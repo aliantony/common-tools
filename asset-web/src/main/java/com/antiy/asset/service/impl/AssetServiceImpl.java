@@ -1,5 +1,39 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -31,38 +65,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1358,7 +1360,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
         Asset asset = assetList.get(0);
 
-        // 查询资产组
+        // 查询资产组AbstractOperations
         param.put("assetId", asset.getId());
         AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
 
@@ -1379,8 +1381,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         } else {
-            Map<Integer,String> map = (Map<Integer,String>) redisUtil.get("asset:unknown:os");
-            assetResponse.setOperationSystemNotice(map.get(asset.getId()));
+            Object osName = redisUtil.get("asset:unknown:os:" + asset.getStringId());
+            assetResponse.setOperationSystemNotice(osName != null ? osName.toString() : null);
         }
         assetResponse.setAssetGroups(
             BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
@@ -1504,21 +1506,42 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             }
                         });
                     }
-                    StringBuffer stringBuffer = new StringBuffer();
+                    // 得到已存在的资产组关系,对新增的插入,移除的删除
+                    List<AssetGroupRelation> existedRelationList = assetGroupRelationDao
+                        .listRelationByAssetId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
                     List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
-                    List<AssetGroupRelation> assetGroupRelations = Lists.newArrayList();
+                    List<AssetGroupRelation> addAssetGroupRelations = Lists.newArrayList();
+                    // 参数中资产组id与已存在的的资产组id相等,不操作;不等就添加插入
                     for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                        stringBuffer.append(assetGroupRequest.getName()).append(",");
-                        AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                        assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                        assetGroupRelation.setAssetId(asset.getStringId());
-                        assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                        assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                        assetGroupRelations.add(assetGroupRelation);
+                        boolean addRelation = true;
+                        for (AssetGroupRelation existedRelation : existedRelationList) {
+                            if (existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
+                                addRelation = false;
+                                break;
+                            }
+                        }
+                        if (addRelation) {
+                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
+                            assetGroupRelation.setAssetId(asset.getStringId());
+                            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                            addAssetGroupRelations.add(assetGroupRelation);
+                        }
                     }
-                    assetGroupRelationDao.deleteByAssetId(asset.getId());
-                    if (!assetGroupRelations.isEmpty()) {
-                        assetGroupRelationDao.insertBatch(assetGroupRelations);
+
+                    // 移除库中existedRelationList已经有的与本次请求相等的,剩下的existedRelationList是本次操作删除的
+                    assetOuterRequest.getAsset().getAssetGroups().forEach(assetGroupRequest -> {
+                        existedRelationList
+                            .removeIf(relation -> assetGroupRequest.getId().equals(relation.getAssetGroupId()));
+                    });
+                    List<Integer> deleteRelationIdList = existedRelationList.stream()
+                        .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
+                    if (CollectionUtils.isNotEmpty(deleteRelationIdList)) {
+                        assetGroupRelationDao.deleteBatch(deleteRelationIdList);
+                    }
+                    if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
+                        assetGroupRelationDao.insertBatch(addAssetGroupRelations);
                     }
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());

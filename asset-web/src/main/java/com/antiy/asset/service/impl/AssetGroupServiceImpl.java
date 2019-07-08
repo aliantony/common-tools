@@ -4,15 +4,16 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.convert.SelectConvert;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.convert.SelectConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
@@ -144,30 +145,52 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         int deleteGroupResult = 0;
 
         // 删除关联资产
-        assetRelationResult = assetGroupRelationDao
-            .deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
+        // assetRelationResult = assetGroupRelationDao
+        // .deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
 
-        if (!Objects.equals(0, assetRelationResult)) {
-            // 写入业务日志(删除关联资产)
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
-                assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
-                BusinessPhaseEnum.NONE));
-            LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
-        }
 
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
 
+        // 查询已有的关联信息
+        List<AssetGroupRelation> existedRelationList = assetGroupRelationDao
+            .listRelationByGroupId(DataTypeUtils.stringToInteger(request.getId()));
+        // 创建资产组关联关系,插入记录
         if (ArrayUtils.isNotEmpty(assetIdArr)) {
             for (String assetId : assetIdArr) {
-                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
-                assetGroupRelation.setAssetId(assetId);
-                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetGroupRelationList.add(assetGroupRelation);
+                boolean addRelation = true;
+                for (AssetGroupRelation groupRelation : existedRelationList) {
+                    // 请求的资产id与所有已存在的有一个相等,就不用添加
+                    if (groupRelation.getAssetId().equals(assetId)) {
+                        addRelation = false;
+                        break;
+                    }
+                }
+                if (addRelation) {
+                    AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                    assetGroupRelation.setAssetGroupId(assetGroup.getStringId());
+                    assetGroupRelation.setAssetId(assetId);
+                    assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                    assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetGroupRelationList.add(assetGroupRelation);
+                }
             }
-
+            // 移除库中existedRelationList已经有的与本次请求相等的,剩下的existedRelationList是本次需要操作删除的
+            for (String requestAssetId : request.getAssetIds()) {
+                existedRelationList.removeIf(e -> e.getAssetId().equals(requestAssetId));
+            }
+            List<Integer> deleteIdList = existedRelationList.stream().map(AssetGroupRelation::getId)
+                .collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(deleteIdList)) {
+                assetRelationResult = assetGroupRelationDao.deleteBatch(deleteIdList);
+                if (!Objects.equals(0, assetRelationResult)) {
+                    // 写入业务日志(删除关联资产)
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
+                        assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
+                        BusinessPhaseEnum.NONE));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
+                }
+            }
             assetRelationResult = assetGroupRelationDao.insertBatch(assetGroupRelationList);
 
             updateGroupResult = assetGroupDao.update(assetGroup);
