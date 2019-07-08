@@ -1,11 +1,16 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.antiy.asset.convert.AccessExportConvert;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.templet.AccessExport;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.utils.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -13,10 +18,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +40,12 @@ public class AssetAdmittanceControllerTest {
 
     @Mock
     private IAssetService assetService;
+
+    @Mock
+    private AccessExportConvert accessExportConvert;
+
+    @Mock
+    private ExcelDownloadUtil excelDownloadUtil;
 
     @InjectMocks
     private AssetAdmittanceController assetAdmittanceController;
@@ -87,25 +101,26 @@ public class AssetAdmittanceControllerTest {
 
     @Test
     public void exportNoData() throws Exception {
-        this.mockMvc
-            .perform(get("/api/v1/asset/admittance/access/export"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body", is("没有数据可以导出")));
-    }
 
-    // @Test
-    public void exportHasData() throws Exception {
         List<AssetResponse> assetList = new ArrayList<>();
-        AssetResponse response = new AssetResponse();
-        assetList.add(response);
-        //when(assetService.findListAsset(any())).thenReturn(assetList);
+        assetList.add(new AssetResponse());
 
-        String fileName = "资产准入管理.xlsx";
+        List<AccessExport> accessExportList = new ArrayList<>();
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        Mockito.when(assetService.findListAsset(Mockito.any(), Mockito.any())).thenReturn(assetList);
+        Mockito.when(accessExportConvert.convert(assetList, AccessExport.class)).thenReturn(accessExportList);
+        Mockito.doNothing().when(excelDownloadUtil).excelDownload(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyString(), Mockito.anyList());
+
         this.mockMvc
-            .perform(get("/api/v1/asset/admittance/access/export"))
-            .andExpect(status().isOk())
-            .andExpect(header().string("Content-Disposition",
-                "attachment; filename=" +
-                    new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1")));
+            .perform(get("/api/v1/asset/admittance/access/export")
+            .param("status", "1")
+            .param("start", "1")
+            .param("end", "2")
+            .param("request", JsonUtil.object2Json(request))
+            .param("response", JsonUtil.object2Json(response)))
+            .andExpect(status().isOk());
     }
 }
