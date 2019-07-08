@@ -110,9 +110,6 @@ public class AssetAdmittanceControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        DownloadVO downloadVO = new DownloadVO();
-        downloadVO.setDownloadList(accessExportList);
-
         Mockito.when(assetService.findListAsset(Mockito.any(), Mockito.any())).thenReturn(assetList);
         Mockito.when(accessExportConvert.convert(assetList, AccessExport.class)).thenReturn(accessExportList);
         Mockito.doNothing().when(excelDownloadUtil).excelDownload(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyString(), Mockito.anyList());
