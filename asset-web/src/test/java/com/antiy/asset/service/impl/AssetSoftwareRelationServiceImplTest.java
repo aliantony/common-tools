@@ -287,8 +287,12 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(assetSoftwareRelationDao.checkInstalled(Mockito.anyString(), Mockito.anyList())).thenReturn(0);
         Mockito.when(commandClient.executeCommand(Mockito.any()))
             .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
-        Assert.assertEquals("123", assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getBody());
-
+        try {
+            Assert.assertEquals("123",
+                assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getBody());
+        } catch (Exception e) {
+            Assert.assertEquals("API接口服务不可用，请联系管理员", e.getMessage());
+        }
         PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
         Mockito.when(commandClient.executeCommand(Mockito.any())).thenReturn(ActionResponse.success());
         Assert.assertNull(assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getBody());
