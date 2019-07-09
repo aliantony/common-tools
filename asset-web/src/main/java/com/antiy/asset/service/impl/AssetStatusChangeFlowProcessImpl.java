@@ -2,10 +2,6 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetOperateLogEnum;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +72,17 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
 
         // 更新资产状态
         assetDao.update(asset);
+
+        // 入网才下发基准
+        new Thread(() -> {
+            if (currentAsset != null && currentAsset.getFirstEnterNett() == null
+                && assetStatusEnum.getCode().equals(AssetStatusEnum.NET_IN.getCode())) {
+                String encodeAssetId = aesEncoder.encode(assetStatusReqeust.getAssetId(),
+                    LoginUserUtil.getLoginUser().getName());
+                baseLineClient.distributeBaseline(encodeAssetId);
+            }
+        }).start();
+
         return ActionResponse.success();
     }
 }
