@@ -5,6 +5,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +33,8 @@ import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.PageResult;
 
 @RunWith(PowerMockRunner.class)
-@SpringBootTest
-@PrepareForTest(BeanConvert.class)
+//@SpringBootTest
+@PrepareForTest({BeanConvert.class, LoginUserUtil.class})
 public class AssetGroupRelationServiceImplTest {
     @InjectMocks
     public AssetGroupRelationServiceImpl assetGroupRelationService;
@@ -44,6 +46,12 @@ public class AssetGroupRelationServiceImplTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
+
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
     }
 
     @Test

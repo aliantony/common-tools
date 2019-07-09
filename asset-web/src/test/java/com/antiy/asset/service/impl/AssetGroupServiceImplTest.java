@@ -48,10 +48,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
+import static org.mockito.Mockito.when;
+
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest(BeanConvert.class)
-@SpringBootTest
+@PrepareForTest({BeanConvert.class, LoginUserUtil.class})
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 public class AssetGroupServiceImplTest {
     @InjectMocks
@@ -95,6 +96,15 @@ public class AssetGroupServiceImplTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
         SecurityContextHolder.setContext(securityContext);
+
+
+        LoginUser loginUser1 = new LoginUser();
+        loginUser1.setId(11);
+        loginUser1.setName("日常安全管理员");
+        loginUser1.setUsername("routine_admin");
+        loginUser1.setPassword("123456");
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
 
     }
 

@@ -14,6 +14,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
@@ -36,8 +37,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ LogUtils.class, LoginUserUtil.class })
 public class AssetDepartmentServiceImplTest {
     @InjectMocks
     private AssetDepartmentServiceImpl                                       assetDepartmentService;
@@ -57,7 +58,13 @@ public class AssetDepartmentServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        LoginUtil.generateDefaultLoginUser();
+        // LoginUtil.generateDefaultLoginUser();
+        PowerMockito.mockStatic(LoginUserUtil.class);
+
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
     }
 
     @Test
