@@ -10,12 +10,14 @@ import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.asset.vo.request.SchemeRequest;
 import com.antiy.asset.vo.response.SchemeResponse;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -31,77 +33,80 @@ import static org.mockito.Mockito.when;
 public class SchemeServiceImplTest {
 
     @MockBean
-    private SchemeDao schemeDao;
+    private SchemeDao        schemeDao;
 
-
+    @MockBean
+    private AesEncoder       aesEncoder;
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
     @SpyBean
-    private ISchemeService iSchemeService;
+    private ISchemeService   iSchemeService;
 
     @Before
-    public void login(){
+    public void login() {
         LoginUtil.generateDefaultLoginUser();
     }
+
     @Test
     public void saveScheme() throws Exception {
-        AssetStatusReqeust assetStatusReqeust=new AssetStatusReqeust ();
+        AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
 
         String result = iSchemeService.saveScheme(assetStatusReqeust);
-        Assert.assertEquals(null,result);
+        Assert.assertEquals(null, result);
     }
 
     @Test
     public void updateScheme() throws Exception {
-        SchemeRequest request=new SchemeRequest();
+        SchemeRequest request = new SchemeRequest();
         Integer result = iSchemeService.updateScheme(request);
-        Assert.assertEquals(null,result);
+        Assert.assertEquals(null, result);
 
     }
 
     @Test
     public void findListScheme() throws Exception {
-        SchemeQuery query=new SchemeQuery();
-        List<Scheme> list=new ArrayList<>();
+        SchemeQuery query = new SchemeQuery();
+        List<Scheme> list = new ArrayList<>();
         when(schemeDao.findQuery(query)).thenReturn(list);
         List<SchemeResponse> listScheme = iSchemeService.findListScheme(query);
-        Assert.assertEquals(0,listScheme.size());
+        Assert.assertEquals(0, listScheme.size());
 
     }
 
     @Test
     public void findPageScheme() throws Exception {
-        SchemeQuery query=new SchemeQuery();
-        when( schemeDao.findCount(query)).thenReturn(100);
+        SchemeQuery query = new SchemeQuery();
+        when(schemeDao.findCount(query)).thenReturn(100);
 
-        List<Scheme> list=new ArrayList<>();
+        List<Scheme> list = new ArrayList<>();
         when(schemeDao.findQuery(query)).thenReturn(list);
         PageResult<SchemeResponse> pageScheme = iSchemeService.findPageScheme(query);
-        Assert.assertEquals(10,pageScheme.getTotalPages());
+        Assert.assertEquals(10, pageScheme.getTotalPages());
 
     }
 
     @Test
     public void findSchemeByAssetIdAndType() throws Exception {
-        AssetIDAndSchemeTypeQuery query=new AssetIDAndSchemeTypeQuery ();
-        Scheme scheme=new Scheme();
+        Mockito.when(aesEncoder.decode(Mockito.anyString(), Mockito.anyString())).thenReturn("abc");
+        AssetIDAndSchemeTypeQuery query = new AssetIDAndSchemeTypeQuery();
+        Scheme scheme = new Scheme();
         scheme.setAssetId("111");
         when(schemeDao.findSchemeByAssetIdAndType(query)).thenReturn(scheme);
         SchemeResponse schemeByAssetIdAndType = iSchemeService.findSchemeByAssetIdAndType(query);
-        Assert.assertEquals("111",schemeByAssetIdAndType.getAssetId());
+        Assert.assertEquals("111", schemeByAssetIdAndType.getAssetId());
     }
 
     @Test
     public void queryMemoById() {
-        Scheme scheme=new Scheme();
-        SchemeQuery query=new SchemeQuery();
+        Scheme scheme = new Scheme();
+        SchemeQuery query = new SchemeQuery();
         query.setAssetId("11");
         query.setAssetStatus(1);
         query.setAssetTypeEnum(AssetTypeEnum.HARDWARE);
+        scheme.setFileInfo("123");
         when(schemeDao.findMemoById(query)).thenReturn(scheme);
         SchemeResponse schemeResponse = iSchemeService.queryMemoById(query);
         Assert.assertNotNull(schemeResponse);
-
 
     }
 }

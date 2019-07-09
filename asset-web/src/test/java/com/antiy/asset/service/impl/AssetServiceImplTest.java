@@ -371,6 +371,8 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("当前区域不存在，或已经注销", e.getMessage());
         }
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
@@ -378,16 +380,6 @@ public class AssetServiceImplTest {
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
         when(assetSoftwareService.configRegister(any(), any())).thenReturn(null);
-        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
-
-        // 异常情况
-
-        // 没用户信息
-        when(assetSoftwareService.configRegister(any(), any())).thenReturn(ActionResponse.success());
-        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
-        Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
         Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
     }
@@ -1061,23 +1053,6 @@ public class AssetServiceImplTest {
 
         }
 
-        // 存储设备变更
-        when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenThrow(new Exception("资产变更失败"));
-        assetOuterRequest = new AssetOuterRequest();
-        assetOuterRequest.setAsset(assetRequest);
-        assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
-        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
-
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-            Assert.assertEquals("资产变更失败", e.getMessage());
-        }
-
         when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenReturn(new ArrayList<>());
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         try {
@@ -1098,11 +1073,46 @@ public class AssetServiceImplTest {
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(null);
         Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
+        SecurityContextHolder.setContext(securityContext);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
-            Assert.assertEquals("获取登录用户： 用户服务异常", e.getMessage());
+            Assert.assertEquals("获取用户失败", e.getMessage());
         }
+
+        LoginUser loginUser = JSONObject.parseObject(
+                "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+                LoginUser.class);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
+        Map<String, Object> map = new HashMap<>();
+        map.put("principal", loginUser);
+        token.setDetails(map);
+
+        authentication = Mockito.mock(OAuth2Authentication.class);
+        securityContext = Mockito.mock(SecurityContext.class);
+
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        // 存储设备变更
+        when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenThrow(new Exception("资产变更失败"));
+        assetOuterRequest = new AssetOuterRequest();
+        assetOuterRequest.setAsset(assetRequest);
+        assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
+        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
+        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
+        assetOuterRequest.setMemory(assetMemoryRequestList);
+        assetOuterRequest.setMainboard(assetMainboradRequestList);
+        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
+
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("资产变更失败", e.getMessage());
+        }
+
     }
 
     private AssetHardDiskRequest generateHardDiskRequest() {

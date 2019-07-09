@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
 import com.antiy.asset.entity.Asset;
@@ -18,11 +19,14 @@ import org.apache.poi.ss.formula.functions.T;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
@@ -30,34 +34,38 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class AssetLinkRelationServiceImplTest {
 
     /**
      * 被测试service
      */
     @InjectMocks
-    private AssetLinkRelationServiceImpl service;
+    private AssetLinkRelationServiceImpl                                service;
 
     /**
      * 模拟对象
      */
     @Mock
-    private AssetLinkRelationDao assetLinkRelationDao;
+    private AssetLinkRelationDao                                        assetLinkRelationDao;
     @Mock
-    private AssetLinkRelationQuery assetLinkRelationQuery;
+    private AssetLinkRelationQuery                                      assetLinkRelationQuery;
     @Mock
-    private IBaseDao<T> baseDao;
+    private IBaseDao<T>                                                 baseDao;
     @Mock
-    private AssetNetworkEquipmentDao assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                    assetNetworkEquipmentDao;
     @Mock
-    private IAssetCategoryModelService assetCategoryModelService;
+    private IAssetCategoryModelService                                  assetCategoryModelService;
     @Mock
-    private IAssetCategoryModelService iAssetCategoryModelService;
+    private IAssetCategoryModelService                                  iAssetCategoryModelService;
+    @Mock
+    private AssetDao                                                    assetDao;
     /**
      * 执行具体逻辑对象，不可删除
      */
     @Spy
-    private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation> requestConverter;
+    private BaseConverter<AssetLinkRelationRequest, AssetLinkRelation>  requestConverter;
     @Spy
     private BaseConverter<AssetLinkRelation, AssetLinkRelationResponse> responseConverter;
 
@@ -71,9 +79,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 从上下文删除用户信息
-     * 不同test中注入的假用户信息会互相影响
-     * 必须删除
+     * 从上下文删除用户信息 不同test中注入的假用户信息会互相影响 必须删除
      */
     @After
     public void tearDown() {
@@ -81,9 +87,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 保存测试
-     * 传入请求数据，向数据库写入数据，返回写入结果
-     * 断言写入结果
+     * 保存测试 传入请求数据，向数据库写入数据，返回写入结果 断言写入结果
      * @throws Exception except
      */
     @Test
@@ -98,17 +102,18 @@ public class AssetLinkRelationServiceImplTest {
         List<String> strings = new ArrayList<>();
         strings.add("0.0.0.110");
         strings.add("0.0.0.111");
-        Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(strings);
+        Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(),
+            Mockito.anyString())).thenReturn(strings);
         Mockito.when(assetLinkRelationDao.insert(Mockito.any())).thenReturn(110);
-
+        Asset asset = new Asset();
+        asset.setNumber("1");
+        Mockito.when(assetDao.getById(Mockito.anyString())).thenReturn(asset);
         boolean s = service.saveAssetLinkRelation(request);
         assertThat(s, equalTo(false));
     }
 
     /**
-     * 更新测试
-     * 传入请求数据，向数据库更新数据，返回更新结果
-     * 断言更新结果
+     * 更新测试 传入请求数据，向数据库更新数据，返回更新结果 断言更新结果
      * @throws Exception except
      */
     @Test
@@ -124,23 +129,22 @@ public class AssetLinkRelationServiceImplTest {
         strings.add("0.0.0.110");
         strings.add("0.0.0.111");
         Mockito.when(assetLinkRelationDao.update(Mockito.any())).thenReturn(2333);
-        Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyString())).thenReturn(strings);
+        Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(),
+            Mockito.anyString())).thenReturn(strings);
 
         String s = service.updateAssetLinkRelation(request);
         assertThat(s, equalTo("2333"));
     }
 
     /**
-     * 列表查询测试
-     * 传入查询参数，向数据库查询信息，返回信息列表
-     * 断言返回信息列表大小
+     * 列表查询测试 传入查询参数，向数据库查询信息，返回信息列表 断言返回信息列表大小
      * @throws Exception except
      */
     @Test
     public void queryListAssetLinkRelation() throws Exception {
         List<AssetLinkRelation> assetLinkRelationList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-//        assetLinkRelation.setAssetId(2333);
+        // assetLinkRelation.setAssetId(2333);
         assetLinkRelationList.add(assetLinkRelation);
         Mockito.when(assetLinkRelationDao.findQuery(Mockito.any())).thenReturn(assetLinkRelationList);
 
@@ -149,16 +153,14 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询测试
-     * 传入查询参数，向数据库查询数据，返回分页查询结果
-     * 断言分页总记录
+     * 分页查询测试 传入查询参数，向数据库查询数据，返回分页查询结果 断言分页总记录
      * @throws Exception except
      */
     @Test
     public void queryPageAssetLinkRelation() throws Exception {
         List<AssetLinkRelation> assetLinkRelationList = new ArrayList<>();
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-//        assetLinkRelation.setAssetId(2333);
+        // assetLinkRelation.setAssetId(2333);
         assetLinkRelationList.add(assetLinkRelation);
         Mockito.when(assetLinkRelationDao.findQuery(Mockito.any())).thenReturn(assetLinkRelationList);
         Mockito.when(baseDao.findCount(Mockito.any())).thenReturn(110);
@@ -168,9 +170,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过id查询测试
-     * 传入查询参数，向数据库查询数据，返回查询结果
-     * 断言查询结果id
+     * 通过id查询测试 传入查询参数，向数据库查询数据，返回查询结果 断言查询结果id
      * @throws Exception except
      */
     @Test
@@ -178,7 +178,7 @@ public class AssetLinkRelationServiceImplTest {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("2333");
         AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
-//        assetLinkRelation.setAssetId(1);
+        // assetLinkRelation.setAssetId(1);
         assetLinkRelation.setId(66666);
         Mockito.when(assetLinkRelationDao.getById(Mockito.any())).thenReturn(assetLinkRelation);
 
@@ -187,9 +187,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过id删除测试
-     * 传入查询参数，从数据库查询数据，返回删除结果
-     * 断言删除结果
+     * 通过id删除测试 传入查询参数，从数据库查询数据，返回删除结果 断言删除结果
      * @throws Exception except
      */
     @Test
@@ -197,15 +195,18 @@ public class AssetLinkRelationServiceImplTest {
         Mockito.when(assetLinkRelationDao.deleteById(Mockito.any())).thenReturn(2333);
         BaseRequest request = new BaseRequest();
         request.setStringId("110");
-
+        AssetLinkRelation assetLinkRelation = new AssetLinkRelation();
+        assetLinkRelation.setAssetId("1");
+        Mockito.when(assetLinkRelationDao.getById(Mockito.anyString())).thenReturn(assetLinkRelation);
+        Asset asset = new Asset();
+        asset.setNumber("1");
+        Mockito.when(assetDao.getById(Mockito.anyString())).thenReturn(asset);
         String s = service.deleteAssetLinkRelationById(request);
         assertThat(s, equalTo("2333"));
     }
 
     /**
-     * 分页查询测试
-     * 情景1：传入查询参数的主键不为空，数据库存在关联资产和关联资产信息，返回分页查询结果
-     * 断言分页查询结果记录
+     * 分页查询测试 情景1：传入查询参数的主键不为空，数据库存在关联资产和关联资产信息，返回分页查询结果 断言分页查询结果记录
      */
     @Test
     public void queryAssetPage() {
@@ -226,9 +227,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页参数测试
-     * 情景2：传入查询参数的主键不为空，数据库不存在关联资产和关联资产信息，返回空
-     * 断言查询结果为空
+     * 分页参数测试 情景2：传入查询参数的主键不为空，数据库不存在关联资产和关联资产信息，返回空 断言查询结果为空
      */
     @Test
     public void queryAssetPageEmpty() {
@@ -242,9 +241,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询测试
-     * 情景3：传入查询参数的主键为空，数据库中存在资产，不存在资产信息，返回空
-     * 断言查询结果为空
+     * 分页查询测试 情景3：传入查询参数的主键为空，数据库中存在资产，不存在资产信息，返回空 断言查询结果为空
      */
     @Test
     public void queryAssetPageEmptyKey() {
@@ -257,9 +254,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询测试
-     * 情景4：传入查询参数的主键为空，数据库中不存在资产和资产信息，返回空
-     * 断言查询结果为空
+     * 分页查询测试 情景4：传入查询参数的主键为空，数据库中不存在资产和资产信息，返回空 断言查询结果为空
      */
     @Test
     public void queryAssetPageEmptyKey1() {
@@ -275,9 +270,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询列表测试
-     * 情景1：传入查询参数，数据库存在对应信息，返回查询结果列表
-     * 断言查询结果
+     * 查询列表测试 情景1：传入查询参数，数据库存在对应信息，返回查询结果列表 断言查询结果
      */
     @Test
     public void queryAssetList() {
@@ -293,9 +286,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询列表测试
-     * 情景2：传入查询参数，数据库不存在对应信息，返回空列表
-     * 断言查询结果为空
+     * 查询列表测试 情景2：传入查询参数，数据库不存在对应信息，返回空列表 断言查询结果为空
      */
     @Test
     public void queryAssetListEmpty() {
@@ -307,15 +298,13 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询链接列表测试
-     * 情景1：传入查询参数，数据库存在对应信息，返回分页查询结果
-     * 断言分页查询结果
+     * 分页查询链接列表测试 情景1：传入查询参数，数据库存在对应信息，返回分页查询结果 断言分页查询结果
      */
     @Test
     public void queryLinekedRelationPage() {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation relation = new AssetLinkRelation();
-//        relation.setAssetId(10010);
+        // relation.setAssetId(10010);
         assetResponseList.add(relation);
         Mockito.when(assetLinkRelationDao.queryLinekedRelationList(Mockito.any())).thenReturn(assetResponseList);
 
@@ -324,9 +313,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询链接列表测试
-     * 情景2：传入查询参数，数据库不存在对应信息，返回分页结果为空
-     * 断言分页结果为空
+     * 分页查询链接列表测试 情景2：传入查询参数，数据库不存在对应信息，返回分页结果为空 断言分页结果为空
      */
     @Test
     public void queryLinekedRelationPageEmpty() {
@@ -337,15 +324,13 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询链接列表测试
-     * 情景1：传入查询参数，数据库存在对应信息，返回查询结果列表
-     * 断言返回列表大小
+     * 查询链接列表测试 情景1：传入查询参数，数据库存在对应信息，返回查询结果列表 断言返回列表大小
      */
     @Test
     public void queryLinekedRelationList() {
         List<AssetLinkRelation> assetResponseList = new ArrayList<>();
         AssetLinkRelation relation = new AssetLinkRelation();
-//        relation.setAssetId(10010);
+        // relation.setAssetId(10010);
         assetResponseList.add(relation);
         Mockito.when(assetLinkRelationDao.queryLinekedRelationList(Mockito.any())).thenReturn(assetResponseList);
 
@@ -354,9 +339,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询链接列表测试
-     * 情景2：传入查询参数，数据库无对应信息，返回空列表
-     * 断言返回列表为空
+     * 查询链接列表测试 情景2：传入查询参数，数据库无对应信息，返回空列表 断言返回列表为空
      */
     @Test
     public void queryLinekedRelationListNull() {
@@ -367,32 +350,31 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过AssetId查询Ip测试
-     * 传入id和bool值，从数据库查询，返回查询结果列表
-     * 断言查询结果的值
+     * 通过AssetId查询Ip测试 传入id和bool值，从数据库查询，返回查询结果列表 断言查询结果的值
      * @throws Exception except
      */
     @Test
     public void queryIpAddressByAssetId() throws Exception {
         List<String> list = new ArrayList<>();
         list.add("123");
-        Mockito.when(assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(), Mockito.any())).thenReturn(list);
+        Mockito
+            .when(
+                assetLinkRelationDao.queryIpAddressByAssetId(Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
+            .thenReturn(list);
 
         List<String> strings = service.queryIpAddressByAssetId("id", true);
         assertThat(strings.get(0), equalTo("123"));
     }
 
     /**
-     * 通过id查询端口测试
-     * 传入查询参数，返回未被占用端口组成的列表响应
-     * 断言返回结果不为空
+     * 通过id查询端口测试 传入查询参数，返回未被占用端口组成的列表响应 断言返回结果不为空
      */
     @Test
     public void queryPortById() {
         List<Integer> list = new ArrayList<>();
         list.add(233);
         list.add(23);
-        QueryCondition queryCondition= new QueryCondition();
+        QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("1");
         Mockito.when(assetNetworkEquipmentDao.findPortAmount(Mockito.any())).thenReturn(998);
         Mockito.when(assetLinkRelationDao.findUsePort(Mockito.anyString())).thenReturn(list);
@@ -402,16 +384,14 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过id查询端口测试
-     * 传入查询参数，无可用端口，返回空
-     * 断言返回为空
+     * 通过id查询端口测试 传入查询参数，无可用端口，返回空 断言返回为空
      */
     @Test
     public void queryPortByIdNull() {
         List<Integer> list = new ArrayList<>();
         list.add(233);
         list.add(23);
-        QueryCondition queryCondition= new QueryCondition();
+        QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("1");
         Mockito.when(assetNetworkEquipmentDao.findPortAmount(Mockito.any())).thenReturn(null);
         Mockito.when(assetLinkRelationDao.findUsePort(Mockito.anyString())).thenReturn(list);
@@ -421,16 +401,14 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过id查询端口测试
-     * 传入查询参数，可用端口为1，返回空
-     * 断言返回为空
+     * 通过id查询端口测试 传入查询参数，可用端口为1，返回空 断言返回为空
      */
     @Test
     public void queryPortByIdLess() {
         List<Integer> list = new ArrayList<>();
         list.add(233);
         list.add(23);
-        QueryCondition queryCondition= new QueryCondition();
+        QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("1");
         Mockito.when(assetNetworkEquipmentDao.findPortAmount(Mockito.any())).thenReturn(1);
         Mockito.when(assetLinkRelationDao.findUsePort(Mockito.anyString())).thenReturn(list);
@@ -440,9 +418,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 分页查询资产联系测试
-     * 情景1：传入查询参数，数据库存在关联数据，返回关联数据
-     * 断言返回结果不为空
+     * 分页查询资产联系测试 情景1：传入查询参数，数据库存在关联数据，返回关联数据 断言返回结果不为空
      * @throws Exception except
      */
     @Test
@@ -459,6 +435,7 @@ public class AssetLinkRelationServiceImplTest {
         List<AssetLinkedCount> counts = new ArrayList<>();
         AssetLinkedCount count = new AssetLinkedCount();
         count.setName("1");
+        count.setAreaId("1");
         counts.add(count);
         Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.anyInt())).thenReturn(integers);
         Mockito.when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(category);
@@ -468,12 +445,16 @@ public class AssetLinkRelationServiceImplTest {
 
         PageResult<AssetLinkedCountResponse> result = service.queryAssetLinkedCountPage(new AssetLinkRelationQuery());
         assertThat(result, notNullValue());
+
+        AssetLinkRelationQuery assetLinkRelationQuery = new AssetLinkRelationQuery();
+        assetLinkRelationQuery.setCategoryModels(Arrays.asList("1", "2"));
+        result = service.queryAssetLinkedCountPage(assetLinkRelationQuery);
+        assertThat(result, notNullValue());
+
     }
 
     /**
-     * 分页查询资产联系测试
-     * 情景2：传入查询参数，数据库不存在关联数据，返回空
-     * 断言返回结果为空
+     * 分页查询资产联系测试 情景2：传入查询参数，数据库不存在关联数据，返回空 断言返回结果为空
      * @throws Exception except
      */
     @Test
@@ -481,7 +462,8 @@ public class AssetLinkRelationServiceImplTest {
         Map<String, String> category = new HashMap<>();
         category.put("1", "计算设备");
         category.put("2", "网络设备");
-        Mockito.doThrow(new NullPointerException()).when(assetCategoryModelService).findAssetCategoryModelIdsById(Mockito.anyInt());
+        Mockito.doThrow(new NullPointerException()).when(assetCategoryModelService)
+            .findAssetCategoryModelIdsById(Mockito.anyInt());
         Mockito.when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(category);
         Mockito.when(assetLinkRelationDao.queryAssetLinkedCountList(Mockito.any())).thenReturn(null);
 
@@ -490,9 +472,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查找资产联系列表测试
-     * 情景1：传入查询参数，上下文中不存在用户信息，数据库中不存在对应信息，返回空列表
-     * 断言返回列表为空
+     * 查找资产联系列表测试 情景1：传入查询参数，上下文中不存在用户信息，数据库中不存在对应信息，返回空列表 断言返回列表为空
      * @throws Exception except
      */
     @Test
@@ -509,9 +489,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查找资产联系列表测试
-     * 情景2：传入查询参数，上下文中存在用户信息，数据库中存在对应信息，返回列表
-     * 断言返回列表大小
+     * 查找资产联系列表测试 情景2：传入查询参数，上下文中存在用户信息，数据库中存在对应信息，返回列表 断言返回列表大小
      * @throws Exception except
      */
     @Test
@@ -524,21 +502,23 @@ public class AssetLinkRelationServiceImplTest {
         AssetLinkedCount count = new AssetLinkedCount();
         AssetLinkedCount count1 = new AssetLinkedCount();
         count1.setCategoryModel("123");
+        count.setAreaId("1");
+        count1.setAreaId("1");
         list.add(count1);
         list.add(count);
         list.add(count1);
         Mockito.when(assetCategoryModelService.findAssetCategoryModelIdsById(Mockito.anyInt())).thenReturn(integers);
         Mockito.when(assetLinkRelationDao.queryAssetLinkedCountList(Mockito.any())).thenReturn(list);
-        Mockito.when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("");
+        Mockito
+            .when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+            .thenReturn("");
 
         List<AssetLinkedCountResponse> result = service.queryAssetLinkedCountList(new AssetLinkRelationQuery());
         assertThat(result.size(), equalTo(3));
     }
 
     /**
-     * 通过资产id查询资产关联数据列表测试
-     * 情景1：传入查询参数，数据库存在关联数据，返回关联数据列表
-     * 断言列表大小
+     * 通过资产id查询资产关联数据列表测试 情景1：传入查询参数，数据库存在关联数据，返回关联数据列表 断言列表大小
      */
     @Test
     public void queryLinkedAssetListByAssetId() throws Exception {
@@ -553,16 +533,16 @@ public class AssetLinkRelationServiceImplTest {
         query.setPrimaryKey("110");
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
         Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(assetResponseList);
-        Mockito.when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("123");
+        Mockito
+            .when(iAssetCategoryModelService.recursionSearchParentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+            .thenReturn("123");
 
         List<AssetLinkRelationResponse> list = service.queryLinkedAssetListByAssetId(query);
         assertThat(list.size(), equalTo(3));
     }
 
     /**
-     * 通过资产id查询资产关联数据列表测试
-     * 情景2：传入查询参数，数据库存在关联数据，返回关联数据列表
-     * 断言列表大小
+     * 通过资产id查询资产关联数据列表测试 情景2：传入查询参数，数据库存在关联数据，返回关联数据列表 断言列表大小
      */
     @Test
     public void queryLinkedAssetListByAssetIdIf() throws Exception {
@@ -579,9 +559,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过资产id查询资产关联数据列表测试
-     * 情景1：传入查询参数，数据库不存在关联数据，返回空列表
-     * 断言列表大小为空
+     * 通过资产id查询资产关联数据列表测试 情景1：传入查询参数，数据库不存在关联数据，返回空列表 断言列表大小为空
      */
     @Test
     public void queryLinkedAssetListByAssetIdEmpty() throws Exception {
@@ -595,9 +573,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 通过资产id分页查询资产关联数据测试
-     * 情景1：传入查询参数，数据库存在关联数据，返回分页查询结果
-     * 断言返回结果大小
+     * 通过资产id分页查询资产关联数据测试 情景1：传入查询参数，数据库存在关联数据，返回分页查询结果 断言返回结果大小
      */
     @Test
     public void queryLinkedAssetPageByAssetId() throws Exception {
@@ -609,14 +585,12 @@ public class AssetLinkRelationServiceImplTest {
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
         Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(assetResponseList);
 
-        PageResult<AssetLinkRelationResponse>result = service.queryLinkedAssetPageByAssetId(query);
+        PageResult<AssetLinkRelationResponse> result = service.queryLinkedAssetPageByAssetId(query);
         assertThat(result.getTotalRecords(), equalTo(0));
     }
 
     /**
-     * 通过资产id分页查询资产关联数据测试
-     * 情景1：传入查询参数，数据库不存在关联数据，返回空结果
-     * 断言返回结果大小为空
+     * 通过资产id分页查询资产关联数据测试 情景1：传入查询参数，数据库不存在关联数据，返回空结果 断言返回结果大小为空
      */
     @Test
     public void queryLinkedAssetPageByAssetIdEmpty() throws Exception {
@@ -625,14 +599,12 @@ public class AssetLinkRelationServiceImplTest {
         Mockito.when(assetLinkRelationDao.queryPortSize(Mockito.any())).thenReturn(233);
         Mockito.when(assetLinkRelationDao.queryLinkedAssetListByAssetId(Mockito.any())).thenReturn(null);
 
-        PageResult<AssetLinkRelationResponse>result = service.queryLinkedAssetPageByAssetId(query);
+        PageResult<AssetLinkRelationResponse> result = service.queryLinkedAssetPageByAssetId(query);
         assertThat(result.getTotalRecords(), equalTo(0));
     }
 
     /**
-     * 保存资产关联数据列表测试
-     * 情景1：传入查询参数，传入资产列表不为空，储存并返回结果
-     * 断言返回成功
+     * 保存资产关联数据列表测试 情景1：传入查询参数，传入资产列表不为空，储存并返回结果 断言返回成功
      */
     @Test
     public void saveAssetLinkRelationList() {
@@ -648,9 +620,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 保存资产关联数据列表测试
-     * 情景2：传入查询参数，传入资产列表为空，返回结果
-     * 断言返回成功
+     * 保存资产关联数据列表测试 情景2：传入查询参数，传入资产列表为空，返回结果 断言返回成功
      */
     @Test
     public void saveAssetLinkRelationListCase1() {
@@ -661,9 +631,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询被使用ip测试
-     * 情景1：传入查询参数，不是规定设备，返回结果
-     * 断言返回结果大小为空
+     * 查询被使用ip测试 情景1：传入查询参数，不是规定设备，返回结果 断言返回结果大小为空
      */
     @Test
     public void queryUseableIpCase1() {
@@ -676,9 +644,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询被使用ip测试
-     * 情景2：传入查询参数，数据库存在关联数据，返回结果
-     * 断言返回结果大小为空
+     * 查询被使用ip测试 情景2：传入查询参数，数据库存在关联数据，返回结果 断言返回结果大小为空
      */
     @Test
     public void queryUseableIpCase2() {
@@ -691,9 +657,7 @@ public class AssetLinkRelationServiceImplTest {
     }
 
     /**
-     * 查询被使用ip测试
-     * 情景3：传入查询参数，数据库存在关联数据，返回结果
-     * 断言返回结果大小为空
+     * 查询被使用ip测试 情景3：传入查询参数，数据库存在关联数据，返回结果 断言返回结果大小为空
      */
     @Test
     public void queryUseableIpCase3() {
