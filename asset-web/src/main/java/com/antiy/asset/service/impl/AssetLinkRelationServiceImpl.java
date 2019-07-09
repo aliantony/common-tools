@@ -74,13 +74,13 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private RedisUtil                                                   redisUtil;
 
-    private CategoryValiEntity func(CategoryValiEntity category) {
-        categoryVali = assetCategoryDao.getNameByCtegoryId(category.getParentId());
-        if (categoryVali.getParentId() != 2) {
-            categoryVali = func(categoryVali);
-        }
-        return categoryVali;
-    }
+    // private CategoryValiEntity func(CategoryValiEntity category) {
+    // categoryVali = assetCategoryDao.getNameByCtegoryId(category.getParentId());
+    // if (categoryVali.getParentId() != 2) {
+    // categoryVali = func(categoryVali);
+    // }
+    // return categoryVali;
+    // }
 
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
@@ -94,37 +94,37 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         return StringUtils.isNotBlank(assetLinkRelation.getStringId()) ? true : false;
     }
 
-    private void validate(AssetLinkRelationRequest request, QueryCondition queryCondition, CategoryType categoryType,
-                          CategoryValiEntity category) {
-        if (category.getName().equals("计算设备")) {
-            categoryType.setPc(true);
-            UseableIpRequest useableIpRequest = new UseableIpRequest();
-            useableIpRequest.setAssetId(request.getParentAssetId());
-            useableIpRequest.setCategoryType(categoryType);
-            List<String> list = this.queryUseableIp(useableIpRequest);
-            if (!list.contains(request.getParentAssetIp())) {
-                throw new RequestParamValidateException("必须选定下拉框中的IP");
-            }
-        } else {
-            categoryType.setNet(true);
-            UseableIpRequest useableIpRequest = new UseableIpRequest();
-            useableIpRequest.setAssetId(request.getParentAssetId());
-            useableIpRequest.setCategoryType(categoryType);
-            List<String> list = this.queryUseableIp(useableIpRequest);
-            if (!list.contains(request.getParentAssetIp())) {
-                throw new RequestParamValidateException("必须选定下拉框中的IP");
-            }
-            queryCondition.setPrimaryKey(request.getParentAssetId());
-            List<SelectResponse> selectResponses = this.queryPortById(queryCondition);
-            List<String> valueList = new ArrayList<>();
-            for (SelectResponse selectResponse : selectResponses) {
-                valueList.add(selectResponse.getValue());
-            }
-            if (!valueList.contains(request.getParentAssetPort())) {
-                throw new RequestParamValidateException("必须选定下拉框中的网口");
-            }
-        }
-    }
+    // private void validate(AssetLinkRelationRequest request, QueryCondition queryCondition, CategoryType categoryType,
+    // CategoryValiEntity category) {
+    // if (category.getName().equals("计算设备")) {
+    // categoryType.setPc(true);
+    // UseableIpRequest useableIpRequest = new UseableIpRequest();
+    // useableIpRequest.setAssetId(request.getParentAssetId());
+    // useableIpRequest.setCategoryType(categoryType);
+    // List<String> list = this.queryUseableIp(useableIpRequest);
+    // if (!list.contains(request.getParentAssetIp())) {
+    // throw new RequestParamValidateException("必须选定下拉框中的IP");
+    // }
+    // } else {
+    // categoryType.setNet(true);
+    // UseableIpRequest useableIpRequest = new UseableIpRequest();
+    // useableIpRequest.setAssetId(request.getParentAssetId());
+    // useableIpRequest.setCategoryType(categoryType);
+    // List<String> list = this.queryUseableIp(useableIpRequest);
+    // if (!list.contains(request.getParentAssetIp())) {
+    // throw new RequestParamValidateException("必须选定下拉框中的IP");
+    // }
+    // queryCondition.setPrimaryKey(request.getParentAssetId());
+    // List<SelectResponse> selectResponses = this.queryPortById(queryCondition);
+    // List<String> valueList = new ArrayList<>();
+    // for (SelectResponse selectResponse : selectResponses) {
+    // valueList.add(selectResponse.getValue());
+    // }
+    // if (!valueList.contains(request.getParentAssetPort())) {
+    // throw new RequestParamValidateException("必须选定下拉框中的网口");
+    // }
+    // }
+    // }
 
     /**
      * 检查IP信息

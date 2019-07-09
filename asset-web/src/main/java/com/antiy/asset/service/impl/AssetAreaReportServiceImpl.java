@@ -356,16 +356,16 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         return "";
     }
 
-    private AssetReportResponse getAreaReportData(String timeType) {
-        AssetReportResponse assetReportResponse = new AssetReportResponse();
-
-        // 本周
-        if ("1".equals(timeType)) {
-            // assetReportResponse.setDate(ReportDateUtils.getDayOfWeek().values());
-        }
-        return null;
-
-    }
+//    private AssetReportResponse getAreaReportData(String timeType) {
+//        AssetReportResponse assetReportResponse = new AssetReportResponse();
+//
+//        // 本周
+//        if ("1".equals(timeType)) {
+//            // assetReportResponse.setDate(ReportDateUtils.getDayOfWeek().values());
+//        }
+//        return null;
+//
+//    }
 
     private List<Integer> getTopFive(ReportQueryRequest reportRequest) {
 
