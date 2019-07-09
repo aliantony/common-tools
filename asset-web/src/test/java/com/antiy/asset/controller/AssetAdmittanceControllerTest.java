@@ -103,7 +103,7 @@ public class AssetAdmittanceControllerTest {
     public void exportNoData() throws Exception {
 
         List<AssetResponse> assetList = new ArrayList<>();
-        assetList.add(new AssetResponse());
+
 
         List<AccessExport> accessExportList = new ArrayList<>();
 
@@ -111,6 +111,16 @@ public class AssetAdmittanceControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         Mockito.when(assetService.findListAsset(Mockito.any(), Mockito.any())).thenReturn(assetList);
+        this.mockMvc
+                .perform(get("/api/v1/asset/admittance/access/export")
+                        .param("status", "1")
+                        .param("start", "1")
+                        .param("end", "2")
+                        .param("request", JsonUtil.object2Json(request))
+                        .param("response", JsonUtil.object2Json(response)))
+                .andExpect(status().isOk());
+
+        assetList.add(new AssetResponse());
         Mockito.when(accessExportConvert.convert(assetList, AccessExport.class)).thenReturn(accessExportList);
         Mockito.doNothing().when(excelDownloadUtil).excelDownload(Mockito.anyObject(), Mockito.anyObject(), Mockito.anyString(), Mockito.anyList());
 
@@ -122,25 +132,5 @@ public class AssetAdmittanceControllerTest {
             .param("request", JsonUtil.object2Json(request))
             .param("response", JsonUtil.object2Json(response)))
             .andExpect(status().isOk());
-    }
-
-    @Test
-    public void exportNoData2() throws Exception {
-
-        List<AssetResponse> assetList = new ArrayList<>();
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
-        Mockito.when(assetService.findListAsset(Mockito.any(), Mockito.any())).thenReturn(assetList);
-
-        this.mockMvc
-                .perform(get("/api/v1/asset/admittance/access/export")
-                        .param("status", "1")
-                        .param("start", "1")
-                        .param("end", "2")
-                        .param("request", JsonUtil.object2Json(request))
-                        .param("response", JsonUtil.object2Json(response)))
-                .andExpect(status().isOk());
     }
 }
