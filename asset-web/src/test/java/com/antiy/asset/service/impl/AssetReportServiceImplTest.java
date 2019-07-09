@@ -1,31 +1,18 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetReportDao;
-import com.antiy.asset.entity.AssetCategoryEntity;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.entity.AssetGroupEntity;
-import com.antiy.asset.manage.Service.AssetReportServiceManager;
-import com.antiy.asset.service.IAssetReportService;
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ReportDateUtils;
-import com.antiy.asset.vo.enums.ShowCycleType;
+import static org.mockito.Mockito.when;
 
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
-import com.antiy.asset.vo.request.ReportQueryRequest;
-import com.antiy.asset.vo.response.AssetReportResponse;
-import com.antiy.asset.vo.response.AssetReportTableResponse;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.antiy.common.exception.BusinessException;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,11 +23,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,40 +33,50 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetReportDao;
+import com.antiy.asset.entity.AssetCategoryEntity;
+import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.AssetGroupEntity;
+import com.antiy.asset.manage.Service.AssetReportServiceManager;
+import com.antiy.asset.templet.ReportForm;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.ReportDateUtils;
+import com.antiy.asset.vo.enums.ShowCycleType;
+import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
+import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetReportResponse;
+import com.antiy.asset.vo.response.AssetReportTableResponse;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LogUtils.class,
-                  ReportDateUtils.class })
-// @SpringBootTest
+                  ReportDateUtils.class, DataTypeUtils.class })
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 public class AssetReportServiceImplTest {
-    /**
-     * 模拟Service，会发生真实调用
-     */
-    @InjectMocks
-    private AssetReportServiceImpl    iAssetReportService;
 
-    /**
-     * 模拟Dao，将其注入上下文
-     */
+    @InjectMocks
+    private AssetReportServiceImpl    iAssetReportService       = new AssetReportServiceImpl();
+
     @Mock
     private AssetReportDao            assetReportDao;
     @Mock
     private AssetCategoryModelDao     categoryModelDao;
     @Spy
     private AssetReportServiceManager assetReportServiceManager = new AssetReportServiceManager();
-    @Mock
-    private ExcelUtils                excelUtils;
+//    @Mock
+//    private ExcelUtils                excelUtils;
+
+    @Rule
+    public ExpectedException          expectedException         = ExpectedException.none();
 
     private LoginUser                 loginUser;
-
-    private Logger                    logger                    = mock(Logger.class);
 
     /**
      * 模拟登陆用户信息
@@ -95,6 +87,7 @@ public class AssetReportServiceImplTest {
         sysArea.setId(1);
         List<SysArea> sysAreaList = new ArrayList<>();
         sysAreaList.add(sysArea);
+
         loginUser = new LoginUser();
         loginUser.setId(11);
         loginUser.setName("日常安全管理员");
@@ -103,13 +96,19 @@ public class AssetReportServiceImplTest {
         loginUser.setAreas(sysAreaList);
         PowerMockito.mockStatic(LoginUserUtil.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
-
         // 日志
         PowerMockito.mockStatic(LogUtils.class);
         PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
-        // PowerMockito.doNothing().when(Logger.class, "debug", Mockito.anyString(),);
+//        PowerMockito.doNothing().when(Logger.class, "debug", Mockito.any());
 
         PowerMockito.mockStatic(RequestContextHolder.class);
+
+//        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, title + ".xlsx"));
+
+        PowerMockito.mockStatic(ExcelUtils.class);
+        PowerMockito.doNothing().when(ExcelUtils.class, "exportFormToClient", Mockito.any(ReportForm.class), Mockito.anyString());
+
+
     }
 
     /**
@@ -118,19 +117,16 @@ public class AssetReportServiceImplTest {
      */
     @Test
     public void queryCategoryCountByTimeWithYear() throws Exception {
-        mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("计算设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("计算设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("计算设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("计算设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551422114000L));
+        AssetReportResponse result = iAssetReportService
+            .queryCategoryCountByTime(initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551422114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -141,17 +137,17 @@ public class AssetReportServiceImplTest {
     @Test
     public void queryCategoryCountByTimeWithYMonth() throws Exception {
         mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("存储设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("存储设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("存储设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("存储设备", 2));
+        List<AssetCategoryEntity> initCategoryEntityList = initCategoryEntityList(
+            getKeyFromMap(ReportDateUtils.getWeekOfMonth()));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(initCategoryEntityList);
+
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
-        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551422114000L));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
+        AssetReportResponse result = iAssetReportService
+            .queryCategoryCountByTime(initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551422114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -169,18 +165,17 @@ public class AssetReportServiceImplTest {
     @Test
     public void queryCategoryCountByTimeWithQuarter() throws Exception {
         mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("其它设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("其它设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("其它设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("其它设备", 2));
+
+        List<AssetCategoryEntity> initCategoryEntityList = initCategoryEntityList(
+            getKeyFromMap(ReportDateUtils.getSeason()));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(initCategoryEntityList);
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(initCategoryEntityList);
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(assetReportServiceManager
-            .initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551422114000L));
+        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(
+            initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551422114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -190,19 +185,22 @@ public class AssetReportServiceImplTest {
      */
     @Test
     public void queryCategoryCountByTimeWithAssignTime() throws Exception {
-        mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("安全设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("安全设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(assetReportServiceManager
-            .initCategoryEntityList(getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L))));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(assetReportServiceManager
-            .initCategoryEntityList(getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L))));
+        List<AssetCategoryModel> allCategoryModelList = initCategoryModeList("安全设备", 1);
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(allCategoryModelList);
+        List<AssetCategoryModel> categoryModelList = initCategoryModeList("安全设备", 2);
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(categoryModelList);
+
+        List<AssetCategoryEntity> categoryEntityList = initCategoryEntityList(
+            getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L)));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(categoryEntityList);
+
+        List<AssetCategoryEntity> previousCategoryEntityList = initCategoryEntityList(
+            getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L)));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(previousCategoryEntityList);
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(assetReportServiceManager
-            .initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L));
+        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(
+            initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -212,19 +210,34 @@ public class AssetReportServiceImplTest {
      */
     @Test
     public void queryCategoryCountByTimeWithWeek() throws Exception {
-        mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("网络设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("网络设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("网络设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("网络设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        AssetReportResponse result = iAssetReportService.queryCategoryCountByTime(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
+        AssetReportResponse result = iAssetReportService
+            .queryCategoryCountByTime(initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
+    /**
+     * 场景六：展示周期为 未指定
+     * @throws Exception
+     */
+    @Test
+    public void queryCategoryCountByTimeNoAssign() throws Exception {
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("网络设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("网络设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+
+        Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
+        AssetReportResponse result = iAssetReportService
+            .queryCategoryCountByTime(initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -234,22 +247,20 @@ public class AssetReportServiceImplTest {
      */
     @Test
     public void exportCategoryCountWithWeek() throws Exception {
-        mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("网络设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("网络设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("网络设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("网络设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getDayOfWeek())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         HttpServletRequest httpServletRequest = getRequest();
+
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+
         iAssetReportService.exportCategoryCount(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L),
-            httpServletRequest);
+            initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L), httpServletRequest);
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -267,21 +278,18 @@ public class AssetReportServiceImplTest {
     @Test
     public void exportCategoryCountWithMonth() throws Exception {
         mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("存储设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("存储设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("存储设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("存储设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getWeekOfMonth())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         iAssetReportService.exportCategoryCount(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551422114000L),
-            getRequest());
+            initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551422114000L), getRequest());
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -293,20 +301,18 @@ public class AssetReportServiceImplTest {
     @Test
     public void exportCategoryCountWithQuater() throws Exception {
         mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("其它设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("其它设备", 2));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("其它设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("其它设备", 2));
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getSeason())));
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
-        iAssetReportService.exportCategoryCount(assetReportServiceManager
-            .initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551422114000L), getRequest());
+        iAssetReportService.exportCategoryCount(
+            initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551422114000L), getRequest());
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -318,21 +324,18 @@ public class AssetReportServiceImplTest {
     @Test
     public void exportCategoryCountWithYear() throws Exception {
         mockLoginUser(loginUser);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(assetReportServiceManager.initCategoryModeList("计算设备", 1));
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(assetReportServiceManager.initCategoryModeList("计算设备", 2));
-        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
-        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(
-            assetReportServiceManager.initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(initCategoryModeList("计算设备", 1));
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(initCategoryModeList("计算设备", 2));
+        Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
+        Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any()))
+            .thenReturn(initCategoryEntityList(getKeyFromMap(ReportDateUtils.getCurrentMonthOfYear())));
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
         iAssetReportService.exportCategoryCount(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551422114000L),
-            getRequest());
+            initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551422114000L), getRequest());
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -343,13 +346,10 @@ public class AssetReportServiceImplTest {
      */
     @Test
     public void exportCategoryCountWithAssignTime() throws Exception {
-        // mockLoginUser(loginUser);
         List<AssetCategoryModel> allCategoryModelList = initCategoryModeList("安全设备", 1);
-        Mockito.when(categoryModelDao.findAllCategory())
-            .thenReturn(allCategoryModelList);
+        Mockito.when(categoryModelDao.findAllCategory()).thenReturn(allCategoryModelList);
         List<AssetCategoryModel> categoryModelList = initCategoryModeList("安全设备", 2);
-        Mockito.when(categoryModelDao.getByWhere(Mockito.any()))
-            .thenReturn(categoryModelList);
+        Mockito.when(categoryModelDao.getByWhere(Mockito.any())).thenReturn(categoryModelList);
         List<AssetCategoryEntity> categoryEntities = initCategoryEntityList(
             getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L)));
         Mockito.when(assetReportDao.findCategoryCountByTime(Mockito.any())).thenReturn(categoryEntities);
@@ -358,18 +358,20 @@ public class AssetReportServiceImplTest {
             getKeyFromMap(ReportDateUtils.getMonthWithDate(1551422114000L, 1551423114000L)));
         Mockito.when(assetReportDao.findCategoryCountPrevious(Mockito.any())).thenReturn(previousCategoryEntities);
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
         Mockito.when(assetReportDao.findCategoryCountAmount(Mockito.anyMap())).thenReturn(1);
 
-        when(iAssetReportService.encodeChineseDownloadFileName(Mockito.any(), Mockito.any())).thenReturn("Hh.xls");
+        // when(iAssetReportService.encodeChineseDownloadFileName(Mockito.any(), Mockito.any())).thenReturn("Hh.xls");
+        //
+        // PowerMockito.doNothing().when(ExcelUtils.class, "exportFormToClient", Mockito.any(ReportForm.class),
+        // iAssetReportService.encodeChineseDownloadFileName(Mockito.any(), Mockito.any()));
 
-        PowerMockito.doNothing().when(ExcelUtils.class, "exportFormToClient", Mockito.any(ReportForm.class),
-            iAssetReportService.encodeChineseDownloadFileName(Mockito.any(), Mockito.any()));
+        // PowerMockito.doNothing().when(ExcelUtils.class, "exportFormToClient", Mockito.any(ReportForm.class),
+        // Mockito.anyString());
 
         iAssetReportService.exportCategoryCount(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L),
-            getRequest());
+            initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L), getRequest());
         Mockito.verify(categoryModelDao).findAllCategory();
         Mockito.verify(assetReportDao).findCategoryCountByTime(Mockito.any());
     }
@@ -441,6 +443,20 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         AssetReportResponse result = iAssetReportService
             .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("5"));
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
+
+    /**
+     * 场景6：展示周期为未指定
+     * @throws Exception
+     */
+    @Test
+    public void getAssetConutWithGroupWithNoAssign() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        AssetReportResponse result = iAssetReportService
+            .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("66"));
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
@@ -570,6 +586,19 @@ public class AssetReportServiceImplTest {
             .getAssetGroupReportTable(assetReportServiceManager.initReportQueryRequest("5"));
         Assert.assertThat(result, Matchers.notNullValue());
     }
+    /**
+     * 场景六：展示周期不为年|月|周|指定时间--
+     * @throws Exception
+     */
+    @Test
+    public void getAssetGroupReportTableWithNoAssign() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        AssetReportTableResponse result = iAssetReportService
+            .getAssetGroupReportTable(assetReportServiceManager.initReportQueryRequest("66"));
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
 
     /**
      * 场景一：展示周期为本周
@@ -657,6 +686,25 @@ public class AssetReportServiceImplTest {
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
 
         iAssetReportService.exportAssetGroupTable(assetReportServiceManager.initReportQueryRequest("5"));
+        Mockito.verify(assetReportDao).getNewAssetWithGroup(Mockito.any());
+    }
+
+    /**
+     * 场景六：未传指定周期-异常
+     * @throws Exception
+     */
+    @Test
+    public void exportAssetGroupTableNotWithTimeType() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("user-agent", "   ");
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("timeType参数异常");
+        iAssetReportService.exportAssetGroupTable(assetReportServiceManager.initReportQueryRequest("99"));
         Mockito.verify(assetReportDao).getNewAssetWithGroup(Mockito.any());
     }
 
