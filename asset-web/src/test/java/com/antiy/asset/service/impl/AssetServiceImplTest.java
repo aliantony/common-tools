@@ -9,6 +9,8 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -20,6 +22,8 @@ import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
 import org.apache.catalina.connector.Request;
@@ -29,6 +33,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -45,18 +51,21 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.File;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ ExcelUtils.class, RequestContextHolder.class })
-@SpringBootTest
+@PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class, LogHandle.class, ZipUtil.class})
+//@SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
 public class AssetServiceImplTest {
@@ -82,7 +91,7 @@ public class AssetServiceImplTest {
     AssetSoftwareLicenseDao                                            assetSoftwareLicenseDao;
     @Mock
     AssetCategoryModelDao                                              assetCategoryModelDao;
-    @SpyBean
+    @Mock
     TransactionTemplate                                                transactionTemplate;
     @Mock
     AssetSoftwareRelationDao                                           assetSoftwareRelationDao;
@@ -161,7 +170,7 @@ public class AssetServiceImplTest {
     SchemeDao                                                          schemeDao;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         // 模拟用户登录
@@ -183,6 +192,38 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(ExcelUtils.class);
 
         PowerMockito.mockStatic(RequestContextHolder.class);
+
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        List<SysArea> areaList = new ArrayList<>();
+        SysArea sysArea = new SysArea();
+        sysArea.setFullName("四川");
+        sysArea.setId(1);
+        areaList.add(sysArea);
+        loginUser.setAreas(areaList);
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+
+        PowerMockito.mockStatic(LicenseUtil.class);
+
+//        PowerMockito.when(LicenseUtil.getLicense().getAssetNum()).thenReturn(100);
+        LicenseContent licenseContent = new LicenseContent();
+        licenseContent.setAssetNum(100);
+        PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
+
+        PowerMockito.mockStatic(LogUtils.class);
+        PowerMockito.mockStatic(LogHandle.class);
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
+        PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+
+        when(transactionTemplate.execute(Mockito.<TransactionCallback> any())).thenAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                TransactionCallback arg = (TransactionCallback) args[0];
+                return arg.doInTransaction(new SimpleTransactionStatus());
+            }
+        });
 
     }
 
@@ -1074,11 +1115,7 @@ public class AssetServiceImplTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(null);
         Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
         SecurityContextHolder.setContext(securityContext);
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-            Assert.assertEquals("获取用户失败", e.getMessage());
-        }
+
 
         LoginUser loginUser = JSONObject.parseObject(
                 "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
@@ -1113,6 +1150,12 @@ public class AssetServiceImplTest {
             Assert.assertEquals("资产变更失败", e.getMessage());
         }
 
+        try {
+            PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("获取用户失败", e.getMessage());
+        }
     }
 
     private AssetHardDiskRequest generateHardDiskRequest() {
@@ -1232,6 +1275,9 @@ public class AssetServiceImplTest {
             assetCategoryModel2, assetCategoryModel3, assetCategoryModel4, assetCategoryModel5));
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("user-agent", "   ");
+
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
