@@ -35,7 +35,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 public class AbstractAssetStatusChangeProcessImplTest {
 
     @InjectMocks

@@ -91,8 +91,9 @@ public class SoftWareStatusChangeProcessImplTest {
         Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
 
         SecurityContextHolder.setContext(securityContext);
-
         PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+        Mockito.when(workOrderClient.createWorkOrder(Mockito.any())).thenReturn(ActionResponse.success());
+        Mockito.when(activityClient.completeTask(Mockito.any())).thenReturn(ActionResponse.success());
     }
 
     @Test
@@ -106,9 +107,9 @@ public class SoftWareStatusChangeProcessImplTest {
 
         AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
         assetStatusReqeust.setManualStartActivityRequest(new ManualStartActivityRequest());
-        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
+        assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_REGISTER);
         assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
-        assetStatusReqeust.setAssetId("");
+        assetStatusReqeust.setAssetId("1");
         assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
         assetStatusReqeust.setSoftware(false);
         assetStatusReqeust.setSchemeRequest(new SchemeRequest());
