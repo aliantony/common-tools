@@ -523,8 +523,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         int j = 0;
         for (String third : thirdIds) {
             boolean flag = true;
-            e = j % 3;
-            int x = e + 4;
+            e = j % 2;
+            int x = e + 3;
             for (int i = 0; i < x * x; i++) {
                 if (flag) {
                     if (!nets.isEmpty()) {
