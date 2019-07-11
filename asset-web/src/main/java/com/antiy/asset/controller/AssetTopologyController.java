@@ -140,7 +140,7 @@ public class AssetTopologyController {
     @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
     public ActionResponse getTopologyGraph() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.getTopologyGraph());
+        return ActionResponse.success(iAssetTopologyService.getTopologyGraphFake());
     }
 
     /**

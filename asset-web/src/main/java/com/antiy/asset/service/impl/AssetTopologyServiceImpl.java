@@ -92,6 +92,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Value("${topology.third.level.height}")
     private Double                              thirdLevelHeight;
 
+    @Value("${topology.fake.first.level.space}")
+    private Double                              firstLevelSpacingFake;
+    @Value("${topology.fake.first.level.height}")
+    private Double                              firstLevelHeightFake;
+    @Value("${topology.fake.second.level.space}")
+    private Double                              secondLevelSpacingFake;
+    @Value("${topology.fake.second.level.height}")
+    private Double                              secondLevelHeightFake;
+    @Value("${topology.fake.third.level.space}")
+    private Double                              thirdLevelSpacingFake;
+    @Value("${topology.fake.third.level.height}")
+    private Double                              thirdLevelHeightFake;
+    @Value("${topology.fake.forth.level.height}")
+    private Double                              forthLevelHeightFake;
+    @Value("${topology.fake.forth.level.space}")
+    private Double                              forthLevelSpacingFake;
+
     @Override
     public List<String> queryCategoryModels() {
         return assetLinkRelationDao.queryCategoryModes();
@@ -423,6 +440,213 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     //
     // return result;
     // }
+
+    public AssetTopologyNodeResponse getTopologyGraphFake() throws Exception {
+        AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
+        assetTopologyNodeResponse.setStatus("success");
+        List<Map<String, AssetTopologyRelation>> dataList = new ArrayList<>();
+        AssetTopologyRelation assetTopologyRelation = new AssetTopologyRelation();
+        // 设置拓扑图信息
+        assetTopologyRelation.setInfo("");
+        // 设置中心点
+        assetTopologyRelation.setMiddlePoint(middlePoint);
+        // 设置角度
+        AssetTopologyViewAngle assetTopologyViewAngle = new AssetTopologyViewAngle();
+        assetTopologyViewAngle.setCameraPos(cameraPos);
+        assetTopologyViewAngle.setTargetPos(targetPos);
+        assetTopologyRelation.setView_angle(assetTopologyViewAngle);
+        AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
+        Map<String, List<List<Object>>> jsonData = new HashMap<>();
+        Map<String, String> map = iAssetCategoryModelService.getSecondCategoryMap();
+        List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
+
+        String computeDeviceId = "4";
+        String netDeviceId = "5";
+        for (AssetCategoryModel assetCategoryModel : categoryModelList) {
+            if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+                computeDeviceId = assetCategoryModel.getStringId();
+            }
+            if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+                netDeviceId = assetCategoryModel.getStringId();
+            }
+        }
+
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(iAssetCategoryModelService
+            .findAssetCategoryModelIdsById(Integer.valueOf(computeDeviceId), categoryModelList)));
+        assetQuery.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetQuery.setAssetStatusList(getAssetUseableStatus());
+        assetQuery.setPageSize(-1);
+        List<Asset> pcs = assetDao.findListAsset(assetQuery);
+
+        assetQuery = new AssetQuery();
+        assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
+            iAssetCategoryModelService.findAssetCategoryModelIdsById(Integer.valueOf(netDeviceId), categoryModelList)));
+        assetQuery.setAreaIds(
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        assetQuery.setAssetStatusList(getAssetUseableStatus());
+        assetQuery.setPageSize(-1);
+        List<Asset> nets = assetDao.findListAsset(assetQuery);
+
+        Map<String, List<String>> firstToSecond = new HashMap<>();
+        Map<String, List<String>> secondToThird = new HashMap<>();
+        Map<String, List<String>> thirdToForth = new HashMap<>();
+
+        List<String> firstIds = new ArrayList<>();
+
+        List<String> secondIds = new ArrayList<>();
+        List<String> thirdIds = new ArrayList<>();
+        List<String> forthIds = new ArrayList<>();
+
+        firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+        for (int i = 0; i < 4; i++) {
+            secondIds.add(aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+            boolean flag = true;
+            for (int j = 0; j < 9; j++) {
+                String stringId = nets.remove(0).getStringId();
+                if (flag) {
+                    thirdIds.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                    flag = false;
+                    List<String> list = new ArrayList<>();
+                    list.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                    secondToThird.put(secondIds.get(i), list);
+                } else {
+                    thirdIds.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                    secondToThird.get(secondIds.get(i)).add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                }
+            }
+        }
+        firstToSecond.put(firstIds.get(0), secondIds);
+
+        int e = 0;
+        int j = 0;
+        for (String third : thirdIds) {
+            boolean flag = true;
+            e = j % 3;
+            int x = e + 4;
+            for (int i = 0; i < x * x; i++) {
+                if (flag) {
+                    if (!nets.isEmpty()) {
+                        String stringId = nets.remove(0).getStringId();
+                        forthIds.add(stringId);
+                        List<String> m = new ArrayList();
+                        m.add(stringId);
+                        thirdToForth.put(third, m);
+                    } else if (!pcs.isEmpty()) {
+                        String stringId = pcs.remove(0).getStringId();
+                        forthIds.add(stringId);
+                        List<String> m = new ArrayList();
+                        m.add(stringId);
+                        thirdToForth.put(third, m);
+                    } else {
+                        break;
+                    }
+                    flag = false;
+                } else {
+                    if (!nets.isEmpty()) {
+                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername());
+                        forthIds.add(stringId);
+                        thirdToForth.get(third).add(stringId);
+                    } else if (!pcs.isEmpty()) {
+                        String stringId =aesEncoder.encode( pcs.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername());
+                        forthIds.add(stringId);
+                        thirdToForth.get(third).add(stringId);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            j++;
+        }
+
+        Map<String, List<Double>> firstCoordinates = new HashMap<>();
+        List<Double> list = new ArrayList<>();
+        list.add(0D);
+        list.add(firstLevelHeightFake);
+        list.add(0D);
+        firstCoordinates.put(firstIds.get(0), list);
+        Map<String, List<Double>> secondCoordinates = new HashMap<>();
+        Map<String, List<Double>> thirdCoordinates = new HashMap<>();
+        Map<String, List<Double>> fourCoordinates = new HashMap<>();
+        List<List<Object>> points = new ArrayList<>();
+        List<Object> point = new ArrayList<>();
+        point.add(firstIds.get(0));
+        point.addAll(firstCoordinates.get(firstIds.get(0)));
+        point.add(new ArrayList<>());
+        point.add(firstCoordinates.get(firstIds.get(0)).get(0));
+        point.add(firstCoordinates.get(firstIds.get(0)).get(2));
+        point.add("");
+        points.add(point);
+        jsonData.put("sim_topo-router", points);
+
+        settingLevelCoordinatesFake(firstToSecond, jsonData, firstCoordinates, secondCoordinates,
+            secondLevelSpacingFake, secondLevelHeightFake, "sim_topo-router");
+        settingLevelCoordinatesFake(secondToThird, jsonData, secondCoordinates, thirdCoordinates, thirdLevelSpacingFake,
+            thirdLevelHeightFake, "sim_topo-router");
+        settingLevelCoordinatesFake(thirdToForth, jsonData, thirdCoordinates, fourCoordinates, forthLevelSpacingFake,
+            forthLevelHeightFake, "sim_topo-host");
+
+        assetTopologyJsonData.setJson_data0(jsonData);
+        assetTopologyRelation.setJson_data(assetTopologyJsonData);
+        Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
+        dataMap.put("relationship", assetTopologyRelation);
+        dataList.add(dataMap);
+        assetTopologyNodeResponse.setData(dataList);
+        return assetTopologyNodeResponse;
+
+    }
+
+    private void settingLevelCoordinatesFake(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
+                                             Map<String, List<Double>> sonCoordinates,
+                                             Map<String, List<Double>> parentCoordinates, double space, double height,
+                                             String category) {
+        List<List<Object>> dataList = new ArrayList<>();
+
+        // 排序
+        Map<String, List<String>> result = new LinkedHashMap<>();
+        Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
+        st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
+
+        // 缓存id和index的关系
+        Map<String, Integer> cache = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+            int i = 0;
+            for (String s : entry.getValue()) {
+                Integer index = cache.get(s);
+                if (index != null) {
+                    List<Object> point = dataList.get(index);
+                    List<String> pointParent = (List<String>) point.get(4);
+                    pointParent.add(entry.getKey());
+                } else {
+                    List<Double> coordinates = sonCoordinates.get(entry.getKey());
+                    List<Object> point = new ArrayList<>();
+                    double size = getSize(entry.getValue().size());
+                    List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
+                        coordinates.get(2));
+                    parentCoordinates.put(s, coordinateByParent);
+                    point.add(s);
+                    point.addAll(coordinateByParent);
+                    List<String> parent = new ArrayList<>();
+                    parent.add(entry.getKey());
+                    point.add(parent);
+                    point.add(coordinateByParent.get(0));
+                    point.add(coordinateByParent.get(2));
+                    point.add("");
+                    List<List<Object>> points = jsonData.get(category);
+                    if (points == null) {
+                        points = new ArrayList<>();
+                    }
+                    points.add(point);
+                    dataList.add(point);
+                    jsonData.put(category, points);
+                    cache.put(s, dataList.size() - 1);
+                    i++;
+
+                }
+            }
+        }
+    }
 
     /**
      * 获取拓扑图
@@ -795,6 +1019,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         coordinate.add(x);
         coordinate.add(height);
         coordinate.add(y);
+
         return coordinate;
     }
 
