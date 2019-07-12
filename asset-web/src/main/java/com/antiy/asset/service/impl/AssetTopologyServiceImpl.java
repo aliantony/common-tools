@@ -477,8 +477,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetQuery.setAssetStatusList(getAssetUseableStatus());
-        assetQuery.setPageSize(-1);
-        List<Asset> pcs = assetDao.findListAsset(assetQuery);
+        List<Asset> pcs = assetTopologyDao.selectFakeAsset(assetQuery);
 
         assetQuery = new AssetQuery();
         assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
@@ -486,8 +485,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         assetQuery.setAssetStatusList(getAssetUseableStatus());
-        assetQuery.setPageSize(-1);
-        List<Asset> nets = assetDao.findListAsset(assetQuery);
+        List<Asset> nets = assetTopologyDao.selectFakeAsset(assetQuery);
 
         Map<String, List<String>> firstToSecond = new HashMap<>();
         Map<String, List<String>> secondToThird = new HashMap<>();
@@ -1186,15 +1184,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     public AssetTopologyAlarmResponse getAlarmTopologyFake() throws Exception {
         HashMap map = new HashMap();
+        AssetQuery query = new AssetQuery();
         map.put("name", "网络设备");
         AssetCategoryModel assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
-        List<Asset> netAssetList = assetTopologyDao
-            .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
-
+        query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAssetStatusList(getAssetUseableStatus());
+        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
+            iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
+        List<Asset> netAssetList = assetTopologyDao.selectFakeAsset(query);
         map.put("name", "计算设备");
         assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
-        List<Asset> pcAssetList = assetTopologyDao
-            .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
+        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
+            iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
+        List<Asset> pcAssetList = assetTopologyDao.selectFakeAsset(query);
         List<Asset> assets = new ArrayList<>();
         assets.addAll(netAssetList);
         assets.addAll(pcAssetList);

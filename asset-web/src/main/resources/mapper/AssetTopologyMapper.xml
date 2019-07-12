@@ -477,7 +477,7 @@
         </where>
     </select>
 
-    <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="java.util.List">
+    <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset.*, IFNULL(alarm.count, 0) AS alarm_count,
         au. NAME AS responsible_user_name,
@@ -543,12 +543,26 @@
         ) alarm ON alarm.id = asset.id
         WHERE
         1 = 1
-        <if test=" categoryModels != null and categoryModels.size() > 0">
+        and asset_status in (3,4,5,6,7,8)
+        <if test=" categoryModels != null and categoryModels.length > 0">
             AND asset.category_model IN
-             <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
-             #{item}
-             </foreach>
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
         </if>
+        <if test=" areaIds != null and areaIds.length > 0">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+
         LIMIT 500
 
     </select>

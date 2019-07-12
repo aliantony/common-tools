@@ -25,7 +25,7 @@ public interface AssetTopologyDao extends IBaseDao<AssetTopology> {
 
     List<String> findTopologyIdByCategory(AssetQuery query);
 
-    List<Asset> selectFakeAsset(@Param("categoryModels") List<Integer> categoryModels);
+    List<Asset> selectFakeAsset(AssetQuery query);
 
 
 }
