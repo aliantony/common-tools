@@ -499,7 +499,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<String> thirdIds = new ArrayList<>();
         List<String> forthIds = new ArrayList<>();
 
-        firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        if (!nets.isEmpty()) {
+            firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        }else if (!pcs.isEmpty()) {
+            firstIds.add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        }
         for (int i = 0; i < 4; i++) {
             if (!nets.isEmpty()) {
                 secondIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
