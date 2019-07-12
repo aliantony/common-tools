@@ -518,13 +518,15 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             for (int j = 0; j < 9; j++) {
                 if (flag) {
                     if (!nets.isEmpty()) {
-                        String stringId = nets.remove(0).getStringId();
+                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         thirdIds.add(stringId);
                         List<String> m = new ArrayList();
                         m.add(stringId);
                         secondToThird.put(secondIds.get(i), m);
                     } else if (!pcs.isEmpty()) {
-                        String stringId = pcs.remove(0).getStringId();
+                        String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         thirdIds.add(stringId);
                         List<String> m = new ArrayList();
                         m.add(stringId);
@@ -561,13 +563,15 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             for (int i = 0; i < x * x; i++) {
                 if (flag) {
                     if (!nets.isEmpty()) {
-                        String stringId = nets.remove(0).getStringId();
+                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         forthIds.add(stringId);
                         List<String> m = new ArrayList();
                         m.add(stringId);
                         thirdToForth.put(third, m);
                     } else if (!pcs.isEmpty()) {
-                        String stringId = pcs.remove(0).getStringId();
+                        String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         forthIds.add(stringId);
                         List<String> m = new ArrayList();
                         m.add(stringId);
