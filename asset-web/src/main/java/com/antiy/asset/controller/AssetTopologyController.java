@@ -128,7 +128,7 @@ public class AssetTopologyController {
     @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:alarm')")
     public ActionResponse alarmTopology() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.getAlarmTopology());
+        return ActionResponse.success(iAssetTopologyService.getAlarmTopologyFake());
     }
 
     /**

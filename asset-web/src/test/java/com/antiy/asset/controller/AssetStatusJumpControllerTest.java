@@ -21,6 +21,7 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.LoginUser;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -97,6 +98,7 @@ public class AssetStatusJumpControllerTest {
     }
 
     @Test
+    @Ignore
     public void testStatusJump() throws Exception {
         AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
         assetStatusReqeust.setSoftware(true);

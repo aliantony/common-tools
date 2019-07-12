@@ -4,6 +4,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetTopology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface AssetTopologyDao extends IBaseDao<AssetTopology> {
     Integer findOtherTopologyCountByCategory(AssetQuery query);
 
     List<String> findTopologyIdByCategory(AssetQuery query);
+
+    List<Asset> selectFakeAsset(AssetQuery query);
+
+
 }

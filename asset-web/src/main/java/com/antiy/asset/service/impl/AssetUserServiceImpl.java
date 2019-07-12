@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -98,7 +99,11 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                                 DataTypeUtils.stringToInteger(a.getAddress()));
                         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                        a.setAddressName(sysArea.getFullName());
+                        if (Objects.isNull(sysArea)) {
+                            a.setAddress(null);
+                        } else {
+                            a.setAddressName(sysArea.getFullName());
+                        }
                     } else {
                         a.setAddress(null);
                     }

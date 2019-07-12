@@ -257,6 +257,8 @@ public class Asset extends BaseEntity {
     private String            patchCount;
     @ApiModelProperty("部门名")
     private String            departmentName;
+    @ApiModelProperty("告警数量")
+    private String           alarmCount;
 
     public Long getFirstDiscoverTime() {
         return firstDiscoverTime;
@@ -296,6 +298,14 @@ public class Asset extends BaseEntity {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public String getAlarmCount() {
+        return alarmCount;
+    }
+
+    public void setAlarmCount(String alarmCount) {
+        this.alarmCount = alarmCount;
     }
 
     @Override

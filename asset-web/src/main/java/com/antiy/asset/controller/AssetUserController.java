@@ -185,7 +185,11 @@ public class AssetUserController {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                     com.antiy.common.utils.DataTypeUtils.stringToInteger(assetUserResponse.getAddress()));
             SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-            assetUserResponse.setAddressName(sysArea.getFullName());
+            if (Objects.isNull(sysArea)) {
+                assetUserResponse.setAddress(null);
+            } else {
+                assetUserResponse.setAddressName(sysArea.getFullName());
+            }
         }
         return ActionResponse.success(assetUserResponse);
     }
