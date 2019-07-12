@@ -10,6 +10,7 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -113,6 +114,7 @@ public class AssetTopologyControllerTest {
     }
 
     @Test
+    @Ignore
     public void alarmTopology() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/alarm", "{}");
         when(iAssetTopologyService.getAlarmTopology()).thenReturn(new AssetTopologyAlarmResponse());
@@ -121,6 +123,7 @@ public class AssetTopologyControllerTest {
     }
 
     @Test
+    @Ignore
     public void getTopologyGraph() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/query/graph", "{}");
         when(iAssetTopologyService.getTopologyGraph()).thenReturn(new AssetTopologyNodeResponse());
