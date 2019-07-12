@@ -14,6 +14,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
@@ -32,10 +33,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ LogUtils.class, LoginUserUtil.class })
 public class AssetDepartmentServiceImplTest {
     @InjectMocks
     private AssetDepartmentServiceImpl                                       assetDepartmentService;
@@ -55,7 +58,13 @@ public class AssetDepartmentServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        LoginUtil.generateDefaultLoginUser();
+        // LoginUtil.generateDefaultLoginUser();
+        PowerMockito.mockStatic(LoginUserUtil.class);
+
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
     }
 
     @Test
@@ -121,13 +130,8 @@ public class AssetDepartmentServiceImplTest {
 
     @Test
     public void findAssetDepartmentByIdTest() throws Exception {
-        List<AssetDepartment> assetDepartmentList = new ArrayList<>();
-        AssetDepartment assetDepartment = new AssetDepartment();
-        assetDepartment.setParentId("0");
-        assetDepartment.setStatus(1);
-        assetDepartment.setId(1);
-        assetDepartmentList.add(assetDepartment);
-
+        List<AssetDepartment> assetDepartmentList = Arrays.asList(getAssetDepartment(1, "0"),
+            getAssetDepartment(2, "1"), getAssetDepartment(3, "2"), getAssetDepartment(4, "3"));
         List<AssetDepartmentResponse> assetDepartmentResponseList = new ArrayList<>();
         AssetDepartmentResponse assetDepartmentResponse = new AssetDepartmentResponse();
         assetDepartmentResponse.setParentId("0");
@@ -139,6 +143,14 @@ public class AssetDepartmentServiceImplTest {
             .thenReturn(assetDepartmentResponseList);
         List<AssetDepartmentResponse> actual = assetDepartmentService.findAssetDepartmentById(1);
         Assert.assertTrue(assetDepartmentResponseList.size() == actual.size());
+    }
+
+    private AssetDepartment getAssetDepartment(int id, String parentId) {
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId(parentId);
+        assetDepartment.setStatus(1);
+        assetDepartment.setId(id);
+        return assetDepartment;
     }
 
     @Test
@@ -167,12 +179,7 @@ public class AssetDepartmentServiceImplTest {
 
     @Test
     public void findDepartmentNodeTest() throws Exception {
-        List<AssetDepartment> assetDepartment = new ArrayList<>();
-        AssetDepartment department = new AssetDepartment();
-        department.setParentId("0");
-        department.setStatus(1);
-        department.setId(1);
-        assetDepartment.add(department);
+        List<AssetDepartment> assetDepartmentList = Arrays.asList(getAssetDepartment(1, "0"));
 
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = new ArrayList<>();
         AssetDepartmentNodeResponse assetDepartmentNodeResponse = new AssetDepartmentNodeResponse();
@@ -185,22 +192,16 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentNodeResponse.setStatus(1);
         assetDepartmentNodeResponses.add(assetDepartmentNodeResponse);
 
-        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartment);
-        Mockito.when(nodeConverter.columnToNode(assetDepartment, AssetDepartmentNodeResponse.class))
-            .thenReturn(assetDepartmentNodeResponses);
+        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentList);
 
         AssetDepartmentNodeResponse actual = assetDepartmentService.findDepartmentNode();
         Assert.assertEquals(assetDepartmentNodeResponse.getStatus(), actual.getStatus());
-        ;
     }
 
     @Test
-    public void deleteAllByIdTest()throws Exception{
+    public void deleteAllByIdTest() throws Exception {
         List<AssetDepartment> assetDepartmentList = new ArrayList<>();
-        AssetDepartment assetDepartment = new AssetDepartment();
-        assetDepartment.setParentId("0");
-        assetDepartment.setStatus(1);
-        assetDepartment.setId(1);
+        AssetDepartment assetDepartment = getAssetDepartment(1, "0");
         assetDepartmentList.add(assetDepartment);
         AssetUser assetUser = new AssetUser();
         assetUser.setId(1);
@@ -209,8 +210,7 @@ public class AssetDepartmentServiceImplTest {
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
         Mockito.when(assetUserDao.findListAssetUser(Mockito.any())).thenReturn(resultUser);
         Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
-        Assert.assertEquals("200",assetDepartmentService.deleteAllById
-                (1).getHead().getCode());
+        Assert.assertEquals("200", assetDepartmentService.deleteAllById(1).getHead().getCode());
     }
 
     public AssetDepartment getDepartment() {

@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.entity.AssetTopology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.PageResult;
@@ -54,6 +55,8 @@ public interface IAssetTopologyService {
      * @throws Exception
      */
     AssetTopologyNodeResponse getTopologyGraph() throws Exception;
+
+    AssetTopologyNodeResponse getTopologyGraphFake() throws Exception;
 
     /**
      * 

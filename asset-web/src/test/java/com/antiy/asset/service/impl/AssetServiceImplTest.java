@@ -9,6 +9,8 @@ import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -20,6 +22,9 @@ import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
 import org.apache.catalina.connector.Request;
@@ -29,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -37,6 +44,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -45,18 +53,22 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.File;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ ExcelUtils.class, RequestContextHolder.class })
-@SpringBootTest
+@PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
+                  LogHandle.class, ZipUtil.class })
+// @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
 public class AssetServiceImplTest {
@@ -82,7 +94,7 @@ public class AssetServiceImplTest {
     AssetSoftwareLicenseDao                                            assetSoftwareLicenseDao;
     @Mock
     AssetCategoryModelDao                                              assetCategoryModelDao;
-    @SpyBean
+    @Mock
     TransactionTemplate                                                transactionTemplate;
     @Mock
     AssetSoftwareRelationDao                                           assetSoftwareRelationDao;
@@ -161,7 +173,7 @@ public class AssetServiceImplTest {
     SchemeDao                                                          schemeDao;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         // 模拟用户登录
@@ -184,6 +196,45 @@ public class AssetServiceImplTest {
 
         PowerMockito.mockStatic(RequestContextHolder.class);
 
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        loginUser = getLoginUser();
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+
+        PowerMockito.mockStatic(LicenseUtil.class);
+
+        // PowerMockito.when(LicenseUtil.getLicense().getAssetNum()).thenReturn(100);
+        LicenseContent licenseContent = new LicenseContent();
+        licenseContent.setAssetNum(100);
+        PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
+
+        PowerMockito.mockStatic(LogUtils.class);
+        PowerMockito.mockStatic(LogHandle.class);
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
+        PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.any(), Mockito.any(),
+            Mockito.any());
+
+        when(transactionTemplate.execute(Mockito.<TransactionCallback> any())).thenAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                TransactionCallback arg = (TransactionCallback) args[0];
+                return arg.doInTransaction(new SimpleTransactionStatus());
+            }
+        });
+
+    }
+
+    private LoginUser getLoginUser() {
+        LoginUser loginUser;
+        loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        List<SysArea> areaList = new ArrayList<>();
+        SysArea sysArea = new SysArea();
+        sysArea.setFullName("四川");
+        sysArea.setId(1);
+        areaList.add(sysArea);
+        loginUser.setAreas(areaList);
+        return loginUser;
     }
 
     private AssetNetworkCardRequest generateAssetNetworkCardRequest() {
@@ -371,6 +422,8 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("当前区域不存在，或已经注销", e.getMessage());
         }
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
@@ -381,14 +434,17 @@ public class AssetServiceImplTest {
         Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
         // 异常情况
-
-        // 没用户信息
         when(assetSoftwareService.configRegister(any(), any())).thenReturn(ActionResponse.success());
-        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
-        Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
-        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        AssetOuterRequest assetOuterRequest5 = new AssetOuterRequest();
+        AssetRequest assetRequest1 = new AssetRequest();
+        assetRequest1.setCategoryModel("4");
+        assetRequest1.setLocation("1");
+        assetOuterRequest5.setAsset(assetRequest1);
+        try {
+            assetServiceImpl.saveAsset(assetOuterRequest5);
+        } catch (Exception e) {
+            Assert.assertEquals("请重新选择资产所属品类型号", e.getMessage());
+        }
 
     }
 
@@ -500,6 +556,10 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.findPageAsset(assetQuery);
         Assert.assertNotNull(result);
 
+        assetQuery = new AssetQuery();
+        List list = assetServiceImpl.findListAsset(assetQuery, null);
+        Assert.assertNotNull(list);
+
     }
 
     @Test
@@ -567,16 +627,18 @@ public class AssetServiceImplTest {
             .thenReturn("recursionSearchParentCategoryResponse");
         when(iAssetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {
             {
-                put("String", "String");
+                put("1", "计算设备");
+                put("2", "网络设备");
             }
         });
         when(assetCategoryModelService.findAssetCategoryModelIdsById(anyInt())).thenReturn(Arrays.asList(0));
         when(assetCategoryModelService.findAssetCategoryModelIdsById(anyInt(), any())).thenReturn(Arrays.asList(0));
         when(assetCategoryModelService.recursionSearchParentCategory(anyString(), any(), any()))
             .thenReturn("recursionSearchParentCategoryResponse");
-        when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {
+        when(iAssetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {
             {
-                put("String", "String");
+                put("1", "计算设备");
+                put("2", "网络设备");
             }
         });
 
@@ -1061,23 +1123,6 @@ public class AssetServiceImplTest {
 
         }
 
-        // 存储设备变更
-        when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenThrow(new Exception("资产变更失败"));
-        assetOuterRequest = new AssetOuterRequest();
-        assetOuterRequest.setAsset(assetRequest);
-        assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
-        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
-
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-            Assert.assertEquals("资产变更失败", e.getMessage());
-        }
-
         when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenReturn(new ArrayList<>());
         when(activityClient.manualStartProcess(any())).thenReturn(null);
         try {
@@ -1098,10 +1143,46 @@ public class AssetServiceImplTest {
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(null);
         Mockito.when(authentication.getUserAuthentication()).thenReturn(null);
+        SecurityContextHolder.setContext(securityContext);
+
+        LoginUser loginUser = JSONObject.parseObject(
+            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+            LoginUser.class);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
+        Map<String, Object> map = new HashMap<>();
+        map.put("principal", loginUser);
+        token.setDetails(map);
+
+        authentication = Mockito.mock(OAuth2Authentication.class);
+        securityContext = Mockito.mock(SecurityContext.class);
+
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        // 存储设备变更
+        when(assetNetworkCardDao.findListAssetNetworkCard(any())).thenThrow(new Exception("资产变更失败"));
+        assetOuterRequest = new AssetOuterRequest();
+        assetOuterRequest.setAsset(assetRequest);
+        assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
+        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
+        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
+        assetOuterRequest.setMemory(assetMemoryRequestList);
+        assetOuterRequest.setMainboard(assetMainboradRequestList);
+        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
+
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
-            Assert.assertEquals("获取登录用户： 用户服务异常", e.getMessage());
+            Assert.assertEquals("资产变更失败", e.getMessage());
+        }
+
+        try {
+            PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("获取用户失败", e.getMessage());
         }
     }
 
@@ -1222,6 +1303,9 @@ public class AssetServiceImplTest {
             assetCategoryModel2, assetCategoryModel3, assetCategoryModel4, assetCategoryModel5));
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("user-agent", "   ");
+
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
@@ -1341,6 +1425,35 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importPc(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行硬盘购买时间需小于等于今天！", result);
 
+        computeDeviceEntity.setArea("四川");
+
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(getLoginUser());
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(null);
+        try {
+            assetServiceImpl.importPc(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(new AssetCategoryModel());
+        importResult.setDataList(null);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        Assert.assertEquals("", assetServiceImpl.importPc(null, assetImportRequest));
+
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importPc(null, assetImportRequest));
+
+        importResult.setMsg("导入失败");
+        importResult.setDataList(computeDeviceEntities);
+        Assert.assertEquals("导入失败", assetServiceImpl.importPc(null, assetImportRequest));
+
+        importResult.setMsg("");
+        Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.importPc(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("请勿重复提交！", e.getMessage());
+        }
     }
 
     private ComputeDeviceEntity getComputeDeviceEntity() {
@@ -1443,6 +1556,34 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行当前用户没有此所属区域，或已被注销！", result);
 
+        networkDeviceEntity.setArea("四川");
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(null);
+        try {
+            assetServiceImpl.importNet(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(new AssetCategoryModel());
+        importResult.setDataList(null);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        Assert.assertEquals("", assetServiceImpl.importNet(null, assetImportRequest));
+
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importNet(null, assetImportRequest));
+
+        importResult.setMsg("导入失败");
+        importResult.setDataList(networkDeviceEntities);
+        Assert.assertEquals("导入失败", assetServiceImpl.importNet(null, assetImportRequest));
+
+        importResult.setMsg("");
+        Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.importNet(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("请勿重复提交！", e.getMessage());
+        }
+
     }
 
     private NetworkDeviceEntity getNetworkDeviceEntity() {
@@ -1536,6 +1677,34 @@ public class AssetServiceImplTest {
         safetyEquipmentEntiy.setArea("sdfsadfasd");
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行当前用户没有此所属区域！", result);
+
+        safetyEquipmentEntiy.setArea("四川");
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(null);
+        try {
+            assetServiceImpl.importSecurity(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(new AssetCategoryModel());
+        importResult.setDataList(null);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        Assert.assertEquals("", assetServiceImpl.importSecurity(null, assetImportRequest));
+
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importSecurity(null, assetImportRequest));
+
+        importResult.setMsg("导入失败");
+        importResult.setDataList(safetyEquipmentEntiys);
+        Assert.assertEquals("导入失败", assetServiceImpl.importSecurity(null, assetImportRequest));
+
+        importResult.setMsg("");
+        Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.importSecurity(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("请勿重复提交！", e.getMessage());
+        }
     }
 
     private SafetyEquipmentEntiy getSafetyEquipmentEntiy() {
@@ -1612,6 +1781,34 @@ public class AssetServiceImplTest {
         storageDeviceEntity.setArea("sdfsadfasd");
         result = assetServiceImpl.importStory(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行当前用户没有此所属区域，或已被注销！", result);
+
+        storageDeviceEntity.setArea("四川");
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(null);
+        try {
+            assetServiceImpl.importStory(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(new AssetCategoryModel());
+        importResult.setDataList(null);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        Assert.assertEquals("", assetServiceImpl.importStory(null, assetImportRequest));
+
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importStory(null, assetImportRequest));
+
+        importResult.setMsg("导入失败");
+        importResult.setDataList(storageDeviceEntityArrayList);
+        Assert.assertEquals("导入失败", assetServiceImpl.importStory(null, assetImportRequest));
+
+        importResult.setMsg("");
+        Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.importStory(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("请勿重复提交！", e.getMessage());
+        }
     }
 
     private StorageDeviceEntity getStorageDeviceEntity() {
@@ -1676,6 +1873,34 @@ public class AssetServiceImplTest {
         otherDeviceEntity.setArea("sdfsadfasd");
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行当前用户没有此所属区域，或已被注销！", result);
+
+        otherDeviceEntity.setArea("四川");
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(null);
+        try {
+            assetServiceImpl.importOhters(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
+        }
+
+        Mockito.when(assetCategoryModelDao.getById(Mockito.any())).thenReturn(new AssetCategoryModel());
+        importResult.setDataList(null);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        Assert.assertEquals("", assetServiceImpl.importOhters(null, assetImportRequest));
+
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importOhters(null, assetImportRequest));
+
+        importResult.setMsg("导入失败");
+        importResult.setDataList(otherDeviceEntities);
+        Assert.assertEquals("导入失败", assetServiceImpl.importOhters(null, assetImportRequest));
+
+        importResult.setMsg("");
+        Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.importOhters(null, assetImportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("请勿重复提交！", e.getMessage());
+        }
     }
 
     private OtherDeviceEntity getOtherDeviceEntity() {
@@ -1745,8 +1970,10 @@ public class AssetServiceImplTest {
         result.setItems(Arrays.asList(assetResponse));
 
         doReturn(result).when(assetServiceImpl).findPageAsset(any());
-
-        assetServiceImpl.exportData(new AssetQuery(), new Response(), new Request());
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setStart(1);
+        assetQuery.setEnd(100);
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
     }
 
     @Test
@@ -1755,18 +1982,23 @@ public class AssetServiceImplTest {
         when(iAssetCategoryModelService.findAssetCategoryModelIdsById(anyInt(), any())).thenReturn(Arrays.asList(0));
         when(iAssetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {
             {
-                put("String", "String");
+                put("1", "计算设备");
+                put("2", "网络设备");
             }
         });
         when(assetCategoryModelService.findAssetCategoryModelIdsById(anyInt(), any())).thenReturn(Arrays.asList(0));
         when(assetCategoryModelService.getSecondCategoryMap()).thenReturn(new HashMap<String, String>() {
             {
-                put("String", "String");
+                put("1", "计算设备");
+                put("2", "网络设备");
             }
         });
-
         List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
         Assert.assertEquals(Arrays.asList("String"), result);
+
+        result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
+        Assert.assertEquals(Arrays.asList("String"), result);
+
     }
 
     private AssetGroup generateAssetGroup() {
@@ -1860,6 +2092,31 @@ public class AssetServiceImplTest {
         AreaOperationRequest areaOperationRequest = new AreaOperationRequest();
         MockAck mockAck = new MockAck();
         assetServiceImpl.listen(JSONObject.toJSONString(areaOperationRequest), mockAck);
+    }
+
+    @Test
+    public void queryWaitRegistCount() {
+        Mockito.when(assetDao.queryWaitRegistCount(Mockito.anyInt(), Mockito.any())).thenReturn(1);
+        Assert.assertEquals("1", assetServiceImpl.queryWaitRegistCount() + "");
+    }
+
+    @Test
+    public void queryNormalCount() {
+        Mockito.when(assetDao.queryNormalCount(Mockito.any())).thenReturn(1);
+        Assert.assertEquals("1", assetServiceImpl.queryNormalCount() + "");
+    }
+
+    public void queryUuidByAreaIds() throws Exception {
+        AreaIdRequest areaIdRequest = new AreaIdRequest();
+        try {
+            assetServiceImpl.queryUuidByAreaIds(areaIdRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("区域ID不能为空", e.getMessage());
+        }
+        areaIdRequest.setAreaIds(Arrays.asList("1"));
+        Mockito.when(assetDao.findUuidByAreaIds(Mockito.any())).thenReturn(Arrays.asList("1", "2"));
+        Assert.assertEquals(2, assetServiceImpl.queryUuidByAreaIds(areaIdRequest).size());
+
     }
 
     class MockAck implements Acknowledgment {

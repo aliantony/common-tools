@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.convert.AccessExportConvert;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.request.AssetDepartmentRequest;
@@ -94,9 +95,11 @@ public class AssetDepartmentControllerTest {
 
     @Test
     public void queryById()throws Exception {
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey("1");
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/v1/asset/department/query/id").param("primaryKey","1")).andReturn();
-        Assert.assertThat(mvcResult.getResponse().getContentAsString(),containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
+                MockMvcRequestBuilders.post("/api/v1/asset/department/query/id").contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(queryCondition))).andReturn();
+        Assert.assertNotNull(mvcResult);
     }
 
     @Test
@@ -134,7 +137,7 @@ public class AssetDepartmentControllerTest {
         assetDepartmentNodeResponse.setParentId("1");
         Mockito.when(iAssetDepartmentService.findDepartmentNode()).thenReturn(assetDepartmentNodeResponse);
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/v1/asset/department/query/node")
+                MockMvcRequestBuilders.post("/api/v1/asset/department/query/node")
                         .param("primaryKey","1")).andReturn();
         ActionResponse actionResponse = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),ActionResponse.class);
         AssetDepartmentNodeResponse actual = JsonUtil.json2Object(JsonUtil.object2Json(actionResponse.getBody()),AssetDepartmentNodeResponse.class);

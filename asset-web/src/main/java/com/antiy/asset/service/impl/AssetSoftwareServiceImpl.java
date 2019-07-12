@@ -267,11 +267,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-                        {
-                            add(request);
-                        }
-                    });
+                    ArrayList<AssetSoftwareRequest> assetSoftwareRequestArrayList = new ArrayList<>();
+                    assetSoftwareRequestArrayList.add(request);
+                    ActionResponse result = assetClient.issueSoftData(assetSoftwareRequestArrayList);
                     if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
                         logger.info("下发软件数据完成：{}", request);
                     }
@@ -393,11 +391,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ActionResponse result = assetClient.issueSoftData(new ArrayList<AssetSoftwareRequest>() {
-                        {
-                            add(request);
-                        }
-                    });
+                    ArrayList<AssetSoftwareRequest> assetSoftwareRequestArrayList = new ArrayList<>();
+                    assetSoftwareRequestArrayList.add(request);
+                    ActionResponse result = assetClient.issueSoftData(assetSoftwareRequestArrayList);
                     if (result != null && RespBasicCode.SUCCESS.getResultCode().equals(result.getHead().getCode())) {
                         logger.info("下发软件数据完成：{}", request);
                     }

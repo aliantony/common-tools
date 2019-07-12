@@ -224,17 +224,18 @@ public class AssetUserController {
      *
      * @return 用户名集合
      */
-    @ApiOperation(value = "查询下拉项的资产使用者信息", notes = "无查询条件")
-    @PreAuthorize("hasAuthority('asset:user:queryUserInAsset')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/test", method = RequestMethod.POST)
-    public ActionResponse test() throws Exception {
-        // System.out.println(DataTypeEnum.validate("1@qq.com", DataTypeEnum.EMAIL));
-        // System.out.println(DataTypeEnum.validate("13551185326", DataTypeEnum.TEL));
-        // System.out.println(DataTypeEnum.validate("510123199306233714", DataTypeEnum.IDCARD));
-        // System.out.println(DataTypeEnum.validate("192.168.30.1", DataTypeEnum.IP));
-        // System.out.println(DataTypeEnum.validate("255.255.255.1", DataTypeEnum.IP));
-        // System.out.println(DataTypeEnum.validate("1A:2F:3D:4E:5B:6C", DataTypeEnum.MAC));
-        return ActionResponse.success(iAssetUserService.queryUserInAsset());
-    }
+    // @ApiOperation(value = "查询下拉项的资产使用者信息", notes = "无查询条件")
+    // @PreAuthorize("hasAuthority('asset:user:queryUserInAsset')")
+    // @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
+    // responseContainer = "actionResponse"), })
+    // @RequestMapping(value = "/query/test", method = RequestMethod.POST)
+    // public ActionResponse test() throws Exception {
+    // // System.out.println(DataTypeEnum.validate("1@qq.com", DataTypeEnum.EMAIL));
+    // // System.out.println(DataTypeEnum.validate("13551185326", DataTypeEnum.TEL));
+    // // System.out.println(DataTypeEnum.validate("510123199306233714", DataTypeEnum.IDCARD));
+    // // System.out.println(DataTypeEnum.validate("192.168.30.1", DataTypeEnum.IP));
+    // // System.out.println(DataTypeEnum.validate("255.255.255.1", DataTypeEnum.IP));
+    // // System.out.println(DataTypeEnum.validate("1A:2F:3D:4E:5B:6C", DataTypeEnum.MAC));
+    // return ActionResponse.success(iAssetUserService.queryUserInAsset());
+    // }
 }

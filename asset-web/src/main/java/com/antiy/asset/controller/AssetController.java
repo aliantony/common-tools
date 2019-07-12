@@ -234,21 +234,23 @@ public class AssetController {
             .success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
     }
 
-    /**
-     * 通过ID数组查询资产列表
-     * @author zhangyajun
-     *
-     * @param ids
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)通过ID数组查询资产列表", notes = "传入资产ID数组")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetByIds')")
-    public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("idfs") @Encode String[] ids) throws Exception {
-        Integer[] id = DataTypeUtils.stringArrayToIntegerArray(ids);
-        return ActionResponse.success(iAssetService.queryAssetByIds(id));
-    }
+    // /**
+    // * 通过ID数组查询资产列表
+    // * @author zhangyajun
+    // *
+    // * @param ids
+    // * @return actionResponse
+    // */
+    // @ApiOperation(value = "(无效)通过ID数组查询资产列表", notes = "传入资产ID数组")
+    // @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class,
+    // responseContainer = "actionResponse"), })
+    // @RequestMapping(value = "/query/{ids}", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetByIds')")
+    // public ActionResponse queryAssetByIds(@ApiParam(value = "资产ID数组") @RequestParam("idfs") @Encode String[] ids)
+    // throws Exception {
+    // Integer[] id = DataTypeUtils.stringArrayToIntegerArray(ids);
+    // return ActionResponse.success(iAssetService.queryAssetByIds(id));
+    // }
 
     /**
      * 硬件资产按品类型号统计

@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.service.IAssetChangeRecordService;
 import com.antiy.asset.vo.request.AssetChangeRecordRequest;
+import com.antiy.asset.vo.request.UniformChangeInfoRequest;
 import com.antiy.common.base.ActionResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,37 +52,12 @@ public class AssetChangeRecordControllerTest {
     }
 
     @Test
-    public void updateSingle() throws Exception {
-        AssetChangeRecordRequest request = new AssetChangeRecordRequest();
-        this.mockMvc
-            .perform(post("/api/v1/asset/changerecord/update/single"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body", is(equalTo(null))));
-    }
-
-    @Test
-    public void queryList() throws Exception {
-        this.mockMvc
-            .perform(get("/api/v1/asset/changerecord/query/list"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body", is(equalTo(null))));
-    }
-
-    @Test
-    public void deleteById() throws Exception {
-        this.mockMvc
-            .perform(post("/api/v1/asset/changerecord/delete/1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body", is(equalTo(0))));
-    }
-
-    @Test
     public void queryUniformChangeInfo() throws Exception {
+
         this.mockMvc
-            .perform(get("/api/v1/asset/changerecord/queryUniformChangeInfo")
-                .param("categoryModelId", "1")
-                .param("businessId", "1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body.size()", is(equalTo(0))));
+            .perform(
+                post("/api/v1/asset/changerecord/queryUniformChangeInfo").contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(JSON.toJSONString(new UniformChangeInfoRequest())))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.body.size()", is(equalTo(0))));
     }
 }

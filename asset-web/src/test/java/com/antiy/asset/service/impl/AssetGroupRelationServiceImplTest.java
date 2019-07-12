@@ -1,5 +1,25 @@
 package com.antiy.asset.service.impl;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.utils.LoginUserUtil;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroupRelation;
@@ -11,29 +31,10 @@ import com.antiy.asset.vo.request.AssetGroupRelationRequest;
 import com.antiy.asset.vo.response.AssetGroupRelationResponse;
 import com.antiy.asset.vo.response.AssetNetworkCardResponse;
 import com.antiy.common.base.PageResult;
-import org.apache.commons.math3.analysis.function.Power;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(PowerMockRunner.class)
-@SpringBootTest
-@PrepareForTest(BeanConvert.class)
+//@SpringBootTest
+@PrepareForTest({BeanConvert.class, LoginUserUtil.class})
 public class AssetGroupRelationServiceImplTest {
     @InjectMocks
     public AssetGroupRelationServiceImpl assetGroupRelationService;
@@ -45,6 +46,12 @@ public class AssetGroupRelationServiceImplTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
+
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(1);
+        loginUser.setUsername("小李");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
     }
 
     @Test
@@ -57,7 +64,7 @@ public class AssetGroupRelationServiceImplTest {
         assetGroupRelation.setId(1);
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(request, AssetGroupRelation.class)).thenReturn(assetGroupRelation);
-        Mockito.when(assetGroupRelationDao.insert(Mockito.any())).thenReturn(1);
+        when(assetGroupRelationDao.insert(Mockito.any())).thenReturn(1);
         int result = assetGroupRelationService.saveAssetGroupRelation(request);
         Assert.assertEquals(1, result);
 
@@ -72,7 +79,7 @@ public class AssetGroupRelationServiceImplTest {
         assetGroupRelation.setId(1);
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(request, AssetGroupRelation.class)).thenReturn(assetGroupRelation);
-        Mockito.when(assetGroupRelationDao.update(Mockito.any())).thenReturn(1);
+        when(assetGroupRelationDao.update(Mockito.any())).thenReturn(1);
         int result = assetGroupRelationService.updateAssetGroupRelation(request);
         Assert.assertEquals(1, result);
     }
@@ -106,12 +113,12 @@ public class AssetGroupRelationServiceImplTest {
         assetGroupRelationResponse.setStringId("1");
         assetGroupRelationResponseList.add(assetGroupRelationResponse);
 
-        Mockito.when(assetGroupRelationDao.findAssetDetailByAssetGroupId(Mockito.any())).thenReturn(assetGroupRelationList);
+        when(assetGroupRelationDao.findAssetDetailByAssetGroupId(Mockito.any())).thenReturn(assetGroupRelationList);
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(query, AssetGroupRelationDetailQuery.class)).thenReturn(assetGroupRelationDetailQuery);
         PowerMockito.when(BeanConvert.convert(assetGroupRelationList, AssetGroupRelationResponse.class)).thenReturn(assetGroupRelationResponseList);
         PowerMockito.when(BeanConvert.convert(assetNetworkCardList, AssetNetworkCardResponse.class)).thenReturn(assetNetworkCardResponseList);
-        Mockito.when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
+        when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
 
         List<AssetGroupRelationResponse> actual = assetGroupRelationService.findAssetDetailByAssetGroupId(query);
         Assert.assertTrue(assetGroupRelationResponseList.size()==actual.size());
@@ -145,15 +152,15 @@ public class AssetGroupRelationServiceImplTest {
         assetNetworkCardResponse.setAssetId("1");
         assetNetworkCardResponseList.add(assetNetworkCardResponse);
 
-        Mockito.when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
+        when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(query, AssetGroupRelationDetailQuery.class)).thenReturn(assetGroupRelationDetailQuery);
         PowerMockito.when(BeanConvert.convert(assetGroupRelationList, AssetGroupRelationResponse.class)).thenReturn(assetGroupRelationResponseList);
         PowerMockito.when(BeanConvert
                 .convert(assetNetworkCardList, AssetNetworkCardResponse.class)).thenReturn(assetNetworkCardResponseList);
-        Mockito.when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
-        Mockito.when(assetGroupRelationDao.findAssetDetailByAssetGroupId(Mockito.any())).thenReturn(assetGroupRelationList);
-        Mockito.when(assetGroupRelationDao.findCountDetailByGroupId(Mockito.any())).thenReturn(1);
+        when(assetNetworkCardDao.findNetworkCardByAssetId(Mockito.any())).thenReturn(assetNetworkCardList);
+        when(assetGroupRelationDao.findAssetDetailByAssetGroupId(Mockito.any())).thenReturn(assetGroupRelationList);
+        when(assetGroupRelationDao.findCountDetailByGroupId(Mockito.any())).thenReturn(1);
 
         PageResult<AssetGroupRelationResponse> actual = assetGroupRelationService.findPageAssetByAssetGroupId(query);
         Assert.assertTrue(pageResult.getItems().size() == actual.getItems().size());
@@ -165,7 +172,7 @@ public class AssetGroupRelationServiceImplTest {
         assetGroupRelationQuery.setAssetGroupId("1");
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(Mockito.any(AssetGroupRelationQuery.class),Mockito.any())).thenReturn(100);
-        Mockito.when(assetGroupRelationDao.findCountDetailByGroupId(Mockito.any())).thenReturn(100);
+        when(assetGroupRelationDao.findCountDetailByGroupId(Mockito.any())).thenReturn(100);
         int result = assetGroupRelationService.findCountDetailByGroupId(assetGroupRelationQuery);
         Assert.assertEquals(100,result);
     }
@@ -173,10 +180,28 @@ public class AssetGroupRelationServiceImplTest {
     public void findCountAssetGroupRelationTest()throws Exception{
         AssetGroupRelationQuery query = new AssetGroupRelationQuery();
         query.setAssetGroupId("1");
-        Mockito.when(assetGroupRelationDao.findCount(Mockito.any())).thenReturn(1);
+        when(assetGroupRelationDao.findCount(Mockito.any())).thenReturn(1);
         int actual = assetGroupRelationService.findCountAssetGroupRelation(query);
         Assert.assertEquals(1,actual);
     }
 
+    @Test
+    public void findListAssetGroupRelationTes() throws Exception {
+        AssetGroupRelationQuery query = new AssetGroupRelationQuery();
+        Assert.assertEquals(0, assetGroupRelationService.findListAssetGroupRelation(query).size());
+    }
+
+    @Test
+    public void hasRealtionAssetTest() {
+        when(assetGroupRelationDao.hasRealtionAsset("1")).thenReturn(1);
+        Assert.assertEquals(new Integer(1), assetGroupRelationService.hasRealtionAsset("1"));
+    }
+
+    @Test
+    public void findPageAssetGroupRelationTest() throws Exception {
+        AssetGroupRelationQuery query = new AssetGroupRelationQuery();
+        Assert.assertEquals(0, assetGroupRelationService.findPageAssetGroupRelation(query).getItems().size());
+
+    }
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -29,6 +29,9 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Value("${updateAssetVerifyUrl}")
     private String     updateAssetVerifyUrl;
+
+    @Value("${distribute.baseline}")
+    private String     distributeBaselineUrl;
 
     @Resource
     private BaseClient baseClient;
@@ -48,4 +51,11 @@ public class BaseLineClientImpl implements BaseLineClient {
         return (ActionResponse) baseClient.post(updateAssetVerifyRequest, new ParameterizedTypeReference<ActionResponse>() {
         }, updateAssetVerifyUrl);
     }
+
+    @Override
+    public ActionResponse distributeBaseline(String assetId) {
+        return (ActionResponse) baseClient.post(assetId, new ParameterizedTypeReference<ActionResponse>() {
+        }, distributeBaselineUrl);
+    }
+
 }

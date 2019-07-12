@@ -9,16 +9,19 @@ import com.antiy.common.base.BaseConverter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
+//@SpringBootTest
+@RunWith(PowerMockRunner.class)
 public class AssetCpuServiceImplTest {
 
     @Mock

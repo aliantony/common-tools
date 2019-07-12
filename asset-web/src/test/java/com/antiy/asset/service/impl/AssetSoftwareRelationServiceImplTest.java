@@ -9,7 +9,7 @@ import com.antiy.asset.intergration.CommandClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.util.ExcelUtils;
-import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,9 +45,6 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -117,7 +114,6 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(requestConverter.convert(request, AssetSoftwareRelation.class)).thenReturn(assetSoftwareRelation);
         Mockito.when(assetSoftwareRelationDao.insert(assetSoftwareRelation)).thenReturn(1);
         Assert.assertEquals(expect, assetSoftwareRelationService.saveAssetSoftwareRelation(request));
-
 
     }
 
@@ -278,7 +274,28 @@ public class AssetSoftwareRelationServiceImplTest {
         assetSoftware.setName("ass");
         Mockito.when(assetSoftwareDao.getById(Mockito.any())).thenReturn(assetSoftware);
         Assert.assertEquals("200",
-                assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getHead().getCode());
+            assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getHead().getCode());
+
+        Mockito.when(assetSoftwareRelationDao.checkInstalled(Mockito.anyString(), Mockito.anyList())).thenReturn(1);
+        try {
+            assetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
+        } catch (Exception e) {
+            Assert.assertEquals("所选资产已经安装成功或在安装中,不允许再次操作!", e.getMessage());
+
+        }
+
+        Mockito.when(assetSoftwareRelationDao.checkInstalled(Mockito.anyString(), Mockito.anyList())).thenReturn(0);
+        Mockito.when(commandClient.executeCommand(Mockito.any()))
+            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
+        try {
+            Assert.assertEquals("123",
+                assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getBody());
+        } catch (Exception e) {
+            Assert.assertEquals("API接口服务不可用，请联系管理员", e.getMessage());
+        }
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
+        Mockito.when(commandClient.executeCommand(Mockito.any())).thenReturn(ActionResponse.success());
+        Assert.assertNull(assetSoftwareRelationService.installSoftware(assetSoftwareRelationList).getBody());
 
     }
 
@@ -329,6 +346,8 @@ public class AssetSoftwareRelationServiceImplTest {
         Mockito.when(responseInstallConverter.convert(Mockito.anyList(), Mockito.any())).thenReturn(new ArrayList<>());
         // Mockito.eq(AssetSoftwareInstallResponse.class))).thenReturn(expect);
         Assert.assertEquals(expect, assetSoftwareRelationService.queryInstallList(query).getItems());
+        Mockito.when(assetSoftwareRelationDao.queryInstallCount(query)).thenReturn(0);
+        Assert.assertEquals(0, assetSoftwareRelationService.queryInstallList(query).getTotalRecords());
     }
 
     public AssetCategoryModel getCategoryModal() {

@@ -26,4 +26,11 @@ public interface BaseLineClient {
      */
     ActionResponse updateAssetVerify(String assetId);
 
+    /**
+     * 入网下发基准
+     * @param assetId
+     * @return
+     */
+    ActionResponse distributeBaseline(String assetId);
+
 }
