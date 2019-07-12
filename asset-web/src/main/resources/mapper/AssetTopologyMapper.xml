@@ -479,6 +479,7 @@
 
     <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
+        distinct
         asset.*, IFNULL(alarm.count, 0) AS alarm_count,
         au. NAME AS responsible_user_name,
         concat(
