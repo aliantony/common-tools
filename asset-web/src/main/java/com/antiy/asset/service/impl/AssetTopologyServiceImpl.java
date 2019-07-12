@@ -499,21 +499,48 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<String> thirdIds = new ArrayList<>();
         List<String> forthIds = new ArrayList<>();
 
-        firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+        firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
         for (int i = 0; i < 4; i++) {
-            secondIds.add(aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername()));
+            if (!nets.isEmpty()) {
+                secondIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            }else if (!pcs.isEmpty()) {
+                secondIds.add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            } else {
+                break;
+            }
             boolean flag = true;
             for (int j = 0; j < 9; j++) {
-                String stringId = nets.remove(0).getStringId();
                 if (flag) {
-                    thirdIds.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                    if (!nets.isEmpty()) {
+                        String stringId = nets.remove(0).getStringId();
+                        thirdIds.add(stringId);
+                        List<String> m = new ArrayList();
+                        m.add(stringId);
+                        secondToThird.put(secondIds.get(i), m);
+                    } else if (!pcs.isEmpty()) {
+                        String stringId = pcs.remove(0).getStringId();
+                        thirdIds.add(stringId);
+                        List<String> m = new ArrayList();
+                        m.add(stringId);
+                        secondToThird.put(secondIds.get(i), m);
+                    } else {
+                        break;
+                    }
                     flag = false;
-                    List<String> list = new ArrayList<>();
-                    list.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
-                    secondToThird.put(secondIds.get(i), list);
                 } else {
-                    thirdIds.add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
-                    secondToThird.get(secondIds.get(i)).add(aesEncoder.encode(stringId,LoginUserUtil.getLoginUser().getUsername()));
+                    if (!nets.isEmpty()) {
+                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
+                                LoginUserUtil.getLoginUser().getUsername());
+                        thirdIds.add(stringId);
+                        secondToThird.get(secondIds.get(i)).add(stringId);
+                    } else if (!pcs.isEmpty()) {
+                        String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
+                                LoginUserUtil.getLoginUser().getUsername());
+                        thirdIds.add(stringId);
+                        secondToThird.get(secondIds.get(i)).add(stringId);
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -545,11 +572,13 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     flag = false;
                 } else {
                     if (!nets.isEmpty()) {
-                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername());
+                        String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         forthIds.add(stringId);
                         thirdToForth.get(third).add(stringId);
                     } else if (!pcs.isEmpty()) {
-                        String stringId =aesEncoder.encode( pcs.remove(0).getStringId(),LoginUserUtil.getLoginUser().getUsername());
+                        String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
+                            LoginUserUtil.getLoginUser().getUsername());
                         forthIds.add(stringId);
                         thirdToForth.get(third).add(stringId);
                     } else {
@@ -1143,6 +1172,29 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             return assetTopologyAlarmResponse;
         }
         return null;
+    }
+
+    public AssetTopologyAlarmResponse getAlarmTopologyFake() throws Exception {
+        HashMap map = new HashMap();
+        map.put("name", "网络设备");
+        AssetCategoryModel assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
+        List<Asset> netAssetList = assetTopologyDao
+            .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
+
+        map.put("name", "计算设备");
+        List<Asset> pcAssetList = assetTopologyDao
+            .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
+        List<Asset> assets = new ArrayList<>();
+        assets.addAll(netAssetList);
+        assets.addAll(pcAssetList);
+        List<AssetResponse> assetResponseList = converter.convert(assets, AssetResponse.class);
+        assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
+        AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
+        assetTopologyAlarmResponse.setStatus("success");
+        assetTopologyAlarmResponse.setVersion("");
+        List<Map> topologyAlarms = transferAssetToMap(assetResponseList);
+        assetTopologyAlarmResponse.setData(topologyAlarms);
+        return assetTopologyAlarmResponse;
     }
 
     private List<Map> transferAssetToMap(List<AssetResponse> assetResponseList) {

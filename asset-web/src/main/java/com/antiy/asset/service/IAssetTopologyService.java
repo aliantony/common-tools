@@ -56,6 +56,11 @@ public interface IAssetTopologyService {
      */
     AssetTopologyNodeResponse getTopologyGraph() throws Exception;
 
+    /**
+     * 展示用接口
+     * @return
+     * @throws Exception
+     */
     AssetTopologyNodeResponse getTopologyGraphFake() throws Exception;
 
     /**
@@ -64,4 +69,11 @@ public interface IAssetTopologyService {
     AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception;
 
     AssetTopologyAlarmResponse getAlarmTopology() throws Exception;
+
+    /**
+     * 展示用接口
+     * @return
+     * @throws Exception
+     */
+    AssetTopologyAlarmResponse getAlarmTopologyFake() throws Exception;
 }
