@@ -501,14 +501,16 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
         if (!nets.isEmpty()) {
             firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-        }else if (!pcs.isEmpty()) {
+        } else if (!pcs.isEmpty()) {
             firstIds.add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
         }
         for (int i = 0; i < 4; i++) {
             if (!nets.isEmpty()) {
-                secondIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-            }else if (!pcs.isEmpty()) {
-                secondIds.add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                secondIds
+                    .add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            } else if (!pcs.isEmpty()) {
+                secondIds
+                    .add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             } else {
                 break;
             }
@@ -534,12 +536,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 } else {
                     if (!nets.isEmpty()) {
                         String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
-                                LoginUserUtil.getLoginUser().getUsername());
+                            LoginUserUtil.getLoginUser().getUsername());
                         thirdIds.add(stringId);
                         secondToThird.get(secondIds.get(i)).add(stringId);
                     } else if (!pcs.isEmpty()) {
                         String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
-                                LoginUserUtil.getLoginUser().getUsername());
+                            LoginUserUtil.getLoginUser().getUsername());
                         thirdIds.add(stringId);
                         secondToThird.get(secondIds.get(i)).add(stringId);
                     } else {
@@ -1186,6 +1188,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
 
         map.put("name", "计算设备");
+        assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
         List<Asset> pcAssetList = assetTopologyDao
             .selectFakeAsset(iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId()));
         List<Asset> assets = new ArrayList<>();
