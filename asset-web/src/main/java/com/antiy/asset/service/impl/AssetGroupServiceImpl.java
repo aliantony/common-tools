@@ -191,7 +191,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                     LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
                 }
             }
-            assetRelationResult = assetGroupRelationDao.insertBatch(assetGroupRelationList);
+
+            if (CollectionUtils.isNotEmpty(assetGroupRelationList)) {
+                assetGroupRelationDao.insertBatch(assetGroupRelationList);
+            }
 
             updateGroupResult = assetGroupDao.update(assetGroup);
 
