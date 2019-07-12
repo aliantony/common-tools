@@ -480,7 +480,7 @@
     <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="java.util.List">
         SELECT
         asset.*, IFNULL(alarm.count, 0) AS alarm_count,
-        au. NAME AS responsibleUserName,
+        au. NAME AS responsible_user_name,
         concat(
         ifnull(
         (
