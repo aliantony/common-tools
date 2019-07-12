@@ -15,11 +15,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -34,7 +37,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class AssetSoftwareControllerTest extends MockContext {
     private final static String       URL_PREFIX = "/api/v1/asset/software";
     private final static String       TIP        = "软件信息controller单元测试失败";
@@ -56,7 +60,6 @@ public class AssetSoftwareControllerTest extends MockContext {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
-    // todo
     @Test
     public void saveSingle() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/save/single",
@@ -66,7 +69,6 @@ public class AssetSoftwareControllerTest extends MockContext {
         Assert.assertEquals(TIP, AssertManager.EXPECTED_1, result);
     }
 
-    // todo
     @Test
     public void updateSingle() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/update/single",
@@ -92,7 +94,6 @@ public class AssetSoftwareControllerTest extends MockContext {
         verify(softwareService).getById(any());
     }
 
-    // todo
     @Test
     public void deleteById() throws Exception {
         BaseRequest baseRequest = new BaseRequest();
@@ -102,7 +103,6 @@ public class AssetSoftwareControllerTest extends MockContext {
         verify(softwareService).deleteById(1);
     }
 
-    // todo
     @Test
     public void export() throws Exception {
         MvcResult mvcResult = mockMvc
@@ -119,7 +119,6 @@ public class AssetSoftwareControllerTest extends MockContext {
         assertManager.assertSuccResponse(TIP, result);
     }
 
-    // todo
     @Test
     public void exportFile() throws Exception {
         MvcResult mvcResult = mockMvc
@@ -128,7 +127,6 @@ public class AssetSoftwareControllerTest extends MockContext {
 
     }
 
-    // todo
     @Test
     public void importExcel() {
         commonManager.postAction(URL_PREFIX + "/import/file",
