@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
@@ -54,7 +55,8 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Override
     public ActionResponse distributeBaseline(String assetId) {
-        return (ActionResponse) baseClient.post(assetId, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(new JSONObject().put("stringId", assetId),
+            new ParameterizedTypeReference<ActionResponse>() {
         }, distributeBaselineUrl);
     }
 
