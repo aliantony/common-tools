@@ -55,7 +55,9 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Override
     public ActionResponse distributeBaseline(String assetId) {
-        return (ActionResponse) baseClient.post(new JSONObject().put("stringId", assetId),
+        JSONObject param = new JSONObject();
+        param.put("stringId", assetId);
+        return (ActionResponse) baseClient.post(param,
             new ParameterizedTypeReference<ActionResponse>() {
         }, distributeBaselineUrl);
     }
