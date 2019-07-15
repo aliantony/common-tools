@@ -74,13 +74,12 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
         assetDao.update(asset);
 
         // 入网才下发基准
-
         new Thread(() -> {
             if (assetStatusEnum.getCode().equals(AssetStatusEnum.NET_IN.getCode())) {
                 logger.info("入网资产，执行下发基准");
-                String encodeAssetId = aesEncoder.encode(assetStatusReqeust.getAssetId(),
-                    LoginUserUtil.getLoginUser().getName());
-                baseLineClient.distributeBaseline(encodeAssetId);
+                // String encodeAssetId = aesEncoder.encode(assetStatusReqeust.getAssetId(),
+                // LoginUserUtil.getLoginUser().getName());
+                baseLineClient.distributeBaseline(assetStatusReqeust.getAssetId());
             }
         }).start();
 
