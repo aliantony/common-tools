@@ -78,7 +78,7 @@ public class AssetStatusChangeFlowProcessImpl extends AbstractAssetStatusChangeP
             if (assetStatusEnum.getCode().equals(AssetStatusEnum.NET_IN.getCode())) {
                 logger.info("入网资产，执行下发基准");
                 // String encodeAssetId = aesEncoder.encode(assetStatusReqeust.getAssetId(),
-                // LoginUserUtil.getLoginUser().getName());
+                // LoginUserUtil.getLoginUser().getUsername());
                 baseLineClient.distributeBaseline(assetStatusReqeust.getAssetId());
             }
         }).start();
