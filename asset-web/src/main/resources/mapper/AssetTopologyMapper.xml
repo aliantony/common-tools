@@ -478,6 +478,77 @@
     </select>
 
     <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        <if test="ids != null and ids.length>0">
+            SELECT
+            distinct
+            asset.*, IFNULL(alarm.count, 0) AS alarm_count,
+            au. NAME AS responsible_user_name,
+            concat(
+            ifnull(
+            (
+            SELECT
+            GROUP_CONCAT(ip_address)
+            FROM
+            asset_network_card
+            WHERE
+            asset_id = asset.id
+            AND STATUS = 1
+            ),
+            ''
+            ),
+            ifnull(
+            asset_network_equipment.inner_ip,
+            ''
+            ),
+            ifnull(
+            asset_safety_equipment.ip,
+            ''
+            )
+            ) AS ip,
+            concat(
+            ifnull(
+            (
+            SELECT
+            GROUP_CONCAT(mac_address)
+            FROM
+            asset_network_card
+            WHERE
+            asset_id = asset.id
+            AND STATUS = 1
+            ),
+            ''
+            ),
+            ifnull(
+            asset_network_equipment.mac_address,
+            ''
+            ),
+            ifnull(
+            asset_safety_equipment.mac,
+            ''
+            )
+            ) AS mac
+            FROM
+            asset
+            LEFT JOIN asset_user au ON au.id = asset.responsible_user_id
+            LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
+            AND asset_network_card. STATUS = 1
+            LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
+            LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
+            LEFT JOIN (
+            SELECT
+            asset_id AS id,
+            count(asset_id) AS count
+            FROM
+            alarm_current_records
+            GROUP BY
+            asset_id
+            ) alarm ON alarm.id = asset.id
+            where asset.id IN
+            <foreach collection="ids" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+            union
+        </if>
         SELECT
         distinct
         asset.*, IFNULL(alarm.count, 0) AS alarm_count,

@@ -7,10 +7,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.*;
-import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
-import com.antiy.asset.vo.enums.NetWorkDeviceEnum;
-import com.antiy.asset.vo.query.AssetDetialCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +15,7 @@ import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetCategoryModelService;
@@ -26,16 +23,16 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.NetWorkDeviceEnum;
+import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.base.PageResult;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
@@ -472,6 +469,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
 
         AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setIds(new String[] { "62163", "62198", "5583", "62019", "62271", "62794" });
         assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(iAssetCategoryModelService
             .findAssetCategoryModelIdsById(Integer.valueOf(computeDeviceId), categoryModelList)));
         assetQuery.setAreaIds(
@@ -1188,12 +1186,13 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         map.put("name", "网络设备");
         AssetCategoryModel assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
         query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         query.setAssetStatusList(getAssetUseableStatus());
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
             iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
         List<Asset> netAssetList = assetTopologyDao.selectFakeAsset(query);
         map.put("name", "计算设备");
+        query.setIds(new String[] { "62163", "62198", "5583", "62019", "62271", "62794" });
         assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
             iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
