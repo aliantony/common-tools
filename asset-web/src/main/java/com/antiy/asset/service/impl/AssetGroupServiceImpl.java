@@ -212,7 +212,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             updateGroupResult = assetGroupDao.update(assetGroup);
             List<String> assetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(request.getId());
             assetIdList.forEach(assetId -> {
-                List<String> assetGroupNameList = null;
+                List<String> assetGroupNameList = new ArrayList<>();
                 try {
                     assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
                 } catch (Exception e) {
