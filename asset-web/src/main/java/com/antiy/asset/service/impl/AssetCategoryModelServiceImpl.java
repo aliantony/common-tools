@@ -7,9 +7,7 @@ import java.util.*;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.entity.IdCount;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -289,7 +287,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     private AssetCategoryModelNodeResponse getNextNodeResponse(List<AssetCategoryModel> softWareCategoryCount) throws Exception {
-        softWareCategoryCount.add(getRootCategory());
         return getAssetCategoryModelNodeResponse(softWareCategoryCount);
     }
 
