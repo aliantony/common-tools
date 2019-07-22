@@ -90,7 +90,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 厂商
      */
     @ApiModelProperty("厂商")
-    @Size(message = "资产厂商不能超过30位", max = 30)
+    @Size(message = "资产厂商不能超过80位", max = 80)
     private String                  manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
