@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetTopologyQuery;
-import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
@@ -128,7 +126,7 @@ public class AssetTopologyController {
     @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:alarm')")
     public ActionResponse alarmTopology() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.getAlarmTopologyFake());
+        return ActionResponse.success(iAssetTopologyService.getAlarmTopology());
     }
 
     /**
@@ -140,7 +138,7 @@ public class AssetTopologyController {
     @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
     public ActionResponse getTopologyGraph() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.getTopologyGraphFake());
+        return ActionResponse.success(iAssetTopologyService.getTopologyGraph());
     }
 
     /**
