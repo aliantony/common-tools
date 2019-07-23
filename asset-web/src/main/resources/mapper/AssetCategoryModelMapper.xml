@@ -419,57 +419,57 @@
 
 
     <select id="findAllCategoryCount" resultMap="BaseResultMap">
-SELECT
-	asset_category_model.id,
-	asset_category_model.NAME,
-	asset_category_model.type,
-	asset_category_model.asset_type,
-	asset_category_model.parent_id,
-	asset_category_model.is_default,
-	SUM( count ) AS count
-FROM
-	asset_category_model
-LEFT JOIN (
-	SELECT
-		category.id,
-		category.NAME,
-		category.type,
-		category.asset_type,
-		category.parent_id,
-		category.is_default,
-		COUNT( category.id ) AS count
-	FROM
-		asset_category_model category
-	LEFT JOIN asset ON asset.category_model = category.id
-	WHERE
-		category. STATUS = 1
-	AND asset. STATUS = 1
-	AND asset_type = 2
-	GROUP BY
-		category.id
-	UNION
-		SELECT
-			category.id,
-		category.NAME,
-		category.type,
-		category.asset_type,
-		category.parent_id,
-		category.is_default,
-		COUNT( category.id ) AS count
-		FROM
-			asset_category_model category
-		LEFT JOIN asset_software ON asset_software.category_model = category.id
-		WHERE
-			category. STATUS = 1
-		AND asset_software. STATUS = 1
-		AND asset_type = 1
-		GROUP BY
-			category.id
-) category ON category.id = asset_category_model.id
-WHERE
-	count is not null
-GROUP BY
-	id
+        SELECT
+            asset_category_model.id,
+            asset_category_model.NAME,
+            asset_category_model.type,
+            asset_category_model.asset_type,
+            asset_category_model.parent_id,
+            asset_category_model.is_default,
+            SUM( count ) AS count
+        FROM
+            asset_category_model
+        LEFT JOIN (
+            SELECT
+                category.id,
+                category.NAME,
+                category.type,
+                category.asset_type,
+                category.parent_id,
+                category.is_default,
+                COUNT( category.id ) AS count
+            FROM
+                asset_category_model category
+            LEFT JOIN asset ON asset.category_model = category.id
+            WHERE
+                category. STATUS = 1
+            AND asset. STATUS = 1
+            AND asset_type = 2
+            GROUP BY
+                category.id
+            UNION
+                SELECT
+                    category.id,
+                category.NAME,
+                category.type,
+                category.asset_type,
+                category.parent_id,
+                category.is_default,
+                COUNT( category.id ) AS count
+                FROM
+                    asset_category_model category
+                LEFT JOIN asset_software ON asset_software.category_model = category.id
+                WHERE
+                    category. STATUS = 1
+                AND asset_software. STATUS = 1
+                AND asset_type = 1
+                GROUP BY
+                    category.id
+        ) category ON category.id = asset_category_model.id
+        WHERE
+            count is not null
+        GROUP BY
+            id
 	    </select>
 
     <!--判断是否还有子节点-->
