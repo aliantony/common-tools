@@ -99,7 +99,7 @@ public class AssetOthersRequest extends BasicRequest implements ObjectValidator 
      * 厂商
      */
     @ApiModelProperty("厂商")
-    @Size(message = "资产厂商不能超过30位", max = 30)
+    @Size(message = "资产厂商不能超过80位", max = 80)
     private String                  manufacturer;
 
     /**

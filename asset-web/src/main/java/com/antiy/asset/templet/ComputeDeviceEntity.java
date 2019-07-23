@@ -26,7 +26,7 @@ public class ComputeDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商")
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80)
     private String  manufacturer;
 
     /**

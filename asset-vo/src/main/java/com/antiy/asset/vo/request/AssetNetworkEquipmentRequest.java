@@ -1,18 +1,15 @@
 package com.antiy.asset.vo.request;
 
-import java.util.regex.Matcher;
-
-import javax.validation.constraints.*;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang.StringUtils;
+
+import javax.validation.constraints.*;
+import java.util.regex.Matcher;
 
 /**
  * <p> AssetNetworkEquipmentRequest 请求对象 </p>
