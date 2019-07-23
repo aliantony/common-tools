@@ -281,18 +281,11 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     @Override
     public List<AssetCategoryModelNodeResponse> queryCategoryNodeCount() throws Exception {
-        Long aa = System.currentTimeMillis();
         List<AssetCategoryModel> categoryCount = assetCategoryModelDao.findAllCategoryCount();
-        System.out.println("findAllCategoryCount 耗时" + (System.currentTimeMillis() - aa));
-        Long bb = System.currentTimeMillis();
         AssetCategoryModelNodeResponse categoryModelNodeResponses = getNextNodeResponse(categoryCount);
-        System.out.println("getNextNodeResponse 耗时" + (System.currentTimeMillis() - bb));
         // 加密数据
-        Long cc = System.currentTimeMillis();
         String userName = LoginUserUtil.getLoginUser().getUsername();
         aesEncode(categoryModelNodeResponses, userName);
-
-        System.out.println("aesEncode 耗时" + (System.currentTimeMillis() - cc));
         return categoryModelNodeResponses.getChildrenNode();
     }
 
