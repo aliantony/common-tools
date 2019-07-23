@@ -689,7 +689,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-
         // 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
@@ -740,9 +739,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
         }
-
         // 查询资产信息
         List<Asset> assetList = assetDao.findListAsset(query);
+
         if (CollectionUtils.isNotEmpty(assetList)) {
             assetList.stream().forEach(a -> {
                 try {
@@ -756,6 +755,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
+
+        List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
         for (AssetResponse object : objects) {
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
@@ -777,7 +778,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             // 设置操作系统名
             if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
                 for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
                     if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
                         object.setOperationSystemName((String) categoryModelResponse.getName());
@@ -785,7 +785,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-
         return objects;
 
     }
@@ -1592,13 +1591,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(assetNetworkCards)) {
                         Map<String, String> nowIp = new HashMap<>(16);
                         for (AssetNetworkCard assetNetworkCard : assetNetworkCards) {
-                            nowIp.put(assetNetworkCard.getStringId(), StringUtils.isBlank(assetNetworkCard.getIpAddress()) ? "" : assetNetworkCard.getIpAddress());
+                            nowIp.put(assetNetworkCard.getStringId(),
+                                StringUtils.isBlank(assetNetworkCard.getIpAddress()) ? ""
+                                    : assetNetworkCard.getIpAddress());
                         }
                         // 页面传过来的网卡
                         Map<String, String> existIp = new HashMap<>(16);
-                        for (AssetNetworkCardRequest card:assetNetworkCardRequestList) {
+                        for (AssetNetworkCardRequest card : assetNetworkCardRequestList) {
                             if (StringUtils.isNotBlank(card.getId())) {
-                                existIp.put(card.getId(), StringUtils.isBlank(card.getIpAddress()) ? "" : card.getIpAddress());
+                                existIp.put(card.getId(),
+                                    StringUtils.isBlank(card.getIpAddress()) ? "" : card.getIpAddress());
                             }
                         }
                         // 需要删除通联关系的网卡信息
@@ -1893,7 +1895,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.WAIT_SETTING));
+                    BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus())) {
@@ -1901,7 +1903,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 anthNumValidate();
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), Integer.valueOf(assetId),
                     assetDao.getById(assetId).getNumber(), assetOuterRequest, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.WAIT_SETTING));
+                    BusinessPhaseEnum.WAIT_SETTING));
                 LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                     JSON.toJSONString(assetOuterRequest));
             } else if (AssetStatusEnum.NET_IN.getCode().equals(currentAsset.getAssetStatus())) {
