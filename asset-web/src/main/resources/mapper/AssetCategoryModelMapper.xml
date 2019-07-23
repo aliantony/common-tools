@@ -421,19 +421,12 @@
     <select id="findAllCategoryCount" resultMap="BaseResultMap">
 SELECT
 	asset_category_model.id,
-	asset_category_model. NAME,
+	asset_category_model.NAME,
 	asset_category_model.type,
 	asset_category_model.asset_type,
 	asset_category_model.parent_id,
-	asset_category_model.description,
 	asset_category_model.is_default,
-	asset_category_model.gmt_create,
-	asset_category_model.gmt_modified,
-	asset_category_model.memo,
-	asset_category_model.create_user,
-	asset_category_model.modify_user,
-	asset_category_model. STATUS,
-	IFNULL(SUM(count), 0) AS count
+	SUM( count ) AS count
 FROM
 	asset_category_model
 LEFT JOIN (
@@ -474,21 +467,9 @@ LEFT JOIN (
 			category.id
 ) category ON category.id = asset_category_model.id
 WHERE
-	asset_category_model. STATUS = 1
+	count is not null
 GROUP BY
-	id,
-	NAME,
-	type,
-	asset_type,
-	parent_id,
-	description,
-	is_default,
-	gmt_create,
-	gmt_modified,
-	memo,
-	create_user,
-	modify_user,
-	STATUS
+	id
 	    </select>
 
     <!--判断是否还有子节点-->
