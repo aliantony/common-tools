@@ -12,6 +12,7 @@ import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetTemplateService;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
@@ -57,9 +58,9 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Override
     public List<String> getAllSystemOs() throws Exception {
         return redisService.getAllSystemOs().stream()
-            .filter(linkedHashMap -> !REMOVE_SYSTEM_OS.contains(
-                linkedHashMap.get("name") != null ? linkedHashMap.get("name").toString().toLowerCase() : null))
-            .map(linkedHashMap -> linkedHashMap.get("name") != null ? linkedHashMap.get("name").toString() : null)
+            .filter(categoryModelResponse -> !REMOVE_SYSTEM_OS.contains(
+                categoryModelResponse.getName() != null ? categoryModelResponse.getName().toLowerCase() : null))
+            .map(BaselineCategoryModelResponse::getName)
             .collect(Collectors.toList());
     }
 }

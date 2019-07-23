@@ -1,5 +1,39 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
@@ -31,38 +65,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -775,10 +777,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             // 设置操作系统名
             if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
-                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-                    if (object.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
-                        object.setOperationSystemName((String) linkedHashMap.get("name"));
+                List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
+                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
+                    if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
+                        object.setOperationSystemName((String) categoryModelResponse.getName());
                     }
                 }
             }
@@ -1372,10 +1374,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 设置操作系统名
         if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
-            List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
-            for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-                if (asset.getOperationSystem().equals(linkedHashMap.get("stringId"))) {
-                    assetResponse.setOperationSystemName((String) linkedHashMap.get("name"));
+            List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
+            for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
+                if (asset.getOperationSystem().equals(categoryModelResponse.getStringId())) {
+                    assetResponse.setOperationSystemName((String) categoryModelResponse.getStringId());
                 }
             }
         } else {
@@ -2531,10 +2533,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMac.add(entity.getNetworkMacAddress());
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
-                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
-                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-                    if (linkedHashMap.get("name").equals(entity.getOperationSystem())) {
-                        asset.setOperationSystem((String) linkedHashMap.get("stringId"));
+                List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
+                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
+                    if (categoryModelResponse.getName().equals(entity.getOperationSystem())) {
+                        asset.setOperationSystem((String) categoryModelResponse.getStringId());
                     }
                 }
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
@@ -3089,10 +3091,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
-                List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
-                for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-                    if (linkedHashMap.get("name").equals(entity.getOperationSystem())) {
-                        asset.setOperationSystem((String) linkedHashMap.get("stringId"));
+                List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
+                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
+                    if (categoryModelResponse.getName().equals(entity.getOperationSystem())) {
+                        asset.setOperationSystem((String) categoryModelResponse.getStringId());
                     }
                 }
                 asset.setResponsibleUserId(checkUser(entity.getUser()));

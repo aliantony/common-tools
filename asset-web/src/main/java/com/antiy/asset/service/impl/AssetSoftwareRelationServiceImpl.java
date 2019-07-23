@@ -34,10 +34,7 @@ import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -156,11 +153,11 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         if (StringUtils.isNotEmpty(assetSoftwareRelationResponse.getOperationSystem())) {
             String[] ops = assetSoftwareRelationResponse.getOperationSystem().split(",");
             StringBuilder stringBuilder = new StringBuilder();
-            List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+            List<BaselineCategoryModelResponse> categoryOsResponseList = redisService.getAllSystemOs();
             for (String os : ops) {
-                for (LinkedHashMap linkedHashMap : categoryOsResponseList) {
-                    if (os.equals(linkedHashMap.get("stringId"))) {
-                        stringBuilder.append((String) linkedHashMap.get("name")).append(",");
+                for (BaselineCategoryModelResponse categoryModelResponse : categoryOsResponseList) {
+                    if (os.equals(categoryModelResponse.getStringId())) {
+                        stringBuilder.append(categoryModelResponse.getName()).append(",");
                     }
                 }
             }
@@ -178,13 +175,13 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public List<SelectResponse> findOS() throws Exception {
         List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        List<LinkedHashMap> linkedHashMapList = redisService.getAllSystemOs();
+        List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
         List<SelectResponse> result = new ArrayList<>();
-        for (LinkedHashMap linkedHashMap : linkedHashMapList) {
-            if (osList.contains(linkedHashMap.get("stringId"))) {
+        for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
+            if (osList.contains(categoryModelResponse.getStringId())) {
                 SelectResponse selectResponse = new SelectResponse();
-                selectResponse.setId((String) linkedHashMap.get("stringId"));
-                selectResponse.setValue((String) linkedHashMap.get("name"));
+                selectResponse.setId(categoryModelResponse.getStringId());
+                selectResponse.setValue(categoryModelResponse.getName());
                 result.add(selectResponse);
             }
         }

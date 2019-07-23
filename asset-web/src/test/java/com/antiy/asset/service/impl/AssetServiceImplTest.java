@@ -1,5 +1,40 @@
 package com.antiy.asset.service.impl;
 
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.util.*;
+
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -22,47 +57,10 @@ import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
-import org.apache.catalina.connector.Request;
-import org.apache.catalina.connector.Response;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.slf4j.Logger;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.support.SimpleTransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.io.File;
-import java.util.*;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -517,12 +515,12 @@ public class AssetServiceImplTest {
         when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAlarmCountByAssetIds(any()))
             .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
-        List<LinkedHashMap> linkedHashMaps = new ArrayList<>();
-        LinkedHashMap linkedHashMap = new LinkedHashMap();
-        linkedHashMap.put("stringId", "1");
-        linkedHashMap.put("name", "windows");
-        linkedHashMaps.add(linkedHashMap);
-        when(redisService.getAllSystemOs()).thenReturn(linkedHashMaps);
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("1");
+        categoryModelResponse.setName("windows");
+        categoryModelResponseList.add(categoryModelResponse);
+        when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
         ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
 
         PageResult pageResult = new PageResult();

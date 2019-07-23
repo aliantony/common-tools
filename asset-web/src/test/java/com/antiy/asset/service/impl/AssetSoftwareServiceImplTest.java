@@ -1,5 +1,34 @@
 package com.antiy.asset.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.util.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.*;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
@@ -23,9 +52,15 @@ import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.query.SoftwareQuery;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetSoftwareLicenseRequest;
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -33,35 +68,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.reflect.Whitebox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static reactor.core.publisher.Mono.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AssetSoftwareServiceImpl.class, LoginUserUtil.class, LogHandle.class, CountTypeUtil.class,
@@ -187,17 +193,17 @@ public class AssetSoftwareServiceImplTest {
         baselineCategoryModelNodeResponse.add(nodeResponse);
         Mockito.when(operatingSystemClient.getInvokeOperatingSystemTree())
             .thenReturn(baselineCategoryModelNodeResponse);
-        List<LinkedHashMap> linkedHashMaps = new ArrayList<>();
-        LinkedHashMap linkedHashMap = new LinkedHashMap();
-        linkedHashMap.put("stringId", "1");
-        LinkedHashMap linkedHashMap1 = new LinkedHashMap();
-        linkedHashMap1.put("stringId", "2");
-        linkedHashMaps.add(linkedHashMap);
-        linkedHashMaps.add(linkedHashMap1);
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("1");
+        BaselineCategoryModelResponse categoryModelResponse1 = new BaselineCategoryModelResponse();
+        categoryModelResponse1.setStringId("2");
+        categoryModelResponseList.add(categoryModelResponse);
+        categoryModelResponseList.add(categoryModelResponse1);
         AssetSoftware assetSoftware = getAssetSoftware();
         Mockito.when(requestConverter.convert(any(AssetSoftwareRequest.class), any(Class.class)))
             .thenReturn(assetSoftware);
-        Mockito.when(redisService.getAllSystemOs()).thenReturn(linkedHashMaps);
+        Mockito.when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
         Mockito.when(assetCategoryModelDao.getById(Mockito.anyInt())).thenReturn(assetCategoryModel);
         Mockito.when(assetSoftwareDao.insert(any())).thenReturn(expect);
         Mockito.when(assetSoftwareDao.findCountCheck(any())).thenReturn(0);
@@ -477,12 +483,12 @@ public class AssetSoftwareServiceImplTest {
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setOperationSystem("2");
         AssetSoftwareDetailResponse expect = new AssetSoftwareDetailResponse();
-        List<LinkedHashMap> linkedHashMapList = new ArrayList<>();
-        LinkedHashMap map = new LinkedHashMap();
-        map.put("stringId", 2);
-        map.put("name", "WINDOWS8-64");
-        linkedHashMapList.add(map);
-        Mockito.when(redisService.getAllSystemOs()).thenReturn(linkedHashMapList);
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("2");
+        categoryModelResponse.setName("WINDOWS8-64");
+        categoryModelResponseList.add(categoryModelResponse);
+        Mockito.when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
         PowerMockito.doReturn(assetSoftware).when(assetSoftwareService).getById(Mockito.anyString());
         Mockito.when(assetSoftwareDetailConverter.convert(assetSoftware, AssetSoftwareDetailResponse.class))
             .thenReturn(expect);

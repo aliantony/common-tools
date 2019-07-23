@@ -2,19 +2,14 @@ package com.antiy.asset.service.impl;
 
 import java.util.*;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.entity.AssetCategoryModel;
-import com.antiy.asset.intergration.CommandClient;
-import com.antiy.asset.intergration.impl.CommandClientImpl;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.common.base.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -28,11 +23,16 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.intergration.impl.CommandClientImpl;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
@@ -41,13 +41,10 @@ import com.antiy.asset.vo.request.AssetInstallRequest;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.web.context.request.RequestContextHolder;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -184,11 +181,11 @@ public class AssetSoftwareRelationServiceImplTest {
         AssetSoftwareRelationResponse response = new AssetSoftwareRelationResponse();
         response.setOperationSystem("4");
         expectList.add(response);
-        List<LinkedHashMap> categoryOsResponseList = new ArrayList<>();
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
-        map.put("stringId", "4");
-        map.put("name", "计算设备");
-        categoryOsResponseList.add(map);
+        List<BaselineCategoryModelResponse> categoryOsResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("4");
+        categoryModelResponse.setName("计算设备");
+        categoryOsResponseList.add(categoryModelResponse);
         Mockito.when(assetSoftwareRelationDao.getSimpleSoftwareByAssetId(Mockito.any()))
             .thenReturn(assetSoftwareRelationList);
         Mockito.when(responseConverter.convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class))
@@ -211,14 +208,15 @@ public class AssetSoftwareRelationServiceImplTest {
 
         List<String> stringList = new ArrayList<>();
         stringList.add("4");
-        List<LinkedHashMap> linkedHashMapList = new LinkedList<>();
-        LinkedHashMap<String, String> map = new LinkedHashMap();
-        map.put("stringId", "4");
-        map.put("name", "计算设备");
-        linkedHashMapList.add(map);
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new LinkedList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("4");
+        categoryModelResponse.setName("计算设备");
+
+        categoryModelResponseList.add(categoryModelResponse);
         SelectResponse expect = new SelectResponse();
         PowerMockito.whenNew(SelectResponse.class).withNoArguments().thenReturn(expect);
-        Mockito.when(redisService.getAllSystemOs()).thenReturn(linkedHashMapList);
+        Mockito.when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
         Mockito.when(assetSoftwareRelationDao.findOS(Mockito.anyList())).thenReturn(stringList);
         Assert.assertEquals(expect, assetSoftwareRelationService.findOS().get(0));
     }

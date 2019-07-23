@@ -17,7 +17,6 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -146,9 +145,9 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
                     Stream<String> stream = Arrays.stream(request.getOperationSystems());
                     StringBuffer stringBuffer = new StringBuffer();
                     List<String> sysId = new ArrayList<>();
-                    List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+                    List<BaselineCategoryModelResponse> categoryOsResponseList = redisService.getAllSystemOs();
                     categoryOsResponseList.stream()
-                        .forEach(linkedHashMap -> sysId.add((String) linkedHashMap.get("stringId")));
+                        .forEach(categoryModelResponse -> sysId.add((String) categoryModelResponse.getStringId()));
 
                     stream.forEach(s -> {
                         // BusinessExceptionUtils.isTrue(checkOperatingSystemById(s), "兼容系统不存在，或已经注销！");
@@ -511,17 +510,17 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         // 设置操作系统名称
         if (ArrayUtils.isNotEmpty(osSystemIds)) {
             try {
-                List<LinkedHashMap> categoryOsResponseList = redisService.getAllSystemOs();
+                List<BaselineCategoryModelResponse> categoryOsResponseList = redisService.getAllSystemOs();
                 if (!CollectionUtils.isEmpty(categoryOsResponseList)) {
                     List<String> osSystemNameList = new ArrayList<>();
                     for (String osSystemId : osSystemIds) {
-                        Optional<LinkedHashMap> optional = categoryOsResponseList.stream()
+                        Optional<BaselineCategoryModelResponse> optional = categoryOsResponseList.stream()
                             .filter(categoryOsResponse -> osSystemId
-                                .equals(Optional.ofNullable(categoryOsResponse.get("stringId")).get().toString()))
+                                .equals(Optional.ofNullable(categoryOsResponse.getStringId()).get()))
                             .findFirst();
                         if (optional.isPresent() && optional.get() != null) {
                             osSystemNameList
-                                .add(optional.get().get("name") != null ? optional.get().get("name").toString() : "");
+                                .add(optional.get().getName() != null ? optional.get().getName() : "");
                         }
                     }
                     return osSystemNameList;
