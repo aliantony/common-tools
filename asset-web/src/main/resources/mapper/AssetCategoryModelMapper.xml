@@ -438,7 +438,13 @@ FROM
 	asset_category_model
 LEFT JOIN (
 	SELECT
-		category.*, COUNT(category.id) AS count
+		category.id,
+		category.NAME,
+		category.type,
+		category.asset_type,
+		category.parent_id,
+		category.is_default,
+		COUNT( category.id ) AS count
 	FROM
 		asset_category_model category
 	LEFT JOIN asset ON asset.category_model = category.id
@@ -450,7 +456,13 @@ LEFT JOIN (
 		category.id
 	UNION
 		SELECT
-			category.*, COUNT(category.id) AS count
+			category.id,
+		category.NAME,
+		category.type,
+		category.asset_type,
+		category.parent_id,
+		category.is_default,
+		COUNT( category.id ) AS count
 		FROM
 			asset_category_model category
 		LEFT JOIN asset_software ON asset_software.category_model = category.id
