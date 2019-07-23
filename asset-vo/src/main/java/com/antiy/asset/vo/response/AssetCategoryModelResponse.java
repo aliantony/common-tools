@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,7 +9,13 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetCategoryModelResponse extends BaseResponse {
+public class AssetCategoryModelResponse {
+
+    /**
+     * stringId
+     */
+    @ApiModelProperty("stringId")
+    private String  stringId;
 
     /**
      * 名称
@@ -26,7 +30,6 @@ public class AssetCategoryModelResponse extends BaseResponse {
      * 父ID
      */
     @ApiModelProperty("父ID")
-    @Encode
     private String parentId;
     /**
      * 父ID
@@ -38,6 +41,14 @@ public class AssetCategoryModelResponse extends BaseResponse {
      */
     @ApiModelProperty("备注")
     private String memo;
+
+    public String getStringId() {
+        return stringId;
+    }
+
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
+    }
 
     public String getName() {
         return name;

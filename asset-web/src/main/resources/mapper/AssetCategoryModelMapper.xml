@@ -467,7 +467,7 @@
                     category.id
         ) category ON category.id = asset_category_model.id
         WHERE
-            count is not null
+            asset_category_model. STATUS = 1
         GROUP BY
             id
 	    </select>

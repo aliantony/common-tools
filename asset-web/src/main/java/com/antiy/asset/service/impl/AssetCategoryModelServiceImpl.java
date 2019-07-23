@@ -281,9 +281,34 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      */
     @Override
     public List<AssetCategoryModelNodeResponse> queryCategoryNodeCount() throws Exception {
+        Long aa = System.currentTimeMillis();
         List<AssetCategoryModel> categoryCount = assetCategoryModelDao.findAllCategoryCount();
+        System.out.println("findAllCategoryCount 耗时" + (System.currentTimeMillis() - aa));
+        Long bb = System.currentTimeMillis();
         AssetCategoryModelNodeResponse categoryModelNodeResponses = getNextNodeResponse(categoryCount);
-        return categoryModelNodeResponses == null ? null : categoryModelNodeResponses.getChildrenNode();
+        System.out.println("getNextNodeResponse 耗时" + (System.currentTimeMillis() - bb));
+        // 加密数据
+        Long cc = System.currentTimeMillis();
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+        aesEncode(categoryModelNodeResponses, userName);
+
+        System.out.println("aesEncode 耗时" + (System.currentTimeMillis() - cc));
+        return categoryModelNodeResponses.getChildrenNode();
+    }
+
+    private void aesEncode(AssetCategoryModelNodeResponse nodeResponse, String userName) {
+
+        if (CollectionUtils.isNotEmpty(nodeResponse.getChildrenNode())) {
+            List<AssetCategoryModelNodeResponse> childrenNodeList = nodeResponse.getChildrenNode();
+            childrenNodeList.forEach(e -> {
+                e.setParentId(aesEncoder.encode(e.getParentId(), userName));
+                if (CollectionUtils.isNotEmpty(e.getChildrenNode())) {
+                    aesEncode(e, userName);
+                }
+            });
+
+        }
+
     }
 
     private AssetCategoryModelNodeResponse getNextNodeResponse(List<AssetCategoryModel> softWareCategoryCount) throws Exception {
