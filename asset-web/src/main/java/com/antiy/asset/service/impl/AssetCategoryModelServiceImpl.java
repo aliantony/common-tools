@@ -296,7 +296,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         if (nodeResponse != null && CollectionUtils.isNotEmpty(nodeResponse.getChildrenNode())) {
             List<AssetCategoryModelNodeResponse> childrenNodeList = nodeResponse.getChildrenNode();
             childrenNodeList.forEach(e -> {
-                e.setStringId(aesEncoder.encode(e.getParentId(), userName));
+                e.setStringId(aesEncoder.encode(e.getStringId(), userName));
                 e.setParentId(aesEncoder.encode(e.getParentId(), userName));
                 if (CollectionUtils.isNotEmpty(e.getChildrenNode())) {
                     aesEncode(e, userName);
