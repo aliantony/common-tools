@@ -254,7 +254,12 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         AssetCategoryModelQuery query = new AssetCategoryModelQuery();
         query.setPageSize(Constants.ALL_PAGE);
         List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.findListAssetCategoryModel(query);
-        return getAssetCategoryModelNodeResponse(assetCategoryModels);
+        // 加密数据
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+        AssetCategoryModelNodeResponse categoryModelNodeResponse = getAssetCategoryModelNodeResponse(
+            assetCategoryModels);
+        aesEncode(categoryModelNodeResponse, userName);
+        return categoryModelNodeResponse;
     }
 
     /**
@@ -347,6 +352,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * @return
      */
     public AssetCategoryModelNodeResponse queryComputeAndNetCategoryNode(Integer isNet) throws Exception {
+        // 加密数据
+        String userName = LoginUserUtil.getLoginUser().getUsername();
         Map<String, String> secondCategoryMap = this.getSecondCategoryMap();
         if ((isNet == null) || isNet == 1) {
             String[] category = new String[2];
@@ -359,7 +366,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     category[i++] = entry.getKey();
                 }
             }
-            return querySecondCategoryNode(category, secondCategoryMap);
+            AssetCategoryModelNodeResponse categoryModelNodeResponse = querySecondCategoryNode(category,
+                secondCategoryMap);
+            aesEncode(categoryModelNodeResponse, userName);
+            return categoryModelNodeResponse;
         } else {
             String[] category = new String[1];
             int i = 0;
@@ -368,7 +378,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     category[i++] = entry.getKey();
                 }
             }
-            return querySecondCategoryNode(category, secondCategoryMap);
+            AssetCategoryModelNodeResponse categoryModelNodeResponse = querySecondCategoryNode(category,
+                secondCategoryMap);
+            aesEncode(categoryModelNodeResponse, userName);
+            return categoryModelNodeResponse;
         }
     }
 
