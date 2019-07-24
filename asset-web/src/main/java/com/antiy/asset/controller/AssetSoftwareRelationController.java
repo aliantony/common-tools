@@ -237,5 +237,4 @@ public class AssetSoftwareRelationController {
         ParamterExceptionUtils.isNull(queryCondition.getAssetId(), "资产ID不能为空");
         return ActionResponse.success(iAssetSoftwareRelationService.getSimpleSoftwarePageByAssetId(queryCondition));
     }
-
 }

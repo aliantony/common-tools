@@ -8,28 +8,25 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.convert.AccessExportConvert;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.antiy.asset.convert.AccessExportConvert;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.service.AssetAdmittanceService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.templet.AccessExport;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.enums.AdmittanceStatusEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.DateUtils;
@@ -48,11 +45,13 @@ import io.swagger.annotations.*;
 public class AssetAdmittanceController {
 
     @Resource
-    public IAssetService       assetService;
+    public IAssetService          assetService;
     @Resource
-    public ExcelDownloadUtil   excelDownloadUtil;
+    public AssetAdmittanceService assetAdmittanceService;
     @Resource
-    public AccessExportConvert accessExportConvert;
+    public ExcelDownloadUtil      excelDownloadUtil;
+    @Resource
+    public AccessExportConvert    accessExportConvert;
 
     /**
      * 批量查询
@@ -68,7 +67,7 @@ public class AssetAdmittanceController {
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         asset.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
         asset.setAdmittance(true);
-        return ActionResponse.success(assetService.findPageAsset(asset));
+        return ActionResponse.success(assetAdmittanceService.findPageAsset(asset));
     }
 
     /**

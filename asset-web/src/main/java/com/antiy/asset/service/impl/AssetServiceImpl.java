@@ -839,9 +839,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        Long s = System.currentTimeMillis();
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
-        System.out.println("待办" + (System.currentTimeMillis() - s));
         dealProcess(query, processMap);
         // 品类型号及其子品类
         if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
