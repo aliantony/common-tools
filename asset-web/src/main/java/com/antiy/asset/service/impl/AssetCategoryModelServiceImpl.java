@@ -271,7 +271,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         assetCategoryModels.add(getRootCategory());
         AssetCategoryModelNodeResponse assetCategoryModelNodeResponse = getAssetCategoryModelNodeResponse(
             assetCategoryModels);
-        return assetCategoryModelNodeResponse == null || assetCategoryModelNodeResponse.getChildrenNode() == null ? null
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+        aesEncode(assetCategoryModelNodeResponse, userName);
+        return assetCategoryModelNodeResponse == null ? null
             : assetCategoryModelNodeResponse.getChildrenNode().get(0);
     }
 
@@ -291,7 +293,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     private void aesEncode(AssetCategoryModelNodeResponse nodeResponse, String userName) {
 
-        if (CollectionUtils.isNotEmpty(nodeResponse.getChildrenNode())) {
+        if (nodeResponse != null && CollectionUtils.isNotEmpty(nodeResponse.getChildrenNode())) {
             List<AssetCategoryModelNodeResponse> childrenNodeList = nodeResponse.getChildrenNode();
             childrenNodeList.forEach(e -> {
                 e.setStringId(aesEncoder.encode(e.getParentId(), userName));
@@ -300,7 +302,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     aesEncode(e, userName);
                 }
             });
-
         }
 
     }
