@@ -1376,7 +1376,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
             for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
                 if (asset.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                    assetResponse.setOperationSystemName((String) categoryModelResponse.getStringId());
+                    assetResponse.setOperationSystemName(categoryModelResponse.getName());
                 }
             }
         } else {
