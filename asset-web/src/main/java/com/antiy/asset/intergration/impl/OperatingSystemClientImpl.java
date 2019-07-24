@@ -1,13 +1,9 @@
 package com.antiy.asset.intergration.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -18,6 +14,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.BaselineCategoryModelQuery;
 import com.antiy.asset.vo.response.BaselineCategoryModelNodeResponse;
+import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
@@ -54,20 +51,10 @@ public class OperatingSystemClientImpl implements OperatingSystemClient {
 
     private ActionResponse<List<BaselineCategoryModelResponse>> decode(ActionResponse<List<BaselineCategoryModelResponse>> oldValue) {
         if (oldValue != null && oldValue.getBody() != null) {
-            List<BaselineCategoryModelResponse> newList = new ArrayList<BaselineCategoryModelResponse>();
+            String userName = LoginUserUtil.getLoginUser().getUsername();
             for (BaselineCategoryModelResponse linkedHashMap : oldValue.getBody()) {
-                BaselineCategoryModelResponse newMap = linkedHashMap;
-                if (linkedHashMap.getStringId() != null
-                    && StringUtils.isNotBlank(linkedHashMap.getStringId())) {
-                    newMap.setStringId(
-                        aesEncoder.decode(linkedHashMap.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-                }
-                if (linkedHashMap.getParentId() != null
-                        && StringUtils.isNotBlank(linkedHashMap.getParentId())) {
-                    newMap.setParentId(
-                            aesEncoder.decode(linkedHashMap.getParentId(), LoginUserUtil.getLoginUser().getUsername()));
-                }
-                newList.add(newMap);
+                linkedHashMap.setStringId(aesEncoder.decode(linkedHashMap.getStringId(), userName));
+                linkedHashMap.setParentId(aesEncoder.decode(linkedHashMap.getParentId(), userName));
             }
         }
         return oldValue;
