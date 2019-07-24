@@ -839,7 +839,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        Long s = System.currentTimeMillis();
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        System.out.println("待办" + (System.currentTimeMillis() - s));
         dealProcess(query, processMap);
         // 品类型号及其子品类
         if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
@@ -3795,6 +3797,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer queryWaitRegistCount() {
+        if (Objects.isNull(LoginUserUtil.getLoginUser())) {
+            return 0;
+        }
         return assetDao.queryWaitRegistCount(AssetStatusEnum.WATI_REGSIST.getCode(),
             LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
     }
