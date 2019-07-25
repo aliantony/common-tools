@@ -527,8 +527,16 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     @Override
     public List<AssetCategoryModelResponse> getNextLevelCategoryByName(String name) throws Exception {
-        return responseConverter.convert(assetCategoryModelDao.getNextLevelCategoryByName(name),
-            AssetCategoryModelResponse.class);
+        List<AssetCategoryModelResponse> list = responseConverter
+            .convert(assetCategoryModelDao.getNextLevelCategoryByName(name), AssetCategoryModelResponse.class);
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+        if (CollectionUtils.isNotEmpty(list)) {
+            list.forEach(e -> {
+                e.setStringId(aesEncoder.encode(e.getStringId(), userName));
+                e.setParentId(aesEncoder.encode(e.getParentId(), userName));
+            });
+        }
+        return list;
     }
 
     @Override
