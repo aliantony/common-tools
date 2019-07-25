@@ -47,11 +47,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     @Max(value = 99, message = "网口数目大小不超过99")
     private Integer portSize;
     /**
-     * 是否无线:0-否,1-是
+     * 是否无线:2-否,1-是
      */
-    @ApiModelProperty("是否无线:0-否,1-是")
-    @Max(value = 1, message = "是否无线不能大于1")
-    @Min(value = 0, message = "是否无线不能小于0")
+    @ApiModelProperty("是否无线:2-否,1-是")
+    @Max(value = 2, message = "是否无线不能大于2")
+    @Min(value = 1, message = "是否无线不能小于1")
     private Integer isWireless;
     /**
      * 内网IP
