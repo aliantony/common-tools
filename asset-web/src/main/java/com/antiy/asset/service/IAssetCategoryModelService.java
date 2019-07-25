@@ -13,7 +13,6 @@ import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-import io.swagger.annotations.ApiParam;
 
 /**
  * <p> 品类型号表 服务类 </p>
@@ -91,6 +90,13 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     List<AssetCategoryModelResponse> getNextLevelCategoryByName(String name) throws Exception;
+
+    /**
+     * 通过名称查询下一级的品类 手动加密id
+     *
+     * @return
+     */
+    List<AssetCategoryModelResponse> getNextLevelCategoryByNameAes(String name) throws Exception;
 
     /**
      * 通过名称查询下一级的品类
