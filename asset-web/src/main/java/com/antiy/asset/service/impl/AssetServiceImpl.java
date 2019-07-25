@@ -3868,9 +3868,12 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
         assetEntity.setCategoryModelName(asset.getCategoryModelName());
         assetEntity.setGmtCreate(longToDateString(asset.getGmtCreate()));
         assetEntity.setServiceLife(longToDateString(asset.getServiceLife()));
-        assetEntity.setImportanceDegree(AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()) != null
-            ? AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree()).toString()
-            : null);
+        AssetImportanceDegreeEnum degreeEnum = AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree());
+        if (degreeEnum != null) {
+            assetEntity.setImportanceDegree(degreeEnum.getMsg());
+        } else {
+            assetEntity.setImportanceDegree(null);
+        }
         assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
         if (null != asset.getAssetSource()) {
             assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");

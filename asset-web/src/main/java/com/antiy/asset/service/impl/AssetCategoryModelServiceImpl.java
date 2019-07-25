@@ -532,6 +532,20 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
+    public List<AssetCategoryModelResponse> getNextLevelCategoryByNameAes(String name) throws Exception {
+        List<AssetCategoryModelResponse> list = responseConverter
+            .convert(assetCategoryModelDao.getNextLevelCategoryByName(name), AssetCategoryModelResponse.class);
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+        if (CollectionUtils.isNotEmpty(list)) {
+            list.forEach(e -> {
+                e.setStringId(aesEncoder.encode(e.getStringId(), userName));
+                e.setParentId(aesEncoder.encode(e.getParentId(), userName));
+            });
+        }
+        return list;
+    }
+
+    @Override
     public List<AssetCategoryModelResponse> findAssetCategoryModelById(Integer id) throws Exception {
         return responseConverter.convert(recursionSearch(assetCategoryModelDao.getAll(), id),
             AssetCategoryModelResponse.class);

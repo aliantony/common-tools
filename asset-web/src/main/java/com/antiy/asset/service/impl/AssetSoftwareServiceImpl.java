@@ -1194,7 +1194,7 @@ class SoftwareEntityConvert extends BaseConverter<AssetSoftwareResponse, ExportS
         exportSoftwareEntity.setGmtCreate(LongToDateString(assetSoftware.getGmtCreate()));
         exportSoftwareEntity.setReleaseTime(LongToDateString(assetSoftware.getReleaseTime()));
         if (assetSoftware.getAuthorization() != null) {
-            exportSoftwareEntity.setAuthorization(assetSoftware.getAuthorization().compareTo(1) == 0 ? "免费软件" : "商业软件");
+            exportSoftwareEntity.setAuthorization(assetSoftware.getAuthorization().compareTo(1) == 0 ? "商业软件" : "免费软件");
         }
         exportSoftwareEntity.setCategoryModelName(assetSoftware.getCategoryModelName());
         super.convert(assetSoftware, exportSoftwareEntity);

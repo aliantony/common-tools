@@ -2,25 +2,22 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.CategoryNodeRequest;
-import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.request.CategoryNodeRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author zhangyajun
@@ -135,7 +132,8 @@ public class AssetCategoryModelController {
     @RequestMapping(value = "/query/second", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:getAssetCategoryByName')")
     public ActionResponse getAssetCategoryByName() throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.getNextLevelCategoryByName(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME));
+        return ActionResponse.success(
+            iAssetCategoryModelService.getNextLevelCategoryByNameAes(Constants.FIRST_LEVEL_ASSET_CATEGORY_NAME));
     }
 
     /**
