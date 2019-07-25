@@ -43,7 +43,7 @@ public class ExportSoftwareEntity {
     /**
      * 上传时间
      */
-    @ApiModelProperty("登记时间")
+    @ApiModelProperty("首次发现时间")
     private String  gmtCreate;
 
     /**
