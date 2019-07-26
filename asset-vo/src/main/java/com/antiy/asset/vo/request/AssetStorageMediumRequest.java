@@ -59,7 +59,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      */
     @ApiModelProperty("RAID支持")
     @Size(message = "RAID支持长度不能超过30位", max = 30)
-    private Integer raidSupport;
+    private String  raidSupport;
     /**
      * 平均传输率
      */
@@ -133,11 +133,11 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
         this.innerInterface = innerInterface;
     }
 
-    public Integer getRaidSupport() {
+    public String getRaidSupport() {
         return raidSupport;
     }
 
-    public void setRaidSupport(Integer raidSupport) {
+    public void setRaidSupport(String raidSupport) {
         this.raidSupport = raidSupport;
     }
 

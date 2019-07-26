@@ -37,7 +37,7 @@ public class AssetStorageMedium extends BaseEntity {
     /**
      * RAID支持
      */
-    private Integer raidSupport;
+    private String  raidSupport;
     /**
      * 平均传输率
      */
@@ -119,11 +119,11 @@ public class AssetStorageMedium extends BaseEntity {
         this.innerInterface = innerInterface;
     }
 
-    public Integer getRaidSupport() {
+    public String getRaidSupport() {
         return raidSupport;
     }
 
-    public void setRaidSupport(Integer raidSupport) {
+    public void setRaidSupport(String raidSupport) {
         this.raidSupport = raidSupport;
     }
 
