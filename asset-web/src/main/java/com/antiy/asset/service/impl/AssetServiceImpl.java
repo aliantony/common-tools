@@ -2184,7 +2184,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setSlotType("1");
         storageDeviceEntity.setTelephone("13541771234");
         storageDeviceEntity.setWarranty("2年");
-        storageDeviceEntity.setRaidSupport(2);
+        storageDeviceEntity.setRaidSupport("否");
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
         storageDeviceEntity.setLocation("成都市青羊区");
