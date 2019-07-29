@@ -403,7 +403,7 @@
         else '' end as ip
         from
         asset a
-        left join asset_network_card b on a.id = b.asset_id
+        left join asset_network_card b on a.id = b.asset_id and b.status = 1
         left join asset_category_model c on a.category_model = c.id
         left join asset_user d on a.responsible_user_id = d.id
         <if test="queryDepartmentName == true">
@@ -415,7 +415,7 @@
             avr.asset_id,
             count(avr.vul_status != 5 or null) vul_count
             from
-            asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v.vul_status = 4 and v. status = 1
+            asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v. status = 1
             group by
             asset_id
             ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
@@ -431,7 +431,7 @@
             asset_id
             ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
         </if>
-        where a.status = 1 and b.status = 1
+        where a.status = 1
         group by a.id
         ) asset
         <where>
