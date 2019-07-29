@@ -2184,7 +2184,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setSlotType("1");
         storageDeviceEntity.setTelephone("13541771234");
         storageDeviceEntity.setWarranty("2年");
-        storageDeviceEntity.setRaidSupport("0");
+        storageDeviceEntity.setRaidSupport("否");
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
         storageDeviceEntity.setLocation("成都市青羊区");
@@ -3315,7 +3315,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // }
                 if (entity.getRaidSupport() != null) {
 
-                    assetStorageMedium.setRaidSupport(entity.getRaidSupport().equals("0") ? "否" : "是");
+                    assetStorageMedium.setRaidSupport(entity.getRaidSupport());
                 }
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());
