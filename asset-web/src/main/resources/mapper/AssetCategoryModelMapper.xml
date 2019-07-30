@@ -426,7 +426,7 @@
             asset_category_model.asset_type,
             asset_category_model.parent_id,
             asset_category_model.is_default,
-            SUM( count ) AS count
+            ifnull (SUM( count ),0) AS count
         FROM
             asset_category_model
         LEFT JOIN (
