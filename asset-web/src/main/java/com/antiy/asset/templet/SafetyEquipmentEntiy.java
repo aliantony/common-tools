@@ -21,11 +21,10 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", type = 0, required = true, length = 80)
     private String manufacturer;
     /**
-     * 序列号
+     * 版本
      */
-    @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
-    private String serial;
-
+    @ExcelField(value = "version", align = 1, title = "版本(必填)", required = true)
+    private String version;
     /**
      * 使用者
      */
@@ -49,34 +48,6 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String importanceDegree;
     /**
-     * 联系电话
-     */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话",type = 0,dataType = DataTypeEnum.TEL)
-    private String telephone;
-    /**
-     * 使用者邮箱
-     */
-    @ExcelField(value = "email", align = 1, title = "邮箱",type = 0,dataType = DataTypeEnum.EMAIL)
-    private String email;
-    /**
-     * 物理位置
-     */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)",required = true)
-    private String location;
-    /**
-     * 机房位置
-     */
-    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
-    private String houseLocation;
-
-
-    // /**
-    // * 固件版本
-    // */
-    // @ExcelField(value = "firmwareVersion", align = 1, title = "固件版本")
-    // private String firmwareVersion;
-
-    /**
      * ip地址
      */
     @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", required = true, dataType = DataTypeEnum.IP)
@@ -86,17 +57,30 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", required = true, dataType = DataTypeEnum.MAC)
     private String mac;
+    /**
+     * 到期时间
+     */
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
+    private Long   dueDate;
 
     /**
      * 购买日期
      */
-    @ExcelField(value = "buyDate", align = 1, title = "购买日期",isDate = true)
-    private Long            buyDate;
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
+    private Long   buyDate;
     /**
-     * 到期时间
+     * 序列号
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)",isDate = true,required = true)
-    private Long            dueDate;
+    @ExcelField(value = "serial", align = 1, title = "序列号", type = 0)
+    private String serial;
+
+    /**
+     * 机房位置
+     */
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
+    private String houseLocation;
+
+
     /**
      * 保修期
      */
@@ -142,28 +126,12 @@ public class SafetyEquipmentEntiy {
         this.user = user;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getVersion() {
+        return version;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getHouseLocation() {

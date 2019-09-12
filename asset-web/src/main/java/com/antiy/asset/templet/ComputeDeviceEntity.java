@@ -1,6 +1,8 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
+
 import lombok.Data;
 
 /**
@@ -24,19 +26,15 @@ public class ComputeDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80, required = true)
     private String manufacturer;
 
     /**
      * 版本
      */
-    @ExcelField(value = "version", align = 1, title = "版本")
+    @ExcelField(value = "version", align = 1, title = "版本", required = true)
     private String version;
-    /**
-     * 序列号
-     */
-    @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String serial;
+
 
     /**
      * 使用者
@@ -60,22 +58,37 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String importanceDegree;
     /**
-     * 机房位置
+     * p地址
      */
-    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
-    private String houseLocation;
-
+    @ExcelField(value = "ip", align = 1, title = "ip(必填)", dataType = DataTypeEnum.IP, required = true)
+    private String ip;
     /**
-     * 购买时间
+     * mac地址
      */
-    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
-    private Long   buyDate;
+    @ExcelField(value = "mac", align = 1, title = "mac(必填)", dataType = DataTypeEnum.MAC, required = true)
+    private String mac;
 
     /**
      * 使用到期时间
      */
     @ExcelField(value = "dueTime", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long   dueTime;
+    /**
+     * 购买时间
+     */
+    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
+    private Long   buyDate;
+    /**
+     * 序列号
+     */
+    @ExcelField(value = "serial", align = 1, title = "序列号")
+    private String serial;
+    /**
+     * 机房位置
+     */
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
+    private String houseLocation;
+
     /**
      * 保修
      */
@@ -87,6 +100,22 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "description", align = 1, title = "描述", length = 300)
     private String description;
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public String getNumber() {
         return number;

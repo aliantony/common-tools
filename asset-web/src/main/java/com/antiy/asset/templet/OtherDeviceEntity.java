@@ -1,7 +1,6 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
-import com.antiy.asset.vo.enums.DataTypeEnum;
 
 public class OtherDeviceEntity {
 
@@ -13,18 +12,19 @@ public class OtherDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "资产名称(必填)")
+    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
     private String name;
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80, required = true)
     private String manufacturer;
+
     /**
-     * 序列号
+     * 版本
      */
-    @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String serial;
+    @ExcelField(value = "version", align = 1, title = "版本", required = true)
+    private String version;
 
     /**
      * 使用者
@@ -43,28 +43,23 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String  importanceDegree;
-
-    /**
-     * 联系电话
-     */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
-    private String telephone;
-    /**
-     * 使用者邮箱
-     */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
-    private String email;
-
-    /**
-     * 购买日期
-     */
-    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
-    private Long   buyDate;
     /**
      * 到期时间
      */
     @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
     private Long   dueDate;
+    /**
+     * 购买日期
+     */
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
+    private Long   buyDate;
+
+    /**
+     * 序列号
+     */
+    @ExcelField(value = "serial", align = 1, title = "序列号")
+    private String serial;
+
     /**
      * 保修期
      */
@@ -75,6 +70,14 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String memo;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getName() {
         return name;
@@ -106,22 +109,6 @@ public class OtherDeviceEntity {
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Long getBuyDate() {

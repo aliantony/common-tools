@@ -1,7 +1,6 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
-import com.antiy.asset.vo.enums.DataTypeEnum;
 
 /**
  * 存储介质
@@ -11,7 +10,7 @@ public class StorageDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)", required = true)
     private String  number;
     /**
      * 资产名称
@@ -21,14 +20,14 @@ public class StorageDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80, required = true)
     private String  manufacturer;
-    /**
-     * 序列号
-     */
-    @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String  serial;
 
+    /**
+     * 版本
+     */
+    @ExcelField(value = "version", align = 1, title = "版本", required = true)
+    private String  version;
     /**
      * 使用者
      */
@@ -42,29 +41,6 @@ public class StorageDeviceEntity {
     private String  area;
 
     /**
-     * 联系电话
-     */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
-    private String  telephone;
-    /**
-     * 邮箱
-     */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
-    private String  email;
-
-    /**
-     * 物理位置
-     */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
-    private String  location;
-    /**
-     * 机房位置
-     */
-    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
-    private String  houseLocation;
-
-
-    /**
      * 重要程度
      */
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
@@ -75,6 +51,27 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "capacity", align = 1, title = "最大存储量(必填)", required = true, length = 7)
     private String  capacity;
+
+    /**
+     * 到期时间
+     */
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
+    private Long    dueDate;
+    /**
+     * 购买时间
+     */
+    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
+    private Long    buyDate;
+    /**
+     * 序列号
+     */
+    @ExcelField(value = "serial", align = 1, title = "序列号")
+    private String  serial;
+    /**
+     * 机房位置
+     */
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
+    private String  houseLocation;
     /**
      * 单机磁盘数
      */
@@ -115,22 +112,12 @@ public class StorageDeviceEntity {
      */
     @ExcelField(value = "driveNum", align = 1, title = "驱动器数量", length = 7)
     private Integer driveNum;
-    /**
-     * 购买时间
-     */
-    @ExcelField(value = "buyDate", align = 1, title = "购买时间", isDate = true)
-    private Long    buyDate;
-    /**
-     * 到期时间
-     */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
-    private Long    dueDate;
 
     /**
      * 保修期
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String    warranty;
+    private String  warranty;
 
     /**
      * 描述
@@ -170,28 +157,12 @@ public class StorageDeviceEntity {
         this.user = user;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getVersion() {
+        return version;
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getCapacity() {
