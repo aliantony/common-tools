@@ -1,10 +1,31 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.util.*;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.service.IAssetSoftwareService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.BaseResponse;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.base.*;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
@@ -35,32 +56,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.service.IAssetSoftwareService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.BaseResponse;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.*;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -1416,9 +1415,7 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         when(operatingSystemClient.getInvokeOperatingSystem()).thenReturn(baselineCategoryModelResponses);
         computeDeviceEntity.setArea("四川");
-        computeDeviceEntity.setHardDiskBuyDate(System.currentTimeMillis() * 2);
-        computeDeviceEntity.setHardDisCapacityl(1);
-        computeDeviceEntity.setHardDiskType(1);
+
 
         result = assetServiceImpl.importPc(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行硬盘购买时间需小于等于今天！", result);
@@ -1458,16 +1455,11 @@ public class AssetServiceImplTest {
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
         computeDeviceEntity.setOperationSystem("1");
         computeDeviceEntity.setArea("四川");
-        computeDeviceEntity.setMemoryCapacity(1);
-        computeDeviceEntity.setHardDisCapacityl(1);
-        computeDeviceEntity.setHardDiskType(1);
-        computeDeviceEntity.setMainboradBrand("1");
-        computeDeviceEntity.setCpuMainFrequency(1f);
+
         computeDeviceEntity.setDueTime(System.currentTimeMillis() + 1);
         computeDeviceEntity.setUser("1");
         computeDeviceEntity.setImportanceDegree("1");
-        computeDeviceEntity.setNetworkIpAddress("1.1.1.1");
-        computeDeviceEntity.setNetworkMacAddress("a");
+
         return computeDeviceEntity;
     }
 
