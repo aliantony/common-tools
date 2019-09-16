@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetInstallTemplateDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetInstallTemplate">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="number_code" property="numberCode"/>
+        <result column="category_model" property="categoryModel"/>
+        <result column="check_status" property="checkStatus"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="operation_system_name" property="operationSystemName"/>
+        <result column="enable" property="enable"/>
+        <result column="description" property="description"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, number_code, category_model, check_status, operation_system, operation_system_name, enable, description
+    </sql>
+
+    <sql id="Table_Name">
+        asset_install_template
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" numberCode != null">
+            number_code,
+        </if>
+        <if test=" categoryModel != null">
+            category_model,
+        </if>
+        <if test=" checkStatus != null">
+            check_status,
+        </if>
+        <if test=" operationSystem != null">
+            operation_system,
+        </if>
+        <if test=" operationSystemName != null">
+            operation_system_name,
+        </if>
+        <if test=" enable != null">
+            enable,
+        </if>
+        <if test=" description != null">
+            description,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" numberCode != null">
+            #{numberCode },
+        </if>
+        <if test=" categoryModel != null">
+            #{categoryModel },
+        </if>
+        <if test=" checkStatus != null">
+            #{checkStatus },
+        </if>
+        <if test=" operationSystem != null">
+            #{operationSystem },
+        </if>
+        <if test=" operationSystemName != null">
+            #{operationSystemName },
+        </if>
+        <if test=" enable != null">
+            #{enable },
+        </if>
+        <if test=" description != null">
+            #{description },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" numberCode != null">
+            number_code = #{numberCode },
+        </if>
+        <if test=" categoryModel != null">
+            category_model = #{categoryModel },
+        </if>
+        <if test=" checkStatus != null">
+            check_status = #{checkStatus },
+        </if>
+        <if test=" operationSystem != null">
+            operation_system = #{operationSystem },
+        </if>
+        <if test=" operationSystemName != null">
+            operation_system_name = #{operationSystemName },
+        </if>
+        <if test=" enable != null">
+            enable = #{enable },
+        </if>
+        <if test=" description != null">
+            description = #{description },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" numberCode != null">
+            and number_code = #{numberCode }
+        </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
+        </if>
+        <if test=" checkStatus != null">
+            and check_status = #{checkStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and operation_system_name = #{operationSystemName }
+        </if>
+        <if test=" enable != null">
+            and enable = #{enable }
+        </if>
+        <if test=" description != null">
+            and description = #{description }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetInstallTemplate" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetInstallTemplate">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>
