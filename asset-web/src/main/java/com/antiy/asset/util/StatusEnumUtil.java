@@ -49,7 +49,7 @@ public class StatusEnumUtil {
         AssetStatusEnum[] assetStatusEnums = AssetStatusEnum.values();
         for (AssetStatusEnum assetStatusEnum : assetStatusEnums) {
             if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE)
-                && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)) {
+                && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGISTER)) {
                 status.add(assetStatusEnum.getCode());
             }
         }

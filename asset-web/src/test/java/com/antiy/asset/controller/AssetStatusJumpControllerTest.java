@@ -8,12 +8,9 @@ import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
-import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
@@ -29,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -38,9 +34,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.annotation.Resource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +41,6 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -115,7 +107,7 @@ public class AssetStatusJumpControllerTest {
             .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
         assetStatusReqeust.setSoftware(false);
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.HARDWARE_REGISTER);
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_REGISTER);
         mockMvc
             .perform(post("/api/v1/asset/statusjump").contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8).content(JSON.toJSONString(assetStatusReqeust)))
@@ -151,7 +143,7 @@ public class AssetStatusJumpControllerTest {
         AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
         assetStatusChangeRequest.setSoftware(true);
         assetStatusChangeRequest.setAssetId("1");
-        assetStatusChangeRequest.setStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+        assetStatusChangeRequest.setStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetStatusChangeRequest.setActivityHandleRequest(new ActivityHandleRequest());
         AssetSoftware assetSoftware = new AssetSoftware();
         assetSoftware.setSoftwareStatus(1);
@@ -166,7 +158,7 @@ public class AssetStatusJumpControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8).content(JSON.toJSONString(assetStatusChangeRequest)))
             .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
         assetStatusChangeRequest.setSoftware(false);
-        asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         mockMvc
             .perform(post("/api/v1/asset/statusjump/noRegister").contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8).content(JSON.toJSONString(assetStatusChangeRequest)))

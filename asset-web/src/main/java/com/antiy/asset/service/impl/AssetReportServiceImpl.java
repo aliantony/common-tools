@@ -38,7 +38,6 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -318,8 +317,8 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private List<Integer> getStatusList() {
         List<Integer> statusList = new ArrayList<>();
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
-            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
-                && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGISTER)
+                && !assetStatusEnum.equals(AssetStatusEnum.WAIT_REGISTER)) {
                 statusList.add(assetStatusEnum.getCode());
             }
         }

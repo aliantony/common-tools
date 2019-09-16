@@ -8,7 +8,6 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
@@ -24,13 +23,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +65,7 @@ public class AssetStatusChangeFlowProcessImplTest {
     @Test
     public void changeStatus() throws Exception {
         AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_REGISTER);
         assetStatusReqeust.setAgree(true);
         assetStatusReqeust.setAssetId("1");
         SchemeRequest schemeRequest = new SchemeRequest();

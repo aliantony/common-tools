@@ -437,8 +437,8 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     private List<Integer> getStatusList() {
         List<Integer> statusList = new ArrayList<>();
         for (AssetStatusEnum assetStatusEnum : AssetStatusEnum.values()) {
-            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGSIST)
-                && !assetStatusEnum.equals(AssetStatusEnum.WATI_REGSIST)) {
+            if (!assetStatusEnum.equals(AssetStatusEnum.RETIRE) && !assetStatusEnum.equals(AssetStatusEnum.NOT_REGISTER)
+                && !assetStatusEnum.equals(AssetStatusEnum.WAIT_REGISTER)) {
                 statusList.add(assetStatusEnum.getCode());
             }
         }

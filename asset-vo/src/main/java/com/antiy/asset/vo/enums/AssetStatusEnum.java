@@ -8,16 +8,15 @@ import org.apache.commons.lang.StringUtils;
  * @Description:
  */
 public enum AssetStatusEnum {
-                             WATI_REGSIST(1,
-                                          "待登记"), NOT_REGSIST(2,
-                                                              "不予登记"), WAIT_SETTING(3,
-                                                                                    "待配置"), WAIT_VALIDATE(4,
-                                                                                                          "待验证"), WAIT_NET(5,
-                                                                                                                           "待入网"), WAIT_CHECK(6,
-                                                                                                                                              "待检查"), NET_IN(7,
-                                                                                                                                                             "已入网"), WAIT_RETIRE(8,
-                                                                                                                                                                                 "待退役"), RETIRE(9,
-                                                                                                                                                                                                "已退役");
+    WAIT_REGISTER(1, "待登记"),
+    NOT_REGISTER(2, "不予登记"),
+    WAIT_SETTING(3, "待配置"),
+    WAIT_VALIDATE(4, "待验证"),
+    WAIT_NET(5, "待入网"),
+    WAIT_CHECK(6, "待检查"),
+    NET_IN(7, "已入网"),
+    WAIT_RETIRE(8, "待退役"),
+    RETIRE(9, "已退役");
 
     AssetStatusEnum(Integer code, String msg) {
         this.code = code;
