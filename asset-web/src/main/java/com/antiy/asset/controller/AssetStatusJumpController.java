@@ -147,12 +147,12 @@ public class AssetStatusJumpController {
             if (currentAsset == null) {
                 throw new BusinessException("资产不存在");
             }
-            if (!(AssetStatusEnum.WATI_REGSIST.getCode().equals(currentAsset.getAssetStatus()))) {
+            if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 throw new BusinessException("资产状态已改变");
             }
             Asset asset = new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+            asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
             if (LoginUserUtil.getLoginUser() == null) {
                 LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
             } else {
@@ -193,7 +193,7 @@ public class AssetStatusJumpController {
         AssetOperationRecord operationRecord = new AssetOperationRecord();
         operationRecord.setTargetObjectId(id);
         operationRecord.setOriginStatus(assetStatusChangeRequest.getStatus());
-        operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+        operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -255,7 +255,7 @@ public class AssetStatusJumpController {
         scheme.setType(6);
         scheme.setAssetId(baseRequest.getStringId());
         scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
-        scheme.setAssetNextStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+        scheme.setAssetNextStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         schemeDao.insert(scheme);
         LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
 
