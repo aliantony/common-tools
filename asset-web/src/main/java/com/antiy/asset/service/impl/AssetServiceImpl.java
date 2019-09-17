@@ -35,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
@@ -74,6 +75,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private Logger                                                             logger   = LogUtils.get(this.getClass());
     @Resource
     private AssetDao                                                           assetDao;
+    @Resource
+    private AssetInstallTemplateDao                                            assetInstallTemplateDao;
     @Resource
     private AssetMainboradDao                                                  assetMainboradDao;
     @Resource
@@ -920,22 +923,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (!dictionaryFile.exists()) {
             logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
         }
+        File comFile = null;
+
         // 需要下载装机模板
-        // if (CollectionUtils.isNotEmpty (baseRequest.getComIds ())){
-        File comFile = new File(dictionaryFile, "装机模板列表.xls");
-        List<AssetResponse> list1 = this
-            .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getComIds().toArray(new String[] {})));
-
-        List<AssetEntity> assetEntities = assetEntityConvert.convert(list1, AssetEntity.class);
-        // 下载资产列表
-        HSSFWorkbook hssfWorkbook = excelDownloadUtil.getHSSFWorkbook("资产列表", assetEntities);
-
-        FileOutputStream fileOutputStream = new FileOutputStream(comFile);
-        hssfWorkbook.write(fileOutputStream);
-        // }
+        if (CollectionUtils.isNotEmpty(baseRequest.getComIds())) {
+            comFile = new File(dictionaryFile, "装机模板列表.xls");
+            List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao.findByAssetIds(baseRequest.getComIds());
+            // 下载装机模板列表
+            HSSFWorkbook hssfWorkbook = excelDownloadUtil.getHSSFWorkbook("装机模板列表", byAssetIds);
+            FileOutputStream fileOutputStream = new FileOutputStream(comFile);
+            hssfWorkbook.write(fileOutputStream);
+            CloseUtils.close(fileOutputStream);
+        }
 
         List<AssetResponse> list = this
-            .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getComIds().toArray(new String[] {})));
+            .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
 
         List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
 
@@ -946,16 +948,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         FileOutputStream fileOutputStream1 = new FileOutputStream(assetFile);
         hssfWorkbook1.write(fileOutputStream1);
         fileOutputStream1.close();
-        fileOutputStream.close();
+        CloseUtils.close(fileOutputStream1);
         // 创造模板文件
-        File[] files = new File[2];
-        files[0] = assetFile;
-        files[1] = comFile;
+
+        List<File> fileList = new ArrayList<>();
+        fileList.add(assetFile);
+        if (!Objects.isNull(comFile)) {
+            fileList.add(comFile);
+        }
+
         // 创造压缩文件
         File zip = new File("/temp" + currentTime + "/模板.zip");
 
         logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
         // 压缩文件为zip压缩包
+        File[] files = fileList.toArray(new File[] {});
         ZipUtil.compress(zip, files);
         // 将文件流发送到客户端
         sendStreamToClient(zip);
@@ -2087,10 +2094,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         File zip = new File("/temp" + currentTime + "/模板.zip");
         int m = 0;
         for (String type : types) {
-                // 生成模板文件
+            // 生成模板文件
             exportTemplate(dictionary + "/", type);
             files[m++] = new File(dictionary + "/" + type + "信息模板.xlsx");
-                logger.info(files[m - 1].getName() + "文件创建成功");
+            logger.info(files[m - 1].getName() + "文件创建成功");
 
         }
         logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
@@ -2134,7 +2141,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 exportOtherTemplate(dictionary);
                 break;
         }
-
 
     }
 
@@ -2618,7 +2624,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         for (NetworkDeviceEntity networkDeviceEntity : entities) {
 
-
             if (assetNumbers.contains(networkDeviceEntity.getNumber())) {
                 repeat++;
                 a++;
@@ -2631,7 +2636,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
-
 
             if (networkDeviceEntity.getPortSize() <= 0 || networkDeviceEntity.getPortSize() > 99) {
                 error++;
@@ -2815,7 +2819,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetSafetyEquipment> assetSafetyEquipments = new ArrayList<>();
         for (SafetyEquipmentEntiy entity : resultDataList) {
 
-
             if (assetNumbers.contains(entity.getNumber())) {
                 repeat++;
                 a++;
@@ -2828,7 +2831,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
-
 
             if (CheckRepeat(entity.getNumber())) {
                 repeat++;
@@ -3004,15 +3006,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetStorageMedium> assetStorageMedia = new ArrayList<>();
         for (StorageDeviceEntity entity : resultDataList) {
 
-
             if (assetNumbers.contains(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-
-
 
             if (CheckRepeat(entity.getNumber())) {
                 repeat++;
@@ -3174,15 +3173,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<String> assetNumbers = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
-
             if (assetNumbers.contains(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-
-
 
             if (CheckRepeat(entity.getNumber())) {
                 repeat++;
@@ -3479,7 +3475,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
-            //TODO 修改了流程枚举，请完善检查查后续代码是否正确
+            // TODO 修改了流程枚举，请完善检查查后续代码是否正确
             assetOperationRecord.setContent(AssetFlowEnum.VALIDATE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {

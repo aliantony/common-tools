@@ -1325,7 +1325,7 @@
         <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
             #{item}
         </foreach>
-        and status = 1
+
     </select>
 
     <update id="updateAssetGroupNameWithAssetId" parameterType="map">
