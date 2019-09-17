@@ -1,7 +1,10 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
+
+import javax.swing.*;
 
 /**
  * @auther: zhangbing
@@ -16,4 +19,13 @@ public interface IAssetStatusChangeProcessService {
      * @return
      */
     ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception;
+
+
+    /**
+     * 资产状态跃迁
+     * @param statusJumpRequest
+     * @return
+     * @throws Exception
+     */
+    ActionResponse  changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception;
 }

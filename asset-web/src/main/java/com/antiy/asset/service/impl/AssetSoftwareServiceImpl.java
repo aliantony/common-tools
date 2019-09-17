@@ -1,8 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.vo.enums.AssetFlowEnum.HARDWARE_CONFIG_BASELINE;
-import static com.antiy.asset.vo.enums.SoftwareFlowEnum.SOFTWARE_INSTALL_CONFIG;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -921,13 +918,14 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         if (AssetTypeEnum.SOFTWARE.getCode().equals(DataTypeUtils.stringToInteger(request.getSource()))) {
             assetOperationRecord.setOriginStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-            assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
+            //TODO 修改了流程枚举，请完善检查查后续代码是否正确
+            // assetOperationRecord.setContent(SOFTWARE_INSTALL_CONFIG.getMsg());
             assetOperationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
             assetOperationRecord
                 .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         } else {
-            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-            assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
+            // assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+            // assetOperationRecord.setContent(HARDWARE_CONFIG_BASELINE.getMsg());
             assetOperationRecord.setSchemeId(scheme.getId());
             assetOperationRecord
                 .setTargetObjectId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));

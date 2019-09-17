@@ -6,11 +6,10 @@ package com.antiy.asset.vo.enums;
  * @create 2019-05-22 14:25
  **/
 public enum ActivityNodeStatusEnum {
-                                    WAIT_REGISTER("资产登记",
-                                                 AssetStatusEnum.WAIT_REGISTER), WAIT_SETTING("基准配置",
-                                                                                             AssetStatusEnum.WAIT_SETTING), WAIT_NET("实施入网",
-                                                                                                                                     AssetStatusEnum.WAIT_NET), WAIT_CHECK("效果检查",
-                                                                                                                                                                           AssetStatusEnum.WAIT_CHECK);
+    WAIT_REGISTER("资产登记", AssetStatusEnum.WAIT_REGISTER),
+    // WAIT_SETTING("基准配置", AssetStatusEnum.WAIT_SETTING),
+    WAIT_NET("实施入网", AssetStatusEnum.WAIT_NET),
+    WAIT_CHECK("效果检查", AssetStatusEnum.WAIT_CHECK);
 
     private String          name;
     private AssetStatusEnum statusEnum;
