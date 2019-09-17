@@ -18,8 +18,9 @@ public class SafetyEquipmentEntiy {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", type = 0, required = true, length = 80)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
     private String manufacturer;
+
     /**
      * 版本
      */

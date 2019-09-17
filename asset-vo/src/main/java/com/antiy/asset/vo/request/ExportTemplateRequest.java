@@ -1,10 +1,9 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.encoder.Encode;
 
 public class ExportTemplateRequest extends BaseRequest {
-    @Encode
+    // @Encode
     private String[] type;
 
     public String[] getType() {

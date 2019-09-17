@@ -954,7 +954,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 创造压缩文件
         File zip = new File("/temp" + currentTime + "/模板.zip");
 
-        // logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
+        logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
         // 压缩文件为zip压缩包
         ZipUtil.compress(zip, files);
         // 将文件流发送到客户端
@@ -2154,7 +2154,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setVersion("1.1.2");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
-
         otherDeviceEntity.setName("触摸查询一体机");
         otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         otherDeviceEntity.setManufacturer("捷显");
@@ -2178,14 +2177,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setArea("四川省");
         safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis());
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis());
-
+        safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
+        safetyEquipmentEntiy.setIp("192.168.1.120");
         safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setManufacturer("安天");
         safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
         safetyEquipmentEntiy
             .setMemo("镇关采用高性能软硬件架构，以智能用户识别与智能应用识别为基础，实现了完全" + "以用户和应用为中心的控制策略，先进的APT防护技术能够有效防范0day攻击和社工渗透等新型威胁。");
         safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
-
         safetyEquipmentEntiy.setNumber("00001");
         safetyEquipmentEntiy.setIp("192.168.1.9");
         safetyEquipmentEntiy.setUser("留小查");
@@ -2194,6 +2193,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setVersion("1.1.2");
         safetyEquipmentEntiy.setHouseLocation("501机房004号");
         safetyEquipmentEntiy.setImportanceDegree("1");
+        safetyEquipmentEntiy.setOperationSystem("Windows");
         dataList.add(safetyEquipmentEntiy);
         return dataList;
     }
@@ -2215,7 +2215,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setDriveNum(3);
         storageDeviceEntity.setVersion("1.1.2");
         storageDeviceEntity.setDueDate(System.currentTimeMillis());
-
         storageDeviceEntity.setHardDiskNum(1);
         storageDeviceEntity.setFirmwareVersion("spi1");
         storageDeviceEntity.setHighCache("6GB/S");
@@ -2223,15 +2222,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setManufacturer("联想");
         storageDeviceEntity.setMemo("私有云网络存储器nas文件共享数字备份 AS6202T 0TB 标机");
         storageDeviceEntity.setName("华芸AS6202T");
-        storageDeviceEntity.setInnerInterface("SAS ，SSD");
+        storageDeviceEntity.setInnerInterface("SSD");
         storageDeviceEntity.setNumber("000001");
         storageDeviceEntity.setSlotType("1");
-
         storageDeviceEntity.setWarranty("2年");
-        storageDeviceEntity.setRaidSupport("2");
+        storageDeviceEntity.setRaidSupport(1);
         storageDeviceEntity.setUser("留小查");
         storageDeviceEntity.setSerial("ANFRWGDFETYRYF");
-
         storageDeviceEntity.setImportanceDegree("1");
         dataList.add(storageDeviceEntity);
         return dataList;
@@ -2253,6 +2250,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setCpuSize(4);
         networkDeviceEntity.setArea("成都市");
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
+        networkDeviceEntity.setIp("192.168.1.120");
         networkDeviceEntity.setName("YTW-600-5A五端口迷你型网络延长器");
         networkDeviceEntity.setDramSize(3.42f);
         networkDeviceEntity.setVersion("1.1.2");
@@ -2293,27 +2291,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private List<ComputeDeviceEntity> initComputeData() {
         List<ComputeDeviceEntity> dataList = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
-
         computeDeviceEntity.setArea("成都市");
         computeDeviceEntity.setName("ThinkPad X1 隐士");
-
+        computeDeviceEntity.setIp("192.168.1.1");
+        computeDeviceEntity.setMac("00-01-6C-06-A6-29");
         computeDeviceEntity.setWarranty("2年");
         computeDeviceEntity.setDescription("搭载第八代英特尔®酷睿TM i7处理器，配备双内存插槽，最高支持64GB内存扩展");
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setImportanceDegree("1");
         computeDeviceEntity.setSerial("ADES-WRGD-EREW-TERF");
         computeDeviceEntity.setHouseLocation("501机房004号");
-
         computeDeviceEntity.setNumber("123");
         computeDeviceEntity.setUser("留小查");
         computeDeviceEntity.setBuyDate(System.currentTimeMillis());
-
         computeDeviceEntity.setVersion("1.3.2");
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
-
         computeDeviceEntity.setManufacturer("联想");
         computeDeviceEntity.setOperationSystem("Window 10");
-
         dataList.add(computeDeviceEntity);
         return dataList;
     }
@@ -3099,14 +3093,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setMaximumStorage(entity.getCapacity());
                 assetStorageMedium.setHighCache(entity.getHighCache());
                 assetStorageMedium.setStatus(1);
-                // if (entity.getRaidSupport() == null) {
-                // assetStorageMedium.setRaidSupport("否");
-                // } else {
-                //
-                // }
+
                 if (entity.getRaidSupport() != null) {
 
-                    assetStorageMedium.setRaidSupport(entity.getRaidSupport());
+                    assetStorageMedium.setRaidSupport(entity.getRaidSupport() == 1 ? "是" : "否");
                 }
                 assetStorageMedium.setInnerInterface(entity.getInnerInterface());
                 assetStorageMedium.setOsVersion(entity.getSlotType());

@@ -20,13 +20,13 @@ public class StorageDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商", length = 80, required = true)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
     private String  manufacturer;
 
     /**
      * 版本
      */
-    @ExcelField(value = "version", align = 1, title = "版本", required = true)
+    @ExcelField(value = "version", align = 1, title = "版本(必填)", required = true)
     private String  version;
     /**
      * 使用者
@@ -86,7 +86,7 @@ public class StorageDeviceEntity {
      * RAID支持
      */
     @ExcelField(value = "raidSupport", align = 1, title = "RAID支持", dictType = "yesorno")
-    private String  raidSupport;
+    private Integer raidSupport;
     /**
      * high_cache
      */
@@ -181,11 +181,11 @@ public class StorageDeviceEntity {
         this.innerInterface = innerInterface;
     }
 
-    public String getRaidSupport() {
+    public Integer getRaidSupport() {
         return raidSupport;
     }
 
-    public void setRaidSupport(String raidSupport) {
+    public void setRaidSupport(Integer raidSupport) {
         this.raidSupport = raidSupport;
     }
 
