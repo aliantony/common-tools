@@ -194,4 +194,26 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="findByAssetIds" resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        asset_install_template
+        WHERE
+
+        id IN (
+        SELECT
+        asset.install_template_id
+        FROM
+        asset
+        WHERE
+        id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+        )
+    </select>
+
+
 </mapper>
