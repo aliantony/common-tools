@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,10 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
         LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + " {}", asset);
         assetDao.update(asset);
         return ActionResponse.success();
+    }
+
+    @Override
+    public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
+        return null;
     }
 }

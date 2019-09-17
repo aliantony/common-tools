@@ -68,9 +68,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitRegist);
 
-            map.put("originStatus", AssetStatusEnum.WAIT_SETTING.getCode());
+            map.put("originStatus", AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
             NameValueVo<AssetOperationRecordBarResponse> waitSetting = new NameValueVo<>();
-            waitSetting.setName(AssetStatusEnum.WAIT_SETTING.getMsg());
+            waitSetting.setName(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getMsg());
             waitSetting.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitSetting);
 
@@ -193,18 +193,19 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                     fileInfoList.add(assetStatusBarResponse);
                 }
                 assetOperationRecordBarResponse.setFileInfos(fileInfoList);
+                //TODO 修改了流程枚举，请完善，检查后续代码是否正确
                 if (assetOperationRecordBarResponse.getContent()
-                    .equals(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg())) {
-                    // 验证情况
+                    .equals(AssetFlowEnum.REGISTER.getMsg())) {
+                    // 登记情况
                     assetOperationRecordBarResponse.setFlowNode(1);
                 } else if (assetOperationRecordBarResponse.getContent()
-                    .equals(AssetFlowEnum.HARDWARE_ENTER_IMPLEMENTATION.getMsg())) {
+                    .equals(AssetFlowEnum.TEMPLATE_IMPL.getMsg())) {
                     assetOperationRecordBarResponse.setFlowNode(2);
                 } else if (assetOperationRecordBarResponse.getContent()
-                    .equals(AssetFlowEnum.HARDWARE_EFFECT_CHECK.getMsg())) {
+                    .equals(AssetFlowEnum.VALIDATE.getMsg())) {
                     assetOperationRecordBarResponse.setFlowNode(3);
                 } else if (assetOperationRecordBarResponse.getContent()
-                    .equals(AssetFlowEnum.VALIDATE_RETIRE_RESULT.getMsg())) {
+                    .equals(AssetFlowEnum.NET_IN.getMsg())) {
                     assetOperationRecordBarResponse.setFlowNode(4);
                 }
                 assetOperationRecordBarResponseList.add(assetOperationRecordBarResponse);

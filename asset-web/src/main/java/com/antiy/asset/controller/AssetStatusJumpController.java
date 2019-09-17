@@ -1,16 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
@@ -22,9 +11,7 @@ import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
-import com.antiy.asset.service.impl.AssetStatusChangeFactory;
-import com.antiy.asset.service.impl.AssetStatusChangeFlowProcessImpl;
-import com.antiy.asset.service.impl.SoftWareStatusChangeProcessImpl;
+import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.*;
@@ -36,8 +23,16 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * 资产状态跃迁统一接口
@@ -66,24 +61,21 @@ public class AssetStatusJumpController {
     @Resource
     private IAssetSoftwareRelationService softwareRelationService;
 
+    @Resource
+    private IAssetStatusChangeProcessService assetStatusChangeFlowProcessImpl;
+
     /**
      * 资产状态跃迁
      *
-     * @param assetStatusReqeust
+     * @param statusJumpRequest
      * @return actionResponse
      */
     @ApiOperation(value = "资产状态跃迁", notes = "传入实体对象信息")
     @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ActionResponse statusJump(@ApiParam(value = "assetStatusReqeust") @RequestBody(required = false) AssetStatusReqeust assetStatusReqeust) throws Exception {
-        if (assetStatusReqeust.getSoftware()) {
-            return AssetStatusChangeFactory.getStatusChangeProcess(SoftWareStatusChangeProcessImpl.class)
-                .changeStatus(assetStatusReqeust);
-        } else {
-            return AssetStatusChangeFactory.getStatusChangeProcess(AssetStatusChangeFlowProcessImpl.class)
-                .changeStatus(assetStatusReqeust);
-        }
+    public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
+        return assetStatusChangeFlowProcessImpl.changeStatus(statusJumpRequest);
     }
 
     /**
@@ -230,16 +222,17 @@ public class AssetStatusJumpController {
         asset.setId(baseRequest.getId());
         asset.setGmtModified(currentTime);
         asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        // TODO AssetStatusEnum
+        // asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
         // 记录操作记录
         AssetOperationRecord operationRecord = new AssetOperationRecord();
         operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
         operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         operationRecord.setTargetObjectId(baseRequest.getStringId());
         operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+        // operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
         operationRecord.setGmtCreate(currentTime);
-        operationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+        // operationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
         operationRecord
             .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
         operationRecord

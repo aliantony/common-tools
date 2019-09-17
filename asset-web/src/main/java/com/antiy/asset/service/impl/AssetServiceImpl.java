@@ -241,7 +241,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setGmtCreate(System.currentTimeMillis());
-                        asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                        asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                         assetDao.insert(asset);
                         AssetRequest assetRequest = assetToRequestConverter.convert(asset, AssetRequest.class);
                         assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
@@ -416,7 +416,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         asset1.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset1.setGmtCreate(System.currentTimeMillis());
-                        asset1.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                        asset1.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                         assetDao.insert(asset1);
                         aid = asset1.getStringId();
 
@@ -438,9 +438,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
-                    assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_REGISTER.getMsg());
+                    assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
@@ -1838,7 +1838,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setOriginStatus(
                         asset.getStatus() == null ? AssetStatusEnum.WAIT_REGISTER.getCode() : asset.getStatus());
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     if (currentAsset.getAssetStatus().equals(AssetStatusEnum.RETIRE.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.RETIRE_REGISTER.getName());
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.NOT_REGISTER.getCode())) {
@@ -1957,8 +1957,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         throw new BusinessException("配置服务异常，登记失败");
                     }
                     // 更新资产状态为待配置
-                    assetOuterRequest.getAsset().setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-                    updateAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode(), currentTimeMillis, assetId);
+                    assetOuterRequest.getAsset().setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), currentTimeMillis, assetId);
                     // ------------------对接配置模块------------------end
                 } else if (null != actionResponse && RespBasicCode.BUSSINESS_EXCETION.getResultCode()
                     .equals(actionResponse.getHead().getCode())) {
@@ -3703,17 +3703,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         Scheme scheme = BeanConvert.convertBean(schemeRequest, Scheme.class);
         // 修改资产状态
-        if (AssetStatusEnum.WAIT_SETTING.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
+        if (AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode().equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             this.changeStatusById(assetId, AssetStatusEnum.WAIT_VALIDATE.getCode());
-            assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
-            assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
+            // TODO 修改了流程枚举，请完善后续代码
+            // assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CONFIG_BASELINE.getMsg());
+            // assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_SETTING.getCode());
             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             assetOperationRecord.setProcessResult(1);
             scheme.setAssetNextStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         } else if (AssetStatusEnum.WAIT_VALIDATE.getCode()
             .equals(assetStatusJumpRequst.getAssetStatusEnum().getCode())) {
             ParamterExceptionUtils.isNull(assetStatusJumpRequst.getAgree(), "agree不能为空");
-            assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
+            //TODO 修改了流程枚举，请完善检查查后续代码是否正确
+            assetOperationRecord.setContent(AssetFlowEnum.VALIDATE.getMsg());
             assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
             if (assetStatusJumpRequst.getAgree()) {
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_NET.getCode());

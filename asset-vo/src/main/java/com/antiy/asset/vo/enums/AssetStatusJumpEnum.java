@@ -8,20 +8,52 @@ package com.antiy.asset.vo.enums;
  **/
 public enum AssetStatusJumpEnum {
 
-    WATI_REGSIST(AssetStatusEnum.WAIT_REGISTER, AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.NOT_REGISTER),
-    WAIT_SETTING(AssetStatusEnum.WAIT_SETTING, AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_REGISTER),
-    WAIT_VALIDATE(AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_SETTING),
-    WAIT_NET(AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_VALIDATE),
-    WAIT_CHECK(AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_NET),
-    NET_IN(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_VALIDATE),
+    /**
+     * 待登记
+     */
+    WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER, AssetStatusEnum.WAIT_TEMPLATE_IMPL, AssetStatusEnum.WAIT_REGISTER),
+    /**
+     * (模板)待实施
+     */
+    WAIT_TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_REGISTER),
+    /**
+     * 待验证
+     */
+    WAIT_VALIDATE(AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_TEMPLATE_IMPL),
+    /**
+     * 待入网
+     */
+    WAIT_NET_IN(AssetStatusEnum.WAIT_NET, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
+    /**
+     * 待整改
+     */
+    WAIT_CORRECT(AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_REGISTER),
+    /**
+     * 待检查
+     */
+    WAIT_CHECK(AssetStatusEnum.WAIT_NET, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
+    /**
+     * 待退役
+     */
     WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.RETIRE, AssetStatusEnum.NET_IN),
-    NOT_REGSIST(AssetStatusEnum.NOT_REGISTER,AssetStatusEnum.NOT_REGISTER,AssetStatusEnum.NOT_REGISTER);
-    // code
+    /**
+     * 不予登记
+     */
+    NOT_REGISTER(AssetStatusEnum.NOT_REGISTER,AssetStatusEnum.NOT_REGISTER,AssetStatusEnum.NOT_REGISTER);
+
+    /**
+     * 当前状态
+     */
     private AssetStatusEnum currentStatus;
 
-    // msg
+    /**
+     * 同意以后的状态
+     */
     private AssetStatusEnum agreeStatus;
 
+    /**
+     * 拒绝以后的状态
+     */
     private AssetStatusEnum refuseStatus;
 
     AssetStatusJumpEnum(AssetStatusEnum currentStatus, AssetStatusEnum agreeStatus, AssetStatusEnum refuseStatus) {
@@ -54,7 +86,4 @@ public enum AssetStatusJumpEnum {
         return refuseStatus;
     }
 
-    public Integer getCode() {
-        return null;
-    }
 }

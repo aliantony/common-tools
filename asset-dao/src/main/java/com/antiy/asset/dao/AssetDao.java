@@ -260,4 +260,20 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Integer> findAlarmAssetId(AssetQuery query);
 
     int findAlarmAssetCount(AssetQuery query);
+
+    /**
+     * 通过资产id查询对应资产信息<br>
+     * 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
+     *
+     * @param ids
+     * @return
+     */
+    List<Asset> findByIds(List<Integer> ids);
+
+    /**
+     * 批量更新资产状态
+     * @param assetList
+     * @return
+     */
+    Integer updateAssetStatusBatch(List<Asset> assetList);
 }
