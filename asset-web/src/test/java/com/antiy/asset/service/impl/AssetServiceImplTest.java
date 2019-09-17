@@ -2050,7 +2050,7 @@ public class AssetServiceImplTest {
         AssetStatusJumpRequst assetStatusJumpRequst = new AssetStatusJumpRequst();
         assetStatusJumpRequst.setAgree(true);
         assetStatusJumpRequst.setAssetId("1");
-        assetStatusJumpRequst.setAssetStatusEnum(AssetStatusEnum.WAIT_SETTING);
+        assetStatusJumpRequst.setAssetStatusEnum(AssetStatusEnum.WAIT_TEMPLATE_IMPL);
         SchemeRequest schemeRequest = new SchemeRequest();
         assetStatusJumpRequst.setSchemeRequest(schemeRequest);
         Assert.assertEquals(RespBasicCode.SUCCESS, assetServiceImpl.changeToNextStatus(assetStatusJumpRequst));
