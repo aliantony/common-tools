@@ -19,7 +19,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -60,7 +59,7 @@ public class AssetStatusChangeProcessImplTest {
     @Test
     public void changeStatus() throws Exception {
         AssetStatusReqeust assetStatusReqeust = new AssetStatusReqeust();
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_REGISTER);
         assetStatusReqeust.setAgree(true);
         assetStatusReqeust.setAssetId("1");
         SchemeRequest schemeRequest = new SchemeRequest();

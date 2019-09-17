@@ -110,7 +110,7 @@ public class SoftWareStatusChangeProcessImplTest {
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_REGISTER);
         assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
         assetStatusReqeust.setAssetId("1");
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_REGISTER);
         assetStatusReqeust.setSoftware(false);
         assetStatusReqeust.setSchemeRequest(new SchemeRequest());
         assetStatusReqeust.setWorkOrderVO(null);
@@ -142,7 +142,7 @@ public class SoftWareStatusChangeProcessImplTest {
         assetStatusReqeust.setAssetFlowCategoryEnum(AssetFlowCategoryEnum.SOFTWARE_IMPL_RETIRE);
         assetStatusReqeust.setSoftwareStatusEnum(SoftwareStatusEnum.WAIT_ANALYZE_RETIRE);
         assetStatusReqeust.setAssetId("");
-        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WATI_REGSIST);
+        assetStatusReqeust.setAssetStatus(AssetStatusEnum.WAIT_REGISTER);
         assetStatusReqeust.setSoftware(false);
         assetStatusReqeust.setSchemeRequest(new SchemeRequest());
         assetStatusReqeust.setWorkOrderVO(null);

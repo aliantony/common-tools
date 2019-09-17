@@ -1068,8 +1068,8 @@ public class AssetServiceImplTest {
 
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
-        asset.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
-        assetRequest.setAssetStatus(AssetStatusEnum.NOT_REGSIST.getCode());
+        asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
+        assetRequest.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
 
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
@@ -1086,8 +1086,8 @@ public class AssetServiceImplTest {
 
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
-        asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
-        assetRequest.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
 
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
@@ -1104,7 +1104,7 @@ public class AssetServiceImplTest {
 
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
-        asset.setAssetStatus(AssetStatusEnum.WATI_REGSIST.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());

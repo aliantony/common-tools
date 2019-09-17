@@ -62,9 +62,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
         HashMap<String, Object> map = new HashMap<>();
         if (AssetOperationTableEnum.ASSET.getMsg().equals(assetOperationRecordQuery.getTargetType().getMsg())) {
-            map.put("originStatus", AssetStatusEnum.WATI_REGSIST.getCode());
+            map.put("originStatus", AssetStatusEnum.WAIT_REGISTER.getCode());
             NameValueVo<AssetOperationRecordBarResponse> waitRegist = new NameValueVo<>();
-            waitRegist.setName(AssetStatusEnum.WATI_REGSIST.getMsg());
+            waitRegist.setName(AssetStatusEnum.WAIT_REGISTER.getMsg());
             waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitRegist);
 
@@ -98,9 +98,9 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             netIn.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(netIn);
 
-            map.put("originStatus", AssetStatusEnum.NOT_REGSIST.getCode());
+            map.put("originStatus", AssetStatusEnum.NOT_REGISTER.getCode());
             NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
-            notRegist.setName(AssetStatusEnum.NOT_REGSIST.getMsg());
+            notRegist.setName(AssetStatusEnum.NOT_REGISTER.getMsg());
             notRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(notRegist);
 
@@ -108,7 +108,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             .equals(assetOperationRecordQuery.getTargetType().getMsg())) {
             map.put("originStatus", SoftwareStatusEnum.WATI_REGSIST.getCode());
             NameValueVo<AssetOperationRecordBarResponse> waitRegist = new NameValueVo<>();
-            waitRegist.setName(AssetStatusEnum.WATI_REGSIST.getMsg());
+            waitRegist.setName(AssetStatusEnum.WAIT_REGISTER.getMsg());
             waitRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(waitRegist);
 
@@ -120,7 +120,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
             map.put("originStatus", SoftwareStatusEnum.NOT_REGSIST.getCode());
             NameValueVo<AssetOperationRecordBarResponse> notRegist = new NameValueVo<>();
-            notRegist.setName(AssetStatusEnum.NOT_REGSIST.getMsg());
+            notRegist.setName(AssetStatusEnum.NOT_REGISTER.getMsg());
             notRegist.setData(getAssetOperationRecordBarResponses(map, assetOperationRecordQuery));
             nameValueVoList.add(notRegist);
 
