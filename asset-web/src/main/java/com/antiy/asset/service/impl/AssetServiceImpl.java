@@ -2390,21 +2390,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public String importPc(MultipartFile file, AssetImportRequest importRequest) throws Exception {
 
-        // HSSFWorkbook wb = new HSSFWorkbook(file.getInputStream ());
-        //
-        //
-        // //得到Excel工作表对象
-        // HSSFSheet sheet = wb.getSheetAt(0);
-        // //得到Excel工作表的行
-        // HSSFRow row = sheet.getRow(1);
-        // //得到Excel工作表指定行的单元格
-        // HSSFCell cell = row.getCell((short) 1);
-        // HSSFCellStyle style = wb.createCellStyle();
-        // style.setFillForegroundColor(IndexedColors.AQUA.getIndex());
-        //
-        // cell.setCellStyle (style);
-
-        // 得到单元格样式
         // 授权数量限制校验
         anthNumValidate();
 
