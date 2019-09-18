@@ -30,6 +30,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     /**
      * id
      */
+    @ApiModelProperty("id")
+    @Encode
+    private String                  businessId;
+    /**
+     * id
+     */
     @ApiModelProperty("基准模板id")
     @Encode
     private String                  baselineTemplateId;
@@ -535,5 +541,17 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     public String getBaselineTemplateId() {
         return baselineTemplateId;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
     }
 }

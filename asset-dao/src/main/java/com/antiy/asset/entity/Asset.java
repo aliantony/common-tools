@@ -15,7 +15,15 @@ import io.swagger.annotations.ApiModelProperty;
 public class Asset extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
+    private Long              businessId;
+    /**
+     * id
+     */
+    private Integer           baselineTemplateId;
+    /**
+     * id
+     */
+    private Integer           installTemplateId;
     /**
      * 品类名称
      */
@@ -742,5 +750,29 @@ public class Asset extends BaseEntity {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
+    }
+
+    public Integer getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(Integer baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public Integer getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(Integer installTemplateId) {
+        this.installTemplateId = installTemplateId;
     }
 }
