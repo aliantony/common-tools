@@ -360,7 +360,7 @@ DROP TABLE IF EXISTS `asset_software_relation`;
 CREATE TABLE `asset_software_relation`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '资产软件主键',
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
-  `software_id` bigint(11) NOT NULL COMMENT '软件主键',
+  `software_id` bigint(20) NOT NULL COMMENT '软件主键',
   `software_status` tinyint(4) NULL DEFAULT 1 COMMENT '软件资产状态：1-待登记，2-待分析，3-可安装，4-已退役，5-不予登记',
   `port` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '端口',
   `configure_status` tinyint(1) NULL DEFAULT NULL COMMENT '配置状态：1-未配置，2-配置中，3-已配置',
