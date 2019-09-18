@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `asset`;
 CREATE TABLE `asset`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `asset_group` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资产组（逗号分隔）',
+  `business_id` bigint(20) NOT NULL COMMENT '业务主键(四库)',
   `number` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资产编号',
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '资产名称',
   `ethernet_port` tinyint(3) NULL DEFAULT NULL COMMENT '网口',
@@ -151,6 +152,7 @@ CREATE TABLE `asset_ip_mac`  (
   `asset_id` int(11) NULL DEFAULT NULL COMMENT '资产主表',
   `ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'IP',
   `mac` varchar(17) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'MAC',
+  `net` int(11) DEFAULT NULL COMMENT '网口',
   PRIMARY KEY (`id`) USING BTREE
 ) COMMENT = '资产-IP-MAC表';
 
