@@ -68,6 +68,10 @@ public class Asset extends BaseEntity {
      */
     private String            name;
     /**
+     * 资产名称
+     */
+    private String            version;
+    /**
      * 网口
      */
     private Integer           ethernetPort;
@@ -730,5 +734,13 @@ public class Asset extends BaseEntity {
 
     public void setInstallTypeName(String installTypeName) {
         this.installTypeName = installTypeName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

@@ -1325,7 +1325,7 @@
         <foreach collection="array" open="(" close=")" separator="," item="item" index="index">
             #{item}
         </foreach>
-        and status = 1
+
     </select>
 
     <update id="updateAssetGroupNameWithAssetId" parameterType="map">
@@ -1602,24 +1602,12 @@
         group by asset_id
     </select>
     <select id="findCountMac" resultType="java.lang.Integer">
-        SELECT
-            count( 1 ) count
-        FROM
-            asset a
-            LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-            AND b.`status` = 1
-            LEFT JOIN asset_safety_equipment d ON a.id = d.asset_id
-            AND d.`status` = 1
-            LEFT JOIN asset_network_card c ON a.id = c.asset_id
-            AND c.`status` = 1
-        WHERE
-            (
-                upper( ( REPLACE ( REPLACE ( b.mac_address, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
-                OR upper( ( REPLACE ( REPLACE ( c.mac_address, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
-                OR upper( ( REPLACE ( REPLACE ( d.mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
-            )
-            AND a.`status` = 1
-            AND a.STATUS != 9;
+ 	SELECT
+		count(1) count
+	FROM
+		asset_ip_mac m LEFT JOIN asset a ON m.asset_id=a.id
+	WHERE
+	 a.`status` !=1	AND mac = #{mac}
     </select>
     <select id="findUuidByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">

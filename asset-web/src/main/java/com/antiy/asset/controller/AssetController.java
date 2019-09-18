@@ -172,6 +172,20 @@ public class AssetController {
     }
 
     /**
+     * 下载流程相关模板
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "下载流程相关模板", notes = "主键封装对象")
+    @RequestMapping(value = "/export/implementation/file", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:asset:implementationFile')")
+    public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isEmpty(baseRequest.getIds(), "资产id不能为空");
+        iAssetService.implementationFile(baseRequest);
+
+    }
+
+    /**
      * 批量修改资产状态
      *
      * @param ids
