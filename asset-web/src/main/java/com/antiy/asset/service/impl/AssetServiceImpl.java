@@ -174,16 +174,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
         // 授权数量校验
         anthNumValidate();
-        if (request.getAsset() != null) {
-            ParamterExceptionUtils.isBlank(request.getAsset().getLocation().trim(), "物理位置不能为空");
-        }
-        // 品类型号判断，如果为计算设备，提示错误信息,配合资产上报
-        if (null != request.getAsset()) {
-            String category = request.getAsset().getCategoryModel();
-            if (!Objects.isNull(category) && "4".equals(category)) {
-                throw new BusinessException("请重新选择资产所属品类型号");
-            }
-        }
+
 
         AssetRequest requestAsset = request.getAsset();
         AssetSafetyEquipmentRequest safetyEquipmentRequest = request.getSafetyEquipment();
@@ -205,8 +196,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             ParamterExceptionUtils.isTrue(!CheckRepeat(requestAsset.getNumber()), "编号重复");
                         }
 
-                        String name = requestAsset.getName();
-                        ParamterExceptionUtils.isTrue(!checkRepeatName(name), "资产名称重复");
+
 
                         if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
                             BusinessExceptionUtils.isTrue(checkOperatingSystemById(requestAsset.getOperationSystem()),
@@ -225,10 +215,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 .getById(DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))),
                             "使用者不存在，或已经注销");
 
-                        BusinessExceptionUtils.isTrue(
-                            !Objects.isNull(assetCategoryModelDao
-                                .getById(DataTypeUtils.stringToInteger(requestAsset.getCategoryModel()))),
-                            "品类型号不存在，或已经注销");
+
 
                         BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
 
@@ -241,7 +228,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                         asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                         asset.setGmtCreate(System.currentTimeMillis());
+                        asset.setVersion(requestAsset.getVersion());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+
                         assetDao.insert(asset);
                         AssetRequest assetRequest = assetToRequestConverter.convert(asset, AssetRequest.class);
                         assetRequest.setId(DataTypeUtils.integerToString(asset.getId()));
@@ -2256,7 +2245,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setCpuSize(4);
         networkDeviceEntity.setArea("成都市");
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
-        networkDeviceEntity.setIp("192.168.1.120");
         networkDeviceEntity.setName("YTW-600-5A五端口迷你型网络延长器");
         networkDeviceEntity.setDramSize(3.42f);
         networkDeviceEntity.setVersion("1.1.2");
