@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
 import com.antiy.asset.vo.response.NameValueVo;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 
 /**
@@ -29,4 +30,11 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      * @return
      */
     List<AssetOperationRecordBarResponse> queryStatusBarOrderByTime(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
+
+    /**
+     *  v1.1 版本 资产详情页，资产动态查询接口
+     * @param id 资产id
+     * @return 响应信息
+     */
+    ActionResponse queryAssetAllStatusInfo(String id);
 }

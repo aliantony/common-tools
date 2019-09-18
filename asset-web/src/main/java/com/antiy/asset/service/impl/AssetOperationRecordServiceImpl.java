@@ -6,7 +6,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.AssetStatusDetail;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.ActionResponse;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -23,9 +27,6 @@ import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.SoftwareStatusEnum;
 import com.antiy.asset.vo.query.AssetOperationRecordQuery;
-import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
-import com.antiy.asset.vo.response.AssetStatusBarResponse;
-import com.antiy.asset.vo.response.NameValueVo;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -223,4 +224,18 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         buidOperationRecordBarResponse(map, assetOperationRecordBarPOList, assetOperationRecordBarResponseList, total);
         return assetOperationRecordBarResponseList;
     }
+
+    @Override
+    public ActionResponse queryAssetAllStatusInfo(String id) {
+        List<AssetStatusDetail> assetStatusDetails = assetOperationRecordDao.queryAssetAllStatusInfo(id);
+        List<AssetPreStatusInfoResponse> responses = new ArrayList<>();
+        for (AssetStatusDetail inner:assetStatusDetails) {
+            StatusLogResponse outer = new StatusLogResponse();
+            BeanUtils.copyProperties(inner,outer);
+            outer.setDescribe(inner.getOperateUserName()+inner.getOriginStatus().describe(inner.getProcessResult()));
+            responses.add(outer);
+        }
+        return ActionResponse.success(responses);
+    }
+
 }
