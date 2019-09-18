@@ -48,15 +48,11 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String  importanceDegree;
     /**
-     * 端口数目
+     * 数目
      */
     @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 2)
     private Integer portSize;
-    /**
-     * p地址
-     */
-    @ExcelField(value = "ip", align = 1, title = "ip(必填)", dataType = DataTypeEnum.IP, required = true)
-    private String  ip;
+
     /**
      * mac地址
      */
@@ -176,13 +172,7 @@ public class NetworkDeviceEntity {
         this.version = version;
     }
 
-    public String getIp() {
-        return ip;
-    }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
 
     public String getName() {
         return name;
