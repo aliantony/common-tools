@@ -119,7 +119,7 @@ CREATE TABLE `asset_install_template`  (
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模板名称',
   `number_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模板编号',
   `category_model` int(11) NULL DEFAULT NULL COMMENT '品类型号',
-  `check_status` tinyint(3) NULL DEFAULT NULL COMMENT '审核状态',
+  `current_status` tinyint(3) NULL DEFAULT NULL COMMENT '状态：1-待审核，2-拒绝，3-启用，4-禁用',
   `operation_system` bigint(20) NULL DEFAULT NULL COMMENT '适用操作系统',
   `operation_system_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作系统名称',
   `enable` tinyint(255) NULL DEFAULT NULL COMMENT '是否启用：0-禁用，1-启用',
