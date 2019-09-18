@@ -17,7 +17,7 @@ public class AssetIpMacRequest extends BaseRequest implements ObjectValidator {
     /**
      * 资产主表
      */
-    @ApiModelProperty("资产主表")
+    @ApiModelProperty("资产id")
     private Integer assetId;
     /**
      * IP
@@ -29,6 +29,11 @@ public class AssetIpMacRequest extends BaseRequest implements ObjectValidator {
      */
     @ApiModelProperty("MAC")
     private String  mac;
+    /**
+     * MAC
+     */
+    @ApiModelProperty("端口")
+    private String  net;
 
     public Integer getAssetId() {
         return assetId;
@@ -59,4 +64,11 @@ public class AssetIpMacRequest extends BaseRequest implements ObjectValidator {
 
     }
 
+    public String getNet() {
+        return net;
+    }
+
+    public void setNet(String net) {
+        this.net = net;
+    }
 }

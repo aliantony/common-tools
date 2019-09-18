@@ -203,6 +203,35 @@ public class AssetController {
     }
 
     /**
+     * 判断mac是否重复
+     *
+     * @param mac
+     * @return actionResponse
+     */
+    @ApiOperation(value = "判断mac是否重复", notes = "传入资产mac")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:changeStatusById')")
+    public ActionResponse CheckRepeatMAC(@ApiParam(value = "资产mac") @RequestParam String mac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(mac));
+    }
+
+    /**
+     * 判断编号是否重复
+     *
+     * @param number
+     * @return actionResponse
+     */
+    @ApiOperation(value = "判断编号是否重复", notes = "传入资产编号")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:changeStatusById')")
+    public ActionResponse CheckRepeatNumber(@ApiParam(value = "资产编号") @RequestParam String number) throws Exception {
+
+        return ActionResponse.success(iAssetService.CheckRepeatNumber(number));
+    }
+
+    /**
      * 通过资产ID修改资产状态
      *
      * @param id

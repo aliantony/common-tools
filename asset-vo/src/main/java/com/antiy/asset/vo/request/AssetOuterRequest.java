@@ -32,6 +32,13 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @Valid
     private List<AssetMainboradRequest>      mainboard;
     /**
+     * 主板
+     */
+    @ApiModelProperty(value = "ip/mac/net")
+    @Valid
+    private List<AssetIpMacRequest>          ipMacRequestList;
+
+    /**
      * 组件
      */
     @ApiModelProperty(value = "组件")
@@ -252,5 +259,13 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setAssemblyRequestList(List<AssetAssemblyRequest> assemblyRequestList) {
         this.assemblyRequestList = assemblyRequestList;
+    }
+
+    public List<AssetIpMacRequest> getIpMacRequestList() {
+        return ipMacRequestList;
+    }
+
+    public void setIpMacRequestList(List<AssetIpMacRequest> ipMacRequestList) {
+        this.ipMacRequestList = ipMacRequestList;
     }
 }

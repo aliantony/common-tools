@@ -290,4 +290,16 @@ public interface IAssetService extends IBaseService<Asset> {
 
     void implementationFile(ProcessTemplateRequest baseRequest) throws InvocationTargetException,
                                                                 IllegalAccessException, IOException;
+
+    /**
+     * 查询mac重复
+     * @return
+     */
+    boolean CheckRepeatMAC(String mac) throws Exception;
+
+    /**
+     * 查询编号重复
+     * @return
+     */
+    boolean CheckRepeatNumber(String number) throws Exception;
 }
