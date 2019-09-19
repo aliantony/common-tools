@@ -26,7 +26,7 @@ public class ManualStartActivityRequest {
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
-    @Encode
+    // @Encode
     private String       businessId;
 
     /**

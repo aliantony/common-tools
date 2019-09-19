@@ -7,8 +7,8 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -25,6 +25,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     private List<String> assetIdList;
 
     @ApiModelProperty("资产当前操作流程")
+    @NotNull(message = "当前操作类型不正确")
     private AssetFlowEnum assetFlowEnum;
 
     @ApiModelProperty(value = "流程引擎数据")
@@ -32,10 +33,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @ApiModelProperty(value = "资产变更流程信息")
     private ManualStartActivityRequest manualStartActivityRequest;
-
-    @ApiModelProperty("资产流程类别")
-    @NotNull(message = "资产流程类别不能为空")
-    private AssetFlowCategoryEnum assetFlowCategoryEnum;
 
     /**
      * 本次处理结果:同意true,不同意false
@@ -57,7 +54,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     /**
      * 从待登记到待检查
      */
-    @ApiModelProperty(value = "从整改到待检查")
+    @ApiModelProperty(value = "从整改到待登记true;")
     private Boolean waitCorrectToWaitRegister = Boolean.FALSE;
 
     public ActivityHandleRequest getActivityHandleRequest() {
@@ -75,23 +72,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     public void setManualStartActivityRequest(ManualStartActivityRequest manualStartActivityRequest) {
         this.manualStartActivityRequest = manualStartActivityRequest;
     }
-
-    // public AssetStatusEnum getAssetStatus() {
-    //     return assetStatus;
-    // }
-    //
-    // public void setAssetStatus(AssetStatusEnum assetStatus) {
-    //     this.assetStatus = assetStatus;
-    // }
-    //
-    // public AssetFlowCategoryEnum getAssetFlowCategoryEnum() {
-    //     return assetFlowCategoryEnum;
-    // }
-    //
-    // public void setAssetFlowCategoryEnum(AssetFlowCategoryEnum assetFlowCategoryEnum) {
-    //     this.assetFlowCategoryEnum = assetFlowCategoryEnum;
-    // }
-
 
     public AssetFlowEnum getAssetFlowEnum() {
         return assetFlowEnum;
@@ -156,7 +136,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         }
         // 通过:校验下一步执行人;不通过:备注信息不能为空
         if (this.getAgree() != null && this.getAgree()) {
-            ParamterExceptionUtils.isTrue(CollectionUtils.isEmpty(this.getManualStartActivityRequest().getConfigUserIds()), "下一步执行人员错误");
+            ParamterExceptionUtils.isTrue(CollectionUtils.isNotEmpty(this.getManualStartActivityRequest().getConfigUserIds()), "下一步执行人员错误");
         } else {
             ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(this.getNote()), "备注信息不能为空");
         }

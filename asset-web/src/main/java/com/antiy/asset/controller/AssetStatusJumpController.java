@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -74,7 +75,7 @@ public class AssetStatusJumpController {
     @PreAuthorize("hasAuthority('asset:statusjump')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
+    public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
         return assetStatusChangeFlowProcessImpl.changeStatus(statusJumpRequest);
     }
 

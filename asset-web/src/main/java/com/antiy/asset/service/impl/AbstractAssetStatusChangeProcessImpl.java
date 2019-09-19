@@ -233,8 +233,8 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             assetOperationRecord.setContent(
                 softwareFlowEnum != null ? softwareFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
         } else {
-            AssetFlowEnum assetFlowEnum = EnumUtil.getByCode(AssetFlowEnum.class,
-                assetStatusReqeust.getAssetStatus().getCode());
+            // TODO 已修改枚举
+            AssetFlowEnum assetFlowEnum = AssetFlowEnum.REGISTER;
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getAssetStatus().getCode());
             assetOperationRecord.setContent(
                 assetFlowEnum != null ? assetFlowEnum.getMsg() : RespBasicCode.PARAMETER_ERROR.getResultCode());
@@ -291,7 +291,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             // 记录方案内容
             scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
         }
-
         return scheme;
     }
 

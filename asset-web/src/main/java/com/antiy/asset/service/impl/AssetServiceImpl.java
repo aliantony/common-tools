@@ -1849,7 +1849,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else if (currentAsset.getAssetStatus().equals(AssetStatusEnum.WAIT_REGISTER.getCode())) {
                         assetOperationRecord.setContent(AssetEventEnum.HARD_WAITTING_REGISTER.getName());
                     } else {
-                        assetOperationRecord.setContent(AssetFlowEnum.HARDWARE_CHANGE.getMsg());
+                        assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                     }
                     assetOperationRecord
                         .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);
@@ -3688,7 +3688,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
-        System.out.println(assetStatusJumpRequst);
         if (LoginUserUtil.getLoginUser() == null) {
             LogUtils.info(logger, "{}  获取用户失败", RespBasicCode.BUSSINESS_EXCETION);
             return RespBasicCode.BUSSINESS_EXCETION;
@@ -3729,7 +3728,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 2.保存流程
 
-        assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());

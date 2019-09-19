@@ -27,6 +27,7 @@ public enum AssetStatusEnum {
      * 不予登记
      */
     NOT_REGISTER(2, "不予登记"),
+
     /**
      * 模板待实施
      */

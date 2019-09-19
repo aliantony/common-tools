@@ -59,6 +59,9 @@ public class AssetStatusChangeProcessImpl extends AbstractAssetStatusChangeProce
 
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
+
+
+
         return null;
     }
 }

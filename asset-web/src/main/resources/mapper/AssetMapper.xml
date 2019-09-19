@@ -1688,7 +1688,7 @@
     <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
         SELECT id,asset_status,number,first_enter_nett FROM asset
         WHERE status = 1
-        <if test="ids != null and ids.size > 0">
+        <if test="ids != null and ids.size() > 0">
             and asset.id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
                 #{item}
@@ -1696,12 +1696,15 @@
         </if>
     </select>
 
-    <update id="updateAssetStatusBatch" parameterType="java.util.List">
+    <update id="updateAssetBatch" parameterType="java.util.List">
         <foreach collection="assetList" separator=";" item="asset">
             update
             <include refid="Table_Name"></include>
             set
-            asset_status = #{asset.assetStatus}
+            <if test="#{asset.firstEnterNett} != null">
+                first_enter_nett = #{asset.firstEnterNett},
+            </if>
+            asset_status = #{asset.assetStatus},
             gmt_modified = #{asset.gmtModified },
             modify_user = #{asset.modifyUser }
             where id = #{asset.id}
