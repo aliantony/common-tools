@@ -50,7 +50,8 @@ public class AssetStorageMediumServiceImplTest {
         AssetStorageMediumQuery query=new AssetStorageMediumQuery();
         List<AssetStorageMedium> assetStorageMediumList =new ArrayList<>();
         when( assetStorageMediumDao.findQuery(query)).thenReturn(assetStorageMediumList);
-        List<AssetStorageMediumResponse> listAssetStorageMedium = iAssetStorageMediumService.findListAssetStorageMedium(query);
+        List<AssetStorageMediumResponse> listAssetStorageMedium = iAssetStorageMediumService
+            .queryListAssetStorageMedium(query);
         Assert.assertEquals(0,listAssetStorageMedium.size());
 
     }
@@ -60,7 +61,8 @@ public class AssetStorageMediumServiceImplTest {
         List<AssetStorageMedium> assetStorageMediumList =new ArrayList<>();
         when(assetStorageMediumDao.findCount(query)).thenReturn(100);
         when(assetStorageMediumDao.findQuery(query)).thenReturn(assetStorageMediumList);
-        PageResult<AssetStorageMediumResponse> pageAssetStorageMedium =     iAssetStorageMediumService.findPageAssetStorageMedium(query);
+        PageResult<AssetStorageMediumResponse> pageAssetStorageMedium = iAssetStorageMediumService
+            .queryPageAssetStorageMedium(query);
         Assert.assertEquals(10,pageAssetStorageMedium.getTotalPages());
     }
 

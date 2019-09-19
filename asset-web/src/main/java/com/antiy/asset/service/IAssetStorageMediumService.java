@@ -35,13 +35,13 @@ public interface IAssetStorageMediumService extends IBaseService<AssetStorageMed
      * @param query
      * @return
      */
-    List<AssetStorageMediumResponse> findListAssetStorageMedium(AssetStorageMediumQuery query) throws Exception;
+    List<AssetStorageMediumResponse> queryListAssetStorageMedium(AssetStorageMediumQuery query) throws Exception;
 
     /**
      * 批量查询
      * @param query
      * @return
      */
-    PageResult<AssetStorageMediumResponse> findPageAssetStorageMedium(AssetStorageMediumQuery query) throws Exception;
+    PageResult<AssetStorageMediumResponse> queryPageAssetStorageMedium(AssetStorageMediumQuery query) throws Exception;
 
 }
