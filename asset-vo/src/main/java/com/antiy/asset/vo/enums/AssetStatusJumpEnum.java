@@ -4,6 +4,7 @@ import com.antiy.common.exception.BusinessException;
 
 /**
  * 资产状态跃迁
+ * <p>获取下一个状态</p>
  *
  * @author zhangyajun
  * @create 2019-01-15 16:13

@@ -76,28 +76,6 @@ public class AssetStatusJumpController {
     }
 
     /**
-     * 资产状态跃迁代配置使用
-     *
-     * @param assetStatusJumpRequst
-     * @return actionResponse
-     */
-    @ApiOperation(value = "资产状态跃迁配置使用", notes = "传入实体对象信息")
-    // @PreAuthorize("hasAuthority('asset:statusjump')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/baseline", method = RequestMethod.POST)
-    public ActionResponse statusJumpWithAsset(@ApiParam(value = "assetStatusJumpRequst") @RequestBody(required = false) AssetStatusJumpRequst assetStatusJumpRequst) throws Exception {
-        return ActionResponse.success(assetService.changeToNextStatus(assetStatusJumpRequst));
-    }
-
-    @ApiOperation(value = "软件安装状态修改", notes = "传入实体对象信息")
-    // @PreAuthorize("hasAuthority('asset:baseline:configurateSoftware')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/baseline/configurateSoftware", method = RequestMethod.POST)
-    public ActionResponse configurateSoftware(@ApiParam(value = "assetStatusJumpRequst") @RequestBody AssetRelationSoftRequest assetRelationSoftRequest) throws Exception {
-        return ActionResponse.success(softwareRelationService.updateAssetReleation(assetRelationSoftRequest));
-    }
-
-    /**
      * 资产不予登记
      *
      * @param assetStatusChangeRequest

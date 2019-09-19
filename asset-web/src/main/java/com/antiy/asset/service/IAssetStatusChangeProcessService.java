@@ -1,10 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
-import com.antiy.asset.vo.request.AssetStatusReqeust;
 import com.antiy.common.base.ActionResponse;
-
-import javax.swing.*;
 
 /**
  * @auther: zhangbing

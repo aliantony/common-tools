@@ -244,16 +244,6 @@ public interface IAssetService extends IBaseService<Asset> {
     List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception;
 
     /**
-     * 代配置状态变更
-     * @param assetStatusJumpRequst
-     * @return
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws Exception
-     */
-    RespBasicCode changeToNextStatus(AssetStatusJumpRequst assetStatusJumpRequst) throws Exception;
-
-    /**
      * 告警管理查询资产信息
      * @param alarmAssetRequest
      * @return
