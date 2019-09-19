@@ -65,7 +65,7 @@ CREATE TABLE `asset` (
   `status` tinyint(1) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `number` (`number`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='资产主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产主表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -842,7 +842,7 @@ CREATE TABLE `asset_user` (
   `detail_address` varchar(255) DEFAULT NULL COMMENT '详细地址',
   `position` varchar(64) DEFAULT NULL COMMENT '位置',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='资产用户信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产用户信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
