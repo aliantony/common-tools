@@ -71,51 +71,51 @@ import com.antiy.common.utils.DataTypeUtils;
  */
 @Service
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
-    private Logger                                                             logger   = LogUtils.get(this.getClass());
+    private Logger                              logger   = LogUtils.get(this.getClass());
     @Resource
-    private AssetDao                                                           assetDao;
+    private AssetDao                            assetDao;
     @Resource
-    private AssetInstallTemplateDao                                            assetInstallTemplateDao;
+    private AssetInstallTemplateDao             assetInstallTemplateDao;
     @Resource
-    private AssetNetworkEquipmentDao                                           assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao            assetNetworkEquipmentDao;
     @Resource
-    private AssetSafetyEquipmentDao                                            assetSafetyEquipmentDao;
+    private AssetSafetyEquipmentDao             assetSafetyEquipmentDao;
     @Resource
-    private TransactionTemplate                                                transactionTemplate;
+    private TransactionTemplate                 transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao                                           assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao                                              assetStorageMediumDao;
+    private AssetStorageMediumDao               assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao                                            assetOperationRecordDao;
+    private AssetOperationRecordDao             assetOperationRecordDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>                                 requestConverter;
-    private BaseConverter<Asset, AssetResponse>                                responseConverter;
-    private AssetUserDao                                                       assetUserDao;
+    private BaseConverter<AssetRequest, Asset>  requestConverter;
+    private BaseConverter<Asset, AssetResponse> responseConverter;
+    private AssetUserDao                        assetUserDao;
     @Resource
-    private AssetGroupRelationDao                                              assetGroupRelationDao;
+    private AssetGroupRelationDao               assetGroupRelationDao;
     @Resource
-    private ExcelDownloadUtil                                                  excelDownloadUtil;
+    private ExcelDownloadUtil                   excelDownloadUtil;
     @Resource
-    private AssetEntityConvert                                                 assetEntityConvert;
+    private AssetEntityConvert                  assetEntityConvert;
     @Resource
-    private AssetGroupDao                                                      assetGroupDao;
+    private AssetGroupDao                       assetGroupDao;
     @Resource
-    private ActivityClient                                                     activityClient;
+    private ActivityClient                      activityClient;
     @Resource
-    private AesEncoder                                                         aesEncoder;
+    private AesEncoder                          aesEncoder;
     @Resource
-    private RedisUtil                                                          redisUtil;
+    private RedisUtil                           redisUtil;
     @Resource
-    private AssetLinkRelationDao                                               assetLinkRelationDao;
+    private AssetLinkRelationDao                assetLinkRelationDao;
     @Resource
-    private OperatingSystemClient                                              operatingSystemClient;
+    private OperatingSystemClient               operatingSystemClient;
     @Resource
-    private IAssetSoftwareService                                              softwareService;
+    private IAssetSoftwareService               softwareService;
     @Resource
-    private IRedisService                                                      redisService;
+    private IRedisService                       redisService;
     @Resource
-    private AssetClient                                                        assetClient;
+    private AssetClient                         assetClient;
     @Resource
     private AssetIpRelationDao                  assetIpRelationDao;
     @Resource
@@ -137,10 +137,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
-
                 try {
                     String aid;
-
                     if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
                         BusinessExceptionUtils.isTrue(checkOperatingSystemById(requestAsset.getOperationSystem()),
                             "操作系统不存在，或已经注销");
@@ -854,8 +852,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // }
         // }
     }
-
-
 
     @Override
     @Transactional
