@@ -1,8 +1,7 @@
 package com.antiy.asset.vo.enums;
 
 public enum ReportType {
-    MANUAL(1, "自动上报"),
-    AUTOMATIC(2, "人工上报"),
+                        AUTOMATIC(1, "自动上报"), MANUAL(2, "人工上报"),
     FREESOFT(0, "免费软件"),
     BUSINESSSOFT(1, "商业软件")
     ;
