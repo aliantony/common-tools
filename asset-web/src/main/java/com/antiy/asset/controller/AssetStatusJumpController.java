@@ -3,11 +3,9 @@ package com.antiy.asset.controller;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
@@ -53,8 +51,6 @@ public class AssetStatusJumpController {
     private AssetSoftwareDao              softwareDao;
     @Resource
     private AssetOperationRecordDao       operationRecordDao;
-    @Resource
-    private SchemeDao                     schemeDao;
     @Resource
     private ActivityClient                activityClient;
 
@@ -241,18 +237,7 @@ public class AssetStatusJumpController {
         operationRecord.setProcessResult(0);
 
         // 记录验证拒绝的原因
-        Scheme scheme = new Scheme();
-        scheme.setGmtCreate(currentTime);
-        scheme.setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        scheme.setMemo(baseRequest.getMemo());
-        scheme.setType(6);
-        scheme.setAssetId(baseRequest.getStringId());
-        scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
-        scheme.setAssetNextStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        schemeDao.insert(scheme);
-        LogUtils.info(logger, AssetEventEnum.ASSET_SCHEME_INSERT.getName() + " {}", scheme.toString());
 
-        operationRecord.setSchemeId(scheme.getId());
         operationRecordDao.insert(operationRecord);
         LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
             operationRecord.toString());

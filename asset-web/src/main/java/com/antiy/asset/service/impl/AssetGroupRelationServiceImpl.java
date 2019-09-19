@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.dao.AssetNetworkCardDao;
 import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.service.IAssetGroupRelationService;
 import com.antiy.asset.util.BeanConvert;
@@ -40,8 +39,6 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
 
     @Resource
     private AssetGroupRelationDao assetGroupRelationDao;
-    @Resource
-    private AssetNetworkCardDao   assetNetworkCardDao;
 
     @Override
     public Integer saveAssetGroupRelation(AssetGroupRelationRequest request) throws Exception {
@@ -101,12 +98,12 @@ public class AssetGroupRelationServiceImpl extends BaseServiceImpl<AssetGroupRel
         List<AssetGroupRelation> assetGroupRelationList = assetGroupRelationDao.findAssetDetailByAssetGroupId(query);
         List<AssetGroupRelationResponse> assetGroupRelationResponseList = BeanConvert.convert(assetGroupRelationList,
             AssetGroupRelationResponse.class);
-        for (AssetGroupRelationResponse assetGroupRelationResponse : assetGroupRelationResponseList) {
-            List<AssetNetworkCardResponse> assetNetworkCardResponseList = BeanConvert
-                .convert(assetNetworkCardDao.findNetworkCardByAssetId(Integer.valueOf(assetGroupRelationResponse
-                    .getStringId())), AssetNetworkCardResponse.class);
-            assetGroupRelationResponse.setNetworkCardResponseList(assetNetworkCardResponseList);
-        }
+        // for (AssetGroupRelationResponse assetGroupRelationResponse : assetGroupRelationResponseList) {
+        // List<AssetNetworkCardResponse> assetNetworkCardResponseList = BeanConvert
+        // .convert(assetNetworkCardDao.findNetworkCardByAssetId(Integer.valueOf(assetGroupRelationResponse
+        // .getStringId())), AssetNetworkCardResponse.class);
+        // assetGroupRelationResponse.setNetworkCardResponseList(assetNetworkCardResponseList);
+        // }
 
         return assetGroupRelationResponseList;
     }

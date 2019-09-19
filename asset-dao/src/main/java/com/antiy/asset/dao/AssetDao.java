@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.entity.Topology;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.common.base.IBaseDao;
@@ -32,15 +31,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer changeStatus(Map<String, Object> map) throws Exception;
-
-    /**
-     * 网络拓扑查询
-     *
-     * @param query
-     * @return
-     * @throws Exception
-     */
-    List<Topology> findTopologyList(AssetQuery query);
 
     /**
      * 查询下拉的厂商信息

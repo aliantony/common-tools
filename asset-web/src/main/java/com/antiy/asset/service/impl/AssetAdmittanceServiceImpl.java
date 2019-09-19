@@ -17,7 +17,6 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.AssetAdmittanceService;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -47,8 +46,6 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     private BaseConverter<Asset, AssetResponse> responseConverter;
     @Resource
     private AssetGroupRelationDao               assetGroupRelationDao;
-    @Resource
-    private IAssetCategoryModelService          assetCategoryModelService;
     @Resource
     private RedisUtil                           redisUtil;
     @Resource
@@ -113,8 +110,8 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
             List<Integer> categoryModels = Lists.newArrayList();
             for (int i = 0; i < query.getCategoryModels().length; i++) {
-                categoryModels.addAll(assetCategoryModelService
-                    .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
+                // categoryModels.addAll(assetCategoryModelService
+                // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
             }
             query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
         }

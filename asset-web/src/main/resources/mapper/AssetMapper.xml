@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.antiy.asset.dao.AssetDao">
-    <resultMap id="topologyResultMap" type="com.antiy.asset.entity.Topology">
-        <id column="id" property="id"/>
-        <result column="parent_id" property="parentId"/>
-        <result column="name" property="name"/>
-        <result column="type" property="type"/>
-    </resultMap>
 
     <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
         <result property="key" column="manufacturer"/>
@@ -1123,12 +1117,6 @@
             </foreach>
         </foreach>
         AND a.status = 1
-    </select>
-
-    <select id="findTopologyList" resultMap="topologyResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select id,type,name,parent_id from
-        <include refid="Table_Name"></include>
-        <include refid="Where_Column_List"/>
     </select>
 
     <select id="pulldownManufacturer" resultType="string">

@@ -50,7 +50,6 @@ public class AssetChangeRecord extends BaseEntity {
      */
     private Integer           businessId;
 
-
     public Integer getType() {
         return type;
     }

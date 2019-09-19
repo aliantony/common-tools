@@ -13,10 +13,8 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetCategoryEntity;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
@@ -61,8 +59,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     @Resource
     private AssetReportDao        assetReportDao;
-    @Resource
-    private AssetCategoryModelDao categoryModelDao;
 
     @Override
     public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
@@ -115,7 +111,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<Integer> statusList = getStatusList();
 
         query.setAssetStatusList(statusList);
-        List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
+        // List<AssetCategoryModel> categoryModels = categoryModelDao.findAllCategory();
         // 构造柱状图所需的source
         Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
         Map<String, Object> timeValueMap = new HashMap<>();
@@ -148,7 +144,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<Integer> otherAddList = new ArrayList<>();
 
         List<ReportData> columnarList = new ArrayList<>();
-        AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
+        // AssetCategoryModel assetCategoryModel = new AssetCategoryModel();
         List<AssetCategoryEntity> amountCategoryEntityList = assetReportDao.findCategoryCountByTime(query);
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("beginTime", query.getBeginTime());
@@ -161,10 +157,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
         int safetyAmountSum = 0;
         int otherAmountSum = 0;
         for (AssetCategoryEntity assetCategoryEntity : previousCategoryEntity) {
-            assetCategoryModel.setId(assetCategoryEntity.getCategoryModel());
-            assetCategoryModel.setParentId(assetCategoryEntity.getParentId());
-            assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
-            String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
+            // assetCategoryModel.setId(assetCategoryEntity.getCategoryModel());
+            // assetCategoryModel.setParentId(assetCategoryEntity.getParentId());
+            // assetCategoryModel.setName(assetCategoryEntity.getCategoryName());
+            String secondCategoryName = null;
+            // String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
             if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)) {
                 computerAmountSum = computerAmountSum + assetCategoryEntity.getCategoryCount();
             } else if (AssetSecondCategoryEnum.OTHER_DEVICE.getMsg().equals(secondCategoryName)) {
@@ -199,10 +196,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
             for (AssetCategoryEntity categoryEntity : amountCategoryEntityList) {
                 if (key.equals(categoryEntity.getDate()) && !categoryEntity.getCategoryModel()
                     .equals(Integer.valueOf(Objects.requireNonNull(getHardwareCategoryId())))) {
-                    assetCategoryModel.setId(categoryEntity.getCategoryModel());
-                    assetCategoryModel.setParentId(categoryEntity.getParentId());
-                    assetCategoryModel.setName(categoryEntity.getCategoryName());
-                    String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
+                    // assetCategoryModel.setId(categoryEntity.getCategoryModel());
+                    // assetCategoryModel.setParentId(categoryEntity.getParentId());
+                    // assetCategoryModel.setName(categoryEntity.getCategoryName());
+                    // String secondCategoryName = this.getParentCategory(assetCategoryModel, categoryModels).getName();
+                    String secondCategoryName = null;
                     if (AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg().equals(secondCategoryName)
                         && key.equals(categoryEntity.getDate())) {
                         filterMap.put("categoryModel", categoryEntity.getCategoryModel());
@@ -365,39 +363,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         if (hardwareId == null) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("name", "硬件");
-            List<AssetCategoryModel> categoryModelList = categoryModelDao.getByWhere(map);
-            if (categoryModelList.get(0) != null) {
-                hardwareId = categoryModelList.get(0).getStringId();
-                return hardwareId;
-            }
             return null;
         }
         return hardwareId;
-    }
-
-    /**
-     * 获取二级品类型号信息
-     *
-     * @param categoryModel
-     * @return
-     */
-    private AssetCategoryModel getParentCategory(AssetCategoryModel categoryModel,
-                                                 List<AssetCategoryModel> allCategory) throws Exception {
-        if (null != categoryModel) {
-            if (Objects.equals(categoryModel.getParentId(), getHardwareCategoryId())) {
-                return categoryModel;
-            }
-            Optional<AssetCategoryModel> categoryModelOptional = allCategory.stream()
-                .filter(x -> Objects.equals(x.getId(), DataTypeUtils.stringToInteger(categoryModel.getParentId())))
-                .findFirst();
-            if (categoryModelOptional.isPresent()) {
-                AssetCategoryModel tblCategory = categoryModelOptional.get();
-                return getParentCategory(tblCategory, allCategory);
-            } else {
-                throw new BusinessException("获取二级品类型号失败");
-            }
-        }
-        throw new BusinessException("二级品类型号不存在");
     }
 
     // private void setFormat(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {

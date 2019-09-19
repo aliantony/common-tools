@@ -12,7 +12,6 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.WorkOrderClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
@@ -46,14 +45,9 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AssetOperationRecordDao              assetOperationRecordDao;
     @Resource
-    private SchemeDao                            schemeDao;
-    @Resource
     private AssetDao                             assetDao;
     @Resource
     private AssetSoftwareDao                     assetSoftwareDao;
-    @Resource
-    private BaseConverter<SchemeRequest, Scheme> schemeRequestToSchemeConverter;
-
     @Resource
     private ActivityClient                       activityClient;
 
@@ -62,14 +56,11 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
     @Resource
     private AesEncoder                           aesEncoder;
     @Resource
-    private AssetStatusTaskDao                   statusTaskDao;
-    @Resource
     private AssetLinkRelationDao                 assetLinkRelationDao;
 
     @Override
     public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         Long gmtCreateTime = System.currentTimeMillis();
-        Scheme scheme = null;
         if (assetStatusReqeust.getSchemeRequest() != null) {
             // 判断
             if ((Objects.equals(assetStatusReqeust.getAssetStatus(), AssetStatusEnum.WAIT_CHECK)
@@ -86,8 +77,6 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
             }
 
             // 1.保存方案信息
-            scheme = convertScheme(assetStatusReqeust, gmtCreateTime);
-            schemeDao.insert(scheme);
         }
 
         // 2.保存流程
@@ -99,7 +88,7 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
         } else {
             assetOperationRecord.setOriginStatus(assetStatusReqeust.getSoftwareStatusEnum().getCode());
         }
-        assetOperationRecord.setSchemeId(scheme != null ? scheme.getId() : null);
+        // assetOperationRecord.setSchemeId(scheme != null ? scheme.getId() : null);
 
         assetOperationRecordDao.insert(assetOperationRecord);
         // 3.调用流程引擎
@@ -257,43 +246,43 @@ public abstract class AbstractAssetStatusChangeProcessImpl implements IAssetStat
      * @param assetStatusReqeust
      * @return
      */
-    private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust, Long gmtCreateTime) throws Exception {
-        Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
-        if (StringUtils.isNotEmpty(scheme.getContent()) && scheme.getMemo() == null) {
-            scheme.setMemo(scheme.getContent());
-        }
-        if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-            JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-        }
-        scheme.setGmtCreate(gmtCreateTime);
-        scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        if (null != assetStatusReqeust.getWorkOrderVO()) {
-            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getStartTime(), "工单开始时间不能为空");
-            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getEndTime(), "工单结束时间不能为空");
-            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getWorkLevel(), "工单级别不能为空");
-            ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), "执行人不能为空");
-            scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
-            scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
-            scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
-            if (scheme.getPutintoUserId() == null) {
-                scheme.setPutintoUserId(DataTypeUtils
-                    .stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),
-                        LoginUserUtil.getLoginUser().getUsername())));
-            }
-        }
-        scheme.setAssetId(assetStatusReqeust.getAssetId());
-
-        if (assetStatusReqeust.getSoftware()) {
-            scheme.setSchemeSource(AssetTypeEnum.SOFTWARE.getCode());
-            scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
-        } else {
-            scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
-            // 记录方案内容
-            scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
-        }
-
-        return scheme;
-    }
+    // private Scheme convertScheme(AssetStatusReqeust assetStatusReqeust, Long gmtCreateTime) throws Exception {
+    // Scheme scheme = schemeRequestToSchemeConverter.convert(assetStatusReqeust.getSchemeRequest(), Scheme.class);
+    // if (StringUtils.isNotEmpty(scheme.getContent()) && scheme.getMemo() == null) {
+    // scheme.setMemo(scheme.getContent());
+    // }
+    // if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+    // JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+    // }
+    // scheme.setGmtCreate(gmtCreateTime);
+    // scheme.setCreateUser(LoginUserUtil.getLoginUser().getId());
+    // if (null != assetStatusReqeust.getWorkOrderVO()) {
+    // ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getStartTime(), "工单开始时间不能为空");
+    // ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getEndTime(), "工单结束时间不能为空");
+    // ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getWorkLevel(), "工单级别不能为空");
+    // ParamterExceptionUtils.isNull(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(), "执行人不能为空");
+    // scheme.setExpecteStartTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getStartTime()));
+    // scheme.setExpecteEndTime(Long.valueOf(assetStatusReqeust.getWorkOrderVO().getEndTime()));
+    // scheme.setOrderLevel(assetStatusReqeust.getWorkOrderVO().getWorkLevel());
+    // if (scheme.getPutintoUserId() == null) {
+    // scheme.setPutintoUserId(DataTypeUtils
+    // .stringToInteger(aesEncoder.decode(assetStatusReqeust.getWorkOrderVO().getExecuteUserId(),
+    // LoginUserUtil.getLoginUser().getUsername())));
+    // }
+    // }
+    // scheme.setAssetId(assetStatusReqeust.getAssetId());
+    //
+    // if (assetStatusReqeust.getSoftware()) {
+    // scheme.setSchemeSource(AssetTypeEnum.SOFTWARE.getCode());
+    // scheme.setAssetNextStatus(this.getNextSoftwareStatus(assetStatusReqeust).getCode());
+    // } else {
+    // scheme.setSchemeSource(AssetTypeEnum.HARDWARE.getCode());
+    // // 记录方案内容
+    // scheme.setAssetNextStatus(this.getNextAssetStatus(assetStatusReqeust).getCode());
+    // }
+    //
+    // return scheme;
+    // }
 
     protected SoftwareStatusEnum getNextSoftwareStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
         SoftwareStatusEnum softwareStatusEnum;
