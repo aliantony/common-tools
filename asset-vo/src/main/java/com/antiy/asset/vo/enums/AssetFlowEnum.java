@@ -1,13 +1,15 @@
 package com.antiy.asset.vo.enums;
 
 /**
- * 硬件流程枚举
+ * 硬件操作流程枚举<br>
+ * <code>currentAssetStatus</code>表示当前状态下才可进行操作
+ * <p>msg作为操作日志记录event</p>
  *
  * @Auther: zhangyajun
  * @Date: 2019/1/14 11:36
  * @Description:
  */
-public enum AssetFlowEnum implements CodeEnum {
+public enum AssetFlowEnum {
     // HARDWARE_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(), "登记资产"),
     // HARDWARE_CONFIG_BASELINE(AssetStatusEnum.WAIT_SETTING.getCode(), "配置基准"),
     // HARDWARE_BASELINE_VALIDATE(AssetStatusEnum.WAIT_VALIDATE.getCode(), "验证基准"),
@@ -19,7 +21,7 @@ public enum AssetFlowEnum implements CodeEnum {
     // HARDWARE_CHANGE(21, "变更资产"),
 
     // 新增
-    REGISTER(AssetStatusEnum.NOT_REGISTER, "登记资产"),
+    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产"),
     TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "实施"),
     VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "验证"),
     NET_IN(AssetStatusEnum.WAIT_NET, "入网"),
@@ -27,35 +29,24 @@ public enum AssetFlowEnum implements CodeEnum {
     CORRECT(AssetStatusEnum.WAIT_CORRECT, "整改"),
     TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "拟退役"),
     RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役"),
-    HARDWARE_CHANGE(21, "变更资产"),
+    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产"),
+    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
             ;
-    AssetFlowEnum(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
-    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String msg) {
-        this.currentAssetStatus = currentAssetStatus;
-        this.msg = msg;
-    }
-
-    // code
-    private Integer code;
-
-    // msg
-    private String  msg;
 
     /**
      * 资产当前状态
      */
     private AssetStatusEnum currentAssetStatus;
 
-    @Override
-    public Integer getCode() {
-        return code;
+    /**
+     * 对应流程信息
+     */
+    private String  msg;
+    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String msg) {
+        this.currentAssetStatus = currentAssetStatus;
+        this.msg = msg;
     }
 
-
-    @Override
     public String getMsg() {
         return msg;
     }

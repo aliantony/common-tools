@@ -1503,4 +1503,17 @@
             </foreach>
         </if>
     </select>
+
+    <delete id="deleteByAssetIdList" parameterType="java.util.List">
+        delete from asset_link_relation where asset_id in
+        <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
+            #{assetId}
+        </foreach>
+        or
+        parent_asset_id in
+        <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
+            #{assetId}
+        </foreach>
+    </delete>
+
 </mapper>

@@ -8,16 +8,6 @@ import org.apache.commons.lang.StringUtils;
  * @Description:
  */
 public enum AssetStatusEnum {
-    // WAIT_REGISTER(1, "待登记"),
-    // NOT_REGISTER(2, "不予登记"),
-    // WAIT_SETTING(3, "待配置"),
-    // WAIT_VALIDATE(4, "待验证"),
-    // WAIT_NET(5, "待入网"),
-    // WAIT_CHECK(6, "待检查"),
-    // NET_IN(7, "已入网"),
-    // WAIT_RETIRE(8, "待退役"),
-    // RETIRE(9, "已退役");
-
     /**
      * 待登记
      */
@@ -27,6 +17,7 @@ public enum AssetStatusEnum {
      * 不予登记
      */
     NOT_REGISTER(2, "不予登记"),
+
     /**
      * 模板待实施
      */
@@ -79,7 +70,7 @@ public enum AssetStatusEnum {
     private String  msg;
 
     /**
-     * 通过code获取资产
+     * 通过code获取资产状态枚举
      * @param code
      * @return
      */
@@ -87,23 +78,6 @@ public enum AssetStatusEnum {
         if (code != null) {
             for (AssetStatusEnum softwareType : AssetStatusEnum.values()) {
                 if (softwareType.getCode().equals(code)) {
-                    return softwareType;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 通过code获取枚举
-     *
-     * @param name name
-     * @return
-     */
-    public static AssetStatusEnum getAssetByName(String name) {
-        if (StringUtils.isNotBlank(name)) {
-            for (AssetStatusEnum softwareType : AssetStatusEnum.values()) {
-                if (softwareType.name().equals(name)) {
                     return softwareType;
                 }
             }

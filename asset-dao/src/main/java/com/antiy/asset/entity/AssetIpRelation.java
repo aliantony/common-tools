@@ -1,8 +1,7 @@
 package com.antiy.asset.entity;
 
-import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
+import com.antiy.common.base.BaseEntity;
 /**
  * <p>资产-IP关系表</p>
  *
@@ -31,6 +30,7 @@ public class AssetIpRelation extends BaseEntity {
      */
     private Integer           status;
 
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -38,6 +38,7 @@ public class AssetIpRelation extends BaseEntity {
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
+
 
     public String getIp() {
         return ip;
@@ -47,6 +48,7 @@ public class AssetIpRelation extends BaseEntity {
         this.ip = ip;
     }
 
+
     public Integer getNet() {
         return net;
     }
@@ -55,6 +57,7 @@ public class AssetIpRelation extends BaseEntity {
         this.net = net;
     }
 
+
     public Integer getStatus() {
         return status;
     }
@@ -62,6 +65,7 @@ public class AssetIpRelation extends BaseEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
 
     @Override
     public String toString() {

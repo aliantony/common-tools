@@ -42,7 +42,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     /**
      * 端口数目
      */
-    @ApiModelProperty("端口数目")
+    @ApiModelProperty("网口数目")
     @NotNull(message = "网口数目不为空")
     @Max(value = 99, message = "网口数目大小不超过99")
     private Integer portSize;
@@ -52,26 +52,14 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
     @ApiModelProperty("是否无线:2-否,1-是")
     @Max(value = 2, message = "是否无线不能大于2")
     @Min(value = 1, message = "是否无线不能小于1")
+
     private Integer isWireless;
-    /**
-     * 内网IP
-     */
-    @ApiModelProperty("内网IP")
-    @NotBlank(message = "内网IP不能为空")
-    @Size(message = "内网IP长度应该在7-15位", min = 7, max = 15)
-    private String  innerIp;
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
-    // @NotBlank(message = "外网IP不能为空")
     private String  outerIp;
-    /**
-     * MAC地址
-     */
-    @ApiModelProperty("MAC地址")
-    @NotBlank(message = "MAC地址不能为空")
-    private String  macAddress;
+
     /**
      * 子网掩码
      */
@@ -205,14 +193,6 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.isWireless = isWireless;
     }
 
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
-
     public String getOuterIp() {
         return outerIp;
     }
@@ -221,13 +201,6 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.outerIp = outerIp;
     }
 
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-    }
 
     public String getSubnetMask() {
         return subnetMask;
@@ -277,23 +250,10 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.ncrmSize = ncrmSize;
     }
 
-    @Override
-    public String toString() {
-        return "AssetNetworkEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\''
-               + ", interfaceSize=" + interfaceSize + ", isWireless=" + isWireless + ", innerIp='" + innerIp + '\''
-               + ", outerIp='" + outerIp + '\'' + ", macAddress='" + macAddress + '\'' + ", subnetMask='" + subnetMask
-               + '\'' + ", expectBandwidth=" + expectBandwidth + ", register=" + register + ", dramSize=" + dramSize
-               + ", flashSize=" + flashSize + ", ncrmSize=" + ncrmSize + '}';
-    }
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (StringUtils.isNotBlank(innerIp)) {
-            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-                "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$");
-            Matcher matcher = pattern.matcher(innerIp);
-            ParamterExceptionUtils.isTrue(matcher.matches(), "ip地址错误");
-        }
+
         if (StringUtils.isNotBlank(outerIp)) {
             if (!(outerIp.length() > 6 && outerIp.length() < 16)) {
                 ParamterExceptionUtils.isTrue(false, "外网IP 7-15位");
@@ -301,15 +261,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             String reg = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
             ParamterExceptionUtils.isTrue(outerIp.matches(reg), "ip地址错误");
         }
-        if (StringUtils.isNotBlank(macAddress)) {
-            if (macAddress.length() != 17) {
-                ParamterExceptionUtils.isTrue(false, "mac地址只能17位");
-            }
-            java.util.regex.Pattern pattern = java.util.regex.Pattern
-                .compile("(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}");
-            Matcher matcher = pattern.matcher(macAddress);
-            ParamterExceptionUtils.isTrue(matcher.matches(), "mac地址错误");
-        }
+
         if (StringUtils.isNotBlank(subnetMask)) {
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
                 "^(254|252|248|240|224|192|128|0)\\.0\\.0\\.0|255\\.(254|252|248|240|224|192|128|0)\\.0\\.0|255\\.255\\.(254|252|248|240|224|192|128|0)\\.0|255\\.255\\.255\\.(254|252|248|240|224|192|128|0)$");

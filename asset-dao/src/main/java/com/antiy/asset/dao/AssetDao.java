@@ -258,12 +258,12 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param ids
      * @return
      */
-    List<Asset> findByIds(List<Integer> ids);
+    List<Asset> findByIds(@Param("ids") List<Integer> ids);
 
     /**
-     * 批量更新资产状态
+     * 流程变更时批量更新资产信息
      * @param assetList
      * @return
      */
-    Integer updateAssetStatusBatch(List<Asset> assetList);
+    Integer updateAssetBatch(@Param("assetList") List<Asset> assetList);
 }
