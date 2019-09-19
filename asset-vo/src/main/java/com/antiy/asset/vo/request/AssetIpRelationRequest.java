@@ -1,9 +1,13 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
-import io.swagger.annotations.ApiModelProperty;
-import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetIpRelationRequest 请求对象 </p>
@@ -19,11 +23,16 @@ public class AssetIpRelationRequest extends BaseRequest implements ObjectValidat
      */
     @ApiModelProperty("资产主表")
     private Integer assetId;
+
     /**
      * IP
      */
     @ApiModelProperty("IP")
+    @NotBlank(message = "不能为空")
+    @Pattern(regexp = "^((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$", message = "ip地址错误")
+    @Size(message = "IP地址长度应该在7-15位", min = 7, max = 15)
     private String  ip;
+
     /**
      * 网口
      */

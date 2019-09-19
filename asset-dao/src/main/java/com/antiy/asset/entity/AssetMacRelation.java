@@ -1,8 +1,7 @@
 package com.antiy.asset.entity;
 
-import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
+import com.antiy.common.base.BaseEntity;
 /**
  * <p>资产-MAC关系表</p>
  *
@@ -27,6 +26,7 @@ public class AssetMacRelation extends BaseEntity {
      */
     private Integer           status;
 
+
     public Integer getAssetId() {
         return assetId;
     }
@@ -34,6 +34,7 @@ public class AssetMacRelation extends BaseEntity {
     public void setAssetId(Integer assetId) {
         this.assetId = assetId;
     }
+
 
     public String getMac() {
         return mac;
@@ -43,6 +44,7 @@ public class AssetMacRelation extends BaseEntity {
         this.mac = mac;
     }
 
+
     public Integer getStatus() {
         return status;
     }
@@ -50,6 +52,7 @@ public class AssetMacRelation extends BaseEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
 
     @Override
     public String toString() {

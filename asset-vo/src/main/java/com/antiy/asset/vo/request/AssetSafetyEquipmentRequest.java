@@ -1,15 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetSafetyEquipmentRequest 请求对象 </p>
@@ -29,22 +27,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
     @ApiModelProperty("资产主键")
     @Encode
     private String assetId;
-    /**
-     * IP
-     */
-    @ApiModelProperty("IP")
-    @NotBlank(message = "不能为空")
-    @Pattern(regexp = "^((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))$", message = "ip地址错误")
-    @Size(message = "IP地址长度应该在7-15位", min =7, max = 15)
-    private String ip;
-    /**
-     * mac
-     */
-    @ApiModelProperty("mac")
-    @NotBlank(message = "mac不能为空")
-    @Pattern(regexp = "^(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}$", message = "mac地址错误")
-    @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
-    private String mac;
+
     /**
      * 特征库版本
      */
@@ -109,32 +92,16 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
         this.memo = memo;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetSafetyEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", ip='" + ip
-               + '\'' + ", mac='" + mac + '\'' + ", featureLibrary='" + featureLibrary + '\'' + ", strategy='"
-               + strategy + '\'' + ", memo='" + memo + '\'' + '}';
-    }
-
     @Override
     public void validate() throws RequestParamValidateException {
 
     }
 
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
+    @Override
+    public String toString() {
+        return "AssetSafetyEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\''
+               + ", featureLibrary='" + featureLibrary + '\'' + ", newVersion='" + newVersion + '\'' + ", strategy='"
+               + strategy + '\'' + ", memo='" + memo + '\'' + '}';
     }
 
     public String getNewVersion() {
