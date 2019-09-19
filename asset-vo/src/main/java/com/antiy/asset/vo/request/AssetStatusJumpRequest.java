@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.asset.vo.enums.AssetFlowCategoryEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -38,19 +37,21 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      * 本次处理结果:同意true,不同意false
      */
     @NotNull(message = "执行意见必填")
+    @ApiModelProperty(value = "执行意见")
     private Boolean agree;
 
     /**
      * 方案内容:输入的备注信息
      */
-    @ApiModelProperty(value = "方案内容")
+    @ApiModelProperty(value = "备注内容")
     private String note;
 
-    @ApiModelProperty(value = "方案文件JSON串")
+    @ApiModelProperty(value = "上传的文件JSON串")
     private String fileInfo;
 
-    @ApiModelProperty(value = "扩展字段,JSON串")
-    private String extension;
+    // @ApiModelProperty(value = "扩展字段,JSON串")
+    // private String extension;
+
     /**
      * 从待登记到待检查
      */
@@ -105,14 +106,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         this.fileInfo = fileInfo;
     }
 
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
     public List<String> getAssetIdList() {
         return assetIdList;
     }
@@ -135,10 +128,10 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
             ParamterExceptionUtils.isTrue(false, "请求流程不能为空");
         }
         // 通过:校验下一步执行人;不通过:备注信息不能为空
-        if (this.getAgree() != null && this.getAgree()) {
-            ParamterExceptionUtils.isTrue(CollectionUtils.isNotEmpty(this.getManualStartActivityRequest().getConfigUserIds()), "下一步执行人员错误");
+        if (getAgree() != null && getAgree()) {
+            ParamterExceptionUtils.isTrue(CollectionUtils.isNotEmpty(getManualStartActivityRequest().getConfigUserIds()), "下一步执行人员错误");
         } else {
-            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(this.getNote()), "备注信息不能为空");
+            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), "备注信息不能为空");
         }
     }
 
@@ -152,7 +145,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
                 ", agree=" + agree +
                 ", note='" + note + '\'' +
                 ", fileInfo='" + fileInfo + '\'' +
-                ", extension='" + extension + '\'' +
                 ", waitCorrectToWaitRegister=" + waitCorrectToWaitRegister +
                 '}';
     }

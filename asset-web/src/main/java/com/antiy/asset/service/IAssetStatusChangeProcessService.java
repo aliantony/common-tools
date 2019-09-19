@@ -15,14 +15,6 @@ public interface IAssetStatusChangeProcessService {
 
     /**
      * 资产状态跃迁
-     * @param assetStatusReqeust
-     * @return
-     */
-    ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception;
-
-
-    /**
-     * 资产状态跃迁
      * @param statusJumpRequest
      * @return
      * @throws Exception

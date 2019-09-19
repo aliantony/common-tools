@@ -60,11 +60,6 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
     private TransactionTemplate transactionTemplate;
 
     @Override
-    public ActionResponse changeStatus(AssetStatusReqeust assetStatusReqeust) throws Exception {
-        return null;
-    }
-
-    @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         // 1.校验参数信息,当前流程的资产是否都满足当前状态(所有资产状态与页面状态一致,当前资产的可执行操作与本次操作一致),待整改有两种情况
         List<Integer> assetIdList = statusJumpRequest.getAssetIdList().stream().map(DataTypeUtils::stringToInteger).collect(Collectors.toList());
@@ -83,7 +78,7 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         // startActivity(statusJumpRequest);
         // 3.更新资产状态
         updateData(statusJumpRequest, assetsInDb);
-        // 4.
+        // 4.记录操作日志
         logRecordOperLog(statusJumpRequest, assetsInDb);
         return ActionResponse.success();
     }
@@ -229,50 +224,34 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
             String logEvent = assetStatusJumpRequest.getAssetFlowEnum().getMsg();
             // TODO 业务阶段
             BusinessPhaseEnum currentBusinessPhase = BusinessPhaseEnum.WAIT_REGISTER;;
-            // switch (assetStatusJumpRequest.getAssetFlowEnum()) {
-            //     case REGISTER:
-            //         logEvent = AssetEventEnum.ASSET_INSERT.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.WAIT_REGISTER;
-            //         // 记录操作日志
-            //         break;
-            //     case TEMPLATE_IMPL:
-            //         logEvent = TEMPLATE_IMPL.get;
-            //
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case VALIDATE:
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         logEvent = "验证";
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case NET_IN:
-            //         logEvent = "入网";
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case CHECK:
-            //         logEvent = "检查";
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case CORRECT:
-            //         logEvent = "整改";
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case TO_WAIT_RETIRE:
-            //         logEvent = "拟退役";
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     case RETIRE:
-            //         logEvent = "退役";
-            //         // logEvent = AssetEventEnum.ASSET_RETIRE_IMPL.getName();
-            //         currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-            //         break;
-            //     default:
-            //         break;
-            // }
+            switch (assetStatusJumpRequest.getAssetFlowEnum()) {
+                case REGISTER:
+                    currentBusinessPhase = BusinessPhaseEnum.WAIT_REGISTER;
+                    break;
+                case TEMPLATE_IMPL:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case VALIDATE:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case NET_IN:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case CHECK:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case CORRECT:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case TO_WAIT_RETIRE:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                case RETIRE:
+                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    break;
+                default:
+                    break;
+            }
             LogUtils.recordOperLog(new BusinessData(logEvent,
                     asset.getId(),
                     asset.getNumber(), assetStatusJumpRequest,
