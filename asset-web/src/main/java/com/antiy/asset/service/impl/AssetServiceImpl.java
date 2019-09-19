@@ -1800,7 +1800,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAreaId(areaId);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
@@ -1973,7 +1973,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAreaId(areaId);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(networkDeviceEntity.getNumber());
                 asset.setName(networkDeviceEntity.getName());
                 asset.setManufacturer(networkDeviceEntity.getManufacturer());
@@ -2169,7 +2169,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
@@ -2327,7 +2327,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
@@ -2492,17 +2492,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.AUTOMATIC.getCode());
+                asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
                 asset.setManufacturer(entity.getManufacturer());
                 asset.setSerial(entity.getSerial());
-
                 asset.setBuyDate(entity.getBuyDate());
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
                 asset.setDescrible(entity.getMemo());
-
                 asset.setCategoryModel(importRequest.getCategory());
                 assets.add(asset);
             }
@@ -2540,39 +2538,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_OTHERS.getName() + " {}", assets.toString());
         return stringBuilder.append(builder).append(sb).toString();
     }
-
-    // private void importActivity(List<ManualStartActivityRequest> manualStartActivityRequests, String stringId,
-    // String areaId) throws Exception {
-    // ActionResponse actionResponse = areaClient.queryByArea(ImportTypeEnum.HARDWARE.getName(),
-    // aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()));
-    //
-    // List<LinkedHashMap> mapList = (List<LinkedHashMap>) actionResponse.getBody();
-    // StringBuilder stringBuilder = new StringBuilder();
-    //
-    // if (CollectionUtils.isEmpty(mapList)) {
-    //
-    // throw new BusinessException("请先在角色权限管理，配置登记权限！");
-    // }
-    //
-    // for (LinkedHashMap linkedHashMap : mapList) {
-    // stringBuilder.append(
-    // aesEncoder.decode(linkedHashMap.get("stringId").toString(), LoginUserUtil.getLoginUser().getUsername()))
-    // .append(",");
-    // }
-    //
-    // String ids = stringBuilder.substring(0, stringBuilder.length() - 1);
-    //
-    // Map<String, Object> formData = new HashMap<>();
-    //
-    // formData.put("admittanceUserId", ids);
-    //
-    // ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-    // manualStartActivityRequest.setBusinessId(stringId);
-    // manualStartActivityRequest.setFormData(formData);
-    // manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
-    // manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANGE_AUTO.getCode());
-    // manualStartActivityRequests.add(manualStartActivityRequest);
-    // }
 
     private AssetOperationRecord assetRecord(String id, String areaId) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
