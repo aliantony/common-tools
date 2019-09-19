@@ -156,6 +156,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     // 存入业务id,基准为空,进入实施,不为空进入网
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
+
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(Integer.valueOf(requestAsset.getBaselineTemplateId()));
                         asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
@@ -263,43 +264,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
 
-            // 对接配置模块
-            ConfigRegisterRequest configRegisterRequest = new ConfigRegisterRequest();
-            configRegisterRequest.setHard(true);
-            // ID加密
-            if (LoginUserUtil.getLoginUser() != null) {
-                String aesAssestId = aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername());
-                configRegisterRequest.setRelId(aesAssestId);
-                configRegisterRequest.setAssetId(aesAssestId);
-            } else {
-                LogUtils.warn(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}",
-                    AssetEventEnum.GET_USER_INOF.getName());
-                // 用户服务异常，逻辑删登记的资产
-                assetDao.deleteById(id);
-                throw new BusinessException(AssetEventEnum.GET_USER_INOF.getName() + "： 用户服务异常");
-            }
-            configRegisterRequest.setSource(String.valueOf(AssetTypeEnum.HARDWARE.getCode()));
-            configRegisterRequest.setSuggest(request.getManualStartActivityRequest().getSuggest());
-            List<String> configUserId = request.getManualStartActivityRequest().getConfigUserIds();
-            List<String> aesConfigUserId = new ArrayList<>();
-            for (String userId : configUserId) {
-                aesConfigUserId.add(aesEncoder.encode(userId, LoginUserUtil.getLoginUser().getUsername()));
-            }
-            configRegisterRequest.setConfigUserIds(aesConfigUserId);
-            ActionResponse actionResponseAsset = softwareService.configRegister(configRegisterRequest,
-                currentTimeMillis);
-            if (null == actionResponseAsset
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponseAsset.getHead().getCode())) {
-                // 调用失败，逻辑删登记的资产
-                assetDao.deleteById(id);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
-            } else {
-                return ActionResponse.success(id);
-            }
         } else {
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
-
+        return ActionResponse.success();
     }
 
     private void checkLocationNotBlank(AssetRequest request) throws Exception {
