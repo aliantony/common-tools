@@ -1,20 +1,20 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.common.base.*;
-import org.slf4j.Logger;
-import java.util.List;
-import java.util.ArrayList;
-
-import com.antiy.common.utils.LogUtils;
-import org.springframework.stereotype.Service;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import com.antiy.asset.entity.AssetInstallTemplateCheck;
 import com.antiy.asset.dao.AssetInstallTemplateCheckDao;
+import com.antiy.asset.entity.AssetInstallTemplateCheck;
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
+import com.antiy.asset.vo.enums.AssetInstallTemplateCheckStautsEnum;
+import com.antiy.asset.vo.query.AssetInstallTemplateCheckQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateCheckResponse;
-import com.antiy.asset.vo.query.AssetInstallTemplateCheckQuery;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,7 +38,8 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
     private BaseConverter<AssetInstallTemplateCheckRequest, AssetInstallTemplateCheck>  requestConverter;
     @Resource
     private BaseConverter<AssetInstallTemplateCheck, AssetInstallTemplateCheckResponse> responseConverter;
-
+    @Resource
+    private RedisUtil redisUtil;
     @Override
     public String saveAssetInstallTemplateCheck(AssetInstallTemplateCheckRequest request) throws Exception {
         AssetInstallTemplateCheck assetInstallTemplateCheck = requestConverter.convert(request,
@@ -80,5 +81,38 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
     public String deleteAssetInstallTemplateCheckById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetInstallTemplateCheckDao.deleteById(baseRequest.getStringId()).toString();
+    }
+    @Override
+    public List<AssetInstallTemplateCheckResponse> queryTemplateCheckByTemplateId(QueryCondition queryCondition) throws Exception {
+
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "装机模板Id不能为空");
+        List<AssetInstallTemplateCheck> installTemplateCheckList = assetInstallTemplateCheckDao.queryTemplateCheckByTemplateId(queryCondition.getPrimaryKey());
+        List<AssetInstallTemplateCheckResponse> responseList = responseConverter.convert(installTemplateCheckList, AssetInstallTemplateCheckResponse.class);
+        for(int i=0;i<installTemplateCheckList.size();i++){
+            AssetInstallTemplateCheck templateCheck=installTemplateCheckList.get(i);
+
+            Integer userId=templateCheck.getUserId();
+            Integer result = templateCheck.getResult();
+            //从redis上获取用户信息
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
+                    userId);
+            SysUser sysUser = redisUtil.getObject(key, SysUser.class);
+            AssetInstallTemplateCheckResponse templateCheckResponse=responseList.get(i);
+            if(sysUser==null){
+                logger.info("该用户不存在");
+                templateCheckResponse.setName("");
+            }else{
+                templateCheckResponse.setName(sysUser.getName());
+            }
+            AssetInstallTemplateCheckStautsEnum currentStatus = AssetInstallTemplateCheckStautsEnum.getStatusEnumByCode(templateCheckResponse.getResult());
+            if(currentStatus==null){
+                logger.info("无效状态");
+            }else{
+                templateCheckResponse.setResultStr(currentStatus.getMsg());
+            }
+
+
+        }
+        return responseList;
     }
 }

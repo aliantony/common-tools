@@ -5,14 +5,17 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetOperationTableEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.request.AssetConfigValidateRefuseReqeust;
+import com.antiy.asset.vo.request.AssetStatusChangeRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
@@ -31,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * 资产状态跃迁统一接口
@@ -87,71 +89,49 @@ public class AssetStatusJumpController {
     @RequestMapping(value = "/noRegister", method = RequestMethod.POST)
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String assetId = assetStatusChangeRequest.getAssetId();
-        if (assetStatusChangeRequest.getSoftware()) {
-            AssetSoftware orginalAssetSoftware = softwareDao.getById(assetId);
-            if (!Objects.equals(orginalAssetSoftware.getSoftwareStatus(), SoftwareStatusEnum.WATI_REGSIST.getCode())) {
-                throw new BusinessException("软件状态已改变");
-            }
-            AssetSoftware assetSoftware = new AssetSoftware();
-            assetSoftware.setId(DataTypeUtils.stringToInteger(assetStatusChangeRequest.getAssetId()));
-            assetSoftware.setGmtModified(System.currentTimeMillis());
-            if (LoginUserUtil.getLoginUser() == null) {
-                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-            } else {
-                assetSoftware.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            }
-            assetSoftware.setSoftwareStatus(SoftwareStatusEnum.NOT_REGSIST.getCode());
-            operationRecord(assetStatusChangeRequest, assetId);
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.SOFT_NO_REGISTER.getName(),
-                DataTypeUtils.stringToInteger(assetId), softwareDao.getById(assetId).getName(),
-                assetStatusChangeRequest, BusinessModuleEnum.SOFTWARE_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-            LogUtils.info(logger, AssetEventEnum.SOFT_NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
 
-            return ActionResponse.success(softwareDao.update(assetSoftware));
+        // 查询资产当前状态
+        Asset currentAsset = assetDao.getById(assetId);
+        if (currentAsset == null) {
+            throw new BusinessException("资产不存在");
+        }
+        if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
+            throw new BusinessException("资产状态已改变");
+        }
+        Asset asset = new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(assetId));
+        asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
+        if (LoginUserUtil.getLoginUser() == null) {
+            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
         } else {
-            // 查询资产当前状态
-            Asset currentAsset = assetDao.getById(assetId);
-            if (currentAsset == null) {
-                throw new BusinessException("资产不存在");
-            }
-            if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-                throw new BusinessException("资产状态已改变");
-            }
-            Asset asset = new Asset();
-            asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-            if (LoginUserUtil.getLoginUser() == null) {
-                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-            } else {
-                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            }
-            operationRecord(assetStatusChangeRequest, assetId);
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        }
+        operationRecord(assetStatusChangeRequest, assetId);
 
-            // 硬件完成流程
-            if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
-                ActionResponse actionResponse = activityClient
+        // 硬件完成流程
+        if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
+            ActionResponse actionResponse = activityClient
                     .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
-                // 流程调用失败不更改资产状态
-                if (null == actionResponse
+            // 流程调用失败不更改资产状态
+            if (null == actionResponse
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                    return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                         : actionResponse;
-                }
             }
+        }
 
-            // 记录日志
-            if (assetDao.getNumberById(assetId) == null) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
+        // 记录日志
+        if (assetDao.getNumberById(assetId) == null) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
                     DataTypeUtils.stringToInteger(assetId), currentAsset.getName(), assetStatusChangeRequest,
                     BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-            } else {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
+        } else {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
                     DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
                     BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-            }
-            LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
-            return ActionResponse.success(assetService.update(asset));
         }
+        LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
+        return ActionResponse.success(assetService.update(asset));
     }
 
     private void operationRecord(@RequestBody(required = false) @ApiParam("assetStatusChangeRequest") AssetStatusChangeRequest assetStatusChangeRequest,
@@ -164,12 +144,10 @@ public class AssetStatusJumpController {
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        if (!assetStatusChangeRequest.getSoftware()) {
-            operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-            operationRecord.setAreaId(assetDao.getAreaIdById(id));
-        } else {
-            operationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        }
+
+        operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
+        operationRecord.setAreaId(assetDao.getAreaIdById(id));
+
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
 
         if (LoginUserUtil.getLoginUser() == null) {
