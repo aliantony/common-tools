@@ -692,6 +692,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         hssfWorkbook1.write(fileOutputStream1);
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
+        // 入网流程不需要基准模板
+        if (!baseRequest.getType()) {
+            System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
+        }
+
         // 创造模板文件
 
         List<File> fileList = new ArrayList<>();

@@ -1,10 +1,8 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +41,6 @@ public class ManualStartActivityRequest {
      * 配置建议(退役再登记时使用)
      */
     @ApiModelProperty(value = "配置建议(退役再登记时使用)")
-    @NotBlank(message = "配置建议不能为空")
     private String       suggest;
 
     public String getSuggest() {
