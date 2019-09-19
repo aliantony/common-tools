@@ -836,22 +836,11 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_card.ip_address like binary
+            or air.ip like binary
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_safety_equipment.ip like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_equipment.inner_ip like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_card.mac_address like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_safety_equipment.mac like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_equipment.mac_address like binary
+            or amr.mac like binary
             CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
-        </if>
-        <if test="name != null">
-            and asset.name like binary CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetName != null">
             and asset.name =#{assetName}
@@ -894,15 +883,6 @@
         <if test=" admittanceStatus != null">
             and asset.admittance_status = #{admittanceStatus}
         </if>
-        <if test=" number != null and number != ''">
-            and asset.number = #{number}
-        </if>
-        <if test=" uuid != null and uuid != ''">
-            and asset.uuid like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_'), '%')
-        </if>
-        <if test=" serial != null">
-            and asset.serial like binary CONCAT('%', replace(replace(#{uuid},'%','\%'),'_','\_')#{serial}, '%')
-        </if>
         <if test=" manufacturer != null and  manufacturer != ''">
             and asset.manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
         </if>
@@ -912,14 +892,12 @@
                 #{item}
             </foreach>
         </if>
-
         <if test="removeManufacturers != null and removeManufacturers.size() > 0">
             and asset.manufacturer not in
             <foreach collection="removeManufacturers" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
-
         <if test=" operationSystem != null and operationSystem != ''">
             and asset.operation_system = #{operationSystem}
         </if>
@@ -932,23 +910,17 @@
         <if test=" importanceDegree != null">
             and asset.importance_degree = #{importanceDegree }
         </if>
-        <if test=" timeType != null and timeType == 2  and beginTime != null">
-            and asset.first_enter_nett &gt;= #{beginTime }
+        <if test="firstEnterStartTime != null">
+            and asset.first_enter_nett &gt;= #{firstEnterStartTime }
         </if>
-        <if test=" timeType != null and timeType == 2  and endTime != null">
-            and asset.first_enter_nett &lt;= #{endTime }
+        <if test=" firstEnterEndTime != null">
+            and asset.first_enter_nett &lt;= #{firstEnterEndTime }
         </if>
-        <if test=" timeType != null and timeType == 1  and beginTime != null">
-            and asset.gmt_create &gt;= #{beginTime }
+        <if test=" serviceLifeStartTime != null">
+            and asset.service_life &gt;= #{serviceLifeStartTime }
         </if>
-        <if test=" timeType != null and timeType == 1  and endTime != null">
-            and asset.gmt_create &lt;= #{endTime }
-        </if>
-        <if test=" timeType != null and timeType == 3  and beginTime != null">
-            and asset.service_life &gt;= #{beginTime }
-        </if>
-        <if test=" timeType != null and timeType == 3  and endTime != null">
-            and asset.service_life &lt;= #{endTime }
+        <if test="serviceLifeEndTime != null">
+            and asset.service_life &lt;= #{serviceLifeEndTime }
         </if>
         <if test="associateGroup and existAssociateIds != null ">
             and asset.id not in (
@@ -956,9 +928,6 @@
                 #{item}
             </foreach>
             )
-        </if>
-        <if test="installType != null and installType != ''">
-            and asset.install_type = #{installType}
         </if>
     </sql>
 
@@ -1224,19 +1193,12 @@
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
-        concat(ifnull((select GROUP_CONCAT( ip_address ) from asset_network_card where asset_id = asset.id and status =
-        1),''),ifnull( asset_network_equipment.inner_ip, '' ),
-        ifnull(asset_safety_equipment.ip,'') ) AS ip,
-        concat(ifnull((select GROUP_CONCAT( mac_address ) from asset_network_card where asset_id = asset.id and status =
-        1),''),
-        ifnull(asset_network_equipment.mac_address,''), ifnull(asset_safety_equipment.mac,'') ) AS mac
+        GROUP_CONCAT(air.ip) AS ip,
+        GROUP_CONCAT(amr.ip) AS mac
         from asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        left join asset_ip_relation air on asset.id = air.asset_id
+        left join asset_mac_relation amr on asset.id = amr.asset_id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
