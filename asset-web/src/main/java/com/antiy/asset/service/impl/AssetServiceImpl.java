@@ -222,15 +222,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
-                    assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+                    assetOperationRecord.setOriginStatus(0);
                     assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setTargetStatus(
+                        asset.getAssetStatus() == AssetStatusEnum.NET_IN.getCode() ? AssetStatusEnum.NET_IN.getCode()
+                            : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
-                    assetOperationRecord.setAreaId(requestAsset.getAreaId());
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (Exception e) {

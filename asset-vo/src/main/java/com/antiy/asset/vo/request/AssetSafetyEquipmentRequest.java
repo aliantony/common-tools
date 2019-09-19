@@ -46,11 +46,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
      */
     @ApiModelProperty("策略配置")
     private String strategy;
-    /**
-     * 备注
-     */
-    @ApiModelProperty("备注")
-    private String memo;
+
 
     public String getId() {
         return id;
@@ -84,13 +80,6 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
         this.strategy = strategy;
     }
 
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
 
     @Override
     public void validate() throws RequestParamValidateException {
@@ -101,7 +90,7 @@ public class AssetSafetyEquipmentRequest extends BasicRequest implements ObjectV
     public String toString() {
         return "AssetSafetyEquipmentRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\''
                + ", featureLibrary='" + featureLibrary + '\'' + ", newVersion='" + newVersion + '\'' + ", strategy='"
-               + strategy + '\'' + ", memo='" + memo + '\'' + '}';
+               + strategy + '\'' + ", memo='" + +'\'' + '}';
     }
 
     public String getNewVersion() {
