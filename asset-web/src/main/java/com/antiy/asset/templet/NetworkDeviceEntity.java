@@ -12,7 +12,7 @@ public class NetworkDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填)", required = true)
     private String  number;
     /**
      * 资产名称
@@ -22,14 +22,14 @@ public class NetworkDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", required = true, length = 80)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
     private String  manufacturer;
-    /**
-     * 序列号
-     */
-    @ExcelField(value = "serial", align = 1, title = "序列号")
-    private String  serial;
 
+    /**
+     * 版本
+     */
+    @ExcelField(value = "version", align = 1, title = "版本(必填)", required = true)
+    private String  version;
     /**
      * 使用者
      */
@@ -43,40 +43,32 @@ public class NetworkDeviceEntity {
     private String  area;
 
     /**
-     * 联系电话
+     * 重要程度
      */
-    @ExcelField(value = "telephone", align = 1, title = "联系电话", type = 0,dataType = DataTypeEnum.TEL)
-    private String  telephone;
+    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
+    private String  importanceDegree;
+    /**
+     * 数目
+     */
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 2)
+    private Integer portSize;
 
     /**
-     * 邮箱
+     * mac地址
      */
-    @ExcelField(value = "email", align = 1, title = "邮箱", type = 0,dataType = DataTypeEnum.EMAIL)
-    private String  email;
-
+    @ExcelField(value = "mac", align = 1, title = "mac(必填)", dataType = DataTypeEnum.MAC, required = true)
+    private String  mac;
     /**
-     * 物理位置
+     * 序列号
      */
-    @ExcelField(value = "location", align = 1, title = "物理位置(必填)", required = true)
-    private String  location;
+    @ExcelField(value = "serial", align = 1, title = "序列号")
+    private String  serial;
     /**
      * 机房位置
      */
     @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
     private String  houseLocation;
 
-
-    /**
-     * 重要程度
-     */
-    @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
-    private String  importanceDegree;
-
-    /**
-     * 端口数目
-     */
-    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 2)
-    private Integer portSize;
     /**
      * 接口数目
      */
@@ -98,25 +90,17 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "isWireless", align = 1, title = "是否无线", dictType = "yesorno")
     private Integer isWireless;
-    /**
-     * 内网IP
-     */
-    @ExcelField(value = "innerIp", align = 1, title = "内网IP(必填)", required = true, dataType = DataTypeEnum.IP)
-    private String  innerIp;
+
     /**
      * 外网IP
      */
-    @ExcelField(value = "outerIp", align = 1, title = "外网IP",dataType = DataTypeEnum.IP,required = false)
+    @ExcelField(value = "outerIp", align = 1, title = "外网IP", dataType = DataTypeEnum.IP, required = false)
     private String  outerIp;
-    /**
-     * mac地址
-     */
-    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", dataType = DataTypeEnum.MAC, required = true)
-    private String  mac;
+
     /**
      * 子网掩码
      */
-    @ExcelField(value = "subnetMask", align = 1, title = "子网掩码",dataType = DataTypeEnum.IP)
+    @ExcelField(value = "subnetMask", align = 1, title = "子网掩码", dataType = DataTypeEnum.IP)
     private String  subnetMask;
     /**
      * 预计带宽
@@ -173,12 +157,22 @@ public class NetworkDeviceEntity {
      * 保修期
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期")
-    private String    warranty;
+    private String  warranty;
     /**
      * 描述
      */
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String  memo;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+
 
     public String getName() {
         return name;
@@ -210,30 +204,6 @@ public class NetworkDeviceEntity {
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getHouseLocation() {
@@ -282,14 +252,6 @@ public class NetworkDeviceEntity {
 
     public void setIsWireless(Integer isWireless) {
         this.isWireless = isWireless;
-    }
-
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
     }
 
     public String getOuterIp() {

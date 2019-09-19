@@ -172,6 +172,20 @@ public class AssetController {
     }
 
     /**
+     * 下载流程相关模板
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "下载流程相关模板", notes = "主键封装对象")
+    @RequestMapping(value = "/export/implementation/file", method = RequestMethod.GET)
+    @PreAuthorize(value = "hasAuthority('asset:asset:implementationFile')")
+    public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
+        ParamterExceptionUtils.isEmpty(baseRequest.getIds(), "资产id不能为空");
+        iAssetService.implementationFile(baseRequest);
+
+    }
+
+    /**
      * 批量修改资产状态
      *
      * @param ids
@@ -186,6 +200,35 @@ public class AssetController {
                                        @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
         iAssetService.changeStatus(ids, targetStatus);
         return ActionResponse.success();
+    }
+
+    /**
+     * 判断mac是否重复
+     *
+     * @param mac
+     * @return actionResponse
+     */
+    @ApiOperation(value = "判断mac是否重复,true重复", notes = "传入资产mac")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
+    public ActionResponse CheckRepeatMAC(@ApiParam(value = "资产mac") @RequestParam String mac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(mac));
+    }
+
+    /**
+     * 判断编号是否重复
+     *
+     * @param number
+     * @return actionResponse
+     */
+    @ApiOperation(value = "判断编号是否重复，true重复", notes = "传入资产编号")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/CheckRepeatNumber", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
+    public ActionResponse CheckRepeatNumber(@ApiParam(value = "资产编号") @RequestParam String number) throws Exception {
+
+        return ActionResponse.success(iAssetService.CheckRepeatNumber(number));
     }
 
     /**

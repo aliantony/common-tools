@@ -28,6 +28,24 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @Encode
     private String                  id;
     /**
+     * id
+     */
+    @ApiModelProperty("id")
+    @Encode
+    private String                  businessId;
+    /**
+     * id
+     */
+    @ApiModelProperty("基准模板id")
+    @Encode
+    private String                  baselineTemplateId;
+    /**
+     * id
+     */
+    @ApiModelProperty("装机模板id")
+    @Encode
+    private String                  installTemplateId;
+    /**
      * 资产zu
      */
     @ApiModelProperty("资产组")
@@ -65,6 +83,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @NotBlank(message = "资产名称不能为空")
     @Size(message = "资产名字应该在1-30之间", max = 30, min = 1)
     private String                  name;
+    /**
+     * 资产版本
+     */
+    @ApiModelProperty("资产版本")
+    @NotBlank(message = "资产版本不能为空")
+    private String                  version;
     /**
      * 序列号
      */
@@ -499,4 +523,35 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.softwareVersion = softwareVersion;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
+    }
+
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
 }

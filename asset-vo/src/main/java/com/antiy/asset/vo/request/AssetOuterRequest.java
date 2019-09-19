@@ -4,11 +4,9 @@ import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.compress.utils.Lists;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +31,19 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "主板")
     @Valid
     private List<AssetMainboradRequest>      mainboard;
+    /**
+     * 主板
+     */
+    @ApiModelProperty(value = "ip/mac/net")
+    @Valid
+    private List<AssetIpMacRequest>          ipMacRequestList;
+
+    /**
+     * 组件
+     */
+    @ApiModelProperty(value = "组件")
+    @Valid
+    private List<AssetAssemblyRequest>       assemblyRequestList;
 
     /**
      * 内存
@@ -240,5 +251,21 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
             e.printStackTrace();
         }
         return outer;
+    }
+
+    public List<AssetAssemblyRequest> getAssemblyRequestList() {
+        return assemblyRequestList;
+    }
+
+    public void setAssemblyRequestList(List<AssetAssemblyRequest> assemblyRequestList) {
+        this.assemblyRequestList = assemblyRequestList;
+    }
+
+    public List<AssetIpMacRequest> getIpMacRequestList() {
+        return ipMacRequestList;
+    }
+
+    public void setIpMacRequestList(List<AssetIpMacRequest> ipMacRequestList) {
+        this.ipMacRequestList = ipMacRequestList;
     }
 }

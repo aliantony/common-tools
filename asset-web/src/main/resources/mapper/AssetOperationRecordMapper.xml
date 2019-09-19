@@ -19,7 +19,9 @@
     <sql id="Base_Column_List">
         id, target_object_id AS targetObjectId, target_type AS targetType, content, create_user AS createUser, gmt_create AS gmtCreate, target_status AS targetStatus,process_result AS processResult,origin_status, process_result AS processResult
     </sql>
-
+    <sql id="AssetStatusNode">
+        id,target_object_id AS assetId,note
+    </sql>
     <sql id="Table_Name">
         asset_operation_record
     </sql>
@@ -380,5 +382,31 @@
         from
         <include refid="Table_Name"></include>
         where target_object_id = #{assetId} order by id desc limit 1
+    </select>
+    <!-- 查询资产动态-->
+    <select id="queryAssetAllStatusInfo" parameterType="java.lang.String" resultType="AssetStatusDetail">
+      select
+      <include refid="AssetStatusNode"/> ,origin_status as originStatus,operate_user_id as operateUserId,process_result as processResult,file_info as fileInfo,gmt_create as gmtCreate,operate_user_name
+      from
+      <include refid="Table_Name"/>
+      where target_object_id = #{id} order by gmt_create desc
+    </select>
+
+    <!-- 查询上一步资产动态 -->
+    <select id="queryAssetPreStatusInfo" resultType="AssetStatusNote">
+    select
+    a.id,a.target_object_id as assetId,note,a.gmt_create
+    from
+    <include refid="Table_Name"/> a
+    inner join
+      ( SELECT target_object_id, MAX( gmt_create ) gmt_create
+        FROM  <include refid="Table_Name"/>
+        GROUP BY target_object_id
+        HAVING target_object_id IN 
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+        ) b
+        on  a.target_object_id = b.target_object_id and a.gmt_create = b.gmt_create
     </select>
 </mapper>
