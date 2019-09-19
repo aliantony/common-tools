@@ -34,9 +34,15 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     /**
      * 主板
      */
-    @ApiModelProperty(value = "ip/mac/net")
+    @ApiModelProperty(value = "mac")
     @Valid
-    private List<AssetIpMacRequest>          ipMacRequestList;
+    private List<AssetMacRelationRequest>    macRelationRequests;
+    /**
+     * 主板
+     */
+    @ApiModelProperty(value = "ip/net")
+    @Valid
+    private List<AssetIpRelationRequest>     ipRelationRequests;
 
     /**
      * 组件
@@ -261,11 +267,19 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
         this.assemblyRequestList = assemblyRequestList;
     }
 
-    public List<AssetIpMacRequest> getIpMacRequestList() {
-        return ipMacRequestList;
+    public List<AssetMacRelationRequest> getMacRelationRequests() {
+        return macRelationRequests;
     }
 
-    public void setIpMacRequestList(List<AssetIpMacRequest> ipMacRequestList) {
-        this.ipMacRequestList = ipMacRequestList;
+    public void setMacRelationRequests(List<AssetMacRelationRequest> macRelationRequests) {
+        this.macRelationRequests = macRelationRequests;
+    }
+
+    public List<AssetIpRelationRequest> getIpRelationRequests() {
+        return ipRelationRequests;
+    }
+
+    public void setIpRelationRequests(List<AssetIpRelationRequest> ipRelationRequests) {
+        this.ipRelationRequests = ipRelationRequests;
     }
 }

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetProtocolDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetProtocol">
+        <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
+        <result column="name" property="name"/>
+        <result column="memo" property="memo"/>
+        <result column="is_storage" property="isStorage"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="link_vuls" property="linkVuls"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, business_id, name, memo, is_storage, gmt_modified, link_vuls, gmt_create, create_user, modified_user, status
+    </sql>
+
+    <sql id="Table_Name">
+        asset_protocol
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" businessId != null">
+            business_id,
+        </if>
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" isStorage != null">
+            is_storage,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" linkVuls != null">
+            link_vuls,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" businessId != null">
+            #{businessId },
+        </if>
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" isStorage != null">
+            #{isStorage },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" linkVuls != null">
+            #{linkVuls },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            #{modifiedUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" businessId != null">
+            business_id = #{businessId },
+        </if>
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" isStorage != null">
+            is_storage = #{isStorage },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" linkVuls != null">
+            link_vuls = #{linkVuls },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" businessId != null">
+            and business_id = #{businessId }
+        </if>
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" isStorage != null">
+            and is_storage = #{isStorage }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" linkVuls != null">
+            and link_vuls = #{linkVuls }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifiedUser != null">
+            and modified_user = #{modifiedUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetProtocol" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetProtocol">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>

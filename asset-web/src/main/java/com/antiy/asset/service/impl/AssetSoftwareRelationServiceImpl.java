@@ -16,16 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.BeanConvert;
@@ -68,11 +65,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private BaseConverter<AssetSoftwareInstall, AssetSoftwareInstallResponse>   responseInstallConverter;
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
-    @Resource
-    private AssetCategoryModelDao                                               assetCategoryModelDao;
-    @Resource
-    private IAssetCategoryModelService                                          iAssetCategoryModelService;
-
     @Resource
     private IRedisService                                                       redisService;
     @Resource
@@ -349,11 +341,11 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 已入网
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
-        AssetCategoryModel assetCategoryModel = assetCategoryModelDao
-            .getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
-        List<Integer> categoryModelIdsById = iAssetCategoryModelService
-            .findAssetCategoryModelIdsById(assetCategoryModel.getId());
-        query.setCategoryModels(DataTypeUtils.integerListToStringList(categoryModelIdsById));
+        // AssetCategoryModel assetCategoryModel = assetCategoryModelDao
+        // .getByName(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg());
+        // List<Integer> categoryModelIdsById = iAssetCategoryModelService
+        // .findAssetCategoryModelIdsById(assetCategoryModel.getId());
+        // query.setCategoryModels(DataTypeUtils.integerListToStringList(categoryModelIdsById));
         // 获取软件列表
         AssetSoftware assetSoftware = assetSoftwareDao.getById(query.getSoftwareId());
         String operationSystem = assetSoftware.getOperationSystem();

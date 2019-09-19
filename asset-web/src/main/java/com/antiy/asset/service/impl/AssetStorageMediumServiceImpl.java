@@ -48,7 +48,7 @@ public class AssetStorageMediumServiceImpl extends BaseServiceImpl<AssetStorageM
     }
 
     @Override
-    public List<AssetStorageMediumResponse> findListAssetStorageMedium(AssetStorageMediumQuery query) throws Exception {
+    public List<AssetStorageMediumResponse> queryListAssetStorageMedium(AssetStorageMediumQuery query) throws Exception {
         List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.findQuery(query);
         // TODO
         List<AssetStorageMediumResponse> assetStorageMediumResponse = responseConverter.convert(assetStorageMediumList,
@@ -57,8 +57,8 @@ public class AssetStorageMediumServiceImpl extends BaseServiceImpl<AssetStorageM
     }
 
     @Override
-    public PageResult<AssetStorageMediumResponse> findPageAssetStorageMedium(AssetStorageMediumQuery query) throws Exception {
+    public PageResult<AssetStorageMediumResponse> queryPageAssetStorageMedium(AssetStorageMediumQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
-            this.findListAssetStorageMedium(query));
+            this.queryListAssetStorageMedium(query));
     }
 }

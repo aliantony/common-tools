@@ -17,10 +17,8 @@ import com.antiy.asset.convert.SelectConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetGroupService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.Constants;
@@ -72,8 +70,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
-    @Resource
-    private IAssetCategoryModelService                    assetCategoryModelService;
 
     @Override
     @Transactional
@@ -314,20 +310,20 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public List<SelectResponse> queryUnconnectedGroupInfo(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
         List<Integer> categoryCondition = new ArrayList<>();
-        Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
-        List<AssetCategoryModel> all = assetCategoryModelService.getAll();
-        for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            if ((isNet == null) || isNet == 1) {
-                if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                    categoryCondition.addAll(
-                        assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-                }
-            }
-            if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                categoryCondition.addAll(
-                    assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            }
-        }
+        // Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
+        // List<AssetCategoryModel> all = assetCategoryModelService.getAll();
+        // for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
+        // if ((isNet == null) || isNet == 1) {
+        // if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+        // categoryCondition.addAll(
+        // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+        // }
+        // }
+        // if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+        // categoryCondition.addAll(
+        // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
+        // }
+        // }
         query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));

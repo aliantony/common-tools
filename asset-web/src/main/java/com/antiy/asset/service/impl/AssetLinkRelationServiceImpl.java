@@ -10,31 +10,32 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetLinkRelation;
+import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.request.UseableIpRequest;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.response.AssetLinkRelationResponse;
+import com.antiy.asset.vo.response.AssetLinkedCountResponse;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -61,16 +62,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private BaseConverter<AssetLinkRelation, AssetLinkRelationResponse> responseConverter;
     @Resource
-    private IAssetCategoryModelService                                  assetCategoryModelService;
-    @Resource
     private IAssetService                                               assetService;
     @Resource
-    private IAssetCategoryModelService                                  iAssetCategoryModelService;
-    @Resource
     private AssetDao                                                    assetDao;
-    @Resource
-    private AssetCategoryModelDao                                       assetCategoryDao;
-    private CategoryValiEntity                                          categoryVali;
     @Resource
     private RedisUtil                                                   redisUtil;
 
@@ -333,29 +327,29 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         if (Objects.isNull(assetLinkRelationQuery.getCategoryModels())
             || assetLinkRelationQuery.getCategoryModels().size() <= 0) {
-            Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
-            category.forEach((k, v) -> {
-                try {
-                    if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-                        // 计算设备下所有品类型号
-                        assetLinkRelationQuery.setPcCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                    } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-                        // 网络设备下所有品类型号
-                        assetLinkRelationQuery.setNetCategoryModels(
-                            assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-                    }
-                } catch (Exception e) {
-                    logger.error("获取{}子品类型号出错", v, e.getStackTrace());
-                }
-
-            });
+            // Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
+            // category.forEach((k, v) -> {
+            // try {
+            // if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+            // // 计算设备下所有品类型号
+            // assetLinkRelationQuery.setPcCategoryModels(
+            // assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+            // } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+            // // 网络设备下所有品类型号
+            // assetLinkRelationQuery.setNetCategoryModels(
+            // assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
+            // }
+            // } catch (Exception e) {
+            // logger.error("获取{}子品类型号出错", v, e.getStackTrace());
+            // }
+            //
+            // });
         } else {
             List<Integer> categoryModels = Lists.newArrayList();
-            for (int i = 0; i < assetLinkRelationQuery.getCategoryModels().size(); i++) {
-                categoryModels.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
-                    DataTypeUtils.stringToInteger(assetLinkRelationQuery.getCategoryModels().get(i))));
-            }
+            // for (int i = 0; i < assetLinkRelationQuery.getCategoryModels().size(); i++) {
+            // categoryModels.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
+            // DataTypeUtils.stringToInteger(assetLinkRelationQuery.getCategoryModels().get(i))));
+            // }
             assetLinkRelationQuery
                 .setCategoryModels(Arrays.asList(DataTypeUtils.integerArrayToStringArray(categoryModels)));
         }
@@ -403,8 +397,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 LogUtils.info(logger, "{}  获取区域失败", RespBasicCode.BUSSINESS_EXCETION);
             }
         });
-        Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        processLinkCount(assetResponseList, categoryMap);
+        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        // processLinkCount(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkedCountResponse.class);
     }
 
@@ -413,20 +407,20 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                                   Map<String, String> categoryMap) throws Exception {
         // 作为缓存使用，提高效率
         Map<String, String> cache = new HashMap<>();
-        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
-        Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         for (AssetLinkedCount assetResponse : assetResponseList) {
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
-                assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
+                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
             } else {
-                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                    categoryMap.keySet());
-                if (Objects.nonNull(second)) {
-                    assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
-                    cache.put(categoryModel, second);
-                }
+                // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                // categoryMap.keySet());
+                // if (Objects.nonNull(second)) {
+                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
+                // cache.put(categoryModel, second);
+                // }
             }
         }
     }
@@ -435,20 +429,20 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                                      Map<String, String> categoryMap) throws Exception {
         // 作为缓存使用，提高效率
         Map<String, String> cache = new HashMap<>();
-        List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
-        Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
+        // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
         for (AssetLinkRelation assetResponse : assetResponseList) {
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
-                assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
+                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
             } else {
-                String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                    categoryMap.keySet());
-                if (Objects.nonNull(second)) {
-                    assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
-                    cache.put(categoryModel, second);
-                }
+                // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
+                // categoryMap.keySet());
+                // if (Objects.nonNull(second)) {
+                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
+                // cache.put(categoryModel, second);
+                // }
             }
         }
     }
@@ -470,8 +464,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
-        Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        processLinkRelation(assetResponseList, categoryMap);
+        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+        // processLinkRelation(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 

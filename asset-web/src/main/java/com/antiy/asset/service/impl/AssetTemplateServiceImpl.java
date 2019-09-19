@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetTemplateService;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.service.IRedisService;
@@ -22,8 +21,6 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetTemplateServiceImpl implements IAssetTemplateService {
-    @Resource
-    private IAssetCategoryModelService iAssetCategoryModelService;
 
     @Resource
     private IAssetUserService          iAssetUserService;
@@ -40,8 +37,7 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> queryAllCategoryModels() throws Exception {
-        return iAssetCategoryModelService.getAll().stream().map(assetCategoryModel -> assetCategoryModel.getName())
-            .collect(Collectors.toList());
+        return null;
     }
 
     @Override

@@ -16,10 +16,8 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.dao.SchemeDao;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetOperationRecordBarPO;
-import com.antiy.asset.entity.Scheme;
 import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
@@ -47,8 +45,6 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         .get(this.getClass());
     @Resource
     private AssetOperationRecordDao                                                   assetOperationRecordDao;
-    @Resource
-    private SchemeDao                                                                 schemeDao;
     @Resource
     private BaseConverter<AssetOperationRecordBarPO, AssetOperationRecordBarResponse> operationRecordBarPOToResponseConverter;
     @Resource
@@ -180,20 +176,20 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
                 assetOperationRecordBarResponse.setTotal(total);
                 // 查询方案信息
-                List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
-
-                // 包含文件信息的AssetStatusBarResponse
-                List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
-
-                for (Scheme scheme : schemeList) {
-                    AssetStatusBarResponse assetStatusBarResponse = new AssetStatusBarResponse();
-                    if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
-                        JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-                        assetStatusBarResponse.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
-                    }
-                    fileInfoList.add(assetStatusBarResponse);
-                }
-                assetOperationRecordBarResponse.setFileInfos(fileInfoList);
+                // List<Scheme> schemeList = schemeDao.findSchemeByAssetIdAndGmtCreateTime(map);
+                //
+                // // 包含文件信息的AssetStatusBarResponse
+                // List<AssetStatusBarResponse> fileInfoList = new ArrayList<>();
+                //
+                // for (Scheme scheme : schemeList) {
+                // AssetStatusBarResponse assetStatusBarResponse = new AssetStatusBarResponse();
+                // if (scheme.getFileInfo() != null && scheme.getFileInfo().length() > 0) {
+                // JSONObject.parse(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+                // assetStatusBarResponse.setFileInfo(HtmlUtils.htmlUnescape(scheme.getFileInfo()));
+                // }
+                // fileInfoList.add(assetStatusBarResponse);
+                // }
+                // assetOperationRecordBarResponse.setFileInfos(fileInfoList);
                 //TODO 修改了流程枚举，请完善，检查后续代码是否正确
                 if (assetOperationRecordBarResponse.getContent()
                     .equals(AssetFlowEnum.REGISTER.getMsg())) {

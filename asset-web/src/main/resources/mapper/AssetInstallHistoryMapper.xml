@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetInstallHistoryDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetInstallHistory">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="package_id" property="packageId"/>
+        <result column="type" property="type"/>
+        <result column="upgrade_type" property="upgradeType"/>
+        <result column="upgrade_status" property="upgradeStatus"/>
+        <result column="version" property="version"/>
+        <result column="upgrade_date" property="upgradeDate"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="memo" property="memo"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, asset_id, package_id, type, upgrade_type, upgrade_status, version, upgrade_date, gmt_create, gmt_modified, memo, create_user, modify_user, status
+    </sql>
+
+    <sql id="Table_Name">
+        asset_install_history
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" assetId != null">
+            asset_id,
+        </if>
+        <if test=" packageId != null">
+            package_id,
+        </if>
+        <if test=" type != null">
+            type,
+        </if>
+        <if test=" upgradeType != null">
+            upgrade_type,
+        </if>
+        <if test=" upgradeStatus != null">
+            upgrade_status,
+        </if>
+        <if test=" version != null">
+            version,
+        </if>
+        <if test=" upgradeDate != null">
+            upgrade_date,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" assetId != null">
+            #{assetId },
+        </if>
+        <if test=" packageId != null">
+            #{packageId },
+        </if>
+        <if test=" type != null">
+            #{type },
+        </if>
+        <if test=" upgradeType != null">
+            #{upgradeType },
+        </if>
+        <if test=" upgradeStatus != null">
+            #{upgradeStatus },
+        </if>
+        <if test=" version != null">
+            #{version },
+        </if>
+        <if test=" upgradeDate != null">
+            #{upgradeDate },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" assetId != null">
+            asset_id = #{assetId },
+        </if>
+        <if test=" packageId != null">
+            package_id = #{packageId },
+        </if>
+        <if test=" type != null">
+            type = #{type },
+        </if>
+        <if test=" upgradeType != null">
+            upgrade_type = #{upgradeType },
+        </if>
+        <if test=" upgradeStatus != null">
+            upgrade_status = #{upgradeStatus },
+        </if>
+        <if test=" version != null">
+            version = #{version },
+        </if>
+        <if test=" upgradeDate != null">
+            upgrade_date = #{upgradeDate },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
+        <if test=" packageId != null">
+            and package_id = #{packageId }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" upgradeType != null">
+            and upgrade_type = #{upgradeType }
+        </if>
+        <if test=" upgradeStatus != null">
+            and upgrade_status = #{upgradeStatus }
+        </if>
+        <if test=" version != null">
+            and version = #{version }
+        </if>
+        <if test=" upgradeDate != null">
+            and upgrade_date = #{upgradeDate }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetInstallHistory" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetInstallHistory">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>

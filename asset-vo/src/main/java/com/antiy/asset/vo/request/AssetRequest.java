@@ -3,10 +3,8 @@ package com.antiy.asset.vo.request;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang.StringUtils;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -30,7 +28,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     /**
      * id
      */
-    @ApiModelProperty("id")
+    @ApiModelProperty("businessId")
     @Encode
     private String                  businessId;
     /**
@@ -56,18 +54,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("机房位置")
     @Size(message = "机房位置不能超过30位", max = 30)
     private String                  houseLocation;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String                  contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    @Email(message = "邮箱不正确")
-    @Size(message = "邮箱必须小于30位", max = 30)
-    private String                  email;
+
     /**
      * 资产编号
      */
@@ -119,15 +106,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
-    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
+    @ApiModelProperty("1-待登记，2-不予登记，3-模板待实施，4-待验证，5-待入网，6-已入网,7-待检查，8-待整改，9-变更中, 10-待退役，11-已退役")
     private Integer                 assetStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
-    @ApiModelProperty("操作系统。基准获取")
-    // @NotBlank(message = "操作系统不能为空")
+    @ApiModelProperty("操作系统")
     @Size(message = "资产操作系统不能超过30位", max = 30)
-    @Encode
     private String                  operationSystem;
     /**
      * 系统位数
@@ -135,13 +120,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("系统位数")
     @Max(message = "系统位数不能超过64", value = 64)
     private Integer                 systemBit;
-    /**
-     * 物理位置
-     */
-    @ApiModelProperty("物理位置")
-    // @NotBlank(message = "物理位置不能为空")
-    @Size(message = "物理位置不能超过30位", max = 30)
-    private String                  location;
+
     /**
      * 安装方式
      */
@@ -194,17 +173,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     private Integer                 importanceDegree;
 
     /**
-     * 父类资源Id
-     */
-    @ApiModelProperty("父类资源Id")
-    @Encode
-    private String                  parentId;
-    /**
-     * 所属标签ID和名称列表JSON串
-     */
-    @ApiModelProperty("所属标签ID和名称列表JSON串")
-    private String                  tags;
-    /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
@@ -212,9 +180,9 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    serviceLife;
     /**
-     * 制造日期
+     * 购买日期
      */
-    @ApiModelProperty("制造日期")
+    @ApiModelProperty("购买日期")
     @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    buyDate;
     /**
@@ -242,20 +210,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("描述")
     @Size(message = "描述不能超过300个字符", max = 300)
     private String                  describle;
-    /**
-     * 备注
-     */
-    @ApiModelProperty("配置建议")
-    @Size(message = "配置建议不能超过300个字符", max = 300)
-    private String                  memo;
-
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
 
     public Long getFirstEnterNett() {
         return firstEnterNett;
@@ -337,14 +291,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.systemBit = systemBit;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getFirmwareVersion() {
         return firmwareVersion;
     }
@@ -393,22 +339,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.categoryModel = categoryModel;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
     public Long getServiceLife() {
         return serviceLife;
     }
@@ -441,22 +371,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
     public String getHouseLocation() {
         return houseLocation;
     }
@@ -475,14 +389,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (StringUtils.isNotBlank(contactTel)) {
-            if (contactTel.length() != 11) {
-                ParamterExceptionUtils.isTrue(false, "联系电话必须为11位");
-            }
-            if (!contactTel.matches("^1[0-9]{10}$")) {
-                ParamterExceptionUtils.isTrue(false, "联系电话错误");
-            }
-        }
     }
 
     public Integer getInstallType() {
@@ -491,20 +397,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     public void setInstallType(Integer installType) {
         this.installType = installType;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetRequest{" + "id='" + id + '\'' + ", assetGroups=" + assetGroups + ", houseLocation='"
-               + houseLocation + '\'' + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", number='"
-               + number + '\'' + ", name='" + name + '\'' + ", serial='" + serial + '\'' + ", categoryModel='"
-               + categoryModel + '\'' + ", areaId='" + areaId + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", assetStatus=" + assetStatus + ", operationSystem='" + operationSystem + '\'' + ", systemBit="
-               + systemBit + ", location='" + location + '\'' + ", installType=" + installType + ", firmwareVersion='"
-               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='" + responsibleUserId + '\''
-               + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", parentId='" + parentId
-               + '\'' + ", tags='" + tags + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate
-               + ", warranty=" + warranty + ", admittanceStatus=" + admittanceStatus + '}';
     }
 
     public String getDescrible() {
@@ -553,5 +445,21 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     public void setBaselineTemplateId(String baselineTemplateId) {
         this.baselineTemplateId = baselineTemplateId;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetRequest{" + "id='" + id + '\'' + ", businessId='" + businessId + '\'' + ", baselineTemplateId='"
+               + baselineTemplateId + '\'' + ", installTemplateId='" + installTemplateId + '\'' + ", assetGroups="
+               + assetGroups + ", houseLocation='" + houseLocation + '\'' + ", number='" + number + '\'' + ", name='"
+               + name + '\'' + ", version='" + version + '\'' + ", serial='" + serial + '\'' + ", categoryModel='"
+               + categoryModel + '\'' + ", areaId='" + areaId + '\'' + ", manufacturer='" + manufacturer + '\''
+               + ", assetStatus=" + assetStatus + ", operationSystem='" + operationSystem + '\'' + ", systemBit="
+               + systemBit + ", installType=" + installType + ", firmwareVersion='" + firmwareVersion + '\''
+               + ", softwareVersion='" + softwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='"
+               + responsibleUserId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty + '\''
+               + ", admittanceStatus=" + admittanceStatus + ", firstEnterNett=" + firstEnterNett + ", describle='"
+               + describle + '\'' + '}';
     }
 }
