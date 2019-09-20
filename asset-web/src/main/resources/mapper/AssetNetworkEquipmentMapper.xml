@@ -13,9 +13,7 @@
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="cpu_size" property="cpuSize"/>
         <result column="ios" property="ios"/>
-        <result column="inner_ip" property="innerIp"/>
         <result column="outer_ip" property="outerIp"/>
-        <result column="mac_address" property="macAddress"/>
         <result column="subnet_mask" property="subnetMask"/>
         <result column="expect_bandwidth" property="expectBandwidth"/>
         <result column="register" property="register"/>
@@ -350,7 +348,8 @@
         </foreach>
     </insert>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkEquipment" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNetworkEquipment" useGeneratedKeys="true"
+            keyProperty="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -387,9 +386,9 @@
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetNetworkEquipment" parameterType="java.util.Map">
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
-        <include refid="Base_Column_List"/>
+        *
         from
         <include refid="Table_Name"></include>
         <where>

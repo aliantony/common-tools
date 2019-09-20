@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.entity.AssetStatusDetail;
+import com.antiy.asset.entity.AssetStatusNote;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     private RedisUtil                                                                 redisUtil;
     @Resource
     private SysRoleClientImpl                                                         roleClient;
+
 
     @Override
     public List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception {
@@ -231,6 +233,14 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             outer.setDescribe(inner.getOperateUserName()+inner.getOriginStatus().describe(inner.getProcessResult()));
             responses.add(outer);
         }
+        return ActionResponse.success(responses);
+    }
+
+    @Override
+    public ActionResponse batchQueryAssetPreStatusInfo(List<String> ids) {
+        List<AssetStatusNote> assetStatusNotes = assetOperationRecordDao.queryAssetPreStatusInfo(ids);
+        List<AssetPreStatusInfoResponse> responses = new ArrayList<>();
+        assetStatusNotes.forEach(e->responses.add(new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(),e.getFileInfo())));
         return ActionResponse.success(responses);
     }
 

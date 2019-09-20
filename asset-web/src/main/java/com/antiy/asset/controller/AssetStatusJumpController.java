@@ -5,17 +5,14 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetConfigValidateRefuseReqeust;
-import com.antiy.asset.vo.request.AssetStatusChangeRequest;
-import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.request.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
@@ -34,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * 资产状态跃迁统一接口
@@ -144,10 +142,6 @@ public class AssetStatusJumpController {
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-
-        operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-        operationRecord.setAreaId(assetDao.getAreaIdById(id));
-
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
 
         if (LoginUserUtil.getLoginUser() == null) {
@@ -179,8 +173,6 @@ public class AssetStatusJumpController {
         // asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
         // 记录操作记录
         AssetOperationRecord operationRecord = new AssetOperationRecord();
-        operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
-        operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         operationRecord.setTargetObjectId(baseRequest.getStringId());
         operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         // operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());

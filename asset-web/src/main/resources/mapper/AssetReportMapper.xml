@@ -179,12 +179,9 @@
         when length(replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0')) &lt; 1
         then 7
         else replace(ltrim(replace(FROM_UNIXTIME(asset.gmt_create/1000,#{format}),'0',' ')),' ','0')
-        end AS date,
-        acm.parent_id as parentId,
-        acm.name as categoryName
+        end AS date
         FROM
         asset
-        LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
         asset.gmt_create &lt;= #{endTime}
         <if test="areaIds!=null and areaIds.size()>0">
@@ -211,12 +208,9 @@
             parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         count( 1 ) AS categoryCount,
-        asset.category_model AS categoryModel,
-        acm.parent_id as parentId,
-        acm.name as categoryName
+        asset.category_model AS categoryModel
         FROM
         asset
-        LEFT JOIN asset_category_model acm ON acm.id = asset.category_model
         WHERE
         asset.gmt_create &lt;= #{beginTime}
         <if test="areaIds!=null and areaIds.size()>0">

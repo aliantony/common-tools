@@ -27,18 +27,14 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     /**
      * 主板
-     */
-    @ApiModelProperty(value = "主板")
-    @Valid
-    private List<AssetMainboradRequest>      mainboard;
     /**
-     * 主板
+     * mac
      */
     @ApiModelProperty(value = "mac")
     @Valid
     private List<AssetMacRelationRequest>    macRelationRequests;
     /**
-     * 主板
+     * ip
      */
     @ApiModelProperty(value = "ip/net")
     @Valid
@@ -51,32 +47,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @Valid
     private List<AssetAssemblyRequest>       assemblyRequestList;
 
-    /**
-     * 内存
-     */
-    @ApiModelProperty(value = "内存")
-    @Valid
-    private List<AssetMemoryRequest>         memory;
-
-    /**
-     * 硬盘
-     */
-    @ApiModelProperty(value = "硬盘")
-    @Valid
-    private List<AssetHardDiskRequest>       hardDisk;
-
-    /**
-     * cpu
-     */
-    @ApiModelProperty(value = "cpu")
-    @Valid
-    private List<AssetCpuRequest>            cpu;
-    /**
-     * 网卡
-     */
-    @ApiModelProperty(value = "网卡")
-    @Valid
-    private List<AssetNetworkCardRequest>    networkCard;
     /**
      * 网络设备
      */
@@ -108,12 +78,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "处理流程数据")
     @Valid
     private ActivityHandleRequest            activityHandleRequest;
-    /**
-     * 其他设备
-     */
-    @ApiModelProperty(value = "其他设备")
-    @Valid
-    private AssetOthersRequest               assetOthersRequest;
 
     public ActivityHandleRequest getActivityHandleRequest() {
         return activityHandleRequest;
@@ -137,51 +101,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setAsset(AssetRequest asset) {
         this.asset = asset;
-    }
-
-    public List<AssetMainboradRequest> getMainboard() {
-        return mainboard;
-    }
-
-    public void setMainboard(List<AssetMainboradRequest> mainboard) {
-
-        this.mainboard = mainboard;
-    }
-
-    public List<AssetMemoryRequest> getMemory() {
-        return memory;
-    }
-
-    public void setMemory(List<AssetMemoryRequest> memory) {
-
-        this.memory = memory;
-    }
-
-    public List<AssetHardDiskRequest> getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(List<AssetHardDiskRequest> hardDisk) {
-
-        this.hardDisk = hardDisk;
-    }
-
-    public List<AssetCpuRequest> getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(List<AssetCpuRequest> cpu) {
-
-        this.cpu = cpu;
-    }
-
-    public List<AssetNetworkCardRequest> getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(List<AssetNetworkCardRequest> networkCard) {
-
-        this.networkCard = networkCard;
     }
 
     public AssetNetworkEquipmentRequest getNetworkEquipment() {
@@ -216,22 +135,14 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
         this.softwareReportRequestList = softwareReportRequestList;
     }
 
-    public AssetOthersRequest getAssetOthersRequest() {
-        return assetOthersRequest;
-    }
-
-    public void setAssetOthersRequest(AssetOthersRequest assetOthersRequest) {
-        this.assetOthersRequest = assetOthersRequest;
-    }
-
     @Override
     public String toString() {
-        return "AssetOuterRequest{" + "asset=" + asset + ", mainboard=" + mainboard + ", memory=" + memory
-               + ", hardDisk=" + hardDisk + ", cpu=" + cpu + ", networkCard=" + networkCard + ", networkEquipment="
-               + networkEquipment + ", safetyEquipment=" + safetyEquipment + ", assetStorageMedium="
-               + assetStorageMedium + ", softwareReportRequestList=" + softwareReportRequestList
-               + ", manualStartActivityRequest=" + manualStartActivityRequest + ", activityHandleRequest="
-               + activityHandleRequest + ", assetOthersRequest=" + assetOthersRequest + '}';
+        return "AssetOuterRequest{" + "asset=" + asset + ", macRelationRequests=" + macRelationRequests
+               + ", ipRelationRequests=" + ipRelationRequests + ", assemblyRequestList=" + assemblyRequestList
+               + ", networkEquipment=" + networkEquipment + ", safetyEquipment=" + safetyEquipment
+               + ", assetStorageMedium=" + assetStorageMedium + ", softwareReportRequestList="
+               + softwareReportRequestList + ", manualStartActivityRequest=" + manualStartActivityRequest
+               + ", activityHandleRequest=" + activityHandleRequest + '}';
     }
 
     @Override

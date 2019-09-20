@@ -10,5 +10,4 @@ import com.antiy.common.base.BaseResponse;
  */
 
 public class AssetIpMacResponse extends BaseResponse {
-
 }

@@ -19,228 +19,194 @@ public class AssetResponse extends BaseResponse {
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String                   number;
+    private String                         number;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String                   name;
+    private String                         name;
     /**
      * 资产组
      */
     @ApiModelProperty("资产组")
-    private String                   assetGroup;
+    private String                         assetGroup;
     /**
      * 资产组列表
      */
     @ApiModelProperty("资产组列表")
-    private List<AssetGroupResponse> assetGroups;
+    private List<AssetGroupResponse>       assetGroups;
     /**
      * ip
      */
     @ApiModelProperty("ip")
-    private String                   ip;
+    private List<AssetIpRelationResponse>  ip;
     /**
      * mac
      */
     @ApiModelProperty("mac")
-    private String                   mac;
+    private List<AssetMacRelationResponse> mac;
     /**
      * 序列号
      */
     @ApiModelProperty("序列号")
-    private String                   serial;
+    private String                         serial;
     /**
      * 品类
      */
     @ApiModelProperty("品类")
     @Encode
-    private String                   categoryModel;
+    private String                         categoryModel;
     /**
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType             categoryType;
+    private CategoryType                   categoryType;
 
     /**
      * 品类名称
      */
     @ApiModelProperty("品类名称")
-    private String                   categoryModelName;
+    private String                         categoryModelName;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String                   manufacturer;
+    private String                         manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态")
-    private Integer                  assetStatus;
+    private Integer                        assetStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
     @Encode
-    private String                   operationSystem;
+    private String                         operationSystem;
 
     /**
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
-    private String                   operationSystemName;
+    private String                         operationSystemName;
     /**
      * 操作系统提示
      */
     @ApiModelProperty("操作系统提示")
-    private String                   operationSystemNotice;
-    /**
-     * 系统位数
-     */
-    @ApiModelProperty("系统位数")
-    private Integer                  systemBit;
+    private String                         operationSystemNotice;
 
-    /**
-     * 固件版本
-     */
-    @ApiModelProperty("固件版本")
-    private String                   firmwareVersion;
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    private String                   uuid;
+    private String                         uuid;
     /**
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    private String                   responsibleUserId;
+    private String                         responsibleUserId;
     /**
      * 责任人名称
      */
     @ApiModelProperty("责任人名称")
-    private String                   responsibleUserName;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String                   contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    private String                   email;
+    private String                         responsibleUserName;
+
 
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("上报来源")
-    private Integer                  assetSource;
+    private Integer                        assetSource;
     /**
      * 1核心2重要3一般
      */
     @ApiModelProperty("1核心2重要3一般")
-    private Integer                  importanceDegree;
+    private Integer                        importanceDegree;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String                   describle;
-    /**
-     * 父类资源Id
-     */
-    @ApiModelProperty("父类资源Id")
-    @Encode
-    private String                   parentId;
-    /**
-     * 所属标签
-     */
-    @ApiModelProperty("")
-    private String                   tags;
+    private String                         describle;
+
     /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
-    private Long                     serviceLife;
+    private Long                           serviceLife;
     /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
-    private Long                     buyDate;
+    private Long                           buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private String                   warranty;
+    private String                         warranty;
     /**
      * 资产准入状态
      */
     @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
-    private Integer                  admittanceStatus;
+    private Integer                        admittanceStatus;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long                     gmtCreate;
+    private Long                           gmtCreate;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
-    private Long                     firstEnterNett;
+    private Long                           firstEnterNett;
     /**
      * 首次入网时间
      */
     @ApiModelProperty("首次发现时间")
-    private Long                     firstDiscoverTime;
+    private Long                           firstDiscoverTime;
     /**
      * 行政区划主键
      */
     @ApiModelProperty("行政区划主键")
     @Encode
-    private String                   areaId;
+    private String                         areaId;
     /**
      * 行政区划名称
      */
     @ApiModelProperty("行政区划名称")
-    private String                   areaName;
-    /**
-     * 物理位置
-     */
-    @ApiModelProperty("物理位置")
-    private String                   location;
+    private String                         areaName;
+
     /**
      * 机房位置
      */
     @ApiModelProperty("机房位置")
-    private String                   houseLocation;
+    private String                         houseLocation;
     /**
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式1人工2自动")
-    private Integer                  installType;
+    private Integer                        installType;
     /**
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式1人工2自动")
-    private String                   installTypeName;
+    private String                         installTypeName;
     /**
      * 资产流程信息
      */
     @ApiModelProperty("资产流程信息")
-    private WaitingTaskReponse       waitingTaskReponse;
+    private WaitingTaskReponse             waitingTaskReponse;
 
     @ApiModelProperty(value = "漏洞个数")
-    private String                   vulCount;
+    private String                         vulCount;
 
     @ApiModelProperty(value = "补丁个数")
-    private String                   patchCount;
+    private String                         patchCount;
 
     @ApiModelProperty(value = "告警个数")
-    private String                   alarmCount;
-    @ApiModelProperty(value = "二级品类名")
-    private String                   secondCategoryModelName;
+    private String                         alarmCount;
+
 
     public String getOperationSystemNotice() {
         return operationSystemNotice;
@@ -258,13 +224,7 @@ public class AssetResponse extends BaseResponse {
         this.firstDiscoverTime = firstDiscoverTime;
     }
 
-    public String getSecondCategoryModelName() {
-        return secondCategoryModelName;
-    }
 
-    public void setSecondCategoryModelName(String secondCategoryModelName) {
-        this.secondCategoryModelName = secondCategoryModelName;
-    }
 
     public String getInstallTypeName() {
         return installTypeName;
@@ -372,22 +332,6 @@ public class AssetResponse extends BaseResponse {
         this.assetGroup = assetGroup;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
     public String getNumber() {
         return number;
     }
@@ -444,21 +388,6 @@ public class AssetResponse extends BaseResponse {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getSystemBit() {
-        return systemBit;
-    }
-
-    public void setSystemBit(Integer systemBit) {
-        this.systemBit = systemBit;
-    }
-
-    public String getFirmwareVersion() {
-        return firmwareVersion;
-    }
-
-    public void setFirmwareVersion(String firmwareVersion) {
-        this.firmwareVersion = firmwareVersion;
-    }
 
     public String getUuid() {
         return uuid;
@@ -474,22 +403,6 @@ public class AssetResponse extends BaseResponse {
 
     public void setResponsibleUserId(String responsibleUserId) {
         this.responsibleUserId = responsibleUserId;
-    }
-
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Integer getAssetSource() {
@@ -508,21 +421,6 @@ public class AssetResponse extends BaseResponse {
         this.importanceDegree = importanceDegree;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
 
     public Long getServiceLife() {
         return serviceLife;
@@ -572,14 +470,6 @@ public class AssetResponse extends BaseResponse {
         this.firstEnterNett = firstEnterNett;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getHouseLocation() {
         return houseLocation;
     }
@@ -604,21 +494,62 @@ public class AssetResponse extends BaseResponse {
         this.categoryType = categoryType;
     }
 
+    public List<AssetIpRelationResponse> getIp() {
+        return ip;
+    }
+
+    public void setIp(List<AssetIpRelationResponse> ip) {
+        this.ip = ip;
+    }
+
+    public List<AssetMacRelationResponse> getMac() {
+        return mac;
+    }
+
+    public void setMac(List<AssetMacRelationResponse> mac) {
+        this.mac = mac;
+    }
+
     @Override
     public String toString() {
-        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
-               + '\'' + ", assetGroups=" + assetGroups + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
-               + serial + '\'' + ", categoryModel='" + categoryModel + '\'' + ", categoryModelName='"
-               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", systemBit=" + systemBit + ", firmwareVersion='"
-               + firmwareVersion + '\'' + ", uuid='" + uuid + '\'' + ", responsibleUserId='" + responsibleUserId + '\''
-               + ", responsibleUserName='" + responsibleUserName + '\'' + ", contactTel='" + contactTel + '\''
-               + ", email='" + email + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", describle='" + describle + '\'' + ", parentId=" + parentId + ", tags='" + tags + '\''
-               + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty=" + warranty
-               + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
-               + firstEnterNett + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", location='"
-               + location + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType=" + installType
-               + ", waitingTaskReponse=" + waitingTaskReponse + '}';
+        return "AssetResponse{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", assetGroups=" + assetGroups +
+                ", ip=" + ip +
+                ", mac=" + mac +
+                ", serial='" + serial + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", categoryType=" + categoryType +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", operationSystemNotice='" + operationSystemNotice + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", describle='" + describle + '\'' +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty='" + warranty + '\'' +
+                ", admittanceStatus=" + admittanceStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", firstEnterNett=" + firstEnterNett +
+                ", firstDiscoverTime=" + firstDiscoverTime +
+                ", areaId='" + areaId + '\'' +
+                ", areaName='" + areaName + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", installType=" + installType +
+                ", installTypeName='" + installTypeName + '\'' +
+                ", waitingTaskReponse=" + waitingTaskReponse +
+                ", vulCount='" + vulCount + '\'' +
+                ", patchCount='" + patchCount + '\'' +
+                ", alarmCount='" + alarmCount + '\'' +
+                '}';
     }
 }

@@ -7,6 +7,8 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p> AssetSoftwareRelation 查询条件 </p>
  *
@@ -20,6 +22,7 @@ public class AssetSoftwareRelationQuery extends ObjectQuery implements ObjectVal
      */
     @ApiModelProperty("资产主键")
     @Encode
+    @NotBlank(message = "资产id不能为空")
     private String  assetId;
     /**
      * 软件主键
