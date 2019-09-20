@@ -34,14 +34,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AssetClient;
+import com.antiy.asset.intergration.EmergencyClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -130,10 +135,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource
     private AssetMacRelationDao                                                 assetMacRelationDao;
+    @Resource
+    private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     private static final int                                                    ALL_PAGE = -1;
 
     @Resource
     private EmergencyClient                                                     emergencyClient;
+    @Resource
+    private AssetAssemblyDao                                                    assetAssemblyDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -410,7 +419,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
-            AssetAssemblyResponse.class);
+                AssetAssemblyResponse.class);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -1191,12 +1200,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
-
-                    List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
-                    // 如果网卡被删除，则同时删除通联关系表
-                    AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
-                    assetNetworkCardQuery.setAssetId(asset.getStringId());
-                    // 当前数据库存在的网卡
+                    // 处理ip
+                    dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests());
+                    // 处理mac
+                    dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
+                    // 处理软件
+                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequestList());
+                    // 处理组件
+                    dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
                     // 7. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1349,6 +1360,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }).start();
         }
         return assetCount;
+    }
+
+    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests) {
+
+    }
+
+    public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
+    }
+
+    public void dealSoft(String id, List<AssetSoftwareReportRequest> softwareReportRequestList) {
+        // 1.先删除旧的关系表
+        assetSoftwareRelationDao.deleteSoftRealtion(id);
+        // 2.插入新的关系
+    }
+
+    public void dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
+        // 1.先删除旧的关系表
+        assetAssemblyDao.deleteAssemblyRelation(id);
+        // 2.插入新的关系
     }
 
     private boolean checkNumber(String id, String number) {
