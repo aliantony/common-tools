@@ -339,25 +339,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
     public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
                                     HttpServletRequest request) throws Exception {
         ReportForm reportForm = new ReportForm();
-        String titleStr;
-        switch (assetReportCategoryCountQuery.getShowCycleType()) {
-            case THIS_WEEK:
-                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                break;
-            case THIS_MONTH:
-                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                break;
-            case THIS_QUARTER:
-                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                break;
-            case THIS_YEAR:
-                titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-                break;
-            case ASSIGN_TIME:
-                titleStr = getTitleStr(assetReportCategoryCountQuery);
-                break;
-            default:
-                throw new BusinessException("timeType参数异常");
+        String titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+        if (assetReportCategoryCountQuery.getShowCycleType().equals(ShowCycleType.ASSIGN_TIME)) {
+            titleStr = getTitleStr(assetReportCategoryCountQuery);
         }
         String title = titleStr + "资产品类型号总数";
         reportForm.setTitle(title);
@@ -606,13 +590,13 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
         Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.STORAGE_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.SAFETY_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.NEW_ADD.getMsg()));
-        rows.add((Map<String, String>) ssMap.get(AssetSecondCategoryEnum.AMOUNT.getMsg()));
+        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.COMPUTER.getName()));
+        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.NETWORK.getName()));
+        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.STORAGE.getName()));
+        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.SAFETY.getName()));
+        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.OTHER.getName()));
+        rows.add((Map<String, String>) ssMap.get("新增"));
+        rows.add((Map<String, String>) ssMap.get("总数"));
 
         reportTableResponse.setRows(rows);
         reportTableResponse.setChildren(children);
