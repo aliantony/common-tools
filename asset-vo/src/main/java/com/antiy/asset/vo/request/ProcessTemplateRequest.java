@@ -1,15 +1,14 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
 public class ProcessTemplateRequest extends BaseRequest {
-    @Encode
-    @ApiModelProperty(value = "流程当前状态")
-    private String       type;
+
+    @ApiModelProperty(value = "流程为入网状态时:传入true")
+    private boolean      flag;
     // @Encode
     @ApiModelProperty(value = "计算设备id数组")
     private List<String> comIds;
@@ -17,12 +16,12 @@ public class ProcessTemplateRequest extends BaseRequest {
     @ApiModelProperty(value = "全部id数组")
     private List<String> ids;
 
-    public String getType() {
-        return type;
+    public boolean getType() {
+        return flag;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(boolean type) {
+        this.flag = type;
     }
 
     public List<String> getIds() {
