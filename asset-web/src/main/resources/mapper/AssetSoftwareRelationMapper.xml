@@ -413,26 +413,22 @@
         order by install_time desc
     </select>
 
-    <select id="getSimpleSoftwareByAssetId" resultMap="BaseResultMap"
+    <select id="getSimpleSoftwareByAssetId" resultType="com.antiy.asset.vo.response.SoftwareResponse"
             parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
         select
-        asoftrel.id as id,
-        asoft.id as software_id,
-        asoft.name,
-        asoft.manufacturer,
-        asoft.version,
-        asoft.operation_system,
-        asoftrel.install_time
+        asoft.business_id softwareId,
+        asoft.product_name productName,
+        asoft.supplier supplier,
+        asoft.version version,
+        asoftrel.gmt_create linkTime
         from
         asset_software_relation asoftrel
-        left join asset_software asoft on asoftrel.software_id = asoft.id
+        left join asset_hard_soft_lib asoft on asoftrel.software_id = asoft.business_id
         where
         asset_id = #{assetId}
-        and asoft.id is not null
+        and asoft.business_id is not null
         and asoftrel.status = 1
         and asoft.status = 1
-        and asoftrel.install_status = 5
-        order by asoftrel.install_time desc
         <if test="pageSize != -1">
             limit #{pageSize} offset #{pageOffset}
         </if>
@@ -443,13 +439,12 @@
         count(1) count
         from
         asset_software_relation asoftrel
-        left join asset_software asoft on asoftrel.software_id = asoft.id
+        left join asset_hard_soft_lib asoft on asoftrel.software_id = asoft.business_id
         where
         asset_id = #{assetId}
-        and asoft.id is not null
+        and asoft.business_id is not null
         and asoftrel.status = 1
         and asoft.status = 1
-        and asoftrel.install_status = 5
     </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">

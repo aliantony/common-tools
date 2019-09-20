@@ -23,10 +23,7 @@ public class AssetStatusDetail extends AssetStatusNote {
 	 * 操作结果 通过-1 不通过-0
 	 */
 	private String processResult;
-	/**
-	 * 文件json
-	 */
-	private String fileInfo;
+
 	/**
 	 * 创建时间
 	 */
@@ -56,13 +53,7 @@ public class AssetStatusDetail extends AssetStatusNote {
 		this.processResult = processResult;
 	}
 
-	public String getFileInfo() {
-		return fileInfo;
-	}
 
-	public void setFileInfo(String fileInfo) {
-		this.fileInfo = fileInfo;
-	}
 
 	public Long getGmtCreate() {
 		return gmtCreate;
@@ -87,7 +78,6 @@ public class AssetStatusDetail extends AssetStatusNote {
 				", operateUserId=" + operateUserId +
 				", operateUserName='" + operateUserName + '\'' +
 				", processResult='" + processResult + '\'' +
-				", fileInfo='" + fileInfo + '\'' +
 				", gmtCreate=" + gmtCreate +
 				'}';
 	}

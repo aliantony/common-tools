@@ -27,12 +27,14 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     /**
      * 主板
+    /**
+     * mac
      */
     @ApiModelProperty(value = "mac")
     @Valid
     private List<AssetMacRelationRequest>    macRelationRequests;
     /**
-     * 主板
+     * ip
      */
     @ApiModelProperty(value = "ip/net")
     @Valid

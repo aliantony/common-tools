@@ -1,21 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -27,12 +11,31 @@ import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.enums.ApiCommandType;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.SoftInstallStatus;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.asset.vo.request.AssetInstallRequest;
+import com.antiy.asset.vo.request.AssetRelationSoftRequest;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
+import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.BaseRequestOuter;
+import com.antiy.asset.vo.request.CommandRequest;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
+import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.SoftwareResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -40,6 +43,24 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -126,19 +147,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public PageResult<AssetSoftwareRelationResponse> getSimpleSoftwarePageByAssetId(AssetSoftwareRelationQuery query) throws Exception {
+    public PageResult<SoftwareResponse> getPageSoftWareList(AssetSoftwareRelationQuery query) {
         int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-        List<AssetSoftwareRelation> assetSoftwareRelationList = assetSoftwareRelationDao
-            .getSimpleSoftwareByAssetId(query);
-        List<AssetSoftwareRelationResponse> assetSoftwareResponseList = responseConverter
-            .convert(assetSoftwareRelationList, AssetSoftwareRelationResponse.class);
-        for (AssetSoftwareRelationResponse assetSoftwareRelationResponse : assetSoftwareResponseList) {
-            setOperationName(assetSoftwareRelationResponse);
-        }
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareResponseList);
+        List<SoftwareResponse> assetSoftwareRelationList = assetSoftwareRelationDao
+                .getSimpleSoftwareByAssetId(query);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareRelationList);
     }
 
     private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {

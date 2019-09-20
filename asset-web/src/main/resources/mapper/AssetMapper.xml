@@ -16,6 +16,7 @@
         <result column="asset_group" property="assetGroup"/>
         <result column="number" property="number"/>
         <result column="name" property="name"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="install_type" property="installType"/>
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
@@ -34,6 +35,7 @@
         <result column="asset_source" property="assetSource"/>
         <result column="importance_degree" property="importanceDegree"/>
         <result column="describle" property="describle"/>
+        <result column="parent_id" property="parentId"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
         <result column="first_discover_time" property="firstDiscoverTime"/>
         <result column="service_life" property="serviceLife"/>
@@ -45,10 +47,16 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="ip" property="ip"/>
+        <result column="mac" property="mac"/>
+        <result column="install_template_id" property="installTemplateId"/>
+        <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
+        <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, parent_id, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status,install_template_id,baseline_template_id,baseline_template_correlation_gmt,install_template_correlation_gmt
     </sql>
 
     <sql id="Table_Name">
@@ -1640,4 +1648,22 @@
         </foreach>
     </update>
 
+    <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
+  SELECT
+  asset.id as assetId,
+	assembly.business_id as businessId,
+	assembly.amount,
+	lib.product_name AS productName,
+	lib.supplier,
+	lib.type
+FROM
+	asset
+LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
+LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
+WHERE
+	asset.id = 1
+  and asset.status=1
+  and assembly.status=1
+  and lib.status=1
+    </select>
 </mapper>

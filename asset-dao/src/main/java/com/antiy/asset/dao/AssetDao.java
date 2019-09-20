@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.antiy.asset.entity.AssetAssembly;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
@@ -266,8 +267,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateAssetBatch(@Param("assetList") List<Asset> assetList);
 
+
+
+
+
     /**
-     * 
+     *
      */
     Asset getByAssetId(@Param("id") String id);
+
+    List<AssetAssembly> getAssemblyInfoById(@Param("id") String id);
 }
