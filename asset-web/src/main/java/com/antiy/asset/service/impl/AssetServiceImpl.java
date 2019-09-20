@@ -31,14 +31,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.*;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IAssetSoftwareService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
