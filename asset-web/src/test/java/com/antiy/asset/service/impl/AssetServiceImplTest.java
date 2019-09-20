@@ -221,8 +221,7 @@ public class AssetServiceImplTest {
         assetNetworkEquipment.setAssetId("1");
         assetNetworkEquipment.setId(1);
         assetNetworkEquipment.setPortSize(1);
-        assetNetworkEquipment.setMacAddress("1A-1A-1A-1A-1A-1A");
-        assetNetworkEquipment.setInnerIp("1.2.1.2");
+
         return assetNetworkEquipment;
     }
 
@@ -724,18 +723,11 @@ public class AssetServiceImplTest {
         asset.setAreaName("");
         asset.setResponsibleUserName("");
         asset.setCategoryModelName("");
-        asset.setHardDisk("1");
-        asset.setMemory("1");
-        asset.setCpu("1");
-        asset.setNetworkCard("");
-        asset.setParentId("1");
-        asset.setIp("");
-        asset.setMac("");
+
         asset.setAssetGroup("");
         asset.setNumber("");
         asset.setName("");
-        asset.setEthernetPort(0);
-        asset.setSerialPort(0);
+
         asset.setInstallType(0);
         asset.setSerial("");
         asset.setAreaId("1");
@@ -744,8 +736,7 @@ public class AssetServiceImplTest {
         asset.setAssetStatus(8);
         asset.setAdmittanceStatus(0);
         asset.setOperationSystem("1");
-        asset.setSystemBit(0);
-        asset.setLocation("");
+
         asset.setLatitude("");
         asset.setLongitude("");
         asset.setHouseLocation("");
@@ -756,7 +747,7 @@ public class AssetServiceImplTest {
         asset.setAssetSource(0);
         asset.setImportanceDegree(0);
         asset.setDescrible("");
-        asset.setTags("");
+
         asset.setFirstEnterNett(0L);
         asset.setServiceLife(0L);
         asset.setBuyDate(0L);
@@ -1096,7 +1087,6 @@ public class AssetServiceImplTest {
     @Test
     public void testImportPc() throws Exception {
         when(assetDao.findCountMac(any())).thenReturn(0);
-
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
@@ -1132,7 +1122,7 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
 
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         computeDeviceEntity.setName("1");
         computeDeviceEntity1.setName("2");
@@ -1146,20 +1136,20 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
 
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产网卡MAC地址重复！", result);
+        Assert.assertEquals("导入失败，第8行MAC地址重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(10);
         importResult.getDataList().remove(1);
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         when(assetDao.findCountMac(any())).thenReturn(10);
 
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产网卡MAC地址重复！", result);
+        Assert.assertEquals("导入失败，第7行MAC地址重复！", result);
 
         when(assetDao.findCountMac(any())).thenReturn(0);
 
@@ -1198,7 +1188,7 @@ public class AssetServiceImplTest {
         computeDeviceEntity.setArea("四川");
 
         result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行硬盘购买时间需小于等于今天！", result);
+        Assert.assertEquals("导入成功1条", result);
 
         computeDeviceEntity.setArea("四川");
 
@@ -1269,7 +1259,7 @@ public class AssetServiceImplTest {
         NetworkDeviceEntity networkDeviceEntity1 = getNetworkDeviceEntity();
         networkDeviceEntities.add(networkDeviceEntity1);
         result = assetServiceImpl.importNet(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         networkDeviceEntity.setName("1");
         networkDeviceEntity1.setName("2");
@@ -1284,7 +1274,7 @@ public class AssetServiceImplTest {
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importNet(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         networkDeviceEntity.setPortSize(-1);
@@ -1386,7 +1376,7 @@ public class AssetServiceImplTest {
         SafetyEquipmentEntiy safetyEquipmentEntiy1 = getSafetyEquipmentEntiy();
         safetyEquipmentEntiys.add(safetyEquipmentEntiy1);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         safetyEquipmentEntiy.setName("1");
         safetyEquipmentEntiy1.setName("2");
@@ -1401,7 +1391,7 @@ public class AssetServiceImplTest {
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         when(assetDao.findCountMac(any())).thenReturn(10);
@@ -1499,7 +1489,7 @@ public class AssetServiceImplTest {
         StorageDeviceEntity storageDeviceEntity1 = getStorageDeviceEntity();
         storageDeviceEntityArrayList.add(storageDeviceEntity1);
         result = assetServiceImpl.importStory(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         storageDeviceEntity.setName("1");
         storageDeviceEntity1.setName("2");
@@ -1509,12 +1499,16 @@ public class AssetServiceImplTest {
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importStory(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         storageDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importStory(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
+
+        when(assetDao.findCount(any())).thenReturn(0);
+        storageDeviceEntity.setRaidSupport(1);
+        result = assetServiceImpl.importStory(null, assetImportRequest);
 
         storageDeviceEntity.setBuyDate(System.currentTimeMillis() / 2);
         storageDeviceEntity.setDueDate(System.currentTimeMillis() / 2);
@@ -1589,7 +1583,7 @@ public class AssetServiceImplTest {
         OtherDeviceEntity otherDeviceEntity1 = getOtherDeviceEntity();
         otherDeviceEntities.add(otherDeviceEntity1);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         otherDeviceEntity.setName("1");
         otherDeviceEntity1.setName("2");
@@ -1599,7 +1593,7 @@ public class AssetServiceImplTest {
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产名称重复！", result);
+        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
@@ -1682,8 +1676,7 @@ public class AssetServiceImplTest {
         assetResponse.setAdmittanceStatus(0);
         assetResponse.setCategoryModelName("");
         assetResponse.setAssetGroup("");
-        assetResponse.setIp("");
-        assetResponse.setMac("");
+
         assetResponse.setNumber("");
         assetResponse.setName("");
         assetResponse.setSerial("");
@@ -1691,23 +1684,20 @@ public class AssetServiceImplTest {
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
         assetResponse.setOperationSystem("");
-        assetResponse.setSystemBit(0);
-        assetResponse.setFirmwareVersion("");
+
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
-        assetResponse.setContactTel("");
-        assetResponse.setEmail("");
+
         assetResponse.setAssetSource(0);
         assetResponse.setImportanceDegree(0);
-        assetResponse.setParentId(0 + "");
-        assetResponse.setTags("");
+
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
         assetResponse.setWarranty("0");
         assetResponse.setAssetGroups(Lists.newArrayList());
         assetResponse.setGmtCreate(0L);
         assetResponse.setFirstEnterNett(0L);
-        assetResponse.setLocation("");
+
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 

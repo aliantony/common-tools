@@ -23,4 +23,13 @@ public enum AssetCategoryEnum {
         return name;
     }
 
+    public static String getNameByCode(Integer code) {
+        for (AssetCategoryEnum assetCategoryEnum : AssetCategoryEnum.values()) {
+            if (assetCategoryEnum.code.equals(code)) {
+                return assetCategoryEnum.name;
+            }
+        }
+        return null;
+    }
+
 }

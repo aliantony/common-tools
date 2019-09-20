@@ -17,53 +17,30 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String  assetId;
+    private String assetId;
     /**
      * 特征库版本
      */
     @ApiModelProperty("特征库版本")
-    private String  featureLibrary;
-    /**
-     * mac
-     */
-    @ApiModelProperty("mac")
-    private String  mac;
+    private String featureLibrary;
+
     /**
      * 策略配置
      */
     @ApiModelProperty("策略配置")
-    private String  strategy;
+    private String strategy;
     /**
      * 备注
      */
     @ApiModelProperty("备注")
-    private String  memo;
-    /**
-     * 创建人
-     */
-    @ApiModelProperty("创建人")
-    private Integer createUser;
-    /**
-     * 修改人
-     */
-    @ApiModelProperty("修改人")
-    private Integer modifyUser;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    private Long    gmtCreate;
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty("更新时间")
-    private Long    gmtModified;
+    private String memo;
+
     @ApiModelProperty("命令与控制通道检测引擎版本号")
-    private String  commandControlChannel;
+    private String commandControlChannel;
     @ApiModelProperty("是否纳入管理")
-    private String  isManage;
+    private String isManage;
     @ApiModelProperty("软件版本")
-    private String  newVersion;
+    private String newVersion;
 
     public String getAssetId() {
         return assetId;
@@ -97,46 +74,6 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
         this.memo = memo;
     }
 
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-        this.createUser = createUser;
-    }
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-        this.modifyUser = modifyUser;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
     public String getCommandControlChannel() {
         return commandControlChannel;
     }
@@ -159,5 +96,18 @@ public class AssetSafetyEquipmentResponse extends BaseResponse {
 
     public void setNewVersion(String newVersion) {
         this.newVersion = newVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetSafetyEquipmentResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", featureLibrary='" + featureLibrary + '\'' +
+                ", strategy='" + strategy + '\'' +
+                ", memo='" + memo + '\'' +
+                ", commandControlChannel='" + commandControlChannel + '\'' +
+                ", isManage='" + isManage + '\'' +
+                ", newVersion='" + newVersion + '\'' +
+                '}';
     }
 }

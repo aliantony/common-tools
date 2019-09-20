@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.antiy.asset.entity.AssetAssembly;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.Asset;
@@ -252,8 +253,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     int findAlarmAssetCount(AssetQuery query);
 
     /**
-     * 通过资产id查询对应资产信息<br>
-     * 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
+     * 通过资产id查询对应资产信息<br> 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
      *
      * @param ids
      * @return
@@ -266,4 +266,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer updateAssetBatch(@Param("assetList") List<Asset> assetList);
+
+    /**
+     * 
+     */
+    Asset getByAssetId(@Param("id") String id);
+
+    List<AssetAssembly> getAssemblyInfoById(@Param("id") String id);
 }

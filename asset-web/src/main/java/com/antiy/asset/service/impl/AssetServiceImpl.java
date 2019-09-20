@@ -1,34 +1,16 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
-import com.antiy.asset.intergration.EmergencyClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.base.*;
-import com.antiy.common.config.kafka.KafkaConfig;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -50,15 +32,32 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.config.kafka.KafkaConfig;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -68,57 +67,73 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
-    private Logger                              logger   = LogUtils.get(this.getClass());
+    private Logger                                                              logger   = LogUtils
+        .get(this.getClass());
     @Resource
-    private AssetDao                            assetDao;
+    private AssetDao                                                            assetDao;
     @Resource
-    private AssetInstallTemplateDao             assetInstallTemplateDao;
+    private AssetInstallTemplateDao                                             assetInstallTemplateDao;
     @Resource
-    private AssetNetworkEquipmentDao            assetNetworkEquipmentDao;
+    private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
     @Resource
-    private AssetSafetyEquipmentDao             assetSafetyEquipmentDao;
+    private AssetSafetyEquipmentDao                                             assetSafetyEquipmentDao;
     @Resource
-    private TransactionTemplate                 transactionTemplate;
+    private TransactionTemplate                                                 transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao               assetStorageMediumDao;
+    private AssetStorageMediumDao                                               assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao             assetOperationRecordDao;
+    private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
-    private BaseConverter<AssetRequest, Asset>  requestConverter;
-    private BaseConverter<Asset, AssetResponse> responseConverter;
-    private AssetUserDao                        assetUserDao;
+    private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
-    private AssetGroupRelationDao               assetGroupRelationDao;
+    private BaseConverter<Asset, AssetResponse>                                 responseConverter;
     @Resource
-    private ExcelDownloadUtil                   excelDownloadUtil;
+    private BaseConverter<AssetIpRelation, AssetIpRelationResponse>             ipResponseConverter;
     @Resource
-    private AssetEntityConvert                  assetEntityConvert;
+    private BaseConverter<AssetMacRelation, AssetMacRelationResponse>           macResponseConverter;
     @Resource
-    private AssetGroupDao                       assetGroupDao;
+    private BaseConverter<AssetNetworkEquipment, AssetNetworkEquipmentResponse> networkResponseConverter;
     @Resource
-    private ActivityClient                      activityClient;
+    private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Resource
-    private AesEncoder                          aesEncoder;
+    private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
     @Resource
-    private RedisUtil                           redisUtil;
-    @Resource
-    private AssetLinkRelationDao                assetLinkRelationDao;
-    @Resource
-    private OperatingSystemClient               operatingSystemClient;
-    @Resource
-    private IRedisService                       redisService;
-    @Resource
-    private AssetClient                         assetClient;
-    @Resource
-    private AssetIpRelationDao                  assetIpRelationDao;
-    @Resource
-    private AssetMacRelationDao                 assetMacRelationDao;
-    private static final int                    ALL_PAGE = -1;
+    private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
 
     @Resource
-    private EmergencyClient                     emergencyClient;
+    private AssetUserDao                                                        assetUserDao;
+    @Resource
+    private AssetGroupRelationDao                                               assetGroupRelationDao;
+    @Resource
+    private ExcelDownloadUtil                                                   excelDownloadUtil;
+    @Resource
+    private AssetEntityConvert                                                  assetEntityConvert;
+    @Resource
+    private AssetGroupDao                                                       assetGroupDao;
+    @Resource
+    private ActivityClient                                                      activityClient;
+    @Resource
+    private AesEncoder                                                          aesEncoder;
+    @Resource
+    private RedisUtil                                                           redisUtil;
+    @Resource
+    private AssetLinkRelationDao                                                assetLinkRelationDao;
+    @Resource
+    private OperatingSystemClient                                               operatingSystemClient;
+    @Resource
+    private IRedisService                                                       redisService;
+    @Resource
+    private AssetClient                                                         assetClient;
+    @Resource
+    private AssetIpRelationDao                                                  assetIpRelationDao;
+    @Resource
+    private AssetMacRelationDao                                                 assetMacRelationDao;
+    private static final int                                                    ALL_PAGE = -1;
+
+    @Resource
+    private EmergencyClient                                                     emergencyClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -390,6 +405,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setNumber(number);
         Integer countAsset = findCountAssetNumber(assetQuery);
         return countAsset >= 1;
+    }
+
+    @Override
+    public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
+        return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
+            AssetAssemblyResponse.class);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -1009,82 +1030,68 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public AssetOuterResponse getByAssetId(AssetDetialCondition condition) throws Exception {
-        BusinessExceptionUtils.isNull(condition, "资产不能为空");
-        BusinessExceptionUtils.isNull(condition.getPrimaryKey(), "资产ID不能为空");
+    public AssetOuterResponse getByAssetId(QueryCondition condition) throws Exception {
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
-        HashMap<String, Object> param = new HashMap();
-        // 资产信息
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(new String[] { condition.getPrimaryKey() });
-        List<Asset> assetList = assetDao.findListAsset(assetQuery);
-        BusinessExceptionUtils.isEmpty(assetList, "资产不存在");
-        Asset asset = assetList.get(0);
-
-        // 查询资产组AbstractOperations
-        param.put("assetId", asset.getId());
-        AssetResponse assetResponse = BeanConvert.convertBean(asset, AssetResponse.class);
-
-        // 设置区域
-        if (StringUtils.isNotEmpty(asset.getAreaId())) {
-            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                DataTypeUtils.stringToInteger(asset.getAreaId()));
-            SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-            assetResponse.setAreaName(sysArea != null ? sysArea.getFullName() : null);
-        }
-
-        // 设置操作系统名
-        if (StringUtils.isNotEmpty(asset.getOperationSystem())) {
-            List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
-            for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
-                if (asset.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                    assetResponse.setOperationSystemName(categoryModelResponse.getName());
-                }
-            }
-        } else {
-            Object osName = redisUtil.get("asset:unknown:os:" + asset.getStringId());
-            assetResponse.setOperationSystemNotice(osName != null ? osName.toString() : null);
-        }
-        assetResponse.setAssetGroups(
-            BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
-        assetResponse.setAssetGroups(
-            BeanConvert.convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class));
+        Asset asset = assetDao.getByAssetId(condition.getPrimaryKey());
+        // 获取主表信息
+        AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
+        // 获取区域
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+            DataTypeUtils.stringToInteger(asset.getAreaId()));
+        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+        assetResponse.setAreaName(sysArea.getFullName());
+        // 设置品类型号名
+        assetResponse
+            .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));
+        // 获取资产组
+        List<AssetGroupResponse> assetGroupResponses = BeanConvert
+            .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);
+        if (CollectionUtils.isNotEmpty(assetGroupResponses)) {
+            assetResponse.setAssetGroups(assetGroupResponses);
+            StringBuilder assetGroup = new StringBuilder();
+            assetGroupResponses.forEach(x -> assetGroup.append(x.getName() + ","));
+            assetResponse.setAssetGroup(assetGroup.substring(0, assetGroup.length() - 1));
+        }
+        // 查询ip
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("status", "1");
+        param.put("assetId", condition.getPrimaryKey());
+        List<AssetIpRelation> assetIpRelations = assetIpRelationDao.getByWhere(param);
+        assetResponse.setIp(ipResponseConverter.convert(assetIpRelations, AssetIpRelationResponse.class));
+        // 查询mac
+        List<AssetMacRelation> assetMacRelations = assetMacRelationDao.getByWhere(param);
+        assetResponse.setMac(macResponseConverter.convert(assetMacRelations, AssetMacRelationResponse.class));
 
-        // 网络设备
-        List<AssetNetworkEquipment> assetNetworkEquipmentList = assetNetworkEquipmentDao.getByWhere(param);
-        if (CollectionUtils.isNotEmpty(assetNetworkEquipmentList)) {
-            assetOuterResponse.setAssetNetworkEquipment(
-                BeanConvert.convertBean(assetNetworkEquipmentList.get(0), AssetNetworkEquipmentResponse.class));
-        }
-        // 安全设备
-        List<AssetSafetyEquipment> assetSafetyEquipmentList = assetSafetyEquipmentDao.getByWhere(param);
-        if (CollectionUtils.isNotEmpty(assetSafetyEquipmentList)) {
-            assetOuterResponse.setAssetSafetyEquipment(
-                BeanConvert.convertBean(assetSafetyEquipmentList.get(0), AssetSafetyEquipmentResponse.class));
-        }
-        // 存储介质
-        List<AssetStorageMedium> assetStorageMediumList = assetStorageMediumDao.getByWhere(param);
-        if (CollectionUtils.isNotEmpty(assetStorageMediumList)) {
-            assetOuterResponse.setAssetStorageMedium(
-                BeanConvert.convertBean(assetStorageMediumList.get(0), AssetStorageMediumResponse.class));
-        }
-        // 软件列表
-        if (condition.getIsNeedSoftware()) {
-            List<AssetSoftware> assetSoftwareList = assetSoftwareRelationDao
-                .getSoftByAssetId(DataTypeUtils.stringToInteger(condition.getPrimaryKey()));
-            if (CollectionUtils.isNotEmpty(assetSoftwareList)) {
-                List<AssetSoftwareResponse> assetSoftware = BeanConvert.convert(assetSoftwareList,
-                    AssetSoftwareResponse.class);
-                assetSoftware.stream().forEach(as -> {
-                    if (StringUtils.isNotBlank(as.getOperationSystem())) {
-                        as.setOperationSystems(Arrays.asList(as.getOperationSystem().split(",")));
-                    }
-                });
-                assetOuterResponse.setAssetSoftware(assetSoftware);
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode().toString())) {
+            List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
+            if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
+                AssetNetworkEquipmentResponse assetNetworkEquipmentResponse = networkResponseConverter
+                    .convert(assetNetworkEquipments.get(0), AssetNetworkEquipmentResponse.class);
+                assetOuterResponse.setAssetNetworkEquipment(assetNetworkEquipmentResponse);
             }
         }
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.SAFETY.getCode().toString())) {
+            List<AssetSafetyEquipment> assetSafetyEquipments = assetSafetyEquipmentDao.getByWhere(param);
+            if (CollectionUtils.isNotEmpty(assetSafetyEquipments)) {
+                AssetSafetyEquipmentResponse assetSafetyEquipmentResponse = safetyResponseConverter
+                    .convert(assetSafetyEquipments.get(0), AssetSafetyEquipmentResponse.class);
+                assetOuterResponse.setAssetSafetyEquipment(assetSafetyEquipmentResponse);
+            }
+
+        }
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode().toString())) {
+            List<AssetStorageMedium> assetStorageMedias = assetStorageMediumDao.getByWhere(param);
+            if (CollectionUtils.isNotEmpty(assetStorageMedias)) {
+                AssetStorageMediumResponse assetStorageMediumResponse = storageResponseConverter
+                    .convert(assetStorageMedias.get(0), AssetStorageMediumResponse.class);
+                assetOuterResponse.setAssetStorageMedium(assetStorageMediumResponse);
+            }
+
+        }
+
         return assetOuterResponse;
+
     }
 
     @Override
@@ -1792,7 +1799,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
                 for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
                     if (categoryModelResponse.getName().equals(entity.getOperationSystem())) {
-                        asset.setOperationSystem((String) categoryModelResponse.getStringId());
+                        // asset.setOperationSystem((String) categoryModelResponse.getStringId());
                     }
                 }
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
@@ -1993,7 +2000,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setPortSize(networkDeviceEntity.getPortSize());
                 assetNetworkEquipment.setIos(networkDeviceEntity.getIos());
                 assetNetworkEquipment.setOuterIp(networkDeviceEntity.getOuterIp());
-                assetNetworkEquipment.setMacAddress(networkDeviceEntity.getMac());
+                // assetNetworkEquipment.setMacAddress(networkDeviceEntity.getMac());
                 assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
                 assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
                 assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
@@ -2160,7 +2167,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
                 for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
                     if (categoryModelResponse.getName().equals(entity.getOperationSystem())) {
-                        asset.setOperationSystem((String) categoryModelResponse.getStringId());
+                        // asset.setOperationSystem((String) categoryModelResponse.getStringId());
                     }
                 }
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
