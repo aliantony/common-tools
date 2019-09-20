@@ -1185,7 +1185,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
 
-                    List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
+                    // List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
                     // 如果网卡被删除，则同时删除通联关系表
                     AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
                     assetNetworkCardQuery.setAssetId(asset.getStringId());

@@ -286,54 +286,8 @@ public class AssetServiceImplTest {
         assetRequest.setAssetGroups(Arrays.asList(generateAssetGroupRequest()));
         assetOuterRequest.setAsset(assetRequest);
         ActionResponse result = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result.getHead().getCode());
+        Assert.assertEquals("416", result.getHead().getCode());
 
-        // 带网卡的资产
-        List<AssetNetworkCardRequest> networkCardRequests = new ArrayList<>();
-        networkCardRequests.add(generateAssetNetworkCardRequest());
-        assetOuterRequest.setNetworkCard(networkCardRequests);
-        ActionResponse result1 = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result1.getHead().getCode());
-
-        // 带主板的资产
-        List<AssetMainboradRequest> mainboradRequests = new ArrayList<>();
-        AssetMainboradRequest assetMainboradRequest = new AssetMainboradRequest();
-        assetMainboradRequest.setAssetId("1");
-        assetMainboradRequest.setBrand("1");
-        mainboradRequests.add(assetMainboradRequest);
-        assetOuterRequest.setMainboard(mainboradRequests);
-        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result2.getHead().getCode());
-
-        // 带内存的资产
-        List<AssetMemoryRequest> memoryRequests = new ArrayList<>();
-        AssetMemoryRequest assetMemoryRequest = new AssetMemoryRequest();
-        assetMemoryRequest.setAssetId("1");
-        assetMemoryRequest.setBrand("1");
-        memoryRequests.add(assetMemoryRequest);
-        assetOuterRequest.setMemory(memoryRequests);
-        ActionResponse result3 = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result3.getHead().getCode());
-
-        // 带cpu的资产
-        List<AssetCpuRequest> cpuRequests = new ArrayList<>();
-        AssetCpuRequest assetCpuRequest = new AssetCpuRequest();
-        assetCpuRequest.setAssetId("1");
-        assetCpuRequest.setBrand("1");
-        cpuRequests.add(assetCpuRequest);
-        assetOuterRequest.setCpu(cpuRequests);
-        ActionResponse result4 = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result4.getHead().getCode());
-
-        // 带硬盘的资产
-        List<AssetHardDiskRequest> hardDisks = new ArrayList<>();
-        AssetHardDiskRequest assetHardDiskRequest = new AssetHardDiskRequest();
-        assetHardDiskRequest.setAssetId("1");
-        assetHardDiskRequest.setBrand("1");
-        hardDisks.add(assetHardDiskRequest);
-        assetOuterRequest.setHardDisk(hardDisks);
-        ActionResponse result5 = assetServiceImpl.saveAsset(assetOuterRequest);
-        Assert.assertEquals("200", result5.getHead().getCode());
 
         // 安全设备
         AssetOuterRequest assetOuterRequest1 = new AssetOuterRequest();
@@ -343,7 +297,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result6 = assetServiceImpl.saveAsset(assetOuterRequest1);
-        Assert.assertEquals("200", result6.getHead().getCode());
+        Assert.assertEquals("416", result6.getHead().getCode());
 
         // 网络设备
         AssetOuterRequest assetOuterRequest2 = new AssetOuterRequest();
@@ -353,7 +307,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result7 = assetServiceImpl.saveAsset(assetOuterRequest2);
-        Assert.assertEquals("200", result7.getHead().getCode());
+        Assert.assertEquals("416", result7.getHead().getCode());
 
         // 存储设备
         AssetOuterRequest assetOuterRequest3 = new AssetOuterRequest();
@@ -362,14 +316,9 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest3.setManualStartActivityRequest(generateAssetManualStart());
         ActionResponse result8 = assetServiceImpl.saveAsset(assetOuterRequest3);
-        Assert.assertEquals("200", result8.getHead().getCode());
+        Assert.assertEquals("416", result8.getHead().getCode());
 
-        // 其它设备
-        AssetOuterRequest assetOuterRequest4 = new AssetOuterRequest();
-        assetOuterRequest4.setAssetOthersRequest(generateAssetOtherRequest());
-        assetOuterRequest4.setManualStartActivityRequest(generateAssetManualStart());
-        ActionResponse result9 = assetServiceImpl.saveAsset(assetOuterRequest4);
-        Assert.assertEquals("200", result9.getHead().getCode());
+
 
         // ip重复
         when(assetDao.findCountMac(any())).thenReturn(10);
@@ -823,48 +772,30 @@ public class AssetServiceImplTest {
         AssetRequest assetRequest = generateAssetRequest();
         assetRequest.setAssetGroups(assetGroupRequests);
         assetOuterRequest.setAsset(assetRequest);
-        // cpu
-        assetOuterRequest.setCpu(Arrays.asList(generateAssetCpuRequest()));
 
-        // 主板信息
-        List<AssetMainboradRequest> assetMainboradRequestList = Arrays.asList(generateAssetMainboradRequest());
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
-
-        // 内存信息
-        List<AssetMemoryRequest> assetMemoryRequestList = Arrays.asList(generateAssetMemoryRequest());
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-
-        // 硬盘信息
-        List<AssetHardDiskRequest> assetHardDiskRequestList = Arrays.asList(generateHardDiskRequest());
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-
-        // 网卡信息
-        List<AssetNetworkCardRequest> assetNetworkCardRequests = Arrays.asList(generateAssetNetworkCardRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         int result = assetServiceImpl.changeAsset(assetOuterRequest);
         Assert.assertEquals(10, result);
 
         AssetCpuRequest assetCpu = generateAssetCpuRequest();
         assetCpu.setId(null);
-        assetOuterRequest.setCpu(Arrays.asList(assetCpu));
+
 
         AssetMainboradRequest assetMainboradRequest = generateAssetMainboradRequest();
         assetMainboradRequest.setId(null);
-        assetOuterRequest.setMainboard(Arrays.asList(assetMainboradRequest));
+
 
         AssetHardDiskRequest assetHardDiskRequest = generateHardDiskRequest();
         assetHardDiskRequest.setId(null);
-        assetOuterRequest.setHardDisk(Arrays.asList(assetHardDiskRequest));
+
 
         AssetNetworkCardRequest assetNetworkCard = generateAssetNetworkCardRequest();
         assetNetworkCard.setId(null);
-        assetOuterRequest.setNetworkCard(Arrays.asList(assetNetworkCard));
+
 
         AssetMemoryRequest assetMemoryRequest = generateAssetMemoryRequest();
         assetMemoryRequest.setId(null);
-        assetOuterRequest.setMemory(Arrays.asList(assetMemoryRequest));
+
 
         result = assetServiceImpl.changeAsset(assetOuterRequest);
         Assert.assertEquals(10, result);
@@ -873,10 +804,7 @@ public class AssetServiceImplTest {
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest.setSafetyEquipment(generateAssetSafetyEquipmentRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         result = assetServiceImpl.changeAsset(assetOuterRequest);
@@ -886,10 +814,7 @@ public class AssetServiceImplTest {
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest.setNetworkEquipment(genrateAssetNetworkEquipmentRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         result = assetServiceImpl.changeAsset(assetOuterRequest);
@@ -899,10 +824,7 @@ public class AssetServiceImplTest {
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         result = assetServiceImpl.changeAsset(assetOuterRequest);
@@ -914,10 +836,7 @@ public class AssetServiceImplTest {
         when(assetDao.getById(any())).thenReturn(asset);
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(null);
         assetServiceImpl.changeAsset(assetOuterRequest);
 
@@ -928,10 +847,7 @@ public class AssetServiceImplTest {
 
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(null);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
@@ -946,10 +862,7 @@ public class AssetServiceImplTest {
 
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(null);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
@@ -963,10 +876,7 @@ public class AssetServiceImplTest {
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         when(assetDao.getById(any())).thenReturn(asset);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
@@ -1017,10 +927,7 @@ public class AssetServiceImplTest {
         assetOuterRequest = new AssetOuterRequest();
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest.setAssetStorageMedium(generateAssetStorageMediumRequest());
-        assetOuterRequest.setNetworkCard(assetNetworkCardRequests);
-        assetOuterRequest.setHardDisk(assetHardDiskRequestList);
-        assetOuterRequest.setMemory(assetMemoryRequestList);
-        assetOuterRequest.setMainboard(assetMainboradRequestList);
+
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
 
         try {
