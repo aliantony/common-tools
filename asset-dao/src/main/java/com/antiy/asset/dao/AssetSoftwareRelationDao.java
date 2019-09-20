@@ -34,7 +34,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param query
      * @return
      */
-    List<SoftwareResponse> getSimpleSoftwareByAssetId(AssetSoftwareRelationQuery query);
+    List<SoftwareResponse> getSimpleSoftwareByAssetId(AssetSoftwareQuery query);
 
     /**
      * 根据assetId资产id统计数量

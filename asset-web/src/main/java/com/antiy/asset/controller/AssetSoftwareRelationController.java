@@ -11,7 +11,6 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
@@ -228,10 +227,4 @@ public class AssetSoftwareRelationController {
         return iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
     }
 
-    @ApiOperation(value = "分页查询资产关联的软件信息列表", notes = "必传资产ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SoftwareResponse.class, responseContainer = "actionResponse")})
-    @RequestMapping(value = "/software/list", method = RequestMethod.POST)
-    public ActionResponse getPageSoftwarePage(@ApiParam(value = "assetId") @RequestBody AssetSoftwareRelationQuery queryCondition) {
-       return ActionResponse.success(iAssetSoftwareRelationService.getPageSoftWareList(queryCondition));
-    }
 }
