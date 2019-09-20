@@ -25,27 +25,18 @@ public class Asset extends BaseEntity {
      */
     private Integer           installTemplateId;
     /**
+     * 资产与基准模板关联时间
+     */
+    private Long              baselineTemplateCorrelationGmt;
+    /**
+     * 资产与装机模板关联时间
+     */
+    private Long              installTemplateCorrelationGmt;
+    /**
      * 品类名称
      */
     private String            categoryModelName;
 
-    /**
-     * 硬盘
-     */
-    private String            hardDisk;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    private String            memory;
-
-    /**
-     * CPUJSON数据{ID:1,name:intel,coresize:8}
-     */
-    private String            cpu;
-    /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
-     */
-    private String            networkCard;
     /**
      * 父类资源Id
      */
@@ -134,10 +125,7 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("操作系统名")
     private String            operationSystemName;
-    /**
-     * 系统位数
-     */
-    private Integer           systemBit;
+
     /**
      * 使用者主键
      */
@@ -181,16 +169,7 @@ public class Asset extends BaseEntity {
      * 设备uuid
      */
     private String            uuid;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String            contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    private String            email;
+
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -211,10 +190,6 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("描述")
     private String            describle;
 
-    /**
-     * 所属标签ID和名称列表JSON串
-     */
-    private String            tags;
     /**
      * 首次入网时间
      */
@@ -270,7 +245,23 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("部门名")
     private String            departmentName;
     @ApiModelProperty("告警数量")
-    private String           alarmCount;
+    private String            alarmCount;
+
+    public Long getBaselineTemplateCorrelationGmt() {
+        return baselineTemplateCorrelationGmt;
+    }
+
+    public void setBaselineTemplateCorrelationGmt(Long baselineTemplateCorrelationGmt) {
+        this.baselineTemplateCorrelationGmt = baselineTemplateCorrelationGmt;
+    }
+
+    public Long getInstallTemplateCorrelationGmt() {
+        return installTemplateCorrelationGmt;
+    }
+
+    public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
+        this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
+    }
 
     public Long getFirstDiscoverTime() {
         return firstDiscoverTime;
@@ -320,30 +311,6 @@ public class Asset extends BaseEntity {
         this.alarmCount = alarmCount;
     }
 
-    @Override
-    public String toString() {
-        return "Asset{" + "categoryModelName='" + categoryModelName + '\'' + ", hardDisk='" + hardDisk + '\''
-               + ", memory='" + memory + '\'' + ", cpu='" + cpu + '\'' + ", networkCard='" + networkCard + '\''
-               + ", parentId='" + parentId + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", assetGroup='"
-               + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ethernetPort="
-               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", installTypeName='"
-               + installTypeName + '\'' + ", serial='" + serial + '\'' + ", areaId='" + areaId + '\'' + ", areaName='"
-               + areaName + '\'' + ", categoryModel='" + categoryModel + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus + ", operationSystem='"
-               + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\'' + ", systemBit="
-               + systemBit + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='"
-               + responsibleUserName + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\''
-               + ", longitude='" + longitude + '\'' + ", houseLocation='" + houseLocation + '\'' + ", firmwareVersion='"
-               + firmwareVersion + '\'' + ", softwareVersion='" + softwareVersion + '\'' + ", uuid='" + uuid + '\''
-               + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", assetSource=" + assetSource
-               + ", importanceDegree=" + importanceDegree + ", importanceDegreeName='" + importanceDegreeName + '\''
-               + ", describle='" + describle + '\'' + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett
-               + ", firstDiscoverTime=" + firstDiscoverTime + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate
-               + ", warranty='" + warranty + '\'' + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", memo='" + memo + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status="
-               + status + ", vulCount=" + vulCount + ", patchCount=" + patchCount + '}';
-    }
-
     public String getAreaName() {
         return areaName;
     }
@@ -366,38 +333,6 @@ public class Asset extends BaseEntity {
 
     public void setCategoryModelName(String categoryModelName) {
         this.categoryModelName = categoryModelName;
-    }
-
-    public String getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(String hardDisk) {
-        this.hardDisk = hardDisk;
-    }
-
-    public String getMemory() {
-        return memory;
-    }
-
-    public void setMemory(String memory) {
-        this.memory = memory;
-    }
-
-    public String getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
-    public String getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
     }
 
     public String getParentId() {
@@ -532,14 +467,6 @@ public class Asset extends BaseEntity {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getSystemBit() {
-        return systemBit;
-    }
-
-    public void setSystemBit(Integer systemBit) {
-        this.systemBit = systemBit;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -588,22 +515,6 @@ public class Asset extends BaseEntity {
         this.uuid = uuid;
     }
 
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Integer getAssetSource() {
         return assetSource;
     }
@@ -626,14 +537,6 @@ public class Asset extends BaseEntity {
 
     public void setDescrible(String describle) {
         this.describle = describle;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     public Long getFirstEnterNett() {

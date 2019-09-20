@@ -17,8 +17,6 @@
         <result column="number" property="number"/>
         <result column="name" property="name"/>
         <result column="category_model_name" property="categoryModelName"/>
-        <result column="ethernet_port" property="ethernetPort"/>
-        <result column="serial_port" property="serialPort"/>
         <result column="install_type" property="installType"/>
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
@@ -27,7 +25,6 @@
         <result column="asset_status" property="assetStatus"/>
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
-        <result column="system_bit" property="systemBit"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="responsible_user_name" property="responsibleUserName"/>
         <result column="location" property="location"/>
@@ -37,13 +34,10 @@
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="software_version" property="softwareVersion"/>
         <result column="uuid" property="uuid"/>
-        <result column="contact_tel" property="contactTel"/>
-        <result column="email" property="email"/>
         <result column="asset_source" property="assetSource"/>
         <result column="importance_degree" property="importanceDegree"/>
         <result column="describle" property="describle"/>
         <result column="parent_id" property="parentId"/>
-        <result column="tags" property="tags"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
         <result column="first_discover_time" property="firstDiscoverTime"/>
         <result column="service_life" property="serviceLife"/>
@@ -57,10 +51,14 @@
         <result column="status" property="status"/>
         <result column="ip" property="ip"/>
         <result column="mac" property="mac"/>
+        <result column="install_template_id" property="installTemplateId"/>
+        <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
+        <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_group, number, name, ethernet_port, serial_port, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, system_bit, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, contact_tel, email, asset_source, importance_degree, describle, parent_id, tags, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, parent_id, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status,install_template_id,baseline_template_id,baseline_template_correlation_gmt,install_template_correlation_gmt
     </sql>
 
     <sql id="Table_Name">
@@ -1159,10 +1157,8 @@
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset_category_model.name as category_model_name,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.system_bit,
         asset.location,
         asset.house_location,
         asset.latitude,
@@ -1170,12 +1166,9 @@
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
-        asset.contact_tel,
-        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
-        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,

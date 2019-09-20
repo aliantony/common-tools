@@ -155,7 +155,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param assetIds
      * @return
      */
-    Integer checkInstalled(@Param("softwareId") String softwareId,@Param("list") List<String> assetIds);
+    Integer checkInstalled(@Param("softwareId") String softwareId, @Param("list") List<String> assetIds);
 
     /**
      * 通过软件ID和资产ID获取配置状态
@@ -163,5 +163,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer findInstallStatus(AssetSoftwareQuery query);
+
+    /**
+     * 删除资产与软件关系
+     * @param id
+     */
+    void deleteSoftRealtion(String id);
 
 }

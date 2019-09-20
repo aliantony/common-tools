@@ -1,34 +1,16 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
-import com.antiy.asset.intergration.EmergencyClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.base.*;
-import com.antiy.common.config.kafka.KafkaConfig;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -50,15 +32,38 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AssetClient;
+import com.antiy.asset.intergration.EmergencyClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.config.kafka.KafkaConfig;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -119,6 +124,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Resource
     private EmergencyClient                     emergencyClient;
+    @Resource
+    private AssetAssemblyDao                    assetAssemblyDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -1089,20 +1096,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
-        // 校验品类型号是否是叶子节点
-        // ParamterExceptionUtils.isTrue(
-        // assetCategoryModelDao.hasChild(assetOuterRequest.getAsset().getCategoryModel()) <= 0,
-        // "品类型号只能选择末级节点数据，请重新选择");
-        // Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
-        // // 幂等校验
-        // if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-        // if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus())
-        // || AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
-        // || AssetStatusEnum.NOT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-        // throw new BusinessException(
-        // "请勿重复提交，当前资产状态是：" + AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus()).getMsg());
-        // }
-        // }
         // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
         checkLocationNotBlank(assetOuterRequest.getAsset());
 
@@ -1117,8 +1110,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ParamterExceptionUtils
             .isTrue(!checkName(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
-        AssetQuery assetQuery = new AssetQuery();
-        Long currentTimeMillis = System.currentTimeMillis();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1180,16 +1171,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
                         assetGroupRelationDao.insertBatch(addAssetGroupRelations);
                     }
+                    // 处理ip
+                    dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests());
+                    // 处理mac
+                    dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
+                    // 处理软件
+                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequestList());
+                    // 处理组件
+                    dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
+                    // 判断资产变更后是否需要走流程
+                    if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
+                        updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(),
+                            assetOuterRequest.getAsset().getId());
+                    }
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
-
-                    List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
-                    // 如果网卡被删除，则同时删除通联关系表
-                    AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
-                    assetNetworkCardQuery.setAssetId(asset.getStringId());
-                    // 当前数据库存在的网卡
 
                     // 7. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1342,6 +1340,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }).start();
         }
         return assetCount;
+    }
+
+    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests) {
+
+    }
+
+    public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
+    }
+
+    public void dealSoft(String id, List<AssetSoftwareReportRequest> softwareReportRequestList) {
+        // 1.先删除旧的关系表
+        assetSoftwareRelationDao.deleteSoftRealtion(id);
+        // 2.插入新的关系
+    }
+
+    public void dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
+        // 1.先删除旧的关系表
+        assetAssemblyDao.deleteAssemblyRelation(id);
+        // 2.插入新的关系
     }
 
     private boolean checkNumber(String id, String number) {
