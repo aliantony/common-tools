@@ -118,7 +118,7 @@ public class AssetReportController {
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        return ActionResponse.success(iAssetReportService.getAssetConutWithGroup(reportQueryRequest));
+        return ActionResponse.success(iAssetReportService.getAssetCountWithGroup(reportQueryRequest));
     }
 
     /**
