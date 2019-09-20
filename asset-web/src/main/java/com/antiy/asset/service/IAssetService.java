@@ -164,10 +164,10 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 通过ID查询资产详情
      *
-     * @param asset 主键封装对象
+     * @param condition 主键封装对象
      * @return AssetOuterResponse
      */
-    AssetOuterResponse getByAssetId(AssetDetialCondition asset) throws Exception;
+    AssetOuterResponse getByAssetId(QueryCondition condition) throws Exception;
 
     /**
      * 资产变更

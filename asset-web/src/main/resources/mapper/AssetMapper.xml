@@ -25,14 +25,12 @@
         <result column="asset_status" property="assetStatus"/>
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
+        <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="responsible_user_name" property="responsibleUserName"/>
-        <result column="location" property="location"/>
         <result column="latitude" property="latitude"/>
         <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
-        <result column="firmware_version" property="firmwareVersion"/>
-        <result column="software_version" property="softwareVersion"/>
         <result column="uuid" property="uuid"/>
         <result column="asset_source" property="assetSource"/>
         <result column="importance_degree" property="importanceDegree"/>
@@ -1006,9 +1004,6 @@
         select DISTINCT asset.id
         from
         asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
         LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
@@ -1034,6 +1029,17 @@
         OR c.ip_address = #{ip} OR d.ip = #{ip})
         AND a.`status` = 1
         AND a.status !=9
+    </select>
+
+    <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        asset.*, lib.product_name AS operation_system_name,
+        `user`.`name` AS responsible_user_name
+        FROM
+        <include refid="Table_Name"></include>
+        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
+        where asset.id=#{id}
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.common.base.ObjectQuery">
@@ -1175,7 +1181,7 @@
         asset.warranty,
         asset.gmt_create,
         GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.ip) AS mac
+        GROUP_CONCAT(amr.mac) AS mac
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id
         left join asset_mac_relation amr on asset.id = amr.asset_id

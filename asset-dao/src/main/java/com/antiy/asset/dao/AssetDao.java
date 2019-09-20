@@ -269,4 +269,9 @@ public interface AssetDao extends IBaseDao<Asset> {
 
 
 
+
+    /**
+     *
+     */
+    Asset getByAssetId(@Param("id") String id);
 }

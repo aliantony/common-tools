@@ -336,7 +336,7 @@
 
     <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
-        <include refid="Base_Column_List"/>
+        *
         from
         <include refid="Table_Name"></include>
         <where>
