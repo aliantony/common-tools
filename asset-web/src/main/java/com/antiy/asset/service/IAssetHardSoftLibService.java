@@ -1,17 +1,19 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.SoftwareResponse;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.ActionResponse;
-import java.io.Serializable;
-import java.util.List;
 
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
-import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.entity.AssetHardSoftLib;
+import java.util.List;
 
 /**
  * <p> CPE表 服务类 </p>
@@ -62,5 +64,19 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
      * @return
      */
     String deleteAssetHardSoftLibById(BaseRequest baseRequest) throws Exception;
+
+    /**
+     * 分页查询资产关联的软件信息列表
+     * @param queryCondition
+     * @return
+     */
+    PageResult<SoftwareResponse> getPageSoftWareList(AssetSoftwareQuery queryCondition);
+
+    /**
+     * 操作系统（下拉项）
+     *
+     * @return
+     */
+    List<SelectResponse> pullDownOs(OsQuery query);
 
 }
