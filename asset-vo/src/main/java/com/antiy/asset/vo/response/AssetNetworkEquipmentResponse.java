@@ -30,20 +30,10 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
     @ApiModelProperty("是否无线:0-否,1-是")
     private Integer isWireless;
     /**
-     * 内网IP
-     */
-    @ApiModelProperty("内网IP")
-    private String  innerIp;
-    /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
     private String  outerIp;
-    /**
-     * MAC地址
-     */
-    @ApiModelProperty("MAC地址")
-    private String  macAddress;
     /**
      * 子网掩码
      */
@@ -170,28 +160,12 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
         this.isWireless = isWireless;
     }
 
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
-
     public String getOuterIp() {
         return outerIp;
     }
 
     public void setOuterIp(String outerIp) {
         this.outerIp = outerIp;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
     }
 
     public String getSubnetMask() {
@@ -252,25 +226,11 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetNetworkEquipmentResponse{" +
-                "assetId='" + assetId + '\'' +
-                ", interfaceSize=" + interfaceSize +
-                ", isWireless=" + isWireless +
-                ", innerIp='" + innerIp + '\'' +
-                ", outerIp='" + outerIp + '\'' +
-                ", macAddress='" + macAddress + '\'' +
-                ", subnetMask='" + subnetMask + '\'' +
-                ", expectBandwidth=" + expectBandwidth +
-                ", register=" + register +
-                ", dramSize=" + dramSize +
-                ", flashSize=" + flashSize +
-                ", ncrmSize=" + ncrmSize +
-                ", status=" + status +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", cpuVersion='" + cpuVersion + '\'' +
-                ", cpuSize=" + cpuSize +
-                ", ios='" + ios + '\'' +
-                ", portSize=" + portSize +
-                '}';
+        return "AssetNetworkEquipmentResponse{" + "assetId='" + assetId + '\'' + ", interfaceSize=" + interfaceSize
+               + ", isWireless=" + isWireless + ", outerIp='" + outerIp + '\'' + ", subnetMask='" + subnetMask + '\''
+               + ", expectBandwidth=" + expectBandwidth + ", register=" + register + ", dramSize=" + dramSize
+               + ", flashSize=" + flashSize + ", ncrmSize=" + ncrmSize + ", status=" + status + ", firmwareVersion='"
+               + firmwareVersion + '\'' + ", cpuVersion='" + cpuVersion + '\'' + ", cpuSize=" + cpuSize + ", ios='"
+               + ios + '\'' + ", portSize=" + portSize + '}';
     }
 }

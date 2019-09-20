@@ -47,20 +47,11 @@ public class AssetNetworkEquipment extends BaseEntity {
     @ApiModelProperty("IOS")
     private String  ios;
     /**
-     * 内网IP
-     */
-    @ApiModelProperty("内网IP")
-    private String  innerIp;
-    /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
     private String  outerIp;
-    /**
-     * MAC地址
-     */
-    @ApiModelProperty("MAC地址")
-    private String  macAddress;
+
     /**
      * 子网掩码
      */
@@ -186,13 +177,6 @@ public class AssetNetworkEquipment extends BaseEntity {
         this.isWireless = isWireless;
     }
 
-    public String getInnerIp() {
-        return innerIp;
-    }
-
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
 
     public String getOuterIp() {
         return outerIp;
@@ -200,14 +184,6 @@ public class AssetNetworkEquipment extends BaseEntity {
 
     public void setOuterIp(String outerIp) {
         this.outerIp = outerIp;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
     }
 
     public String getSubnetMask() {

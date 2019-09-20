@@ -35,7 +35,7 @@ CREATE TABLE `asset` (
   `manufacturer` varchar(80) DEFAULT NULL COMMENT '厂商',
   `asset_status` tinyint(3) DEFAULT '0' COMMENT '资产状态：1-待登记，2-不予登记，3-模板待实施，4-待验证，5-待入网，6-已入网,7-待检查，8-待整改，9-变更中, 10-待退役，11-已退役',
   `admittance_status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '准入状态：1-待设置，2-已允许，3-已禁止',
-  `operation_system` varchar(16) DEFAULT '' COMMENT '操作系统',
+  `operation_system` bigint(20) DEFAULT '' COMMENT '操作系统',
   `responsible_user_id` int(11) DEFAULT NULL COMMENT '责任人主键',
   `location` varchar(64) DEFAULT '' COMMENT '物理位置',
   `latitude` varchar(16) DEFAULT '' COMMENT '纬度',

@@ -841,23 +841,23 @@ public class AssetSoftwareServiceImpl extends BaseServiceImpl<AssetSoftware> imp
         if (CollectionUtils.isNotEmpty(softwareReportRequestList)) {
             softwareReportRequestList.stream().forEach(softwareReportRequest -> {
                 // 判断软件是否存在
-                Integer softwareId = isExsit(softwareReportRequest.getName(), softwareReportRequest.getVersion());
+//                Integer softwareId = isExsit(softwareReportRequest.getName(), softwareReportRequest.getVersion());
                 // 不存在该软件，添加软件信息
-                if (Objects.isNull(softwareId)) {
-                    AssetSoftware assetSoftware = BeanConvert.convertBean(softwareReportRequest, AssetSoftware.class);
-                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
-                    try {
-                        softwareId = assetSoftwareDao.insert(assetSoftware);
-                    } catch (Exception e) {
-
-                    }
-                }
+//                if (Objects.isNull(softwareId)) {
+//                    AssetSoftware assetSoftware = BeanConvert.convertBean(softwareReportRequest, AssetSoftware.class);
+//                    assetSoftware.setSoftwareStatus(SoftwareStatusEnum.ALLOW_INSTALL.getCode());
+//                    try {
+//                        softwareId = assetSoftwareDao.insert(assetSoftware);
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
                 // 保存资产软件关系
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(DataTypeUtils.integerToString(assetId));
-                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softwareId));
+//                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softwareId));
                 assetSoftwareRelation.setInstallStatus(InstallStatus.SUCCESS.getCode());
-                assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
+//                assetSoftwareRelation.setInstallTime(softwareReportRequest.getInstallTime());
                 assetSoftwareRelation.setInstallType(InstallType.MANUAL.getCode());
                 assetSoftwareRelation
                     .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : 0);

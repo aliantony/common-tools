@@ -30,38 +30,6 @@ public class Asset extends BaseEntity {
     private String            categoryModelName;
 
     /**
-     * 硬盘
-     */
-    private String            hardDisk;
-    /**
-     * 内存JSON数据{ID:1,name:Kingston,rom:8GB}
-     */
-    private String            memory;
-
-    /**
-     * CPUJSON数据{ID:1,name:intel,coresize:8}
-     */
-    private String            cpu;
-    /**
-     * 网卡JSON数据{ID:1,name:intel,speed:1900M}
-     */
-    private String            networkCard;
-    /**
-     * 父类资源Id
-     */
-    @Encode
-    private String            parentId;
-
-    /**
-     * ip
-     */
-    private String            ip;
-    /**
-     * mac
-     */
-    private String            mac;
-
-    /**
      * json数据
      */
     @ApiModelProperty("资产组")
@@ -75,18 +43,7 @@ public class Asset extends BaseEntity {
      * 资产名称
      */
     private String            name;
-    /**
-     * 资产名称
-     */
-    private String            version;
-    /**
-     * 网口
-     */
-    private Integer           ethernetPort;
-    /**
-     * 串口
-     */
-    private Integer           serialPort;
+
     /**
      * 安装方式1人工2自动
      */
@@ -128,16 +85,13 @@ public class Asset extends BaseEntity {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String            operationSystem;
+    private String              operationSystem;
     /**
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
     private String            operationSystemName;
-    /**
-     * 系统位数
-     */
-    private Integer           systemBit;
+
     /**
      * 使用者主键
      */
@@ -149,11 +103,7 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("使用者")
     private String            responsibleUserName;
-    /**
-     * 物理位置
-     */
-    @ApiModelProperty("物理位置")
-    private String            location;
+
     /**
      * 纬度
      */
@@ -212,10 +162,6 @@ public class Asset extends BaseEntity {
     private String            describle;
 
     /**
-     * 所属标签ID和名称列表JSON串
-     */
-    private String            tags;
-    /**
      * 首次入网时间
      */
     private Long              firstEnterNett;
@@ -270,94 +216,30 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("部门名")
     private String            departmentName;
     @ApiModelProperty("告警数量")
-    private String           alarmCount;
+    private String            alarmCount;
 
-    public Long getFirstDiscoverTime() {
-        return firstDiscoverTime;
+    public Long getBusinessId() {
+        return businessId;
     }
 
-    public void setFirstDiscoverTime(Long firstDiscoverTime) {
-        this.firstDiscoverTime = firstDiscoverTime;
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
     }
 
-    public String getOperationSystemName() {
-        return operationSystemName;
+    public Integer getBaselineTemplateId() {
+        return baselineTemplateId;
     }
 
-    public void setOperationSystemName(String operationSystemName) {
-        this.operationSystemName = operationSystemName;
+    public void setBaselineTemplateId(Integer baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
     }
 
-    public String getVulCount() {
-        return vulCount;
+    public Integer getInstallTemplateId() {
+        return installTemplateId;
     }
 
-    public void setVulCount(String vulCount) {
-        this.vulCount = vulCount;
-    }
-
-    public String getPatchCount() {
-        return patchCount;
-    }
-
-    public void setPatchCount(String patchCount) {
-        this.patchCount = patchCount;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    public String getAlarmCount() {
-        return alarmCount;
-    }
-
-    public void setAlarmCount(String alarmCount) {
-        this.alarmCount = alarmCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Asset{" + "categoryModelName='" + categoryModelName + '\'' + ", hardDisk='" + hardDisk + '\''
-               + ", memory='" + memory + '\'' + ", cpu='" + cpu + '\'' + ", networkCard='" + networkCard + '\''
-               + ", parentId='" + parentId + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", assetGroup='"
-               + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", ethernetPort="
-               + ethernetPort + ", serialPort=" + serialPort + ", installType=" + installType + ", installTypeName='"
-               + installTypeName + '\'' + ", serial='" + serial + '\'' + ", areaId='" + areaId + '\'' + ", areaName='"
-               + areaName + '\'' + ", categoryModel='" + categoryModel + '\'' + ", manufacturer='" + manufacturer + '\''
-               + ", assetStatus=" + assetStatus + ", admittanceStatus=" + admittanceStatus + ", operationSystem='"
-               + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\'' + ", systemBit="
-               + systemBit + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='"
-               + responsibleUserName + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\''
-               + ", longitude='" + longitude + '\'' + ", houseLocation='" + houseLocation + '\'' + ", firmwareVersion='"
-               + firmwareVersion + '\'' + ", softwareVersion='" + softwareVersion + '\'' + ", uuid='" + uuid + '\''
-               + ", contactTel='" + contactTel + '\'' + ", email='" + email + '\'' + ", assetSource=" + assetSource
-               + ", importanceDegree=" + importanceDegree + ", importanceDegreeName='" + importanceDegreeName + '\''
-               + ", describle='" + describle + '\'' + ", tags='" + tags + '\'' + ", firstEnterNett=" + firstEnterNett
-               + ", firstDiscoverTime=" + firstDiscoverTime + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate
-               + ", warranty='" + warranty + '\'' + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified
-               + ", memo='" + memo + '\'' + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status="
-               + status + ", vulCount=" + vulCount + ", patchCount=" + patchCount + '}';
-    }
-
-    public String getAreaName() {
-        return areaName;
-    }
-
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
-    }
-
-    public String getResponsibleUserName() {
-        return responsibleUserName;
-    }
-
-    public void setResponsibleUserName(String responsibleUserName) {
-        this.responsibleUserName = responsibleUserName;
+    public void setInstallTemplateId(Integer installTemplateId) {
+        this.installTemplateId = installTemplateId;
     }
 
     public String getCategoryModelName() {
@@ -366,62 +248,6 @@ public class Asset extends BaseEntity {
 
     public void setCategoryModelName(String categoryModelName) {
         this.categoryModelName = categoryModelName;
-    }
-
-    public String getHardDisk() {
-        return hardDisk;
-    }
-
-    public void setHardDisk(String hardDisk) {
-        this.hardDisk = hardDisk;
-    }
-
-    public String getMemory() {
-        return memory;
-    }
-
-    public void setMemory(String memory) {
-        this.memory = memory;
-    }
-
-    public String getCpu() {
-        return cpu;
-    }
-
-    public void setCpu(String cpu) {
-        this.cpu = cpu;
-    }
-
-    public String getNetworkCard() {
-        return networkCard;
-    }
-
-    public void setNetworkCard(String networkCard) {
-        this.networkCard = networkCard;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
     }
 
     public String getAssetGroup() {
@@ -448,28 +274,20 @@ public class Asset extends BaseEntity {
         this.name = name;
     }
 
-    public Integer getEthernetPort() {
-        return ethernetPort;
-    }
-
-    public void setEthernetPort(Integer ethernetPort) {
-        this.ethernetPort = ethernetPort;
-    }
-
-    public Integer getSerialPort() {
-        return serialPort;
-    }
-
-    public void setSerialPort(Integer serialPort) {
-        this.serialPort = serialPort;
-    }
-
     public Integer getInstallType() {
         return installType;
     }
 
     public void setInstallType(Integer installType) {
         this.installType = installType;
+    }
+
+    public String getInstallTypeName() {
+        return installTypeName;
+    }
+
+    public void setInstallTypeName(String installTypeName) {
+        this.installTypeName = installTypeName;
     }
 
     public String getSerial() {
@@ -488,16 +306,20 @@ public class Asset extends BaseEntity {
         this.areaId = areaId;
     }
 
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
     public String getCategoryModel() {
         return categoryModel;
     }
 
     public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
-    }
-
-    public String getResponsibleUserId() {
-        return responsibleUserId;
     }
 
     public String getManufacturer() {
@@ -532,20 +354,28 @@ public class Asset extends BaseEntity {
         this.operationSystem = operationSystem;
     }
 
-    public Integer getSystemBit() {
-        return systemBit;
+    public String getOperationSystemName() {
+        return operationSystemName;
     }
 
-    public void setSystemBit(Integer systemBit) {
-        this.systemBit = systemBit;
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
     }
 
-    public String getLocation() {
-        return location;
+    public String getResponsibleUserId() {
+        return responsibleUserId;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setResponsibleUserId(String responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
+    }
+
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
     }
 
     public String getLatitude() {
@@ -578,6 +408,14 @@ public class Asset extends BaseEntity {
 
     public void setFirmwareVersion(String firmwareVersion) {
         this.firmwareVersion = firmwareVersion;
+    }
+
+    public String getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+    public void setSoftwareVersion(String softwareVersion) {
+        this.softwareVersion = softwareVersion;
     }
 
     public String getUuid() {
@@ -620,6 +458,14 @@ public class Asset extends BaseEntity {
         this.importanceDegree = importanceDegree;
     }
 
+    public String getImportanceDegreeName() {
+        return importanceDegreeName;
+    }
+
+    public void setImportanceDegreeName(String importanceDegreeName) {
+        this.importanceDegreeName = importanceDegreeName;
+    }
+
     public String getDescrible() {
         return describle;
     }
@@ -628,20 +474,20 @@ public class Asset extends BaseEntity {
         this.describle = describle;
     }
 
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
     public Long getFirstEnterNett() {
         return firstEnterNett;
     }
 
     public void setFirstEnterNett(Long firstEnterNett) {
         this.firstEnterNett = firstEnterNett;
+    }
+
+    public Long getFirstDiscoverTime() {
+        return firstDiscoverTime;
+    }
+
+    public void setFirstDiscoverTime(Long firstDiscoverTime) {
+        this.firstDiscoverTime = firstDiscoverTime;
     }
 
     public Long getServiceLife() {
@@ -716,63 +562,88 @@ public class Asset extends BaseEntity {
         this.status = status;
     }
 
-    public void setResponsibleUserId(String responsibleUserId) {
-        this.responsibleUserId = responsibleUserId;
+    public String getVulCount() {
+        return vulCount;
     }
 
-    public String getSoftwareVersion() {
-        return softwareVersion;
+    public void setVulCount(String vulCount) {
+        this.vulCount = vulCount;
     }
 
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
+    public String getPatchCount() {
+        return patchCount;
     }
 
-    public String getImportanceDegreeName() {
-        return importanceDegreeName;
+    public void setPatchCount(String patchCount) {
+        this.patchCount = patchCount;
     }
 
-    public void setImportanceDegreeName(String importanceDegreeName) {
-        this.importanceDegreeName = importanceDegreeName;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public String getInstallTypeName() {
-        return installTypeName;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    public void setInstallTypeName(String installTypeName) {
-        this.installTypeName = installTypeName;
+    public String getAlarmCount() {
+        return alarmCount;
     }
 
-    public String getVersion() {
-        return version;
+    public void setAlarmCount(String alarmCount) {
+        this.alarmCount = alarmCount;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Long getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
-    }
-
-    public Integer getBaselineTemplateId() {
-        return baselineTemplateId;
-    }
-
-    public void setBaselineTemplateId(Integer baselineTemplateId) {
-        this.baselineTemplateId = baselineTemplateId;
-    }
-
-    public Integer getInstallTemplateId() {
-        return installTemplateId;
-    }
-
-    public void setInstallTemplateId(Integer installTemplateId) {
-        this.installTemplateId = installTemplateId;
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "businessId=" + businessId +
+                ", baselineTemplateId=" + baselineTemplateId +
+                ", installTemplateId=" + installTemplateId +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", installType=" + installType +
+                ", installTypeName='" + installTypeName + '\'' +
+                ", serial='" + serial + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", areaName='" + areaName + '\'' +
+                ", categoryModel='" + categoryModel + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", admittanceStatus=" + admittanceStatus +
+                ", operationSystem=" + operationSystem +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
+                ", softwareVersion='" + softwareVersion + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", contactTel='" + contactTel + '\'' +
+                ", email='" + email + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", importanceDegreeName='" + importanceDegreeName + '\'' +
+                ", describle='" + describle + '\'' +
+                ", firstEnterNett=" + firstEnterNett +
+                ", firstDiscoverTime=" + firstDiscoverTime +
+                ", serviceLife=" + serviceLife +
+                ", buyDate=" + buyDate +
+                ", warranty='" + warranty + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", vulCount='" + vulCount + '\'' +
+                ", patchCount='" + patchCount + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", alarmCount='" + alarmCount + '\'' +
+                '}';
     }
 }

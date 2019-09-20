@@ -12,6 +12,7 @@ import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -97,17 +98,17 @@ public class AssetController {
     /**
      * 通过ID查询资产详情
      *
-     * @param asset 主键封装对象
+     * @param condition 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "asset") AssetDetialCondition asset) throws Exception {
-        ParamterExceptionUtils.isNull(asset, "资产不能为空");
-        ParamterExceptionUtils.isNull(asset.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getByAssetId(asset));
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "asset") QueryCondition condition) throws Exception {
+        ParamterExceptionUtils.isNull(condition, "资产不能为空");
+        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetService.getByAssetId(condition));
     }
 
     /**
