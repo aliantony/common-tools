@@ -5,7 +5,7 @@ public enum AssetCategoryEnum {
     NETWORK(2, "网络设备"),
     SAFETY(3, "安全设备"),
     STORAGE(4, "存储设备"),
-    OTHER(5, "其他设备");
+    OTHER(5, "其它设备");
 
     private Integer code;
     private String  name;
