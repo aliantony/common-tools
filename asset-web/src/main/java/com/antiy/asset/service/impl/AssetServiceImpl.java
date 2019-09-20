@@ -56,7 +56,6 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
 
@@ -81,11 +80,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao               assetStorageMediumDao;
+    private AssetStorageMediumDao                                               assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao             assetOperationRecordDao;
+    private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
@@ -100,39 +99,41 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Resource
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
+    @Resource
+    private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
 
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
-    private AssetGroupRelationDao               assetGroupRelationDao;
+    private AssetGroupRelationDao                                               assetGroupRelationDao;
     @Resource
-    private ExcelDownloadUtil                   excelDownloadUtil;
+    private ExcelDownloadUtil                                                   excelDownloadUtil;
     @Resource
-    private AssetEntityConvert                  assetEntityConvert;
+    private AssetEntityConvert                                                  assetEntityConvert;
     @Resource
-    private AssetGroupDao                       assetGroupDao;
+    private AssetGroupDao                                                       assetGroupDao;
     @Resource
-    private ActivityClient                      activityClient;
+    private ActivityClient                                                      activityClient;
     @Resource
-    private AesEncoder                          aesEncoder;
+    private AesEncoder                                                          aesEncoder;
     @Resource
-    private RedisUtil                           redisUtil;
+    private RedisUtil                                                           redisUtil;
     @Resource
-    private AssetLinkRelationDao                assetLinkRelationDao;
+    private AssetLinkRelationDao                                                assetLinkRelationDao;
     @Resource
-    private OperatingSystemClient               operatingSystemClient;
+    private OperatingSystemClient                                               operatingSystemClient;
     @Resource
-    private IRedisService                       redisService;
+    private IRedisService                                                       redisService;
     @Resource
-    private AssetClient                         assetClient;
+    private AssetClient                                                         assetClient;
     @Resource
-    private AssetIpRelationDao                  assetIpRelationDao;
+    private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource
-    private AssetMacRelationDao                 assetMacRelationDao;
-    private static final int                    ALL_PAGE = -1;
+    private AssetMacRelationDao                                                 assetMacRelationDao;
+    private static final int                                                    ALL_PAGE = -1;
 
     @Resource
-    private EmergencyClient                     emergencyClient;
+    private EmergencyClient                                                     emergencyClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -404,6 +405,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setNumber(number);
         Integer countAsset = findCountAssetNumber(assetQuery);
         return countAsset >= 1;
+    }
+
+    @Override
+    public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
+        return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
+            AssetAssemblyResponse.class);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -1033,7 +1040,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        asset.setAreaName(sysArea.getFullName());
+        assetResponse.setAreaName(sysArea.getFullName());
         // 设置品类型号名
         assetResponse
             .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));
