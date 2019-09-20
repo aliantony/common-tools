@@ -38,7 +38,7 @@ public interface IAssetReportService {
      * @return
      * @throws Exception
      */
-    AssetReportResponse getAssetConutWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
+    AssetReportResponse getAssetCountWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
 
     /**
      * 根据时间条件分类统计查询数据，返回表格信息
