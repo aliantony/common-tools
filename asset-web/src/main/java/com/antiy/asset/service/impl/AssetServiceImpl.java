@@ -104,6 +104,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Resource
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
+    @Resource
+    private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
 
     @Resource
     private AssetUserDao                                                        assetUserDao;
@@ -1039,7 +1041,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        asset.setAreaName(sysArea.getFullName());
+        assetResponse.setAreaName(sysArea.getFullName());
         // 设置品类型号名
         assetResponse
             .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));

@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetAssemblyResponse 响应对象 </p>
@@ -11,4 +12,100 @@ import com.antiy.common.base.BaseResponse;
 
 public class AssetAssemblyResponse extends BaseResponse {
 
+    /**
+     * 资产主键
+     */
+    @ApiModelProperty("资产组件")
+    private Integer           assetId;
+    /**
+     * 组件数量
+     */
+    @ApiModelProperty("组件数量")
+
+    private Integer           amount;
+    /**
+     * 组件主键
+     */
+    @ApiModelProperty("组件主键")
+
+    private Integer           businessId;
+    /**
+     * 组件类型
+     */
+    @ApiModelProperty("组件类型")
+
+    private String            type;
+    /**
+     * 产品名
+     */
+    @ApiModelProperty("产品名")
+
+    private String            productName;
+    /**
+     * 供应商
+     */
+    @ApiModelProperty("供应商")
+
+    private String            supplier;
+
+
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Integer getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Integer businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    @Override
+    public String toString() {
+        return "AssetAssemblyResponse{" +
+                "assetId=" + assetId +
+                ", amount=" + amount +
+                ", businessId=" + businessId +
+                ", type='" + type + '\'' +
+                ", productName='" + productName + '\'' +
+                ", supplier='" + supplier + '\'' +
+                '}';
+    }
 }

@@ -1648,4 +1648,22 @@
         </foreach>
     </update>
 
+    <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
+  SELECT
+  asset.id as assetId,
+	assembly.business_id as businessId,
+	assembly.amount,
+	lib.product_name AS productName,
+	lib.supplier,
+	lib.type
+FROM
+	asset
+LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
+LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
+WHERE
+	asset.id = 1
+  and asset.status=1
+  and assembly.status=1
+  and lib.status=1
+    </select>
 </mapper>
