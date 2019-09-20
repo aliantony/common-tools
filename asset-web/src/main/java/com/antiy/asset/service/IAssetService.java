@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
@@ -292,4 +293,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     boolean CheckRepeatNumber(String number) throws Exception;
+
+    List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
 }
