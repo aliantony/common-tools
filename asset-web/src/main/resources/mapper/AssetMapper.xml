@@ -996,9 +996,6 @@
         select DISTINCT asset.id
         from
         asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
         LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
@@ -1158,10 +1155,8 @@
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset_category_model.name as category_model_name,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.system_bit,
         asset.location,
         asset.house_location,
         asset.latitude,
@@ -1169,19 +1164,16 @@
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
-        asset.contact_tel,
-        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
-        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
         GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.ip) AS mac
+        GROUP_CONCAT(amr.mac) AS mac
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id
         left join asset_mac_relation amr on asset.id = amr.asset_id

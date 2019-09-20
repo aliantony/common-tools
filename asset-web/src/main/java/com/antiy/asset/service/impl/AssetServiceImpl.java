@@ -84,11 +84,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao                                               assetStorageMediumDao;
+    private AssetStorageMediumDao               assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao                                             assetOperationRecordDao;
+    private AssetOperationRecordDao             assetOperationRecordDao;
     @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
@@ -107,37 +107,35 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
-    private AssetGroupRelationDao                                               assetGroupRelationDao;
+    private AssetGroupRelationDao               assetGroupRelationDao;
     @Resource
-    private ExcelDownloadUtil                                                   excelDownloadUtil;
+    private ExcelDownloadUtil                   excelDownloadUtil;
     @Resource
-    private AssetEntityConvert                                                  assetEntityConvert;
+    private AssetEntityConvert                  assetEntityConvert;
     @Resource
-    private AssetGroupDao                                                       assetGroupDao;
+    private AssetGroupDao                       assetGroupDao;
     @Resource
-    private ActivityClient                                                      activityClient;
+    private ActivityClient                      activityClient;
     @Resource
-    private AesEncoder                                                          aesEncoder;
+    private AesEncoder                          aesEncoder;
     @Resource
-    private RedisUtil                                                           redisUtil;
+    private RedisUtil                           redisUtil;
     @Resource
-    private AssetLinkRelationDao                                                assetLinkRelationDao;
+    private AssetLinkRelationDao                assetLinkRelationDao;
     @Resource
-    private OperatingSystemClient                                               operatingSystemClient;
+    private OperatingSystemClient               operatingSystemClient;
     @Resource
-    private IAssetSoftwareService                                               softwareService;
+    private IRedisService                       redisService;
     @Resource
-    private IRedisService                                                       redisService;
+    private AssetClient                         assetClient;
     @Resource
-    private AssetClient                                                         assetClient;
+    private AssetIpRelationDao                  assetIpRelationDao;
     @Resource
-    private AssetIpRelationDao                                                  assetIpRelationDao;
-    @Resource
-    private AssetMacRelationDao                                                 assetMacRelationDao;
-    private static final int                                                    ALL_PAGE = -1;
+    private AssetMacRelationDao                 assetMacRelationDao;
+    private static final int                    ALL_PAGE = -1;
 
     @Resource
-    private EmergencyClient                                                     emergencyClient;
+    private EmergencyClient                     emergencyClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
