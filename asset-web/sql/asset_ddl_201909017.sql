@@ -34,7 +34,7 @@ CREATE TABLE `asset` (
   `category_model` int(11) DEFAULT NULL COMMENT '品类型号',
   `manufacturer` varchar(80) DEFAULT NULL COMMENT '厂商',
   `asset_status` tinyint(3) DEFAULT '0' COMMENT '资产状态：1-待登记，2-不予登记，3-模板待实施，4-待验证，5-待入网，6-已入网,7-待检查，8-待整改，9-变更中, 10-待退役，11-已退役',
-  `admittance_status` tinyint(1) unsigned zerofill DEFAULT '1' COMMENT '准入状态：1-待设置，2-已允许，3-已禁止',
+  `admittance_status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '准入状态：1-待设置，2-已允许，3-已禁止',
   `operation_system` varchar(16) DEFAULT '' COMMENT '操作系统',
   `responsible_user_id` int(11) DEFAULT NULL COMMENT '责任人主键',
   `location` varchar(64) DEFAULT '' COMMENT '物理位置',
@@ -62,7 +62,7 @@ CREATE TABLE `asset` (
   `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `status` tinyint(1) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
+  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `number` (`number`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产主表';
@@ -80,7 +80,7 @@ CREATE TABLE `asset_assembly` (
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
   `amount` tinyint(3) DEFAULT NULL COMMENT '组件数量',
   `business_id` int(11) NOT NULL COMMENT '组件主键',
-  `status` tinyint(1) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
+  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产组件关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -107,7 +107,7 @@ CREATE TABLE `asset_assembly_lib` (
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
   `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
   `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `is_storage` tinyint(1) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
+  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
   `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `index_business_id` (`business_id`) USING BTREE,
@@ -278,7 +278,7 @@ CREATE TABLE `asset_hard_soft_lib` (
   `hard_platform` varchar(32) DEFAULT NULL COMMENT '硬件平台',
   `other` varchar(32) DEFAULT NULL COMMENT '其他',
   `data_source` tinyint(3) DEFAULT NULL COMMENT '数据来源：1-CPE，2-MANUAL',
-  `is_storage` tinyint(1) DEFAULT NULL COMMENT '是否入库：1-已入库、2-未入库',
+  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1-已入库、2-未入库',
   `cpe_uri` varchar(640) DEFAULT NULL COMMENT 'cpe路径',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
@@ -315,7 +315,7 @@ CREATE TABLE `asset_install_history` (
   `memo` varchar(300) DEFAULT NULL COMMENT '备注',
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `status` tinyint(1) DEFAULT '1' COMMENT '状态,1 未删除,0已删除',
+  `status` tinyint(3) DEFAULT '1' COMMENT '状态,1 未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `UK_ASSET_PACKAGE` (`asset_id`,`package_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=710 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='安装记录表';
@@ -394,7 +394,7 @@ CREATE TABLE `asset_link_relation` (
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
   `asset_ip` varchar(15) NOT NULL COMMENT '资产IP',
   `asset_port` varchar(64) DEFAULT NULL COMMENT '资产端口',
-  `parent_asset_id` int(4) NOT NULL DEFAULT '0' COMMENT '父级设备主键',
+  `parent_asset_id` int(11) NOT NULL DEFAULT '0' COMMENT '父级设备主键',
   `parent_asset_ip` varchar(15) NOT NULL DEFAULT '0' COMMENT '父级设备IP',
   `parent_asset_port` varchar(64) DEFAULT NULL COMMENT '父级设备端口',
   `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
@@ -468,7 +468,7 @@ DROP TABLE IF EXISTS `asset_operation_record`;
 CREATE TABLE `asset_operation_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `target_object_id` int(11) NOT NULL COMMENT '被操作的对象ID',
-  `origin_status` tinyint(1) NOT NULL COMMENT '原始状态',
+  `origin_status` tinyint(3) NOT NULL COMMENT '原始状态',
   `target_status` int(11) DEFAULT NULL COMMENT '目标状态',
   `content` varchar(300) DEFAULT '' COMMENT '本次操作(类型)内容',
   `operate_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID',
@@ -478,7 +478,7 @@ CREATE TABLE `asset_operation_record` (
   `file_info` varchar(1024) NOT NULL DEFAULT '' COMMENT '附件信息JSON',
   `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
-  `status` tinyint(1) unsigned zerofill DEFAULT '1' COMMENT '状态：1未删除,0已删除',
+  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COMMENT='资产动态表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -515,7 +515,7 @@ CREATE TABLE `asset_protocol` (
   `business_id` bigint(11) NOT NULL COMMENT '业务主键',
   `name` varchar(128) NOT NULL COMMENT '协议',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `is_storage` tinyint(1) DEFAULT '2' COMMENT '是否入库：1-已入库，2-未入库',
+  `is_storage` tinyint(3) DEFAULT '2' COMMENT '是否入库：1-已入库，2-未入库',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
   `link_vuls` varchar(1024) DEFAULT NULL COMMENT '关联的遏制漏洞编号',
   `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
@@ -803,7 +803,7 @@ CREATE TABLE `asset_sys_service_lib` (
   `service_classes` int(11) DEFAULT NULL COMMENT '服务类型',
   `startup_parameter` varchar(300) DEFAULT NULL COMMENT '启动参数',
   `describ` varchar(1024) DEFAULT NULL COMMENT '描述',
-  `is_storage` tinyint(1) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
+  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
   `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
   `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
