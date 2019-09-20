@@ -135,6 +135,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource
     private AssetMacRelationDao                                                 assetMacRelationDao;
+    @Resource
+    private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     private static final int                                                    ALL_PAGE = -1;
 
     @Resource
@@ -412,6 +414,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setNumber(number);
         Integer countAsset = findCountAssetNumber(assetQuery);
         return countAsset >= 1;
+    }
+
+    @Override
+    public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
+        return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
+                AssetAssemblyResponse.class);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
