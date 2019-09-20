@@ -1,17 +1,17 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -34,7 +34,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param query
      * @return
      */
-    List<AssetSoftwareRelation> getSimpleSoftwareByAssetId(AssetSoftwareRelationQuery query);
+    List<SoftwareResponse> getSimpleSoftwareByAssetId(AssetSoftwareQuery query);
 
     /**
      * 根据assetId资产id统计数量
@@ -155,7 +155,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param assetIds
      * @return
      */
-    Integer checkInstalled(@Param("softwareId") String softwareId,@Param("list") List<String> assetIds);
+    Integer checkInstalled(@Param("softwareId") String softwareId, @Param("list") List<String> assetIds);
 
     /**
      * 通过软件ID和资产ID获取配置状态
@@ -163,5 +163,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer findInstallStatus(AssetSoftwareQuery query);
+
+    /**
+     * 删除资产与软件关系
+     * @param id
+     */
+    void deleteSoftRealtion(String id);
 
 }

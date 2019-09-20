@@ -1,9 +1,27 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.antiy.asset.service.IAssetSoftwareRelationService;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
+import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.request.AssetSoftwareRelationList;
+import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
+import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
+import com.antiy.asset.vo.response.AssetSoftwareResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,21 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.antiy.asset.service.IAssetSoftwareRelationService;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
-import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -222,19 +227,4 @@ public class AssetSoftwareRelationController {
         return iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
     }
 
-    /**
-     * 根据资产id分页查询关联的软件信息
-     * @param queryCondition
-     * @return
-     * @throws Exception
-     */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @ApiOperation(value = "分页查询硬件资产关联的软件列表", notes = "必传资产ID")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:querySimpleSoftwareByAssetId')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/simpleSoftwareList", method = RequestMethod.POST)
-    public ActionResponse getSimpleSoftwarePageByAssetId(@ApiParam(value = "assetId") @RequestBody AssetSoftwareRelationQuery queryCondition) throws Exception {
-        ParamterExceptionUtils.isNull(queryCondition.getAssetId(), "资产ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getSimpleSoftwarePageByAssetId(queryCondition));
-    }
 }

@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
@@ -164,10 +165,10 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 通过ID查询资产详情
      *
-     * @param asset 主键封装对象
+     * @param condition 主键封装对象
      * @return AssetOuterResponse
      */
-    AssetOuterResponse getByAssetId(AssetDetialCondition asset) throws Exception;
+    AssetOuterResponse getByAssetId(QueryCondition condition) throws Exception;
 
     /**
      * 资产变更
@@ -292,4 +293,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     boolean CheckRepeatNumber(String number) throws Exception;
+
+    List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
 }

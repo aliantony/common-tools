@@ -315,7 +315,7 @@
     <!-- 查询资产动态-->
     <select id="queryAssetAllStatusInfo" parameterType="java.lang.String" resultType="AssetStatusDetail">
       select
-      <include refid="AssetStatusNode"/> ,origin_status as originStatus,operate_user_id as operateUserId,process_result as processResult,file_info as fileInfo,gmt_create as gmtCreate,operate_user_name
+      <include refid="AssetStatusNode"/> ,origin_status as originStatus,operate_user_id as operateUserId,process_result as processResult,file_info as fileInfo,gmt_create as gmtCreate,operate_user_name as operateUserName
       from
       <include refid="Table_Name"/>
       where target_object_id = #{id} order by gmt_create desc
@@ -324,7 +324,7 @@
     <!-- 查询上一步资产动态 -->
     <select id="queryAssetPreStatusInfo" resultType="AssetStatusNote">
     select
-    a.id,a.target_object_id as assetId,note,a.gmt_create
+    a.id,a.target_object_id as assetId,note,a.gmt_create,file_info as fileInfo
     from
     <include refid="Table_Name"/> a
     inner join

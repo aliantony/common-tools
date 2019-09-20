@@ -37,4 +37,9 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      * @return 响应信息
      */
     ActionResponse queryAssetAllStatusInfo(String id);
+
+    /**
+     * v1.1 版本 资产动态上一步备注信息查询批量接口
+     */
+    ActionResponse batchQueryAssetPreStatusInfo(List<String> ids);
 }

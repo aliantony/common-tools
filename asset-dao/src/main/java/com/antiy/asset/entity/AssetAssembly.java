@@ -27,6 +27,18 @@ public class AssetAssembly extends BaseEntity {
      */
     private Integer           businessId;
     /**
+     * 组件类型
+     */
+    private String            type;
+    /**
+     * 产品名
+     */
+    private String            productName;
+    /**
+     * 供应商
+     */
+    private String            supplier;
+    /**
      * 状态：1-未删除,0-已删除
      */
     private Integer           status;
@@ -63,9 +75,34 @@ public class AssetAssembly extends BaseEntity {
         this.status = status;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
     @Override
     public String toString() {
-        return "AssetAssembly{" + ", assetId=" + assetId + ", amount=" + amount + ", businessId=" + businessId
-               + ", status=" + status + "}";
+        return "AssetAssembly{" + "assetId=" + assetId + ", amount=" + amount + ", businessId=" + businessId
+               + ", type='" + type + '\'' + ", productName='" + productName + '\'' + ", supplier='" + supplier + '\''
+               + ", status=" + status + '}';
     }
 }
