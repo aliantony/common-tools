@@ -169,7 +169,6 @@ public class AssetController {
     public void exportTemplate(@ApiParam("导出的模板类型") ExportTemplateRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getType(), "类型不能为空");
         iAssetService.exportTemplate(request.getType());
-
     }
 
     /**
