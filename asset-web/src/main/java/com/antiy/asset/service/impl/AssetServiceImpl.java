@@ -217,9 +217,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(
-                        asset.getAssetStatus() == AssetStatusEnum.NET_IN.getCode() ? AssetStatusEnum.NET_IN.getCode()
+                        asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode()) ? AssetStatusEnum.NET_IN.getCode()
                             : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
@@ -2542,7 +2541,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetOperationRecord assetRecord(String id, String areaId) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(id);
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setContent("导入硬件资产");
         assetOperationRecord.setProcessResult(1);
@@ -2551,7 +2549,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setAreaId(areaId);
         return assetOperationRecord;
         // assetOperationRecordDao.insert(assetOperationRecord);
     }

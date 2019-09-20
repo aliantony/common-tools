@@ -164,12 +164,6 @@ public class AssetStatusJumpController {
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        if (!assetStatusChangeRequest.getSoftware()) {
-            operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
-            operationRecord.setAreaId(assetDao.getAreaIdById(id));
-        } else {
-            operationRecord.setTargetType(AssetOperationTableEnum.SOFTWARE.getCode());
-        }
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
 
         if (LoginUserUtil.getLoginUser() == null) {
@@ -201,8 +195,6 @@ public class AssetStatusJumpController {
         // asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
         // 记录操作记录
         AssetOperationRecord operationRecord = new AssetOperationRecord();
-        operationRecord.setAreaId(assetDao.getAreaIdById(baseRequest.getStringId()));
-        operationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         operationRecord.setTargetObjectId(baseRequest.getStringId());
         operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
         // operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
