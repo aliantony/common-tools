@@ -10,6 +10,10 @@
         <result property="key" column="asset_status"/>
         <result property="value" column="num"/>
     </resultMap>
+    <resultMap id="categoryModelResultMap" type="java.util.HashMap">
+        <result property="key" column="category_model"/>
+        <result property="value" column="num"/>
+    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -1004,6 +1008,9 @@
         select DISTINCT asset.id
         from
         asset asset
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
+        asset_network_card.status = 1
+        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
         LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
@@ -1029,17 +1036,6 @@
         OR c.ip_address = #{ip} OR d.ip = #{ip})
         AND a.`status` = 1
         AND a.status !=9
-    </select>
-
-    <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
-        SELECT
-        asset.*, lib.product_name AS operation_system_name,
-        `user`.`name` AS responsible_user_name
-        FROM
-        <include refid="Table_Name"></include>
-        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
-        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
-        where asset.id=#{id}
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.Asset" parameterType="com.antiy.common.base.ObjectQuery">
@@ -1163,8 +1159,10 @@
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
+        asset_category_model.name as category_model_name,
         asset.manufacturer, asset_status,
         asset.operation_system,
+        asset.system_bit,
         asset.location,
         asset.house_location,
         asset.latitude,
@@ -1172,16 +1170,19 @@
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
+        asset.contact_tel,
+        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
+        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
         GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.mac) AS mac
+        GROUP_CONCAT(amr.ip) AS mac
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id
         left join asset_mac_relation amr on asset.id = amr.asset_id
@@ -1666,4 +1667,31 @@ WHERE
   and assembly.status=1
   and lib.status=1
     </select>
+    <select id="countCategoryModel" resultMap="categoryModelResultMap">
+          SELECT
+            category_model,COUNT(category_model) AS num
+          FROM <include refid="Table_Name"/>
+          where status =1
+          <if test="status !=null and status.size>0">
+              AND asset_status IN
+              <foreach collection="status" open="(" close=")" separator="," item="s">
+                  #{s}
+              </foreach>
+          </if>
+          <if test="status !=null and status.size==0">
+              AND 1=0
+          </if>
+
+          <if test="areaIds !=null and areaIds.size>0">
+              AND area_id  IN
+              <foreach collection="areaIds" open="(" close=")" separator="," item="areaId">
+                  #{areaId}
+              </foreach>
+          </if>
+         <if test="areaIds !=null and areaIds.size==0">
+             AND 1=0
+         </if>
+        GROUP BY category_model
+    </select>
+
 </mapper>

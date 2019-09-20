@@ -1,31 +1,28 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class AssetTemplateRelationResponse {
 
 
-    /**
-     * 模板名称
-     */
+    @ApiModelProperty("模板名称")
     private String  name;
-    /**
-     * 模板编号
-     */
+
+    @ApiModelProperty("模板编号")
     private String numberCode;
     /**
-     * 描述
+     *
      */
+    @ApiModelProperty("描述")
     private String description;
-    /**
-     * 关联软件总数
-     */
+
+
     private Integer softwareCount;
-    /**
-     * 关联补丁总数
-     */
+
+    @ApiModelProperty("关联补丁总数")
     private Integer patchCount;
-    /**
-     * 装机模板关联时间
-     */
+
+    @ApiModelProperty("装机模板关联时间")
     private Long installTemplateCorrelationGmt;
 
     public Long getInstallTemplateCorrelationGmt() {

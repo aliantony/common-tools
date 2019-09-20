@@ -4,7 +4,6 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
@@ -315,7 +314,7 @@ public class AssetController {
      *
      * @return 品类型号名和该品类型号资产数量的映射
      */
-    @ApiOperation(value = "硬件资产按二级品类型号统计接口", notes = "无查询条件")
+    @ApiOperation(value = "资产品类型号统计接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountResponse.class, responseContainer = "assetCountResponse"), })
     @RequestMapping(value = "/count/category", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:countAssetByCategory')")

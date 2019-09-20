@@ -4,10 +4,10 @@ package com.antiy.asset.vo.response;
  * 统计返回
  */
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 枚举统计返回
@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class EnumCountResponse {
     @ApiModelProperty("枚举名，用于展示")
     private String        msg;
-    @ApiModelProperty("用于做查询的参数")
+    @ApiModelProperty("品类型号")
     private List<String>  code;
     @ApiModelProperty("统计的数量")
     private long          number;

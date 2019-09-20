@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetInstallTemplateCheckResponse 响应对象 </p>
@@ -10,32 +11,26 @@ import com.antiy.common.base.BaseResponse;
  */
 
 public class AssetInstallTemplateCheckResponse extends BaseResponse {
-    /**
-     * 装机模板主键
-     */
+
+    @ApiModelProperty("装机模板主键")
     private Integer           installTemplateId;
-    /**
-     * 用户主键
-     */
+
+    @ApiModelProperty("用户主键")
     private Integer           userId;
-    /**
-     * 审核意见
-     */
+
+    @ApiModelProperty("审核意见")
     private String            advice;
-    /**
-     * 状态：1-待审核，2-拒绝，3-禁用，4-启用
-     */
+
+    @ApiModelProperty("当前状态 1-待审核，2-拒绝，3-禁用，4-启用")
     private Integer           result;
 
-
+    @ApiModelProperty("当前状态名称")
     private String  resultStr;
-    /**
-     * 创建时间
-     */
+
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-    /**
-     * 用户名
-     */
+
+    @ApiModelProperty("用户名")
     private String name;
 
     public String getName() {

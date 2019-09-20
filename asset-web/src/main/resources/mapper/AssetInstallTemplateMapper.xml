@@ -228,8 +228,8 @@
             asset AS a,
             asset_install_template AS ait
         WHERE
-	        a.install_template_id = ait.id
-	        AND
-	        a.id=#{assetId}
+            ait.status=1
+	        AND a.install_template_id = ait.id
+	        AND a.id=#{assetId}
     </select>
 </mapper>

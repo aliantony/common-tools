@@ -12,6 +12,11 @@ import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -253,7 +258,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     int findAlarmAssetCount(AssetQuery query);
 
     /**
-     * 通过资产id查询对应资产信息<br> 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
+     * 通过资产id查询对应资产信息<br>
+     * 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
      *
      * @param ids
      * @return
@@ -277,4 +283,13 @@ public interface AssetDao extends IBaseDao<Asset> {
     Asset getByAssetId(@Param("id") String id);
 
     List<AssetAssembly> getAssemblyInfoById(@Param("id") String id);
+
+    /**
+     * 统计品类
+     * @param areaIdsOfCurrentUser    当前登录用户对应的区域
+     * @param status      资产状体（不包含已退役资产状态）
+     * @return
+     */
+
+    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
 }
