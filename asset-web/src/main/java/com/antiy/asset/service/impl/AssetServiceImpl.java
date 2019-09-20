@@ -34,14 +34,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AssetClient;
+import com.antiy.asset.intergration.EmergencyClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -56,7 +61,6 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
 
@@ -81,11 +85,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private TransactionTemplate                                                 transactionTemplate;
     @Resource
-    private AssetSoftwareRelationDao            assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                            assetSoftwareRelationDao;
     @Resource
-    private AssetStorageMediumDao               assetStorageMediumDao;
+    private AssetStorageMediumDao                                               assetStorageMediumDao;
     @Resource
-    private AssetOperationRecordDao             assetOperationRecordDao;
+    private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
@@ -104,35 +108,37 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
-    private AssetGroupRelationDao               assetGroupRelationDao;
+    private AssetGroupRelationDao                                               assetGroupRelationDao;
     @Resource
-    private ExcelDownloadUtil                   excelDownloadUtil;
+    private ExcelDownloadUtil                                                   excelDownloadUtil;
     @Resource
-    private AssetEntityConvert                  assetEntityConvert;
+    private AssetEntityConvert                                                  assetEntityConvert;
     @Resource
-    private AssetGroupDao                       assetGroupDao;
+    private AssetGroupDao                                                       assetGroupDao;
     @Resource
-    private ActivityClient                      activityClient;
+    private ActivityClient                                                      activityClient;
     @Resource
-    private AesEncoder                          aesEncoder;
+    private AesEncoder                                                          aesEncoder;
     @Resource
-    private RedisUtil                           redisUtil;
+    private RedisUtil                                                           redisUtil;
     @Resource
-    private AssetLinkRelationDao                assetLinkRelationDao;
+    private AssetLinkRelationDao                                                assetLinkRelationDao;
     @Resource
-    private OperatingSystemClient               operatingSystemClient;
+    private OperatingSystemClient                                               operatingSystemClient;
     @Resource
-    private IRedisService                       redisService;
+    private IRedisService                                                       redisService;
     @Resource
-    private AssetClient                         assetClient;
+    private AssetClient                                                         assetClient;
     @Resource
-    private AssetIpRelationDao                  assetIpRelationDao;
+    private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource
-    private AssetMacRelationDao                 assetMacRelationDao;
-    private static final int                    ALL_PAGE = -1;
+    private AssetMacRelationDao                                                 assetMacRelationDao;
+    private static final int                                                    ALL_PAGE = -1;
 
     @Resource
-    private EmergencyClient                     emergencyClient;
+    private EmergencyClient                                                     emergencyClient;
+    @Resource
+    private AssetAssemblyDao                                                    assetAssemblyDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -1184,12 +1190,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
-
-                    List<AssetNetworkCardRequest> assetNetworkCardRequestList = assetOuterRequest.getNetworkCard();
-                    // 如果网卡被删除，则同时删除通联关系表
-                    AssetNetworkCardQuery assetNetworkCardQuery = new AssetNetworkCardQuery();
-                    assetNetworkCardQuery.setAssetId(asset.getStringId());
-                    // 当前数据库存在的网卡
+                    // 处理ip
+                    dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests());
+                    // 处理mac
+                    dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
+                    // 处理软件
+                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequestList());
+                    // 处理组件
+                    dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
                     // 7. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1342,6 +1350,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }).start();
         }
         return assetCount;
+    }
+
+    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests) {
+
+    }
+
+    public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
+    }
+
+    public void dealSoft(String id, List<AssetSoftwareReportRequest> softwareReportRequestList) {
+        // 1.先删除旧的关系表
+        assetSoftwareRelationDao.deleteSoftRealtion(id);
+        // 2.插入新的关系
+    }
+
+    public void dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
+        // 1.先删除旧的关系表
+        assetAssemblyDao.deleteAssemblyRelation(id);
+        // 2.插入新的关系
     }
 
     private boolean checkNumber(String id, String number) {
