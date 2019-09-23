@@ -39,7 +39,7 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
     @Resource
     private BaseConverter<AssetAssemblyLib, AssetAssemblyLibResponse> responseConverter;
     @Resource
-    private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
+    private BaseConverter<AssetAssembly, AssetAssemblyResponse>       assemblyResponseBaseConverter;
 
     @Override
     public String saveAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception {
@@ -84,7 +84,7 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
     @Override
     public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query) {
         return assemblyResponseBaseConverter
-                .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getPrimaryKey()), AssetAssemblyResponse.class);
+            .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getPrimaryKey()), AssetAssemblyResponse.class);
     }
 
 }

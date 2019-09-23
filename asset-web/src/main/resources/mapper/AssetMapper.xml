@@ -1649,6 +1649,17 @@
         </foreach>
     </update>
 
+    <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        asset.*, lib.product_name AS operation_system_name,
+        `user`.`name` AS responsible_user_name
+        FROM
+        <include refid="Table_Name"></include>
+        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
+        where asset.id=#{id}
+    </select>
+
     <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
   SELECT
   asset.id as assetId,
