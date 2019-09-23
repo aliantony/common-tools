@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -31,36 +63,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -141,6 +143,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private EmergencyClient                                                     emergencyClient;
     @Resource
     private AssetAssemblyDao                                                    assetAssemblyDao;
+    @Resource
+    private AssetAssemblyLibDao                                                 assetAssemblyLibDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -239,9 +243,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetStatus(
-                        asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode()) ? AssetStatusEnum.NET_IN.getCode()
-                            : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())
+                        ? AssetStatusEnum.NET_IN.getCode()
+                        : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -416,8 +420,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
-                AssetAssemblyResponse.class);
+            AssetAssemblyResponse.class);
     }
+
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public boolean checkRepeatName(String name) throws Exception {
@@ -849,10 +854,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return i + 1;
     }
 
-    @Override
-    public List<String> pulldownManufacturer() throws Exception {
-        return assetDao.pulldownManufacturer();
+    private boolean checkSupplier(String supplier) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("supplier", supplier);
+        map.put("type", "h");
+        map.put("status", "1");
+        return assetHardSoftLibDao.countByWhere(map) > 0;
     }
+
+    private boolean checkName(String supplier, String productName) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("supplier", supplier);
+        map.put("type", "h");
+        map.put("status", "1");
+        map.put("productName", productName);
+        return assetHardSoftLibDao.countByWhere(map) > 0;
+    }
+
+
 
     @Override
     public boolean checkRepeatAsset(String uuid, List<String[]> ipMac) {
@@ -979,21 +998,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         /**
          *
-         *统计品类型号
-         * Map中的数据  key--品类型号  value--总数
+         * 统计品类型号 Map中的数据 key--品类型号 value--总数
          */
-        List<Map<String, Object>> categoryModelCount =assetDao.countCategoryModel(areaIdsOfCurrentUser,status);
+        List<Map<String, Object>> categoryModelCount = assetDao.countCategoryModel(areaIdsOfCurrentUser, status);
 
-        List<EnumCountResponse> listResponse=new LinkedList<>();
-        for(AssetCategoryEnum categoryEnum: AssetCategoryEnum.values()){
+        List<EnumCountResponse> listResponse = new LinkedList<>();
+        for (AssetCategoryEnum categoryEnum : AssetCategoryEnum.values()) {
             EnumCountResponse enumCountResponse = new EnumCountResponse(categoryEnum.getName(),
-                    categoryEnum.getCode() + "", 0);
-            //查找品类型号对应的总数并设置到EnumCountResponse对象中
-            for(Map<String,Object> map:categoryModelCount){
+                categoryEnum.getCode() + "", 0);
+            // 查找品类型号对应的总数并设置到EnumCountResponse对象中
+            for (Map<String, Object> map : categoryModelCount) {
 
-                Integer code=(Integer)map.get("key");
-                if(categoryEnum.getCode().equals(code)){
-                    Long n=(Long)map.get("value");
+                Integer code = (Integer) map.get("key");
+                if (categoryEnum.getCode().equals(code)) {
+                    Long n = (Long) map.get("value");
                     enumCountResponse.setNumber(n);
                     break;
                 }
@@ -1004,7 +1022,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return listResponse;
 
     }
-
 
     @Override
     public List<AssetResponse> queryAssetByIds(Integer[] ids) {
@@ -1358,10 +1375,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private boolean checkNumber(String id, String number) {
         return assetDao.selectRepeatNumber(number, id) > 0;
-    }
-
-    private boolean checkName(String id, String name) {
-        return assetDao.selectRepeatName(name, id) > 0;
     }
 
     private void updateAssetStatus(Integer assetStatus, Long currentTimeMillis, String assetId) throws Exception {
@@ -1740,6 +1753,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (!checkSupplier(entity.getManufacturer())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商不存在！");
+                continue;
+            }
+            if (!checkName(entity.getManufacturer(), entity.getName())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
+                continue;
+            }
+
             if (CheckRepeatMAC(entity.getMac())) {
                 repeat++;
                 a++;
@@ -1897,31 +1923,57 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<String> assetMac = new ArrayList<>();
         List<AssetNetworkEquipment> networkEquipments = new ArrayList<>();
 
-        for (NetworkDeviceEntity networkDeviceEntity : entities) {
+        for (NetworkDeviceEntity entity : entities) {
 
-            if (assetNumbers.contains(networkDeviceEntity.getNumber())) {
+            if (assetNumbers.contains(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (assetMac.contains(networkDeviceEntity.getMac())) {
+            if (assetMac.contains(entity.getMac())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
+            if (CheckRepeatNumber(entity.getNumber())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("资产编号重复！");
+                continue;
+            }
 
-            if (networkDeviceEntity.getPortSize() <= 0 || networkDeviceEntity.getPortSize() > 99) {
+            if (!checkSupplier(entity.getManufacturer())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商不存在！");
+                continue;
+            }
+            if (!checkName(entity.getManufacturer(), entity.getName())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
+                continue;
+            }
+
+            if (CheckRepeatMAC(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
+                continue;
+            }
+
+            if (entity.getPortSize() <= 0 || entity.getPortSize() > 99) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("网口数目范围为1-99！");
                 continue;
             }
 
-            if (networkDeviceEntity.getButDate() != null) {
+            if (entity.getButDate() != null) {
 
-                if (isBuyDataBig(networkDeviceEntity.getButDate())) {
+                if (isBuyDataBig(entity.getButDate())) {
                     error++;
                     a++;
                     builder.append("第").append(a).append("行").append("购买时间需小于等于今天！");
@@ -1929,28 +1981,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
-            if (isDataBig(networkDeviceEntity.getDueDate())) {
+            if (isDataBig(entity.getDueDate())) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
 
-            if (CheckRepeatNumber(networkDeviceEntity.getNumber())) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产编号重复！");
-                continue;
-            }
 
-            if (CheckRepeatMAC(networkDeviceEntity.getMac())) {
-                repeat++;
-                a++;
-                builder.append("第").append(a).append("行").append("资产MAC地址重复！");
-                continue;
-            }
-
-            if ("".equals(checkUser(networkDeviceEntity.getUser()))) {
+            if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("系统没有此使用者，或已被注销！");
@@ -1962,12 +2001,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<String> areasStrings = new ArrayList<>();
             for (SysArea area : areas) {
                 areasStrings.add(area.getFullName());
-                if (area.getFullName().equals(networkDeviceEntity.getArea())) {
+                if (area.getFullName().equals(entity.getArea())) {
                     areaId = area.getStringId();
                 }
             }
 
-            if (!areasStrings.contains(networkDeviceEntity.getArea())) {
+            if (!areasStrings.contains(entity.getArea())) {
                 error++;
                 a++;
                 builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
@@ -1975,46 +2014,46 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
             if (repeat + error == 0) {
-                assetNames.add(networkDeviceEntity.getName());
-                assetNumbers.add(networkDeviceEntity.getNumber());
-                assetMac.add(networkDeviceEntity.getMac());
+                assetNames.add(entity.getName());
+                assetNumbers.add(entity.getNumber());
+                assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
-                asset.setResponsibleUserId(checkUser(networkDeviceEntity.getUser()));
+                asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
                 asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(networkDeviceEntity.getNumber());
-                asset.setName(networkDeviceEntity.getName());
-                asset.setManufacturer(networkDeviceEntity.getManufacturer());
-                asset.setSerial(networkDeviceEntity.getSerial());
-                asset.setHouseLocation(networkDeviceEntity.getHouseLocation());
-                asset.setBuyDate(networkDeviceEntity.getButDate());
-                asset.setServiceLife(networkDeviceEntity.getDueDate());
-                asset.setWarranty(networkDeviceEntity.getWarranty());
+                asset.setNumber(entity.getNumber());
+                asset.setName(entity.getName());
+                asset.setManufacturer(entity.getManufacturer());
+                asset.setSerial(entity.getSerial());
+                asset.setHouseLocation(entity.getHouseLocation());
+                asset.setBuyDate(entity.getButDate());
+                asset.setServiceLife(entity.getDueDate());
+                asset.setWarranty(entity.getWarranty());
                 asset.setCategoryModel(importRequest.getCategory());
-                asset.setDescrible(networkDeviceEntity.getMemo());
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(networkDeviceEntity.getImportanceDegree()));
+                asset.setDescrible(entity.getMemo());
+                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 assets.add(asset);
                 assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
-                assetNetworkEquipment.setFirmwareVersion(networkDeviceEntity.getFirmwareVersion());
+                assetNetworkEquipment.setFirmwareVersion(entity.getFirmwareVersion());
                 assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetNetworkEquipment.setInterfaceSize(networkDeviceEntity.getInterfaceSize());
-                assetNetworkEquipment.setPortSize(networkDeviceEntity.getPortSize());
-                assetNetworkEquipment.setIos(networkDeviceEntity.getIos());
-                assetNetworkEquipment.setOuterIp(networkDeviceEntity.getOuterIp());
+                assetNetworkEquipment.setInterfaceSize(entity.getInterfaceSize());
+                assetNetworkEquipment.setPortSize(entity.getPortSize());
+                assetNetworkEquipment.setIos(entity.getIos());
+                assetNetworkEquipment.setOuterIp(entity.getOuterIp());
                 // assetNetworkEquipment.setMacAddress(networkDeviceEntity.getMac());
-                assetNetworkEquipment.setCpuVersion(networkDeviceEntity.getCpuVersion());
-                assetNetworkEquipment.setSubnetMask(networkDeviceEntity.getSubnetMask());
-                assetNetworkEquipment.setExpectBandwidth(networkDeviceEntity.getExpectBandwidth());
-                assetNetworkEquipment.setNcrmSize(networkDeviceEntity.getNcrmSize());
-                assetNetworkEquipment.setCpuSize(networkDeviceEntity.getCpuSize());
-                assetNetworkEquipment.setDramSize(networkDeviceEntity.getDramSize());
-                assetNetworkEquipment.setFlashSize(networkDeviceEntity.getFlashSize());
-                assetNetworkEquipment.setRegister(networkDeviceEntity.getRegister());
-                assetNetworkEquipment.setIsWireless(networkDeviceEntity.getIsWireless());
+                assetNetworkEquipment.setCpuVersion(entity.getCpuVersion());
+                assetNetworkEquipment.setSubnetMask(entity.getSubnetMask());
+                assetNetworkEquipment.setExpectBandwidth(entity.getExpectBandwidth());
+                assetNetworkEquipment.setNcrmSize(entity.getNcrmSize());
+                assetNetworkEquipment.setCpuSize(entity.getCpuSize());
+                assetNetworkEquipment.setDramSize(entity.getDramSize());
+                assetNetworkEquipment.setFlashSize(entity.getFlashSize());
+                assetNetworkEquipment.setRegister(entity.getRegister());
+                assetNetworkEquipment.setIsWireless(entity.getIsWireless());
                 assetNetworkEquipment.setStatus(1);
                 networkEquipments.add(assetNetworkEquipment);
             }
@@ -2107,6 +2146,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
+                continue;
+            }
+            if (!checkSupplier(entity.getManufacturer())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商不存在！");
+                continue;
+            }
+            if (!checkName(entity.getManufacturer(), entity.getName())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
                 continue;
             }
             if (CheckRepeatMAC(entity.getMac())) {
@@ -2287,6 +2338,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (!checkSupplier(entity.getManufacturer())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商不存在！");
+                continue;
+            }
+            if (!checkName(entity.getManufacturer(), entity.getName())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
+                continue;
+            }
+
             if (entity.getBuyDate() != null) {
 
                 if (isBuyDataBig(entity.getBuyDate())) {
@@ -2447,12 +2511,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
+
+            if (!checkSupplier(entity.getManufacturer())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商不存在！");
+                continue;
+            }
+            if (!checkName(entity.getManufacturer(), entity.getName())) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
+                continue;
+            }
+
             if (entity.getBuyDate() != null) {
 
                 if (isBuyDataBig(entity.getBuyDate())) {

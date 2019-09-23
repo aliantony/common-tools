@@ -4,16 +4,16 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -125,6 +125,7 @@ public class AssetController {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetService.getAssemblyInfo(condition));
     }
+
     /**
      * 资产变更
      * @author lvliang
@@ -262,19 +263,6 @@ public class AssetController {
         return ActionResponse.success();
     }
 
-    /**
-     * 查询下拉的厂商信息
-     * @author zhangyajun
-     *
-     * @return 厂商名称集合
-     */
-    @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
-        return ActionResponse.success(iAssetService.pulldownManufacturer());
-    }
 
     /**
      * 查询通联设置厂商下拉接口
@@ -503,4 +491,5 @@ public class AssetController {
     public ActionResponse findAlarmAssetCount() throws Exception {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
+
 }

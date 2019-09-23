@@ -285,4 +285,18 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="queryAssemblyByHardSoftId" resultType="com.antiy.asset.entity.AssetAssembly">
+        SELECT
+    	    business_id as businessId,
+    	    type,
+    	    supplier,
+    	    product_name as productName
+        FROM
+        	`asset_assembly_lib` lib
+            LEFT JOIN asset_hard_assembly_relation relation ON lib.business_id = relation.assembly_id
+        WHERE
+            relation.status=1
+            and lib.status=1
+         	and relation.hard_id = #{id}
+    </select>
 </mapper>

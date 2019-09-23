@@ -1,9 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetHardSoftLibDao;
+import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetTemplateService;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,11 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Resource
     private IAssetUserService          iAssetUserService;
-
+    @Resource
+    private IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
     private IRedisService              redisService;
-    @Resource
-    private AssetHardSoftLibDao assetHardSoftLibDao;
+
 
     private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
     static {
@@ -54,12 +55,8 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> getAllSystemOs() throws Exception {
-        // return redisService.getAllSystemOs().stream()
-        // .filter(categoryModelResponse -> !REMOVE_SYSTEM_OS.contains(
-        // categoryModelResponse.getName() != null ? categoryModelResponse.getName().toLowerCase() : null))
-        // .map(BaselineCategoryModelResponse::getName)
-        // .collect(Collectors.toList());
-        List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(null);
+        OsQuery osQuery = new OsQuery();
+        List<SelectResponse> osList = iAssetHardSoftLibService.pullDownOs(osQuery);
         return osList.stream().map(SelectResponse::getValue).collect(Collectors.toList());
     }
 }

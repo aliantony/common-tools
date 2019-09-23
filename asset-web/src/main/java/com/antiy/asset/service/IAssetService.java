@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -92,12 +93,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer batchSave(List<Asset> assets) throws Exception;
 
-    /**
-     * 查询下拉的厂商信息
-     *
-     * @return
-     */
-    List<String> pulldownManufacturer() throws Exception;
+
 
     /**
      * 根据品类型号查询对应资产列表

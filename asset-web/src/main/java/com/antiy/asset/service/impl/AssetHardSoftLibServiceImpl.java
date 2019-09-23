@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
@@ -23,7 +24,9 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> CPE表 服务实现类 </p>
@@ -103,4 +106,32 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
         return osList;
     }
+
+    @Override
+    public List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception {
+        return assetHardSoftLibDao.pulldownSupplier(query);
+    }
+
+
+    @Override
+    public List<String> pulldownName(AssetPulldownQuery query) {
+        return assetHardSoftLibDao.pulldownName(query);
+    }
+
+    @Override
+    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) {
+        List<SelectResponse> result = new ArrayList<>();
+        List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
+        for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
+            SelectResponse response = new SelectResponse();
+            // 特殊处理
+            // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分
+            String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
+            response.setValue(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+            response.setId(Objects.toString(assetHardSoftLib.getBusinessId()));
+            result.add(response);
+        }
+        return result;
+    }
+
 }

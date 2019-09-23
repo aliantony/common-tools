@@ -1,11 +1,13 @@
 package com.antiy.asset.dao;
 
+import java.util.HashMap;
+import java.util.List;
+
+import com.antiy.asset.vo.query.AssetPulldownQuery;
+import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p> CPE表 Mapper 接口 </p>
@@ -22,4 +24,11 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      */
     List<SelectResponse> pullDownOs(OsQuery query);
 
+    List<String> pulldownSupplier(AssetPulldownQuery query);
+
+    List<String> pulldownName(AssetPulldownQuery query);
+
+    List<AssetHardSoftLib> queryHardSoftLibByVersion(AssetPulldownQuery query);
+
+    int countByWhere(HashMap<String, String> map);
 }

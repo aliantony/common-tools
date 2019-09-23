@@ -85,7 +85,7 @@ public class Asset extends BaseEntity {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String              operationSystem;
+    private String            operationSystem;
     /**
      * 操作系统名
      */
@@ -217,6 +217,10 @@ public class Asset extends BaseEntity {
     private String            departmentName;
     @ApiModelProperty("告警数量")
     private String            alarmCount;
+
+    private Long              baselineTemplateCorrelationGmt;
+
+    private Long              installTemplateCorrelationGmt;
 
     public Long getBusinessId() {
         return businessId;
@@ -594,6 +598,22 @@ public class Asset extends BaseEntity {
         this.alarmCount = alarmCount;
     }
 
+    public Long getBaselineTemplateCorrelationGmt() {
+        return baselineTemplateCorrelationGmt;
+    }
+
+    public void setBaselineTemplateCorrelationGmt(Long baselineTemplateCorrelationGmt) {
+        this.baselineTemplateCorrelationGmt = baselineTemplateCorrelationGmt;
+    }
+
+    public Long getInstallTemplateCorrelationGmt() {
+        return installTemplateCorrelationGmt;
+    }
+
+    public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
+        this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
+    }
+
     @Override
     public String toString() {
         return "Asset{" +
@@ -613,7 +633,7 @@ public class Asset extends BaseEntity {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", assetStatus=" + assetStatus +
                 ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem=" + operationSystem +
+                ", operationSystem='" + operationSystem + '\'' +
                 ", operationSystemName='" + operationSystemName + '\'' +
                 ", responsibleUserId='" + responsibleUserId + '\'' +
                 ", responsibleUserName='" + responsibleUserName + '\'' +
@@ -644,6 +664,8 @@ public class Asset extends BaseEntity {
                 ", patchCount='" + patchCount + '\'' +
                 ", departmentName='" + departmentName + '\'' +
                 ", alarmCount='" + alarmCount + '\'' +
+                ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
+                ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';
     }
 }
