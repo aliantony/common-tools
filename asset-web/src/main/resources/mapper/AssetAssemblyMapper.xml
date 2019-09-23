@@ -142,4 +142,27 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <!--删除资产与组件关系-->
+    <delete id="deleteAssemblyRelation">
+        update asset_assembly set status = 1 where asset_id = #{assetId}
+    </delete>
+
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetAssembly">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        amount,
+        business_id
+        )
+        values
+        <foreach collection="assetAssemblyList" item="item" open="(" close=")" separator=",">
+            (
+            #{item.assetId},
+            #{item.amount},
+            #{item.businessId}
+            )
+        </foreach>
+    </insert>
+
 </mapper>

@@ -129,4 +129,25 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <!--删除资产mac关系-->
+    <delete id="deleteByAssetId">
+        update asset_mac_relation set status = 0 where assetId = #{assetId}
+    </delete>
+    <!--批量保存资产mac关系-->
+    <insert id="insertBatch">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        mac
+        )
+        values
+        <foreach collection="assetMacRelationList" item="item" open="(" close=")" separator=",">
+            (
+            #{item.asetId},
+            #{item.mac}
+            )
+        </foreach>
+    </insert>
+
 </mapper>

@@ -92,6 +92,7 @@
         </trim>
     </insert>
 
+
     <update id="update" parameterType="com.antiy.asset.entity.AssetIpRelation">
         update
         <include refid="Table_Name"></include>
@@ -142,4 +143,26 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <!-- 删除资产ip关系-->
+    <delete id="deleteByAssetId">
+        update asset_ip_relation set status = 0 where asset_id = #{assetId}
+    </delete>
+    <!--保存资产ip关系-->
+    <insert id="insertBatch">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        ip,
+        net
+        )
+        values
+        <foreach collection="assetIpRelationList" separator="," open="(" close=")" item="item">
+            (
+            #{item.assetId},
+            #{item.ip},
+            #{item.net}
+            )
+        </foreach>
+    </insert>
 </mapper>

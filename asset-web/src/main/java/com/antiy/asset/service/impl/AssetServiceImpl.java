@@ -1337,10 +1337,40 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests) {
-
+        // 1. 删除旧的资产ip关系
+        assetIpRelationDao.deleteByAssetId(id);
+        // 2. 批量保存资产ip关系
+        if (CollectionUtils.isNotEmpty(ipRelationRequests)) {
+            List<AssetIpRelation> assetIpRelationList = Lists.newArrayList();
+            Integer assetId = DataTypeUtils.stringToInteger(id);
+            ipRelationRequests.stream().forEach(ip->{
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setAssetId(assetId);
+                assetIpRelation.setIp(ip.getIp());
+                assetIpRelation.setNet(ip.getNet());
+                assetIpRelationList.add(assetIpRelation);
+            });
+            assetIpRelationDao.insertBatch(assetIpRelationList);
+        }
+        // 3. 处理通联
+        //assetLinkRelationDao.deleteRelationByIp(id, );
     }
 
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
+        // 1. 删除旧的资产mac关系
+        assetMacRelationDao.deleteByAssetId(id);
+        // 2.插入新的资产mac关系
+        if (CollectionUtils.isNotEmpty(macRelationRequests)) {
+            List<AssetMacRelation> assetMacRelationList = Lists.newArrayList();
+            Integer assetId = DataTypeUtils.stringToInteger(id);
+            macRelationRequests.stream().forEach(mac -> {
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setAssetId(assetId);
+                assetMacRelation.setMac(mac.getMac());
+                assetMacRelationList.add(assetMacRelation);
+            });
+            assetMacRelationDao.insertBatch(assetMacRelationList);
+        }
     }
 
     public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) {
@@ -1366,6 +1396,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 1.先删除旧的关系表
         assetAssemblyDao.deleteAssemblyRelation(id);
         // 2.插入新的关系
+        if (CollectionUtils.isNotEmpty(assemblyRequestList)) {
+            List<AssetAssembly> assetAssemblyList = Lists.newArrayList();
+            assemblyRequestList.stream().forEach(assemblyRequest -> {
+                AssetAssembly assetAssembly = new AssetAssembly();
+                assetAssembly.setAssetId(id);
+                assetAssembly.setBusinessId(assemblyRequest.getBusinessId());
+                assetAssembly.setAmount(assemblyRequest.getAmount());
+                assetAssemblyList.add(assetAssembly);
+            });
+            assetAssemblyDao.insertBatch(assetAssemblyList);
+        }
     }
 
     private boolean checkNumber(String id, String number) {
