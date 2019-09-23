@@ -132,7 +132,7 @@ public class AssetHardSoftLibController {
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.POST)
+    @RequestMapping(value = "/pullDown/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownManufacturer(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         return ActionResponse.success(iAssetHardSoftLibService.pulldownSupplier(query));
@@ -146,7 +146,7 @@ public class AssetHardSoftLibController {
      */
     @ApiOperation(value = "查询下拉的名称信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/name", method = RequestMethod.POST)
+    @RequestMapping(value = "/pullDown/name", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownName')")
     public ActionResponse<List<String>> pulldownName(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "厂商不能为空");
@@ -162,7 +162,7 @@ public class AssetHardSoftLibController {
      */
     @ApiOperation(value = "查询下拉的版本信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/pulldown/version", method = RequestMethod.POST)
+    @RequestMapping(value = "/pullDown/version", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownVersion')")
     public ActionResponse<List<SelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "厂商不能为空");
