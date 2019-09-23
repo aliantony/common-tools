@@ -1,15 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import java.io.*;
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import java.io.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -27,6 +25,8 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "资产主表信息")
     private AssetRequest                     asset;
 
+    /**
+     * 主板
     /**
      * mac
      */
@@ -78,12 +78,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "处理流程数据")
     @Valid
     private ActivityHandleRequest            activityHandleRequest;
-    /**
-     * 其他设备
-     */
-    @ApiModelProperty(value = "其他设备")
-    @Valid
-    private AssetOthersRequest               assetOthersRequest;
 
     public ActivityHandleRequest getActivityHandleRequest() {
         return activityHandleRequest;
@@ -141,14 +135,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
         this.softwareReportRequestList = softwareReportRequestList;
     }
 
-    public AssetOthersRequest getAssetOthersRequest() {
-        return assetOthersRequest;
-    }
-
-    public void setAssetOthersRequest(AssetOthersRequest assetOthersRequest) {
-        this.assetOthersRequest = assetOthersRequest;
-    }
-
     @Override
     public String toString() {
         return "AssetOuterRequest{" + "asset=" + asset + ", macRelationRequests=" + macRelationRequests
@@ -156,8 +142,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
                + ", networkEquipment=" + networkEquipment + ", safetyEquipment=" + safetyEquipment
                + ", assetStorageMedium=" + assetStorageMedium + ", softwareReportRequestList="
                + softwareReportRequestList + ", manualStartActivityRequest=" + manualStartActivityRequest
-               + ", activityHandleRequest=" + activityHandleRequest + ", assetOthersRequest=" + assetOthersRequest
-               + '}';
+               + ", activityHandleRequest=" + activityHandleRequest + '}';
     }
 
     @Override

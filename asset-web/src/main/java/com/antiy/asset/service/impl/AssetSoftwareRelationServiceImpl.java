@@ -29,7 +29,6 @@ import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -144,17 +143,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<AssetSoftwareResponse> assetSoftwareRelationResponse = responseSoftConverter
             .convert(assetSoftwareRelationList, AssetSoftwareResponse.class);
         return assetSoftwareRelationResponse;
-    }
-
-    @Override
-    public PageResult<SoftwareResponse> getPageSoftWareList(AssetSoftwareRelationQuery query) {
-        int count = countByAssetId(DataTypeUtils.stringToInteger(query.getAssetId()));
-        if (count == 0) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
-        }
-        List<SoftwareResponse> assetSoftwareRelationList = assetSoftwareRelationDao
-                .getSimpleSoftwareByAssetId(query);
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareRelationList);
     }
 
     private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {

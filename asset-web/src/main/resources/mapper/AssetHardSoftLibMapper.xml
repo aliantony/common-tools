@@ -416,4 +416,26 @@
         limit 50
     </select>
 
+    <select id="pullDownOs" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select filter.product_name as value,temp.id from (
+        SELECT
+        min(business_id) as id ,product_name as value
+        from
+        <include refid="Table_Name"></include>
+        lib
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            and lib.type = 'o'
+            <if test=" productName != null and productName != '' ">
+                and lib.product_name like CONCAT('%', replace(replace(REPLACE
+                (#{productName},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test=" isfilter">
+                and product_name in (select product_name from asset_cpe_filter where status = 1)
+            </if>
+            and lib.status = 1 and is_storage = 1
+        </trim>
+        GROUP BY product_name limit 50) temp INNER JOIN asset_cpe_filter filter on filter.product_name =
+        temp.value
+    </select>
 </mapper>

@@ -204,14 +204,12 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         assetOperationRecord.setOriginStatus(currentAssetStatus.getCode());
         assetOperationRecord.setTargetStatus(nextAssetStatus);
         assetOperationRecord.setContent(AssetFlowEnum.getMsgByAssetStatus(currentAssetStatus));
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(gmtCreateTime);
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setProcessResult(agree ? 1 : 0);
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setAreaId(areaId);
         return assetOperationRecord;
     }
 

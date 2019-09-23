@@ -10,7 +10,6 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -126,10 +125,4 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      */
     Integer updateAssetReleation(AssetRelationSoftRequest assetRelationSoftRequest) throws Exception;
 
-    /**
-     * 分页查询资产关联的软件信息列表
-     * @param queryCondition
-     * @return
-     */
-    PageResult<SoftwareResponse> getPageSoftWareList(AssetSoftwareRelationQuery queryCondition);
 }

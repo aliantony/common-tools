@@ -1,8 +1,9 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetInstallTemplateCheck;
+import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 /**
  * <p> 装机模板审核表 Mapper 接口 </p>
@@ -12,4 +13,11 @@ import com.antiy.asset.entity.AssetInstallTemplateCheck;
  */
 public interface AssetInstallTemplateCheckDao extends IBaseDao<AssetInstallTemplateCheck> {
 
+    /**
+     * 通过装机模板ID查询
+     * @param templateId
+     * @return
+     * @throws Exception
+     */
+    List<AssetInstallTemplateCheck> queryTemplateCheckByTemplateId(String templateId) throws Exception;
 }

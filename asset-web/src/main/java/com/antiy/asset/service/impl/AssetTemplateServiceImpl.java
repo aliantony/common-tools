@@ -1,18 +1,17 @@
 package com.antiy.asset.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
+import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.service.IAssetTemplateService;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -27,6 +26,8 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Resource
     private IRedisService              redisService;
+    @Resource
+    private AssetHardSoftLibDao assetHardSoftLibDao;
 
     private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
     static {
@@ -53,10 +54,12 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> getAllSystemOs() throws Exception {
-        return redisService.getAllSystemOs().stream()
-            .filter(categoryModelResponse -> !REMOVE_SYSTEM_OS.contains(
-                categoryModelResponse.getName() != null ? categoryModelResponse.getName().toLowerCase() : null))
-            .map(BaselineCategoryModelResponse::getName)
-            .collect(Collectors.toList());
+        // return redisService.getAllSystemOs().stream()
+        // .filter(categoryModelResponse -> !REMOVE_SYSTEM_OS.contains(
+        // categoryModelResponse.getName() != null ? categoryModelResponse.getName().toLowerCase() : null))
+        // .map(BaselineCategoryModelResponse::getName)
+        // .collect(Collectors.toList());
+        List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(null);
+        return osList.stream().map(SelectResponse::getValue).collect(Collectors.toList());
     }
 }

@@ -1,16 +1,27 @@
 package com.antiy.asset.controller;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMethod;
-import io.swagger.annotations.*;
-import javax.annotation.Resource;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.ActionResponse;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.SoftwareResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  *
@@ -88,5 +99,24 @@ public class AssetHardSoftLibController {
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
         return ActionResponse.success(iAssetHardSoftLibService.deleteAssetHardSoftLibById(baseRequest));
+    }
+
+    @ApiOperation(value = "分页查询资产关联的软件信息列表", notes = "必传资产ID")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SoftwareResponse.class, responseContainer = "actionResponse")})
+    @RequestMapping(value = "/software/list", method = RequestMethod.POST)
+    public ActionResponse getPageSoftwarePage(@ApiParam(value = "assetId") @RequestBody AssetSoftwareQuery queryCondition) {
+        return ActionResponse.success(iAssetHardSoftLibService.getPageSoftWareList(queryCondition));
+    }
+
+    /**
+     * 操作系统(下拉项)
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "操作系统下拉选项", notes = "操作系统")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class), })
+    @RequestMapping(value = "/pullDown/os", method = RequestMethod.POST)
+    public ActionResponse pullDownOs(@RequestBody(required = false) OsQuery osQuery) {
+        return ActionResponse.success(iAssetHardSoftLibService.pullDownOs(osQuery));
     }
 }

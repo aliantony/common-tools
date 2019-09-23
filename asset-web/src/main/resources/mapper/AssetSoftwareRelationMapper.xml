@@ -414,7 +414,7 @@
     </select>
 
     <select id="getSimpleSoftwareByAssetId" resultType="com.antiy.asset.vo.response.SoftwareResponse"
-            parameterType="com.antiy.asset.vo.query.AssetSoftwareRelationQuery">
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
         select
         asoft.business_id softwareId,
         asoft.product_name productName,

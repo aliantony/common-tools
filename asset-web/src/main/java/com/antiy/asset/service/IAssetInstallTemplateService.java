@@ -1,17 +1,16 @@
 package com.antiy.asset.service;
 
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.ActionResponse;
-import java.io.Serializable;
-import java.util.List;
-
+import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
+
+import java.util.List;
 
 /**
  * <p> 装机模板 服务类 </p>
@@ -62,5 +61,13 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @return
      */
     String deleteAssetInstallTemplateById(BaseRequest baseRequest) throws Exception;
+
+    /**
+     * 通过资产ID查询
+     * @param queryCondition
+     * @return
+     * @throws Exception
+     */
+    AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception;
 
 }

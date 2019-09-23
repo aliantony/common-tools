@@ -1,20 +1,18 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.common.base.*;
-import org.slf4j.Logger;
-import java.util.List;
-import java.util.ArrayList;
-
-import com.antiy.common.utils.LogUtils;
-import org.springframework.stereotype.Service;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
+import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetInstallTemplateService;
+import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
+import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.common.base.*;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -76,5 +74,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public String deleteAssetInstallTemplateById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetInstallTemplateDao.deleteById(baseRequest.getStringId()).toString();
+    }
+    @Override
+    public AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception {
+        AssetTemplateRelationResponse templateRelationResponse = assetInstallTemplateDao.queryTemplateByAssetId(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
+        return templateRelationResponse;
     }
 }

@@ -64,6 +64,36 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -242,9 +272,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
                     assetOperationRecord.setTargetStatus(
-                        asset.getAssetStatus() == AssetStatusEnum.NET_IN.getCode() ? AssetStatusEnum.NET_IN.getCode()
+                        asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode()) ? AssetStatusEnum.NET_IN.getCode()
                             : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
@@ -996,51 +1025,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countCategory() throws Exception {
+        List<Integer> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+
+        // 不统计已退役资产
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
-        return countCategoryByStatus(status);
+        /**
+         *
+         *统计品类型号
+         * Map中的数据  key--品类型号  value--总数
+         */
+        List<Map<String, Object>> categoryModelCount =assetDao.countCategoryModel(areaIdsOfCurrentUser,status);
+
+        List<EnumCountResponse> listResponse=new LinkedList<>();
+        for(AssetCategoryEnum categoryEnum: AssetCategoryEnum.values()){
+            EnumCountResponse enumCountResponse = new EnumCountResponse(categoryEnum.getName(),
+                    categoryEnum.getCode() + "", 0);
+            //查找品类型号对应的总数并设置到EnumCountResponse对象中
+            for(Map<String,Object> map:categoryModelCount){
+
+                Integer code=(Integer)map.get("key");
+                if(categoryEnum.getCode().equals(code)){
+                    Long n=(Long)map.get("value");
+                    enumCountResponse.setNumber(n);
+                    break;
+                }
+            }
+
+            listResponse.add(enumCountResponse);
+        }
+        return listResponse;
+
     }
 
-    @Override
-    public List<EnumCountResponse> countCategoryByStatus(List<Integer> assetStatusList) throws Exception {
-        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        // 查询第二级分类id
-        // List<AssetCategoryModel> secondCategoryModelList = assetCategoryModelDao.getNextLevelCategoryByName("硬件");
-        // List<AssetCategoryModel> categoryModelDaoAll = assetCategoryModelDao.getAll();
-        // if (CollectionUtils.isNotEmpty(secondCategoryModelList)) {
-        // List<EnumCountResponse> resultList = new ArrayList<>();
-        //// for (AssetCategoryModel secondCategoryModel : secondCategoryModelList) {
-        //// EnumCountResponse enumCountResponse = new EnumCountResponse();
-        //// // 查询第二级每个分类下所有的分类id，并添加至list集合
-        ////// List<AssetCategoryModel> search = iAssetCategoryModelService.recursionSearch(categoryModelDaoAll,
-        ////// secondCategoryModel.getId());
-        //// List<String> categoryList = new ArrayList<>();
-        //// categoryList.add(
-        //// aesEncoder.encode(secondCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-        //// enumCountResponse.setCode(categoryList);
-        //// // 设置查询资产条件参数，包括区域id，状态，资产品类型号
-        ////// AssetQuery assetQuery = setAssetQueryParam(enumCountResponse, areaIds, search, assetStatusList);
-        //// // 将查询结果放置结果集
-        ////// enumCountResponse.setNumber((long) assetDao.findCountByCategoryModel(assetQuery));
-        ////// enumCountResponse.setMsg(secondCategoryModel.getName());
-        //// resultList.add(enumCountResponse);
-        //// }
-        // return resultList;
-        // }
-        return null;
-    }
-
-    // private AssetQuery setAssetQueryParam(EnumCountResponse enumCountResponse, List<Integer> areaIds,
-    // List<AssetCategoryModel> search, List<Integer> assetStatusList) {
-    // List<Integer> list = new ArrayList<>();
-    // search.stream().forEach(x -> list.add(x.getId()));
-    // AssetQuery assetQuery = new AssetQuery();
-    // assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
-    // assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-    // // 需要排除已退役资产
-    // enumCountResponse.setStatus(assetStatusList);
-    // assetQuery.setAssetStatusList(assetStatusList);
-    // return assetQuery;
-    // }
 
     @Override
     public List<AssetResponse> queryAssetByIds(Integer[] ids) {
@@ -2590,7 +2606,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetOperationRecord assetRecord(String id, String areaId) throws Exception {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(id);
-        assetOperationRecord.setTargetType(AssetOperationTableEnum.ASSET.getCode());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setContent("导入硬件资产");
         assetOperationRecord.setProcessResult(1);
@@ -2599,7 +2614,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-        assetOperationRecord.setAreaId(areaId);
         return assetOperationRecord;
         // assetOperationRecordDao.insert(assetOperationRecord);
     }

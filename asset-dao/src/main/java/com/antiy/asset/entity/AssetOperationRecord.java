@@ -16,10 +16,6 @@ public class AssetOperationRecord extends BaseEntity {
      */
     private String  targetObjectId;
     /**
-     * 被操作对象类别
-     */
-    private String  targetType;
-    /**
      * 状态
      */
     private Integer targetStatus;
@@ -35,10 +31,6 @@ public class AssetOperationRecord extends BaseEntity {
      * 操作人名字
      */
     private String  operateUserName;
-    /**
-     * 方案表ID
-     */
-    private Integer schemeId;
     /**
      * 创建时间
      */
@@ -57,18 +49,7 @@ public class AssetOperationRecord extends BaseEntity {
      * 原始状态
      */
     private Integer originStatus;
-    /**
-     * 区域主键
-     */
-    private String  areaId;
 
-    public String getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
-    }
 
     public Integer getOriginStatus() {
         return originStatus;
@@ -84,14 +65,6 @@ public class AssetOperationRecord extends BaseEntity {
 
     public void setTargetObjectId(String targetObjectId) {
         this.targetObjectId = targetObjectId;
-    }
-
-    public String getTargetType() {
-        return targetType;
-    }
-
-    public void setTargetType(String targetType) {
-        this.targetType = targetType;
     }
 
     public Integer getTargetStatus() {
@@ -126,14 +99,6 @@ public class AssetOperationRecord extends BaseEntity {
         this.operateUserName = operateUserName;
     }
 
-    public Integer getSchemeId() {
-        return schemeId;
-    }
-
-    public void setSchemeId(Integer schemeId) {
-        this.schemeId = schemeId;
-    }
-
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -160,9 +125,16 @@ public class AssetOperationRecord extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetOperationRecord{" + ", targetObjectId=" + targetObjectId + ", targetType=" + targetType
-               + ", targetStatus=" + targetStatus + ", content=" + content + ", operateUserId=" + operateUserId
-               + ", operateUserName=" + operateUserName + ", schemeId=" + schemeId + ", gmtCreate=" + gmtCreate
-               + ", processResult=" + processResult + "}";
+        return "AssetOperationRecord{" +
+                "targetObjectId='" + targetObjectId + '\'' +
+                ", targetStatus=" + targetStatus +
+                ", content='" + content + '\'' +
+                ", operateUserId=" + operateUserId +
+                ", operateUserName='" + operateUserName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", createUser=" + createUser +
+                ", processResult=" + processResult +
+                ", originStatus=" + originStatus +
+                '}';
     }
 }
