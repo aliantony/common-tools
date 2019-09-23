@@ -79,7 +79,7 @@ CREATE TABLE `asset_assembly` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
   `amount` tinyint(3) DEFAULT NULL COMMENT '组件数量',
-  `business_id` int(11) NOT NULL COMMENT '组件主键',
+  `business_id` bigint(20) NOT NULL COMMENT '组件主键',
   `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产组件关系表';

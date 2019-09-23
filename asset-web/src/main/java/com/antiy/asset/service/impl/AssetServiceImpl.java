@@ -106,7 +106,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
     @Resource
     private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
-
+    @Resource
+    private BaseConverter<AssetGroup, AssetGroupResponse>                       assetGroupResponseBaseConverter;
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
@@ -138,13 +139,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     private static final int                                                    ALL_PAGE = -1;
-
-    @Resource
-    private EmergencyClient                                                     emergencyClient;
     @Resource
     private AssetAssemblyDao                                                    assetAssemblyDao;
-    @Resource
-    private AssetAssemblyLibDao                                                 assetAssemblyLibDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -422,7 +418,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
             AssetAssemblyResponse.class);
     }
-
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public boolean checkRepeatName(String name) throws Exception {
@@ -880,8 +875,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
 
-
-
     @Override
     public boolean checkRepeatAsset(String uuid, List<String[]> ipMac) {
         ParamterExceptionUtils.isBlank(uuid, "上报设备资产UUID不能为空");
@@ -1055,7 +1048,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse
             .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));
         // 获取资产组
-        List<AssetGroupResponse> assetGroupResponses = BeanConvert
+        List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
             .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);
         if (CollectionUtils.isNotEmpty(assetGroupResponses)) {
             assetResponse.setAssetGroups(assetGroupResponses);
@@ -1997,7 +1990,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -2519,7 +2511,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-
 
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
