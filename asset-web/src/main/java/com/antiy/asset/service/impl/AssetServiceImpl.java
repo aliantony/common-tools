@@ -272,9 +272,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetStatus(
-                        asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode()) ? AssetStatusEnum.NET_IN.getCode()
-                            : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())
+                        ? AssetStatusEnum.NET_IN.getCode()
+                        : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -449,7 +449,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
-                AssetAssemblyResponse.class);
+            AssetAssemblyResponse.class);
     }
 
     @Override
@@ -459,7 +459,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<String> pulldownVersion(AssetPulldownQuery query) {
-        return assetHardSoftLibDao.pulldownVersion(query);
+        List<String> result = new ArrayList<>();
+        List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
+        for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
+            // 特殊处理
+            // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分
+            String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
+            result.add(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+        }
+        return result;
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -901,6 +909,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return i + 1;
     }
 
+    private boolean checkSupplier(String supplier) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("supplier", supplier);
+        map.put("type", "h");
+        map.put("status", "1");
+        return assetHardSoftLibDao.countByWhere(map) > 0;
+    }
+
+    private boolean checkName(String supplier, String productName) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("supplier", supplier);
+        map.put("type", "h");
+        map.put("status", "1");
+        map.put("productName", productName);
+        return assetHardSoftLibDao.countByWhere(map) > 0;
+    }
+
     @Override
     public List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception {
         return assetHardSoftLibDao.pulldownSupplier(query);
@@ -1031,21 +1056,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         /**
          *
-         *统计品类型号
-         * Map中的数据  key--品类型号  value--总数
+         * 统计品类型号 Map中的数据 key--品类型号 value--总数
          */
-        List<Map<String, Object>> categoryModelCount =assetDao.countCategoryModel(areaIdsOfCurrentUser,status);
+        List<Map<String, Object>> categoryModelCount = assetDao.countCategoryModel(areaIdsOfCurrentUser, status);
 
-        List<EnumCountResponse> listResponse=new LinkedList<>();
-        for(AssetCategoryEnum categoryEnum: AssetCategoryEnum.values()){
+        List<EnumCountResponse> listResponse = new LinkedList<>();
+        for (AssetCategoryEnum categoryEnum : AssetCategoryEnum.values()) {
             EnumCountResponse enumCountResponse = new EnumCountResponse(categoryEnum.getName(),
-                    categoryEnum.getCode() + "", 0);
-            //查找品类型号对应的总数并设置到EnumCountResponse对象中
-            for(Map<String,Object> map:categoryModelCount){
+                categoryEnum.getCode() + "", 0);
+            // 查找品类型号对应的总数并设置到EnumCountResponse对象中
+            for (Map<String, Object> map : categoryModelCount) {
 
-                Integer code=(Integer)map.get("key");
-                if(categoryEnum.getCode().equals(code)){
-                    Long n=(Long)map.get("value");
+                Integer code = (Integer) map.get("key");
+                if (categoryEnum.getCode().equals(code)) {
+                    Long n = (Long) map.get("value");
                     enumCountResponse.setNumber(n);
                     break;
                 }
@@ -1056,7 +1080,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return listResponse;
 
     }
-
 
     @Override
     public List<AssetResponse> queryAssetByIds(Integer[] ids) {
@@ -1410,10 +1433,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private boolean checkNumber(String id, String number) {
         return assetDao.selectRepeatNumber(number, id) > 0;
-    }
-
-    private boolean checkName(String id, String name) {
-        return assetDao.selectRepeatName(name, id) > 0;
     }
 
     private void updateAssetStatus(Integer assetStatus, Long currentTimeMillis, String assetId) throws Exception {

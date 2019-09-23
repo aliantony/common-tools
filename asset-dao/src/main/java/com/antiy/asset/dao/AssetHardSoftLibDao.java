@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.antiy.asset.vo.query.AssetPulldownQuery;
@@ -31,5 +32,7 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
 
     List<String> pulldownName(AssetPulldownQuery query);
 
-    List<String> pulldownVersion(AssetPulldownQuery query);
+    List<AssetHardSoftLib> queryHardSoftLibByVersion(AssetPulldownQuery query);
+
+    int countByWhere(HashMap<String, String> map);
 }

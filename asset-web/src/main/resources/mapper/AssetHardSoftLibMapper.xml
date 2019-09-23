@@ -359,6 +359,15 @@
         </trim>
     </select>
 
+    <select id="countByWhere" resultMap="int" parameterType="java.util.Map">
+        select
+        count(*)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
@@ -400,8 +409,9 @@
         limit 50
     </select>
 
-    <select id="pulldownVersion" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
-        select distinct cpe_uri from
+    <select id="queryHardSoftLibByVersion" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select * from
         <include refid="Table_Name"></include>
         where status = 1 and type='h'
         <if test="supplier != null">
