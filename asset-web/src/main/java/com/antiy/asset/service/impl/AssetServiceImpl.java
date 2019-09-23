@@ -606,15 +606,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
         dealProcess(query, processMap);
-        // 品类型号及其子品类
-        if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
-            List<Integer> categoryModels = Lists.newArrayList();
-            // for (int i = 0; i < query.getCategoryModels().length; i++) {
-            // categoryModels.addAll(assetCategoryModelService
-            // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            // }
-            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
-        }
 
         int count = 0;
         // 如果会查询漏洞数量
@@ -1355,7 +1346,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     public void dealSoft(String id, List<AssetSoftwareReportRequest> softwareReportRequestList) {
         // 1.先删除旧的关系表
-        assetSoftwareRelationDao.deleteSoftRealtion(id);
+        //assetSoftwareRelationDao.deleteSoftRealtion(id);
         // 2.插入新的关系
     }
 

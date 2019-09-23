@@ -254,8 +254,10 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_card.ip_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset_network_card.mac_address like binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.ip_address like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or asset_network_card.mac_address like binary
+            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
@@ -265,7 +267,8 @@
             </foreach>
         </if>
         <if test="installType != null ">
-            and if (asset_software_relation.install_type is null ,asset.install_type = #{installType}, asset_software_relation.install_type = #{installType})
+            and if (asset_software_relation.install_type is null ,asset.install_type = #{installType},
+            asset_software_relation.install_type = #{installType})
         </if>
         <if test="installStatus != null">
             <choose>
@@ -629,9 +632,11 @@
         install_status
         from
         asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and asset_network_card.status = 1 and asset.status=1
+        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
+        asset_network_card.status = 1 and asset.status=1
         left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
-        left join asset_software_relation asset_software_relation on asset.id=asset_software_relation.asset_id and asset_software_relation.software_id=#{softwareId} and asset_software_relation.status=1
+        left join asset_software_relation asset_software_relation on asset.id=asset_software_relation.asset_id and
+        asset_software_relation.software_id=#{softwareId} and asset_software_relation.status=1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -650,26 +655,26 @@
         count( 1 )
         FROM
         (
-            SELECT DISTINCT
-            asset.id AS asset_id
-            FROM
-            asset asset
-            LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
-            AND asset_network_card.STATUS = 1
-            AND asset.STATUS = 1
-            LEFT JOIN asset_category_model asset_category_model ON asset.category_model = asset_category_model.id
-            LEFT JOIN asset_software_relation asset_software_relation ON asset.id = asset_software_relation.asset_id
-            AND asset_software_relation.software_id = #{softwareId}
-            AND asset_software_relation.STATUS = 1
-            <where>
-                <trim prefixOverrides="and">
-                    <include refid="Multiple_Query"></include>
-                </trim>
-            </where>
-            GROUP BY
-            asset.id
-            ORDER BY
-            asset.first_enter_nett DESC
+        SELECT DISTINCT
+        asset.id AS asset_id
+        FROM
+        asset asset
+        LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
+        AND asset_network_card.STATUS = 1
+        AND asset.STATUS = 1
+        LEFT JOIN asset_category_model asset_category_model ON asset.category_model = asset_category_model.id
+        LEFT JOIN asset_software_relation asset_software_relation ON asset.id = asset_software_relation.asset_id
+        AND asset_software_relation.software_id = #{softwareId}
+        AND asset_software_relation.STATUS = 1
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+        GROUP BY
+        asset.id
+        ORDER BY
+        asset.first_enter_nett DESC
 
         ) t
 
@@ -733,5 +738,94 @@
         <include refid="Table_Name"/>
         where software_id = #{softwareId} and asset_id = #{assetId}
         and status = 1
+    </select>
+
+    <!--查询资产已关联的软件-->
+    <select id="queryInstalledList" parameterType="com.antiy.asset.vo.query.InstallQuery"
+            resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
+        SELECT
+          t1.id,
+          t1.software_id as softwareId,
+          t2.supplier,
+          t2.product_name as productName,
+          t2.version,
+          t2.soft_platform as softPlatform
+        FROM
+            asset_software_relation t1
+            LEFT JOIN asset_hard_soft_lib t2
+            ON t1.software_id = t2.business_id and t2.status = 1
+        WHERE
+            t1.asset_id = #{assetId}
+            and t1.status = 1
+    </select>
+    <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
+        select sw_type from baseline_template where id = #{installTemplateId}
+    </select>
+    <!--模板的软件-->
+    <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
+        select software_id from baseline_template where id = #{installTemplateId}
+    </select>
+    <!--查询可关联的软件-->
+    <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
+        select
+        business_id as softwareId,
+        supplier,
+        product_name as productName,
+        version,
+        soft_platform as softPlatform
+        from asset_hard_soft_lib
+        where
+        status = 1
+        <choose>
+            <when test="nameListType == 1">
+                and business_id not in
+                <foreach collection="softwareIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+            <when test="nameListType == 2">
+                and business_id in
+                <foreach collection="softwareIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+            <otherwise>
+                and business_id not in
+                <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </otherwise>
+        </choose>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <!--查询可关联的软件数量-->
+    <select id="queryInstallableCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from asset_hard_soft_lib
+        where
+        status = 1
+        <choose>
+            <when test="nameListType == 1">
+                and business_id not in
+                <foreach collection="softwareIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+            <when test="nameListType == 2">
+                and business_id in
+                <foreach collection="softwareIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+            <otherwise>
+                and business_id not in
+                <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </otherwise>
+        </choose>
     </select>
 </mapper>

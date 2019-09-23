@@ -1,17 +1,18 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
+import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -110,17 +111,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     List<AssetSoftwareRelation> getReleationByAssetId(Integer id);
 
-    Integer installArtificial(List<AssetSoftwareRelation> assetSoftwareRelation);
-
-    Integer installAauto(List<AssetSoftwareRelation> assetSoftwareRelation);
-
-    /**
-     * 软件安装
-     * @param relationList
-     * @return
-     */
-    Integer installSoftware(@Param(value = "list") List<AssetSoftwareRelation> relationList);
-
     /**
      * 安装列表查询
      * @param query
@@ -134,13 +124,6 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     Integer queryInstallCount(InstallQuery query);
-
-    Integer updateByAssetId(AssetSoftwareRelation assetSoftwareRelation);
-
-    /**
-     * 更新关系表配置状态
-     */
-    Integer updateConfigStatusByAssetId(AssetSoftwareRelation assetSoftwareRelation) throws Exception;
 
     /**
      * 查询资产上安装的软件，用于下发智甲
@@ -165,9 +148,46 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     Integer findInstallStatus(AssetSoftwareQuery query);
 
     /**
-     * 删除资产与软件关系
-     * @param id
+     * 查询资产已关联的软件列表
+     * @param query
+     * @return
      */
-    void deleteSoftRealtion(String id);
+    List<AssetSoftwareInstallResponse> queryInstalledList(InstallQuery query);
 
+    /**
+     * 查询基准模板名单类型
+     * @param query
+     * @return
+     */
+    Integer queryNameListType(InstallQuery query);
+
+    /**
+     * 查询基准模板中的软件
+     * @param query
+     * @return
+     */
+    List<Long> querySoftwareIds(InstallQuery query);
+
+    /**
+     * 查询可关联软件列表
+     * @param query
+     * @param nameListType
+     * @param softwareIds
+     * @return
+     */
+    List<AssetSoftwareInstallResponse> queryInstallableList(@Param("query") InstallQuery query,
+                                                            @Param("nameListType") Integer nameListType,
+                                                            @Param("softwareIds") List<Long> softwareIds,
+                                                            @Param("installedSoftIds") List<String> installedSoftIds);
+
+    /**
+     * 查询可关联软件数量
+     * @param query
+     * @param nameListType
+     * @param softwareIds
+     * @return
+     */
+    Integer queryInstallableCount(@Param("query") InstallQuery query, @Param("nameListType") Integer nameListType,
+                                  @Param("softwareIds") List<Long> softwareIds,
+                                  @Param("installedSoftIds") List<String> installedSoftIds);
 }

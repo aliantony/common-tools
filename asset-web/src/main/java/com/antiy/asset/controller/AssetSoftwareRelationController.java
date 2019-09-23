@@ -48,80 +48,6 @@ public class AssetSoftwareRelationController {
     @Resource
     public IAssetSoftwareRelationService iAssetSoftwareRelationService;
 
-    /**
-     * 保存
-     *
-     * @param assetSoftwareRelationRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)保存接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:saveSingle')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
-        return ActionResponse
-            .success(iAssetSoftwareRelationService.saveAssetSoftwareRelation(assetSoftwareRelationRequest));
-    }
-
-    /**
-     * 修改
-     *
-     * @param assetSoftwareRelationRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)修改接口", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:updateSingle')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationRequest assetSoftwareRelationRequest) throws Exception {
-        iAssetSoftwareRelationService.updateAssetSoftwareRelation(assetSoftwareRelationRequest);
-        return ActionResponse.success();
-    }
-
-    /**
-     * 批量查询
-     *
-     * @param assetSoftwareRelationQuery
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)批量查询接口", notes = "传入查询条件")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:queryList')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetSoftwareRelation") @RequestBody AssetSoftwareRelationQuery assetSoftwareRelationQuery) throws Exception {
-        return ActionResponse
-            .success(iAssetSoftwareRelationService.findPageAssetSoftwareRelation(assetSoftwareRelationQuery));
-    }
-
-    /**
-     * 通过ID查询
-     *
-     * @param queryCondition
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)通过ID查询", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:queryById')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareRelationResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetSoftwareRelation") @RequestBody QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.getById(queryCondition.getPrimaryKey()));
-    }
-
-    /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)通过ID删除接口", notes = "主键封装对象")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:deleteById')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isNull(baseRequest.getStringId(), "ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService.deleteById(baseRequest.getStringId()));
-    }
 
     /**
      * 通过软件ID统计资产数量
@@ -141,23 +67,6 @@ public class AssetSoftwareRelationController {
     }
 
     /**
-     * 查询硬件资产关联的软件列表
-     * 
-     * @param queryCondition
-     * @return actionResponse
-     */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @ApiOperation(value = "查询硬件资产关联的软件列表", notes = "资产ID")
-    @PreAuthorize("hasAuthority('asset:softwarerelation:getSoftwareByAssetId')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/getSoftwareByAssetId", method = RequestMethod.POST)
-    public ActionResponse getSoftwareByAssetId(@ApiParam(value = "assetId") @RequestBody QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "资产ID不能为空");
-        return ActionResponse.success(iAssetSoftwareRelationService
-            .getSoftByAssetId(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey())));
-    }
-
-    /**
      * 查询下拉项的资产操作系统信息
      *
      * @return 操作系统名称集合
@@ -172,59 +81,31 @@ public class AssetSoftwareRelationController {
     }
 
     /**
-     * 软件安装列表
+     * 资产已关联的软件列表
      *
-     * @return 操作系统名称集合
+     * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @ApiOperation(value = "软件安装列表", notes = "返回的id即为资产id 需要传的参数为multipleQuery,softwareId,configureStatus,installType,installStatus 其中softwareId必传")
+    @ApiOperation(value = "资产已关联软件列表", notes = "")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/installList", method = RequestMethod.POST)
-    public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstallList(@ApiParam("查询条件") @RequestBody InstallQuery query) throws Exception {
-        return ActionResponse.success(iAssetSoftwareRelationService.queryInstallList(query));
+    @RequestMapping(value = "/query/installedList", method = RequestMethod.POST)
+    public ActionResponse<List<AssetSoftwareInstallResponse>> queryInstalledList(@ApiParam("查询条件") @RequestBody InstallQuery query) throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.queryInstalledList(query));
+    }
+    /**
+     * 资产可安装的软件列表
+     *
+     * @return
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @ApiOperation(value = "资产已关联软件列表", notes = "")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/installableList", method = RequestMethod.POST)
+    public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstallableList(@ApiParam("查询条件") @RequestBody InstallQuery query) throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.queryInstallableList(query));
     }
 
-    /**
-     * 自动安装软件
-     * @param assetSoftwareRelationList
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "（无效）自动安装软件", notes = "安装软件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/install/auto", method = RequestMethod.POST)
-    public ActionResponse installAauto(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
-        iAssetSoftwareRelationService.installAauto(assetSoftwareRelationList);
-        return ActionResponse.success();
-    }
-
-    /**
-     * 人工安装软件
-     * @param assetSoftwareRelationList
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "（无效）手动安装软件", notes = "安装软件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/software/artificial", method = RequestMethod.POST)
-    public ActionResponse installArtificial(@ApiParam(value = "softwareQuery") @RequestBody List<AssetSoftwareRelationRequest> assetSoftwareRelationList) throws Exception {
-        iAssetSoftwareRelationService.installArtificial(assetSoftwareRelationList);
-        return ActionResponse.success();
-    }
-
-    /**
-     * 安装软件
-     * @param assetSoftwareRelationList
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value = "安装软件", notes = "安装软件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSoftwareDetailResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/software/install", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('asset:softwarerelation:installSoftware')")
-    public ActionResponse installSoftware(@ApiParam(value = "softwareQuery") @RequestBody AssetSoftwareRelationList assetSoftwareRelationList) throws Exception {
-        return iAssetSoftwareRelationService.installSoftware(assetSoftwareRelationList);
-    }
 
 }
