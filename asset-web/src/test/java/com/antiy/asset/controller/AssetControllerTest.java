@@ -231,7 +231,7 @@ public class AssetControllerTest {
     public void pulldownManufacturer() throws Exception {
         List<String> manufacturer = new ArrayList<>();
         manufacturer.add("test");
-        Mockito.when(iAssetService.pulldownManufacturer()).thenReturn(manufacturer);
+        // Mockito.when(iAssetService.pulldownManufacturer()).thenReturn(manufacturer);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/pulldown/manufacturer"))
             .andReturn();
         ActionResponse actual = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),

@@ -376,4 +376,44 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="pulldownSupplier" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select distinct supplier from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier like CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
+    <select id="pulldownName" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select distinct product_name from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier =#{supplier}
+        </if>
+        <if test="name != null">
+            and product_name like CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
+    <select id="pulldownVersion" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select distinct cpe_uri from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier =#{supplier}
+        </if>
+        <if test="name != null">
+            and product_name =#{name}
+        </if>
+        <if test="version != null">
+            and version like CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
 </mapper>

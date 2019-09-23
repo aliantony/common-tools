@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -420,6 +421,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
                 AssetAssemblyResponse.class);
+    }
+
+    @Override
+    public List<String> pulldownName(AssetPulldownQuery query) {
+        return assetHardSoftLibDao.pulldownName(query);
+    }
+
+    @Override
+    public List<String> pulldownVersion(AssetPulldownQuery query) {
+        return assetHardSoftLibDao.pulldownVersion(query);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -862,8 +873,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> pulldownManufacturer() throws Exception {
-        return assetDao.pulldownManufacturer();
+    public List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception {
+        return assetHardSoftLibDao.pulldownSupplier(query);
     }
 
     @Override

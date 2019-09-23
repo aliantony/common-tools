@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -97,7 +98,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    List<String> pulldownManufacturer() throws Exception;
+    List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception;
 
     /**
      * 根据品类型号查询对应资产列表
@@ -295,4 +296,8 @@ public interface IAssetService extends IBaseService<Asset> {
     boolean CheckRepeatNumber(String number) throws Exception;
 
     List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
+
+    List<String> pulldownName(AssetPulldownQuery query);
+
+    List<String> pulldownVersion(AssetPulldownQuery query);
 }

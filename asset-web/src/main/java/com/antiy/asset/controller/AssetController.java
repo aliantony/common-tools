@@ -4,7 +4,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
@@ -15,6 +15,7 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -126,6 +127,7 @@ public class AssetController {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetService.getAssemblyInfo(condition));
     }
+
     /**
      * 资产变更
      * @author lvliang
@@ -273,8 +275,41 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/manufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownManufacturer() throws Exception {
-        return ActionResponse.success(iAssetService.pulldownManufacturer());
+    public ActionResponse<List<String>> pulldownManufacturer(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+        return ActionResponse.success(iAssetService.pulldownSupplier(query));
+    }
+
+    /**
+     * 查询下拉的名称信息
+     * @author zhangyajun
+     *
+     * @return 查询下拉的名称信息
+     */
+    @ApiOperation(value = "查询下拉的名称信息", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/pulldown/name", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:pulldownName')")
+    public ActionResponse<List<String>> pulldownName(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+        ParamterExceptionUtils.isNull(query, "厂商不能为空");
+        ParamterExceptionUtils.isBlank(query.getSupplier(), "厂商不能为空");
+        return ActionResponse.success(iAssetService.pulldownName(query));
+    }
+
+    /**
+     * 查询下拉的名称信息
+     * @author zhangyajun
+     *
+     * @return 查询下拉的名称信息
+     */
+    @ApiOperation(value = "查询下拉的版本信息", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/pulldown/version", method = RequestMethod.POST)
+    @PreAuthorize(value = "hasAuthority('asset:asset:pulldownVersion')")
+    public ActionResponse<List<String>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+        ParamterExceptionUtils.isNull(query, "厂商不能为空");
+        ParamterExceptionUtils.isNull(query.getSupplier(), "厂商不能为空");
+        ParamterExceptionUtils.isNull(query.getName(), "名称不能为空");
+        return ActionResponse.success(iAssetService.pulldownVersion(query));
     }
 
     /**
@@ -504,4 +539,5 @@ public class AssetController {
     public ActionResponse findAlarmAssetCount() throws Exception {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
+
 }
