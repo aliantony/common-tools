@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetRelationSoftRequest;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
 import com.antiy.asset.vo.response.AssetSoftwareResponse;
@@ -55,4 +56,11 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @return
      */
     PageResult<AssetSoftwareInstallResponse> queryInstallableList(InstallQuery query);
+
+    /**
+     * 批量关联软件
+     * @param softwareReportRequest
+     * @return
+     */
+    Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest);
 }

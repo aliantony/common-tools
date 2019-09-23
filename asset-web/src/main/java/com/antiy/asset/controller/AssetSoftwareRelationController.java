@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationList;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
@@ -99,7 +100,7 @@ public class AssetSoftwareRelationController {
      * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    @ApiOperation(value = "资产已关联软件列表", notes = "")
+    @ApiOperation(value = "资产可安装的软件列表", notes = "")
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installableList", method = RequestMethod.POST)
@@ -107,5 +108,17 @@ public class AssetSoftwareRelationController {
         return ActionResponse.success(iAssetSoftwareRelationService.queryInstallableList(query));
     }
 
-
+    /**
+     * 批量资产关联软件
+     *
+     * @return
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @ApiOperation(value = "批量资产关联软件", notes = "")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/batchRelation", method = RequestMethod.POST)
+    public ActionResponse batchRelation(@ApiParam("查询条件") @RequestBody AssetSoftwareReportRequest softwareReportRequest) throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.batchRelation(softwareReportRequest));
+    }
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
+import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
@@ -31,6 +33,7 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 
 /**
@@ -121,25 +124,49 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
-        if (nameListType == 1) {
+        if (nameListType == 1 && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.add(Long.parseLong(a));
             });
         }
-        // 模板是白名单需排除白名单中已安装多过的软件
-        else if (nameListType == 2) {
+        // 模板是白名单需排除白名单中已安装过的软件
+        else if (nameListType == 2 && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.remove(DataTypeUtils.stringToInteger(a));
             });
         }
-        List<AssetSoftwareInstallResponse> softwareInstallResponseList = assetSoftwareRelationDao
-            .queryInstallableList(query, nameListType, softwareIds, installedSoftIds);
         Integer count = assetSoftwareRelationDao.queryInstallableCount(query, nameListType, softwareIds,
             installedSoftIds);
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
         }
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), softwareInstallResponseList);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+            assetSoftwareRelationDao.queryInstallableList(query, nameListType, softwareIds, installedSoftIds));
+    }
+
+    @Override
+    public Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest) {
+        List<String> assetIds = softwareReportRequest.getAssetId();
+        List<Integer> softIds = softwareReportRequest.getSoftId();
+        ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
+        if (CollectionUtils.isNotEmpty(softIds)) {
+            List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+            assetIds.stream().forEach(assetId -> {
+                // 1.先删除旧的关系表
+                assetSoftwareRelationDao.deleteSoftRealtion(assetId);
+                // 2.插入新的关系
+                softIds.stream().forEach(softId -> {
+                    AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                    assetSoftwareRelation.setAssetId(assetId);
+                    assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                    assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                    assetSoftwareRelationList.add(assetSoftwareRelation);
+                });
+            });
+            return assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+        }
+        return 0;
     }
 
     private Integer countByAssetId(Integer assetId) {

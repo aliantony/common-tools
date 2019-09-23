@@ -1,9 +1,14 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetSoftwareRequest 请求对象 </p>
@@ -14,13 +19,25 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(value = "软件请求")
 public class AssetSoftwareReportRequest extends BasicRequest implements ObjectValidator {
 
-    private Integer softId;
+    @ApiModelProperty("资产id")
+    @Encode
+    private List<String>  assetId;
+    @ApiModelProperty("软件id")
+    private List<Integer> softId;
 
-    public Integer getSoftId() {
+    public List<String> getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(List<String> assetId) {
+        this.assetId = assetId;
+    }
+
+    public List<Integer> getSoftId() {
         return softId;
     }
 
-    public void setSoftId(Integer softId) {
+    public void setSoftId(List<Integer> softId) {
         this.softId = softId;
     }
 

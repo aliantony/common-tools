@@ -693,6 +693,7 @@
         </trim>
 
     </delete>
+
     <!--查询资产上安装的软件，用于下发智甲-->
     <select id="findInstalledSoft" resultType="com.antiy.asset.entity.AssetSoftware"
             parameterType="java.lang.String">
@@ -790,10 +791,12 @@
                 </foreach>
             </when>
             <otherwise>
-                and business_id not in
-                <foreach collection="installedSoftIds" item="item" open="(" close=")">
-                    #{item}
-                </foreach>
+                <if test="!query.isBatch">
+                    and business_id not in
+                    <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
             </otherwise>
         </choose>
         <if test="pageSize !=-1">
@@ -821,11 +824,37 @@
                 </foreach>
             </when>
             <otherwise>
-                and business_id not in
-                <foreach collection="installedSoftIds" item="item" open="(" close=")">
-                    #{item}
-                </foreach>
+                <if test="!query.isBatch">
+                    and business_id not in
+                    <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
             </otherwise>
         </choose>
     </select>
+    <!--删除资产与软件的关联关系-->
+    <delete id="deleteSoftRealtion">
+        update asset_software_relation set status = 0 where asset_id = #{id}
+    </delete>
+    <!--保存资产软件关系-->
+    <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
+        insert into
+        <include refid="Table_Name"></include>
+        (
+        asset_id,
+        software_id,
+        gmt_create,
+        create_user
+        )
+        values
+        <foreach collection="assetSoftwareRelationList" item="item" open="(" close=")" separator=",">
+            (
+            #{assetId},
+            #{softwareId},
+            #{gmtCreate},
+            #{createUser}
+            )
+        </foreach>
+    </insert>
 </mapper>

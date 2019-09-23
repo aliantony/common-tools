@@ -423,7 +423,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetAssemblyResponse.class);
     }
 
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public boolean checkRepeatName(String name) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
@@ -871,8 +870,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
 
-
-
     @Override
     public boolean checkRepeatAsset(String uuid, List<String[]> ipMac) {
         ParamterExceptionUtils.isBlank(uuid, "上报设备资产UUID不能为空");
@@ -1097,20 +1094,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
-        // 校验品类型号是否是叶子节点
-        // ParamterExceptionUtils.isTrue(
-        // assetCategoryModelDao.hasChild(assetOuterRequest.getAsset().getCategoryModel()) <= 0,
-        // "品类型号只能选择末级节点数据，请重新选择");
-        // Asset currentAsset = assetDao.getById(assetOuterRequest.getAsset().getId());
-        // // 幂等校验
-        // if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-        // if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus())
-        // || AssetStatusEnum.RETIRE.getCode().equals(currentAsset.getAssetStatus())
-        // || AssetStatusEnum.NOT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-        // throw new BusinessException(
-        // "请勿重复提交，当前资产状态是：" + AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus()).getMsg());
-        // }
-        // }
         // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
         checkLocationNotBlank(assetOuterRequest.getAsset());
 
@@ -1125,8 +1108,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ParamterExceptionUtils
             .isTrue(!checkName(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
-        AssetQuery assetQuery = new AssetQuery();
-        Long currentTimeMillis = System.currentTimeMillis();
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1197,7 +1178,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 处理mac
                     dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
                     // 处理软件
-                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequestList());
+                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequest());
                     // 处理组件
                     dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
@@ -1361,10 +1342,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
     }
 
-    public void dealSoft(String id, List<AssetSoftwareReportRequest> softwareReportRequestList) {
+    public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) {
         // 1.先删除旧的关系表
-        //assetSoftwareRelationDao.deleteSoftRealtion(id);
+        assetSoftwareRelationDao.deleteSoftRealtion(id);
         // 2.插入新的关系
+        List<Integer> softIds = softwareReportRequest.getSoftId();
+        if (CollectionUtils.isNotEmpty(softIds)) {
+            List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+            softIds.stream().forEach(softId -> {
+                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                assetSoftwareRelation.setAssetId(id);
+                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                assetSoftwareRelationList.add(assetSoftwareRelation);
+            });
+            assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+        }
     }
 
     public void dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
@@ -1988,7 +1982,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
                 a++;
@@ -2510,7 +2503,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-
 
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
