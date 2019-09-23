@@ -10,15 +10,15 @@ public class OtherDeviceEntity {
     @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
     private String number;
     /**
-     * 资产名称
-     */
-    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
-    private String name;
-    /**
      * 厂商
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
     private String manufacturer;
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
+    private String name;
 
     /**
      * 版本
