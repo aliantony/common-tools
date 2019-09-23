@@ -458,14 +458,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> pulldownVersion(AssetPulldownQuery query) {
-        List<String> result = new ArrayList<>();
+    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) {
+        List<SelectResponse> result = new ArrayList<>();
         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
         for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
+            SelectResponse response = new SelectResponse();
             // 特殊处理
             // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分
             String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
-            result.add(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+            response.setValue(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+            response.setId(assetHardSoftLib.getStringId());
+            result.add(response);
         }
         return result;
     }

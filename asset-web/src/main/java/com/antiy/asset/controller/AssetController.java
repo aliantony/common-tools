@@ -10,6 +10,7 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -305,7 +306,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/version", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownVersion')")
-    public ActionResponse<List<String>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+    public ActionResponse<List<SelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getSupplier(), "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getName(), "名称不能为空");

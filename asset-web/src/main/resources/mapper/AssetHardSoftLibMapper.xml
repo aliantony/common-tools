@@ -359,7 +359,7 @@
         </trim>
     </select>
 
-    <select id="countByWhere" resultMap="int" parameterType="java.util.Map">
+    <select id="countByWhere" resultType="int" parameterType="java.util.Map">
         select
         count(*)
         from

@@ -6,12 +6,8 @@ import java.util.List;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
-import org.apache.ibatis.annotations.Param;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p> CPE表 Mapper 接口 </p>

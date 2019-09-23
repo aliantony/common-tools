@@ -292,5 +292,5 @@ public interface IAssetService extends IBaseService<Asset> {
 
     List<String> pulldownName(AssetPulldownQuery query);
 
-    List<String> pulldownVersion(AssetPulldownQuery query);
+    List<SelectResponse> pulldownVersion(AssetPulldownQuery query);
 }
