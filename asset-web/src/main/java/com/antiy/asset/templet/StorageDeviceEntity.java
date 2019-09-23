@@ -26,7 +26,7 @@ public class StorageDeviceEntity {
     /**
      * 版本
      */
-    @ExcelField(value = "version", align = 1, title = "版本(必填)", required = true)
+    @ExcelField(value = "version", align = 1, title = "版本", required = false)
     private String  version;
     /**
      * 使用者

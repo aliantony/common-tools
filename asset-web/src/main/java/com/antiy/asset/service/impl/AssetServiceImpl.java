@@ -160,10 +160,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     String aid;
-                    if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
-                        BusinessExceptionUtils.isTrue(checkOperatingSystemById(requestAsset.getOperationSystem()),
-                            "操作系统不存在，或已经注销");
-                    }
+                    // if (StringUtils.isNotBlank(requestAsset.getOperationSystem())) {
+                    // BusinessExceptionUtils.isTrue(checkOperatingSystemById(requestAsset.getOperationSystem()),
+                    // "操作系统不存在，或已经注销");
+                    // }
+
                     String areaId = requestAsset.getAreaId();
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                         DataTypeUtils.stringToInteger(areaId));
