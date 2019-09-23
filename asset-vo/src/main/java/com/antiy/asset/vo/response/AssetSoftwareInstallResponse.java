@@ -1,8 +1,7 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.asset.vo.enums.InstallType;
-import com.antiy.asset.vo.enums.SoftInstallStatus;
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class AssetSoftwareInstallResponse extends BaseResponse {
@@ -11,197 +10,72 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
      */
     @ApiModelProperty("主键")
     @Encode
-    private String  id;
+    private String id;
     /**
      * 资产ID
      */
     @ApiModelProperty("资产ID")
     @Encode
-    private String  assetId;
+    private String assetId;
     /**
      * 软件ID
      */
     @ApiModelProperty("软件ID")
     @Encode
-    private String  softwareId;
-    /**
-     * 资产编号
-     */
-    @ApiModelProperty("资产编号")
-    private String  number;
-    /**
-     * 资产名称
-     */
-    @ApiModelProperty("资产名称")
-    private String  name;
-    /**
-     * 责任人主键
-     */
-    @ApiModelProperty("责任人主键")
-    @Encode(message = "责任人主键加密失败")
-    private String  userId;
-    /**
-     * 区域主键
-     */
-    @ApiModelProperty("区域主键")
-    @Encode(message = "区域主键加密失败")
-    private String  areaId;
-    /**
-     * 责任人
-     */
-    @ApiModelProperty("责任人")
-    private String  userName;
-    /**
-     * ip
-     */
-    @ApiModelProperty("ip")
-    private String  ip;
-    /**
-     * mac
-     */
-    @ApiModelProperty("mac")
-    private String  mac;
-    /**
-     * 序列号
-     */
-    @ApiModelProperty("序列号")
-    private String  serial;
+    private String softwareId;
 
     /**
-     * 品类名称
+     * 名称
      */
-    @ApiModelProperty("品类名称")
-    private String  categoryModelName;
+    @ApiModelProperty("名称")
+    private String productName;
+
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String  manufacturer;
-
+    private String supplier;
     /**
-     * 安装类型
+     * 版本
      */
-    @ApiModelProperty("安装类型code 1人工 2自动")
-    private Integer installType;
-
+    @ApiModelProperty("版本")
+    private String version;
     /**
-     * 安装类型
+     * 软件平台
      */
-    @ApiModelProperty("安装类型code 1人工 2自动")
-    private String  installTypeStr;
+    @ApiModelProperty("软件平台")
+    private String softPlatform;
 
-    /**
-     * 安装状态
-     */
-    @ApiModelProperty("安装状态code 1失败、2成功，3安装中 4未安装")
-    private Integer installStatus;
-
-    /**
-     * 安装状态
-     */
-    @ApiModelProperty("安装状态名 1失败、2成功，3安装中 4未安装")
-    private String  installStatusStr;
-
-    /**
-     * 安装时间
-     */
-    @ApiModelProperty("安装时间")
-    private Long    installTime;
-
-    public String getUserId() {
-        return userId;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getSoftPlatform() {
+        return softPlatform;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setSoftPlatform(String softPlatform) {
+        this.softPlatform = softPlatform;
     }
 
-    public String getNumber() {
-        return number;
+    public String getVersion() {
+        return version;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public String getName() {
-        return name;
+    public String getSupplier() {
+        return supplier;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
-    }
-
-    public String getSerial() {
-        return serial;
-    }
-
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getCategoryModelName() {
-        return categoryModelName;
-    }
-
-    public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public Integer getInstallType() {
-        return installType;
-    }
-
-    public void setInstallType(Integer installType) {
-        this.installType = installType;
-    }
-
-    public Integer getInstallStatus() {
-        return installStatus;
-    }
-
-    public void setInstallStatus(Integer installStatus) {
-        this.installStatus = installStatus;
-    }
-
-    public Long getInstallTime() {
-        return installTime;
-    }
-
-    public void setInstallTime(Long installTime) {
-        this.installTime = installTime;
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
     }
 
     public String getId() {
@@ -228,42 +102,4 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
         this.softwareId = softwareId;
     }
 
-    public String getInstallStatusStr() {
-        return installStatusStr;
-    }
-
-    public void setInstallStatusStr(String installStatusStr) {
-        this.installStatusStr = SoftInstallStatus.getInstallStatusByCode(installStatus) != null
-            ? SoftInstallStatus.getInstallStatusByCode(installStatus).getStatus()
-            : null;
-    }
-
-    public String getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
-    }
-
-    public String getInstallTypeStr() {
-        return installTypeStr;
-    }
-
-    public void setInstallTypeStr(String installTypeStr) {
-        this.installTypeStr = InstallType.getInstallTypeByCode(installType) != null
-            ? InstallType.getInstallTypeByCode(installType).getStatus()
-            : null;
-    }
-
-    @Override
-    public String toString() {
-        return "AssetSoftwareInstallResponse{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", softwareId='"
-               + softwareId + '\'' + ", number='" + number + '\'' + ", name='" + name + '\'' + ", userId=" + userId
-               + ", userName='" + userName + '\'' + ", ip='" + ip + '\'' + ", mac='" + mac + '\'' + ", serial='"
-               + serial + '\'' + ", categoryModelName='" + categoryModelName + '\'' + ", manufacturer='" + manufacturer
-               + '\'' + ", installType=" + installType + ", installTypeStr='" + installTypeStr + '\''
-               + ", installStatus=" + installStatus + ", installStatusStr='" + installStatusStr + '\''
-               + ", installTime=" + installTime + '}';
-    }
 }

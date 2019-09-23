@@ -1159,7 +1159,6 @@
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset_category_model.name as category_model_name,
         asset.manufacturer, asset_status,
         asset.operation_system,
         asset.system_bit,

@@ -1,9 +1,5 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
@@ -12,118 +8,48 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
 
+/**
+ * 关联软件查询
+ */
 public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
-    @ApiModelProperty("综合查询")
-    @Size(max = 30, message = "综合查询长度不能超过30个字符")
-    private String        multipleQuery;
-
-    @ApiModelProperty(value = "软件id", required = true)
-    @NotNull
+    @ApiModelProperty(value = "资产id", required = true)
     @Encode
-    private String        softwareId;
+    private String  assetId;
     /**
-     * 安装方式
+     * 配置基准模板
      */
-    @ApiModelProperty("安装方式 1人工 2自动")
-    private Integer       installType;
-    /**
-     * 安装方式
-     */
-    @ApiModelProperty("配置方式 1未配置，2配置中，3已配置")
-    private Integer       configureStatus;
-
-    @ApiModelProperty("区域id列表 不传")
+    @ApiModelProperty(value = "基准模板id", required = true)
     @Encode
-    private String[]      areaIds;
-
+    private String  installTemplateId;
     /**
-     * 安装状态
+     * 是否是批量操作
      */
-    @ApiModelProperty("安装状态 1失败、2成功，3安装中4未安装")
-    private Integer       installStatus;
-    /**
-     * 资产状态
-     */
-    @ApiModelProperty("资产状态[列表] 不传")
-    private List<Integer> assetStatusList;
+    @ApiModelProperty(value = "是否是批量操作", required = true)
+    private boolean isBatch;
 
-    @ApiModelProperty("品类型号")
-    @Encode
-    private List<String>  categoryModels;
-
-    private List<String> operationSystems;
-
-    public List<String> getOperationSystems() {
-        return operationSystems;
+    public boolean getIsBatch() {
+        return isBatch;
     }
 
-    public void setOperationSystems(List<String> operationSystems) {
-        this.operationSystems = operationSystems;
+    public void setIsBatch(boolean batch) {
+        isBatch = batch;
     }
 
-    public String getMultipleQuery() {
-        return multipleQuery;
+    public String getAssetId() {
+        return assetId;
     }
 
-    public void setMultipleQuery(String multipleQuery) {
-        this.multipleQuery = multipleQuery;
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
-    public Integer getInstallType() {
-        return installType;
+    public String getInstallTemplateId() {
+        return installTemplateId;
     }
 
-    public void setInstallType(Integer installType) {
-        this.installType = installType;
-    }
-
-    public Integer getConfigureStatus() {
-        return configureStatus;
-    }
-
-    public void setConfigureStatus(Integer configureStatus) {
-        this.configureStatus = configureStatus;
-    }
-
-    public String[] getAreaIds() {
-        return areaIds;
-    }
-
-    public void setAreaIds(String[] areaIds) {
-        this.areaIds = areaIds;
-    }
-
-    public Integer getInstallStatus() {
-        return installStatus;
-    }
-
-    public void setInstallStatus(Integer installStatus) {
-        this.installStatus = installStatus;
-    }
-
-    public List<Integer> getAssetStatusList() {
-        return assetStatusList;
-    }
-
-    public void setAssetStatusList(List<Integer> assetStatusList) {
-        this.assetStatusList = assetStatusList;
-    }
-
-    public String getSoftwareId() {
-        return softwareId;
-    }
-
-    public void setSoftwareId(String softwareId) {
-        this.softwareId = softwareId;
-    }
-
-    public List<String> getCategoryModels() {
-        return categoryModels;
-    }
-
-    public void setCategoryModels(List<String> categoryModels) {
-        this.categoryModels = categoryModels;
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
     }
 
     @Override
