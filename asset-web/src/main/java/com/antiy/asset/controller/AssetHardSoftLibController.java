@@ -132,7 +132,7 @@ public class AssetHardSoftLibController {
      */
     @ApiOperation(value = "查询厂商接口", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/pullDown/manufacturer", method = RequestMethod.POST)
+    @RequestMapping(value = "/pullDown/supplier", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
     public ActionResponse<List<String>> pulldownManufacturer(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         return ActionResponse.success(iAssetHardSoftLibService.pulldownSupplier(query));
