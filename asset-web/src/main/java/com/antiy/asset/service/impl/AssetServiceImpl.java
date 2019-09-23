@@ -106,7 +106,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
     @Resource
     private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
-
+    @Resource
+    private BaseConverter<AssetGroup, AssetGroupResponse>                       assetGroupResponseBaseConverter;
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
@@ -138,13 +139,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     private static final int                                                    ALL_PAGE = -1;
-
-    @Resource
-    private EmergencyClient                                                     emergencyClient;
     @Resource
     private AssetAssemblyDao                                                    assetAssemblyDao;
-    @Resource
-    private AssetAssemblyLibDao                                                 assetAssemblyLibDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -1044,7 +1040,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse
             .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));
         // 获取资产组
-        List<AssetGroupResponse> assetGroupResponses = BeanConvert
+        List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
             .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);
         if (CollectionUtils.isNotEmpty(assetGroupResponses)) {
             assetResponse.setAssetGroups(assetGroupResponses);
