@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.vo.query.AssetPulldownQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -64,36 +63,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -174,6 +143,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private EmergencyClient                                                     emergencyClient;
     @Resource
     private AssetAssemblyDao                                                    assetAssemblyDao;
+    @Resource
+    private AssetAssemblyLibDao                                                 assetAssemblyLibDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -452,26 +423,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetAssemblyResponse.class);
     }
 
-    @Override
-    public List<String> pulldownName(AssetPulldownQuery query) {
-        return assetHardSoftLibDao.pulldownName(query);
-    }
-
-    @Override
-    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) {
-        List<SelectResponse> result = new ArrayList<>();
-        List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
-        for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
-            SelectResponse response = new SelectResponse();
-            // 特殊处理
-            // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分
-            String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
-            response.setValue(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
-            response.setId(assetHardSoftLib.getStringId());
-            result.add(response);
-        }
-        return result;
-    }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public boolean checkRepeatName(String name) throws Exception {
@@ -929,10 +880,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
 
-    @Override
-    public List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception {
-        return assetHardSoftLibDao.pulldownSupplier(query);
-    }
+
 
     @Override
     public boolean checkRepeatAsset(String uuid, List<String[]> ipMac) {

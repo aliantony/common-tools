@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,7 +17,8 @@ public class AssetAssemblyResponse extends BaseResponse {
      * 资产主键
      */
     @ApiModelProperty("资产组件")
-    private Integer           assetId;
+    @Encode
+    private String           assetId;
     /**
      * 组件数量
      */
@@ -27,8 +29,8 @@ public class AssetAssemblyResponse extends BaseResponse {
      * 组件主键
      */
     @ApiModelProperty("组件主键")
-
-    private Integer           businessId;
+    @Encode
+    private String           businessId;
     /**
      * 组件类型
      */
@@ -49,11 +51,11 @@ public class AssetAssemblyResponse extends BaseResponse {
     private String            supplier;
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
@@ -65,11 +67,11 @@ public class AssetAssemblyResponse extends BaseResponse {
         this.amount = amount;
     }
 
-    public Integer getBusinessId() {
+    public String getBusinessId() {
         return businessId;
     }
 
-    public void setBusinessId(Integer businessId) {
+    public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
 

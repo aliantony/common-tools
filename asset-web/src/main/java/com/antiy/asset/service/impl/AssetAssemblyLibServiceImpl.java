@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.entity.AssetAssembly;
+import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.*;
 import org.slf4j.Logger;
 import java.util.List;
@@ -36,6 +38,8 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
     private BaseConverter<AssetAssemblyLibRequest, AssetAssemblyLib>  requestConverter;
     @Resource
     private BaseConverter<AssetAssemblyLib, AssetAssemblyLibResponse> responseConverter;
+    @Resource
+    private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
 
     @Override
     public String saveAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception {
@@ -76,4 +80,11 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetAssemblyLibDao.deleteById(baseRequest.getStringId()).toString();
     }
+
+    @Override
+    public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query) {
+        return assemblyResponseBaseConverter
+                .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getPrimaryKey()), AssetAssemblyResponse.class);
+    }
+
 }

@@ -93,12 +93,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer batchSave(List<Asset> assets) throws Exception;
 
-    /**
-     * 查询下拉的厂商信息
-     *
-     * @return
-     */
-    List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception;
+
 
     /**
      * 根据品类型号查询对应资产列表
@@ -289,8 +284,4 @@ public interface IAssetService extends IBaseService<Asset> {
     boolean CheckRepeatNumber(String number) throws Exception;
 
     List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
-
-    List<String> pulldownName(AssetPulldownQuery query);
-
-    List<SelectResponse> pulldownVersion(AssetPulldownQuery query);
 }
