@@ -1,42 +1,9 @@
 package com.antiy.asset.service.impl;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.AssetClient;
-import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
@@ -63,6 +30,36 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1002,7 +999,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 categoryEnum.getCode() + "", 0);
             // 查找品类型号对应的总数并设置到EnumCountResponse对象中
             for (Map<String, Object> map : categoryModelCount) {
-
                 Integer code = (Integer) map.get("key");
                 if (categoryEnum.getCode().equals(code)) {
                     Long n = (Long) map.get("value");
@@ -1502,7 +1498,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setBuyDate(System.currentTimeMillis());
         otherDeviceEntity.setDueDate(System.currentTimeMillis());
         otherDeviceEntity.setUser("留小查");
-        otherDeviceEntity.setVersion("1.1.2");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
         otherDeviceEntity.setName("触摸查询一体机");
         otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
@@ -1540,7 +1535,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setUser("留小查");
         safetyEquipmentEntiy.setManufacturer("安天");
         safetyEquipmentEntiy.setSerial("ANFRWGDFETYRYF");
-        safetyEquipmentEntiy.setVersion("1.1.2");
         safetyEquipmentEntiy.setHouseLocation("501机房004号");
         safetyEquipmentEntiy.setImportanceDegree("1");
         safetyEquipmentEntiy.setOperationSystem("Windows");
@@ -1563,7 +1557,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setBuyDate(System.currentTimeMillis());
         storageDeviceEntity.setCapacity("256GB");
         storageDeviceEntity.setDriveNum(3);
-        storageDeviceEntity.setVersion("1.1.2");
         storageDeviceEntity.setDueDate(System.currentTimeMillis());
         storageDeviceEntity.setHardDiskNum(1);
         storageDeviceEntity.setFirmwareVersion("spi1");
@@ -1602,7 +1595,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
         networkDeviceEntity.setName("YTW-600-5A五端口迷你型网络延长器");
         networkDeviceEntity.setDramSize(3.42f);
-        networkDeviceEntity.setVersion("1.1.2");
         networkDeviceEntity.setExpectBandwidth(4);
         networkDeviceEntity.setFirmwareVersion("1.1.1");
         networkDeviceEntity.setUser("留小查");
@@ -1653,7 +1645,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setNumber("123");
         computeDeviceEntity.setUser("留小查");
         computeDeviceEntity.setBuyDate(System.currentTimeMillis());
-        computeDeviceEntity.setVersion("1.3.2");
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setManufacturer("联想");
         computeDeviceEntity.setOperationSystem("Window 10");

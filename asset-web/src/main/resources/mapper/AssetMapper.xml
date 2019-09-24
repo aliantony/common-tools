@@ -1682,25 +1682,14 @@ WHERE
             category_model,COUNT(category_model) AS num
           FROM <include refid="Table_Name"/>
           where status =1
-          <if test="status !=null and status.size>0">
-              AND asset_status IN
-              <foreach collection="status" open="(" close=")" separator="," item="s">
+              AND asset_status
+              <foreach collection="status" open=" IN (" close=")" separator="," item="s">
                   #{s}
               </foreach>
-          </if>
-          <if test="status !=null and status.size==0">
-              AND 1=0
-          </if>
-
-          <if test="areaIds !=null and areaIds.size>0">
-              AND area_id  IN
-              <foreach collection="areaIds" open="(" close=")" separator="," item="areaId">
+              AND area_id
+              <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
                   #{areaId}
               </foreach>
-          </if>
-         <if test="areaIds !=null and areaIds.size==0">
-             AND 1=0
-         </if>
         GROUP BY category_model
     </select>
 
