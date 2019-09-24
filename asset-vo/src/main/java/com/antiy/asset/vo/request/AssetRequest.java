@@ -86,7 +86,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    @Encode
     @NotBlank(message = "品类型号不能为空")
     private String                  categoryModel;
 
