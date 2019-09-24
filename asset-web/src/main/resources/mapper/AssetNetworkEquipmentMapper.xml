@@ -363,9 +363,24 @@
     <update id="update" parameterType="com.antiy.asset.entity.AssetNetworkEquipment">
         update
         <include refid="Table_Name"></include>
-        <trim prefix="SET" suffixOverrides=",">
-            <include refid="Set_Column_List"></include>
-        </trim>
+        set
+        firmware_version = #{firmwareVersion },
+        interface_size = #{interfaceSize },
+        port_size = #{portSize },
+        is_wireless = #{isWireless },
+        cpu_version = #{cpuVersion },
+        cpu_size = #{cpuSize },
+        ios = #{ios },
+        mac_address = #{macAddress },
+        subnet_mask = #{subnetMask },
+        expect_bandwidth = #{expectBandwidth },
+        register = #{register },
+        dram_size = #{dramSize },
+        flash_size = #{flashSize },
+        ncrm_size = #{ncrmSize },
+        gmt_modified = #{gmtModified },
+        modify_user = #{modifyUser},
+        memo = #{memo }
         where id = #{id}
     </update>
 

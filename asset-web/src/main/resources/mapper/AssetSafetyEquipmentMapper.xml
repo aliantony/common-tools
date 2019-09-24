@@ -312,7 +312,7 @@
         update
         <include refid="Table_Name"></include>
         <trim prefix="SET" suffixOverrides=",">
-            <include refid="Set_Column_List"></include>
+                new_version = #{newVersion }
         </trim>
         where id = #{id}
     </update>

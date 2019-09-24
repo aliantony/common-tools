@@ -285,14 +285,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void checkLocationNotBlank(AssetRequest request) throws Exception {
-        // Map<String, String> map = iAssetCategoryModelService.getSecondCategoryMap();
-        // String secondCategory = iAssetCategoryModelService.recursionSearchParentCategory(request.getCategoryModel(),
-        // assetCategoryModelDao.getAll(), map.keySet());
-        // AssetCategoryModel assetCategoryModel = assetCategoryModelDao
-        // .getByName(AssetSecondCategoryEnum.OTHER_DEVICE.getMsg());
-        // if (!Objects.equals(assetCategoryModel.getStringId(), secondCategory)) {
-        // ParamterExceptionUtils.isBlank(request.getLocation().trim(), "物理位置不能为空");
-        // }
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -1087,9 +1079,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
-        // 判断物理位置是否为空，因为其它设备没有物理位置所以需要单独校验
-        checkLocationNotBlank(assetOuterRequest.getAsset());
-
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
@@ -1106,68 +1095,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             public Integer doInTransaction(TransactionStatus transactionStatus) {
                 try {
                     List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
-                    if (assetGroup != null && !assetGroup.isEmpty()) {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        assetGroup.stream().forEach(assetGroupRequest -> {
-                            try {
-                                AssetGroup tempGroup = assetGroupDao.getById(assetGroupRequest.getId());
-                                String assetGroupName = tempGroup.getName();
-                                if (tempGroup.getStatus() == 0) {
-                                    throw new BusinessException(assetGroupName + "已失效，请核对后提交");
-                                } else {
-                                    asset.setAssetGroup(stringBuilder.append(assetGroupName).append(",").substring(0,
-                                        stringBuilder.length() - 1));
-                                }
-                            } catch (Exception e) {
-
-                                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e.getMessage());
-                                throw new BusinessException(e.getMessage());
-                            }
-                        });
-                    }
-                    // 得到已存在的资产组关系,对新增的插入,移除的删除
-                    List<AssetGroupRelation> existedRelationList = assetGroupRelationDao
-                        .listRelationByAssetId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
-                    List<AssetGroupRequest> assetGroups = assetOuterRequest.getAsset().getAssetGroups();
-                    List<AssetGroupRelation> addAssetGroupRelations = Lists.newArrayList();
-                    // 参数中资产组id与已存在的的资产组id相等,不操作;不等就添加插入
-                    for (AssetGroupRequest assetGroupRequest : assetGroups) {
-                        boolean addRelation = true;
-                        for (AssetGroupRelation existedRelation : existedRelationList) {
-                            if (existedRelation.getAssetGroupId().equals(assetGroupRequest.getId())) {
-                                addRelation = false;
-                                break;
-                            }
-                        }
-                        if (addRelation) {
-                            AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
-                            assetGroupRelation.setAssetGroupId(assetGroupRequest.getId());
-                            assetGroupRelation.setAssetId(asset.getStringId());
-                            assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            assetGroupRelation.setGmtCreate(System.currentTimeMillis());
-                            addAssetGroupRelations.add(assetGroupRelation);
-                        }
-                    }
-
-                    // 移除库中existedRelationList已经有的与本次请求相等的,剩下的existedRelationList是本次操作删除的
-                    assetOuterRequest.getAsset().getAssetGroups().forEach(assetGroupRequest -> {
-                        existedRelationList
-                            .removeIf(relation -> assetGroupRequest.getId().equals(relation.getAssetGroupId()));
-                    });
-                    List<Integer> deleteRelationIdList = existedRelationList.stream()
-                        .map(deleteRelation -> deleteRelation.getId()).collect(Collectors.toList());
-                    if (CollectionUtils.isNotEmpty(deleteRelationIdList)) {
-                        assetGroupRelationDao.deleteBatch(deleteRelationIdList);
-                    }
-                    if (CollectionUtils.isNotEmpty(addAssetGroupRelations)) {
-                        assetGroupRelationDao.insertBatch(addAssetGroupRelations);
-                    }
+                    // 处理资产组关系
+                    asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
-                    dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests());
+                    dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
+                        asset.getCategoryModel());
                     // 处理mac
                     dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
                     // 处理软件
@@ -1175,10 +1111,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 处理组件
                     dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
-                    // 7. 更新网络设备信息
+                    // 2. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
+                    if (!Objects.isNull(networkEquipment)) {
+                        AssetNetworkEquipment anp = BeanConvert.convertBean(networkEquipment,
+                            AssetNetworkEquipment.class);
+                        anp.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        anp.setGmtModified(System.currentTimeMillis());
+                        assetNetworkEquipmentDao.update(anp);
+                    }
+                    // 3.更新安全设备信息
+                    AssetSafetyEquipmentRequest safetyEquipmentRequest = assetOuterRequest.getSafetyEquipment();
+                    if (!Objects.isNull(safetyEquipmentRequest)) {
+                        AssetSafetyEquipment asp = BeanConvert.convertBean(safetyEquipmentRequest,
+                            AssetSafetyEquipment.class);
+                        asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        asp.setGmtModified(System.currentTimeMillis());
+                        assetSafetyEquipmentDao.update(asp);
+                    }
 
-                    // 9. 更新存储介质信息
+                    // 4. 更新存储介质信息
                     AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
                     if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
@@ -1189,19 +1141,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
                         assetStorageMediumDao.update(assetStorageMedium);
                     }
-                    // 10. 更新资产软件关系信息
                     return 0;
-
                 } catch (Exception e) {
                     logger.info("资产变更失败:", e);
                     transactionStatus.setRollbackOnly();
-
-                    if (e.getMessage().contains("失效")) {
-                        throw new BusinessException(e.getMessage());
-                    }
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("IP不能重复", e.getMessage()), "IP不能重复");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("网络设备IP不能重复", e.getMessage()), "网络设备IP不能重复");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("安全设备IP不能重复", e.getMessage()), "安全设备IP不能重复");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("网口数只能增加不能减少", e.getMessage()), "网口数只能增加不能减少");
                     BusinessExceptionUtils.isTrue(!StringUtils.equals("MAC不能重复", e.getMessage()), "MAC不能重复");
                     throw new BusinessException("资产变更失败");
@@ -1328,14 +1272,38 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetCount;
     }
 
-    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests) {
+    private String dealAssetGroup(String id, List<AssetGroupRequest> assetGroup) {
+        StringBuilder groupName = new StringBuilder();
+        // 1.删除旧的资产组关系
+        assetGroupRelationDao.deleteByAssetId(DataTypeUtils.stringToInteger(id));
+        // 2.保存现有资产组关系
+        if (CollectionUtils.isNotEmpty(assetGroup)) {
+            List<AssetGroupRelation> assetGroupRelationList = Lists.newArrayList();
+            assetGroup.stream().forEach(ag -> {
+                AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
+                assetGroupRelation.setAssetId(id);
+                assetGroupRelation.setAssetGroupId(ag.getId());
+                assetGroupRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetGroupRelation.setGmtCreate(System.currentTimeMillis());
+                assetGroupRelationList.add(assetGroupRelation);
+                groupName.append(ag.getName()).append(",");
+            });
+            assetGroupRelationDao.insertBatch(assetGroupRelationList);
+        }
+        return groupName.toString().substring(0, groupName.toString().length() - 1);
+    }
+
+    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests, String categoryModel) {
+        // 现有ip
+        List<String> ips = Lists.newArrayList();
         // 1. 删除旧的资产ip关系
         assetIpRelationDao.deleteByAssetId(id);
         // 2. 批量保存资产ip关系
         if (CollectionUtils.isNotEmpty(ipRelationRequests)) {
+            ips = ipRelationRequests.stream().map(AssetIpRelationRequest::getIp).collect(Collectors.toList());
             List<AssetIpRelation> assetIpRelationList = Lists.newArrayList();
             Integer assetId = DataTypeUtils.stringToInteger(id);
-            ipRelationRequests.stream().forEach(ip->{
+            ipRelationRequests.stream().forEach(ip -> {
                 AssetIpRelation assetIpRelation = new AssetIpRelation();
                 assetIpRelation.setAssetId(assetId);
                 assetIpRelation.setIp(ip.getIp());
@@ -1345,7 +1313,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetIpRelationDao.insertBatch(assetIpRelationList);
         }
         // 3. 处理通联
-        //assetLinkRelationDao.deleteRelationByIp(id, );
+        // 删除被删/改的IP端口通联关系
+        assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, DataTypeUtils.stringToInteger(categoryModel));
     }
 
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
