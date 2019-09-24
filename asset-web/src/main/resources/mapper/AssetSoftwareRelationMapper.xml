@@ -764,7 +764,7 @@
     </select>
     <!--模板的软件-->
     <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select software_id from baseline_template where id = #{installTemplateId}
+        select software_id from baseline_template_software where id = #{installTemplateId}
     </select>
     <!--查询可关联的软件-->
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
@@ -778,13 +778,13 @@
         where
         status = 1
         <choose>
-            <when test="nameListType == 1">
+            <when test="nameListType == 2">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
             </when>
-            <when test="nameListType == 2">
+            <when test="nameListType == 3">
                 and business_id in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
