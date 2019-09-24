@@ -421,7 +421,7 @@
             and product_name =#{name}
         </if>
         <if test="version != null">
-            and version like CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+            and SUBSTR(cpe_uri,#{pos}) like CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
         </if>
         limit 50
     </select>
