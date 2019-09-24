@@ -10,16 +10,14 @@ public class AssetTemplateRelationResponse {
 
     @ApiModelProperty("模板编号")
     private String numberCode;
-    /**
-     *
-     */
+
     @ApiModelProperty("描述")
     private String description;
 
-
+    @ApiModelProperty("软件总数")
     private Integer softwareCount;
 
-    @ApiModelProperty("关联补丁总数")
+    @ApiModelProperty("补丁总数")
     private Integer patchCount;
 
     @ApiModelProperty("装机模板关联时间")

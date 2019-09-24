@@ -1,5 +1,9 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.common.base.IBaseDao;
 
@@ -12,7 +16,13 @@ import com.antiy.common.base.IBaseDao;
 public interface AssetAssemblyDao extends IBaseDao<AssetAssembly> {
     /**
      * 删除资产与组件关系
-     * @param id
+     * @param assetId
      */
-    void deleteAssemblyRelation(String id);
+    void deleteAssemblyRelation(@Param("assetId") String assetId);
+
+    /**
+     * 批量插入资产与组件关系
+     * @param assetAssemblyList
+     */
+    void insertBatch(@Param("assetAssemblyList") List<AssetAssembly> assetAssemblyList);
 }

@@ -92,7 +92,7 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
             AssetInstallTemplateCheck templateCheck=installTemplateCheckList.get(i);
 
             Integer userId=templateCheck.getUserId();
-            Integer result = templateCheck.getResult();
+
             //从redis上获取用户信息
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
                     userId);

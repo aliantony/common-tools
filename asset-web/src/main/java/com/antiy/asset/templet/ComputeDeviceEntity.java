@@ -27,11 +27,6 @@ public class ComputeDeviceEntity {
     @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
     private String name;
 
-    /**
-     * 版本
-     */
-    @ExcelField(value = "version", align = 1, title = "版本", required = false)
-    private String version;
 
 
     /**
@@ -169,14 +164,6 @@ public class ComputeDeviceEntity {
 
     public void setHouseLocation(String houseLocation) {
         this.houseLocation = houseLocation;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public String getOperationSystem() {

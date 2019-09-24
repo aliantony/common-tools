@@ -225,11 +225,11 @@
             ( SELECT count( * ) FROM asset_software_install_template WHERE asset_software_install_template.install_template_id = ait.id ) AS softwareCount,
             ( SELECT count( * ) FROM asset_patch_install_template WHERE asset_patch_install_template.install_template_id = ait.id ) AS patchCount
         FROM
-            asset AS a,
+            asset AS a inner  join
             asset_install_template AS ait
-        WHERE
+        on
             ait.status=1
+            AND a.id=#{assetId}
 	        AND a.install_template_id = ait.id
-	        AND a.id=#{assetId}
     </select>
 </mapper>

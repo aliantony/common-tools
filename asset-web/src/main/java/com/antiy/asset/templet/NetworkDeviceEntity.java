@@ -25,11 +25,7 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
     private String  name;
 
-    /**
-     * 版本
-     */
-    @ExcelField(value = "version", align = 1, title = "版本", required = false)
-    private String  version;
+
     /**
      * 使用者
      */
@@ -163,15 +159,6 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String  memo;
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
 
 
     public String getName() {
