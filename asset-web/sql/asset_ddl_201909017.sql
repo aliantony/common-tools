@@ -34,7 +34,7 @@ CREATE TABLE `asset` (
   `category_model` int(11) DEFAULT NULL COMMENT '品类型号',
   `manufacturer` varchar(80) DEFAULT NULL COMMENT '厂商',
   `asset_status` tinyint(3) DEFAULT '0' COMMENT '资产状态：1-待登记，2-不予登记，3-待实施，4-待验证，5-待入网，6-已入网,7-待检查，8-待整改，9-变更中, 10-待退役，11-已退役',
-  `admittance_status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '准入状态：1-待设置，2-已允许，3-已禁止',
+  `admittance_status` tinyint(3) unsigned DEFAULT '1' COMMENT '准入状态：1-待设置，2-已允许，3-已禁止',
   `operation_system` bigint(20) DEFAULT '' COMMENT '操作系统',
   `responsible_user_id` int(11) DEFAULT NULL COMMENT '责任人主键',
   `location` varchar(64) DEFAULT '' COMMENT '物理位置',
@@ -62,7 +62,7 @@ CREATE TABLE `asset` (
   `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
+  `status` tinyint(3) unsigned DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `number` (`number`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产主表';
@@ -80,7 +80,7 @@ CREATE TABLE `asset_assembly` (
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
   `amount` tinyint(3) DEFAULT NULL COMMENT '组件数量',
   `business_id` int(11) NOT NULL COMMENT '组件主键',
-  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
+  `status` tinyint(3) unsigned DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产组件关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -263,7 +263,7 @@ DROP TABLE IF EXISTS `asset_hard_soft_lib`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_hard_soft_lib` (
-  `id` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `business_id` bigint(20) NOT NULL COMMENT '业务主键',
   `number` int(11) DEFAULT NULL COMMENT '编号',
   `type` varchar(8) NOT NULL COMMENT '类型：a-应用软件 h-硬件 o-操作系统',
@@ -478,7 +478,7 @@ CREATE TABLE `asset_operation_record` (
   `file_info` varchar(1024) NOT NULL DEFAULT '' COMMENT '附件信息JSON',
   `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
-  `status` tinyint(3) unsigned zerofill DEFAULT '1' COMMENT '状态：1未删除,0已删除',
+  `status` tinyint(3) unsigned DEFAULT '1' COMMENT '状态：1未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COMMENT='资产动态表';
 /*!40101 SET character_set_client = @saved_cs_client */;
