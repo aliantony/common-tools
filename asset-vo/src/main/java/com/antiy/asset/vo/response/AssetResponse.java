@@ -54,7 +54,6 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    @Encode
     private String                         categoryModel;
     /**
      * 设备类型
