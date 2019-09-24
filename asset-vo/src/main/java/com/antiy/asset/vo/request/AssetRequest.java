@@ -83,11 +83,10 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @Size(message = "资产序列号不能超过30位", max = 30)
     private String                  serial;
     /**
-     * 品类型号
+     * NETWORK(2, "网络设备"), SAFETY(3, "安全设备"), STORAGE(4, "存储设备"), OTHER(5, "其它设备");
      */
-    @ApiModelProperty("品类型号")
-    @NotBlank(message = "品类型号不能为空")
-    private String                  categoryModel;
+    @ApiModelProperty("品类型号:1计算设备,2网络设备3安全设备4存储设备5其它设备")
+    private Integer                 categoryModel;
 
     /**
      * 行政区划主键ID
@@ -330,11 +329,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.importanceDegree = importanceDegree;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
