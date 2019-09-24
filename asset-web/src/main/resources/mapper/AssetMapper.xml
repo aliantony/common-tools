@@ -32,8 +32,6 @@
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="responsible_user_name" property="responsibleUserName"/>
-        <result column="latitude" property="latitude"/>
-        <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
         <result column="uuid" property="uuid"/>
         <result column="asset_source" property="assetSource"/>
@@ -796,7 +794,7 @@
             </foreach>
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
-                <when test="enterControl and assetStatusList[0] != 7 and assetStatusList[0] != 1">
+                <when test="enterControl and assetStatusList[0] != 6 and assetStatusList[0] != 1">
                     and
                 </when>
                 <otherwise>
@@ -878,7 +876,7 @@
             and asset.admittance_status = #{admittanceStatus}
         </if>
         <if test=" manufacturer != null and  manufacturer != ''">
-            and asset.manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
+            and asset.manufacturer = #{manufacturer}
         </if>
         <if test=" manufacturers != null and manufacturers.size() > 0">
             and asset.manufacturer in
@@ -1483,22 +1481,14 @@
         <include refid="Table_Name"></include>
         set
         asset_group = #{assetGroup },
-        number = #{number },
-        name = #{name },
-        ethernet_port = #{ethernetPort },
-        serial_port = #{serialPort },
         install_type = #{installType },
         serial = #{serial },
         area_id = #{areaId },
-        category_model = #{categoryModel },
-        manufacturer = #{manufacturer },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
         location = #{location },
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
-        contact_tel = #{contactTel },
-        email = #{email },
         importance_degree = #{importanceDegree },
         describle = #{describle },
         service_life = #{serviceLife},

@@ -14,6 +14,7 @@ import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -89,6 +90,6 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     List<String> pulldownName(AssetPulldownQuery query);
 
-    List<SelectResponse> pulldownVersion(AssetPulldownQuery query);
+    List<SelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException;
 
 }

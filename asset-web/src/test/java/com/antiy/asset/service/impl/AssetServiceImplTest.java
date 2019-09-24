@@ -382,7 +382,7 @@ public class AssetServiceImplTest {
 
         AssetOuterRequest assetOuterRequest5 = new AssetOuterRequest();
         AssetRequest assetRequest1 = new AssetRequest();
-        assetRequest1.setCategoryModel("4");
+        assetRequest1.setCategoryModel(4);
 
         assetOuterRequest5.setAsset(assetRequest1);
         try {
@@ -744,19 +744,19 @@ public class AssetServiceImplTest {
 
     private Asset generateNetWorkAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
         return asset;
     }
 
     private Asset generateStorageAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
         return asset;
     }
 
     private Asset generateSafetyAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
         return asset;
     }
 
@@ -775,22 +775,20 @@ public class AssetServiceImplTest {
         asset.setAreaName("");
         asset.setResponsibleUserName("");
         asset.setCategoryModelName("");
-
         asset.setAssetGroup("");
         asset.setNumber("");
         asset.setName("");
-
         asset.setInstallType(0);
         asset.setSerial("");
         asset.setAreaId("1");
-        asset.setCategoryModel("");
+        asset.setCategoryModel(5);
         asset.setManufacturer("");
         asset.setAssetStatus(8);
         asset.setAdmittanceStatus(0);
         asset.setOperationSystem("1");
 
-        asset.setLatitude("");
-        asset.setLongitude("");
+//        asset.setLatitude("");
+//        asset.setLongitude("");
         asset.setHouseLocation("");
         asset.setFirmwareVersion("");
         asset.setUuid("");
@@ -1684,7 +1682,7 @@ public class AssetServiceImplTest {
         assetResponse.setNumber("");
         assetResponse.setName("");
         assetResponse.setSerial("");
-        assetResponse.setCategoryModel("");
+        assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
         assetResponse.setOperationSystem("");
@@ -1753,7 +1751,7 @@ public class AssetServiceImplTest {
         assetRequest.setResponsibleUserId("1");
         assetRequest.setAssetSource(0);
         assetRequest.setImportanceDegree(0);
-        assetRequest.setCategoryModel("1");
+        assetRequest.setCategoryModel(2);
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
         assetRequest.setWarranty("0");

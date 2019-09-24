@@ -13,6 +13,8 @@ public class AssetPulldownQuery extends BasicRequest {
     @ApiModelProperty("版本")
     private String version;
 
+    private int pos;
+
     public String getSupplier() {
         return supplier;
     }
@@ -35,5 +37,13 @@ public class AssetPulldownQuery extends BasicRequest {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
 }
