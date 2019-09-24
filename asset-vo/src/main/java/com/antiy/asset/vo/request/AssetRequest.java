@@ -137,7 +137,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 软件版本
      */
     @ApiModelProperty("软件版本")
-    @Size(message = "固件版本不能超过16位", max = 16)
+    @Size(message = "软件版本不能超过16位", max = 16)
     private String                  softwareVersion;
     /**
      * 设备uuid

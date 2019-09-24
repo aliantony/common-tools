@@ -102,14 +102,7 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("使用者")
     private String            responsibleUserName;
 
-    /**
-     * 纬度
-     */
-    private String            latitude;
-    /**
-     * 经度
-     */
-    private String            longitude;
+
     /**
      * 机房位置
      */
@@ -125,6 +118,11 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("软件版本")
     private String            softwareVersion;
+    /**
+     * 版本
+     */
+    @ApiModelProperty("版本")
+    private String            vsersion;
     /**
      * 设备uuid
      */
@@ -380,21 +378,7 @@ public class Asset extends BaseEntity {
         this.responsibleUserName = responsibleUserName;
     }
 
-    public String getLatitude() {
-        return latitude;
-    }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
 
     public String getHouseLocation() {
         return houseLocation;
@@ -635,8 +619,6 @@ public class Asset extends BaseEntity {
                 ", operationSystemName='" + operationSystemName + '\'' +
                 ", responsibleUserId='" + responsibleUserId + '\'' +
                 ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
                 ", houseLocation='" + houseLocation + '\'' +
                 ", firmwareVersion='" + firmwareVersion + '\'' +
                 ", softwareVersion='" + softwareVersion + '\'' +
@@ -665,5 +647,13 @@ public class Asset extends BaseEntity {
                 ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
                 ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';
+    }
+
+    public String getVsersion() {
+        return vsersion;
+    }
+
+    public void setVsersion(String vsersion) {
+        this.vsersion = vsersion;
     }
 }
