@@ -1026,7 +1026,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse.setAreaName(sysArea.getFullName());
         // 设置品类型号名
         assetResponse
-            .setCategoryModelName(AssetCategoryEnum.getNameByCode(Integer.parseInt(assetResponse.getCategoryModel())));
+            .setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 获取资产组
         List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
             .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);

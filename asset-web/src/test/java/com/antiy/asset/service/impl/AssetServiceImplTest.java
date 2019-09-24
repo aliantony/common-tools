@@ -382,7 +382,7 @@ public class AssetServiceImplTest {
 
         AssetOuterRequest assetOuterRequest5 = new AssetOuterRequest();
         AssetRequest assetRequest1 = new AssetRequest();
-        assetRequest1.setCategoryModel("4");
+        assetRequest1.setCategoryModel(4);
 
         assetOuterRequest5.setAsset(assetRequest1);
         try {
@@ -1682,7 +1682,7 @@ public class AssetServiceImplTest {
         assetResponse.setNumber("");
         assetResponse.setName("");
         assetResponse.setSerial("");
-        assetResponse.setCategoryModel("");
+        assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
         assetResponse.setOperationSystem("");
@@ -1751,7 +1751,7 @@ public class AssetServiceImplTest {
         assetRequest.setResponsibleUserId("1");
         assetRequest.setAssetSource(0);
         assetRequest.setImportanceDegree(0);
-        assetRequest.setCategoryModel("1");
+        assetRequest.setCategoryModel(1);
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
         assetRequest.setWarranty("0");

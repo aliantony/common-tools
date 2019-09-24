@@ -1,11 +1,10 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -54,7 +53,7 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    private String                         categoryModel;
+    private Integer                        categoryModel;
     /**
      * 设备类型
      */
@@ -355,11 +354,11 @@ public class AssetResponse extends BaseResponse {
         this.serial = serial;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
