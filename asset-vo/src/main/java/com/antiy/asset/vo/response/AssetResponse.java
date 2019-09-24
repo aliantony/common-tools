@@ -1,10 +1,12 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -110,7 +112,6 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("责任人名称")
     private String                         responsibleUserName;
 
-
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -205,7 +206,6 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
 
-
     public String getOperationSystemNotice() {
         return operationSystemNotice;
     }
@@ -221,8 +221,6 @@ public class AssetResponse extends BaseResponse {
     public void setFirstDiscoverTime(Long firstDiscoverTime) {
         this.firstDiscoverTime = firstDiscoverTime;
     }
-
-
 
     public String getInstallTypeName() {
         return installTypeName;
@@ -319,7 +317,7 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
+        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
     }
 
     public String getAssetGroup() {
@@ -386,7 +384,6 @@ public class AssetResponse extends BaseResponse {
         this.operationSystem = operationSystem;
     }
 
-
     public String getUuid() {
         return uuid;
     }
@@ -418,7 +415,6 @@ public class AssetResponse extends BaseResponse {
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
     }
-
 
     public Long getServiceLife() {
         return serviceLife;
@@ -510,44 +506,20 @@ public class AssetResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetResponse{" +
-                "number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", assetGroups=" + assetGroups +
-                ", ip=" + ip +
-                ", mac=" + mac +
-                ", serial='" + serial + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", categoryType=" + categoryType +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", operationSystemNotice='" + operationSystemNotice + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", describle='" + describle + '\'' +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty='" + warranty + '\'' +
-                ", admittanceStatus=" + admittanceStatus +
-                ", gmtCreate=" + gmtCreate +
-                ", firstEnterNett=" + firstEnterNett +
-                ", firstDiscoverTime=" + firstDiscoverTime +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", waitingTaskReponse=" + waitingTaskReponse +
-                ", vulCount='" + vulCount + '\'' +
-                ", patchCount='" + patchCount + '\'' +
-                ", alarmCount='" + alarmCount + '\'' +
-                '}';
+        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
+               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", serial='" + serial + '\''
+               + ", categoryModel='" + categoryModel + '\'' + ", categoryType=" + categoryType + ", categoryModelName='"
+               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
+               + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
+               + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
+               + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", describle='"
+               + describle + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty
+               + '\'' + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
+               + firstEnterNett + ", firstDiscoverTime=" + firstDiscoverTime + ", areaId='" + areaId + '\''
+               + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
+               + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
+               + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
+               + ", alarmCount='" + alarmCount + '\'' + '}';
     }
 }
