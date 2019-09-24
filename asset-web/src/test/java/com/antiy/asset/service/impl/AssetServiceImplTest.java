@@ -787,8 +787,8 @@ public class AssetServiceImplTest {
         asset.setAdmittanceStatus(0);
         asset.setOperationSystem("1");
 
-        asset.setLatitude("");
-        asset.setLongitude("");
+//        asset.setLatitude("");
+//        asset.setLongitude("");
         asset.setHouseLocation("");
         asset.setFirmwareVersion("");
         asset.setUuid("");
