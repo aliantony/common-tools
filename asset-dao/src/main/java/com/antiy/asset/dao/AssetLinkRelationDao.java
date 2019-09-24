@@ -3,12 +3,13 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.asset.entity.*;
 import org.apache.ibatis.annotations.Param;
 
+import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
+import com.antiy.asset.vo.request.AssetIpRelationRequest;
 import com.antiy.asset.vo.response.AssetNodeInfoResponse;
 import com.antiy.common.base.IBaseDao;
 
@@ -183,4 +184,14 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @return
      */
     Integer deleteByAssetIdList(@Param("assetIdList") List<Integer> assetIdList);
+
+    /**
+     * 删除通联关系
+     * @param assetId
+     * @param ipRelationRequests
+     * @param categoryModel
+     */
+    void deleteRelationByIp(@Param("assetId") String assetId,
+                            @Param("ips") List<AssetIpRelationRequest> ipRelationRequests,
+                            @Param("categoryModel") Integer categoryModel);
 }

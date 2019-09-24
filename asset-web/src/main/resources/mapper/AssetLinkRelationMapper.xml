@@ -1515,5 +1515,62 @@
             #{assetId}
         </foreach>
     </delete>
+    <!--删除通联关系-->
+    <delete id="deleteRelationByIp">
+        <choose>
+            <!--计算设备-->
+            <when test="categoryModel == 1">
+                delete
+                from
+                asset_link_relation
+                where
+                (
+                asset_id = #{assetId}
+                <if test="ips != null and ips.size() > 0">
+                    and asset_ip in
+                    <foreach collection="ips" item="item" open="(" close=")" separator=",">
+                        #{item.ip}
+                    </foreach>
+                </if>
+                )
+                or
+                (
+                parent_asset_id = #{assetId}
+                <if test="ips != null and ips.size() > 0">
+                    and parent_asset_ip in
+                    <foreach collection="ips" item="item" open="(" close=")" separator=",">
+                        #{item.ip}
+                    </foreach>
+                </if>
+                )
+            </when>
+            <when test="categoryModel == 2">
+                delete
+                from
+                asset_link_relation
+                where
+                (
+                asset_id = #{assetId}
+                <if test="ips != null and ips.size() > 0">
+                    and (asset_ip,asset_port) in
+                    <foreach collection="ips" item="item" open="(" close=")" separator=",">
+                        (#{item.ip},#{item.net)
+                    </foreach>
+                </if>
+                )
+                or
+                (
+                parent_asset_id = #{assetId}
+                <if test="ips != null and ips.size() > 0">
+                    and (parent_asset_ip,parent_asset_port) in
+                    <foreach collection="ips" item="item" open="(" close=")" separator=",">
+                        (#{item.ip},#{item.net)
+                    </foreach>
+                </if>
+                )
+            </when>
+            <otherwise/>
+        </choose>
+    </delete>
 
 </mapper>
