@@ -744,19 +744,19 @@ public class AssetServiceImplTest {
 
     private Asset generateNetWorkAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
         return asset;
     }
 
     private Asset generateStorageAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
         return asset;
     }
 
     private Asset generateSafetyAsset() {
         Asset asset = generateAsset();
-        asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode().toString());
+        asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
         return asset;
     }
 
@@ -775,15 +775,13 @@ public class AssetServiceImplTest {
         asset.setAreaName("");
         asset.setResponsibleUserName("");
         asset.setCategoryModelName("");
-
         asset.setAssetGroup("");
         asset.setNumber("");
         asset.setName("");
-
         asset.setInstallType(0);
         asset.setSerial("");
         asset.setAreaId("1");
-        asset.setCategoryModel("");
+        asset.setCategoryModel(5);
         asset.setManufacturer("");
         asset.setAssetStatus(8);
         asset.setAdmittanceStatus(0);
