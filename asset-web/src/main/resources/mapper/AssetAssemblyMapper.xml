@@ -9,6 +9,7 @@
         <result column="amount" property="amount"/>
         <result column="business_id" property="businessId"/>
         <result column="status" property="status"/>
+        <result column="product_name" property="productName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -125,22 +126,36 @@
         </trim>
     </select>
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1)
-        from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+    <sql id="where">
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="assetId != null and assetId.length() > 0">
+               and lib.business_id not in (select business_id from asset_assembly where asset_id = #{assetId} and status = 1)
+            </if>
+            <if test="supplier != null and supplier.length() > 0">
+                and supplier like CONCAT('',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+            </if>
+            <if test="productName != null and productName.length() > 0">
+                and product_name like CONCAT('',replace(replace(#{productName},'%','\%'),'_','\_'),'%')
+            </if>
+             and lib.status = 1
         </trim>
+    </sql>
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) from asset_assembly_lib lib left join asset_assembly a on lib.business_id = a.business_id
+        <include refid="where"></include>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <trim prefix="WHERE" prefixOverrides="AND |OR ">
-        </trim>
+        select lib.type, lib.supplier, lib.product_name, lib.business_id from asset_assembly_lib lib
+        left join asset_assembly a on lib.business_id = a.business_id
+        <include refid="where"></include>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+
+    <select id="findAssemblyIds" resultType="string">
+        select business_id from asset_assembly where asset_id = #{assetId}
     </select>
     <!--删除资产与组件关系-->
     <delete id="deleteAssemblyRelation">
