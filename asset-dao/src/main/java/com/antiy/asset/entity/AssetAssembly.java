@@ -17,7 +17,7 @@ public class AssetAssembly extends BaseEntity {
     /**
      * 资产主键
      */
-    private Integer           assetId;
+    private String           assetId;
     /**
      * 组件数量
      */
@@ -25,7 +25,7 @@ public class AssetAssembly extends BaseEntity {
     /**
      * 组件主键
      */
-    private Integer           businessId;
+    private String           businessId;
     /**
      * 组件类型
      */
@@ -43,14 +43,6 @@ public class AssetAssembly extends BaseEntity {
      */
     private Integer           status;
 
-    public Integer getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(Integer assetId) {
-        this.assetId = assetId;
-    }
-
     public Integer getAmount() {
         return amount;
     }
@@ -59,11 +51,19 @@ public class AssetAssembly extends BaseEntity {
         this.amount = amount;
     }
 
-    public Integer getBusinessId() {
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getBusinessId() {
         return businessId;
     }
 
-    public void setBusinessId(Integer businessId) {
+    public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
 

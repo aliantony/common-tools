@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
@@ -62,5 +63,7 @@ public interface IAssetAssemblyLibService extends IBaseService<AssetAssemblyLib>
      * @return
      */
     String deleteAssetAssemblyLibById(BaseRequest baseRequest) throws Exception;
+
+    List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query);
 
 }

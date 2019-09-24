@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
@@ -23,7 +24,12 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> CPE表 服务实现类 </p>
@@ -43,7 +49,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     @Resource
     private BaseConverter<AssetHardSoftLib, AssetHardSoftLibResponse> responseConverter;
     @Resource
-    private AssetSoftwareRelationDao assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
 
     @Override
     public String saveAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception {
@@ -91,8 +97,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), null);
         }
-        List<SoftwareResponse> assetSoftwareRelationList = assetSoftwareRelationDao
-                .getSimpleSoftwareByAssetId(query);
+        List<SoftwareResponse> assetSoftwareRelationList = assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareRelationList);
     }
 
@@ -103,4 +108,36 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
         return osList;
     }
+
+    @Override
+    public List<String> pulldownSupplier(AssetPulldownQuery query) throws Exception {
+        return assetHardSoftLibDao.pulldownSupplier(query);
+    }
+
+    @Override
+    public List<String> pulldownName(AssetPulldownQuery query) {
+        return assetHardSoftLibDao.pulldownName(query);
+    }
+
+    @Override
+    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException {
+        List<SelectResponse> result = new ArrayList<>();
+        if (query.getVersion() != null) {
+            String posStr = query.getName() + query.getSupplier();
+            query.setPos(posStr.length() + 9);
+            query.setVersion(query.getVersion().replace(" ", ":"));
+        }
+        List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
+        for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
+            SelectResponse response = new SelectResponse();
+            // 特殊处理
+            // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分 且：用空格代替
+            String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
+            response.setValue(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+            response.setId(Objects.toString(assetHardSoftLib.getBusinessId()));
+            result.add(response);
+        }
+        return result;
+    }
+
 }

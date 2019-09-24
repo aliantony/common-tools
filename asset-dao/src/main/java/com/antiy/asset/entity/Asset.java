@@ -1,8 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -68,7 +66,7 @@ public class Asset extends BaseEntity {
     /**
      * 品类型号
      */
-    private String            categoryModel;
+    private Integer           categoryModel;
     /**
      * 厂商
      */
@@ -85,7 +83,7 @@ public class Asset extends BaseEntity {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String              operationSystem;
+    private String            operationSystem;
     /**
      * 操作系统名
      */
@@ -104,14 +102,7 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("使用者")
     private String            responsibleUserName;
 
-    /**
-     * 纬度
-     */
-    private String            latitude;
-    /**
-     * 经度
-     */
-    private String            longitude;
+
     /**
      * 机房位置
      */
@@ -127,6 +118,11 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("软件版本")
     private String            softwareVersion;
+    /**
+     * 版本
+     */
+    @ApiModelProperty("版本")
+    private String            vsersion;
     /**
      * 设备uuid
      */
@@ -217,6 +213,10 @@ public class Asset extends BaseEntity {
     private String            departmentName;
     @ApiModelProperty("告警数量")
     private String            alarmCount;
+
+    private Long              baselineTemplateCorrelationGmt;
+
+    private Long              installTemplateCorrelationGmt;
 
     public Long getBusinessId() {
         return businessId;
@@ -314,11 +314,11 @@ public class Asset extends BaseEntity {
         this.areaName = areaName;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
@@ -378,21 +378,7 @@ public class Asset extends BaseEntity {
         this.responsibleUserName = responsibleUserName;
     }
 
-    public String getLatitude() {
-        return latitude;
-    }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
 
     public String getHouseLocation() {
         return houseLocation;
@@ -594,6 +580,22 @@ public class Asset extends BaseEntity {
         this.alarmCount = alarmCount;
     }
 
+    public Long getBaselineTemplateCorrelationGmt() {
+        return baselineTemplateCorrelationGmt;
+    }
+
+    public void setBaselineTemplateCorrelationGmt(Long baselineTemplateCorrelationGmt) {
+        this.baselineTemplateCorrelationGmt = baselineTemplateCorrelationGmt;
+    }
+
+    public Long getInstallTemplateCorrelationGmt() {
+        return installTemplateCorrelationGmt;
+    }
+
+    public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
+        this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
+    }
+
     @Override
     public String toString() {
         return "Asset{" +
@@ -613,12 +615,10 @@ public class Asset extends BaseEntity {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", assetStatus=" + assetStatus +
                 ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem=" + operationSystem +
+                ", operationSystem='" + operationSystem + '\'' +
                 ", operationSystemName='" + operationSystemName + '\'' +
                 ", responsibleUserId='" + responsibleUserId + '\'' +
                 ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
                 ", houseLocation='" + houseLocation + '\'' +
                 ", firmwareVersion='" + firmwareVersion + '\'' +
                 ", softwareVersion='" + softwareVersion + '\'' +
@@ -644,6 +644,16 @@ public class Asset extends BaseEntity {
                 ", patchCount='" + patchCount + '\'' +
                 ", departmentName='" + departmentName + '\'' +
                 ", alarmCount='" + alarmCount + '\'' +
+                ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
+                ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';
+    }
+
+    public String getVsersion() {
+        return vsersion;
+    }
+
+    public void setVsersion(String vsersion) {
+        this.vsersion = vsersion;
     }
 }

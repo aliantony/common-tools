@@ -148,13 +148,14 @@
             user_id as userId,
             advice,
             result,
-            gmt_create as gmtCreate
+            asset_install_template_check.gmt_create as gmtCreate
        FROM
-            asset_install_template_check,asset_install_template
-       WHERE
+            asset_install_template_check inner JOIN asset_install_template
+       ON
             asset_install_template_check.status=1
-            AND asset_install_template.id=asset_install_template_check.install_template_id
             AND asset_install_template.id=#{templateId}
-       ORDER BY gmt_create DESC
+            AND asset_install_template.id=asset_install_template_check.install_template_id
+
+       ORDER BY asset_install_template_check.gmt_create DESC
     </select>
 </mapper>

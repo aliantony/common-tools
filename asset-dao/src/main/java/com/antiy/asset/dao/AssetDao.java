@@ -273,10 +273,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateAssetBatch(@Param("assetList") List<Asset> assetList);
 
-
-
-
-
     /**
      *
      */

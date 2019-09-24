@@ -15,21 +15,17 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "number", align = 1, title = "资产编号(必填)", required = true)
     private String  number;
     /**
-     * 资产名称
-     */
-    @ExcelField(value = "name", align = 1, title = "资产名称(必填)", required = true)
-    private String  name;
-    /**
      * 厂商
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
     private String  manufacturer;
-
     /**
-     * 版本
+     * 资产名称
      */
-    @ExcelField(value = "version", align = 1, title = "版本(必填)", required = true)
-    private String  version;
+    @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
+    private String  name;
+
+
     /**
      * 使用者
      */
@@ -163,15 +159,6 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String  memo;
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
 
 
     public String getName() {

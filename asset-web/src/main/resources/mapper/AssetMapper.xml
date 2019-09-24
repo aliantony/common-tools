@@ -32,8 +32,6 @@
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="responsible_user_name" property="responsibleUserName"/>
-        <result column="latitude" property="latitude"/>
-        <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
         <result column="uuid" property="uuid"/>
         <result column="asset_source" property="assetSource"/>
@@ -796,7 +794,7 @@
             </foreach>
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
-                <when test="enterControl and assetStatusList[0] != 7 and assetStatusList[0] != 1">
+                <when test="enterControl and assetStatusList[0] != 6 and assetStatusList[0] != 1">
                     and
                 </when>
                 <otherwise>
@@ -878,7 +876,7 @@
             and asset.admittance_status = #{admittanceStatus}
         </if>
         <if test=" manufacturer != null and  manufacturer != ''">
-            and asset.manufacturer like binary CONCAT('%',replace(replace(#{manufacturer},'%','\%'),'_','\_'), '%')
+            and asset.manufacturer = #{manufacturer}
         </if>
         <if test=" manufacturers != null and manufacturers.size() > 0">
             and asset.manufacturer in
@@ -1159,7 +1157,6 @@
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset_category_model.name as category_model_name,
         asset.manufacturer, asset_status,
         asset.operation_system,
         asset.system_bit,
@@ -1484,22 +1481,14 @@
         <include refid="Table_Name"></include>
         set
         asset_group = #{assetGroup },
-        number = #{number },
-        name = #{name },
-        ethernet_port = #{ethernetPort },
-        serial_port = #{serialPort },
         install_type = #{installType },
         serial = #{serial },
         area_id = #{areaId },
-        category_model = #{categoryModel },
-        manufacturer = #{manufacturer },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
         location = #{location },
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
-        contact_tel = #{contactTel },
-        email = #{email },
         importance_degree = #{importanceDegree },
         describle = #{describle },
         service_life = #{serviceLife},
@@ -1649,6 +1638,17 @@
         </foreach>
     </update>
 
+    <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        asset.*, lib.product_name AS operation_system_name,
+        `user`.`name` AS responsible_user_name
+        FROM
+        <include refid="Table_Name"></include>
+        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
+        where asset.id=#{id}
+    </select>
+
     <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
   SELECT
   asset.id as assetId,
@@ -1672,25 +1672,14 @@ WHERE
             category_model,COUNT(category_model) AS num
           FROM <include refid="Table_Name"/>
           where status =1
-          <if test="status !=null and status.size>0">
-              AND asset_status IN
-              <foreach collection="status" open="(" close=")" separator="," item="s">
+              AND asset_status
+              <foreach collection="status" open=" IN (" close=")" separator="," item="s">
                   #{s}
               </foreach>
-          </if>
-          <if test="status !=null and status.size==0">
-              AND 1=0
-          </if>
-
-          <if test="areaIds !=null and areaIds.size>0">
-              AND area_id  IN
-              <foreach collection="areaIds" open="(" close=")" separator="," item="areaId">
+              AND area_id
+              <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
                   #{areaId}
               </foreach>
-          </if>
-         <if test="areaIds !=null and areaIds.size==0">
-             AND 1=0
-         </if>
         GROUP BY category_model
     </select>
 

@@ -359,6 +359,15 @@
         </trim>
     </select>
 
+    <select id="countByWhere" resultType="int" parameterType="java.util.Map">
+        select
+        count(*)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
@@ -376,6 +385,47 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="pulldownSupplier" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select distinct supplier from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier like CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
+    <select id="pulldownName" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select distinct product_name from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier =#{supplier}
+        </if>
+        <if test="name != null">
+            and product_name like CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
+    <select id="queryHardSoftLibByVersion" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        where status = 1 and type='h'
+        <if test="supplier != null">
+            and supplier =#{supplier}
+        </if>
+        <if test="name != null">
+            and product_name =#{name}
+        </if>
+        <if test="version != null">
+            and SUBSTR(cpe_uri,#{pos}) like CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+        </if>
+        limit 50
+    </select>
+
     <select id="pullDownOs" resultType="com.antiy.asset.vo.response.SelectResponse">
         select filter.product_name as value,temp.id from (
         SELECT
