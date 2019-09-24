@@ -1751,7 +1751,7 @@ public class AssetServiceImplTest {
         assetRequest.setResponsibleUserId("1");
         assetRequest.setAssetSource(0);
         assetRequest.setImportanceDegree(0);
-        assetRequest.setCategoryModel(1);
+        assetRequest.setCategoryModel(2);
         assetRequest.setServiceLife(0L);
         assetRequest.setBuyDate(0L);
         assetRequest.setWarranty("0");
