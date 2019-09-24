@@ -27,7 +27,7 @@ CREATE TABLE `asset` (
   `business_id` bigint(20) NOT NULL COMMENT '业务主键(四库)',
   `asset_group` varchar(255) DEFAULT NULL COMMENT '资产组（逗号分隔）',
   `number` varchar(32) DEFAULT NULL COMMENT '资产编号',
-  `name` varchar(32) NOT NULL DEFAULT '' COMMENT '资产名称',
+  `name` varchar(32) DEFAULT NULL DEFAULT '' COMMENT '资产名称',
   `install_type` tinyint(3) DEFAULT '1' COMMENT '安装方式：1-人工，2-自动',
   `serial` varchar(32) DEFAULT '' COMMENT '序列号',
   `area_id` int(11) DEFAULT NULL COMMENT '行政区划主键',
