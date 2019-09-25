@@ -1,18 +1,16 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -111,7 +109,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
     @ApiModelProperty("资产状态")
-    @Max(value = 9, message = "资产状态最大为9")
+    @Max(value = 11, message = "资产状态最大为11")
     @Min(value = 1, message = "资产状态最小为1")
     private Integer       assetStatus;
 
