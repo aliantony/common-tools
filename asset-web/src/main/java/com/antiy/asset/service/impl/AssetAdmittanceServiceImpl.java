@@ -106,16 +106,6 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
 
-        // 品类型号及其子品类
-        if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
-            List<Integer> categoryModels = Lists.newArrayList();
-            for (int i = 0; i < query.getCategoryModels().length; i++) {
-                // categoryModels.addAll(assetCategoryModelService
-                // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            }
-            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
-        }
-
         int count = 0;
         // 如果count为0 直接返回结果即可
         if (count <= 0) {

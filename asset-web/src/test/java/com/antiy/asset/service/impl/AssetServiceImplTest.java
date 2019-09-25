@@ -497,7 +497,6 @@ public class AssetServiceImplTest {
         assetQuery.setQueryPatchCount(true);
         assetQuery.setQueryVulCount(true);
         assetQuery.setQueryAlarmCount(true);
-        assetQuery.setCategoryModels(new String[] { "1" });
         assetQuery.setAssetGroupQuery(true);
 
         PageResult<AssetResponse> result = assetServiceImpl.findPageAsset(assetQuery);

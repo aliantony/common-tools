@@ -25,7 +25,6 @@ import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetSecondCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -143,7 +142,6 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // 删除关联资产
         // assetRelationResult = assetGroupRelationDao
         // .deleteByAssetGroupId(DataTypeUtils.stringToInteger(request.getId()));
-
 
         Map<String, Object> map = new HashMap<>();
         StringBuilder assetNameBuilder = new StringBuilder();
@@ -324,7 +322,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
         // }
         // }
-        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
