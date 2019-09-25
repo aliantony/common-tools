@@ -756,7 +756,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
             // }
             // }
-            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+            //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         } else {
             // 品类型号及其子品类
             // List<Integer> categoryModels = Lists.newArrayList();
@@ -2689,7 +2689,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));

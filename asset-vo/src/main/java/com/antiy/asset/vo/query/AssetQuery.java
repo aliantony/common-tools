@@ -1,16 +1,18 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -69,12 +71,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private String categoryModel;
+    private Integer      categoryModel;
     /**
      * 品类型号列表
      */
     @ApiModelProperty("品类型号列表")
-    private String[] categoryModels;
+    @Encode
+    private Integer[]    categoryModels;
 
     @ApiModelProperty("二级品类")
     /**
@@ -107,7 +110,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
-    @ApiModelProperty("资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役")
+    @ApiModelProperty("资产状态")
     @Max(value = 9, message = "资产状态最大为9")
     @Min(value = 1, message = "资产状态最小为1")
     private Integer assetStatus;
@@ -134,7 +137,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
-    @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
+    @ApiModelProperty("1, 资产探测,2, 人工登记,3,代理上报")
     @Max(message = "上报来源最大为2", value = 2)
     @Min(message = "上报来源最小为1", value = 1)
     private Integer assetSource;
@@ -510,20 +513,28 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.importanceDegree = importanceDegree;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
-    public String[] getCategoryModels() {
+    public Integer[] getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(String[] categoryModels) {
+    public void setCategoryModels(Integer[] categoryModels) {
         this.categoryModels = categoryModels;
+    }
+
+    public boolean isAll() {
+        return all;
+    }
+
+    public boolean isAssetGroupQuery() {
+        return assetGroupQuery;
     }
 
     public String[] getAreaIds() {

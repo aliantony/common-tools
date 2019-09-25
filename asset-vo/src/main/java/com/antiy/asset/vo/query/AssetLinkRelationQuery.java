@@ -69,22 +69,6 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产状态列表")
     private List<String>  statusList;
-    /**
-     * 端口号列表
-     */
-    private List<Integer> portCount;
-
-    public List<Integer> getPortCount() {
-        return portCount;
-    }
-
-    public void setPortCount(List<Integer> portCount) {
-        this.portCount = portCount;
-    }
-
-    public Integer getCategoryModel() {
-        return categoryModel;
-    }
 
     public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
