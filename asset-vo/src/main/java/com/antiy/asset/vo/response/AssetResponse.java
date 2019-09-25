@@ -156,6 +156,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("使用到期时间")
     private Long                           serviceLife;
     /**
+     * 联系电话
+     */
+    @ApiModelProperty("联系电话")
+    private String                         contactTel;
+    /**
      * 制造日期
      */
     @ApiModelProperty("制造日期")
@@ -556,6 +561,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setMac(List<AssetMacRelationResponse> mac) {
         this.mac = mac;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
     }
 
     @Override

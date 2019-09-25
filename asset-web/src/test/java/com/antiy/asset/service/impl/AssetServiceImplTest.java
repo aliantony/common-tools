@@ -793,7 +793,7 @@ public class AssetServiceImplTest {
         asset.setFirmwareVersion("");
         asset.setUuid("");
         asset.setContactTel("");
-        asset.setEmail("");
+//        asset.setEmail("");
         asset.setAssetSource(0);
         asset.setImportanceDegree(0);
         asset.setDescrible("");

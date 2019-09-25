@@ -30,9 +30,6 @@
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
-        <result column="location" property="location"/>
-        <result column="latitude" property="latitude"/>
-        <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="uuid" property="uuid"/>
@@ -44,10 +41,10 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
-        <result column="version" property="version"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="contact_tel" property="contactTel"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
@@ -1574,7 +1571,8 @@
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
         SELECT
         asset.*, lib.product_name AS operation_system_name,
-        `user`.`name` AS responsible_user_name
+        `user`.`name` AS responsible_user_name,
+        `user`.`mobile` As contact_tel
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
