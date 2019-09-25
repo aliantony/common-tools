@@ -86,86 +86,6 @@ CREATE TABLE `asset_assembly` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `asset_assembly_lib`
---
-
-DROP TABLE IF EXISTS `asset_assembly_lib`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_assembly_lib` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
-  `type` varchar(16) DEFAULT NULL COMMENT '组件类型',
-  `supplier` varchar(64) NOT NULL COMMENT '供应商',
-  `product_name` varchar(500) NOT NULL COMMENT '产品名',
-  `version` varchar(64) DEFAULT NULL COMMENT '版本号',
-  `sys_version` varchar(32) DEFAULT NULL COMMENT '系统版本',
-  `language` varchar(32) DEFAULT NULL COMMENT '语言',
-  `other` varchar(128) DEFAULT NULL COMMENT '其他',
-  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE,
-  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
-  KEY `index_id_status` (`id`,`status`) USING BTREE,
-  KEY `name_index` (`supplier`,`product_name`,`version`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组件表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `asset_assembly_soft_relation`
---
-
-DROP TABLE IF EXISTS `asset_assembly_soft_relation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_assembly_soft_relation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `soft_id` bigint(20) NOT NULL COMMENT '软件业务id',
-  `assembly_id` bigint(20) NOT NULL COMMENT '组件业务id',
-  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `index_` (`soft_id`) USING BTREE,
-  KEY `index_soft_id` (`soft_id`) USING BTREE,
-  KEY `index_assembly_id` (`assembly_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组件与软件关系表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `asset_cpe_filter`
---
-
-DROP TABLE IF EXISTS `asset_cpe_filter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_cpe_filter` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) DEFAULT NULL COMMENT '业务主键',
-  `product_name` varchar(255) DEFAULT NULL COMMENT '产品名称',
-  `serial_name` varchar(255) DEFAULT NULL COMMENT '系列名称',
-  `type` varchar(10) DEFAULT NULL COMMENT '类型',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE,
-  UNIQUE KEY `index_product_name` (`product_name`) USING BTREE COMMENT '操作系统唯一所索引'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='过滤显示表（筛选指定的数据给用户）';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `asset_department`
 --
 
@@ -232,67 +152,8 @@ CREATE TABLE `asset_group_relation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产与资产组关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `asset_hard_assembly_relation`
---
 
-DROP TABLE IF EXISTS `asset_hard_assembly_relation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_hard_assembly_relation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `hard_id` bigint(20) NOT NULL COMMENT '硬件id',
-  `assembly_id` bigint(20) NOT NULL COMMENT '组件id',
-  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `index_hard_id` (`hard_id`) USING BTREE,
-  KEY `index_assembly_id` (`assembly_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='硬件与组件关系表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `asset_hard_soft_lib`
---
-
-DROP TABLE IF EXISTS `asset_hard_soft_lib`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_hard_soft_lib` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(20) NOT NULL COMMENT '业务主键',
-  `number` int(11) DEFAULT NULL COMMENT '编号',
-  `type` varchar(8) NOT NULL COMMENT '类型：a-应用软件 h-硬件 o-操作系统',
-  `supplier` varchar(64) DEFAULT NULL COMMENT '供应商',
-  `product_name` varchar(128) DEFAULT NULL COMMENT '产品名',
-  `version` varchar(64) DEFAULT NULL COMMENT '版本号',
-  `upgrade_msg` varchar(64) DEFAULT NULL COMMENT '更新信息',
-  `sys_version` varchar(64) DEFAULT NULL COMMENT '系统版本',
-  `language` varchar(8) DEFAULT NULL COMMENT '语言',
-  `soft_version` varchar(64) DEFAULT NULL COMMENT '软件版本',
-  `soft_platform` varchar(64) DEFAULT NULL COMMENT '软件平台',
-  `hard_platform` varchar(32) DEFAULT NULL COMMENT '硬件平台',
-  `other` varchar(32) DEFAULT NULL COMMENT '其他',
-  `data_source` tinyint(3) DEFAULT NULL COMMENT '数据来源：1-CPE，2-MANUAL',
-  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1-已入库、2-未入库',
-  `cpe_uri` varchar(640) DEFAULT NULL COMMENT 'cpe路径',
-  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE COMMENT '业务主键唯一索引',
-  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
-  KEY `id_type_status` (`id`,`type`,`status`,`product_name`,`supplier`) USING BTREE,
-  KEY `index_relation` (`id`,`business_id`,`type`,`is_storage`,`supplier`,`product_name`,`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asset_install_history`
@@ -503,33 +364,7 @@ CREATE TABLE `asset_patch_install_template` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与补丁关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `asset_protocol`
---
 
-DROP TABLE IF EXISTS `asset_protocol`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_protocol` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
-  `name` varchar(128) NOT NULL COMMENT '协议',
-  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
-  `is_storage` tinyint(3) DEFAULT '2' COMMENT '是否入库：1-已入库，2-未入库',
-  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
-  `link_vuls` varchar(1024) DEFAULT NULL COMMENT '关联的遏制漏洞编号',
-  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
-  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
-  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
-  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `index_business_id` (`business_id`) USING BTREE,
-  KEY `index_id` (`id`) USING BTREE,
-  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
-  KEY `index_is_storage` (`is_storage`) USING BTREE,
-  KEY `protocol_name` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='协议表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asset_safety_equipment`
@@ -558,6 +393,278 @@ CREATE TABLE `asset_safety_equipment` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `INX_ASSET_ID` (`asset_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='安全设备表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_software_install_template`
+--
+
+DROP TABLE IF EXISTS `asset_software_install_template`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_software_install_template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `install_template_id` int(11) NOT NULL COMMENT '模板主键',
+  `software_id` int(11) NOT NULL COMMENT '软件主键',
+  `status` tinyint(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与软件关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_software_relation`
+--
+
+DROP TABLE IF EXISTS `asset_software_relation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_software_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '资产软件主键',
+  `asset_id` int(11) NOT NULL COMMENT '资产主键',
+  `software_id` bigint(20) NOT NULL COMMENT '软件主键',
+  `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
+  `memo` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
+  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
+  `status` tinyint(3) DEFAULT '1' COMMENT '状态：1未删除,0已删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_asset_id_software_id` (`asset_id`,`software_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产软件关系信息';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_storage_medium`
+--
+
+DROP TABLE IF EXISTS `asset_storage_medium`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_storage_medium` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `asset_id` int(11) NOT NULL DEFAULT '0' COMMENT '资产主键',
+  `maximum_storage` varchar(16) DEFAULT NULL COMMENT '最大存储量',
+  `disk_number` int(11) DEFAULT NULL COMMENT '单机磁盘数',
+  `high_cache` varchar(30) DEFAULT NULL COMMENT '最高缓存',
+  `inner_interface` varchar(32) DEFAULT '' COMMENT '内置接口',
+  `raid_support` varchar(32) DEFAULT '' COMMENT 'RAID支持',
+  `average_transfer_rate` varchar(30) DEFAULT NULL COMMENT '平均传输速率',
+  `driver_number` int(11) DEFAULT NULL COMMENT '驱动器数量',
+  `firmware` varchar(32) DEFAULT '' COMMENT '固件',
+  `os_version` varchar(32) DEFAULT '' COMMENT 'OS版本',
+  `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
+  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '修改时间',
+  `memo` varchar(300) DEFAULT NULL COMMENT '备准',
+  `create_user` int(11) DEFAULT '0' COMMENT '创建人',
+  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
+  `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存数设备表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `asset_user`
+--
+
+DROP TABLE IF EXISTS `asset_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(90) NOT NULL COMMENT '名称',
+  `department_id` int(11) NOT NULL COMMENT '部门主键',
+  `email` varchar(32) DEFAULT '' COMMENT '电子邮箱',
+  `qq` varchar(30) DEFAULT NULL COMMENT 'QQ',
+  `weixin` varchar(32) DEFAULT NULL COMMENT '微信',
+  `mobile` varchar(30) DEFAULT NULL COMMENT '手机',
+  `address` varchar(128) DEFAULT '' COMMENT '住址',
+  `create_user` int(11) DEFAULT '0' COMMENT '创建人',
+  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
+  `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
+  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(3) DEFAULT '1' COMMENT '状态,1- 未删除,0-已删除',
+  `memo` varchar(300) DEFAULT NULL COMMENT '备准',
+  `detail_address` varchar(255) DEFAULT NULL COMMENT '详细地址',
+  `position` varchar(64) DEFAULT NULL COMMENT '位置',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产用户信息';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+------------------------------------------------------------------------------------------------------
+------------------------------------------------ kbms ------------------------------------------------
+------------------------------------------------------------------------------------------------------
+
+--
+-- Table structure for table `asset_assembly_lib`
+--
+
+DROP TABLE IF EXISTS `asset_assembly_lib`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_assembly_lib` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
+  `type` varchar(16) DEFAULT NULL COMMENT '组件类型',
+  `supplier` varchar(64) NOT NULL COMMENT '供应商',
+  `product_name` varchar(500) NOT NULL COMMENT '产品名',
+  `version` varchar(64) DEFAULT NULL COMMENT '版本号',
+  `sys_version` varchar(32) DEFAULT NULL COMMENT '系统版本',
+  `language` varchar(32) DEFAULT NULL COMMENT '语言',
+  `other` varchar(128) DEFAULT NULL COMMENT '其他',
+  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
+  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1已入库、2未入库',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE,
+  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
+  KEY `index_id_status` (`id`,`status`) USING BTREE,
+  KEY `name_index` (`supplier`,`product_name`,`version`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组件表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_assembly_soft_relation`
+--
+
+DROP TABLE IF EXISTS `asset_assembly_soft_relation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_assembly_soft_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `soft_id` bigint(20) NOT NULL COMMENT '软件业务id',
+  `assembly_id` bigint(20) NOT NULL COMMENT '组件业务id',
+  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_` (`soft_id`) USING BTREE,
+  KEY `index_soft_id` (`soft_id`) USING BTREE,
+  KEY `index_assembly_id` (`assembly_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组件与软件关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_cpe_filter`
+--
+
+DROP TABLE IF EXISTS `asset_cpe_filter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_cpe_filter` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `business_id` bigint(11) DEFAULT NULL COMMENT '业务主键',
+  `product_name` varchar(255) DEFAULT NULL COMMENT '产品名称',
+  `serial_name` varchar(255) DEFAULT NULL COMMENT '系列名称',
+  `type` varchar(10) DEFAULT NULL COMMENT '类型',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE,
+  UNIQUE KEY `index_product_name` (`product_name`) USING BTREE COMMENT '操作系统唯一所索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='过滤显示表（筛选指定的数据给用户）';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_hard_assembly_relation`
+--
+
+DROP TABLE IF EXISTS `asset_hard_assembly_relation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_hard_assembly_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `hard_id` bigint(20) NOT NULL COMMENT '硬件id',
+  `assembly_id` bigint(20) NOT NULL COMMENT '组件id',
+  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_hard_id` (`hard_id`) USING BTREE,
+  KEY `index_assembly_id` (`assembly_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='硬件与组件关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_hard_soft_lib`
+--
+
+DROP TABLE IF EXISTS `asset_hard_soft_lib`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_hard_soft_lib` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `business_id` bigint(20) NOT NULL COMMENT '业务主键',
+  `number` int(11) DEFAULT NULL COMMENT '编号',
+  `type` varchar(8) NOT NULL COMMENT '类型：a-应用软件 h-硬件 o-操作系统',
+  `supplier` varchar(64) DEFAULT NULL COMMENT '供应商',
+  `product_name` varchar(128) DEFAULT NULL COMMENT '产品名',
+  `version` varchar(64) DEFAULT NULL COMMENT '版本号',
+  `upgrade_msg` varchar(64) DEFAULT NULL COMMENT '更新信息',
+  `sys_version` varchar(64) DEFAULT NULL COMMENT '系统版本',
+  `language` varchar(8) DEFAULT NULL COMMENT '语言',
+  `soft_version` varchar(64) DEFAULT NULL COMMENT '软件版本',
+  `soft_platform` varchar(64) DEFAULT NULL COMMENT '软件平台',
+  `hard_platform` varchar(32) DEFAULT NULL COMMENT '硬件平台',
+  `other` varchar(32) DEFAULT NULL COMMENT '其他',
+  `data_source` tinyint(3) DEFAULT NULL COMMENT '数据来源：1-CPE，2-MANUAL',
+  `is_storage` tinyint(3) DEFAULT NULL COMMENT '是否入库：1-已入库、2-未入库',
+  `cpe_uri` varchar(640) DEFAULT NULL COMMENT 'cpe路径',
+  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `index_business_id` (`business_id`) USING BTREE COMMENT '业务主键唯一索引',
+  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
+  KEY `id_type_status` (`id`,`type`,`status`,`product_name`,`supplier`) USING BTREE,
+  KEY `index_relation` (`id`,`business_id`,`type`,`is_storage`,`supplier`,`product_name`,`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `asset_protocol`
+--
+
+DROP TABLE IF EXISTS `asset_protocol`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `asset_protocol` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
+  `name` varchar(128) NOT NULL COMMENT '协议',
+  `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
+  `is_storage` tinyint(3) DEFAULT '2' COMMENT '是否入库：1-已入库，2-未入库',
+  `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
+  `link_vuls` varchar(1024) DEFAULT NULL COMMENT '关联的遏制漏洞编号',
+  `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(32) DEFAULT NULL COMMENT '创建人',
+  `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
+  `status` int(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_business_id` (`business_id`) USING BTREE,
+  KEY `index_id` (`id`) USING BTREE,
+  KEY `index_gmt_create` (`gmt_create`) USING BTREE,
+  KEY `index_is_storage` (`is_storage`) USING BTREE,
+  KEY `protocol_name` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='协议表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -698,6 +805,7 @@ CREATE TABLE `asset_soft_service_lib` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='软件提供的服务';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
 --
 -- Table structure for table `asset_soft_service_relation`
 --
@@ -719,73 +827,6 @@ CREATE TABLE `asset_soft_service_relation` (
   KEY `index_soft_id` (`soft_id`) USING BTREE,
   KEY `index_service_id` (`service_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='软件依赖的服务';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `asset_software_install_template`
---
-
-DROP TABLE IF EXISTS `asset_software_install_template`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_software_install_template` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `install_template_id` int(11) NOT NULL COMMENT '模板主键',
-  `software_id` int(11) NOT NULL COMMENT '软件主键',
-  `status` tinyint(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与软件关系表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `asset_software_relation`
---
-
-DROP TABLE IF EXISTS `asset_software_relation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_software_relation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '资产软件主键',
-  `asset_id` int(11) NOT NULL COMMENT '资产主键',
-  `software_id` bigint(20) NOT NULL COMMENT '软件主键',
-  `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
-  `memo` varchar(300) DEFAULT NULL COMMENT '备注',
-  `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
-  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `status` tinyint(3) DEFAULT '1' COMMENT '状态：1未删除,0已删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_asset_id_software_id` (`asset_id`,`software_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产软件关系信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `asset_storage_medium`
---
-
-DROP TABLE IF EXISTS `asset_storage_medium`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_storage_medium` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `asset_id` int(11) NOT NULL DEFAULT '0' COMMENT '资产主键',
-  `maximum_storage` varchar(16) DEFAULT NULL COMMENT '最大存储量',
-  `disk_number` int(11) DEFAULT NULL COMMENT '单机磁盘数',
-  `high_cache` varchar(30) DEFAULT NULL COMMENT '最高缓存',
-  `inner_interface` varchar(32) DEFAULT '' COMMENT '内置接口',
-  `raid_support` varchar(32) DEFAULT '' COMMENT 'RAID支持',
-  `average_transfer_rate` varchar(30) DEFAULT NULL COMMENT '平均传输速率',
-  `driver_number` int(11) DEFAULT NULL COMMENT '驱动器数量',
-  `firmware` varchar(32) DEFAULT '' COMMENT '固件',
-  `os_version` varchar(32) DEFAULT '' COMMENT 'OS版本',
-  `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
-  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '修改时间',
-  `memo` varchar(300) DEFAULT NULL COMMENT '备准',
-  `create_user` int(11) DEFAULT '0' COMMENT '创建人',
-  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存数设备表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -817,35 +858,7 @@ CREATE TABLE `asset_sys_service_lib` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='服务表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `asset_user`
---
-
-DROP TABLE IF EXISTS `asset_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `asset_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(90) NOT NULL COMMENT '名称',
-  `department_id` int(11) NOT NULL COMMENT '部门主键',
-  `email` varchar(32) DEFAULT '' COMMENT '电子邮箱',
-  `qq` varchar(30) DEFAULT NULL COMMENT 'QQ',
-  `weixin` varchar(32) DEFAULT NULL COMMENT '微信',
-  `mobile` varchar(30) DEFAULT NULL COMMENT '手机',
-  `address` varchar(128) DEFAULT '' COMMENT '住址',
-  `create_user` int(11) DEFAULT '0' COMMENT '创建人',
-  `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
-  `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
-  `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
-  `status` tinyint(3) DEFAULT '1' COMMENT '状态,1- 未删除,0-已删除',
-  `memo` varchar(300) DEFAULT NULL COMMENT '备准',
-  `detail_address` varchar(255) DEFAULT NULL COMMENT '详细地址',
-  `position` varchar(64) DEFAULT NULL COMMENT '位置',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产用户信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -855,3 +868,5 @@ CREATE TABLE `asset_user` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2019-09-19 13:04:07
+
+
