@@ -44,7 +44,6 @@
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
-        <result column="contact_tel" property="contactTel"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
@@ -58,7 +57,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -106,9 +105,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
-        <if test=" location != null">
-            location,
-        </if>
+
         <if test=" latitude != null">
             latitude,
         </if>
@@ -226,9 +223,7 @@
         <if test=" responsibleUserId != null">
             #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            #{location },
-        </if>
+
         <if test=" latitude != null">
             #{latitude },
         </if>
@@ -419,9 +414,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id = #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            location = #{location },
-        </if>
+
         <if test=" latitude != null">
             latitude = #{latitude },
         </if>
@@ -539,9 +532,7 @@
         <if test=" responsibleUserId != null">
             and responsible_user_id = #{responsibleUserId }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
         <if test=" latitude != null">
             and latitude = #{latitude }
         </if>
@@ -649,9 +640,7 @@
         <if test=" systemBit != null">
             and system_bit = #{systemBit }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
 
         <if test=" firmwareVersion != null">
             and firmware_version = #{firmwareVersion }
@@ -1077,7 +1066,7 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.location,
+
         asset.house_location,
         asset.latitude,
         asset.longitude,
@@ -1402,7 +1391,7 @@
         area_id = #{areaId },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
-        location = #{location },
+
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },

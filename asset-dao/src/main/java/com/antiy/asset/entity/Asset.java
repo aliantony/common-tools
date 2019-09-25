@@ -32,6 +32,14 @@ public class Asset extends BaseEntity {
      * 是否入网
      */
     private Integer           isInnet;
+    /**
+     * 是否入网
+     */
+    private String            latitude;
+    /**
+     * 是否入网
+     */
+    private String            longitude;
 
     /**
      * json数据
@@ -216,22 +224,6 @@ public class Asset extends BaseEntity {
 
     private Long              installTemplateCorrelationGmt;
 
-    public String getIps() {
-        return ips;
-    }
-
-    public void setIps(String ips) {
-        this.ips = ips;
-    }
-
-    public String getMacs() {
-        return macs;
-    }
-
-    public void setMacs(String macs) {
-        this.macs = macs;
-    }
-
 
     public Long getBusinessId() {
         return businessId;
@@ -255,6 +247,38 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateId(String installTemplateId) {
         this.installTemplateId = installTemplateId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Integer getIsInnet() {
+        return isInnet;
+    }
+
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public String getAssetGroup() {
@@ -415,6 +439,22 @@ public class Asset extends BaseEntity {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getIps() {
+        return ips;
+    }
+
+    public void setIps(String ips) {
+        this.ips = ips;
+    }
+
+    public String getMacs() {
+        return macs;
+    }
+
+    public void setMacs(String macs) {
+        this.macs = macs;
     }
 
     public Integer getAssetSource() {
@@ -583,78 +623,5 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
-    }
-
-
-
-
-    @Override
-    public String toString() {
-        return "Asset{" +
-                "businessId=" + businessId +
-                ", baselineTemplateId=" + baselineTemplateId +
-                ", installTemplateId=" + installTemplateId +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", serial='" + serial + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", categoryModel=" + categoryModel +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", softwareVersion='" + softwareVersion + '\'' +
-                ", version='" + version + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", ips='" + ips + '\'' +
-                ", macs='" + macs + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", importanceDegreeName='" + importanceDegreeName + '\'' +
-                ", isInnet=" + isInnet +
-                ", describle='" + describle + '\'' +
-                ", firstEnterNett=" + firstEnterNett +
-                ", firstDiscoverTime=" + firstDiscoverTime +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty='" + warranty + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                ", vulCount='" + vulCount + '\'' +
-                ", patchCount='" + patchCount + '\'' +
-                ", departmentName='" + departmentName + '\'' +
-                ", alarmCount='" + alarmCount + '\'' +
-                ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
-                ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
-                '}';
-    }
-
-    public Integer getIsInnet() {
-        return isInnet;
-    }
-
-    public void setIsInnet(Integer isInnet) {
-        this.isInnet = isInnet;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 }
