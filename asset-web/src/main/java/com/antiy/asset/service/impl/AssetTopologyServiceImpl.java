@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.QueryCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -82,23 +83,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Value("${topology.third.level.height}")
     private Double                              thirdLevelHeight;
 
-    @Value("${topology.fake.first.level.space}")
-    private Double                              firstLevelSpacingFake;
-    @Value("${topology.fake.first.level.height}")
-    private Double                              firstLevelHeightFake;
-    @Value("${topology.fake.second.level.space}")
-    private Double                              secondLevelSpacingFake;
-    @Value("${topology.fake.second.level.height}")
-    private Double                              secondLevelHeightFake;
-    @Value("${topology.fake.third.level.space}")
-    private Double                              thirdLevelSpacingFake;
-    @Value("${topology.fake.third.level.height}")
-    private Double                              thirdLevelHeightFake;
-    @Value("${topology.fake.forth.level.height}")
-    private Double                              forthLevelHeightFake;
-    @Value("${topology.fake.forth.level.space}")
-    private Double                              forthLevelSpacingFake;
-
     @Override
     public List<String> queryCategoryModels() {
         return assetLinkRelationDao.queryCategoryModes();
@@ -106,26 +90,29 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
-        AssetDetialCondition assetDetialCondition = new AssetDetialCondition();
-        assetDetialCondition.setPrimaryKey(assetId);
-        AssetOuterResponse assetOuterResponse = iAssetService.getByAssetId(assetDetialCondition);
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetId);
+        AssetOuterResponse assetOuterResponse = iAssetService.getByAssetId(queryCondition);
         AssetResponse assetResponse = assetOuterResponse.getAsset();
         TopologyAssetResponse topologyAssetResponse = new TopologyAssetResponse();
-        // TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
-        // topologyNodeAsset.setAsset_id(assetResponse.getStringId());
-        // topologyNodeAsset.setAssetGroup(assetResponse.getAssetGroup());
-        // topologyNodeAsset.setHouseLocation(assetResponse.getHouseLocation());
-        // topologyNodeAsset.setIp(assetResponse.getIp());
-        // topologyNodeAsset.setInstallType(assetResponse.getInstallTypeName());
-        // topologyNodeAsset.setOs(assetResponse.getOperationSystemName());
-        // topologyNodeAsset.setTelephone(assetResponse.getContactTel());
-        // topologyNodeAsset.setLocation(assetResponse.getLocation());
-        // topologyNodeAsset.setAsset_name(assetResponse.getName());
-        // topologyAssetResponse.setStatus("success");
-        // topologyAssetResponse.setVersion(assetResponse.getNumber());
-        // List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();
-        // topologyNodeAssets.add(topologyNodeAsset);
-        // topologyAssetResponse.setData(topologyNodeAssets);
+        TopologyAssetResponse.TopologyNodeAsset topologyNodeAsset = topologyAssetResponse.new TopologyNodeAsset();
+        topologyNodeAsset.setAsset_id(assetResponse.getStringId());
+        topologyNodeAsset.setAssetGroup(assetResponse.getAssetGroup());
+        topologyNodeAsset.setHouseLocation(assetResponse.getHouseLocation());
+        if (CollectionUtils.isNotEmpty(assetResponse.getIp())) {
+            StringBuilder ip = new StringBuilder();
+            assetResponse.getIp().forEach(x -> ip.append(x.getIp()).append(","));
+            topologyNodeAsset.setIp(ip.toString().substring(0, ip.toString().length() - 1));
+        }
+        topologyNodeAsset.setInstallType(assetResponse.getInstallTypeName());
+        topologyNodeAsset.setOs(assetResponse.getOperationSystemName());
+        topologyNodeAsset.setTelephone(assetResponse.getContactTel());
+        topologyNodeAsset.setAsset_name(assetResponse.getName());
+        topologyAssetResponse.setStatus("success");
+        topologyAssetResponse.setVersion(assetResponse.getNumber());
+        List<TopologyAssetResponse.TopologyNodeAsset> topologyNodeAssets = new ArrayList<>();
+        topologyNodeAssets.add(topologyNodeAsset);
+        topologyAssetResponse.setData(topologyNodeAssets);
         return topologyAssetResponse;
     }
 
@@ -136,7 +123,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        // 1.1资产状态出去不予登记和登记
+        // 1.1资产状态除去不予登记和登记
         List<Integer> assetStatusList = getAssetUseableStatus();
         assetQuery.setAssetStatusList(assetStatusList);
         // 1.2所有资产
@@ -326,11 +313,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return null;
     }
 
-    @Override
-    public AssetTopologyNodeResponse getTopologyGraphFake() throws Exception {
-        return null;
-    }
-
     // private AssetQuery setAssetQueryParam(List<Integer> areaIds, List<AssetCategoryModel> search, List<String>
     // osList) {
     // AssetQuery assetQuery = new AssetQuery();
@@ -439,258 +421,13 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         response.setAreaName(sysArea != null ? sysArea.getFullName() : null);
     }
 
-    // public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-    // Map<K, V> result = new LinkedHashMap<>();
-    // Stream<Map.Entry<K, V>> st = map.entrySet().stream();
-    //
-    // st.sorted(Comparator.comparing(e -> e.getValue())).forEach(e -> result.put(e.getKey(), e.getValue()));
-    //
-    // return result;
-    // }
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+        Stream<Map.Entry<K, V>> st = map.entrySet().stream();
 
-    // public AssetTopologyNodeResponse getTopologyGraphFake() throws Exception {
-    // AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
-    // assetTopologyNodeResponse.setStatus("success");
-    // List<Map<String, AssetTopologyRelation>> dataList = new ArrayList<>();
-    // AssetTopologyRelation assetTopologyRelation = new AssetTopologyRelation();
-    // // 设置拓扑图信息
-    // assetTopologyRelation.setInfo("");
-    // // 设置中心点
-    // assetTopologyRelation.setMiddlePoint(middlePoint);
-    // // 设置角度
-    // AssetTopologyViewAngle assetTopologyViewAngle = new AssetTopologyViewAngle();
-    // assetTopologyViewAngle.setCameraPos(cameraPos);
-    // assetTopologyViewAngle.setTargetPos(targetPos);
-    // assetTopologyRelation.setView_angle(assetTopologyViewAngle);
-    // AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
-    // Map<String, List<List<Object>>> jsonData = new HashMap<>();
-    // Map<String, String> map = iAssetCategoryModelService.getSecondCategoryMap();
-    // List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
-    //
-    // String computeDeviceId = "4";
-    // String netDeviceId = "5";
-    // for (AssetCategoryModel assetCategoryModel : categoryModelList) {
-    // if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-    // computeDeviceId = assetCategoryModel.getStringId();
-    // }
-    // if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-    // netDeviceId = assetCategoryModel.getStringId();
-    // }
-    // }
-    //
-    // AssetQuery assetQuery = new AssetQuery();
-    // assetQuery.setIds(new String[] { "62163", "62198", "5583", "62019", "62271", "62794" });
-    // assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(iAssetCategoryModelService
-    // .findAssetCategoryModelIdsById(Integer.valueOf(computeDeviceId), categoryModelList)));
-    // assetQuery.setAreaIds(
-    // DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-    // assetQuery.setAssetStatusList(getAssetUseableStatus());
-    // List<Asset> pcs = assetTopologyDao.selectFakeAsset(assetQuery);
-    //
-    // assetQuery = new AssetQuery();
-    // assetQuery.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
-    // iAssetCategoryModelService.findAssetCategoryModelIdsById(Integer.valueOf(netDeviceId), categoryModelList)));
-    // assetQuery.setAreaIds(
-    // DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-    // assetQuery.setAssetStatusList(getAssetUseableStatus());
-    // List<Asset> nets = assetTopologyDao.selectFakeAsset(assetQuery);
-    //
-    // Map<String, List<String>> firstToSecond = new HashMap<>();
-    // Map<String, List<String>> secondToThird = new HashMap<>();
-    // Map<String, List<String>> thirdToForth = new HashMap<>();
-    //
-    // List<String> firstIds = new ArrayList<>();
-    //
-    // List<String> secondIds = new ArrayList<>();
-    // List<String> thirdIds = new ArrayList<>();
-    // List<String> forthIds = new ArrayList<>();
-    //
-    // if (!nets.isEmpty()) {
-    // firstIds.add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-    // } else if (!pcs.isEmpty()) {
-    // firstIds.add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-    // }
-    // for (int i = 0; i < 4; i++) {
-    // if (!nets.isEmpty()) {
-    // secondIds
-    // .add(aesEncoder.encode(nets.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-    // } else if (!pcs.isEmpty()) {
-    // secondIds
-    // .add(aesEncoder.encode(pcs.remove(0).getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-    // } else {
-    // break;
-    // }
-    // boolean flag = true;
-    // for (int j = 0; j < 9; j++) {
-    // if (flag) {
-    // if (!nets.isEmpty()) {
-    // String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // thirdIds.add(stringId);
-    // List<String> m = new ArrayList();
-    // m.add(stringId);
-    // secondToThird.put(secondIds.get(i), m);
-    // } else if (!pcs.isEmpty()) {
-    // String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // thirdIds.add(stringId);
-    // List<String> m = new ArrayList();
-    // m.add(stringId);
-    // secondToThird.put(secondIds.get(i), m);
-    // } else {
-    // break;
-    // }
-    // flag = false;
-    // } else {
-    // if (!nets.isEmpty()) {
-    // String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // thirdIds.add(stringId);
-    // secondToThird.get(secondIds.get(i)).add(stringId);
-    // } else if (!pcs.isEmpty()) {
-    // String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // thirdIds.add(stringId);
-    // secondToThird.get(secondIds.get(i)).add(stringId);
-    // } else {
-    // break;
-    // }
-    // }
-    // }
-    // }
-    // firstToSecond.put(firstIds.get(0), secondIds);
-    //
-    // int e = 0;
-    // int j = 0;
-    // for (String third : thirdIds) {
-    // boolean flag = true;
-    // e = j % 2;
-    // int x = e + 3;
-    // for (int i = 0; i < x * x; i++) {
-    // if (flag) {
-    // if (!nets.isEmpty()) {
-    // String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // forthIds.add(stringId);
-    // List<String> m = new ArrayList();
-    // m.add(stringId);
-    // thirdToForth.put(third, m);
-    // } else if (!pcs.isEmpty()) {
-    // String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // forthIds.add(stringId);
-    // List<String> m = new ArrayList();
-    // m.add(stringId);
-    // thirdToForth.put(third, m);
-    // } else {
-    // break;
-    // }
-    // flag = false;
-    // } else {
-    // if (!nets.isEmpty()) {
-    // String stringId = aesEncoder.encode(nets.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // forthIds.add(stringId);
-    // thirdToForth.get(third).add(stringId);
-    // } else if (!pcs.isEmpty()) {
-    // String stringId = aesEncoder.encode(pcs.remove(0).getStringId(),
-    // LoginUserUtil.getLoginUser().getUsername());
-    // forthIds.add(stringId);
-    // thirdToForth.get(third).add(stringId);
-    // } else {
-    // break;
-    // }
-    // }
-    // }
-    // j++;
-    // }
-    //
-    // Map<String, List<Double>> firstCoordinates = new HashMap<>();
-    // List<Double> list = new ArrayList<>();
-    // list.add(0D);
-    // list.add(firstLevelHeightFake);
-    // list.add(0D);
-    // firstCoordinates.put(firstIds.get(0), list);
-    // Map<String, List<Double>> secondCoordinates = new HashMap<>();
-    // Map<String, List<Double>> thirdCoordinates = new HashMap<>();
-    // Map<String, List<Double>> fourCoordinates = new HashMap<>();
-    // List<List<Object>> points = new ArrayList<>();
-    // List<Object> point = new ArrayList<>();
-    // point.add(firstIds.get(0));
-    // point.addAll(firstCoordinates.get(firstIds.get(0)));
-    // point.add(new ArrayList<>());
-    // point.add(firstCoordinates.get(firstIds.get(0)).get(0));
-    // point.add(firstCoordinates.get(firstIds.get(0)).get(2));
-    // point.add("");
-    // points.add(point);
-    // jsonData.put("sim_topo-router", points);
-    //
-    // settingLevelCoordinatesFake(firstToSecond, jsonData, firstCoordinates, secondCoordinates,
-    // secondLevelSpacingFake, secondLevelHeightFake, "sim_topo-router");
-    // settingLevelCoordinatesFake(secondToThird, jsonData, secondCoordinates, thirdCoordinates, thirdLevelSpacingFake,
-    // thirdLevelHeightFake, "sim_topo-router");
-    // settingLevelCoordinatesFake(thirdToForth, jsonData, thirdCoordinates, fourCoordinates, forthLevelSpacingFake,
-    // forthLevelHeightFake, "sim_topo-host");
-    //
-    // assetTopologyJsonData.setJson_data0(jsonData);
-    // assetTopologyRelation.setJson_data(assetTopologyJsonData);
-    // Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
-    // dataMap.put("relationship", assetTopologyRelation);
-    // dataList.add(dataMap);
-    // assetTopologyNodeResponse.setData(dataList);
-    // return assetTopologyNodeResponse;
-    //
-    // }
+        st.sorted(Comparator.comparing(e -> e.getValue())).forEach(e -> result.put(e.getKey(), e.getValue()));
 
-    private void settingLevelCoordinatesFake(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
-                                             Map<String, List<Double>> sonCoordinates,
-                                             Map<String, List<Double>> parentCoordinates, double space, double height,
-                                             String category) {
-        List<List<Object>> dataList = new ArrayList<>();
-
-        // 排序
-        Map<String, List<String>> result = new LinkedHashMap<>();
-        Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
-        st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
-
-        // 缓存id和index的关系
-        Map<String, Integer> cache = new HashMap<>();
-        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-            int i = 0;
-            for (String s : entry.getValue()) {
-                Integer index = cache.get(s);
-                if (index != null) {
-                    List<Object> point = dataList.get(index);
-                    List<String> pointParent = (List<String>) point.get(4);
-                    pointParent.add(entry.getKey());
-                } else {
-                    List<Double> coordinates = sonCoordinates.get(entry.getKey());
-                    List<Object> point = new ArrayList<>();
-                    double size = getSize(entry.getValue().size());
-                    List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
-                        coordinates.get(2));
-                    parentCoordinates.put(s, coordinateByParent);
-                    point.add(s);
-                    point.addAll(coordinateByParent);
-                    List<String> parent = new ArrayList<>();
-                    parent.add(entry.getKey());
-                    point.add(parent);
-                    point.add(coordinateByParent.get(0));
-                    point.add(coordinateByParent.get(2));
-                    point.add("");
-                    List<List<Object>> points = jsonData.get(category);
-                    if (points == null) {
-                        points = new ArrayList<>();
-                    }
-                    points.add(point);
-                    dataList.add(point);
-                    jsonData.put(category, points);
-                    cache.put(s, dataList.size() - 1);
-                    i++;
-
-                }
-            }
-        }
+        return result;
     }
 
     /**
@@ -698,178 +435,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @return
      * @throws Exception
      */
-    // public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
-    // AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
-    // assetTopologyNodeResponse.setStatus("success");
-    // List<Map<String, AssetTopologyRelation>> dataList = new ArrayList<>();
-    // AssetTopologyRelation assetTopologyRelation = new AssetTopologyRelation();
-    // // 设置拓扑图信息
-    // assetTopologyRelation.setInfo("");
-    // // 设置中心点
-    // assetTopologyRelation.setMiddlePoint(middlePoint);
-    // // 设置角度
-    // AssetTopologyViewAngle assetTopologyViewAngle = new AssetTopologyViewAngle();
-    // assetTopologyViewAngle.setCameraPos(cameraPos);
-    // assetTopologyViewAngle.setTargetPos(targetPos);
-    // assetTopologyRelation.setView_angle(assetTopologyViewAngle);
-    //
-    // AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
-    // Map<String, List<List<Object>>> jsonData = new HashMap<>();
-    //
-    // AssetQuery query = new AssetQuery();
-    // query.setAreaIds(
-    // DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-    // List<Integer> statusList = new ArrayList<>();
-    // statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
-    // statusList.add(AssetStatusEnum.NET_IN.getCode());
-    // query.setAssetStatusList(statusList);
-    // List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
-    // List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
-    //
-    // String computeDeviceId = "";
-    // String routeId = "";
-    // String switchId = "";
-    // Set<String> querySet = new HashSet();
-    // // 找到对应品类id
-    // for (AssetCategoryModel assetCategoryModel : categoryModelList) {
-    // if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-    // querySet.add(assetCategoryModel.getStringId());
-    // computeDeviceId = assetCategoryModel.getStringId();
-    // }
-    // if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Router.getMsg())) {
-    // querySet.add(assetCategoryModel.getStringId());
-    // routeId = assetCategoryModel.getStringId();
-    // }
-    // if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Switch.getMsg())) {
-    // querySet.add(assetCategoryModel.getStringId());
-    // switchId = assetCategoryModel.getStringId();
-    // }
-    //
-    // }
-    //
-    // Map<String, String> idCategory = new HashMap<>();
-    // Map<String, String> cache = new HashMap<>();
-    // for (AssetLink assetLink : assetLinks) {
-    // // id加密
-    // assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
-    // assetLink.setParentAssetId(
-    // aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
-    // }
-    //
-    // // 设置品类id与返回格式的映射
-    // for (AssetLink assetLink : assetLinks) {
-    //
-    // String categoryId = idCategory.get(assetLink.getAssetId());
-    // String cacheId = cache.get(assetLink.getCategoryModal().toString());
-    // if (categoryId == null) {
-    // if (cacheId == null) {
-    // String result = iAssetCategoryModelService.recursionSearchParentCategory(
-    // assetLink.getCategoryModal().toString(), categoryModelList, querySet);
-    // String resultCategory = "";
-    // if (result == null) {
-    // resultCategory = "sim_topo-network";
-    // }
-    // if (Objects.equals(result, routeId)) {
-    // resultCategory = "sim_topo-router";
-    // }
-    // if (Objects.equals(result, switchId)) {
-    // resultCategory = "sim_topo-switch";
-    // }
-    // if (Objects.equals(result, computeDeviceId)) {
-    // resultCategory = "sim_topo-host";
-    // }
-    // idCategory.put(assetLink.getAssetId(), resultCategory);
-    // cache.put(assetLink.getCategoryModal() + "", resultCategory);
-    // } else {
-    // idCategory.put(assetLink.getAssetId(), cacheId);
-    // }
-    // }
-    //
-    // cacheId = cache.get(assetLink.getParentCategoryModal().toString());
-    // String parentCategoryId = idCategory.get(assetLink.getParentAssetId());
-    // if (parentCategoryId == null) {
-    // if (cacheId == null) {
-    // String result = iAssetCategoryModelService.recursionSearchParentCategory(
-    // assetLink.getParentCategoryModal().toString(), categoryModelList, querySet);
-    // String resultCategory = "";
-    // if (result == null) {
-    // resultCategory = "sim_topo-network";
-    // }
-    // if (Objects.equals(result, routeId)) {
-    // resultCategory = "sim_topo-router";
-    // }
-    // if (Objects.equals(result, switchId)) {
-    // resultCategory = "sim_topo-switch";
-    // }
-    // if (Objects.equals(result, computeDeviceId)) {
-    // resultCategory = "sim_topo-host";
-    // }
-    // idCategory.put(assetLink.getParentAssetId(), resultCategory);
-    // cache.put(assetLink.getParentCategoryModal() + "", resultCategory);
-    // } else {
-    // idCategory.put(assetLink.getParentAssetId(), cacheId);
-    // }
-    // }
-    //
-    // }
-    // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-    // processLinkCount(assetLinks, secondCategoryMap);
-    // // 找到各个的层级节点
-    // Map<String, List<String>> firstMap = new HashMap<>();
-    // Map<String, List<String>> secondMap = new HashMap<>();
-    // Map<String, List<String>> secondThirdMap = new LinkedHashMap<>();
-    // String networkDeviceId = "";
-    // for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
-    // if (Objects.equals(entry.getValue(), AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-    // networkDeviceId = entry.getKey();
-    // }
-    // }
-    // for (AssetLink assetLink : assetLinks) {
-    // if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)
-    // && Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
-    // // 构造第一，二级层级节点关系
-    // flushMap(firstMap, assetLink);
-    // flushParentMap(firstMap, assetLink);
-    //
-    // } else {
-    // // 构造第二，三级层级节点关系
-    // if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
-    // flushMap(secondMap, assetLink);
-    // } else {
-    // flushParentMap(secondThirdMap, assetLink);
-    // }
-    // if (Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
-    // flushParentMap(secondMap, assetLink);
-    // } else {
-    // flushMap(secondThirdMap, assetLink);
-    // }
-    // }
-    // }
-    // // 去掉第一层中不符合要求的数据
-    // for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
-    // List<String> first = entry.getValue();
-    // List<String> result = firstMap.remove(entry.getKey());
-    // if (result != null) {
-    // first.addAll(result);
-    // secondMap.put(entry.getKey(), first);
-    // }
-    // }
-    //
-    // // 构造第一层坐标数据
-    // settingFirstLevelCoordinates(firstMap, jsonData, idCategory);
-    // Map<String, List<Double>> secondCoordinates = new HashMap<>();
-    // // 构造第二层坐标数据
-    // settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
-    // // 构造第三层坐标数据
-    // settingThirdLevelCoordinates(secondThirdMap, jsonData, idCategory, secondCoordinates);
-    // assetTopologyJsonData.setJson_data0(jsonData);
-    // assetTopologyRelation.setJson_data(assetTopologyJsonData);
-    // Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
-    // dataMap.put("relationship", assetTopologyRelation);
-    // dataList.add(dataMap);
-    // assetTopologyNodeResponse.setData(dataList);
-    // return assetTopologyNodeResponse;
-    // }
 
     @Override
     public AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception {
@@ -909,11 +474,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     @Override
     public AssetTopologyAlarmResponse getAlarmTopology() throws Exception {
-        return null;
-    }
-
-    @Override
-    public AssetTopologyAlarmResponse getAlarmTopologyFake() throws Exception {
         return null;
     }
 
@@ -1198,36 +758,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     // return assetTopologyAlarmResponse;
     // }
     // return null;
-    // }
-
-    // public AssetTopologyAlarmResponse getAlarmTopologyFake() throws Exception {
-    // HashMap map = new HashMap();
-    // AssetQuery query = new AssetQuery();
-    // map.put("name", "网络设备");
-    // AssetCategoryModel assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
-    // query.setAreaIds(
-    // DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-    // query.setAssetStatusList(getAssetUseableStatus());
-    // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
-    // iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
-    // List<Asset> netAssetList = assetTopologyDao.selectFakeAsset(query);
-    // map.put("name", "计算设备");
-    // query.setIds(new String[] { "62163", "62198", "5583", "62019", "62271", "62794" });
-    // assetCategoryModel = (AssetCategoryModel) assetCategoryModelDao.getByWhere(map).get(0);
-    // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(
-    // iAssetCategoryModelService.findAssetCategoryModelIdsById(assetCategoryModel.getId())));
-    // List<Asset> pcAssetList = assetTopologyDao.selectFakeAsset(query);
-    // List<Asset> assets = new ArrayList<>();
-    // assets.addAll(netAssetList);
-    // assets.addAll(pcAssetList);
-    // List<AssetResponse> assetResponseList = converter.convert(assets, AssetResponse.class);
-    // assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
-    // AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
-    // assetTopologyAlarmResponse.setStatus("success");
-    // assetTopologyAlarmResponse.setVersion("");
-    // List<Map> topologyAlarms = transferAssetToMap(assetResponseList);
-    // assetTopologyAlarmResponse.setData(topologyAlarms);
-    // return assetTopologyAlarmResponse;
     // }
 
     private List<Map> transferAssetToMap(List<AssetResponse> assetResponseList) {
