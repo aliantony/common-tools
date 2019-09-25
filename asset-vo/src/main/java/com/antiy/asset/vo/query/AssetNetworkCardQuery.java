@@ -42,11 +42,7 @@ public class AssetNetworkCardQuery extends ObjectQuery implements ObjectValidato
      */
     @ApiModelProperty("IP地址")
     private String  ipAddress;
-    /**
-     * MAC地址
-     */
-    @ApiModelProperty("MAC地址")
-    private String  macAddress;
+
     /**
      * 默认网关
      */
@@ -114,13 +110,7 @@ public class AssetNetworkCardQuery extends ObjectQuery implements ObjectValidato
         this.ipAddress = ipAddress;
     }
 
-    public String getMacAddress() {
-        return macAddress;
-    }
 
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-    }
 
     public String getDefaultGateway() {
         return defaultGateway;
