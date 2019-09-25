@@ -31,21 +31,13 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
      */
     @ApiModelProperty("是否无线:0-否,1-是")
     private Boolean isWireless;
-    /**
-     * 内网IP
-     */
-    @ApiModelProperty("内网IP")
-    private String  innerIp;
+
     /**
      * 外网IP
      */
     @ApiModelProperty("外网IP")
     private String  outerIp;
-    /**
-     * MAC地址
-     */
-    @ApiModelProperty("MAC地址")
-    private String  macAddress;
+
     /**
      * 子网掩码
      */
@@ -79,13 +71,7 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
         isWireless = wireless;
     }
 
-    public String getInnerIp() {
-        return innerIp;
-    }
 
-    public void setInnerIp(String innerIp) {
-        this.innerIp = innerIp;
-    }
 
     public String getOuterIp() {
         return outerIp;
@@ -95,13 +81,7 @@ public class AssetNetworkEquipmentQuery extends ObjectQuery implements ObjectVal
         this.outerIp = outerIp;
     }
 
-    public String getMacAddress() {
-        return macAddress;
-    }
 
-    public void setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-    }
 
     public String getSubnetMask() {
         return subnetMask;

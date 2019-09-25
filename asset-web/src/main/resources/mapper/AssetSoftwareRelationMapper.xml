@@ -742,7 +742,7 @@
     </select>
 
     <!--查询资产已关联的软件-->
-    <select id="queryInstalledList" parameterType="com.antiy.asset.vo.query.InstallQuery"
+    <select id="queryInstalledList" parameterType="com.antiy.common.base.QueryCondition"
             resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
         SELECT
           t1.id,
@@ -756,7 +756,7 @@
             LEFT JOIN asset_hard_soft_lib t2
             ON t1.software_id = t2.business_id and t2.status = 1
         WHERE
-            t1.asset_id = #{assetId}
+            t1.asset_id = #{primaryKey}
             and t1.status = 1
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
@@ -778,7 +778,7 @@
         where
         status = 1
         <choose>
-            <when test="nameListType == 2">
+            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
@@ -791,7 +791,7 @@
                 </foreach>
             </when>
             <otherwise>
-                <if test="!query.isBatch">
+                <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
@@ -811,20 +811,21 @@
         where
         status = 1
         <choose>
-            <when test="nameListType == 1">
+            <!--排除黑名单和已安装过的软件-->
+            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
             </when>
-            <when test="nameListType == 2">
+            <when test="nameListType == 3">
                 and business_id in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
             </when>
             <otherwise>
-                <if test="!query.isBatch">
+                <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
@@ -848,12 +849,12 @@
         create_user
         )
         values
-        <foreach collection="assetSoftwareRelationList" item="item" open="(" close=")" separator=",">
+        <foreach collection="list" item="item"  separator=",">
             (
-            #{assetId},
-            #{softwareId},
-            #{gmtCreate},
-            #{createUser}
+            #{item.assetId},
+            #{item.softwareId},
+            #{item.gmtCreate},
+            #{item.createUser}
             )
         </foreach>
     </insert>

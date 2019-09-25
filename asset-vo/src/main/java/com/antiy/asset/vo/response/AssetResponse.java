@@ -122,7 +122,18 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("责任人名称")
     private String                         responsibleUserName;
-
+    /**
+     * 配置模板id
+     */
+    @ApiModelProperty("配置模板id")
+    @Encode
+    private String                         baselineTemplateId;
+    /**
+     * 装机模板id
+     */
+    @Encode
+    @ApiModelProperty("装机模板id")
+    private String                         installTemplateId;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -176,11 +187,6 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("首次入网时间")
     private Long                           firstEnterNett;
     /**
-     * 首次入网时间
-     */
-    @ApiModelProperty("首次发现时间")
-    private Long                           firstDiscoverTime;
-    /**
      * 行政区划主键
      */
     @ApiModelProperty("行政区划主键")
@@ -226,6 +232,22 @@ public class AssetResponse extends BaseResponse {
         return ips;
     }
 
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public String getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
+    }
+
     public void setIps(String ips) {
         this.ips = ips;
     }
@@ -244,14 +266,6 @@ public class AssetResponse extends BaseResponse {
 
     public void setOperationSystemNotice(String operationSystemNotice) {
         this.operationSystemNotice = operationSystemNotice;
-    }
-
-    public Long getFirstDiscoverTime() {
-        return firstDiscoverTime;
-    }
-
-    public void setFirstDiscoverTime(Long firstDiscoverTime) {
-        this.firstDiscoverTime = firstDiscoverTime;
     }
 
     public String getInstallTypeName() {
@@ -556,10 +570,9 @@ public class AssetResponse extends BaseResponse {
                + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", describle='"
                + describle + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty
                + '\'' + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
-               + firstEnterNett + ", firstDiscoverTime=" + firstDiscoverTime + ", areaId='" + areaId + '\''
-               + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
-               + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
-               + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
-               + ", alarmCount='" + alarmCount + '\'' + '}';
+               + firstEnterNett + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", houseLocation='"
+               + houseLocation + '\'' + ", installType=" + installType + ", installTypeName='" + installTypeName + '\''
+               + ", waitingTaskReponse=" + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='"
+               + patchCount + '\'' + ", alarmCount='" + alarmCount + '\'' + '}';
     }
 }

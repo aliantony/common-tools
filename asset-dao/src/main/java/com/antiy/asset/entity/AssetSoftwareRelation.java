@@ -19,7 +19,7 @@ public class AssetSoftwareRelation extends BaseEntity {
     /**
      * 软件主键
      */
-    private String  softwareId;
+    private Long    softwareId;
 
     /**
      * 创建时间
@@ -54,11 +54,11 @@ public class AssetSoftwareRelation extends BaseEntity {
         this.assetId = assetId;
     }
 
-    public String getSoftwareId() {
+    public Long getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(String softwareId) {
+    public void setSoftwareId(Long softwareId) {
         this.softwareId = softwareId;
     }
 
