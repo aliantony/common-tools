@@ -239,13 +239,7 @@
             #{entity.cpuSize },
 
             #{entity.ios },
-
-
-
             #{entity.outerIp },
-
-
-
             #{entity.subnetMask },
 
             #{entity.expectBandwidth },
