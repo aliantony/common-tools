@@ -419,7 +419,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 查询资产当前状态
         List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetId);
-        if (org.springframework.util.CollectionUtils.isEmpty(currentAssetList)) {
+        if (CollectionUtils.isEmpty(currentAssetList)) {
             throw new BusinessException("资产不存在");
         }
         for(Asset currentAsset:currentAssetList){
@@ -487,7 +487,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         }
-        
+
         operationRecordDao.insert(operationRecord);
     }
 
