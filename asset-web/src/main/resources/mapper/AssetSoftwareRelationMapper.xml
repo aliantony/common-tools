@@ -778,7 +778,7 @@
         where
         status = 1
         <choose>
-            <when test="nameListType == 2">
+            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
@@ -791,7 +791,7 @@
                 </foreach>
             </when>
             <otherwise>
-                <if test="!query.isBatch">
+                <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
@@ -811,20 +811,21 @@
         where
         status = 1
         <choose>
-            <when test="nameListType == 1">
+            <!--排除黑名单和已安装过的软件-->
+            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
             </when>
-            <when test="nameListType == 2">
+            <when test="nameListType == 3">
                 and business_id in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
             </when>
             <otherwise>
-                <if test="!query.isBatch">
+                <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
