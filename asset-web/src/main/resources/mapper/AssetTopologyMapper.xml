@@ -28,56 +28,8 @@
         <result column="house_location" property="houseLocation"/>
         <result column="vul_count" property="vulCount"/>
         <result column="patch_count" property="patchCount"/>
-        <result column="department_name" property="departmentName"/>
-    </resultMap>
-
-    <resultMap id="fakeResultMap" type="com.antiy.asset.entity.Asset">
-        <id column="id" property="id"/>
-        <result column="asset_group" property="assetGroup"/>
-        <result column="number" property="number"/>
-        <result column="name" property="name"/>
-        <result column="category_model_name" property="categoryModelName"/>
-        <result column="ethernet_port" property="ethernetPort"/>
-        <result column="serial_port" property="serialPort"/>
-        <result column="install_type" property="installType"/>
-        <result column="serial" property="serial"/>
-        <result column="area_id" property="areaId"/>
-        <result column="category_model" property="categoryModel"/>
-        <result column="manufacturer" property="manufacturer"/>
-        <result column="asset_status" property="assetStatus"/>
-        <result column="admittance_status" property="admittanceStatus"/>
-        <result column="operation_system" property="operationSystem"/>
-        <result column="system_bit" property="systemBit"/>
-        <result column="responsible_user_id" property="responsibleUserId"/>
-        <result column="responsible_user_name" property="responsibleUserName"/>
-        <result column="location" property="location"/>
-        <result column="latitude" property="latitude"/>
-        <result column="longitude" property="longitude"/>
-        <result column="house_location" property="houseLocation"/>
-        <result column="firmware_version" property="firmwareVersion"/>
-        <result column="software_version" property="softwareVersion"/>
-        <result column="uuid" property="uuid"/>
-        <result column="contact_tel" property="contactTel"/>
-        <result column="email" property="email"/>
-        <result column="asset_source" property="assetSource"/>
-        <result column="importance_degree" property="importanceDegree"/>
-        <result column="describle" property="describle"/>
-        <result column="parent_id" property="parentId"/>
-        <result column="tags" property="tags"/>
-        <result column="first_enter_nett" property="firstEnterNett"/>
-        <result column="first_discover_time" property="firstDiscoverTime"/>
-        <result column="service_life" property="serviceLife"/>
-        <result column="buy_date" property="buyDate"/>
-        <result column="warranty" property="warranty"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="gmt_modified" property="gmtModified"/>
-        <result column="memo" property="memo"/>
-        <result column="create_user" property="createUser"/>
-        <result column="modify_user" property="modifyUser"/>
-        <result column="status" property="status"/>
-        <result column="ip" property="ip"/>
-        <result column="mac" property="mac"/>
         <result column="alarm_count" property="alarmCount"/>
+        <result column="department_name" property="departmentName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -154,14 +106,8 @@
             #{assetGroup} and b.status = 1)
         </if>
         <if test=" ip != null">
-            and (
-            exists (select 1 from asset_network_card b where asset.id = b.asset_id and ip_address like
-            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_network_equipment b where asset.id = b.asset_id and inner_ip like
-            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
-            or exists (select 1 from asset_safety_equipment b where asset.id = b.asset_id and ip like
-            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%') and b.status = 1)
-            )
+            and air.ip like binary
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
             and asset_status in
@@ -182,10 +128,10 @@
             and category_model = #{categoryModel}
         </if>
         <if test=" responsibleUserName != null and responsibleUserName != ''">
-            and responsible_user_name like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
+            and  asset_user.`name`  like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" ids != null and ids.length >0">
-            and id in
+            and asset.id in
             <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
@@ -366,277 +312,107 @@
         and status=1
     </select>
 
+
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select * from (select
-        a.id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        a.number,
-        a.name,
-        d.name as responsible_user_name,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.responsible_user_id,
-        a.first_enter_nett,
+        select
+        asset.id,
+        asset.area_id,
+        asset.asset_group,
+        asset.category_model,
+        asset.name,
+        asset_user.name as responsible_user_name,
+        asset.responsible_user_id,
         <if test="queryVulCount == true">
             IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
         </if>
         <if test="queryPatchCount == true">
             IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
         </if>
-        <if test="queryDepartmentName == true">
-            e.name as department_name,
+        <if test="queryAlarmCount == true">
+            IFNULL(
+            asset_alarm_rel_1.alarm_count,
+            0
+            ) AS alarm_count,
         </if>
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip
-        from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
-        <if test="queryDepartmentName == true">
-            left join asset_department e on d.department_id=e.id
-        </if>
+        GROUP_CONCAT(air.ip) AS ips
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <if test="queryVulCount == true">
-            left join (
-            select
+            LEFT JOIN (
+            SELECT
             avr.asset_id,
-            count(avr.vul_status != 5 or null) vul_count
-            from
-            asset_vul_rel avr inner join vul v on v.id = avr.vul_id where v. status = 1
-            group by
+            count(avr.vul_status != 5 OR NULL) vul_count
+            FROM
+            vuln_asset_rel avr
+            INNER JOIN vuln_info v ON v.id = avr.vul_id
+            WHERE
+            v. STATUS = 1
+            <if test=" ids != null and ids.length >0">
+                and asset_id in
+                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            GROUP BY
             asset_id
-            ) asset_vul_rel_1 on asset_vul_rel_1.asset_id = a.id
+            ) asset_vul_rel_1 ON asset_vul_rel_1.asset_id = asset.id
         </if>
         <if test="queryPatchCount == true">
-            left join (
-            select
+            LEFT JOIN (
+            SELECT
             apr.asset_id,
-            count(apr.patch_status != 5 or null) patch_count
-            from
-            asset_patch_rel apr inner join patch p on p.id = apr.patch_id where p.status = 1 and p.patch_status = 3
-            group by
+            count(apr.patch_status = 3 ) patch_count
+            FROM
+            patch_asset_rel apr
+            INNER JOIN patch_info p ON p.id = apr.patch_id
+            WHERE
+            p. STATUS = 1
+            <if test=" ids != null and ids.length >0">
+                and asset_id in
+                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            GROUP BY
             asset_id
-            ) asset_patch_rel_1 on asset_patch_rel_1.asset_id = a.id
+            ) asset_patch_rel_1 ON asset_patch_rel_1.asset_id = asset.id
         </if>
-        where a.status = 1
-        group by a.id
-        ) asset
+        <if test="queryAlarmCount == true">
+            LEFT JOIN (
+            SELECT
+            acr.asset_id,
+            count(*) alarm_count
+            FROM
+            alarm_current_records acr
+            GROUP BY
+            asset_id
+            ) asset_alarm_rel_1 ON asset_alarm_rel_1.asset_id = asset.id
+        </if>
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
+        group by asset.id
     </select>
 
     <select id="findTopologyListAssetCount" resultType="int"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(id) from (select
-        a.id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        asset_status,
-        d.name as responsible_user_name,
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select replace(rtrim(replace(concat(inner_ip,',',outer_ip),',',' ')),' ',',') from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip
-        from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1
-        left join asset_category_model c on a.category_model = c.id
-        left join asset_user d on a.responsible_user_id = d.id
-        where a.status = 1
-        group by a.id
-        ) asset
+        select count(*) from (
+        select
+        asset.id
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-    </select>
-
-    <select id="selectFakeAsset" resultMap="fakeResultMap" parameterType="com.antiy.asset.vo.query.AssetQuery">
-        <if test="ids != null and ids.length>0">
-            SELECT
-            distinct
-            asset.*, IFNULL(alarm.count, 0) AS alarm_count,
-            au. NAME AS responsible_user_name,
-            concat(
-            ifnull(
-            (
-            SELECT
-            GROUP_CONCAT(ip_address)
-            FROM
-            asset_network_card
-            WHERE
-            asset_id = asset.id
-            AND STATUS = 1
-            ),
-            ''
-            ),
-            ifnull(
-            asset_network_equipment.inner_ip,
-            ''
-            ),
-            ifnull(
-            asset_safety_equipment.ip,
-            ''
-            )
-            ) AS ip,
-            concat(
-            ifnull(
-            (
-            SELECT
-            GROUP_CONCAT(mac_address)
-            FROM
-            asset_network_card
-            WHERE
-            asset_id = asset.id
-            AND STATUS = 1
-            ),
-            ''
-            ),
-            ifnull(
-            asset_network_equipment.mac_address,
-            ''
-            ),
-            ifnull(
-            asset_safety_equipment.mac,
-            ''
-            )
-            ) AS mac
-            FROM
-            asset
-            LEFT JOIN asset_user au ON au.id = asset.responsible_user_id
-            LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
-            AND asset_network_card. STATUS = 1
-            LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-            LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
-            LEFT JOIN (
-            SELECT
-            asset_id AS id,
-            count(asset_id) AS count
-            FROM
-            alarm_current_records
-            GROUP BY
-            asset_id
-            ) alarm ON alarm.id = asset.id
-            where asset.id IN
-            <foreach collection="ids" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-            union
-        </if>
-        SELECT
-        distinct
-        asset.*, IFNULL(alarm.count, 0) AS alarm_count,
-        au. NAME AS responsible_user_name,
-        concat(
-        ifnull(
-        (
-        SELECT
-        GROUP_CONCAT(ip_address)
-        FROM
-        asset_network_card
-        WHERE
-        asset_id = asset.id
-        AND STATUS = 1
-        ),
-        ''
-        ),
-        ifnull(
-        asset_network_equipment.inner_ip,
-        ''
-        ),
-        ifnull(
-        asset_safety_equipment.ip,
-        ''
-        )
-        ) AS ip,
-        concat(
-        ifnull(
-        (
-        SELECT
-        GROUP_CONCAT(mac_address)
-        FROM
-        asset_network_card
-        WHERE
-        asset_id = asset.id
-        AND STATUS = 1
-        ),
-        ''
-        ),
-        ifnull(
-        asset_network_equipment.mac_address,
-        ''
-        ),
-        ifnull(
-        asset_safety_equipment.mac,
-        ''
-        )
-        ) AS mac
-        FROM
-        asset
-        LEFT JOIN asset_user au ON au.id = asset.responsible_user_id
-        LEFT JOIN asset_network_card asset_network_card ON asset.id = asset_network_card.asset_id
-        AND asset_network_card. STATUS = 1
-        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
-        LEFT JOIN (
-        SELECT
-        asset_id AS id,
-        count(asset_id) AS count
-        FROM
-        alarm_current_records
-        GROUP BY
-        asset_id
-        ) alarm ON alarm.id = asset.id
-        WHERE
-        1 = 1
-        and asset_status in (3,4,5,6,7,8)
-        <if test=" categoryModels != null and categoryModels.length > 0">
-            AND asset.category_model IN
-            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" areaIds != null and areaIds.length > 0">
-            and asset.area_id in
-            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset.asset_status in
-            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                #{assetStatus}
-            </foreach>
-        </if>
-
-        LIMIT 500
-
+        group by asset.id
+        ) a
     </select>
 
 </mapper>
