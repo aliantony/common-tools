@@ -46,6 +46,17 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("mac")
     private List<AssetMacRelationResponse> mac;
+
+    /**
+     * ips
+     */
+    @ApiModelProperty("ips用于列表展示")
+    private String                         ips;
+    /**
+     * mac
+     */
+    @ApiModelProperty("mac用于列表展示")
+    private String                         macs;
     /**
      * 序列号
      */
@@ -111,7 +122,18 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("责任人名称")
     private String                         responsibleUserName;
-
+    /**
+     * 配置模板id
+     */
+    @ApiModelProperty("配置模板id")
+    @Encode
+    private String                         baselineTemplateId;
+    /**
+     * 装机模板id
+     */
+    @Encode
+    @ApiModelProperty("装机模板id")
+    private String                         installTemplateId;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -133,6 +155,11 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("使用到期时间")
     private Long                           serviceLife;
+    /**
+     * 联系电话
+     */
+    @ApiModelProperty("联系电话")
+    private String                         contactTel;
     /**
      * 制造日期
      */
@@ -205,6 +232,38 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
+
+    public String getIps() {
+        return ips;
+    }
+
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public String getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
+    }
+
+    public void setIps(String ips) {
+        this.ips = ips;
+    }
+
+    public String getMacs() {
+        return macs;
+    }
+
+    public void setMacs(String macs) {
+        this.macs = macs;
+    }
 
     public String getOperationSystemNotice() {
         return operationSystemNotice;
@@ -502,6 +561,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setMac(List<AssetMacRelationResponse> mac) {
         this.mac = mac;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
     }
 
     @Override

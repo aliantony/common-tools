@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -30,36 +62,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -169,13 +171,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
 
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
-                        asset.setBaselineTemplateId(Integer.valueOf(requestAsset.getBaselineTemplateId()));
+                        asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                     }
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
-                        asset.setInstallTemplateId(Integer.valueOf(requestAsset.getInstallTemplateId()));
+                        asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
                     }
 
                     if (CollectionUtils.isNotEmpty(assetGroup)) {
@@ -393,9 +395,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public boolean CheckRepeatNumber(String number) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setNumber(number);
-        Integer countAsset = findCountAssetNumber(assetQuery);
+        Integer countAsset = findCountAssetNumber(number);
         return countAsset >= 1;
     }
 
@@ -405,13 +405,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetAssemblyResponse.class);
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public boolean checkRepeatName(String name) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAssetName(name);
-        Integer countAsset = findCountAssetNumber(assetQuery);
-        return countAsset >= 1;
-    }
+    // @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    // public boolean checkRepeatName(String name) throws Exception {
+    // AssetQuery assetQuery = new AssetQuery();
+    // assetQuery.setAssetName(name);
+    // Integer countAsset = findCountAssetNumber(assetQuery);
+    // return countAsset >= 1;
+    // }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String checkUser(String user) throws Exception {
@@ -507,7 +507,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
-        List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
         for (AssetResponse object : objects) {
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
@@ -525,15 +524,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (MapUtils.isNotEmpty(alarmCountMaps)) {
                 object.setAlarmCount(
                     alarmCountMaps.containsKey(object.getStringId()) ? alarmCountMaps.get(object.getStringId()) : "0");
-            }
-
-            // 设置操作系统名
-            if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
-                    if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                        object.setOperationSystemName((String) categoryModelResponse.getName());
-                    }
-                }
             }
         }
         return objects;
@@ -572,8 +562,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    public Integer findCountAssetNumber(AssetQuery query) throws Exception {
-        return assetDao.findCount(query);
+    public Integer findCountAssetNumber(String number) throws Exception {
+        return assetDao.findCountAssetNumber(number);
     }
 
     @Override
@@ -1021,8 +1011,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
         assetResponse.setAreaName(sysArea.getFullName());
         // 设置品类型号名
-        assetResponse
-            .setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
+        assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 获取资产组
         List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
             .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);
@@ -1334,13 +1323,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 1.先删除旧的关系表
         assetSoftwareRelationDao.deleteSoftRealtion(id);
         // 2.插入新的关系
-        List<Integer> softIds = softwareReportRequest.getSoftId();
+        List<Long> softIds = softwareReportRequest.getSoftId();
         if (CollectionUtils.isNotEmpty(softIds)) {
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
             softIds.stream().forEach(softId -> {
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(id);
-                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                assetSoftwareRelation.setSoftwareId(softId);
                 assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelationList.add(assetSoftwareRelation);
@@ -1783,12 +1772,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (!checkOperatingSystem(entity.getOperationSystem())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-                continue;
-            }
+            // if (!checkOperatingSystem(entity.getOperationSystem())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
+            // continue;
+            // }
 
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
@@ -1816,6 +1805,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
+                asset.setIsInnet(0);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
                 asset.setAssetSource(ReportType.MANUAL.getCode());
@@ -2025,6 +2015,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setWarranty(entity.getWarranty());
                 asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
                 asset.setDescrible(entity.getMemo());
+                asset.setIsInnet(0);
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 assets.add(asset);
                 AssetMacRelation assetMacRelation = new AssetMacRelation();
@@ -2184,12 +2175,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
-            if (!checkOperatingSystem(entity.getOperationSystem())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-                continue;
-            }
+            // if (!checkOperatingSystem(entity.getOperationSystem())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
+            // continue;
+            // }
 
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
@@ -2211,6 +2202,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setMac(entity.getMac());
+                assetMacRelations.add(assetMacRelation);
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setIp(entity.getIp());
+                assetIpRelations.add(assetIpRelation);
                 Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
                 asset.setOperationSystem(entity.getOperationSystem());
@@ -2230,6 +2227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
                 asset.setDescrible(entity.getMemo());
+                asset.setIsInnet(0);
                 asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
                 assets.add(asset);
                 assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -2394,6 +2392,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
+                asset.setIsInnet(0);
                 asset.setManufacturer(entity.getManufacturer());
                 asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
@@ -2571,6 +2570,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
+                asset.setIsInnet(0);
                 asset.setManufacturer(entity.getManufacturer());
                 asset.setSerial(entity.getSerial());
                 asset.setBuyDate(entity.getBuyDate());

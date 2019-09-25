@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,17 +16,30 @@ public class Asset extends BaseEntity {
     private static final long serialVersionUID = 1L;
     private Long              businessId;
     /**
-     * id
+     * 配置模板id
      */
-    private Integer           baselineTemplateId;
+    private String           baselineTemplateId;
     /**
-     * id
+     * 装机模板id
      */
-    private Integer           installTemplateId;
+    private String           installTemplateId;
     /**
      * 品类名称
      */
-    private String            categoryModelName;
+    private String            version;
+
+    /**
+     * 是否入网
+     */
+    private Integer           isInnet;
+    /**
+     * 是否入网
+     */
+    private String            latitude;
+    /**
+     * 是否入网
+     */
+    private String            longitude;
 
     /**
      * json数据
@@ -102,7 +116,6 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("使用者")
     private String            responsibleUserName;
 
-
     /**
      * 机房位置
      */
@@ -118,25 +131,18 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("软件版本")
     private String            softwareVersion;
-    /**
-     * 版本
-     */
-    @ApiModelProperty("版本")
-    private String            vsersion;
+
+
     /**
      * 设备uuid
      */
     private String            uuid;
+
+    private String            ips;
     /**
-     * 联系电话
+     * mac
      */
-    @ApiModelProperty("联系电话")
-    private String            contactTel;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty("邮箱")
-    private String            email;
+    private String            macs;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -218,6 +224,7 @@ public class Asset extends BaseEntity {
 
     private Long              installTemplateCorrelationGmt;
 
+
     public Long getBusinessId() {
         return businessId;
     }
@@ -226,28 +233,52 @@ public class Asset extends BaseEntity {
         this.businessId = businessId;
     }
 
-    public Integer getBaselineTemplateId() {
+    public String getBaselineTemplateId() {
         return baselineTemplateId;
     }
 
-    public void setBaselineTemplateId(Integer baselineTemplateId) {
+    public void setBaselineTemplateId(String baselineTemplateId) {
         this.baselineTemplateId = baselineTemplateId;
     }
 
-    public Integer getInstallTemplateId() {
+    public String getInstallTemplateId() {
         return installTemplateId;
     }
 
-    public void setInstallTemplateId(Integer installTemplateId) {
+    public void setInstallTemplateId(String installTemplateId) {
         this.installTemplateId = installTemplateId;
     }
 
-    public String getCategoryModelName() {
-        return categoryModelName;
+    public String getVersion() {
+        return version;
     }
 
-    public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Integer getIsInnet() {
+        return isInnet;
+    }
+
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public String getAssetGroup() {
@@ -378,8 +409,6 @@ public class Asset extends BaseEntity {
         this.responsibleUserName = responsibleUserName;
     }
 
-
-
     public String getHouseLocation() {
         return houseLocation;
     }
@@ -412,20 +441,20 @@ public class Asset extends BaseEntity {
         this.uuid = uuid;
     }
 
-    public String getContactTel() {
-        return contactTel;
+    public String getIps() {
+        return ips;
     }
 
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
+    public void setIps(String ips) {
+        this.ips = ips;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMacs() {
+        return macs;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMacs(String macs) {
+        this.macs = macs;
     }
 
     public Integer getAssetSource() {
@@ -594,66 +623,5 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
-    }
-
-    @Override
-    public String toString() {
-        return "Asset{" +
-                "businessId=" + businessId +
-                ", baselineTemplateId=" + baselineTemplateId +
-                ", installTemplateId=" + installTemplateId +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", serial='" + serial + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", softwareVersion='" + softwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", importanceDegreeName='" + importanceDegreeName + '\'' +
-                ", describle='" + describle + '\'' +
-                ", firstEnterNett=" + firstEnterNett +
-                ", firstDiscoverTime=" + firstDiscoverTime +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty='" + warranty + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                ", vulCount='" + vulCount + '\'' +
-                ", patchCount='" + patchCount + '\'' +
-                ", departmentName='" + departmentName + '\'' +
-                ", alarmCount='" + alarmCount + '\'' +
-                ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
-                ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
-                '}';
-    }
-
-    public String getVsersion() {
-        return vsersion;
-    }
-
-    public void setVsersion(String vsersion) {
-        this.vsersion = vsersion;
     }
 }

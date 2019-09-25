@@ -30,9 +30,6 @@
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
-        <result column="location" property="location"/>
-        <result column="latitude" property="latitude"/>
-        <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="uuid" property="uuid"/>
@@ -44,12 +41,13 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
-        <result column="version" property="version"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
+        <result column="ips" property="ips"/>
+        <result column="macs" property="macs"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -59,7 +57,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -107,9 +105,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
-        <if test=" location != null">
-            location,
-        </if>
+
         <if test=" latitude != null">
             latitude,
         </if>
@@ -227,9 +223,7 @@
         <if test=" responsibleUserId != null">
             #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            #{location },
-        </if>
+
         <if test=" latitude != null">
             #{latitude },
         </if>
@@ -307,52 +301,79 @@
         </if>
     </sql>
     <sql id="IF_Value_Column_List_ForBatch">
-            #{businessId },
-            #{assetGroup },
-            #{number },
-            #{name },
-            #{installType },
-            #{serial },
-            #{areaId },
-            #{categoryModel },
-            #{manufacturer },
-            #{assetStatus },
-            #{admittanceStatus },
-            #{operationSystem },
-            #{responsibleUserId },
-            #{location },
-            #{latitude },
-            #{longitude },
-            #{houseLocation },
-            #{firmwareVersion },
-            #{uuid },
-            #{assetSource },
-            #{importanceDegree },
-            #{describle },
-            #{firstEnterNett },
-            #{firstDiscoverTime },
-            #{isInnet },
-            #{serviceLife },
-            #{buyDate },
-            #{version },
-            #{warranty },
-            #{installTemplateId },
-            #{baselineTemplateId },
-            #{baselineTemplateCorrelationGmt },
-            #{installTemplateCorrelationGmt },
-            #{memo },
-            #{gmtCreate },
-            #{gmtModified },
-            #{createUser },
-
-
-            #{modifyUser },
-
-
-            #{status }
-
+            #{entity.number },
+            #{entity.name },
+            #{entity.installType },
+            #{entity.serial },
+            #{entity.areaId },
+            #{entity.categoryModel },
+            #{entity.manufacturer },
+            #{entity.assetStatus },
+            #{entity.admittanceStatus },
+            #{entity.operationSystem },
+            #{entity.responsibleUserId },
+            #{entity.houseLocation },
+            #{entity.firmwareVersion },
+            #{entity.uuid },
+            #{entity.assetSource },
+            #{entity.importanceDegree },
+            #{entity.describle },
+            #{entity.firstEnterNett },
+            #{entity.firstDiscoverTime },
+            #{entity.isInnet },
+            #{entity.serviceLife },
+            #{entity.buyDate },
+            #{entity.version },
+            #{entity.warranty },
+            #{entity.installTemplateId },
+            #{entity.baselineTemplateId },
+            #{entity.baselineTemplateCorrelationGmt },
+            #{entity.installTemplateCorrelationGmt },
+            #{entity.memo },
+            #{entity.gmtCreate },
+            #{entity.gmtModified },
+            #{entity.createUser },
+            #{entity.modifyUser },
+            #{entity.status }
     </sql>
 
+    <sql id="IF_Base_Column_List_ForBatch">
+
+            number,
+            name,
+            install_type,
+            serial,
+            area_id,
+            category_model,
+            manufacturer,
+            asset_status,
+            admittance_status,
+            operation_system,
+            responsible_user_id,
+            house_location,
+            firmware_version,
+            uuid,
+            asset_source,
+            importance_degree,
+            describle,
+            first_enter_nett,
+            first_discover_time,
+            is_innet,
+            service_life,
+            buy_date,
+            version,
+            warranty,
+            install_template_id,
+            baseline_template_id,
+            baseline_template_correlation_gmt,
+            install_template_correlation_gmt,
+            memo,
+            gmt_create,
+            gmt_modified,
+            create_user,
+            modify_user,
+            status
+    </sql>
     <sql id="Set_Column_List">
         <if test=" businessId != null">
             business_id = #{businessId },
@@ -393,9 +414,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id = #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            location = #{location },
-        </if>
+
         <if test=" latitude != null">
             latitude = #{latitude },
         </if>
@@ -513,9 +532,7 @@
         <if test=" responsibleUserId != null">
             and responsible_user_id = #{responsibleUserId }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
         <if test=" latitude != null">
             and latitude = #{latitude }
         </if>
@@ -594,47 +611,6 @@
     </sql>
 
 
-    <sql id="IF_Base_Column_List_Batch">
-            business_id,
-            asset_group,
-            number,
-            name,
-            install_type,
-            serial,
-            area_id,
-            category_model,
-            manufacturer,
-            asset_status,
-            admittance_status,
-            operation_system,
-            responsible_user_id,
-            location,
-            latitude,
-            longitude,
-            house_location,
-            firmware_version,
-            uuid,
-            asset_source,
-            importance_degree,
-            describle,
-            first_enter_nett,
-            first_discover_time,
-            is_innet,
-            service_life,
-            buy_date,
-            version,
-            warranty,
-            install_template_id,
-            baseline_template_id,
-            baseline_template_correlation_gmt,
-            install_template_correlation_gmt,
-            memo,
-            gmt_create,
-            gmt_modified,
-            create_user,
-            modify_user,
-            status
-    </sql>
 
 
 
@@ -664,9 +640,7 @@
         <if test=" systemBit != null">
             and system_bit = #{systemBit }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
 
         <if test=" firmwareVersion != null">
             and firmware_version = #{firmwareVersion }
@@ -877,7 +851,7 @@
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="IF_Base_Column_List_Batch"></include>
+            <include refid="IF_Base_Column_List_ForBatch"></include>
         </trim>
         values
 
@@ -941,20 +915,16 @@
         count(1) count from
         (
         select DISTINCT asset.id
-        from
-        asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id
+        left join asset_mac_relation amr on asset.id = amr.asset_id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        group by asset.id) t
+        ) t
     </select>
 
 
@@ -1096,30 +1066,28 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.system_bit,
-        asset.location,
+
         asset.house_location,
         asset.latitude,
         asset.longitude,
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
-        asset.contact_tel,
-        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
-        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,
         asset.warranty,
+        asset.install_template_id,
+        asset.baseline_template_id,
         asset.gmt_create,
-        GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.ip) AS mac
+        GROUP_CONCAT(air.ip) AS ips,
+        GROUP_CONCAT(amr.mac) AS macs
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id
-        left join asset_mac_relation amr on asset.id = amr.asset_id
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <where>
             <trim prefixOverrides="and">
@@ -1423,7 +1391,7 @@
         area_id = #{areaId },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
-        location = #{location },
+
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
@@ -1481,7 +1449,7 @@
  	SELECT
 		count(1) count
 	FROM
-		asset_ip_mac m LEFT JOIN asset a ON m.asset_id=a.id
+		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
 	WHERE
 	 a.`status` !=1	AND mac = #{mac}
     </select>
@@ -1578,7 +1546,8 @@
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
         SELECT
         asset.*, lib.product_name AS operation_system_name,
-        `user`.`name` AS responsible_user_name
+        `user`.`name` AS responsible_user_name,
+        `user`.`mobile` As contact_tel
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
@@ -1620,5 +1589,15 @@ WHERE
         </foreach>
         GROUP BY category_model
     </select>
+    <select id="findCountAssetNumber" resultType="int">
+SELECT
+	count(1) count
+FROM
+	asset a
+WHERE
+	number = #{number}
+AND a.`status` = 1
+    </select>
+
 
 </mapper>

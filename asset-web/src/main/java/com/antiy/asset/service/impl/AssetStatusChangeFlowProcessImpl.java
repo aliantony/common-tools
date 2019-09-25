@@ -84,7 +84,7 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
     }
 
 
-    public ActionResponse startActivity(AssetStatusJumpRequest assetStatusRequest) throws Exception {
+    private ActionResponse startActivity(AssetStatusJumpRequest assetStatusRequest) throws Exception {
         // 1.封装数据
         List<ManualStartActivityRequest> manualStartActivityRequestList = new ArrayList<>(assetStatusRequest.getAssetIdList().size());
 
@@ -233,10 +233,10 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
                     currentBusinessPhase = BusinessPhaseEnum.RETIRE;
                     break;
                 case NET_IN:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    currentBusinessPhase = BusinessPhaseEnum.WAIT_NET;
                     break;
                 case CHECK:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
+                    currentBusinessPhase = BusinessPhaseEnum.WAIT_CHECK;
                     break;
                 case CORRECT:
                     currentBusinessPhase = BusinessPhaseEnum.RETIRE;

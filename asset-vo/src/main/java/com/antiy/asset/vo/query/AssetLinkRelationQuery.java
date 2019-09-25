@@ -1,11 +1,13 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 import javax.validation.constraints.Size;
-import java.util.List;
+
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetLinkRelation 查询条件 </p>
@@ -42,18 +44,8 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    @Encode
-    private List<String>  categoryModels;
-    /**
-     * 计算设备资产品类型号列表
-     */
-    @ApiModelProperty("计算设备资产品类型号列表，不传")
-    private List<Integer> pcCategoryModels;
-    /**
-     * 网络设备资产品类型号列表
-     */
-    @ApiModelProperty("网络设备资产品类型号列表，不传")
-    private List<Integer> netCategoryModels;
+    private Integer       categoryModel;
+
     /**
      * 资产综合查询
      */
@@ -71,9 +63,9 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产区域")
     @Encode
-    private List<String> areaIds;
+    private List<String>  areaIds;
     /**
-     * 关联资产综合查询
+     * 资产状态列表
      */
     @ApiModelProperty("资产状态列表")
     private List<String>  statusList;
@@ -90,12 +82,12 @@ public class AssetLinkRelationQuery extends ObjectQuery {
         this.portCount = portCount;
     }
 
-    public List<String> getCategoryModels() {
-        return categoryModels;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setCategoryModels(List<String> categoryModels) {
-        this.categoryModels = categoryModels;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public String getAssetName() {
@@ -112,22 +104,6 @@ public class AssetLinkRelationQuery extends ObjectQuery {
 
     public void setAssetNumber(String assetNumber) {
         this.assetNumber = assetNumber;
-    }
-
-    public List<Integer> getPcCategoryModels() {
-        return pcCategoryModels;
-    }
-
-    public void setPcCategoryModels(List<Integer> pcCategoryModels) {
-        this.pcCategoryModels = pcCategoryModels;
-    }
-
-    public List<Integer> getNetCategoryModels() {
-        return netCategoryModels;
-    }
-
-    public void setNetCategoryModels(List<Integer> netCategoryModels) {
-        this.netCategoryModels = netCategoryModels;
     }
 
     public String getMultipleQuery() {

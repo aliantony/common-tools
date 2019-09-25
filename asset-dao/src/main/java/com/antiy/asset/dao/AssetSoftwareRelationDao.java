@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.common.base.QueryCondition;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -94,7 +95,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param assetSoftwareRelationList
      * @return
      */
-    Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+    Integer insertBatch(@Param("list") List<AssetSoftwareRelation> assetSoftwareRelationList);
 
     /**
      * 批量修改软件状态
@@ -152,7 +153,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param query
      * @return
      */
-    List<AssetSoftwareInstallResponse> queryInstalledList(InstallQuery query);
+    List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query);
 
     /**
      * 查询基准模板名单类型
