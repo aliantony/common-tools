@@ -487,6 +487,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
             operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         }
+        
         operationRecordDao.insert(operationRecord);
     }
 
