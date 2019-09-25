@@ -1408,13 +1408,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 1.先删除旧的关系表
         assetSoftwareRelationDao.deleteSoftRealtion(id);
         // 2.插入新的关系
-        List<Integer> softIds = softwareReportRequest.getSoftId();
+        List<Long> softIds = softwareReportRequest.getSoftId();
         if (CollectionUtils.isNotEmpty(softIds)) {
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
             softIds.stream().forEach(softId -> {
                 AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                 assetSoftwareRelation.setAssetId(id);
-                assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                assetSoftwareRelation.setSoftwareId(softId);
                 assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                 assetSoftwareRelationList.add(assetSoftwareRelation);
