@@ -16,13 +16,13 @@ public class Asset extends BaseEntity {
     private static final long serialVersionUID = 1L;
     private Long              businessId;
     /**
-     * id
+     * 配置模板id
      */
-    private Integer           baselineTemplateId;
+    private String           baselineTemplateId;
     /**
-     * id
+     * 装机模板id
      */
-    private Integer           installTemplateId;
+    private String           installTemplateId;
     /**
      * 品类名称
      */
@@ -287,19 +287,19 @@ public class Asset extends BaseEntity {
         this.businessId = businessId;
     }
 
-    public Integer getBaselineTemplateId() {
+    public String getBaselineTemplateId() {
         return baselineTemplateId;
     }
 
-    public void setBaselineTemplateId(Integer baselineTemplateId) {
+    public void setBaselineTemplateId(String baselineTemplateId) {
         this.baselineTemplateId = baselineTemplateId;
     }
 
-    public Integer getInstallTemplateId() {
+    public String getInstallTemplateId() {
         return installTemplateId;
     }
 
-    public void setInstallTemplateId(Integer installTemplateId) {
+    public void setInstallTemplateId(String installTemplateId) {
         this.installTemplateId = installTemplateId;
     }
 

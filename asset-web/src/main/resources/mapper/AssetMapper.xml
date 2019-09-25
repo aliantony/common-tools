@@ -1108,6 +1108,8 @@
         asset.service_life,
         asset.buy_date,
         asset.warranty,
+        asset.install_template_id,
+        asset.baseline_template_id,
         asset.gmt_create,
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs

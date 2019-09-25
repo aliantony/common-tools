@@ -122,7 +122,18 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("责任人名称")
     private String                         responsibleUserName;
-
+    /**
+     * 配置模板id
+     */
+    @ApiModelProperty("配置模板id")
+    @Encode
+    private String                         baselineTemplateId;
+    /**
+     * 装机模板id
+     */
+    @Encode
+    @ApiModelProperty("装机模板id")
+    private String                         installTemplateId;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -219,6 +230,22 @@ public class AssetResponse extends BaseResponse {
 
     public String getIps() {
         return ips;
+    }
+
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public String getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
     }
 
     public void setIps(String ips) {

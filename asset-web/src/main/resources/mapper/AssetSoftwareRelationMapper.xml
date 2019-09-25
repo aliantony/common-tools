@@ -742,7 +742,7 @@
     </select>
 
     <!--查询资产已关联的软件-->
-    <select id="queryInstalledList" parameterType="com.antiy.asset.vo.query.InstallQuery"
+    <select id="queryInstalledList" parameterType="com.antiy.common.base.QueryCondition"
             resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
         SELECT
           t1.id,
@@ -756,7 +756,7 @@
             LEFT JOIN asset_hard_soft_lib t2
             ON t1.software_id = t2.business_id and t2.status = 1
         WHERE
-            t1.asset_id = #{assetId}
+            t1.asset_id = #{primaryKey}
             and t1.status = 1
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">

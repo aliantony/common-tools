@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.QueryCondition;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -109,7 +110,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public List<AssetSoftwareInstallResponse> queryInstalledList(InstallQuery query) throws Exception {
+    public List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query) throws Exception {
         // 查询资产已关联的软件列表
         return assetSoftwareRelationDao.queryInstalledList(query);
     }

@@ -956,12 +956,6 @@
                 #{item}
             </foreach>
         </if>
-        <if test="pcCategoryModels != null and pcCategoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="pcCategoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
@@ -969,11 +963,8 @@
             </foreach>
         </if>
 
-        <if test="categoryModels != null and categoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
+        <if test="categoryModel != null">
+            and a.category_model = #{categoryModel}
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
