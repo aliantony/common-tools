@@ -2837,7 +2837,7 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
             AssetStatusEnum assetStatusEnum = AssetStatusEnum.getAssetByCode(asset.getAssetStatus());
             assetEntity.setAssetStatus(assetStatusEnum == null ? "" : assetStatusEnum.getMsg());
         }
-        assetEntity.setCategoryModelName(asset.getCategoryModelName());
+        // assetEntity.setCategoryModelName(asset.getCategoryModelName());
         assetEntity.setGmtCreate(longToDateString(asset.getGmtCreate()));
         assetEntity.setServiceLife(longToDateString(asset.getServiceLife()));
         AssetImportanceDegreeEnum degreeEnum = AssetImportanceDegreeEnum.getByCode(asset.getImportanceDegree());
