@@ -258,17 +258,17 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     public TopologyCategoryCountResponse countTopologyCategory() throws Exception {
         // 查询第二级分类id
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
-        // List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-        // List<EnumCountResponse> enumCountResponses = iAssetService.countCategoryByStatus(getAssetUseableStatus());
-        // for (EnumCountResponse enumCountResponse : enumCountResponses) {
-        // TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new
-        // CategoryResponse();
-        // categoryResponse.setNum(Integer.valueOf(enumCountResponse.getNumber() + ""));
-        // categoryResponse.setAsset_name(enumCountResponse.getMsg());
-        // categoryResponseList.add(categoryResponse);
-        // }
-        // topologyCategoryCountResponse.setData(categoryResponseList);
-        // topologyCategoryCountResponse.setStatus("success");
+        List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
+        List<Map<String, Object>> result = assetDao
+            .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+        for (Map<String, Object> map : result) {
+            TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
+            categoryResponse.setNum(Integer.valueOf(map.get("value") + ""));
+            categoryResponse.setAsset_name(AssetCategoryEnum.getNameByCode(Integer.valueOf(map.get("key").toString())));
+            categoryResponseList.add(categoryResponse);
+        }
+        topologyCategoryCountResponse.setData(categoryResponseList);
+        topologyCategoryCountResponse.setStatus("success");
         return topologyCategoryCountResponse;
 
     }
@@ -662,7 +662,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetQuery query = new AssetQuery();
         initQuery(query);
         query.setQueryVulCount(false);
-        query.setQueryAlarmCount(false);
+        query.setQueryAlarmCount(true);
         query.setQueryPatchCount(false);
         List<String> assetIdList = getLinkRelationIdList();
         if (CollectionUtils.isEmpty(assetIdList)) {
@@ -695,7 +695,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<Map> topologyAlarms = new ArrayList<>();
         for (AssetResponse assetResponse : assetResponseList) {
             Map<String, Object> map = new HashMap();
-            map.put("ip", assetResponse.getIp());
+            map.put("ip", assetResponse.getIps());
             map.put("os", assetResponse.getOperationSystemName());
             map.put("person_name", assetResponse.getResponsibleUserName());
             map.put("alert", assetResponse.getAlarmCount());
