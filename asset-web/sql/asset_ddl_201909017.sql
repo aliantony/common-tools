@@ -506,7 +506,7 @@ DROP TABLE IF EXISTS `asset_assembly_lib`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_assembly_lib` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
+  `business_id` bigint(20) NOT NULL COMMENT '业务主键',
   `type` varchar(16) DEFAULT NULL COMMENT '组件类型',
   `supplier` varchar(64) NOT NULL COMMENT '供应商',
   `product_name` varchar(500) NOT NULL COMMENT '产品名',
@@ -562,7 +562,7 @@ DROP TABLE IF EXISTS `asset_cpe_filter`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_cpe_filter` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) DEFAULT NULL COMMENT '业务主键',
+  `business_id` bigint(20) DEFAULT NULL COMMENT '业务主键',
   `product_name` varchar(255) DEFAULT NULL COMMENT '产品名称',
   `serial_name` varchar(255) DEFAULT NULL COMMENT '系列名称',
   `type` varchar(10) DEFAULT NULL COMMENT '类型',
@@ -648,7 +648,7 @@ DROP TABLE IF EXISTS `asset_protocol`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_protocol` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
+  `business_id` bigint(20) NOT NULL COMMENT '业务主键',
   `name` varchar(128) NOT NULL COMMENT '协议',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `is_storage` tinyint(3) DEFAULT '2' COMMENT '是否入库：1-已入库，2-未入库',
@@ -676,9 +676,9 @@ DROP TABLE IF EXISTS `asset_service_depend`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_service_depend` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `service_id` bigint(11) NOT NULL COMMENT '服务id',
+  `service_id` bigint(20) NOT NULL COMMENT '服务id',
   `service_name` varchar(64) DEFAULT NULL COMMENT '服务名',
-  `depend_service` bigint(11) NOT NULL COMMENT '依赖服务id',
+  `depend_service` bigint(20) NOT NULL COMMENT '依赖服务id',
   `depend_service_name` varchar(64) DEFAULT NULL COMMENT '依赖服务名',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
@@ -701,7 +701,7 @@ DROP TABLE IF EXISTS `asset_service_port_relation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_service_port_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `service_id` bigint(11) NOT NULL COMMENT '服务id',
+  `service_id` bigint(20) NOT NULL COMMENT '服务id',
   `port` int(11) NOT NULL COMMENT '端口',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
@@ -723,8 +723,8 @@ DROP TABLE IF EXISTS `asset_service_protocol_relation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_service_protocol_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `service_id` bigint(11) NOT NULL COMMENT '服务id',
-  `protocol_id` bigint(11) NOT NULL COMMENT '协议id',
+  `service_id` bigint(20) NOT NULL COMMENT '服务id',
+  `protocol_id` bigint(20) NOT NULL COMMENT '协议id',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
   `gmt_create` bigint(20) DEFAULT NULL COMMENT '创建时间',
@@ -746,7 +746,7 @@ DROP TABLE IF EXISTS `asset_soft_port_relation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_soft_port_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `soft_id` bigint(11) NOT NULL COMMENT '软件id',
+  `soft_id` bigint(20) NOT NULL COMMENT '软件id',
   `port` int(11) NOT NULL COMMENT '端口',
   `memo` varchar(1024) DEFAULT NULL COMMENT '备注',
   `gmt_modified` bigint(20) DEFAULT NULL COMMENT '修改时间',
@@ -838,7 +838,7 @@ DROP TABLE IF EXISTS `asset_sys_service_lib`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset_sys_service_lib` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(11) NOT NULL COMMENT '业务主键',
+  `business_id` bigint(20) NOT NULL COMMENT '业务主键',
   `service` varchar(128) NOT NULL COMMENT '服务名',
   `display_name` varchar(128) DEFAULT NULL COMMENT '显示名',
   `service_classes` int(11) DEFAULT NULL COMMENT '服务类型',
