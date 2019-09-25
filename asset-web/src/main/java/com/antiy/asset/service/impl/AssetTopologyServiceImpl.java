@@ -410,8 +410,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     public AssetTopologyIpSearchResposne queryListByIp(AssetQuery query) throws Exception {
         initQuery(query);
         query.setQueryDepartmentName(true);
-        query.setQueryVulCount(false);
-        query.setQueryPatchCount(false);
         List<String> assetIdList = getLinkRelationIdList();
         AssetTopologyIpSearchResposne assetTopologyIpSearchResposne = new AssetTopologyIpSearchResposne();
         assetTopologyIpSearchResposne.setStatus("success");
@@ -432,7 +430,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             AssetTopologyIpSearchResposne.IpSearch ipSearch = new AssetTopologyIpSearchResposne().new IpSearch();
             ipSearch.setAsset_id(aesEncoder.encode(asset.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             ipSearch.setDepartment_name(asset.getDepartmentName());
-            // ipSearch.setIp(asset.getIp());
+            ipSearch.setIp(asset.getIps());
             ipSearch.setPerson_name(asset.getResponsibleUserName());
             ipSearchList.add(ipSearch);
         }
