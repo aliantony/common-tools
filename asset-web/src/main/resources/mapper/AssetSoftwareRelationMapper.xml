@@ -849,12 +849,12 @@
         create_user
         )
         values
-        <foreach collection="assetSoftwareRelationList" item="item" open="(" close=")" separator=",">
+        <foreach collection="list" item="item"  separator=",">
             (
-            #{assetId},
-            #{softwareId},
-            #{gmtCreate},
-            #{createUser}
+            #{item.assetId},
+            #{item.softwareId},
+            #{item.gmtCreate},
+            #{item.createUser}
             )
         </foreach>
     </insert>

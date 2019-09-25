@@ -152,7 +152,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest) {
         List<String> assetIds = softwareReportRequest.getAssetId();
-        List<Integer> softIds = softwareReportRequest.getSoftId();
+        List<Long> softIds = softwareReportRequest.getSoftId();
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
         if (CollectionUtils.isNotEmpty(softIds)) {
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
@@ -163,7 +163,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 softIds.stream().forEach(softId -> {
                     AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                     assetSoftwareRelation.setAssetId(assetId);
-                    assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                    assetSoftwareRelation.setSoftwareId(softId);
                     assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                     assetSoftwareRelationList.add(assetSoftwareRelation);

@@ -95,7 +95,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param assetSoftwareRelationList
      * @return
      */
-    Integer insertBatch(List<AssetSoftwareRelation> assetSoftwareRelationList);
+    Integer insertBatch(@Param("list") List<AssetSoftwareRelation> assetSoftwareRelationList);
 
     /**
      * 批量修改软件状态

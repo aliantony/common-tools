@@ -21,9 +21,10 @@ public class AssetSoftwareReportRequest extends BasicRequest implements ObjectVa
 
     @ApiModelProperty("资产id")
     @Encode
-    private List<String>  assetId;
+    private List<String> assetId;
+
     @ApiModelProperty("软件id")
-    private List<Integer> softId;
+    private List<Long>   softId;
 
     public List<String> getAssetId() {
         return assetId;
@@ -33,11 +34,11 @@ public class AssetSoftwareReportRequest extends BasicRequest implements ObjectVa
         this.assetId = assetId;
     }
 
-    public List<Integer> getSoftId() {
+    public List<Long> getSoftId() {
         return softId;
     }
 
-    public void setSoftId(List<Integer> softId) {
+    public void setSoftId(List<Long> softId) {
         this.softId = softId;
     }
 
