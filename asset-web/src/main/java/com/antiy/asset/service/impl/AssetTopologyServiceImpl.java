@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import org.apache.commons.collections.CollectionUtils;
@@ -223,7 +224,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_id(
                     aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
-                topologyNode.setAsset_type(assetResponse.getCategoryModelName());
+                topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
                 topologyNode.setAsset_unrepair(assetResponse.getVulCount());
                 topologyNode.setAsset_untreated_warning(assetResponse.getAlarmCount());
