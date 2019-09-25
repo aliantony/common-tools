@@ -18,11 +18,11 @@ public class Asset extends BaseEntity {
     /**
      * 配置模板id
      */
-    private String           baselineTemplateId;
+    private String            baselineTemplateId;
     /**
      * 装机模板id
      */
-    private String           installTemplateId;
+    private String            installTemplateId;
     /**
      * 品类名称
      */
@@ -82,6 +82,10 @@ public class Asset extends BaseEntity {
      */
     private Integer           categoryModel;
     /**
+     * 品类名称
+     */
+    private String            categoryModelName;
+    /**
      * 厂商
      */
     private String            manufacturer;
@@ -131,7 +135,6 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("软件版本")
     private String            softwareVersion;
-
 
     /**
      * 设备uuid
@@ -220,10 +223,17 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("告警数量")
     private String            alarmCount;
 
-    private Long              baselineTemplateCorrelationGmt;
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
 
-    private Long              installTemplateCorrelationGmt;
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
+    }
 
+    private Long baselineTemplateCorrelationGmt;
+
+    private Long installTemplateCorrelationGmt;
 
     public Long getBusinessId() {
         return businessId;
