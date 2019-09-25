@@ -157,7 +157,7 @@
         net
         )
         values
-        <foreach collection="assetIpRelationList" separator="," open="(" close=")" item="item">
+        <foreach collection="assetIpRelationList" separator="," item="item">
             (
             #{item.assetId},
             #{item.ip},

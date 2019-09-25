@@ -1,13 +1,7 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.antiy.asset.entity.AssetAssembly;
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
@@ -288,4 +282,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
 
     List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
+
+    Integer findCountAssetNumber(@Param("number") String number);
 }

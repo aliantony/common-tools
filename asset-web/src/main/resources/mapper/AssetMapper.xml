@@ -44,7 +44,6 @@
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
-        <result column="contact_tel" property="contactTel"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
@@ -58,7 +57,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -106,9 +105,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
-        <if test=" location != null">
-            location,
-        </if>
+
         <if test=" latitude != null">
             latitude,
         </if>
@@ -226,9 +223,7 @@
         <if test=" responsibleUserId != null">
             #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            #{location },
-        </if>
+
         <if test=" latitude != null">
             #{latitude },
         </if>
@@ -306,52 +301,79 @@
         </if>
     </sql>
     <sql id="IF_Value_Column_List_ForBatch">
-            #{businessId },
-            #{assetGroup },
-            #{number },
-            #{name },
-            #{installType },
-            #{serial },
-            #{areaId },
-            #{categoryModel },
-            #{manufacturer },
-            #{assetStatus },
-            #{admittanceStatus },
-            #{operationSystem },
-            #{responsibleUserId },
-            #{location },
-            #{latitude },
-            #{longitude },
-            #{houseLocation },
-            #{firmwareVersion },
-            #{uuid },
-            #{assetSource },
-            #{importanceDegree },
-            #{describle },
-            #{firstEnterNett },
-            #{firstDiscoverTime },
-            #{isInnet },
-            #{serviceLife },
-            #{buyDate },
-            #{version },
-            #{warranty },
-            #{installTemplateId },
-            #{baselineTemplateId },
-            #{baselineTemplateCorrelationGmt },
-            #{installTemplateCorrelationGmt },
-            #{memo },
-            #{gmtCreate },
-            #{gmtModified },
-            #{createUser },
-
-
-            #{modifyUser },
-
-
-            #{status }
-
+            #{entity.number },
+            #{entity.name },
+            #{entity.installType },
+            #{entity.serial },
+            #{entity.areaId },
+            #{entity.categoryModel },
+            #{entity.manufacturer },
+            #{entity.assetStatus },
+            #{entity.admittanceStatus },
+            #{entity.operationSystem },
+            #{entity.responsibleUserId },
+            #{entity.houseLocation },
+            #{entity.firmwareVersion },
+            #{entity.uuid },
+            #{entity.assetSource },
+            #{entity.importanceDegree },
+            #{entity.describle },
+            #{entity.firstEnterNett },
+            #{entity.firstDiscoverTime },
+            #{entity.isInnet },
+            #{entity.serviceLife },
+            #{entity.buyDate },
+            #{entity.version },
+            #{entity.warranty },
+            #{entity.installTemplateId },
+            #{entity.baselineTemplateId },
+            #{entity.baselineTemplateCorrelationGmt },
+            #{entity.installTemplateCorrelationGmt },
+            #{entity.memo },
+            #{entity.gmtCreate },
+            #{entity.gmtModified },
+            #{entity.createUser },
+            #{entity.modifyUser },
+            #{entity.status }
     </sql>
 
+    <sql id="IF_Base_Column_List_ForBatch">
+
+            number,
+            name,
+            install_type,
+            serial,
+            area_id,
+            category_model,
+            manufacturer,
+            asset_status,
+            admittance_status,
+            operation_system,
+            responsible_user_id,
+            house_location,
+            firmware_version,
+            uuid,
+            asset_source,
+            importance_degree,
+            describle,
+            first_enter_nett,
+            first_discover_time,
+            is_innet,
+            service_life,
+            buy_date,
+            version,
+            warranty,
+            install_template_id,
+            baseline_template_id,
+            baseline_template_correlation_gmt,
+            install_template_correlation_gmt,
+            memo,
+            gmt_create,
+            gmt_modified,
+            create_user,
+            modify_user,
+            status
+    </sql>
     <sql id="Set_Column_List">
         <if test=" businessId != null">
             business_id = #{businessId },
@@ -392,9 +414,7 @@
         <if test=" responsibleUserId != null">
             responsible_user_id = #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            location = #{location },
-        </if>
+
         <if test=" latitude != null">
             latitude = #{latitude },
         </if>
@@ -512,9 +532,7 @@
         <if test=" responsibleUserId != null">
             and responsible_user_id = #{responsibleUserId }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
         <if test=" latitude != null">
             and latitude = #{latitude }
         </if>
@@ -593,47 +611,6 @@
     </sql>
 
 
-    <sql id="IF_Base_Column_List_Batch">
-            business_id,
-            asset_group,
-            number,
-            name,
-            install_type,
-            serial,
-            area_id,
-            category_model,
-            manufacturer,
-            asset_status,
-            admittance_status,
-            operation_system,
-            responsible_user_id,
-            location,
-            latitude,
-            longitude,
-            house_location,
-            firmware_version,
-            uuid,
-            asset_source,
-            importance_degree,
-            describle,
-            first_enter_nett,
-            first_discover_time,
-            is_innet,
-            service_life,
-            buy_date,
-            version,
-            warranty,
-            install_template_id,
-            baseline_template_id,
-            baseline_template_correlation_gmt,
-            install_template_correlation_gmt,
-            memo,
-            gmt_create,
-            gmt_modified,
-            create_user,
-            modify_user,
-            status
-    </sql>
 
 
 
@@ -663,9 +640,7 @@
         <if test=" systemBit != null">
             and system_bit = #{systemBit }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
 
         <if test=" firmwareVersion != null">
             and firmware_version = #{firmwareVersion }
@@ -876,7 +851,7 @@
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="IF_Base_Column_List_Batch"></include>
+            <include refid="IF_Base_Column_List_ForBatch"></include>
         </trim>
         values
 
@@ -1091,7 +1066,7 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.location,
+
         asset.house_location,
         asset.latitude,
         asset.longitude,
@@ -1416,7 +1391,7 @@
         area_id = #{areaId },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
-        location = #{location },
+
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
@@ -1474,7 +1449,7 @@
  	SELECT
 		count(1) count
 	FROM
-		asset_ip_mac m LEFT JOIN asset a ON m.asset_id=a.id
+		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
 	WHERE
 	 a.`status` !=1	AND mac = #{mac}
     </select>
@@ -1614,5 +1589,15 @@ WHERE
         </foreach>
         GROUP BY category_model
     </select>
+    <select id="findCountAssetNumber" resultType="int">
+SELECT
+	count(1) count
+FROM
+	asset a
+WHERE
+	number = #{number}
+AND a.`status` = 1
+    </select>
+
 
 </mapper>

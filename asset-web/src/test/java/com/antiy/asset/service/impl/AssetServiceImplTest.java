@@ -558,7 +558,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testFindCountAssetNumber() throws Exception {
-        Integer result = assetServiceImpl.findCountAssetNumber(new AssetQuery());
+        Integer result = assetServiceImpl.findCountAssetNumber("");
         Assert.assertEquals(Integer.valueOf(0), result);
     }
 
@@ -774,7 +774,6 @@ public class AssetServiceImplTest {
         asset.setOperationSystemName("");
         asset.setAreaName("");
         asset.setResponsibleUserName("");
-        asset.setCategoryModelName("");
         asset.setAssetGroup("");
         asset.setNumber("");
         asset.setName("");
@@ -792,7 +791,7 @@ public class AssetServiceImplTest {
         asset.setHouseLocation("");
         asset.setFirmwareVersion("");
         asset.setUuid("");
-        asset.setContactTel("");
+
 //        asset.setEmail("");
         asset.setAssetSource(0);
         asset.setImportanceDegree(0);
