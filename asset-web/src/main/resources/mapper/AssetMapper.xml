@@ -306,52 +306,79 @@
         </if>
     </sql>
     <sql id="IF_Value_Column_List_ForBatch">
-            #{businessId },
-            #{assetGroup },
-            #{number },
-            #{name },
-            #{installType },
-            #{serial },
-            #{areaId },
-            #{categoryModel },
-            #{manufacturer },
-            #{assetStatus },
-            #{admittanceStatus },
-            #{operationSystem },
-            #{responsibleUserId },
-            #{location },
-            #{latitude },
-            #{longitude },
-            #{houseLocation },
-            #{firmwareVersion },
-            #{uuid },
-            #{assetSource },
-            #{importanceDegree },
-            #{describle },
-            #{firstEnterNett },
-            #{firstDiscoverTime },
-            #{isInnet },
-            #{serviceLife },
-            #{buyDate },
-            #{version },
-            #{warranty },
-            #{installTemplateId },
-            #{baselineTemplateId },
-            #{baselineTemplateCorrelationGmt },
-            #{installTemplateCorrelationGmt },
-            #{memo },
-            #{gmtCreate },
-            #{gmtModified },
-            #{createUser },
-
-
-            #{modifyUser },
-
-
-            #{status }
-
+            #{entity.number },
+            #{entity.name },
+            #{entity.installType },
+            #{entity.serial },
+            #{entity.areaId },
+            #{entity.categoryModel },
+            #{entity.manufacturer },
+            #{entity.assetStatus },
+            #{entity.admittanceStatus },
+            #{entity.operationSystem },
+            #{entity.responsibleUserId },
+            #{entity.houseLocation },
+            #{entity.firmwareVersion },
+            #{entity.uuid },
+            #{entity.assetSource },
+            #{entity.importanceDegree },
+            #{entity.describle },
+            #{entity.firstEnterNett },
+            #{entity.firstDiscoverTime },
+            #{entity.isInnet },
+            #{entity.serviceLife },
+            #{entity.buyDate },
+            #{entity.version },
+            #{entity.warranty },
+            #{entity.installTemplateId },
+            #{entity.baselineTemplateId },
+            #{entity.baselineTemplateCorrelationGmt },
+            #{entity.installTemplateCorrelationGmt },
+            #{entity.memo },
+            #{entity.gmtCreate },
+            #{entity.gmtModified },
+            #{entity.createUser },
+            #{entity.modifyUser },
+            #{entity.status }
     </sql>
 
+    <sql id="IF_Base_Column_List_ForBatch">
+
+            number,
+            name,
+            install_type,
+            serial,
+            area_id,
+            category_model,
+            manufacturer,
+            asset_status,
+            admittance_status,
+            operation_system,
+            responsible_user_id,
+            house_location,
+            firmware_version,
+            uuid,
+            asset_source,
+            importance_degree,
+            describle,
+            first_enter_nett,
+            first_discover_time,
+            is_innet,
+            service_life,
+            buy_date,
+            version,
+            warranty,
+            install_template_id,
+            baseline_template_id,
+            baseline_template_correlation_gmt,
+            install_template_correlation_gmt,
+            memo,
+            gmt_create,
+            gmt_modified,
+            create_user,
+            modify_user,
+            status
+    </sql>
     <sql id="Set_Column_List">
         <if test=" businessId != null">
             business_id = #{businessId },
@@ -593,47 +620,6 @@
     </sql>
 
 
-    <sql id="IF_Base_Column_List_Batch">
-            business_id,
-            asset_group,
-            number,
-            name,
-            install_type,
-            serial,
-            area_id,
-            category_model,
-            manufacturer,
-            asset_status,
-            admittance_status,
-            operation_system,
-            responsible_user_id,
-            location,
-            latitude,
-            longitude,
-            house_location,
-            firmware_version,
-            uuid,
-            asset_source,
-            importance_degree,
-            describle,
-            first_enter_nett,
-            first_discover_time,
-            is_innet,
-            service_life,
-            buy_date,
-            version,
-            warranty,
-            install_template_id,
-            baseline_template_id,
-            baseline_template_correlation_gmt,
-            install_template_correlation_gmt,
-            memo,
-            gmt_create,
-            gmt_modified,
-            create_user,
-            modify_user,
-            status
-    </sql>
 
 
 
@@ -876,7 +862,7 @@
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="IF_Base_Column_List_Batch"></include>
+            <include refid="IF_Base_Column_List_ForBatch"></include>
         </trim>
         values
 
@@ -1474,7 +1460,7 @@
  	SELECT
 		count(1) count
 	FROM
-		asset_ip_mac m LEFT JOIN asset a ON m.asset_id=a.id
+		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
 	WHERE
 	 a.`status` !=1	AND mac = #{mac}
     </select>
@@ -1614,5 +1600,15 @@ WHERE
         </foreach>
         GROUP BY category_model
     </select>
+    <select id="findCountAssetNumber" resultType="int">
+SELECT
+	count(1) count
+FROM
+	asset a
+WHERE
+	number = #{number}
+AND a.`status` = 1
+    </select>
+
 
 </mapper>

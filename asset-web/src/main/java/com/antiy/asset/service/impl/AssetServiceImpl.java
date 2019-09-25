@@ -395,9 +395,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public boolean CheckRepeatNumber(String number) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setNumber(number);
-        Integer countAsset = findCountAssetNumber(assetQuery);
+        Integer countAsset = findCountAssetNumber(number);
         return countAsset >= 1;
     }
 
@@ -407,13 +405,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetAssemblyResponse.class);
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public boolean checkRepeatName(String name) throws Exception {
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAssetName(name);
-        Integer countAsset = findCountAssetNumber(assetQuery);
-        return countAsset >= 1;
-    }
+    // @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    // public boolean checkRepeatName(String name) throws Exception {
+    // AssetQuery assetQuery = new AssetQuery();
+    // assetQuery.setAssetName(name);
+    // Integer countAsset = findCountAssetNumber(assetQuery);
+    // return countAsset >= 1;
+    // }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String checkUser(String user) throws Exception {
@@ -564,8 +562,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    public Integer findCountAssetNumber(AssetQuery query) throws Exception {
-        return assetDao.findCount(query);
+    public Integer findCountAssetNumber(String number) throws Exception {
+        return assetDao.findCountAssetNumber(number);
     }
 
     @Override
@@ -1774,12 +1772,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (!checkOperatingSystem(entity.getOperationSystem())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-                continue;
-            }
+            // if (!checkOperatingSystem(entity.getOperationSystem())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
+            // continue;
+            // }
 
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
@@ -1807,6 +1805,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
+                asset.setIsInnet(0);
                 asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
                 asset.setAssetSource(ReportType.MANUAL.getCode());
@@ -2016,6 +2015,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setWarranty(entity.getWarranty());
                 asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
                 asset.setDescrible(entity.getMemo());
+                asset.setIsInnet(0);
                 asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
                 assets.add(asset);
                 AssetMacRelation assetMacRelation = new AssetMacRelation();
@@ -2175,12 +2175,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
-            if (!checkOperatingSystem(entity.getOperationSystem())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-                continue;
-            }
+            // if (!checkOperatingSystem(entity.getOperationSystem())) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
+            // continue;
+            // }
 
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
@@ -2202,6 +2202,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setMac(entity.getMac());
+                assetMacRelations.add(assetMacRelation);
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setIp(entity.getIp());
+                assetIpRelations.add(assetIpRelation);
                 Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
                 asset.setOperationSystem(entity.getOperationSystem());
@@ -2221,6 +2227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setServiceLife(entity.getDueDate());
                 asset.setWarranty(entity.getWarranty());
                 asset.setDescrible(entity.getMemo());
+                asset.setIsInnet(0);
                 asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
                 assets.add(asset);
                 assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -2385,6 +2392,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
+                asset.setIsInnet(0);
                 asset.setManufacturer(entity.getManufacturer());
                 asset.setFirmwareVersion(entity.getFirmwareVersion());
                 asset.setSerial(entity.getSerial());
@@ -2562,6 +2570,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetSource(ReportType.MANUAL.getCode());
                 asset.setNumber(entity.getNumber());
                 asset.setName(entity.getName());
+                asset.setIsInnet(0);
                 asset.setManufacturer(entity.getManufacturer());
                 asset.setSerial(entity.getSerial());
                 asset.setBuyDate(entity.getBuyDate());

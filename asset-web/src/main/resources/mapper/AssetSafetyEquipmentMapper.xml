@@ -138,10 +138,6 @@
 
             new_version,
 
-            ip,
-
-            mac,
-
             memo,
 
             create_user,
@@ -171,10 +167,6 @@
             #{entity.isManage },
 
             #{entity.newVersion },
-
-            #{entity.ip },
-
-            #{entity.mac },
 
             #{entity.memo },
 

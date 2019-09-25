@@ -26,7 +26,12 @@ public class Asset extends BaseEntity {
     /**
      * 品类名称
      */
-    private String            categoryModelName;
+    private String            version;
+
+    /**
+     * 是否入网
+     */
+    private Integer           isInnet;
 
     /**
      * json数据
@@ -118,23 +123,13 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("软件版本")
     private String            softwareVersion;
-    /**
-     * 版本
-     */
-    @ApiModelProperty("版本")
-    private String            version;
 
-    /**
-     * 联系电话
-     */
-    private String            contactTel;
+
     /**
      * 设备uuid
      */
     private String            uuid;
-    /**
-     * ip
-     */
+
     private String            ips;
     /**
      * mac
@@ -154,10 +149,6 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("重要程度")
     private String            importanceDegreeName;
-    /**
-     * 是否入网
-     */
-    private Boolean           isInnet;
     /**
      * 描述
      */
@@ -241,13 +232,6 @@ public class Asset extends BaseEntity {
         this.macs = macs;
     }
 
-    public Boolean getInnet() {
-        return isInnet;
-    }
-
-    public void setInnet(Boolean innet) {
-        isInnet = innet;
-    }
 
     public Long getBusinessId() {
         return businessId;
@@ -271,14 +255,6 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateId(String installTemplateId) {
         this.installTemplateId = installTemplateId;
-    }
-
-    public String getCategoryModelName() {
-        return categoryModelName;
-    }
-
-    public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
     }
 
     public String getAssetGroup() {
@@ -609,21 +585,8 @@ public class Asset extends BaseEntity {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
     }
 
-    public String getContactTel() {
-        return contactTel;
-    }
 
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
 
     @Override
     public String toString() {
@@ -631,7 +594,6 @@ public class Asset extends BaseEntity {
                 "businessId=" + businessId +
                 ", baselineTemplateId=" + baselineTemplateId +
                 ", installTemplateId=" + installTemplateId +
-                ", categoryModelName='" + categoryModelName + '\'' +
                 ", assetGroup='" + assetGroup + '\'' +
                 ", number='" + number + '\'' +
                 ", name='" + name + '\'' +
@@ -652,7 +614,6 @@ public class Asset extends BaseEntity {
                 ", firmwareVersion='" + firmwareVersion + '\'' +
                 ", softwareVersion='" + softwareVersion + '\'' +
                 ", version='" + version + '\'' +
-                ", contactTel='" + contactTel + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", ips='" + ips + '\'' +
                 ", macs='" + macs + '\'' +
@@ -679,5 +640,21 @@ public class Asset extends BaseEntity {
                 ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
                 ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';
+    }
+
+    public Integer getIsInnet() {
+        return isInnet;
+    }
+
+    public void setIsInnet(Integer isInnet) {
+        this.isInnet = isInnet;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

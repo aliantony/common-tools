@@ -142,9 +142,9 @@
         mac
         )
         values
-        <foreach collection="assetMacRelationList" item="item" open="(" close=")" separator=",">
+        <foreach collection="assetMacRelationList" item="item" separator=",">
             (
-            #{item.asetId},
+            #{item.assetId},
             #{item.mac}
             )
         </foreach>
