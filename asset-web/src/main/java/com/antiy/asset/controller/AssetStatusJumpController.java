@@ -5,20 +5,16 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.request.AssetConfigValidateRefuseReqeust;
+import com.antiy.asset.vo.request.AssetStatusChangeRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import io.swagger.annotations.*;
@@ -31,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * 资产状态跃迁统一接口
@@ -86,71 +81,8 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/noRegister", method = RequestMethod.POST)
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
-        String assetId = assetStatusChangeRequest.getAssetId();
-
-        // 查询资产当前状态
-        Asset currentAsset = assetDao.getById(assetId);
-        if (currentAsset == null) {
-            throw new BusinessException("资产不存在");
-        }
-        if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-            throw new BusinessException("资产状态已改变");
-        }
-        Asset asset = new Asset();
-        asset.setId(DataTypeUtils.stringToInteger(assetId));
-        asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-        if (LoginUserUtil.getLoginUser() == null) {
-            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-        } else {
-            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-        }
-        operationRecord(assetStatusChangeRequest, assetId);
-
-        // 硬件完成流程
-        if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
-            ActionResponse actionResponse = activityClient
-                    .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
-            // 流程调用失败不更改资产状态
-            if (null == actionResponse
-                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
-                        : actionResponse;
-            }
-        }
-
-        // 记录日志
-        if (assetDao.getNumberById(assetId) == null) {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
-                    DataTypeUtils.stringToInteger(assetId), currentAsset.getName(), assetStatusChangeRequest,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-        } else {
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
-                    DataTypeUtils.stringToInteger(assetId), assetDao.getNumberById(assetId), assetStatusChangeRequest,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-        }
-        LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
-        return ActionResponse.success(assetService.update(asset));
-    }
-
-    private void operationRecord(@RequestBody(required = false) @ApiParam("assetStatusChangeRequest") AssetStatusChangeRequest assetStatusChangeRequest,
-                                 String id) throws Exception {
-        // 记录操作历史到数据库
-        AssetOperationRecord operationRecord = new AssetOperationRecord();
-        operationRecord.setTargetObjectId(id);
-        operationRecord.setOriginStatus(assetStatusChangeRequest.getStatus());
-        operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-        operationRecord.setGmtCreate(System.currentTimeMillis());
-        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
-
-        if (LoginUserUtil.getLoginUser() == null) {
-            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-        } else {
-            operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        }
-        operationRecordDao.insert(operationRecord);
+        Integer count = assetService.assetNoRegister(assetStatusChangeRequest);
+        return ActionResponse.success(count);
     }
 
     /**

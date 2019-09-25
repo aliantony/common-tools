@@ -1600,4 +1600,12 @@ AND a.`status` = 1
     </select>
 
 
+    <select id="getAssetStatusListByIds"  resultType="com.antiy.asset.entity.Asset">
+        SELECT id,asset_status as assetStatus
+        FROM  asset
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
