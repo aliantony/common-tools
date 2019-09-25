@@ -19,7 +19,7 @@ public class AssetEntity {
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    private String categoryModel;
+    private String categoryModelName;
     /**
      * 厂商
      */
@@ -147,14 +147,6 @@ public class AssetEntity {
         this.manufacturer = manufacturer;
     }
 
-    public String getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
-    }
-
     public String getIps() {
         return ips;
     }
@@ -201,5 +193,13 @@ public class AssetEntity {
 
     public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
     }
 }
