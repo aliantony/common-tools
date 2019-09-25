@@ -526,15 +526,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 object.setAlarmCount(
                     alarmCountMaps.containsKey(object.getStringId()) ? alarmCountMaps.get(object.getStringId()) : "0");
             }
-
-            // 设置操作系统名
-            if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
-                    if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                        object.setOperationSystemName((String) categoryModelResponse.getName());
-                    }
-                }
-            }
         }
         return objects;
 

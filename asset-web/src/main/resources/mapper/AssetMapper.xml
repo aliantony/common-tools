@@ -50,6 +50,8 @@
         <result column="baseline_template_id" property="baselineTemplateId"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
+        <result column="ips" property="ips"/>
+        <result column="macs" property="macs"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -976,20 +978,16 @@
         count(1) count from
         (
         select DISTINCT asset.id
-        from
-        asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id
+        left join asset_mac_relation amr on asset.id = amr.asset_id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        group by asset.id) t
+        ) t
     </select>
 
 
@@ -1131,7 +1129,6 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.system_bit,
         asset.location,
         asset.house_location,
         asset.latitude,
@@ -1139,22 +1136,19 @@
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
-        asset.contact_tel,
-        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
-        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,
         asset.warranty,
         asset.gmt_create,
-        GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.ip) AS mac
+        GROUP_CONCAT(air.ip) AS ips,
+        GROUP_CONCAT(amr.mac) AS macs
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id
-        left join asset_mac_relation amr on asset.id = amr.asset_id
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <where>
             <trim prefixOverrides="and">

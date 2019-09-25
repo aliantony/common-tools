@@ -1,6 +1,7 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -89,7 +90,18 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("操作系统名")
     private String            operationSystemName;
-
+    /**
+     * 物理位置
+     */
+    private String            location;
+    /**
+     * 纬度
+     */
+    private String            latitude;
+    /**
+     * 经度
+     */
+    private String            longitude;
     /**
      * 使用者主键
      */
@@ -101,7 +113,6 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("使用者")
     private String            responsibleUserName;
-
 
     /**
      * 机房位置
@@ -122,21 +133,19 @@ public class Asset extends BaseEntity {
      * 版本
      */
     @ApiModelProperty("版本")
-    private String            vsersion;
+    private String            version;
     /**
      * 设备uuid
      */
     private String            uuid;
     /**
-     * 联系电话
+     * ip
      */
-    @ApiModelProperty("联系电话")
-    private String            contactTel;
+    private String            ips;
     /**
-     * 邮箱
+     * mac
      */
-    @ApiModelProperty("邮箱")
-    private String            email;
+    private String            macs;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
@@ -151,6 +160,10 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("重要程度")
     private String            importanceDegreeName;
+    /**
+     * 是否入网
+     */
+    private Boolean           isInnet;
     /**
      * 描述
      */
@@ -217,6 +230,54 @@ public class Asset extends BaseEntity {
     private Long              baselineTemplateCorrelationGmt;
 
     private Long              installTemplateCorrelationGmt;
+
+    public String getIps() {
+        return ips;
+    }
+
+    public void setIps(String ips) {
+        this.ips = ips;
+    }
+
+    public String getMacs() {
+        return macs;
+    }
+
+    public void setMacs(String macs) {
+        this.macs = macs;
+    }
+
+    public Boolean getInnet() {
+        return isInnet;
+    }
+
+    public void setInnet(Boolean innet) {
+        isInnet = innet;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
     public Long getBusinessId() {
         return businessId;
@@ -378,8 +439,6 @@ public class Asset extends BaseEntity {
         this.responsibleUserName = responsibleUserName;
     }
 
-
-
     public String getHouseLocation() {
         return houseLocation;
     }
@@ -410,22 +469,6 @@ public class Asset extends BaseEntity {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Integer getAssetSource() {
@@ -598,62 +641,35 @@ public class Asset extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Asset{" +
-                "businessId=" + businessId +
-                ", baselineTemplateId=" + baselineTemplateId +
-                ", installTemplateId=" + installTemplateId +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", serial='" + serial + '\'' +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", categoryModel='" + categoryModel + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", admittanceStatus=" + admittanceStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", firmwareVersion='" + firmwareVersion + '\'' +
-                ", softwareVersion='" + softwareVersion + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", contactTel='" + contactTel + '\'' +
-                ", email='" + email + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", importanceDegreeName='" + importanceDegreeName + '\'' +
-                ", describle='" + describle + '\'' +
-                ", firstEnterNett=" + firstEnterNett +
-                ", firstDiscoverTime=" + firstDiscoverTime +
-                ", serviceLife=" + serviceLife +
-                ", buyDate=" + buyDate +
-                ", warranty='" + warranty + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", memo='" + memo + '\'' +
-                ", createUser=" + createUser +
-                ", modifyUser=" + modifyUser +
-                ", status=" + status +
-                ", vulCount='" + vulCount + '\'' +
-                ", patchCount='" + patchCount + '\'' +
-                ", departmentName='" + departmentName + '\'' +
-                ", alarmCount='" + alarmCount + '\'' +
-                ", baselineTemplateCorrelationGmt=" + baselineTemplateCorrelationGmt +
-                ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
-                '}';
+        return "Asset{" + "businessId=" + businessId + ", baselineTemplateId=" + baselineTemplateId
+               + ", installTemplateId=" + installTemplateId + ", categoryModelName='" + categoryModelName + '\''
+               + ", assetGroup='" + assetGroup + '\'' + ", number='" + number + '\'' + ", name='" + name + '\''
+               + ", installType=" + installType + ", installTypeName='" + installTypeName + '\'' + ", serial='" + serial
+               + '\'' + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", categoryModel="
+               + categoryModel + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", admittanceStatus=" + admittanceStatus + ", operationSystem='" + operationSystem + '\''
+               + ", operationSystemName='" + operationSystemName + '\'' + ", location='" + location + '\''
+               + ", latitude='" + latitude + '\'' + ", longitude='" + longitude + '\'' + ", responsibleUserId='"
+               + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName + '\'' + ", houseLocation='"
+               + houseLocation + '\'' + ", firmwareVersion='" + firmwareVersion + '\'' + ", softwareVersion='"
+               + softwareVersion + '\'' + ", version='" + version + '\'' + ", uuid='" + uuid + '\'' + ", ips='" + ips
+               + '\'' + ", macs='" + macs + '\'' + ", assetSource=" + assetSource + ", importanceDegree="
+               + importanceDegree + ", importanceDegreeName='" + importanceDegreeName + '\'' + ", isInnet=" + isInnet
+               + ", describle='" + describle + '\'' + ", firstEnterNett=" + firstEnterNett + ", firstDiscoverTime="
+               + firstDiscoverTime + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty
+               + '\'' + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", memo='" + memo + '\''
+               + ", createUser=" + createUser + ", modifyUser=" + modifyUser + ", status=" + status + ", vulCount='"
+               + vulCount + '\'' + ", patchCount='" + patchCount + '\'' + ", departmentName='" + departmentName + '\''
+               + ", alarmCount='" + alarmCount + '\'' + ", baselineTemplateCorrelationGmt="
+               + baselineTemplateCorrelationGmt + ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt
+               + '}';
     }
 
-    public String getVsersion() {
-        return vsersion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setVsersion(String vsersion) {
-        this.vsersion = vsersion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

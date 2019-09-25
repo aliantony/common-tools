@@ -46,6 +46,17 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("mac")
     private List<AssetMacRelationResponse> mac;
+
+    /**
+     * ips
+     */
+    @ApiModelProperty("ips用于列表展示")
+    private String                         ips;
+    /**
+     * mac
+     */
+    @ApiModelProperty("mac用于列表展示")
+    private String                         macs;
     /**
      * 序列号
      */
@@ -205,6 +216,22 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
+
+    public String getIps() {
+        return ips;
+    }
+
+    public void setIps(String ips) {
+        this.ips = ips;
+    }
+
+    public String getMacs() {
+        return macs;
+    }
+
+    public void setMacs(String macs) {
+        this.macs = macs;
+    }
 
     public String getOperationSystemNotice() {
         return operationSystemNotice;
