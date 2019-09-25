@@ -128,7 +128,7 @@
             and category_model = #{categoryModel}
         </if>
         <if test=" responsibleUserName != null and responsibleUserName != ''">
-            and  asset_user.`name`  like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
+            and asset_user.`name` like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" ids != null and ids.length >0">
             and asset.id in
@@ -335,6 +335,9 @@
             0
             ) AS alarm_count,
         </if>
+        <if test="queryDepartmentName == true">
+            department.name as department_name,
+        </if>
         GROUP_CONCAT(air.ip) AS ips
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
@@ -390,6 +393,9 @@
             asset_id
             ) asset_alarm_rel_1 ON asset_alarm_rel_1.asset_id = asset.id
         </if>
+        <if test="queryDepartmentName == true">
+            LEFT JOIN asset_department department ON asset_user.department_id = department.id
+        </if>
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -414,5 +420,4 @@
         group by asset.id
         ) a
     </select>
-
 </mapper>
