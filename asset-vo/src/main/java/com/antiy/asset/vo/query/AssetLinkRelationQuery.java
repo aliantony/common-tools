@@ -22,65 +22,53 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产id")
     @Encode
-    private String        assetId;
+    private String       assetId;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String        assetName;
+    private String       assetName;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
     @Size(message = "资产编号0~30字符", max = 30)
-    private String        assetNumber;
+    private String       assetNumber;
     /**
      * 关联资产id
      */
     @ApiModelProperty("关联资产id")
     @Encode
-    private String        parentAssetId;
+    private String       parentAssetId;
     /**
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private Integer       categoryModel;
+    private Integer      categoryModel;
 
     /**
      * 资产综合查询
      */
     @ApiModelProperty("资产综合查询")
     @Size(message = "综合查询0~30字符", max = 30)
-    private String        multipleQuery;
+    private String       multipleQuery;
     /**
      * 关联资产综合查询
      */
     @ApiModelProperty("关联资产综合查询")
     @Size(message = "关联资产综合查询0~30字符", max = 30)
-    private String        parentMultipleQuery;
+    private String       parentMultipleQuery;
     /**
      * 资产区域
      */
     @ApiModelProperty("资产区域")
     @Encode
-    private List<String>  areaIds;
+    private List<String> areaIds;
     /**
      * 资产状态列表
      */
     @ApiModelProperty("资产状态列表")
-    private List<String>  statusList;
-    /**
-     * 端口号列表
-     */
-    private List<Integer> portCount;
-
-    public List<Integer> getPortCount() {
-        return portCount;
-    }
-
-    public void setPortCount(List<Integer> portCount) {
-        this.portCount = portCount;
-    }
+    private List<String> statusList;
 
     public Integer getCategoryModel() {
         return categoryModel;

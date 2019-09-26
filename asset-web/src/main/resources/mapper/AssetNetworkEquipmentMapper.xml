@@ -29,7 +29,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize,cpu_version as cpuVersion, cpu_size as cpuSize, ios, inner_ip as innerIp, outer_ip as outerIp, mac_address as macAddress, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
+        id, asset_id as assetId, interface_size as interfaceSize, is_wireless as isWireless,port_size as portSize,cpu_version as cpuVersion, cpu_size as cpuSize, ios,  outer_ip as outerIp, subnet_mask as subnetMask, expect_bandwidth as expectBandwidth, register, dram_size as dramSize, flash_size as flashSize, ncrm_size as ncrmSize, firmware_version as firmwareVersion, create_user AS createUser, modify_user AS modifyUser, status
     </sql>
 
     <sql id="Table_Name">
@@ -62,15 +62,11 @@
         <if test=" ios != null">
             ios,
         </if>
-        <if test=" innerIp != null">
-            inner_ip,
-        </if>
+
         <if test=" outerIp != null">
             outer_ip,
         </if>
-        <if test=" macAddress != null">
-            mac_address,
-        </if>
+
         <if test=" subnetMask != null">
             subnet_mask,
         </if>
@@ -134,15 +130,11 @@
         <if test=" ios != null">
             #{ios },
         </if>
-        <if test=" innerIp != null">
-            #{innerIp },
-        </if>
+
         <if test=" outerIp != null">
             #{outerIp },
         </if>
-        <if test=" macAddress != null">
-            #{macAddress },
-        </if>
+
         <if test=" subnetMask != null">
             #{subnetMask },
         </if>
@@ -198,11 +190,11 @@
 
             ios,
 
-            inner_ip,
+
 
             outer_ip,
 
-            mac_address,
+
 
             subnet_mask,
 
@@ -247,13 +239,7 @@
             #{entity.cpuSize },
 
             #{entity.ios },
-
-            #{entity.innerIp },
-
             #{entity.outerIp },
-
-            #{entity.macAddress },
-
             #{entity.subnetMask },
 
             #{entity.expectBandwidth },
@@ -288,9 +274,9 @@
             cpu_version = #{cpuVersion },
             cpu_size = #{cpuSize },
             ios = #{ios },
-            inner_ip = #{innerIp },
+
             outer_ip = #{outerIp },
-            mac_address = #{macAddress },
+
             subnet_mask = #{subnetMask },
             expect_bandwidth = #{expectBandwidth },
             register = #{register },
@@ -312,15 +298,11 @@
         <if test=" isWireless != null">
             and is_wireless = #{isWireless }
         </if>
-        <if test=" innerIp != null">
-            and inner_ip = #{innerIp }
-        </if>
+
         <if test=" outerIp != null">
             and outer_ip = #{outerIp }
         </if>
-        <if test=" macAddress != null">
-            and mac_address = #{macAddress }
-        </if>
+
         <if test=" subnetMask != null">
             and subnet_mask = #{subnetMask }
         </if>
@@ -371,7 +353,7 @@
         cpu_version = #{cpuVersion },
         cpu_size = #{cpuSize },
         ios = #{ios },
-        mac_address = #{macAddress },
+
         subnet_mask = #{subnetMask },
         expect_bandwidth = #{expectBandwidth },
         register = #{register },
@@ -461,15 +443,11 @@
             <if test=" isWireless != null">
                 and is_wireless = #{isWireless }
             </if>
-            <if test=" innerIp != null">
-                and inner_ip = #{innerIp }
-            </if>
+
             <if test=" outerIp != null">
                 and outer_ip = #{outerIp }
             </if>
-            <if test=" macAddress != null">
-                and mac_address = #{macAddress }
-            </if>
+
             <if test=" subnetMask != null">
                 and subnet_mask = #{subnetMask }
             </if>

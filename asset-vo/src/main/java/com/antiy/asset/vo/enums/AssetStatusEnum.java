@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.enums;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * @Auther: zhangbing
  * @Date: 2019/1/3 13:27

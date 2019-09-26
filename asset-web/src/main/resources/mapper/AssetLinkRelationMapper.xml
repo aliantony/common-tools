@@ -694,85 +694,25 @@
         a.area_id as areaId,
         a.name,
         a.number,
-        a.category_model as categoryModel,
-        t.NAME as categoryModelName,
+        a.category_model,
         count( b.id ) AS canBind,
         count( b.id ) - count( c.id ) AS noBind,
         a.gmt_create
         FROM
         asset a
-        LEFT JOIN asset_category_model t ON a.category_model = t.id
-        LEFT JOIN asset_network_card b ON ( a.id = b.asset_id AND b.STATUS = 1 )
-        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip_address = c.asset_ip) or (a.id =
-        c.parent_asset_id AND b.ip_address = c.parent_asset_ip) AND c.STATUS = 1 )
-        WHERE 1 = 1
-        and b.asset_id IS NOT NULL
+        LEFT JOIN asset_ip_relation b ON ( a.id = b.asset_id AND b.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip = c.asset_ip) or (a.id =
+        c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
+        WHERE
+        b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
             and a.area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </if>
-        <if test="pcCategoryModels != null and pcCategoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="pcCategoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="categoryModels != null and categoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="statusList != null and statusList.size() > 0">
-            and a.asset_status in
-            <foreach collection="statusList" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="assetName != null and assetName != ''">
-            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
-        </if>
-        <if test="assetNumber != null and assetNumber != ''">
-            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
-        </if>
-        GROUP BY a.id
-        UNION ALL
-        SELECT
-        a.id as assetId,
-        a.area_id as areaId,
-        a.name,
-        a.number,
-        a.category_model as categoryModel,
-        t.NAME as categoryModelName,
-        b.port_size AS canBind,
-        b.port_size - count( c.id ) AS noBind,
-        a.gmt_create
-        FROM
-        asset a
-        LEFT JOIN asset_category_model t ON a.category_model = t.id
-        LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id or a.id = c.parent_asset_id AND c.STATUS = 1 )
-        WHERE 1 = 1
-        and b.asset_id IS NOT NULL
-        <if test="areaIds != null and areaIds.size() > 0">
-            and a.area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="netCategoryModels != null and netCategoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="netCategoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="categoryModels != null and categoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
+        <if test="categoryModel != null">
+            and a.category_model= #{categoryModel}
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
@@ -803,130 +743,49 @@
     <!--与当前资产通联的资产列表查询-->
     <select id="queryLinkedAssetListByAssetId" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select distinct * from (SELECT
-        c.id,
-        a.id as assetId,
-        a.NAME as assetName,
-        c.asset_port as assetPort,
-        a.category_model as categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = a.category_model ) AS categoryModelName,
-        b.ip_address as assetIp,
-        c.parent_asset_id as parentAssetId,
-        (select name from asset where id = c.parent_asset_id) as parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
-        ) ) AS parentCategoryModelName,
-        c.parent_asset_ip as parentAssetIp,
-        c.parent_asset_port as parentAssetPort,
-        c.gmt_create
-        FROM
-        asset a
-        LEFT JOIN asset_network_card b ON a.id = b.asset_id and b.status = 1
-        LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip and c.status = 1)
-        WHERE
-        a.id = #{primaryKey}
-        and not EXISTS (select 1 from asset_link_relation d where d.parent_asset_ip = b.ip_address and d.parent_asset_id
-        = b.asset_id)
-        and b.ip_address is not null
-        <if test="portCount != null and portCount.size() > 0">
-            UNION ALL
-            SELECT
-            alr.id,
-            t.id as assetId,
-            t.NAME as assetName,
-            t.port as assetPort,
-            t.category_model as categoryModel,
-            ( SELECT NAME FROM asset_category_model WHERE id = t.category_model ) AS categoryModelName,
-            t.inner_ip as assetIp,
-            alr.parent_asset_id as parentAssetId,
-            (select name from asset where id = alr.parent_asset_id) as parentAssetName,
-            ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id =
-            alr.parent_asset_id ) ) AS parentCategoryModelName,
-            alr.parent_asset_ip as parentAssetIp,
-            alr.parent_asset_port as parentAssetPort,
-            alr.gmt_create
-            FROM
-            (
-            SELECT
-            t2.id,
-            t2.NAME,
-            t2.category_model,
-            t2.inner_ip,
-            t1.`port`
-            FROM
-            <foreach collection="portCount" item="item" index="index" open="(" close=")">
-                <if test="index == 0">
-                    select #{item} port
-                </if>
-                <if test="index > 0">
-                    union select #{item}
-                </if>
-            </foreach>
-            t1
-            LEFT JOIN (
-            SELECT
-            a.id,
-            a.NAME,
-            a.category_model,
-            b.inner_ip,
-            b.port_size
-            FROM
-            asset a,asset_network_equipment b
-            WHERE
-            a.id = b.asset_id
-            and a.id = #{primaryKey}
-            ) t2 ON t1.port &lt;= t2.port_size
-            ) t
-            LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
-            AND t.port = alr.asset_port
-            where t.id is not null
-            and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
-            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port =
-            t.port)
-        </if>
-        union all
         SELECT
-        a.id,
-        a.parent_asset_id as assetId,
-        b.name as assetName,
-        a.parent_asset_port as assetPort,
-        b.category_model as categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
-        a.parent_asset_ip as assetIp,
-        a.asset_id as parentAssetId,
-        (select name from asset where id = a.asset_id) as parentAssetName,
-        (SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS
-        parentCategoryModelName,
-        a.asset_ip as parentAssetIp,
-        a.asset_port as parentAssetPort,
-        a.gmt_create
+        asset.id AS assetId,
+        asset.NAME AS assetName,
+        asset.category_model AS categoryModel,
+        air.ip AS assetIp,
+        air.net AS assetPort,
+        alr.parent_asset_id AS parentAssetId,
+        t.name as parentAssetName,
+        t.category_model as parentCategoryModel,
+        alr.parent_asset_ip AS parentAssetIp,
+        alr.parent_asset_port AS parentAssetPort
         FROM
-        asset_link_relation a left join asset b on a.parent_asset_id = b.id
+        asset asset
+        LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
+        LEFT JOIN asset_link_relation alr ON ( air.ip = alr.asset_ip AND asset.id = alr.asset_id AND alr.STATUS = 1)
+        left join asset t on alr.parent_asset_id = t.id
         WHERE
-        a.parent_asset_id = #{primaryKey}
-        and a.status = 1
-        union all
+        asset.id = #{primaryKey}
+        AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
+        asset.id )
+        UNION
         SELECT
-        a.id,
-        a.asset_id AS assetId,
-        b.NAME AS assetName,
-        a.asset_port AS assetPort,
-        b.category_model AS categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
-        a.asset_ip AS assetIp,
-        a.parent_asset_id AS parentAssetId,
-        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
-        ) ) AS parentCategoryModelName,
-        a.parent_asset_ip AS parentAssetIp,
-        a.parent_asset_port AS parentAssetPort,
-        a.gmt_create
+        asset.id AS assetId,
+        asset.NAME AS assetName,
+        asset.category_model AS categoryModel,
+        air.ip AS assetIp,
+        air.net AS assetPort,
+        alr.asset_id AS parentAssetId,
+        t.name as parentAssetName,
+        t.category_model as parentCategoryModel,
+        alr.asset_ip AS parentAssetIp,
+        alr.asset_port AS parentAssetPort
         FROM
-        asset_link_relation a
-        LEFT JOIN asset b ON a.asset_id = b.id
+        asset asset
+        LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
+        AND air.STATUS = 1
+        LEFT JOIN asset_link_relation alr ON (air.ip = alr.parent_asset_ip
+        AND asset.id = alr.parent_asset_id
+        AND alr.STATUS = 1 )
+        left join asset t on alr.asset_id = t.id
         WHERE
-        a.asset_id = #{primaryKey}
-        AND a.STATUS = 1) t
-        order by CAST(assetPort AS SIGNED) asc
+        asset.id = #{primaryKey}
+        AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -937,75 +796,28 @@
     <select id="queryAssetLinkedCount" resultType="java.lang.Integer">
         select count(1) count from (SELECT
         a.id as assetId,
+        a.area_id as areaId,
         a.name,
         a.number,
-        a.category_model as categoryModel,
-        t.NAME as categoryModelName,
+        a.category_model,
         count( b.id ) AS canBind,
-        count( b.id ) - count( c.id ) AS noBind
+        count( b.id ) - count( c.id ) AS noBind,
+        a.gmt_create
         FROM
         asset a
-        LEFT JOIN asset_category_model t ON a.category_model = t.id
-        LEFT JOIN asset_network_card b ON ( a.id = b.asset_id AND b.STATUS = 1 )
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND b.ip_address = c.asset_ip AND c.STATUS = 1 )
-        WHERE 1 = 1
-        and b.asset_id IS NOT NULL
+        LEFT JOIN asset_ip_relation b ON ( a.id = b.asset_id AND b.STATUS = 1 )
+        LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip = c.asset_ip) or (a.id =
+        c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
+        WHERE
+        b.asset_id IS NOT NULL
         <if test="areaIds != null and areaIds.size() > 0">
             and a.area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </if>
-        <if test="statusList != null and statusList.size() > 0">
-            and a.asset_status in
-            <foreach collection="statusList" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-
         <if test="categoryModel != null">
-            and a.category_model = #{categoryModel}
-        </if>
-        <if test="assetName != null and assetName != ''">
-            and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
-        </if>
-        <if test="assetNumber != null and assetNumber != ''">
-            and a.number like binary CONCAT('%',replace(replace(#{assetNumber},'%','\%'),'_','\_'),'%')
-        </if>
-        GROUP BY a.id
-        UNION ALL
-        SELECT
-        a.id as assetId,
-        a.name,
-        a.number,
-        a.category_model as categoryModel,
-        t.NAME as categoryModelName,
-        b.port_size AS canBind,
-        b.port_size - count( c.id ) AS noBind
-        FROM
-        asset a
-        LEFT JOIN asset_category_model t ON a.category_model = t.id
-        LEFT JOIN asset_network_equipment b ON a.id = b.asset_id
-        LEFT JOIN asset_link_relation c ON ( a.id = c.asset_id AND c.STATUS = 1 )
-        WHERE 1 = 1
-        and b.asset_id IS NOT NULL
-        <if test="areaIds != null and areaIds.size() > 0">
-            and a.area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="netCategoryModels != null and netCategoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="netCategoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test="categoryModels != null and categoryModels.size() > 0">
-            and a.category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," item="item">
-                #{item}
-            </foreach>
+            and a.category_model= #{categoryModel}
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
@@ -1023,124 +835,50 @@
     </select>
     <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select count(1) count from(select distinct t.* from (SELECT
-        c.id,
-        a.id as assetId,
-        a.NAME as assetName,
-        c.asset_port as assetPort,
-        a.category_model as categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = a.category_model ) AS categoryModelName,
-        b.ip_address as assetIp,
-        c.parent_asset_id as parentAssetId,
-        (select name from asset where id = c.parent_asset_id) as parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
-        ) ) AS parentCategoryModelName,
-        c.parent_asset_ip as parentAssetIp,
-        c.parent_asset_port as parentAssetPort
-        FROM
-        asset a
-        LEFT JOIN asset_network_card b ON a.id = b.asset_id and b.status = 1
-        LEFT JOIN asset_link_relation c ON ( b.asset_id = c.asset_id AND b.ip_address = c.asset_ip and c.status = 1)
-        WHERE
-        a.id = #{primaryKey}
-        and b.ip_address is not null
-        <if test="portCount != null and portCount.size() > 0">
-            UNION ALL
-            SELECT
-            alr.id,
-            t.id as assetId,
-            t.NAME as assetName,
-            t.port as assetPort,
-            t.category_model as categoryModel,
-            ( SELECT NAME FROM asset_category_model WHERE id = t.category_model ) AS categoryModelName,
-            t.inner_ip as assetIp,
-            alr.parent_asset_id as parentAssetId,
-            (select name from asset where id = alr.parent_asset_id) as parentAssetName,
-            ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id =
-            alr.parent_asset_id ) ) AS parentCategoryModelName,
-            alr.parent_asset_ip as parentAssetIp,
-            alr.parent_asset_port as parentAssetPort
+        select count(1) count from(
+          SELECT
+            asset.id AS assetId,
+            asset.NAME AS assetName,
+            asset.category_model AS categoryModel,
+            air.ip AS assetIp,
+            air.net AS assetPort,
+            alr.parent_asset_id AS parentAssetId,
+            t.name as parentAssetName,
+            t.category_model as parentCategoryModel,
+            alr.parent_asset_ip AS parentAssetIp,
+            alr.parent_asset_port AS parentAssetPort
             FROM
-            (
-            SELECT
-            t2.id,
-            t2.NAME,
-            t2.category_model,
-            t2.inner_ip,
-            t1.`port`
-            FROM
-            <foreach collection="portCount" item="item" index="index" open="(" close=")">
-                <if test="index == 0">
-                    select #{item} port
-                </if>
-                <if test="index > 0">
-                    union select #{item}
-                </if>
-            </foreach>
-            t1
-            LEFT JOIN (
-            SELECT
-            a.id,
-            a.NAME,
-            a.category_model,
-            b.inner_ip,
-            b.port_size
-            FROM
-            asset a,asset_network_equipment b
+            asset asset
+            LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
+            LEFT JOIN asset_link_relation alr ON ( air.ip = alr.asset_ip AND asset.id = alr.asset_id AND alr.STATUS = 1)
+            left join asset t on alr.parent_asset_id = t.id
             WHERE
-            a.id = b.asset_id
-            and a.id = #{primaryKey}
-            ) t2 ON t1.port &lt;= t2.port_size
-            ) t
-            LEFT JOIN asset_link_relation alr ON t.id = alr.asset_id
-            AND t.port = alr.asset_port
-            where t.id is not null
-            and not EXISTS(select 1 from asset_link_relation where asset_id = t.id and asset_port = t.port)
-            and not EXISTS(select 1 from asset_link_relation where parent_asset_id = t.id and parent_asset_port =
-            t.port)
-        </if>
-        union all
-        SELECT
-        a.id,
-        a.parent_asset_id as assetId,
-        b.name as assetName,
-        a.parent_asset_port as assetPort,
-        b.category_model as categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
-        a.parent_asset_ip as assetIp,
-        a.asset_id as parentAssetId,
-        (select name from asset where id = a.asset_id) as parentAssetName,
-        (SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = asset_id ) ) AS
-        parentCategoryModelName,
-        a.asset_ip as parentAssetIp,
-        a.asset_port as parentAssetPort
-        FROM
-        asset_link_relation a left join asset b on a.parent_asset_id = b.id
-        WHERE
-        a.parent_asset_id = #{primaryKey}
-        and a.status = 1
-        union all
-        SELECT
-        a.id,
-        a.asset_id AS assetId,
-        b.NAME AS assetName,
-        a.asset_port AS assetPort,
-        b.category_model AS categoryModel,
-        ( SELECT NAME FROM asset_category_model WHERE id = b.category_model ) AS categoryModelName,
-        a.asset_ip AS assetIp,
-        a.parent_asset_id AS parentAssetId,
-        ( SELECT NAME FROM asset WHERE id = a.parent_asset_id ) AS parentAssetName,
-        ( SELECT NAME FROM asset_category_model WHERE id = ( SELECT category_model FROM asset WHERE id = parent_asset_id
-        ) ) AS parentCategoryModelName,
-        a.parent_asset_ip AS parentAssetIp,
-        a.parent_asset_port AS parentAssetPort
-        FROM
-        asset_link_relation a
-        LEFT JOIN asset b ON a.asset_id = b.id
-        WHERE
-        a.asset_id = #{primaryKey}
-        AND a.STATUS = 1) t) p
-
+            asset.id = #{primaryKey}
+            AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
+            UNION
+            SELECT
+            asset.id AS assetId,
+            asset.NAME AS assetName,
+            asset.category_model AS categoryModel,
+            air.ip AS assetIp,
+            air.net AS assetPort,
+            alr.asset_id AS parentAssetId,
+            t.name as parentAssetName,
+            t.category_model as parentCategoryModel,
+            alr.asset_ip AS parentAssetIp,
+            alr.asset_port AS parentAssetPort
+            FROM
+            asset asset
+            LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
+            AND air.STATUS = 1
+            LEFT JOIN asset_link_relation alr ON (air.ip = alr.parent_asset_ip
+            AND asset.id = alr.parent_asset_id
+            AND alr.STATUS = 1 )
+            left join asset t on alr.asset_id = t.id
+            WHERE
+            asset.id = #{primaryKey}
+            AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
+        ) t
     </select>
 
     <select id="queryAssetNodeInfo" parameterType="java.lang.String" resultMap="AssetNodeInfoResultMap">

@@ -55,6 +55,17 @@ public class NetworkDeviceEntity {
     @ExcelField(value = "mac", align = 1, title = "mac(必填)", dataType = DataTypeEnum.MAC, required = true)
     private String  mac;
     /**
+     * 到期时间
+     */
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
+    private Long    dueDate;
+    /**
+     * 购买日期
+     */
+    @ExcelField(value = "butDate", align = 1, title = "购买日期", isDate = true)
+    private Long    butDate;
+
+    /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
@@ -139,16 +150,7 @@ public class NetworkDeviceEntity {
      */
     @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小", length = 7)
     private Float   ncrmSize;
-    /**
-     * 购买日期
-     */
-    @ExcelField(value = "butDate", align = 1, title = "购买日期", isDate = true)
-    private Long    butDate;
-    /**
-     * 到期时间
-     */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
-    private Long    dueDate;
+
     /**
      * 保修期
      */
