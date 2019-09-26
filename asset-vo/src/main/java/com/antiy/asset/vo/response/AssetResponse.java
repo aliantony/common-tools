@@ -79,6 +79,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("品类名称")
     private String                         categoryModelName;
     /**
+     * 品类名称
+     */
+    @ApiModelProperty("版本")
+    private String                         version;
+    /**
      * 厂商
      */
     @ApiModelProperty("厂商")
@@ -558,21 +563,59 @@ public class AssetResponse extends BaseResponse {
         this.contactTel = contactTel;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
-        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
-               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", serial='" + serial + '\''
-               + ", categoryModel='" + categoryModel + '\'' + ", categoryType=" + categoryType + ", categoryModelName='"
-               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
-               + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
-               + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
-               + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", describle='"
-               + describle + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty
-               + '\'' + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
-               + firstEnterNett + ", areaId='" + areaId + '\'' + ", areaName='" + areaName + '\'' + ", houseLocation='"
-               + houseLocation + '\'' + ", installType=" + installType + ", installTypeName='" + installTypeName + '\''
-               + ", waitingTaskReponse=" + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='"
-               + patchCount + '\'' + ", alarmCount='" + alarmCount + '\'' + '}';
+        return "AssetResponse{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", assetGroup='" + assetGroup + '\'' +
+                ", assetGroups=" + assetGroups +
+                ", ip=" + ip +
+                ", mac=" + mac +
+                ", ips='" + ips + '\'' +
+                ", macs='" + macs + '\'' +
+                ", serial='" + serial + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", categoryType=" + categoryType +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", version='" + version + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", assetStatus=" + assetStatus +
+                ", operationSystem='" + operationSystem + '\'' +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", operationSystemNotice='" + operationSystemNotice + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", responsibleUserId='" + responsibleUserId + '\'' +
+                ", responsibleUserName='" + responsibleUserName + '\'' +
+                ", baselineTemplateId='" + baselineTemplateId + '\'' +
+                ", installTemplateId='" + installTemplateId + '\'' +
+                ", assetSource=" + assetSource +
+                ", importanceDegree=" + importanceDegree +
+                ", describle='" + describle + '\'' +
+                ", serviceLife=" + serviceLife +
+                ", contactTel='" + contactTel + '\'' +
+                ", buyDate=" + buyDate +
+                ", warranty='" + warranty + '\'' +
+                ", admittanceStatus=" + admittanceStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", firstEnterNett=" + firstEnterNett +
+                ", areaId='" + areaId + '\'' +
+                ", areaName='" + areaName + '\'' +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", installType=" + installType +
+                ", installTypeName='" + installTypeName + '\'' +
+                ", waitingTaskReponse=" + waitingTaskReponse +
+                ", vulCount='" + vulCount + '\'' +
+                ", patchCount='" + patchCount + '\'' +
+                ", alarmCount='" + alarmCount + '\'' +
+                '}';
     }
 }
