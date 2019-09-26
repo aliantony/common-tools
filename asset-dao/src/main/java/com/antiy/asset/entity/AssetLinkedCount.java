@@ -2,8 +2,6 @@ package com.antiy.asset.entity;
 
 import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
-import com.antiy.common.base.BaseResponse;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetLinkRelationResponse 响应对象 </p>
@@ -27,7 +25,7 @@ public class AssetLinkedCount extends BaseEntity {
     /**
      * 资产品类型号
      */
-    private String       categoryModel;
+    private Integer      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -101,11 +99,11 @@ public class AssetLinkedCount extends BaseEntity {
         this.name = name;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 

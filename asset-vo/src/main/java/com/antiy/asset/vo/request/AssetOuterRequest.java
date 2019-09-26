@@ -1,15 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import java.io.*;
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import java.io.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -62,7 +60,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     /**
      * 存储介质
      */
-    @ApiModelProperty(value = "存储介质")
+    @ApiModelProperty(value = "存储设备")
     @Valid
     private AssetStorageMediumRequest     assetStorageMedium;
     /**

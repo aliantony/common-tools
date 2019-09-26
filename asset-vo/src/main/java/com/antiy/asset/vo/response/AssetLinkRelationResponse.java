@@ -1,7 +1,9 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -17,7 +19,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("资产主键")
     @Encode
-    private String      assetId;
+    private String       assetId;
     /**
      * 资产名称
      */
@@ -37,8 +39,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    @Encode
-    private String       categoryModel;
+    private Integer      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -49,7 +50,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("父级设备主键")
     @Encode
-    private String      parentAssetId;
+    private String       parentAssetId;
     /**
      * 关联资产名称
      */
@@ -69,8 +70,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 关联资产品类型号
      */
     @ApiModelProperty("关联资产品类型号")
-    @Encode
-    private String       parentCategoryModel;
+    private Integer      parentCategoryModel;
     /**
      * 关联资产品类型号名称
      */
@@ -90,8 +90,6 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.categoryType = categoryType;
     }
 
-
-
     public String getAssetIp() {
         return assetIp;
     }
@@ -108,20 +106,12 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.assetPort = assetPort;
     }
 
-    public String getCategoryModel() {
-        return categoryModel;
-    }
-
-    public void setCategoryModel(String categoryModel) {
-        this.categoryModel = categoryModel;
-    }
-
     public String getCategoryModelName() {
         return categoryModelName;
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
+        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
     }
 
     public String getAssetId() {
@@ -156,11 +146,19 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentAssetPort = parentAssetPort;
     }
 
-    public String getParentCategoryModel() {
+    public Integer getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public Integer getParentCategoryModel() {
         return parentCategoryModel;
     }
 
-    public void setParentCategoryModel(String parentCategoryModel) {
+    public void setParentCategoryModel(Integer parentCategoryModel) {
         this.parentCategoryModel = parentCategoryModel;
     }
 
@@ -169,7 +167,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
     }
 
     public void setParentCategoryModelName(String parentCategoryModelName) {
-        this.parentCategoryModelName = parentCategoryModelName;
+        this.parentCategoryModelName = AssetCategoryEnum.getNameByCode(parentCategoryModel);
     }
 
     public String getAssetName() {

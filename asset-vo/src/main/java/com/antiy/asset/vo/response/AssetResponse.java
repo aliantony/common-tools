@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import java.util.List;
 
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
 
@@ -97,7 +98,6 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    @Encode
     private String                         operationSystem;
 
     /**
@@ -140,10 +140,15 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("装机模板id")
     private String                         installTemplateId;
     /**
-     * 上报来源,1-自动上报，2-人工上报
+     * 上报来源
      */
     @ApiModelProperty("上报来源")
     private Integer                        assetSource;
+    /**
+     * 上报来源名称
+     */
+    @ApiModelProperty("上报来源名称")
+    private String                         assetSourceName;
     /**
      * 1核心2重要3一般
      */
@@ -232,6 +237,14 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
+
+    public String getAssetSourceName() {
+        return assetSourceName;
+    }
+
+    public void setAssetSourceName(String assetSourceName) {
+        this.assetSourceName = AssetSourceEnum.getNameByCode(assetSource);
+    }
 
     public String getIps() {
         return ips;

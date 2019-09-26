@@ -76,6 +76,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetDao                                                            assetDao;
     @Resource
+    private AssetCpeFilterDao                                                   assetCpeFilterDao;
+    @Resource
     private AssetInstallTemplateDao                                             assetInstallTemplateDao;
     @Resource
     private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
@@ -187,6 +189,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setGmtCreate(System.currentTimeMillis());
                     assetDao.insert(asset);
 
+
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
@@ -196,6 +199,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     insertBatchAssetGroupRelation(asset, assetGroup);
                     // 返回的资产id
                     aid = asset.getStringId();
+                    // 组件
+                    if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
+                        List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
+                        List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
+                        convert.forEach(assetAssembly -> assetAssembly.setAssetId(aid));
+                        assetAssemblyDao.insertBatch(convert);
+                    }
                     // 插入ip/net mac
                     if (CollectionUtils.isNotEmpty(request.getIpRelationRequests())) {
                         List<AssetIpRelationRequest> ipRequestList = request.getIpRelationRequests();
@@ -1072,8 +1082,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         ParamterExceptionUtils.isTrue(
             !checkNumber(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getNumber()), "资产编号重复");
-        ParamterExceptionUtils
-            .isTrue(!checkName(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
+
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -1801,7 +1810,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMac.add(entity.getMac());
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
-                asset.setOperationSystem(entity.getOperationSystem());
+                HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+                stringObjectHashMap.put("productName", entity.getOperationSystem());
+                AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+                asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2208,9 +2220,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 AssetIpRelation assetIpRelation = new AssetIpRelation();
                 assetIpRelation.setIp(entity.getIp());
                 assetIpRelations.add(assetIpRelation);
-                Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
-                asset.setOperationSystem(entity.getOperationSystem());
+                Asset asset = new Asset();
+                if (StringUtils.isNotBlank(entity.getOperationSystem())) {
+                    HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+                    stringObjectHashMap.put("productName", entity.getOperationSystem());
+                    AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+                    asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                }
+
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2652,11 +2670,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
+        // 未知资产
+        if (assetQuery.getUnknownAssets()) {
+            List<AssetUnkonwEntity> assetEntities = BeanConvert.convert(list, AssetUnkonwEntity.class);
+            downloadVO.setDownloadList(assetEntities);
+        } else {
+
+            List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
+            downloadVO.setDownloadList(assetEntities);
+        }
+
         downloadVO.setSheetName("资产信息表");
-        downloadVO.setDownloadList(assetEntities);
-        if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
+
+        if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
             LogUtils.recordOperLog(

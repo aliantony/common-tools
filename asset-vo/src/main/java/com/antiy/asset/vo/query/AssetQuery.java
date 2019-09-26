@@ -54,6 +54,12 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     private Integer      isNet;
     /**
+     * 是否网络设备,重复判读使用
+     */
+    @ApiModelProperty(value = "是否未知资产列表: 是 true  ")
+    private Boolean      unknownAssets = false;
+
+    /**
      * 是否安全设备,重复判读使用
      */
 
@@ -74,7 +80,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 品类型号列表
      */
     @ApiModelProperty("品类型号列表")
-    @Encode
     private Integer[]    categoryModels;
 
     @ApiModelProperty("二级品类")
@@ -672,5 +677,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setInstallType(String installType) {
         this.installType = installType;
+    }
+
+    public Boolean getUnknownAssets() {
+        return unknownAssets;
+    }
+
+    public void setUnknownAssets(Boolean unknownAssets) {
+        this.unknownAssets = unknownAssets;
     }
 }
