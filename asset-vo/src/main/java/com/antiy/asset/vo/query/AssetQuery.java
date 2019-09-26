@@ -57,7 +57,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 是否网络设备,重复判读使用
      */
     @ApiModelProperty(value = "是否未知资产列表: 是 true  ")
-    private Boolean      unknownAssets;
+    private Boolean      unknownAssets = false;
 
     /**
      * 是否安全设备,重复判读使用
