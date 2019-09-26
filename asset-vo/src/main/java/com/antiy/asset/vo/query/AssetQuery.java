@@ -1,18 +1,16 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -58,8 +56,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 是否网络设备,重复判读使用
      */
-    @ApiModelProperty(value = "是否未知资产列表: 是 1 ")
-    private Integer      isUnknown;
+    @ApiModelProperty(value = "是否未知资产列表: 是 true  ")
+    private Boolean      unknownAssets;
 
     /**
      * 是否安全设备,重复判读使用
@@ -641,14 +639,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         }
     }
 
-    public Integer getIsUnknown() {
-        return isUnknown;
-    }
-
-    public void setIsUnknown(Integer isUnknown) {
-        this.isUnknown = isUnknown;
-    }
-
     public String getAssetName() {
         return assetName;
     }
@@ -687,5 +677,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setInstallType(String installType) {
         this.installType = installType;
+    }
+
+    public Boolean getUnknownAssets() {
+        return unknownAssets;
+    }
+
+    public void setUnknownAssets(Boolean unknownAssets) {
+        this.unknownAssets = unknownAssets;
     }
 }
