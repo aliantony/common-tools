@@ -165,11 +165,7 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("使用到期时间")
     private Long                           serviceLife;
-    /**
-     * 联系电话
-     */
-    @ApiModelProperty("联系电话")
-    private String                         contactTel;
+
     /**
      * 制造日期
      */
@@ -568,13 +564,6 @@ public class AssetResponse extends BaseResponse {
         this.mac = mac;
     }
 
-    public String getContactTel() {
-        return contactTel;
-    }
-
-    public void setContactTel(String contactTel) {
-        this.contactTel = contactTel;
-    }
 
     public String getVersion() {
         return version;
@@ -596,7 +585,7 @@ public class AssetResponse extends BaseResponse {
                + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
                + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
                + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + contactTel
+               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" +
                + '\'' + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus="
                + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='"
                + areaId + '\'' + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\''
