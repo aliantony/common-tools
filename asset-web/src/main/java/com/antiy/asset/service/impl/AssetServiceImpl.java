@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
@@ -188,7 +187,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
                     assetDao.insert(asset);
-
 
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
@@ -654,8 +652,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void implementationFile(ProcessTemplateRequest baseRequest) throws InvocationTargetException,
-                                                                       IllegalAccessException, IOException {
+    public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
 
         // 根据时间戳创建文件夹，防止产生冲突
         Long currentTime = System.currentTimeMillis();
@@ -678,9 +675,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             CloseUtils.close(fileOutputStream);
         }
 
-        List<AssetResponse> list = this
-            .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-
+        // List<AssetResponse> list = this
+        // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
@@ -692,7 +693,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        if (!baseRequest.getType()) {
+        if (!baseRequest.isFlag()) {
             System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
         }
 
@@ -749,33 +750,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
-        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
-            List<Integer> categoryCondition = new ArrayList<>();
-            // for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            // Integer isNet = query.getIsNet();
-            // if ((isNet == null) || isNet == 1) {
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-            // categoryCondition.addAll(assetCategoryModelService
-            // .findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
-            // }
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-            // categoryCondition.addAll(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
-            // }
-            //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
-        } else {
-            // 品类型号及其子品类
-            // List<Integer> categoryModels = Lists.newArrayList();
-            // for (int i = 0; i < query.getCategoryModels().length; i++) {
-            // categoryModels.addAll(assetCategoryModelService
-            // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            // }
-            // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
+
+        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
+            // 网络设备可关联计算设备和网络设备
+            if (query.getIsNet() == 1) {
+                query.setCategoryModels(
+                    new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
+            }
+            // 计算设备只能关联网络设备
+            else {
+                query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
+            }
         }
+
         // 进行查询
         Integer count = assetLinkRelationDao.findUnconnectedCount(query);
         if (count == 0) {
@@ -1813,7 +1800,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                 stringObjectHashMap.put("productName", entity.getOperationSystem());
                 AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                // asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2226,7 +2213,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                     stringObjectHashMap.put("productName", entity.getOperationSystem());
                     AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                    asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                    asset.setOperationSystem(assetCpeFilter.getBusinessId());
                 }
 
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
@@ -2716,7 +2703,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
