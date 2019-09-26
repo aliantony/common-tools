@@ -2665,7 +2665,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
-        if (assetQuery.getIsUnknown() == 1) {
+        if (assetQuery.getUnknownAssets()) {
             List<AssetUnkonwEntity> assetEntities = BeanConvert.convert(list, AssetUnkonwEntity.class);
             downloadVO.setDownloadList(assetEntities);
         } else {
