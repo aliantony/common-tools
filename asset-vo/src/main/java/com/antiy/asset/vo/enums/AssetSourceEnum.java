@@ -8,6 +8,15 @@ public enum AssetSourceEnum {
     private Integer code;
     private String  name;
 
+    public static String getNameByCode(Integer code) {
+        for (AssetSourceEnum assetSourceEnum : AssetSourceEnum.values()) {
+            if (assetSourceEnum.code.equals(code)) {
+                return assetSourceEnum.name;
+            }
+        }
+        return "";
+    }
+
     AssetSourceEnum(Integer code, String name) {
         this.code = code;
         this.name = name;

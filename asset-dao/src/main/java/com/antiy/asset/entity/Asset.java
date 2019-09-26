@@ -151,6 +151,10 @@ public class Asset extends BaseEntity {
      */
     private Integer           assetSource;
     /**
+     * 上报来源名称
+     */
+    private String            assetSourceName;
+    /**
      * 资产重要程度：1核心2重要3一般
      */
     @ApiModelProperty("重要程度")
@@ -222,6 +226,14 @@ public class Asset extends BaseEntity {
     private String            departmentName;
     @ApiModelProperty("告警数量")
     private String            alarmCount;
+
+    public String getAssetSourceName() {
+        return assetSourceName;
+    }
+
+    public void setAssetSourceName(String assetSourceName) {
+        this.assetSourceName = assetSourceName;
+    }
 
     public String getCategoryModelName() {
         return categoryModelName;
