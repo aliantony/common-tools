@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -98,6 +97,7 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
+    @Encode
     private String                         operationSystem;
 
     /**
