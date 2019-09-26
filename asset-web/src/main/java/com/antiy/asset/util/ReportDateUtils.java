@@ -92,7 +92,7 @@ public class ReportDateUtils {
         LocalDate lastDay = today.with(TemporalAdjusters.lastDayOfMonth());
 
         // 获取当前月一共多少天
-        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + 1;
+        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal()+1;
         int weeks = (int) Math.ceil(days / 7.0);
         Map<String, String> resultMap = new HashMap<>();
 
@@ -102,6 +102,7 @@ public class ReportDateUtils {
         weeksMap.put(3, "第三周");
         weeksMap.put(4, "第四周");
         weeksMap.put(5, "第五周");
+        weeksMap.put(6, "第六周");
         for (int i = 1; i <= weeks; i++) {
             resultMap.put(weeksMap.get(i), weeksMap.get(i));
         }
