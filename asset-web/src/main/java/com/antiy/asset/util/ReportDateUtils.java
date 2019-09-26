@@ -1,12 +1,10 @@
 package com.antiy.asset.util;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,11 +46,16 @@ public class ReportDateUtils {
         days.put(4, "星期四");
         days.put(5, "星期五");
         days.put(6, "星期六");
-        days.put(7, "星期日");
+        days.put(0, "星期日");
         LocalDate currentDate = LocalDate.now();
         int weekDay = currentDate.getDayOfWeek().getValue();
         Map<String, String> resultWeek = new HashMap<>();
-        for (int i = 1; i <= weekDay; i++) {
+
+        // 转换mysql 0 为周天
+        if (weekDay == 7) {
+            resultWeek.put("0", days.get(0));
+        }
+        for (int i = 1; i < weekDay; i++) {
             if (null != days.get(i)) {
                 resultWeek.put(i + "", days.get(i));
             }
@@ -91,8 +94,12 @@ public class ReportDateUtils {
         // 获取本月最后一天
         LocalDate lastDay = today.with(TemporalAdjusters.lastDayOfMonth());
 
+        WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
+        int firstWeek = firstday.get(weekFields.weekOfWeekBasedYear());
+        int lastWeek = lastDay.get(weekFields.weekOfWeekBasedYear());
+
         // 获取当前月一共多少天
-        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal()+1;
+        int days = lastDay.getDayOfMonth() - firstday.getDayOfMonth() + firstday.getDayOfWeek().ordinal() + 1;
         int weeks = (int) Math.ceil(days / 7.0);
         Map<String, String> resultMap = new HashMap<>();
 
@@ -103,8 +110,9 @@ public class ReportDateUtils {
         weeksMap.put(4, "第四周");
         weeksMap.put(5, "第五周");
         weeksMap.put(6, "第六周");
-        for (int i = 1; i <= weeks; i++) {
-            resultMap.put(weeksMap.get(i), weeksMap.get(i));
+        int weekCount = lastWeek - firstWeek + 1;
+        for (int i = 1; i <= weekCount; i++) {
+            resultMap.put((firstWeek + i - 1) + "", weeksMap.get(i));
         }
         return resultMap;
     }
