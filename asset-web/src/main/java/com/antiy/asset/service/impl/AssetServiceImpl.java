@@ -76,6 +76,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetDao                                                            assetDao;
     @Resource
+    private AssetCpeFilterDao                                                   assetCpeFilterDao;
+    @Resource
     private AssetInstallTemplateDao                                             assetInstallTemplateDao;
     @Resource
     private AssetNetworkEquipmentDao                                            assetNetworkEquipmentDao;
@@ -1801,7 +1803,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMac.add(entity.getMac());
                 ComputerVo computerVo = new ComputerVo();
                 Asset asset = new Asset();
-                asset.setOperationSystem(entity.getOperationSystem());
+                HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+                stringObjectHashMap.put("productName", entity.getOperationSystem());
+                AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+                asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2208,9 +2213,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 AssetIpRelation assetIpRelation = new AssetIpRelation();
                 assetIpRelation.setIp(entity.getIp());
                 assetIpRelations.add(assetIpRelation);
-                Asset asset = new Asset();
                 AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
-                asset.setOperationSystem(entity.getOperationSystem());
+                Asset asset = new Asset();
+                if (StringUtils.isNotBlank(entity.getOperationSystem())) {
+                    HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+                    stringObjectHashMap.put("productName", entity.getOperationSystem());
+                    AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+                    asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                }
+
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);

@@ -29,12 +29,12 @@ public class AssetEntity {
      * ip
      */
     @ApiModelProperty("ip")
-    private String ip;
+    private String ips;
     /**
      * mac
      */
     @ApiModelProperty("mac")
-    private String mac;
+    private String macs;
     /**
      * mac
      */
@@ -57,7 +57,7 @@ public class AssetEntity {
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
-    private String operationSystemName;
+    private String operationSystem;
 
     /**
      * mac
@@ -106,14 +106,6 @@ public class AssetEntity {
         this.assetSource = assetSource;
     }
 
-    public String getOperationSystemName() {
-        return operationSystemName;
-    }
-
-    public void setOperationSystemName(String operationSystemName) {
-        this.operationSystemName = operationSystemName;
-    }
-
     public String getFirstEnterNett() {
         return firstEnterNett;
     }
@@ -146,13 +138,6 @@ public class AssetEntity {
         this.number = number;
     }
 
-    public String getCategoryModelName() {
-        return categoryModelName;
-    }
-
-    public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
-    }
 
     public String getManufacturer() {
         return manufacturer;
@@ -162,20 +147,28 @@ public class AssetEntity {
         this.manufacturer = manufacturer;
     }
 
-    public String getIp() {
-        return ip;
+    public String getIps() {
+        return ips;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setIps(String ips) {
+        this.ips = ips;
     }
 
-    public String getMac() {
-        return mac;
+    public String getMacs() {
+        return macs;
     }
 
-    public void setMac(String mac) {
-        this.mac = mac;
+    public void setMacs(String macs) {
+        this.macs = macs;
+    }
+
+    public String getOperationSystem() {
+        return operationSystem;
+    }
+
+    public void setOperationSystem(String operationSystem) {
+        this.operationSystem = operationSystem;
     }
 
     public String getAssetGroup() {
@@ -200,5 +193,13 @@ public class AssetEntity {
 
     public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getCategoryModelName() {
+        return categoryModelName;
+    }
+
+    public void setCategoryModelName(String categoryModelName) {
+        this.categoryModelName = categoryModelName;
     }
 }
