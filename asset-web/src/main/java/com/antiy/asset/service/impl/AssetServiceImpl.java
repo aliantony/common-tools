@@ -654,8 +654,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void implementationFile(ProcessTemplateRequest baseRequest) throws InvocationTargetException,
-                                                                       IllegalAccessException, IOException {
+    public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
 
         // 根据时间戳创建文件夹，防止产生冲突
         Long currentTime = System.currentTimeMillis();
@@ -678,9 +677,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             CloseUtils.close(fileOutputStream);
         }
 
-        List<AssetResponse> list = this
-            .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-
+        // List<AssetResponse> list = this
+        // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
@@ -692,7 +695,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        if (!baseRequest.getType()) {
+        if (!baseRequest.isFlag()) {
             System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
         }
 
