@@ -98,7 +98,7 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String                         operationSystem;
+    private Long                           operationSystem;
 
     /**
      * 操作系统名
@@ -440,11 +440,11 @@ public class AssetResponse extends BaseResponse {
         this.assetStatus = assetStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 
@@ -586,49 +586,22 @@ public class AssetResponse extends BaseResponse {
 
     @Override
     public String toString() {
-        return "AssetResponse{" +
-                "number='" + number + '\'' +
-                ", name='" + name + '\'' +
-                ", assetGroup='" + assetGroup + '\'' +
-                ", assetGroups=" + assetGroups +
-                ", ip=" + ip +
-                ", mac=" + mac +
-                ", ips='" + ips + '\'' +
-                ", macs='" + macs + '\'' +
-                ", serial='" + serial + '\'' +
-                ", categoryModel=" + categoryModel +
-                ", categoryType=" + categoryType +
-                ", categoryModelName='" + categoryModelName + '\'' +
-                ", version='" + version + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", assetStatus=" + assetStatus +
-                ", operationSystem='" + operationSystem + '\'' +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", operationSystemNotice='" + operationSystemNotice + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", responsibleUserId='" + responsibleUserId + '\'' +
-                ", responsibleUserName='" + responsibleUserName + '\'' +
-                ", baselineTemplateId='" + baselineTemplateId + '\'' +
-                ", installTemplateId='" + installTemplateId + '\'' +
-                ", assetSource=" + assetSource +
-                ", importanceDegree=" + importanceDegree +
-                ", describle='" + describle + '\'' +
-                ", serviceLife=" + serviceLife +
-                ", contactTel='" + contactTel + '\'' +
-                ", buyDate=" + buyDate +
-                ", warranty='" + warranty + '\'' +
-                ", admittanceStatus=" + admittanceStatus +
-                ", gmtCreate=" + gmtCreate +
-                ", firstEnterNett=" + firstEnterNett +
-                ", areaId='" + areaId + '\'' +
-                ", areaName='" + areaName + '\'' +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", installType=" + installType +
-                ", installTypeName='" + installTypeName + '\'' +
-                ", waitingTaskReponse=" + waitingTaskReponse +
-                ", vulCount='" + vulCount + '\'' +
-                ", patchCount='" + patchCount + '\'' +
-                ", alarmCount='" + alarmCount + '\'' +
-                '}';
+        return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
+               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", ips='" + ips + '\''
+               + ", macs='" + macs + '\'' + ", serial='" + serial + '\'' + ", categoryModel=" + categoryModel
+               + ", categoryType=" + categoryType + ", categoryModelName='" + categoryModelName + '\'' + ", version='"
+               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
+               + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
+               + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
+               + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
+               + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + contactTel
+               + '\'' + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus="
+               + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='"
+               + areaId + '\'' + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\''
+               + ", installType=" + installType + ", installTypeName='" + installTypeName + '\''
+               + ", waitingTaskReponse=" + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='"
+               + patchCount + '\'' + ", alarmCount='" + alarmCount + '\'' + '}';
     }
 }
