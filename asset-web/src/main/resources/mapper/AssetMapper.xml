@@ -29,6 +29,7 @@
         <result column="asset_status" property="assetStatus"/>
         <result column="admittance_status" property="admittanceStatus"/>
         <result column="operation_system" property="operationSystem"/>
+        <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="house_location" property="houseLocation"/>
         <result column="version" property="version"/>
@@ -1067,7 +1068,7 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-
+        ahsl.product_name as operation_system_name,
         asset.house_location,
         asset.latitude,
         asset.longitude,
@@ -1090,6 +1091,7 @@
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
