@@ -741,33 +741,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        // 若品类型号查询条件为空 默认只查已入网，网络设备和计算设备的资产
-        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length <= 0) {
-            List<Integer> categoryCondition = new ArrayList<>();
-            // for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
-            // Integer isNet = query.getIsNet();
-            // if ((isNet == null) || isNet == 1) {
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-            // categoryCondition.addAll(assetCategoryModelService
-            // .findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
-            // }
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-            // categoryCondition.addAll(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
-            // }
-            //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
-        } else {
-            // 品类型号及其子品类
-            // List<Integer> categoryModels = Lists.newArrayList();
-            // for (int i = 0; i < query.getCategoryModels().length; i++) {
-            // categoryModels.addAll(assetCategoryModelService
-            // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            // }
-            // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
+
+        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
+            // 网络设备可关联计算设备和网络设备
+            if (query.getIsNet() == 1) {
+                query.setCategoryModels(
+                    new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
+            }
+            // 计算设备只能关联网络设备
+            else {
+                query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
+            }
         }
+
         // 进行查询
         Integer count = assetLinkRelationDao.findUnconnectedCount(query);
         if (count == 0) {
@@ -2709,7 +2695,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));

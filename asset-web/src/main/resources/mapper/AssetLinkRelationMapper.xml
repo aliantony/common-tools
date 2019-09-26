@@ -973,107 +973,41 @@
     </select>
     <select id="findListUnconnectedAsset" resultMap="ResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select * from (select
+        select
         a.id,
         a.area_id,
         a.asset_group,
         a.category_model,
-        a.admittance_status,
         a.number,
         a.name,
-        a.install_type,
-        a.serial,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.operation_system,
-        a.system_bit,
-        a.location,
-        a.house_location,
-        a.latitude,
-        a.longitude,
-        a.firmware_version,
-        a.uuid,
-        a.responsible_user_id,
-        a.contact_tel,
-        a.email,
-        a.asset_source,
-        a.importance_degree,
-        a.describle,
-        a.parent_id,
-        a.tags,
-        a.first_enter_nett,
-        a.service_life,
-        a. buy_date,
-        a.warranty,
-        a.gmt_create,
-        a.status,
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
+        group_concat(b.ip) as ips,
+        group_concat(c.mac) as macs
         from
         asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
-        left join asset_category_model c on a.category_model = c.id
+        left join asset_ip_relation b on a.id = b.asset_id and b.status = 1
+        left join asset_mac_relation c on a.id = c.asset_id and b.status = 1
+        left join asset_link_relation d on ((a.id = d.asset_id and b.ip = d.asset_ip ) or (a.id = d.parent_asset_id and
+        b.ip = d.parent_asset_ip))
         where a.status = 1
         <if test="primaryKey !=null">
             and a.id != #{primaryKey}
         </if>
-        group by a.id
-        ) asset
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="All_Condition"></include>
-                and id not in (
-                select distinct asset_id from
-                (
-                (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
-                GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
-                parent_asset_id=netcard.asset_id and status=1))
-                union
-                (select DISTINCT relation.asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                union
-                (select DISTINCT relation.parent_asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                ) as assets
-                )
-            </trim>
-            ORDER BY first_enter_nett desc,
-            <if test=" ids != null and ids.length > 0">
-                FIELD(`id`,
-                <foreach index="index" item="item" collection="ids" separator=",">
-                    #{item}
-                </foreach>
-                ) DESC,
-            </if>
-            gmt_create desc,
-            id desc
-        </where>
-
+        <if test="categoryModels != null and categoryModels.length > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by a.id having count(b.id) > count(d.id)
+        ORDER BY first_enter_nett desc,
+        <if test=" ids != null and ids.length > 0">
+            FIELD(`id`,
+            <foreach index="index" item="item" collection="ids" separator=",">
+                #{item}
+            </foreach>
+            ) DESC,
+        </if>
+        id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -1081,100 +1015,34 @@
     <select id="findUnconnectedCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(1) count
         from
-        (select
-        a.id,
-        a.area_id,
-        a.asset_group,
-        a.category_model,
-        a.admittance_status,
-        a.number,
-        a.name,
-        a.install_type,
-        a.serial,
-        c.name as category_model_name,
-        a.manufacturer, asset_status,
-        a.operation_system,
-        a.system_bit,
-        a.location,
-        a.house_location,
-        a.latitude,
-        a.longitude,
-        a.firmware_version,
-        a.uuid,
-        a.responsible_user_id,
-        a.contact_tel,
-        a.email,
-        a.asset_source,
-        a.importance_degree,
-        a.describle,
-        a.parent_id,
-        a.tags,
-        a.first_enter_nett,
-        a.service_life,
-        a. buy_date,
-        a.warranty,
-        a.gmt_create,
-        a.status,
-        case
-        when replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.ip_address),',',' ')),' ',',')
-        when (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1) is
-        not
-        null then
-        (select inner_ip from asset_network_equipment
-        where asset_id = a.id and status = 1)
-        when (select ip from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select ip from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as ip,
-        case
-        when replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',') is not null then
-        replace(rtrim(replace(group_concat(b.mac_address),',',' ')),' ',',')
-        when (select mac_address from asset_network_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac_address from asset_network_equipment where asset_id = a.id and status = 1)
-        when (select mac from asset_safety_equipment where asset_id = a.id and status = 1) is not null then
-        (select mac from asset_safety_equipment where asset_id = a.id and status = 1)
-        else '' end as mac
-        from
-        asset a
-        left join asset_network_card b on a.id = b.asset_id and b.status = 1 and a.status=1
-        left join asset_category_model c on a.category_model = c.id
-        where a.status = 1
-        <if test="primaryKey !=null">
-            and a.id != #{primaryKey}
-        </if>
-        group by a.id
-        ) asset
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="All_Condition"></include>
-                and status=1
-                <if test="primaryKey !=null">
-                    and asset.id != #{primaryKey}
-                </if>
-                and id not in (
-                select distinct asset_id from
-                (
-                (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
-                GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
-                parent_asset_id=netcard.asset_id and status=1))
-                union
-                (select DISTINCT relation.asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                union
-                (select DISTINCT relation.parent_asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                ) as assets
-                )
-            </trim>
-        </where>
+        (
+            select
+            a.id,
+            a.area_id,
+            a.asset_group,
+            a.category_model,
+            a.number,
+            a.name,
+            group_concat(b.ip) as ips,
+            group_concat(c.mac) as macs
+            from
+            asset a
+            left join asset_ip_relation b on a.id = b.asset_id and b.status = 1
+            left join asset_mac_relation c on a.id = c.asset_id and b.status = 1
+            left join asset_link_relation d on ((a.id = d.asset_id and b.ip = d.asset_ip ) or (a.id = d.parent_asset_id and
+            b.ip = d.parent_asset_ip))
+            where a.status = 1
+            <if test="primaryKey !=null">
+                and a.id != #{primaryKey}
+            </if>
+            <if test="categoryModels != null and categoryModels.length > 0">
+                and a.category_model in
+                <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            group by a.id having count(b.id) > count(d.id)
+        ) t
     </select>
 
     <select id="queryGroupList" parameterType="com.antiy.asset.vo.query.AssetTopologyQuery"
