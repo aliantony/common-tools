@@ -380,8 +380,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        for (AssetLinkedCount assetResponse : assetResponseList) {
-            String categoryModel = assetResponse.getCategoryModel();
+        /*for (AssetLinkedCount assetResponse : assetResponseList) {
+            //String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
                 // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
@@ -393,7 +393,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 // cache.put(categoryModel, second);
                 // }
             }
-        }
+        }*/
     }
 
     private void processLinkRelation(List<AssetLinkRelation> assetResponseList,
@@ -402,7 +402,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        for (AssetLinkRelation assetResponse : assetResponseList) {
+       /* for (AssetLinkRelation assetResponse : assetResponseList) {
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
@@ -415,42 +415,22 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 // cache.put(categoryModel, second);
                 // }
             }
-        }
+        }*/
     }
 
     @Override
     public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
-        Integer portSize = assetLinkRelationDao
-            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
-        List<Integer> portCount = Lists.newArrayList();
-        /*if (portSize != null && portSize > 0) {
-            for (int i = 1; i <= portSize; i++) {
-                portCount.add(i);
-            }
-            assetLinkRelationQuery.setPortCount(portCount);
-        }*/
         List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
-        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        // processLinkRelation(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 
     public Integer queryLinkedCountAssetByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
-        Integer portSize = assetLinkRelationDao
-            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
-        List<Integer> portCount = Lists.newArrayList();
-        /*if (portSize != null && portSize > 0) {
-            for (int i = 1; i <= portSize; i++) {
-                portCount.add(i);
-            }
-            assetLinkRelationQuery.setPortCount(portCount);
-        }*/
         return assetLinkRelationDao.queryLinkedCountAssetByAssetId(assetLinkRelationQuery);
     }
 
@@ -459,10 +439,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
-            return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
+            return new PageResult<>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
-        return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
+        return new PageResult<>(assetLinkRelationQuery.getPageSize(),
             this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkRelationResponseList);
     }
