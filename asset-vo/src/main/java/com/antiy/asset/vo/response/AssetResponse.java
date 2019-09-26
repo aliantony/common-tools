@@ -98,7 +98,7 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("操作系统")
     @Encode
-    private String                           operationSystem;
+    private String                         operationSystem;
 
     /**
      * 操作系统名
@@ -176,6 +176,8 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("保修期")
     private String                         warranty;
+    @ApiModelProperty("联系电话")
+    private String                         contactTel;
     /**
      * 资产准入状态
      */
@@ -564,13 +566,20 @@ public class AssetResponse extends BaseResponse {
         this.mac = mac;
     }
 
-
     public String getVersion() {
         return version;
     }
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
     }
 
     @Override
@@ -585,12 +594,12 @@ public class AssetResponse extends BaseResponse {
                + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
                + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
                + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" +
-               + '\'' + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus="
-               + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='"
-               + areaId + '\'' + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\''
-               + ", installType=" + installType + ", installTypeName='" + installTypeName + '\''
-               + ", waitingTaskReponse=" + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='"
-               + patchCount + '\'' + ", alarmCount='" + alarmCount + '\'' + '}';
+               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + +'\''
+               + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus=" + admittanceStatus
+               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='" + areaId + '\''
+               + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
+               + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
+               + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
+               + ", alarmCount='" + alarmCount + '\'' + '}';
     }
 }
