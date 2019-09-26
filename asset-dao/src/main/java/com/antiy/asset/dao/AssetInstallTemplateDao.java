@@ -15,12 +15,28 @@ import java.util.List;
 public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> {
 
     public List<AssetInstallTemplate> findByAssetIds(List<String> ids);
+
     /**
      * 通过资产ID查询
+     *
      * @param assetId
      * @return
      * @throws Exception
      */
     AssetTemplateRelationResponse queryTemplateByAssetId(Integer assetId) throws Exception;
+
+    /**
+     * 查询所有装机模板操作系统名称(去重)
+     *
+     * @return
+     */
+    List<String> queryTemplateOs();
+
+    /**
+     * 查询所有装机模板操作系统状态(去重)
+     *
+     * @return
+     */
+    List<Integer> queryTemplateStatus();
 
 }

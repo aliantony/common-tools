@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
+import com.antiy.asset.vo.response.AssetInstallTemplateOsAndStatusResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.BaseRequest;
@@ -20,8 +21,13 @@ import java.util.List;
  */
 public interface IAssetInstallTemplateService extends IBaseService<AssetInstallTemplate> {
 
+
+    AssetInstallTemplateOsAndStatusResponse queryOsAndStatus();
+
+
     /**
      * 保存
+     *
      * @param request
      * @return
      */
@@ -29,6 +35,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 修改
+     *
      * @param request
      * @return
      */
@@ -36,6 +43,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 查询对象集合
+     *
      * @param query
      * @return
      */
@@ -43,6 +51,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 分页查询
+     *
      * @param query
      * @return
      */
@@ -50,6 +59,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 通过ID查询
+     *
      * @param queryCondition
      * @return
      */
@@ -57,6 +67,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 通过ID删除
+     *
      * @param baseRequest
      * @return
      */
@@ -64,6 +75,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 通过资产ID查询
+     *
      * @param queryCondition
      * @return
      * @throws Exception
