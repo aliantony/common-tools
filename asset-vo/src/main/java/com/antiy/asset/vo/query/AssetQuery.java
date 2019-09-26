@@ -54,6 +54,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     private Integer      isNet;
     /**
+     * 是否网络设备,重复判读使用
+     */
+    @ApiModelProperty(value = "是否未知资产列表: 是 1 ")
+    private Integer      isUnknown;
+    /**
      * 是否安全设备,重复判读使用
      */
 
@@ -631,6 +636,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
             ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
             ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
         }
+    }
+
+    public Integer getUnkonw() {
+        return isUnknown;
+    }
+
+    public void setUnkonw(Integer unkonw) {
+        isUnknown = unkonw;
     }
 
     public String getAssetName() {

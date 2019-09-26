@@ -2663,11 +2663,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         DownloadVO downloadVO = new DownloadVO();
+        // 未知资产
+        if (assetQuery.getUnkonw() == 1) {
+            List<AssetUnkonwEntity> assetEntities = BeanConvert.convert(list, AssetUnkonwEntity.class);
+            downloadVO.setDownloadList(assetEntities);
+        } else {
+
+            List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
+            downloadVO.setDownloadList(assetEntities);
+        }
+
         downloadVO.setSheetName("资产信息表");
-        downloadVO.setDownloadList(assetEntities);
-        if (Objects.nonNull(assetEntities) && assetEntities.size() > 0) {
+
+        if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
             excelDownloadUtil.excelDownload(request, response,
                 "硬件资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
             LogUtils.recordOperLog(

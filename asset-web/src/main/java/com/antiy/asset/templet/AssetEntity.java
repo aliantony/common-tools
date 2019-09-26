@@ -57,7 +57,7 @@ public class AssetEntity {
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
-    private String operationSystem;
+    private String operationSystemName;
 
     /**
      * mac
@@ -163,14 +163,6 @@ public class AssetEntity {
         this.macs = macs;
     }
 
-    public String getOperationSystem() {
-        return operationSystem;
-    }
-
-    public void setOperationSystem(String operationSystem) {
-        this.operationSystem = operationSystem;
-    }
-
     public String getAssetGroup() {
         return assetGroup;
     }
@@ -201,5 +193,13 @@ public class AssetEntity {
 
     public void setCategoryModelName(String categoryModelName) {
         this.categoryModelName = categoryModelName;
+    }
+
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
     }
 }
