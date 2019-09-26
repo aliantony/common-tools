@@ -189,6 +189,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setGmtCreate(System.currentTimeMillis());
                     assetDao.insert(asset);
 
+
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
@@ -198,6 +199,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     insertBatchAssetGroupRelation(asset, assetGroup);
                     // 返回的资产id
                     aid = asset.getStringId();
+                    // 组件
+                    if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
+                        List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
+                        List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
+                        convert.forEach(assetAssembly -> assetAssembly.setAssetId(aid));
+                        assetAssemblyDao.insertBatch(convert);
+                    }
                     // 插入ip/net mac
                     if (CollectionUtils.isNotEmpty(request.getIpRelationRequests())) {
                         List<AssetIpRelationRequest> ipRequestList = request.getIpRelationRequests();
@@ -1074,8 +1082,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         ParamterExceptionUtils.isTrue(
             !checkNumber(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getNumber()), "资产编号重复");
-        ParamterExceptionUtils
-            .isTrue(!checkName(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAsset().getName()), "资产名称重复");
+
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
