@@ -783,7 +783,7 @@ public class AssetServiceImplTest {
         asset.setManufacturer("");
         asset.setAssetStatus(8);
         asset.setAdmittanceStatus(0);
-        asset.setOperationSystem("1");
+        asset.setOperationSystem(1L);
 
 //        asset.setLatitude("");
 //        asset.setLongitude("");
@@ -1683,7 +1683,7 @@ public class AssetServiceImplTest {
         assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
-        assetResponse.setOperationSystem("");
+        assetResponse.setOperationSystem(1L);
 
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
@@ -1742,7 +1742,7 @@ public class AssetServiceImplTest {
         assetRequest.setAreaId("1");
         assetRequest.setManufacturer("1");
         assetRequest.setAssetStatus(0);
-        assetRequest.setOperationSystem("1");
+        assetRequest.setOperationSystem(1L);
         assetRequest.setSystemBit(0);
         assetRequest.setFirmwareVersion("1");
         assetRequest.setUuid("1");

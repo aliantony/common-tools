@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
@@ -188,7 +187,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
                     assetDao.insert(asset);
-
 
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
@@ -1802,7 +1800,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                 stringObjectHashMap.put("productName", entity.getOperationSystem());
                 AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                // asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2215,7 +2213,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                     stringObjectHashMap.put("productName", entity.getOperationSystem());
                     AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                    asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                    asset.setOperationSystem(assetCpeFilter.getBusinessId());
                 }
 
                 asset.setResponsibleUserId(checkUser(entity.getUser()));

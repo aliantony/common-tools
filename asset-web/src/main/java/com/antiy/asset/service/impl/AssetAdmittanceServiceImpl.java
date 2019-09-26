@@ -76,17 +76,6 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
-        List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
-        for (AssetResponse object : objects) {
-            // 设置操作系统名
-            if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
-                    if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                        object.setOperationSystemName((String) categoryModelResponse.getName());
-                    }
-                }
-            }
-        }
         return objects;
 
     }
