@@ -71,14 +71,6 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
         this.baselineTemplateId = baselineTemplateId;
     }
 
-    public boolean isBatch() {
-        return isBatch;
-    }
-
-    public void setBatch(boolean batch) {
-        isBatch = batch;
-    }
-
     @Override
     public void validate() throws RequestParamValidateException {
     }
