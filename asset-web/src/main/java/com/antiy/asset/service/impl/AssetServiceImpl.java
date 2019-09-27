@@ -2694,6 +2694,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetId.length;
     }
 
+    @Override
+    public List<SelectResponse> queryBaselineTemplate() {
+        return assetDao.queryBaselineTemplate();
+    }
+
     private void operationRecord(String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
