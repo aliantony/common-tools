@@ -471,7 +471,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
                 LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(patchCountList)) {
-                return new ArrayList<AssetResponse>();
+                return new ArrayList<>();
             }
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[patchCountMaps.size()];
@@ -494,7 +494,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return new ArrayList<AssetResponse>();
             }
             alarmCountMaps = alarmCountList.stream()
-                .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
+                .collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
         }

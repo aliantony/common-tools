@@ -33,6 +33,9 @@ public class ActivityClientImpl implements ActivityClient {
     @Value("${manualStartProcessUrl}")
     private String     manualStartProcessUrl;
 
+    @Value("${batchCompleteTaskUrl}")
+    private String     batchCompleteTaskUrl;
+
     @Value("${completeTaskUrl}")
     private String     completeTaskUrl;
 
@@ -56,6 +59,14 @@ public class ActivityClientImpl implements ActivityClient {
         ParamterExceptionUtils.isNull(request, "处理流程参数不能为空");
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, completeTaskUrl);
+    }
+
+    @Override
+    @AssetLog(description = "批量处理工作流", operationType = AssetLogOperationType.ADD)
+    public ActionResponse completeTaskBatch(List<ActivityHandleRequest> request) {
+        ParamterExceptionUtils.isNull(request, "处理流程参数不能为空");
+        return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
+        }, batchCompleteTaskUrl);
     }
 
     @Override
