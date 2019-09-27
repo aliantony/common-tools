@@ -269,24 +269,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        if (id != null && id > 0) {
-            // 启动流程
-            ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
-            activityRequest.setBusinessId(String.valueOf(id));
-            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
-            activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
-            ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-            // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                // 调用失败，逻辑删登记的资产
-                assetDao.deleteById(id);
-                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-            }
-
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
-        }
+        // if (id != null && id > 0) {
+        // // 启动流程
+        // ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
+        // activityRequest.setBusinessId(String.valueOf(id));
+        // activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+        // activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+        // ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+        // // 如果流程引擎为空,直接返回错误信息
+        // if (null == actionResponse
+        // || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+        // // 调用失败，逻辑删登记的资产
+        // assetDao.deleteById(id);
+        // return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        // }
+        //
+        // } else {
+        // return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
+        // }
         return ActionResponse.success();
     }
 
