@@ -31,6 +31,7 @@
         <result column="operation_system" property="operationSystem"/>
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="responsible_user_name" property="responsibleUserName"/>
         <result column="house_location" property="houseLocation"/>
         <result column="version" property="version"/>
         <result column="firmware_version" property="firmwareVersion"/>
@@ -613,9 +614,6 @@
     </sql>
 
 
-
-
-
     <sql id="Where_Column">
         <if test=" number != null">
             and number = #{number }
@@ -694,6 +692,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="baselineTemplateId != null and baselineTemplateId != ''">
+            and baseline_template_id = #{baselineTemplateId}
+        </if>
         <if test=" areaIds != null and areaIds.length > 0 and ids == null">
             and asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -1085,9 +1086,11 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
-        asset.version
+        asset.version,
         GROUP_CONCAT(air.ip) AS ips,
-        GROUP_CONCAT(amr.mac) AS macs
+        GROUP_CONCAT(amr.mac) AS macs,
+        asset.install_template_id,
+        asset.baseline_template_id
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
@@ -1604,9 +1607,9 @@ AND a.`status` = 1
     </select>
 
 
-    <select id="getAssetStatusListByIds"  resultType="com.antiy.asset.entity.Asset">
+    <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
         SELECT id,asset_status as assetStatus
-        FROM  asset
+        FROM asset
         WHERE id IN
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
