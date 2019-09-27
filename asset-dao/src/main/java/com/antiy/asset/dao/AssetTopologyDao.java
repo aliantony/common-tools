@@ -21,11 +21,7 @@ public interface AssetTopologyDao extends IBaseDao<AssetTopology> {
 
     Integer findTopologyCountByCategory(AssetQuery query);
 
-    Integer findOtherTopologyCountByCategory(AssetQuery query);
-
     List<String> findTopologyIdByCategory(AssetQuery query);
-
-    List<Asset> selectFakeAsset(AssetQuery query);
 
     List<AssetCountResult> countAssetByOs(AssetQuery query);
 }
