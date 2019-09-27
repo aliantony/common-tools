@@ -9,6 +9,7 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
 import com.antiy.asset.vo.response.AssetCountResponse;
 import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -17,6 +18,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -486,6 +488,17 @@ public class AssetController {
     public ActionResponse findAlarmAssetCount() throws Exception {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
-
+    /**
+     * 资产列表查询-基准模板下拉项信息
+     * @author zhangyajun
+     *
+     * @return 资产组名称集合
+     */
+    @ApiOperation(value = "资产列表查询-基准模板下拉项信息", notes = "无查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/baselineTemplate", method = RequestMethod.POST)
+    public ActionResponse<List<SelectResponse>> queryBaselineTemplate() throws Exception {
+        return ActionResponse.success(iAssetService.queryBaselineTemplate());
+    }
 
 }

@@ -799,8 +799,14 @@
                 </if>
             </otherwise>
         </choose>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
+        <if test="query.supplier != null and query.supplier != ''">
+            and supplier = #{query.supplier}
+        </if>
+        <if test="query.productName != null and query.productName != ''">
+            and product_name = #{query.productName}
+        </if>
+        <if test="query.pageSize !=-1">
+            LIMIT #{query.pageSize} offset #{query.pageOffset}
         </if>
     </select>
     <!--查询可关联的软件数量-->
@@ -833,6 +839,12 @@
                 </if>
             </otherwise>
         </choose>
+        <if test="query.supplier != null and query.supplier != ''">
+            and supplier = #{query.supplier}
+        </if>
+        <if test="query.productName != null and query.productName != ''">
+            and product_name = #{query.productName}
+        </if>
     </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
@@ -849,7 +861,7 @@
         create_user
         )
         values
-        <foreach collection="list" item="item"  separator=",">
+        <foreach collection="list" item="item" separator=",">
             (
             #{item.assetId},
             #{item.softwareId},

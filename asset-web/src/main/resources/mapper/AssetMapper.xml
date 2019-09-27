@@ -1615,4 +1615,12 @@ AND a.`status` = 1
             #{id}
         </foreach>
     </select>
+    <select id="queryBaselineTemplate" resultType="com.antiy.asset.vo.response.SelectResponse">
+       SELECT DISTINCT
+            bt.id,
+            bt.tp_name as value
+        FROM
+            asset asset
+            INNER JOIN baseline_template bt ON asset.baseline_template_id = bt.id
+    </select>
 </mapper>
