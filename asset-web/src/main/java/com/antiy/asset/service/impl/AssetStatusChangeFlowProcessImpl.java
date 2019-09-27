@@ -3,16 +3,16 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
+import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetStatusChangeProcessService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
@@ -53,8 +53,6 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
     @Resource
     private AesEncoder aesEncoder;
     @Resource
-    private BaseLineClient baseLineClient;
-    @Resource
     private ActivityClient activityClient;
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -62,7 +60,7 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         // 1.校验参数信息,当前流程的资产是否都满足当前状态(所有资产状态与页面状态一致,当前资产的可执行操作与本次操作一致),待整改有两种情况
-        List<Integer> assetIdList = statusJumpRequest.getAssetIdList().stream().map(DataTypeUtils::stringToInteger).collect(Collectors.toList());
+        List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
         List<Asset> assetsInDb = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(assetIdList)) {
             assetsInDb = assetDao.findByIds(assetIdList);
@@ -79,24 +77,22 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         // 3.更新资产状态
         updateData(statusJumpRequest, assetsInDb);
         // 4.记录操作日志
-        logRecordOperLog(statusJumpRequest, assetsInDb);
+        assetsInDb.forEach(asset -> {
+            LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getMsg(),
+                    asset.getId(),
+                    asset.getNumber(), statusJumpRequest,
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        });
         return ActionResponse.success();
     }
 
 
-    private ActionResponse startActivity(AssetStatusJumpRequest assetStatusRequest) throws Exception {
+    private void startActivity(AssetStatusJumpRequest assetStatusRequest) {
         // 1.封装数据
-        List<ManualStartActivityRequest> manualStartActivityRequestList = new ArrayList<>(assetStatusRequest.getAssetIdList().size());
 
-        // TODO 与流程引擎对接数据
-        // assetStatusRequest.getManualStartActivityRequest().forEach(assetStatusRequest -> {
-        //     assetStatusRequest.getManualStartActivityRequest()
-        //             .setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-        //     ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-        //     manualStartActivityRequestList.add(manualStartActivityRequest);
-        // });
-
+        //TODO 退役启动流程
         if (AssetFlowEnum.RETIRE.getCurrentAssetStatus().equals(assetStatusRequest.getAssetFlowEnum().getCurrentAssetStatus())) {
+            List<ManualStartActivityRequest> manualStartActivityRequestList = new ArrayList<>(assetStatusRequest.getAssetInfoList().size());
             // 记录操作日志
             // LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_RETIRE_START.getName(),
             //         DataTypeUtils.stringToInteger(assetStatusReqeust.getAssetId()),
@@ -105,31 +101,36 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
             // 启动流程
             assetStatusRequest.getManualStartActivityRequest()
                     .setAssignee(LoginUserUtil.getLoginUser().getId().toString());
-            // TODO退役
-            // actionResponse = activityClient.manualStartProcess(assetStatusReqeust.getManualStartActivityRequest());
-        }
-
-        try {
-            ActionResponse actionResponse = activityClient.startProcessWithoutFormBatch(manualStartActivityRequestList);
-            LogUtils.info(logger, "请求工作流数据结果 {}", actionResponse);
-            // 如果流程引擎为空,直接返回错误信息
-            if (null == actionResponse
-                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                // 记录流程失败的资产节点信息，用于资产状态的定时任务
-                // AssetStatusTask assetStatusTask = new AssetStatusTask();
-                // assetStatusTask.setAssetId(assetStatusReqeust.getAssetId());
-                // assetStatusTask.setTaskId(assetStatusReqeust.getActivityHandleRequest().getTaskId());
-                // assetStatusTask.setGmtCreate(System.currentTimeMillis());
-                // assetStatusTask.setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId()
-                // : null);
-                // statusTaskDao.insert(assetStatusTask);
-                return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+            //TODO 开始退役
+            try {
+                ActionResponse actionResponse = activityClient.manualStartProcess(assetStatusRequest.getManualStartActivityRequest());
+            } catch (Exception e) {
+                LogUtils.error(logger, "请求工作流数据异常: {}", e);
+                throw new BusinessException("数据错误,请稍后重试");
             }
-        } catch (Exception e) {
-            LogUtils.error(logger, "请求工作流数据异常: {}", e);
-            throw new BusinessException("数据错误,请稍后重试");
+        } else {
+            // 非启动退役流程
+            List<ActivityHandleRequest> requestList = new ArrayList<>();
+            assetStatusRequest.getAssetInfoList().forEach(assetInfo -> {
+                ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+                activityHandleRequest.setFormData(assetStatusRequest.getFormData());
+                activityHandleRequest.setTaskId(assetInfo.getTaskId());
+                requestList.add(activityHandleRequest);
+            });
+
+            try {
+                ActionResponse actionResponse = activityClient.completeTaskBatch(requestList);
+                LogUtils.info(logger, "请求工作流数据结果 {}", actionResponse);
+                // 如果流程引擎为空,直接返回错误信息
+                if (null == actionResponse
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                    throw new BusinessException("请求工作流数据失败");
+                }
+            } catch (Exception e) {
+                LogUtils.error(logger, "请求工作流数据异常: {}", e);
+                throw new BusinessException("工作流请求失败,请稍后重试");
+            }
         }
-        return ActionResponse.success();
     }
 
     /**
@@ -186,7 +187,6 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         });
     }
 
-
     /**
      * 转换操作记录
      *
@@ -219,41 +219,10 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
      */
     private void logRecordOperLog(AssetStatusJumpRequest assetStatusJumpRequest, List<Asset> assetList) {
         assetList.forEach(asset -> {
-            String logEvent = assetStatusJumpRequest.getAssetFlowEnum().getMsg();
-            // TODO 业务阶段
-            BusinessPhaseEnum currentBusinessPhase = BusinessPhaseEnum.WAIT_REGISTER;;
-            switch (assetStatusJumpRequest.getAssetFlowEnum()) {
-                case REGISTER:
-                    currentBusinessPhase = BusinessPhaseEnum.WAIT_REGISTER;
-                    break;
-                case TEMPLATE_IMPL:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-                    break;
-                case VALIDATE:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-                    break;
-                case NET_IN:
-                    currentBusinessPhase = BusinessPhaseEnum.WAIT_NET;
-                    break;
-                case CHECK:
-                    currentBusinessPhase = BusinessPhaseEnum.WAIT_CHECK;
-                    break;
-                case CORRECT:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-                    break;
-                case TO_WAIT_RETIRE:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-                    break;
-                case RETIRE:
-                    currentBusinessPhase = BusinessPhaseEnum.RETIRE;
-                    break;
-                default:
-                    break;
-            }
-            LogUtils.recordOperLog(new BusinessData(logEvent,
+            LogUtils.recordOperLog(new BusinessData(assetStatusJumpRequest.getAssetFlowEnum().getMsg(),
                     asset.getId(),
                     asset.getNumber(), assetStatusJumpRequest,
-                    BusinessModuleEnum.HARD_ASSET, currentBusinessPhase));
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         });
     }
 

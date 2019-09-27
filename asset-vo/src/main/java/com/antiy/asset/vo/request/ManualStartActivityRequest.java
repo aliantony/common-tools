@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -21,10 +22,10 @@ public class ManualStartActivityRequest {
     private String       assignee;
 
     /**
-     * 业务Id
+     * 资产主键
      */
-    @ApiModelProperty(value = "业务Id")
-    // @Encode
+    @ApiModelProperty(value = "资产主键")
+    @Encode
     private String       businessId;
 
     /**
