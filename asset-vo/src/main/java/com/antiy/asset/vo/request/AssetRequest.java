@@ -41,12 +41,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("装机模板id")
     @Encode
     private String                  installTemplateId;
-    /**
-     * id
-     */
-    @ApiModelProperty("是安全检查:true ,模板实施false")
 
-    private boolean                 safetyCheck;
     /**
      * 资产zu
      */
@@ -464,11 +459,4 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
                + describle + '\'' + '}';
     }
 
-    public boolean isSafetyCheck() {
-        return safetyCheck;
-    }
-
-    public void setSafetyCheck(boolean safetyCheck) {
-        this.safetyCheck = safetyCheck;
-    }
 }

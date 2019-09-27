@@ -24,9 +24,10 @@ public class ManualStartActivityRequest {
      * 业务Id
      */
     @ApiModelProperty(value = "业务Id")
-    // @Encode
     private String       businessId;
-
+    @ApiModelProperty(value = "流程定义Id")
+    // @NotNull(message = "流程定义Id不能为空")
+    private String       processDefinitionKey;
     /**
      * 表单数据
      */
@@ -58,10 +59,6 @@ public class ManualStartActivityRequest {
     public void setConfigUserIds(List<String> configUserIds) {
         this.configUserIds = configUserIds;
     }
-
-    @ApiModelProperty(value = "流程定义Id")
-    // @NotNull(message = "流程定义Id不能为空")
-    private String processDefinitionKey;
 
     public String getAssignee() {
         return assignee;
