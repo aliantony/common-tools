@@ -179,7 +179,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     List<AssetSoftwareInstallResponse> queryInstallableList(@Param("query") InstallQuery query,
                                                             @Param("nameListType") Integer nameListType,
                                                             @Param("softwareIds") List<Long> softwareIds,
-                                                            @Param("installedSoftIds") List<String> installedSoftIds);
+                                                            @Param("installedSoftIds") List<Long> installedSoftIds);
 
     /**
      * 查询可关联软件数量
@@ -190,7 +190,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     Integer queryInstallableCount(@Param("query") InstallQuery query, @Param("nameListType") Integer nameListType,
                                   @Param("softwareIds") List<Long> softwareIds,
-                                  @Param("installedSoftIds") List<String> installedSoftIds);
+                                  @Param("installedSoftIds") List<Long> installedSoftIds);
 
     /**
      * 删除资产与软件的关联关系
