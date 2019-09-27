@@ -1,5 +1,13 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
@@ -8,14 +16,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -85,18 +85,16 @@ public interface IAssetService extends IBaseService<Asset> {
     Integer changeStatusById(String id, Integer targetStatus) throws Exception;
 
     /**
-     * 批量保存
+     * 批量保存 <p> 批量保存 m
      *
-     * 批量保存 m
      * @param assets
      * @return
      */
     Integer batchSave(List<Asset> assets) throws Exception;
 
-
-
     /**
      * 根据品类型号查询对应资产列表
+     *
      * @param query
      * @return
      * @throws Exception
@@ -105,6 +103,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产数量
+     *
      * @param query
      * @return
      * @throws Exception
@@ -113,6 +112,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 根据品类型号查询对应资产
+     *
      * @return
      * @throws Exception
      */
@@ -142,7 +142,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<EnumCountResponse> countCategory() throws Exception;
 
-
     /**
      * 通过ID列表查询资产列表
      *
@@ -161,6 +160,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 资产变更
+     *
      * @param assetOuterRequest 资产信息
      */
     Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
@@ -178,6 +178,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 硬件导入PC
+     *
      * @param file
      * @param areaId
      * @return
@@ -186,6 +187,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 硬件导入网络设备
+     *
      * @param file
      * @param areaId
      * @return
@@ -194,6 +196,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 硬件导入安全设备
+     *
      * @param file
      * @param areaId
      * @return
@@ -202,6 +205,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 硬件导存储设备
+     *
      * @param file
      * @param areaId
      * @return
@@ -210,6 +214,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 硬件其他设备
+     *
      * @param file
      * @param areaId
      * @return
@@ -218,6 +223,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 通过区域Id查询当前区域是否存在资产
+     *
      * @param areaIds
      * @return
      */
@@ -235,6 +241,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 告警管理查询资产信息
+     *
      * @param alarmAssetRequest
      * @return
      * @throws Exception
@@ -243,24 +250,28 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 获取资产id列表
+     *
      * @return
      */
     IDResponse findAssetIds();
 
     /**
      * 工作台待登记数量
+     *
      * @return
      */
     Integer queryWaitRegistCount();
 
     /**
      * 统计正常资产数量
+     *
      * @return
      */
     Integer queryNormalCount();
 
     /**
      * 根据区域ID返回资产UUID
+     *
      * @return
      * @throws Exception
      */
@@ -272,12 +283,14 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 查询mac重复
+     *
      * @return
      */
     boolean CheckRepeatMAC(String mac) throws Exception;
 
     /**
      * 查询编号重复
+     *
      * @return
      */
     boolean CheckRepeatNumber(String number) throws Exception;
@@ -286,8 +299,15 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 不予登记
+     *
      * @param assetStatusChangeRequest
      * @return
      */
-    Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest)throws Exception;
+    Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception;
+
+    /**
+     * 基准模板下拉
+     * @return
+     */
+    List<SelectResponse> queryBaselineTemplate();
 }

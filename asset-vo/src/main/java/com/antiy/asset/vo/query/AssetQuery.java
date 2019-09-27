@@ -268,6 +268,17 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Long          firstEnterStartTime;
     @ApiModelProperty("首次发现时间结束时间")
     private Long          firstEnterEndTime;
+    @ApiModelProperty("基准模板id")
+    @Encode
+    private String        baselineTemplateId;
+
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
 
     public Long getServiceLifeStartTime() {
         return serviceLifeStartTime;

@@ -12,55 +12,29 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetInstallTemplateQuery extends ObjectQuery {
 
-    /**
-     * 模板名称
-     */
+    @ApiModelProperty("模板名称")
     private String name;
-    /**
-     * 模板编号
-     */
+    @ApiModelProperty("模板编号")
     private String numberCode;
-    /**
-     * 品类型号
-     */
+    @ApiModelProperty("适用资产类型")
     private Integer categoryModel;
-    /**
-     * 模板状态
-     */
+    @ApiModelProperty("模板状态")
     private Integer currentStatus;
-    /**
-     * 适用操作系统
-     */
+    @ApiModelProperty("适用操作系统编号")
     private Long operationSystem;
-    /**
-     * 操作系统名称
-     */
+    @ApiModelProperty("适用操作系统名称")
     private String operationSystemName;
-
-    /**
-     * 描述
-     */
+    @ApiModelProperty("描述")
     private String description;
-    /**
-     * 创建时间
-     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
-    /**
-     * 修改时间
-     */
+    @ApiModelProperty("修改时间")
     private Long gmtModified;
-    /**
-     * 创建人
-     */
+    @ApiModelProperty("创建人")
     private String createUser;
-    /**
-     * 修改人
-     */
+    @ApiModelProperty("修改人")
     private String modifiedUser;
-
-    /**
-     * 状态：1-正常，0-删除
-     */
+    @ApiModelProperty("模板状态")
     private Integer status;
 
     public String getName() {

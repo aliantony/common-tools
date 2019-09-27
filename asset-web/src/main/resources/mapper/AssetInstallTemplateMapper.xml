@@ -286,10 +286,16 @@
             a.id=#{assetId}
 	        AND a.install_template_id = ait.id
     </select>
-    <select id="queryTemplateOs" resultType="java.lang.String">
-        SELECT DISTINCT operation_system_name  FROM `asset_install_template` where status=1 ;
+    <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
+        SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
     </select>
     <select id="queryTemplateStatus" resultType="int">
-        SELECT  DISTINCT current_status  FROM `asset_install_template` where status=1 ;
+        SELECT  DISTINCT current_status  FROM `asset_install_template` where status=1 order by current_status ;
+    </select>
+    <select id="queryNumberCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*) FROM `asset_install_template` WHERE number_code=#{numberCode} and status=1
+    </select>
+    <select id="queryOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
+        SELECT DISTINCT id as osCode,product_name as osName FROM `asset_cpe_filter` where status=1
     </select>
 </mapper>

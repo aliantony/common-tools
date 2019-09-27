@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,25 +20,23 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
      * 主键
      */
     @ApiModelProperty("主键")
-    @Encode
+    // @Encode
     private String  id;
     /**
      * 资产主键
      */
     @ApiModelProperty("资产主键")
-    @Encode
+    // @Encode
     private String  assetId;
     /**
      * 组件主键
      */
     @ApiModelProperty("组件主键")
-    @Encode
     private String  businessId;
     /**
      * 组件主键
      */
-    @ApiModelProperty("组件主键")
-    @Encode
+    @ApiModelProperty("组件数量")
     private Integer amount;
 
     public String getId() {

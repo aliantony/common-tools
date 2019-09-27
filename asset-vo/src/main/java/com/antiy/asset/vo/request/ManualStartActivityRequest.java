@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,12 +21,13 @@ public class ManualStartActivityRequest {
     private String       assignee;
 
     /**
-     * 资产主键
+     * 业务Id
      */
-    @ApiModelProperty(value = "资产主键")
-    @Encode
+    @ApiModelProperty(value = "业务Id")
     private String       businessId;
-
+    @ApiModelProperty(value = "流程定义Id")
+    // @NotNull(message = "流程定义Id不能为空")
+    private String       processDefinitionKey;
     /**
      * 表单数据
      */
@@ -59,10 +59,6 @@ public class ManualStartActivityRequest {
     public void setConfigUserIds(List<String> configUserIds) {
         this.configUserIds = configUserIds;
     }
-
-    @ApiModelProperty(value = "流程定义Id")
-    // @NotNull(message = "流程定义Id不能为空")
-    private String processDefinitionKey;
 
     public String getAssignee() {
         return assignee;

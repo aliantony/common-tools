@@ -8,6 +8,7 @@ import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsAndStatusResponse;
+import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.*;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * <p> 装机模板 服务实现类 </p>
@@ -39,14 +41,28 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Resource
     private BaseConverter<AssetInstallTemplate, AssetInstallTemplateResponse> responseConverter;
 
-    @Override
-    public AssetInstallTemplateOsAndStatusResponse queryOsAndStatus() {
-        List<String> osName = assetInstallTemplateDao.queryTemplateOs();
-        List<Integer> statusNum = assetInstallTemplateDao.queryTemplateStatus();
-        List<String> status = new ArrayList<>();
-        statusNum.forEach(v -> status.add(AssetInstallTemplateStatusEnum.getEnumByCode(v).getStatus()));
 
-        return new AssetInstallTemplateOsAndStatusResponse(osName, status);
+    @Override
+    public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
+        return assetInstallTemplateDao.queryTemplateOs();
+    }
+
+    @Override
+    public List<Integer> queryTemplateStatus() {
+//        List<Integer> statusCode = assetInstallTemplateDao.queryTemplateStatus();
+//
+//        Stream.of(AssetInstallTemplateStatusEnum.values()).filter(v->v.getCode()==statusCode);
+        return assetInstallTemplateDao.queryTemplateStatus();
+    }
+
+    @Override
+    public Integer queryNumberCode(String numberCode) {
+        return assetInstallTemplateDao.queryNumberCode(numberCode);
+    }
+
+    @Override
+    public List<AssetInstallTemplateOsResponse> queryOs() {
+        return assetInstallTemplateDao.queryOs();
     }
 
     @Override

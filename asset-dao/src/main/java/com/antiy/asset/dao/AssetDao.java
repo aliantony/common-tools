@@ -5,6 +5,7 @@ import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
 
@@ -286,4 +287,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer findCountAssetNumber(@Param("number") String number);
 
     List<Asset> getAssetStatusListByIds(@Param("ids") String[]ids);
+
+    List<SelectResponse> queryBaselineTemplate();
 }
