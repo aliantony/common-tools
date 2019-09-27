@@ -1085,6 +1085,7 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
+        asset.version
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs
         from asset asset
@@ -1603,4 +1604,12 @@ AND a.`status` = 1
     </select>
 
 
+    <select id="getAssetStatusListByIds"  resultType="com.antiy.asset.entity.Asset">
+        SELECT id,asset_status as assetStatus
+        FROM  asset
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

@@ -1,6 +1,6 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -12,7 +12,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetInstallTemplateResponse {
 
-
+    @ApiModelProperty("模板id")
+    //@Encode
+    private String stringId;
     @ApiModelProperty("模板名称")
     private String name;
 
@@ -45,6 +47,14 @@ public class AssetInstallTemplateResponse {
 
     @ApiModelProperty("修改人")
     private String modifiedUser;
+
+    public String getStringId() {
+        return stringId;
+    }
+
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
+    }
 
     public String getName() {
         return name;
@@ -137,7 +147,8 @@ public class AssetInstallTemplateResponse {
     @Override
     public String toString() {
         return "AssetInstallTemplateResponse{" +
-                "name='" + name + '\'' +
+                "stringId='" + stringId + '\'' +
+                ", name='" + name + '\'' +
                 ", numberCode='" + numberCode + '\'' +
                 ", categoryModel=" + categoryModel +
                 ", currentStatus=" + currentStatus +

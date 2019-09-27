@@ -284,4 +284,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
 
     Integer findCountAssetNumber(@Param("number") String number);
+
+    List<Asset> getAssetStatusListByIds(@Param("ids") String[]ids);
 }
