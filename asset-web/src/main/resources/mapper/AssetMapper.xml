@@ -1085,6 +1085,7 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
+        asset.version
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs
         from asset asset
