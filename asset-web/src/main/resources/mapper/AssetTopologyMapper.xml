@@ -95,6 +95,7 @@
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
+        and asset.status=1
         <if test=" areaIds != null and areaIds.length >0">
             and area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -285,34 +286,6 @@
         and status=1
     </select>
 
-    <select id="findOtherTopologyCountByCategory" resultType="int"
-            parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(id) from asset a where
-        1=1
-        and operation_system is not null
-        and operation_system != ''
-        <if test=" assetStatusList != null">
-            and asset_status in
-            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" areaIds != null and areaIds.length >0 ">
-            and area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" osList != null and osList.size() >0 ">
-            and operation_system not in
-            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        and status=1
-    </select>
-
-
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         select
@@ -340,7 +313,7 @@
         </if>
         GROUP_CONCAT(air.ip) AS ips
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_ip_relation air on asset.id = air.asset_id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <if test="queryVulCount == true">
             LEFT JOIN (
@@ -352,6 +325,7 @@
             INNER JOIN vuln_info v ON v.id = avr.vul_id
             WHERE
             v. STATUS = 1
+            and avr.status=1
             <if test=" ids != null and ids.length >0">
                 and asset_id in
                 <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
@@ -372,6 +346,7 @@
             INNER JOIN patch_info p ON p.id = apr.patch_id
             WHERE
             p. STATUS = 1
+            and apr.status=1
             <if test=" ids != null and ids.length >0">
                 and asset_id in
                 <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
@@ -398,6 +373,8 @@
         </if>
         <where>
             <trim prefixOverrides="and">
+                and air.status = 1
+                and asset_user.status = 1
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
@@ -414,10 +391,38 @@
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         <where>
             <trim prefixOverrides="and">
+                and air.status = 1
+                and asset_user.status = 1
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
         group by asset.id
         ) a
+    </select>
+
+    <select id="countAssetByOs" resultType="com.antiy.asset.entity.AssetCountResult" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        SELECT
+        count(*) as num,
+        serial_name as code
+        FROM
+        asset
+        LEFT JOIN asset_cpe_filter filter ON asset.operation_system = filter.business_id
+        WHERE
+        asset. STATUS = 1
+        and filter.status=1
+        <if test=" areaIds != null and areaIds.length >0">
+            and area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        GROUP BY
+        serial_name
     </select>
 </mapper>

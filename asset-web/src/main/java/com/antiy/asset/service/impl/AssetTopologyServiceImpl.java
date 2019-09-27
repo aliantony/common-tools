@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.entity.*;
+import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
@@ -17,16 +19,9 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetLink;
-import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.intergration.EmergencyClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
 import com.antiy.asset.vo.response.*;
@@ -55,15 +50,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Resource
     private AssetTopologyDao                    assetTopologyDao;
     @Resource
-    private EmergencyClient                     emergencyClient;
-    @Resource
     private BaseConverter<Asset, AssetResponse> converter;
     @Resource
     private RedisUtil                           redisUtil;
     @Resource
     private AesEncoder                          aesEncoder;
-    @Resource
-    private OperatingSystemClient               operatingSystemClient;
     @Resource
     private IAssetService                       iAssetService;
     @Value("#{'${topology.middlePoint}'.split(',')}")
@@ -274,114 +265,205 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     }
 
     @Override
-    public TopologyOsCountResponse countTopologyOs() throws Exception {
-        return null;
-    }
-
-    @Override
     public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
         return null;
     }
 
-    // private AssetQuery setAssetQueryParam(List<Integer> areaIds, List<AssetCategoryModel> search, List<String>
-    // osList) {
-    // AssetQuery assetQuery = new AssetQuery();
-    // if (search != null) {
-    // List<Integer> list = new ArrayList<>();
-    // search.forEach(x -> list.add(x.getId()));
-    // assetQuery.setCategoryModels(ArrayTypeUtil.objectArrayToStringArray(list.toArray()));
+    /**
+     * 获取拓扑图
+     * @return
+     * @throws Exception
+     */
+    // public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
+    // AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
+    // assetTopologyNodeResponse.setStatus("success");
+    // List<Map<String, AssetTopologyRelation>> dataList = new ArrayList<>();
+    // AssetTopologyRelation assetTopologyRelation = new AssetTopologyRelation();
+    // // 设置拓扑图信息
+    // assetTopologyRelation.setInfo("");
+    // // 设置中心点
+    // assetTopologyRelation.setMiddlePoint(middlePoint);
+    // // 设置角度
+    // AssetTopologyViewAngle assetTopologyViewAngle = new AssetTopologyViewAngle();
+    // assetTopologyViewAngle.setCameraPos(cameraPos);
+    // assetTopologyViewAngle.setTargetPos(targetPos);
+    // assetTopologyRelation.setView_angle(assetTopologyViewAngle);
+    //
+    // AssetTopologyJsonData assetTopologyJsonData = new AssetTopologyJsonData();
+    // Map<String, List<List<Object>>> jsonData = new HashMap<>();
+    //
+    // AssetQuery query = new AssetQuery();
+    // query.setAreaIds(
+    // DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+    // List<Integer> statusList = new ArrayList<>();
+    // statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
+    // statusList.add(AssetStatusEnum.NET_IN.getCode());
+    // query.setAssetStatusList(statusList);
+    // List<AssetLink> assetLinks = assetLinkRelationDao.findLinkRelation(query);
+    // List<AssetCategoryModel> categoryModelList = iAssetCategoryModelService.getAll();
+    //
+    // String computeDeviceId = "";
+    // String routeId = "";
+    // String switchId = "";
+    // Set<String> querySet = new HashSet();
+    // // 找到对应品类id
+    // for (AssetCategoryModel assetCategoryModel : categoryModelList) {
+    // if (Objects.equals(assetCategoryModel.getName(), AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
+    // querySet.add(assetCategoryModel.getStringId());
+    // computeDeviceId = assetCategoryModel.getStringId();
     // }
-    // if (osList != null) {
-    // assetQuery.setOsList(osList);
+    // if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Router.getMsg())) {
+    // querySet.add(assetCategoryModel.getStringId());
+    // routeId = assetCategoryModel.getStringId();
     // }
-    // if (areaIds != null) {
-    // assetQuery.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
+    // if (Objects.equals(assetCategoryModel.getName(), NetWorkDeviceEnum.Switch.getMsg())) {
+    // querySet.add(assetCategoryModel.getStringId());
+    // switchId = assetCategoryModel.getStringId();
     // }
-    // // 只统计已入网待退役
-    // List<Integer> statusList = getAssetUseableStatus();
-    // assetQuery.setAssetStatusList(statusList);
-    // return assetQuery;
+    //
+    // }
+    //
+    // Map<String, String> idCategory = new HashMap<>();
+    // Map<String, String> cache = new HashMap<>();
+    // for (AssetLink assetLink : assetLinks) {
+    // // id加密
+    // assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+    // assetLink.setParentAssetId(
+    // aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+    // }
+    //
+    // // 设置品类id与返回格式的映射
+    // for (AssetLink assetLink : assetLinks) {
+    //
+    // String categoryId = idCategory.get(assetLink.getAssetId());
+    // String cacheId = cache.get(assetLink.getCategoryModal().toString());
+    // if (categoryId == null) {
+    // if (cacheId == null) {
+    // String result = iAssetCategoryModelService.recursionSearchParentCategory(
+    // assetLink.getCategoryModal().toString(), categoryModelList, querySet);
+    // String resultCategory = "";
+    // if (result == null) {
+    // resultCategory = "sim_topo-network";
+    // }
+    // if (Objects.equals(result, routeId)) {
+    // resultCategory = "sim_topo-router";
+    // }
+    // if (Objects.equals(result, switchId)) {
+    // resultCategory = "sim_topo-switch";
+    // }
+    // if (Objects.equals(result, computeDeviceId)) {
+    // resultCategory = "sim_topo-host";
+    // }
+    // idCategory.put(assetLink.getAssetId(), resultCategory);
+    // cache.put(assetLink.getCategoryModal() + "", resultCategory);
+    // } else {
+    // idCategory.put(assetLink.getAssetId(), cacheId);
+    // }
+    // }
+    //
+    // cacheId = cache.get(assetLink.getParentCategoryModal().toString());
+    // String parentCategoryId = idCategory.get(assetLink.getParentAssetId());
+    // if (parentCategoryId == null) {
+    // if (cacheId == null) {
+    // String result = iAssetCategoryModelService.recursionSearchParentCategory(
+    // assetLink.getParentCategoryModal().toString(), categoryModelList, querySet);
+    // String resultCategory = "";
+    // if (result == null) {
+    // resultCategory = "sim_topo-network";
+    // }
+    // if (Objects.equals(result, routeId)) {
+    // resultCategory = "sim_topo-router";
+    // }
+    // if (Objects.equals(result, switchId)) {
+    // resultCategory = "sim_topo-switch";
+    // }
+    // if (Objects.equals(result, computeDeviceId)) {
+    // resultCategory = "sim_topo-host";
+    // }
+    // idCategory.put(assetLink.getParentAssetId(), resultCategory);
+    // cache.put(assetLink.getParentCategoryModal() + "", resultCategory);
+    // } else {
+    // idCategory.put(assetLink.getParentAssetId(), cacheId);
+    // }
+    // }
+    //
+    // }
+    // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
+    // processLinkCount(assetLinks, secondCategoryMap);
+    // // 找到各个的层级节点
+    // Map<String, List<String>> firstMap = new HashMap<>();
+    // Map<String, List<String>> secondMap = new HashMap<>();
+    // Map<String, List<String>> secondThirdMap = new LinkedHashMap<>();
+    // String networkDeviceId = "";
+    // for (Map.Entry<String, String> entry : secondCategoryMap.entrySet()) {
+    // if (Objects.equals(entry.getValue(), AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
+    // networkDeviceId = entry.getKey();
+    // }
+    // }
+    // for (AssetLink assetLink : assetLinks) {
+    // if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)
+    // && Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
+    // // 构造第一，二级层级节点关系
+    // flushMap(firstMap, assetLink);
+    // flushParentMap(firstMap, assetLink);
+    //
+    // } else {
+    // // 构造第二，三级层级节点关系
+    // if (Objects.equals(String.valueOf(assetLink.getCategoryModal()), networkDeviceId)) {
+    // flushMap(secondMap, assetLink);
+    // } else {
+    // flushParentMap(secondThirdMap, assetLink);
+    // }
+    // if (Objects.equals(String.valueOf(assetLink.getParentCategoryModal()), networkDeviceId)) {
+    // flushParentMap(secondMap, assetLink);
+    // } else {
+    // flushMap(secondThirdMap, assetLink);
+    // }
+    // }
+    // }
+    // // 去掉第一层中不符合要求的数据
+    // for (Map.Entry<String, List<String>> entry : secondMap.entrySet()) {
+    // List<String> first = entry.getValue();
+    // List<String> result = firstMap.remove(entry.getKey());
+    // if (result != null) {
+    // first.addAll(result);
+    // secondMap.put(entry.getKey(), first);
+    // }
+    // }
+    //
+    // // 构造第一层坐标数据
+    // settingFirstLevelCoordinates(firstMap, jsonData, idCategory);
+    // Map<String, List<Double>> secondCoordinates = new HashMap<>();
+    // // 构造第二层坐标数据
+    // settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
+    // // 构造第三层坐标数据
+    // settingThirdLevelCoordinates(secondThirdMap, jsonData, idCategory, secondCoordinates);
+    // assetTopologyJsonData.setJson_data0(jsonData);
+    // assetTopologyRelation.setJson_data(assetTopologyJsonData);
+    // Map<String, AssetTopologyRelation> dataMap = new HashMap<>(2);
+    // dataMap.put("relationship", assetTopologyRelation);
+    // dataList.add(dataMap);
+    // assetTopologyNodeResponse.setData(dataList);
+    // return assetTopologyNodeResponse;
     // }
 
-    // public TopologyOsCountResponse countTopologyOs() throws Exception {
-    // List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-    // // 查询第二级分类id
-    // List<BaselineCategoryModelNodeResponse> osTreeList = operatingSystemClient.getInvokeOperatingSystemTree();
-    // if (CollectionUtils.isNotEmpty(osTreeList)) {
-    // TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
-    // List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
-    // List<String> otherId = new ArrayList<>();
-    // for (BaselineCategoryModelNodeResponse nodeResponse : osTreeList) {
-    // if (Objects.equals(nodeResponse.getName(), Constants.WINDOWS)
-    // || Objects.equals(nodeResponse.getName(), Constants.LINUX)) {
-    // List<String> idList = new ArrayList<>();
-    // AssetQuery assetQuery = setAssetQueryParam(areaIds, null, idList);
-    // TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-    // String osId = null;
-    // if (Objects.equals(nodeResponse.getName(), Constants.WINDOWS)) {
-    // osId = findOsId(osTreeList, Constants.WINDOWS);
-    // osResponse.setOs_type(Constants.WINDOWS);
-    // }
-    // if (Objects.equals(nodeResponse.getName(), Constants.LINUX)) {
-    // osId = findOsId(osTreeList, Constants.LINUX);
-    // osResponse.setOs_type(Constants.LINUX);
-    // }
-    // recursionSearchOsSystem(idList, osTreeList, osId);
-    // otherId.addAll(idList);
-    // osResponse.setNum(assetDao.findCountByCategoryModel(assetQuery));
-    // osResponseList.add(osResponse);
-    // }
-    // }
-    // AssetQuery assetQuery = setAssetQueryParam(areaIds, null, otherId);
-    // TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-    // osResponse.setOs_type(Constants.OTHER);
-    // osResponse.setNum(assetTopologyDao.findOtherTopologyCountByCategory(assetQuery));
-    // osResponseList.add(osResponse);
-    // topologyOsCountResponse.setData(osResponseList);
-    // topologyOsCountResponse.setStatus("success");
-    // return topologyOsCountResponse;
-    // }
-    // return null;
-    // }
-
-    private String findOsId(List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponses, String name) {
-        for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : baselineCategoryModelNodeResponses) {
-            if (Objects.equals(baselineCategoryModelNodeResponse.getName(), name)) {
-                return baselineCategoryModelNodeResponse.getStringId();
-            }
+    public TopologyOsCountResponse countTopologyOs() throws Exception {
+        AssetQuery query = new AssetQuery();
+        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
+        query.setAssetStatusList(getAssetUseableStatus());
+        List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);
+        TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
+        List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
+        for (AssetCountResult result : assetCountResults) {
+            TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
+            osResponse.setNum(result.getNum());
+            osResponse.setOs_type(result.getCode());
+            osResponseList.add(osResponse);
         }
-        return null;
-    }
-
-    private void recursionSearchOsSystem(List<String> result, List<BaselineCategoryModelNodeResponse> list,
-                                         String id) throws Exception {
-        for (BaselineCategoryModelNodeResponse baselineCategoryModelResponse : list) {
-            if (Objects.equals(baselineCategoryModelResponse.getStringId(), id)) {
-                result.add(aesEncoder.decode(baselineCategoryModelResponse.getStringId(),
-                    LoginUserUtil.getLoginUser().getUsername()));
-                recursionSearch(result, baselineCategoryModelResponse.getChildrenNode());
-            }
-        }
-    }
-
-    private void recursionSearch(List<String> result, List<BaselineCategoryModelNodeResponse> list) {
-        for (BaselineCategoryModelNodeResponse baselineCategoryModelResponse : list) {
-            result.add(aesEncoder.decode(baselineCategoryModelResponse.getStringId(),
-                LoginUserUtil.getLoginUser().getUsername()));
-            recursionSearch(result, baselineCategoryModelResponse.getChildrenNode());
-        }
-
-    }
-
-    private void setAlarmCount(List<AssetResponse> assetResponseList, List<IdCount> idCounts) {
-        for (AssetResponse assetResponse : assetResponseList) {
-            assetResponse.setAlarmCount("0");
-            for (IdCount idCount : idCounts) {
-                if (Objects.equals(idCount.getId(), assetResponse.getStringId())) {
-                    assetResponse.setAlarmCount(idCount.getCount());
-                }
-            }
-        }
+        topologyOsCountResponse.setData(osResponseList);
+        topologyOsCountResponse.setStatus("success");
+        return topologyOsCountResponse;
     }
 
     private void setAreaName(AssetResponse response) throws Exception {
@@ -727,6 +809,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+        Integer[] category = new Integer[2];
+        category[0]=AssetCategoryEnum.COMPUTER.getCode();
+        category[1]=AssetCategoryEnum.NETWORK.getCode();
+        query.setCategoryModels(category);
         setStatusQuery(query);
     }
 }
