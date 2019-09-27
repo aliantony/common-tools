@@ -101,7 +101,7 @@ public class Asset extends BaseEntity {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private String            operationSystem;
+    private Long              operationSystem;
     /**
      * 操作系统名
      */
@@ -399,11 +399,11 @@ public class Asset extends BaseEntity {
         this.admittanceStatus = admittanceStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 

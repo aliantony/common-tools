@@ -420,4 +420,30 @@
         group by asset.id
         ) a
     </select>
+
+    <select id="countAssetByOs" resultType="com.antiy.asset.entity.AssetCountResult" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        SELECT
+        count(*) as num,
+        serial_name as code
+        FROM
+        asset
+        LEFT JOIN asset_cpe_filter filter ON asset.operation_system = filter.business_id
+        WHERE
+        asset. STATUS = 1
+        and filter.status=1
+        <if test=" areaIds != null and areaIds.length >0">
+            and area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        GROUP BY
+        serial_name
+    </select>
 </mapper>

@@ -16,14 +16,6 @@ public class ProcessTemplateRequest extends BaseRequest {
     @ApiModelProperty(value = "全部id数组")
     private List<String> ids;
 
-    public boolean getType() {
-        return flag;
-    }
-
-    public void setType(boolean type) {
-        this.flag = type;
-    }
-
     public List<String> getIds() {
         return ids;
     }
@@ -38,5 +30,13 @@ public class ProcessTemplateRequest extends BaseRequest {
 
     public void setComIds(List<String> comIds) {
         this.comIds = comIds;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

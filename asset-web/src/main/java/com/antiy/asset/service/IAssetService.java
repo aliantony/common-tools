@@ -268,8 +268,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     Map findAlarmAssetCount();
 
-    void implementationFile(ProcessTemplateRequest baseRequest) throws InvocationTargetException,
-                                                                IllegalAccessException, IOException;
+    void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
 
     /**
      * 查询mac重复

@@ -1,16 +1,18 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -122,8 +124,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统,如果type为IDS或者IPS则此字段存放软件版本信息")
-    @Encode
-    private String        operationSystem;
+    private Long          operationSystem;
 
     /**
      * 设备uuid
@@ -473,11 +474,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.assetStatus = assetStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 
