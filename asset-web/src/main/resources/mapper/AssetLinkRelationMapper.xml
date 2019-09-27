@@ -1053,11 +1053,32 @@
         SELECT asset_group_id
         FROM asset_group_relation grou
         where exists (
-        select * from asset_link_relation relation left join asset on asset.id=relation.asset_id where relation.status=1
-        and asset.status=1
-        and (relation.asset_id =grou.asset_id or relation.parent_asset_id=grou.asset_id)
+        select * from asset_link_relation left join asset asset1 on asset_id = asset1.id LEFT JOIN asset
+        asset2 on parent_asset_id = asset2.id
+        where
+        asset1.status=1
+        and asset2.status=1
+        and asset_link_relation.status=1
+        <if test="userAreaIds != null and userAreaIds.size() > 0">
+            AND asset1.area_id in
+            <foreach collection="userAreaIds" separator="," open="(" close=")" item="areaId">
+                #{areaId}
+            </foreach>
+        </if>
+        <if test="userAreaIds != null and userAreaIds.size() > 0">
+            AND asset2.area_id in
+            <foreach collection="userAreaIds" separator="," open="(" close=")" item="areaId">
+                #{areaId}
+            </foreach>
+        </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset_status in
+            and asset1.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset2.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
@@ -1074,7 +1095,10 @@
         asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as
         parentCategoryModal from asset_link_relation left join asset asset1 on asset_id = asset1.id LEFT JOIN asset
         asset2 on parent_asset_id = asset2.id
-        where 1=1
+        where
+        asset1.status=1
+        and asset2.status=1
+        and asset_link_relation.status=1
         <if test=" areaIds != null and areaIds.length > 0 ">
             and asset1.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
