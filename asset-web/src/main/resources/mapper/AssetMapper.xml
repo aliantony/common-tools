@@ -31,6 +31,7 @@
         <result column="operation_system" property="operationSystem"/>
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="responsible_user_name" property="responsibleUserName"/>
         <result column="house_location" property="houseLocation"/>
         <result column="version" property="version"/>
         <result column="firmware_version" property="firmwareVersion"/>
