@@ -3,7 +3,6 @@ package com.antiy.asset.service.impl;
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -230,7 +229,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             topologyListResponse.setTotal(pageResult.getTotalRecords());
             return topologyListResponse;
         }
-        return null;
+        TopologyListResponse topologyListResponse = new TopologyListResponse();
+        topologyListResponse.setStatus("success");
+        topologyListResponse.setData(null);
+        return topologyListResponse;
     }
 
     private void setStatusQuery(AssetQuery query) {
@@ -473,14 +475,14 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         response.setAreaName(sysArea != null ? sysArea.getFullName() : null);
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        Map<K, V> result = new LinkedHashMap<>();
-        Stream<Map.Entry<K, V>> st = map.entrySet().stream();
-
-        st.sorted(Comparator.comparing(e -> e.getValue())).forEach(e -> result.put(e.getKey(), e.getValue()));
-
-        return result;
-    }
+//    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+//        Map<K, V> result = new LinkedHashMap<>();
+//        Stream<Map.Entry<K, V>> st = map.entrySet().stream();
+//
+//        st.sorted(Comparator.comparing(e -> e.getValue())).forEach(e -> result.put(e.getKey(), e.getValue()));
+//
+//        return result;
+//    }
 
     /**
      * 获取拓扑图
@@ -519,224 +521,191 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return ipSearchList;
     }
 
-    /**
-     * 设置第一层坐标数据
-     * @param map
-     * @return
-     */
-    private void settingFirstLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
-                                              Map<String, String> idCategory) {
-        double size = getSize(map.size());
-        double space = firstLevelSpacing;
-        double height = firstLevelHeight;
-        int i = 0;
-        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            getDataList(size, space, height, i, entry, jsonData, idCategory);
-            i++;
+//    /**
+//     * 设置第一层坐标数据
+//     * @param map
+//     * @return
+//     */
+//    private void settingFirstLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
+//                                              Map<String, String> idCategory) {
+//        double size = getSize(map.size());
+//        double space = firstLevelSpacing;
+//        double height = firstLevelHeight;
+//        int i = 0;
+//        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+//            getDataList(size, space, height, i, entry, jsonData, idCategory);
+//            i++;
+//
+//        }
+//    }
 
-        }
-    }
+//    /**
+//     * 获取第二层数据信息
+//     * @param map
+//     * @param secondCoordinates
+//     * @return
+//     */
+//    private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
+//                                                             Map<String, List<List<Object>>> jsonData,
+//                                                             Map<String, String> idCategory,
+//                                                             Map<String, List<Double>> secondCoordinates) {
+//        double size = getSize(map.size());
+//        List<List<Object>> dataList = new ArrayList<>();
+//        double space = secondLevelSpacing;
+//        double height = secondLevelHeight;
+//        int i = 0;
+//        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+//            List<Double> coordinateList = getDataList(size, space, height, i, entry, jsonData, idCategory);
+//            secondCoordinates.put(entry.getKey(), coordinateList);
+//            i++;
+//        }
+//        return dataList;
+//    }
+//
+//    private List<Double> getDataList(double size, double space, double height, double i,
+//                                     Map.Entry<String, List<String>> entry, Map<String, List<List<Object>>> jsonData,
+//                                     Map<String, String> idCategory) {
+//        List<Double> coordinateList = getCoordinate(size, i, space, height);
+//        // 设置坐标数据
+//        List<Object> point = new ArrayList<>();
+//        point.add(entry.getKey());
+//        point.addAll(coordinateList);
+//        point.add(entry.getValue());
+//        point.add(coordinateList.get(0));
+//        point.add(coordinateList.get(2));
+//        point.add("");
+//        List<List<Object>> points = jsonData.get(idCategory.get(entry.getKey()));
+//        if (points == null) {
+//            points = new ArrayList<>();
+//        }
+//        points.add(point);
+//        jsonData.put(idCategory.get(entry.getKey()), points);
+//        return coordinateList;
+//    }
+//
+//    /**
+//     * 获取第三层数据信息
+//     * @param map
+//     * @param secondCoordinates
+//     * @return
+//     */
+//    private void settingThirdLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
+//                                              Map<String, String> idCategory,
+//                                              Map<String, List<Double>> secondCoordinates) {
+//        List<List<Object>> dataList = new ArrayList<>();
+//        // 间隔
+//        double space = thirdLevelSpacing;
+//        // 高度
+//        double height = thirdLevelHeight;
+//
+//        // 排序
+//        Map<String, List<String>> result = new LinkedHashMap<>();
+//        Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
+//        st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
+//
+//        // 缓存id和index的关系
+//        Map<String, Integer> cache = new HashMap<>();
+//        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+//            int i = 0;
+//            for (String s : entry.getValue()) {
+//                Integer index = cache.get(s);
+//                if (index != null) {
+//                    List<Object> point = dataList.get(index);
+//                    List<String> pointParent = (List<String>) point.get(4);
+//                    pointParent.add(entry.getKey());
+//                } else {
+//                    List<Double> coordinates = secondCoordinates.get(entry.getKey());
+//                    List<Object> point = new ArrayList<>();
+//                    double size = getSize(entry.getValue().size());
+//                    List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
+//                        coordinates.get(2));
+//                    point.add(s);
+//                    point.addAll(coordinateByParent);
+//                    List<String> parent = new ArrayList<>();
+//                    parent.add(entry.getKey());
+//                    point.add(parent);
+//                    point.add(coordinateByParent.get(0));
+//                    point.add(coordinateByParent.get(2));
+//                    point.add("");
+//                    List<List<Object>> points = jsonData.get(idCategory.get(s));
+//                    if (points == null) {
+//                        points = new ArrayList<>();
+//                    }
+//                    points.add(point);
+//                    dataList.add(point);
+//                    jsonData.put(idCategory.get(s), points);
+//                    cache.put(s, dataList.size() - 1);
+//                    i++;
+//                }
+//            }
+//        }
+//    }
 
-    /**
-     * 获取第二层数据信息
-     * @param map
-     * @param secondCoordinates
-     * @return
-     */
-    private List<List<Object>> settingSecondLevelCoordinates(Map<String, List<String>> map,
-                                                             Map<String, List<List<Object>>> jsonData,
-                                                             Map<String, String> idCategory,
-                                                             Map<String, List<Double>> secondCoordinates) {
-        double size = getSize(map.size());
-        List<List<Object>> dataList = new ArrayList<>();
-        double space = secondLevelSpacing;
-        double height = secondLevelHeight;
-        int i = 0;
-        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            List<Double> coordinateList = getDataList(size, space, height, i, entry, jsonData, idCategory);
-            secondCoordinates.put(entry.getKey(), coordinateList);
-            i++;
-        }
-        return dataList;
-    }
+//    /**
+//     * 获取自身坐标
+//     */
+//    private List<Double> getCoordinate(Double size, Double i, Double space, Double height) {
+//        Double x = ((Math.floor(i / size) - ((size - 1) / 2d)) * space);
+//        Double y = (((size - 1) / 2d - (i % size)) * space);
+//        List<Double> coordinate = new ArrayList<>();
+//        coordinate.add(x);
+//        coordinate.add(height);
+//        coordinate.add(y);
+//        return coordinate;
+//    }
+//
+//    /**
+//     * 根据上级坐标获取本身坐标
+//     */
+//    private List<Double> getCoordinateByParent(double size, double i, double space, double height, double xx,
+//                                               double yy) {
+//        double x = (((Math.floor(i / size) - ((size - 1) / 2d)) * space) + xx);
+//        double y = ((((size - 1) / 2d - (i % size)) * space) + yy);
+//        List<Double> coordinate = new ArrayList<>();
+//        coordinate.add(x);
+//        coordinate.add(height);
+//        coordinate.add(y);
+//
+//        return coordinate;
+//    }
+//
+//    private double getSize(int size) {
+//        double d = Math.sqrt((double) size);
+//        return Math.ceil(d);
+//    }
 
-    private List<Double> getDataList(double size, double space, double height, double i,
-                                     Map.Entry<String, List<String>> entry, Map<String, List<List<Object>>> jsonData,
-                                     Map<String, String> idCategory) {
-        List<Double> coordinateList = getCoordinate(size, i, space, height);
-        // 设置坐标数据
-        List<Object> point = new ArrayList<>();
-        point.add(entry.getKey());
-        point.addAll(coordinateList);
-        point.add(entry.getValue());
-        point.add(coordinateList.get(0));
-        point.add(coordinateList.get(2));
-        point.add("");
-        List<List<Object>> points = jsonData.get(idCategory.get(entry.getKey()));
-        if (points == null) {
-            points = new ArrayList<>();
-        }
-        points.add(point);
-        jsonData.put(idCategory.get(entry.getKey()), points);
-        return coordinateList;
-    }
+//    /**
+//     * 设置层级关系
+//     * @param secondMap
+//     * @param assetLink
+//     */
+//
+//    private void flushParentMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
+//        List<String> idList = secondMap.get(assetLink.getParentAssetId());
+//        if (idList != null) {
+//            idList.add(assetLink.getAssetId());
+//        } else {
+//            idList = new ArrayList<>();
+//            idList.add(assetLink.getAssetId());
+//            secondMap.put(assetLink.getParentAssetId(), idList);
+//        }
+//    }
 
-    /**
-     * 获取第三层数据信息
-     * @param map
-     * @param secondCoordinates
-     * @return
-     */
-    private void settingThirdLevelCoordinates(Map<String, List<String>> map, Map<String, List<List<Object>>> jsonData,
-                                              Map<String, String> idCategory,
-                                              Map<String, List<Double>> secondCoordinates) {
-        List<List<Object>> dataList = new ArrayList<>();
-        // 间隔
-        double space = thirdLevelSpacing;
-        // 高度
-        double height = thirdLevelHeight;
-
-        // 排序
-        Map<String, List<String>> result = new LinkedHashMap<>();
-        Stream<Map.Entry<String, List<String>>> st = map.entrySet().stream();
-        st.sorted(Comparator.comparing(e -> -e.getValue().size())).forEach(e -> result.put(e.getKey(), e.getValue()));
-
-        // 缓存id和index的关系
-        Map<String, Integer> cache = new HashMap<>();
-        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-            int i = 0;
-            for (String s : entry.getValue()) {
-                Integer index = cache.get(s);
-                if (index != null) {
-                    List<Object> point = dataList.get(index);
-                    List<String> pointParent = (List<String>) point.get(4);
-                    pointParent.add(entry.getKey());
-                } else {
-                    List<Double> coordinates = secondCoordinates.get(entry.getKey());
-                    List<Object> point = new ArrayList<>();
-                    double size = getSize(entry.getValue().size());
-                    List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
-                        coordinates.get(2));
-                    point.add(s);
-                    point.addAll(coordinateByParent);
-                    List<String> parent = new ArrayList<>();
-                    parent.add(entry.getKey());
-                    point.add(parent);
-                    point.add(coordinateByParent.get(0));
-                    point.add(coordinateByParent.get(2));
-                    point.add("");
-                    List<List<Object>> points = jsonData.get(idCategory.get(s));
-                    if (points == null) {
-                        points = new ArrayList<>();
-                    }
-                    points.add(point);
-                    dataList.add(point);
-                    jsonData.put(idCategory.get(s), points);
-                    cache.put(s, dataList.size() - 1);
-                    i++;
-                }
-            }
-        }
-    }
-
-    /**
-     * 获取自身坐标
-     */
-    private List<Double> getCoordinate(Double size, Double i, Double space, Double height) {
-        Double x = ((Math.floor(i / size) - ((size - 1) / 2d)) * space);
-        Double y = (((size - 1) / 2d - (i % size)) * space);
-        List<Double> coordinate = new ArrayList<>();
-        coordinate.add(x);
-        coordinate.add(height);
-        coordinate.add(y);
-        return coordinate;
-    }
-
-    /**
-     * 根据上级坐标获取本身坐标
-     */
-    private List<Double> getCoordinateByParent(double size, double i, double space, double height, double xx,
-                                               double yy) {
-        double x = (((Math.floor(i / size) - ((size - 1) / 2d)) * space) + xx);
-        double y = ((((size - 1) / 2d - (i % size)) * space) + yy);
-        List<Double> coordinate = new ArrayList<>();
-        coordinate.add(x);
-        coordinate.add(height);
-        coordinate.add(y);
-
-        return coordinate;
-    }
-
-    private double getSize(int size) {
-        double d = Math.sqrt((double) size);
-        return Math.ceil(d);
-    }
-
-    /**
-     * 设置层级关系
-     * @param secondMap
-     * @param assetLink
-     */
-
-    private void flushParentMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
-        List<String> idList = secondMap.get(assetLink.getParentAssetId());
-        if (idList != null) {
-            idList.add(assetLink.getAssetId());
-        } else {
-            idList = new ArrayList<>();
-            idList.add(assetLink.getAssetId());
-            secondMap.put(assetLink.getParentAssetId(), idList);
-        }
-    }
-
-    /**
-     * 设置层级关系
-     * @param secondMap
-     * @param assetLink
-     */
-    private void flushMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
-        List<String> idList = secondMap.get(assetLink.getAssetId());
-        if (idList != null) {
-            idList.add(assetLink.getParentAssetId());
-        } else {
-            idList = new ArrayList<>();
-            idList.add(assetLink.getParentAssetId());
-            secondMap.put(assetLink.getAssetId(), idList);
-        }
-    }
-
-    // 处理品类型号使其均为二级品类型号
-    private void processLinkCount(List<AssetLink> assetLinks, Map<String, String> categoryMap) throws Exception {
-        // 作为缓存使用，提高效率
-        // Map<String, String> cache = new HashMap<>();
-        // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
-        // for (AssetLink assetLink : assetLinks) {
-        // String categoryModel = assetLink.getCategoryModal().toString();
-        // String cacheId = cache.get(categoryModel);
-        // if (Objects.nonNull(cacheId)) {
-        // assetLink.setCategoryModal(Integer.valueOf(cacheId));
-        // } else {
-        // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-        // categoryMap.keySet());
-        // if (Objects.nonNull(second)) {
-        // assetLink.setCategoryModal(Integer.valueOf(second));
-        // cache.put(categoryModel, second);
-        // }
-        // }
-        // categoryModel = assetLink.getParentCategoryModal().toString();
-        // cacheId = cache.get(categoryModel);
-        // if (Objects.nonNull(cacheId)) {
-        // assetLink.setParentCategoryModal(Integer.valueOf(cacheId));
-        // } else {
-        // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-        // categoryMap.keySet());
-        // if (Objects.nonNull(second)) {
-        // assetLink.setParentCategoryModal(Integer.valueOf(second));
-        // cache.put(categoryModel, second);
-        // }
-        // }
-        // }
-    }
+//    /**
+//     * 设置层级关系
+//     * @param secondMap
+//     * @param assetLink
+//     */
+//    private void flushMap(Map<String, List<String>> secondMap, AssetLink assetLink) {
+//        List<String> idList = secondMap.get(assetLink.getAssetId());
+//        if (idList != null) {
+//            idList.add(assetLink.getParentAssetId());
+//        } else {
+//            idList = new ArrayList<>();
+//            idList.add(assetLink.getParentAssetId());
+//            secondMap.put(assetLink.getAssetId(), idList);
+//        }
+//    }
 
     public AssetTopologyAlarmResponse getAlarmTopology() throws Exception {
         AssetQuery query = new AssetQuery();
@@ -768,7 +737,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             assetTopologyAlarmResponse.setData(topologyAlarms);
             return assetTopologyAlarmResponse;
         }
-        return null;
+        AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
+        assetTopologyAlarmResponse.setStatus("success");
+        assetTopologyAlarmResponse.setVersion("");
+        assetTopologyAlarmResponse.setData(null);
+        return assetTopologyAlarmResponse;
     }
 
     private List<Map> transferAssetToMap(List<AssetResponse> assetResponseList) {

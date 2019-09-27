@@ -826,6 +826,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         HashMap<String, String> map = new HashMap<>();
         map.put("supplier", supplier);
         map.put("type", "h");
+        map.put("isStorage", "1");
         map.put("status", "1");
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
@@ -835,6 +836,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("supplier", supplier);
         map.put("type", "h");
         map.put("status", "1");
+        map.put("isStorage", "1");
         map.put("productName", productName);
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
