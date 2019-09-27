@@ -5,6 +5,7 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.List;
@@ -27,7 +28,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * id
      */
     @ApiModelProperty("businessId")
-    @Encode
     private String                  businessId;
     /**
      * id
@@ -41,6 +41,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("装机模板id")
     @Encode
     private String                  installTemplateId;
+    /**
+     * id
+     */
+    @ApiModelProperty("是安全检查:true ,模板实施false")
+
+    private boolean                 safetyCheck;
     /**
      * 资产zu
      */
@@ -108,8 +114,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    @Encode
-    private String                  operationSystem;
+    private Long                  operationSystem;
     /**
      * 系统位数
      */
@@ -271,11 +276,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.assetStatus = assetStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 
@@ -457,5 +462,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
                + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty + '\''
                + ", admittanceStatus=" + admittanceStatus + ", firstEnterNett=" + firstEnterNett + ", describle='"
                + describle + '\'' + '}';
+    }
+
+    public boolean isSafetyCheck() {
+        return safetyCheck;
+    }
+
+    public void setSafetyCheck(boolean safetyCheck) {
+        this.safetyCheck = safetyCheck;
     }
 }

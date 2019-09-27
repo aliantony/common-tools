@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -13,7 +11,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "下拉框格式返回")
 public class SelectResponse {
 
-    @Encode
     @ApiModelProperty(value = "返回Id")
     private String id;
 
