@@ -17,10 +17,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
+        <result column="business_id" property="businessId"/>
         <result column="asset_group" property="assetGroup"/>
         <result column="number" property="number"/>
         <result column="name" property="name"/>
-        <result column="category_model_name" property="categoryModelName"/>
         <result column="install_type" property="installType"/>
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
@@ -33,32 +33,34 @@
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="responsible_user_name" property="responsibleUserName"/>
         <result column="house_location" property="houseLocation"/>
+        <result column="version" property="version"/>
+        <result column="firmware_version" property="firmwareVersion"/>
         <result column="uuid" property="uuid"/>
         <result column="asset_source" property="assetSource"/>
         <result column="importance_degree" property="importanceDegree"/>
         <result column="describle" property="describle"/>
-        <result column="parent_id" property="parentId"/>
         <result column="first_enter_nett" property="firstEnterNett"/>
         <result column="first_discover_time" property="firstDiscoverTime"/>
+        <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
         <result column="warranty" property="warranty"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="gmt_modified" property="gmtModified"/>
-        <result column="memo" property="memo"/>
-        <result column="create_user" property="createUser"/>
-        <result column="modify_user" property="modifyUser"/>
-        <result column="status" property="status"/>
-        <result column="ip" property="ip"/>
-        <result column="mac" property="mac"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
+        <result column="ips" property="ips"/>
+        <result column="macs" property="macs"/>
+        <result column="memo" property="memo"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, parent_id, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, warranty, gmt_create, gmt_modified, memo, create_user, modify_user, status,install_template_id,baseline_template_id,baseline_template_correlation_gmt,install_template_correlation_gmt
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -67,6 +69,9 @@
 
 
     <sql id="IF_Base_Column_List">
+        <if test=" businessId != null">
+            business_id,
+        </if>
         <if test=" assetGroup != null">
             asset_group,
         </if>
@@ -75,12 +80,6 @@
         </if>
         <if test=" name != null">
             name,
-        </if>
-        <if test=" ethernetPort != null">
-            ethernet_port,
-        </if>
-        <if test=" serialPort != null">
-            serial_port,
         </if>
         <if test=" installType != null">
             install_type,
@@ -106,15 +105,10 @@
         <if test=" operationSystem != null">
             operation_system,
         </if>
-        <if test=" systemBit != null">
-            system_bit,
-        </if>
         <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
-        <if test=" location != null">
-            location,
-        </if>
+
         <if test=" latitude != null">
             latitude,
         </if>
@@ -130,12 +124,6 @@
         <if test=" uuid != null">
             uuid,
         </if>
-        <if test=" contactTel != null">
-            contact_tel,
-        </if>
-        <if test=" email != null">
-            email,
-        </if>
         <if test=" assetSource != null">
             asset_source,
         </if>
@@ -145,17 +133,14 @@
         <if test=" describle != null">
             describle,
         </if>
-        <if test=" parentId != null">
-            parent_id,
-        </if>
-        <if test=" tags != null">
-            tags,
-        </if>
         <if test=" firstEnterNett != null">
             first_enter_nett,
         </if>
         <if test=" firstDiscoverTime != null">
             first_discover_time,
+        </if>
+        <if test=" isInnet != null">
+            is_innet,
         </if>
         <if test=" serviceLife != null">
             service_life,
@@ -163,17 +148,32 @@
         <if test=" buyDate != null">
             buy_date,
         </if>
+        <if test=" version != null">
+            version,
+        </if>
         <if test=" warranty != null">
             warranty,
+        </if>
+        <if test=" installTemplateId != null">
+            install_template_id,
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id,
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            baseline_template_correlation_gmt,
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            install_template_correlation_gmt,
+        </if>
+        <if test=" memo != null">
+            memo,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
         </if>
         <if test=" gmtModified != null">
             gmt_modified,
-        </if>
-        <if test=" memo != null">
-            memo,
         </if>
         <if test=" createUser != null">
             create_user,
@@ -185,90 +185,11 @@
             status,
         </if>
     </sql>
-    <sql id="IF_Base_Column_List_Batch">
-
-            asset_group,
-
-
-            number,
-
-            name,
-
-            ethernet_port,
-
-            serial_port,
-
-            install_type,
-
-            serial,
-
-            area_id,
-
-            category_model,
-
-            manufacturer,
-
-            asset_status,
-
-            admittance_status,
-
-            operation_system,
-
-            system_bit,
-
-            responsible_user_id,
-
-            location,
-
-            latitude,
-
-            longitude,
-
-            house_location,
-
-            firmware_version,
-
-            uuid,
-
-            contact_tel,
-
-            email,
-
-            asset_source,
-
-            importance_degree,
-
-            describle,
-
-            parent_id,
-
-            tags,
-
-            first_enter_nett,
-
-            first_discover_time,
-
-            service_life,
-
-            buy_date,
-
-            warranty,
-
-            gmt_create,
-
-            gmt_modified,
-
-            memo,
-
-            create_user,
-
-            modify_user
-
-
-
-    </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" businessId != null">
+            #{businessId },
+        </if>
         <if test=" assetGroup != null">
             #{assetGroup },
         </if>
@@ -277,12 +198,6 @@
         </if>
         <if test=" name != null">
             #{name },
-        </if>
-        <if test=" ethernetPort != null">
-            #{ethernetPort },
-        </if>
-        <if test=" serialPort != null">
-            #{serialPort },
         </if>
         <if test=" installType != null">
             #{installType },
@@ -308,15 +223,10 @@
         <if test=" operationSystem != null">
             #{operationSystem },
         </if>
-        <if test=" systemBit != null">
-            #{systemBit },
-        </if>
         <if test=" responsibleUserId != null">
             #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            #{location },
-        </if>
+
         <if test=" latitude != null">
             #{latitude },
         </if>
@@ -332,12 +242,6 @@
         <if test=" uuid != null">
             #{uuid },
         </if>
-        <if test=" contactTel != null">
-            #{contactTel },
-        </if>
-        <if test=" email != null">
-            #{email },
-        </if>
         <if test=" assetSource != null">
             #{assetSource },
         </if>
@@ -347,17 +251,14 @@
         <if test=" describle != null">
             #{describle },
         </if>
-        <if test=" parentId != null">
-            #{parentId },
-        </if>
-        <if test=" tags != null">
-            #{tags },
-        </if>
         <if test=" firstEnterNett != null">
             #{firstEnterNett },
         </if>
         <if test=" firstDiscoverTime != null">
             #{firstDiscoverTime },
+        </if>
+        <if test=" isInnet != null">
+            #{isInnet },
         </if>
         <if test=" serviceLife != null">
             #{serviceLife },
@@ -365,17 +266,32 @@
         <if test=" buyDate != null">
             #{buyDate },
         </if>
+        <if test=" version != null">
+            #{version },
+        </if>
         <if test=" warranty != null">
             #{warranty },
+        </if>
+        <if test=" installTemplateId != null">
+            #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            #{baselineTemplateId },
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            #{baselineTemplateCorrelationGmt },
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            #{installTemplateCorrelationGmt },
+        </if>
+        <if test=" memo != null">
+            #{memo },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
         </if>
         <if test=" gmtModified != null">
             #{gmtModified },
-        </if>
-        <if test=" memo != null">
-            #{memo },
         </if>
         <if test=" createUser != null">
             #{createUser },
@@ -387,91 +303,84 @@
             #{status },
         </if>
     </sql>
-
     <sql id="IF_Value_Column_List_ForBatch">
-
-            #{entity.assetGroup },
-
-
             #{entity.number },
-
             #{entity.name },
-
-            #{entity.ethernetPort },
-
-            #{entity.serialPort },
-
             #{entity.installType },
-
             #{entity.serial },
-
             #{entity.areaId },
-
             #{entity.categoryModel },
-
             #{entity.manufacturer },
-
             #{entity.assetStatus },
-
             #{entity.admittanceStatus },
-
             #{entity.operationSystem },
-
-            #{entity.systemBit },
-
             #{entity.responsibleUserId },
-
-            #{entity.location },
-
-            #{entity.latitude },
-
-            #{entity.longitude },
-
             #{entity.houseLocation },
-
             #{entity.firmwareVersion },
-
             #{entity.uuid },
-
-            #{entity.contactTel },
-
-            #{entity.email },
-
             #{entity.assetSource },
-
             #{entity.importanceDegree },
-
             #{entity.describle },
-
-            #{entity.parentId },
-
-            #{entity.tags },
-
             #{entity.firstEnterNett },
-
             #{entity.firstDiscoverTime },
-
+            #{entity.isInnet },
             #{entity.serviceLife },
-
             #{entity.buyDate },
-
+            #{entity.version },
             #{entity.warranty },
-
-            #{entity.gmtCreate },
-
-            #{entity.gmtModified },
-
+            #{entity.installTemplateId },
+            #{entity.baselineTemplateId },
+            #{entity.baselineTemplateCorrelationGmt },
+            #{entity.installTemplateCorrelationGmt },
             #{entity.memo },
-
+            #{entity.gmtCreate },
+            #{entity.gmtModified },
             #{entity.createUser },
-
             #{entity.modifyUser }
-
-
 
     </sql>
 
+    <sql id="IF_Base_Column_List_ForBatch">
+
+            number,
+            name,
+            install_type,
+            serial,
+            area_id,
+            category_model,
+            manufacturer,
+            asset_status,
+            admittance_status,
+            operation_system,
+            responsible_user_id,
+            house_location,
+            firmware_version,
+            uuid,
+            asset_source,
+            importance_degree,
+            describle,
+            first_enter_nett,
+            first_discover_time,
+            is_innet,
+            service_life,
+            buy_date,
+            version,
+            warranty,
+            install_template_id,
+            baseline_template_id,
+            baseline_template_correlation_gmt,
+            install_template_correlation_gmt,
+            memo,
+            gmt_create,
+            gmt_modified,
+            create_user,
+            modify_user
+
+    </sql>
     <sql id="Set_Column_List">
+        <if test=" businessId != null">
+            business_id = #{businessId },
+        </if>
         <if test=" assetGroup != null">
             asset_group = #{assetGroup },
         </if>
@@ -480,12 +389,6 @@
         </if>
         <if test=" name != null">
             name = #{name },
-        </if>
-        <if test=" ethernetPort != null">
-            ethernet_port = #{ethernetPort },
-        </if>
-        <if test=" serialPort != null">
-            serial_port = #{serialPort },
         </if>
         <if test=" installType != null">
             install_type = #{installType },
@@ -511,15 +414,10 @@
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
         </if>
-        <if test=" systemBit != null">
-            system_bit = #{systemBit },
-        </if>
         <if test=" responsibleUserId != null">
             responsible_user_id = #{responsibleUserId },
         </if>
-        <if test=" location != null">
-            location = #{location },
-        </if>
+
         <if test=" latitude != null">
             latitude = #{latitude },
         </if>
@@ -535,12 +433,6 @@
         <if test=" uuid != null">
             uuid = #{uuid },
         </if>
-        <if test=" contactTel != null">
-            contact_tel = #{contactTel },
-        </if>
-        <if test=" email != null">
-            email = #{email },
-        </if>
         <if test=" assetSource != null">
             asset_source = #{assetSource },
         </if>
@@ -550,32 +442,47 @@
         <if test=" describle != null">
             describle = #{describle },
         </if>
-        <if test=" parentId != null">
-            parent_id = #{parentId },
-        </if>
-        <if test=" tags != null">
-            tags = #{tags },
-        </if>
         <if test=" firstEnterNett != null">
             first_enter_nett = #{firstEnterNett },
         </if>
         <if test=" firstDiscoverTime != null">
             first_discover_time = #{firstDiscoverTime },
         </if>
+        <if test=" isInnet != null">
+            is_innet = #{isInnet },
+        </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife },
+        </if>
         <if test=" buyDate != null">
             buy_date = #{buyDate },
         </if>
+        <if test=" version != null">
+            version = #{version },
+        </if>
         <if test=" warranty != null">
             warranty = #{warranty },
+        </if>
+        <if test=" installTemplateId != null">
+            install_template_id = #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id = #{baselineTemplateId },
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt },
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            install_template_correlation_gmt = #{installTemplateCorrelationGmt },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
         <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
-        </if>
-        <if test=" memo != null">
-            memo = #{memo },
         </if>
         <if test=" createUser != null">
             create_user = #{createUser },
@@ -586,24 +493,29 @@
         <if test=" status != null">
             status = #{status },
         </if>
-        <if test=" serviceLife != null">
-            service_life = #{serviceLife }
-        </if>
     </sql>
 
-
     <sql id="Where_Column_List">
+        <if test=" businessId != null">
+            and business_id = #{businessId }
+        </if>
+        <if test=" assetGroup != null">
+            and asset_group = #{assetGroup }
+        </if>
         <if test=" number != null">
             and number = #{number }
-        </if>
-        <if test=" type != null">
-            and type = #{type }
         </if>
         <if test=" name != null">
             and name = #{name }
         </if>
+        <if test=" installType != null">
+            and install_type = #{installType }
+        </if>
         <if test=" serial != null">
             and serial = #{serial }
+        </if>
+        <if test=" areaId != null">
+            and area_id = #{areaId }
         </if>
         <if test=" categoryModel != null">
             and category_model = #{categoryModel }
@@ -614,20 +526,24 @@
         <if test=" assetStatus != null">
             and asset_status = #{assetStatus }
         </if>
+        <if test=" admittanceStatus != null">
+            and admittance_status = #{admittanceStatus }
+        </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
         </if>
-        <if test=" systemBit != null">
-            and system_bit = #{systemBit }
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
         <if test=" latitude != null">
             and latitude = #{latitude }
         </if>
         <if test=" longitude != null">
             and longitude = #{longitude }
+        </if>
+        <if test=" houseLocation != null">
+            and house_location = #{houseLocation }
         </if>
         <if test=" firmwareVersion != null">
             and firmware_version = #{firmwareVersion }
@@ -635,17 +551,6 @@
         <if test=" uuid != null">
             and uuid = #{uuid }
         </if>
-        <if test=" responsibleUserId != null">
-            and responsible_user_id = #{responsibleUserId }
-        </if>
-        <if test=" contactTel != null">
-            and contact_tel = #{contactTel }
-        </if>
-        <if test=" email != null">
-            and email = #{email }
-        </if>
-
-
         <if test=" assetSource != null">
             and asset_source = #{assetSource }
         </if>
@@ -655,15 +560,14 @@
         <if test=" describle != null">
             and describle = #{describle }
         </if>
-
-        <if test=" parentId != null">
-            and parent_id = #{parentId }
-        </if>
-        <if test=" tags != null">
-            and tags = #{tags }
-        </if>
         <if test=" firstEnterNett != null">
             and first_enter_nett = #{firstEnterNett }
+        </if>
+        <if test=" firstDiscoverTime != null">
+            and first_discover_time = #{firstDiscoverTime }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
         </if>
         <if test=" serviceLife != null">
             and service_life = #{serviceLife }
@@ -671,17 +575,32 @@
         <if test=" buyDate != null">
             and buy_date = #{buyDate }
         </if>
+        <if test=" version != null">
+            and version = #{version }
+        </if>
         <if test=" warranty != null">
             and warranty = #{warranty }
+        </if>
+        <if test=" installTemplateId != null">
+            and install_template_id = #{installTemplateId }
+        </if>
+        <if test=" baselineTemplateId != null">
+            and baseline_template_id = #{baselineTemplateId }
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            and baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt }
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            and install_template_correlation_gmt = #{installTemplateCorrelationGmt }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
         </if>
         <if test=" gmtModified != null">
             and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" memo != null">
-            and memo = #{memo }
         </if>
         <if test=" createUser != null">
             and create_user = #{createUser }
@@ -692,14 +611,11 @@
         <if test=" status != null">
             and status = #{status }
         </if>
-
-        <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset_status in
-            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                #{assetStatus}
-            </foreach>
-        </if>
     </sql>
+
+
+
+
 
     <sql id="Where_Column">
         <if test=" number != null">
@@ -727,9 +643,7 @@
         <if test=" systemBit != null">
             and system_bit = #{systemBit }
         </if>
-        <if test=" location != null">
-            and location = #{location }
-        </if>
+
 
         <if test=" firmwareVersion != null">
             and firmware_version = #{firmwareVersion }
@@ -940,7 +854,7 @@
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="IF_Base_Column_List_Batch"></include>
+            <include refid="IF_Base_Column_List_ForBatch"></include>
         </trim>
         values
 
@@ -1004,20 +918,16 @@
         count(1) count from
         (
         select DISTINCT asset.id
-        from
-        asset asset
-        left join asset_network_card asset_network_card on asset.id = asset_network_card.asset_id and
-        asset_network_card.status = 1
-        left join asset_category_model asset_category_model on asset.category_model = asset_category_model.id
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id
+        left join asset_mac_relation amr on asset.id = amr.asset_id
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        LEFT JOIN asset_safety_equipment asset_safety_equipment ON asset.id = asset_safety_equipment.asset_id
-        LEFT JOIN asset_network_equipment asset_network_equipment ON asset.id = asset_network_equipment.asset_id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-        group by asset.id) t
+        ) t
     </select>
 
 
@@ -1159,31 +1069,31 @@
         asset.serial,
         asset.manufacturer, asset_status,
         asset.operation_system,
-        asset.system_bit,
-        asset.location,
+        ahsl.product_name as operation_system_name,
         asset.house_location,
         asset.latitude,
         asset.longitude,
         asset.firmware_version,
         asset.uuid,
         asset.responsible_user_id,
-        asset.contact_tel,
-        asset.email,
         asset.asset_source,
         asset.importance_degree,
         asset.describle,
-        asset.parent_id,
         asset.first_enter_nett,
         asset.service_life,
         asset.buy_date,
         asset.warranty,
+        asset.install_template_id,
+        asset.baseline_template_id,
         asset.gmt_create,
-        GROUP_CONCAT(air.ip) AS ip,
-        GROUP_CONCAT(amr.ip) AS mac
+        asset.version,
+        GROUP_CONCAT(air.ip) AS ips,
+        GROUP_CONCAT(amr.mac) AS macs
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id
-        left join asset_mac_relation amr on asset.id = amr.asset_id
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1486,7 +1396,7 @@
         area_id = #{areaId },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
-        location = #{location },
+
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
@@ -1544,7 +1454,7 @@
  	SELECT
 		count(1) count
 	FROM
-		asset_ip_mac m LEFT JOIN asset a ON m.asset_id=a.id
+		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
 	WHERE
 	 a.`status` !=1	AND mac = #{mac}
     </select>
@@ -1641,7 +1551,8 @@
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
         SELECT
         asset.*, lib.product_name AS operation_system_name,
-        `user`.`name` AS responsible_user_name
+        `user`.`name` AS responsible_user_name,
+        `user`.`mobile` As contact_tel
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
@@ -1668,19 +1579,38 @@ WHERE
   and lib.status=1
     </select>
     <select id="countCategoryModel" resultMap="categoryModelResultMap">
-          SELECT
-            category_model,COUNT(category_model) AS num
-          FROM <include refid="Table_Name"/>
-          where status =1
-              AND asset_status
-              <foreach collection="status" open=" IN (" close=")" separator="," item="s">
-                  #{s}
-              </foreach>
-              AND area_id
-              <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
-                  #{areaId}
-              </foreach>
+        SELECT
+        category_model,COUNT(category_model) AS num
+        FROM
+        <include refid="Table_Name"/>
+        where status =1
+        AND asset_status
+        <foreach collection="status" open=" IN (" close=")" separator="," item="s">
+            #{s}
+        </foreach>
+        AND area_id
+        <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
+            #{areaId}
+        </foreach>
         GROUP BY category_model
     </select>
+    <select id="findCountAssetNumber" resultType="int">
+SELECT
+	count(1) count
+FROM
+	asset a
+WHERE
+	number = #{number}
+AND a.`status` = 1
+    </select>
 
+
+    <select id="getAssetStatusListByIds"  resultType="com.antiy.asset.entity.Asset">
+        SELECT id,asset_status as assetStatus
+        FROM  asset
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

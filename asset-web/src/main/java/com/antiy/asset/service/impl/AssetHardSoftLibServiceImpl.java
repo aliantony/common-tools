@@ -132,8 +132,8 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
             SelectResponse response = new SelectResponse();
             // 特殊处理
             // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分 且：用空格代替
-            String m = assetHardSoftLib.getSupplier() + ":" + assetHardSoftLib.getProductName() + ":";
-            response.setValue(assetHardSoftLib.getCpeUri().substring(7 + m.length()));
+            String m = assetHardSoftLib.getSupplier() + assetHardSoftLib.getProductName();
+            response.setValue(assetHardSoftLib.getCpeUri().substring(9 + m.length()));
             response.setId(Objects.toString(assetHardSoftLib.getBusinessId()));
             result.add(response);
         }

@@ -23,7 +23,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @NotEmpty(message = "资产数据格式不正确")
     private List<String> assetIdList;
 
-    @ApiModelProperty("资产当前操作流程")
+    @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
     private AssetFlowEnum assetFlowEnum;
 
@@ -49,13 +49,10 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty(value = "上传的文件JSON串")
     private String fileInfo;
 
-    // @ApiModelProperty(value = "扩展字段,JSON串")
-    // private String extension;
-
     /**
      * 从待登记到待检查
      */
-    @ApiModelProperty(value = "从整改到待登记true;")
+    @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
     private Boolean waitCorrectToWaitRegister = Boolean.FALSE;
 
     public ActivityHandleRequest getActivityHandleRequest() {

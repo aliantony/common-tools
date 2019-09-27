@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>装机模板</p>
@@ -17,35 +16,57 @@ public class AssetInstallTemplate extends BaseEntity {
     /**
      * 模板名称
      */
-    private String            name;
+    private String name;
     /**
      * 模板编号
      */
-    private String            numberCode;
+    private String numberCode;
     /**
      * 品类型号
      */
-    private Integer           categoryModel;
+    private Integer categoryModel;
     /**
-     * 审核状态
+     * 模板状态
      */
-    private Integer           checkStatus;
+    private Integer currentStatus;
     /**
      * 适用操作系统
      */
-    private Long              operationSystem;
+    private Long operationSystem;
     /**
      * 操作系统名称
      */
-    private String            operationSystemName;
-    /**
-     * 是否启用：0-禁用，1-启用
-     */
-    private Integer           enable;
+    private String operationSystemName;
+
     /**
      * 描述
      */
-    private String            description;
+    private String description;
+    /**
+     * 创建时间
+     */
+    private Long              gmtCreate;
+    /**
+     * 修改时间
+     */
+    private Long              gmtModified;
+    /**
+     * 创建人
+     */
+    private String            createUser;
+    /**
+     * 修改人
+     */
+    private String            modifiedUser;
+
+    /**
+     * 状态：1-正常，0-删除
+     */
+    private Integer           status;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public String getName() {
         return name;
@@ -71,12 +92,12 @@ public class AssetInstallTemplate extends BaseEntity {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getCheckStatus() {
-        return checkStatus;
+    public Integer getCurrentStatus() {
+        return currentStatus;
     }
 
-    public void setCheckStatus(Integer checkStatus) {
-        this.checkStatus = checkStatus;
+    public void setCurrentStatus(Integer currentStatus) {
+        this.currentStatus = currentStatus;
     }
 
     public Long getOperationSystem() {
@@ -95,14 +116,6 @@ public class AssetInstallTemplate extends BaseEntity {
         this.operationSystemName = operationSystemName;
     }
 
-    public Integer getEnable() {
-        return enable;
-    }
-
-    public void setEnable(Integer enable) {
-        this.enable = enable;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -111,11 +124,61 @@ public class AssetInstallTemplate extends BaseEntity {
         this.description = description;
     }
 
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifiedUser() {
+        return modifiedUser;
+    }
+
+    public void setModifiedUser(String modifiedUser) {
+        this.modifiedUser = modifiedUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "AssetInstallTemplate{" + ", name=" + name + ", numberCode=" + numberCode + ", categoryModel="
-               + categoryModel + ", checkStatus=" + checkStatus + ", operationSystem=" + operationSystem
-               + ", operationSystemName=" + operationSystemName + ", enable=" + enable + ", description=" + description
-               + "}";
+        return "AssetInstallTemplate{" +
+                "name='" + name + '\'' +
+                ", numberCode='" + numberCode + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", currentStatus=" + currentStatus +
+                ", operationSystem=" + operationSystem +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", description='" + description + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", createUser='" + createUser + '\'' +
+                ", modifiedUser='" + modifiedUser + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

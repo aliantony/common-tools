@@ -15,9 +15,9 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.base.*;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LicenseUtil;
@@ -54,7 +54,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 
@@ -497,7 +496,6 @@ public class AssetServiceImplTest {
         assetQuery.setQueryPatchCount(true);
         assetQuery.setQueryVulCount(true);
         assetQuery.setQueryAlarmCount(true);
-        assetQuery.setCategoryModels(new String[] { "1" });
         assetQuery.setAssetGroupQuery(true);
 
         PageResult<AssetResponse> result = assetServiceImpl.findPageAsset(assetQuery);
@@ -558,7 +556,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testFindCountAssetNumber() throws Exception {
-        Integer result = assetServiceImpl.findCountAssetNumber(new AssetQuery());
+        Integer result = assetServiceImpl.findCountAssetNumber("");
         Assert.assertEquals(Integer.valueOf(0), result);
     }
 
@@ -774,7 +772,6 @@ public class AssetServiceImplTest {
         asset.setOperationSystemName("");
         asset.setAreaName("");
         asset.setResponsibleUserName("");
-        asset.setCategoryModelName("");
         asset.setAssetGroup("");
         asset.setNumber("");
         asset.setName("");
@@ -785,15 +782,15 @@ public class AssetServiceImplTest {
         asset.setManufacturer("");
         asset.setAssetStatus(8);
         asset.setAdmittanceStatus(0);
-        asset.setOperationSystem("1");
+        asset.setOperationSystem(1L);
 
 //        asset.setLatitude("");
 //        asset.setLongitude("");
         asset.setHouseLocation("");
         asset.setFirmwareVersion("");
         asset.setUuid("");
-        asset.setContactTel("");
-        asset.setEmail("");
+
+//        asset.setEmail("");
         asset.setAssetSource(0);
         asset.setImportanceDegree(0);
         asset.setDescrible("");
@@ -1685,7 +1682,7 @@ public class AssetServiceImplTest {
         assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
-        assetResponse.setOperationSystem("");
+        assetResponse.setOperationSystem("1");
 
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");

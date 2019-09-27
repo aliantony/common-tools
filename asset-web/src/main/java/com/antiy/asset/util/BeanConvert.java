@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
-import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -137,6 +136,9 @@ public class BeanConvert {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
                         return Integer.parseInt(o.toString());
+
+                    } else if (Long.class.equals(aClass)) {
+                        return Long.parseLong(o.toString());
                     }
                 }
                 return o;

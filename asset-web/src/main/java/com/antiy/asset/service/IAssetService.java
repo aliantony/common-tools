@@ -1,13 +1,13 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -268,8 +268,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     Map findAlarmAssetCount();
 
-    void implementationFile(ProcessTemplateRequest baseRequest) throws InvocationTargetException,
-                                                                IllegalAccessException, IOException;
+    void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
 
     /**
      * 查询mac重复
@@ -284,4 +283,11 @@ public interface IAssetService extends IBaseService<Asset> {
     boolean CheckRepeatNumber(String number) throws Exception;
 
     List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
+
+    /**
+     * 不予登记
+     * @param assetStatusChangeRequest
+     * @return
+     */
+    Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest)throws Exception;
 }

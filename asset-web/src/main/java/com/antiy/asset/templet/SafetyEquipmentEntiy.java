@@ -35,7 +35,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = true, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = false, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
     private String operationSystem;
 
     /**

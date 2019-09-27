@@ -2,6 +2,7 @@ package com.antiy.asset.entity;
 
 import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -34,7 +35,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 资产品类型号
      */
-    private String            categoryModel;
+    private Integer           categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -58,7 +59,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 关联资产品类型号
      */
-    private String            parentCategoryModel;
+    private Integer           parentCategoryModel;
     /**
      * 关联资产品类型号名称
      */
@@ -197,12 +198,20 @@ public class AssetLinkRelation extends BaseEntity {
         this.status = status;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
+    }
+
+    public Integer getParentCategoryModel() {
+        return parentCategoryModel;
+    }
+
+    public void setParentCategoryModel(Integer parentCategoryModel) {
+        this.parentCategoryModel = parentCategoryModel;
     }
 
     public String getCategoryModelName() {
@@ -211,14 +220,6 @@ public class AssetLinkRelation extends BaseEntity {
 
     public void setCategoryModelName(String categoryModelName) {
         this.categoryModelName = categoryModelName;
-    }
-
-    public String getParentCategoryModel() {
-        return parentCategoryModel;
-    }
-
-    public void setParentCategoryModel(String parentCategoryModel) {
-        this.parentCategoryModel = parentCategoryModel;
     }
 
     public String getParentCategoryModelName() {

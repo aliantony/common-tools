@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -30,6 +31,7 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -109,7 +111,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public List<AssetSoftwareInstallResponse> queryInstalledList(InstallQuery query) throws Exception {
+    public List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query) throws Exception {
         // 查询资产已关联的软件列表
         return assetSoftwareRelationDao.queryInstalledList(query);
     }
@@ -124,16 +126,19 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
-        if (nameListType == 2 && !query.getIsBatch()) {
+        if (Objects.equals(nameListType, 2) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.add(Long.parseLong(a));
             });
         }
         // 模板是白名单需排除白名单中已安装过的软件
-        else if (nameListType == 3 && !query.getIsBatch()) {
+        else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.remove(DataTypeUtils.stringToInteger(a));
             });
+        }
+        if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         Integer count = assetSoftwareRelationDao.queryInstallableCount(query, nameListType, softwareIds,
             installedSoftIds);
@@ -147,7 +152,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Override
     public Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest) {
         List<String> assetIds = softwareReportRequest.getAssetId();
-        List<Integer> softIds = softwareReportRequest.getSoftId();
+        List<Long> softIds = softwareReportRequest.getSoftId();
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
         if (CollectionUtils.isNotEmpty(softIds)) {
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
@@ -158,7 +163,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                 softIds.stream().forEach(softId -> {
                     AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
                     assetSoftwareRelation.setAssetId(assetId);
-                    assetSoftwareRelation.setSoftwareId(DataTypeUtils.integerToString(softId));
+                    assetSoftwareRelation.setSoftwareId(softId);
                     assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
                     assetSoftwareRelationList.add(assetSoftwareRelation);

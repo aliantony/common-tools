@@ -144,7 +144,7 @@
     </select>
     <select id="queryTemplateCheckByTemplateId" resultType="com.antiy.asset.entity.AssetInstallTemplateCheck">
        SELECT
-            asset_install_template_check.id,
+            asset_install_template_check.id as installTemplateId,
             user_id as userId,
             advice,
             result,
@@ -153,6 +153,7 @@
             asset_install_template_check inner JOIN asset_install_template
        ON
             asset_install_template_check.status=1
+            AND asset_install_template.status=1
             AND asset_install_template.id=#{templateId}
             AND asset_install_template.id=asset_install_template_check.install_template_id
 

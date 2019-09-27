@@ -1,7 +1,9 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -31,8 +33,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    @Encode
-    private String       categoryModel;
+    private Integer      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -112,11 +113,11 @@ public class AssetLinkedCountResponse extends BaseResponse {
         this.name = name;
     }
 
-    public String getCategoryModel() {
+    public Integer getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(String categoryModel) {
+    public void setCategoryModel(Integer categoryModel) {
         this.categoryModel = categoryModel;
     }
 
@@ -125,7 +126,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = categoryModelName;
+        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
     }
 
     public Integer getCanBind() {

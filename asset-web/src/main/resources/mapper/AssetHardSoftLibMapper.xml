@@ -365,6 +365,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
     </select>
 
@@ -390,6 +391,7 @@
         select distinct supplier from
         <include refid="Table_Name"></include>
         where status = 1 and type='h'
+        and is_storage=1
         <if test="supplier != null">
             and supplier like CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
         </if>
@@ -400,6 +402,7 @@
         select distinct product_name from
         <include refid="Table_Name"></include>
         where status = 1 and type='h'
+        and is_storage=1
         <if test="supplier != null">
             and supplier =#{supplier}
         </if>
@@ -414,6 +417,7 @@
         select * from
         <include refid="Table_Name"></include>
         where status = 1 and type='h'
+        and is_storage =1
         <if test="supplier != null">
             and supplier =#{supplier}
         </if>

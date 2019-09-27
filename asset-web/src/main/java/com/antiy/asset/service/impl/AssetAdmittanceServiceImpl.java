@@ -76,17 +76,6 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         }
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
-        List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
-        for (AssetResponse object : objects) {
-            // 设置操作系统名
-            if (StringUtils.isNotEmpty(object.getOperationSystem())) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {
-                    if (object.getOperationSystem().equals(categoryModelResponse.getStringId())) {
-                        object.setOperationSystemName((String) categoryModelResponse.getName());
-                    }
-                }
-            }
-        }
         return objects;
 
     }
@@ -104,16 +93,6 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-        }
-
-        // 品类型号及其子品类
-        if (ArrayUtils.isNotEmpty(query.getCategoryModels())) {
-            List<Integer> categoryModels = Lists.newArrayList();
-            for (int i = 0; i < query.getCategoryModels().length; i++) {
-                // categoryModels.addAll(assetCategoryModelService
-                // .findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(query.getCategoryModels()[i])));
-            }
-            query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryModels));
         }
 
         int count = 0;

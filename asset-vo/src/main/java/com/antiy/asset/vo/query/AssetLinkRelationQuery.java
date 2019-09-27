@@ -1,11 +1,13 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 import javax.validation.constraints.Size;
-import java.util.List;
+
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetLinkRelation 查询条件 </p>
@@ -20,52 +22,42 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产id")
     @Encode
-    private String        assetId;
+    private String       assetId;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String        assetName;
+    private String       assetName;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
     @Size(message = "资产编号0~30字符", max = 30)
-    private String        assetNumber;
+    private String       assetNumber;
     /**
      * 关联资产id
      */
     @ApiModelProperty("关联资产id")
     @Encode
-    private String        parentAssetId;
+    private String       parentAssetId;
     /**
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    @Encode
-    private List<String>  categoryModels;
-    /**
-     * 计算设备资产品类型号列表
-     */
-    @ApiModelProperty("计算设备资产品类型号列表，不传")
-    private List<Integer> pcCategoryModels;
-    /**
-     * 网络设备资产品类型号列表
-     */
-    @ApiModelProperty("网络设备资产品类型号列表，不传")
-    private List<Integer> netCategoryModels;
+    private Integer      categoryModel;
+
     /**
      * 资产综合查询
      */
     @ApiModelProperty("资产综合查询")
     @Size(message = "综合查询0~30字符", max = 30)
-    private String        multipleQuery;
+    private String       multipleQuery;
     /**
      * 关联资产综合查询
      */
     @ApiModelProperty("关联资产综合查询")
     @Size(message = "关联资产综合查询0~30字符", max = 30)
-    private String        parentMultipleQuery;
+    private String       parentMultipleQuery;
     /**
      * 资产区域
      */
@@ -73,29 +65,17 @@ public class AssetLinkRelationQuery extends ObjectQuery {
     @Encode
     private List<String> areaIds;
     /**
-     * 关联资产综合查询
+     * 资产状态列表
      */
     @ApiModelProperty("资产状态列表")
-    private List<String>  statusList;
-    /**
-     * 端口号列表
-     */
-    private List<Integer> portCount;
+    private List<String> statusList;
 
-    public List<Integer> getPortCount() {
-        return portCount;
+    public Integer getCategoryModel() {
+        return categoryModel;
     }
 
-    public void setPortCount(List<Integer> portCount) {
-        this.portCount = portCount;
-    }
-
-    public List<String> getCategoryModels() {
-        return categoryModels;
-    }
-
-    public void setCategoryModels(List<String> categoryModels) {
-        this.categoryModels = categoryModels;
+    public void setCategoryModel(Integer categoryModel) {
+        this.categoryModel = categoryModel;
     }
 
     public String getAssetName() {
@@ -112,22 +92,6 @@ public class AssetLinkRelationQuery extends ObjectQuery {
 
     public void setAssetNumber(String assetNumber) {
         this.assetNumber = assetNumber;
-    }
-
-    public List<Integer> getPcCategoryModels() {
-        return pcCategoryModels;
-    }
-
-    public void setPcCategoryModels(List<Integer> pcCategoryModels) {
-        this.pcCategoryModels = pcCategoryModels;
-    }
-
-    public List<Integer> getNetCategoryModels() {
-        return netCategoryModels;
-    }
-
-    public void setNetCategoryModels(List<Integer> netCategoryModels) {
-        this.netCategoryModels = netCategoryModels;
     }
 
     public String getMultipleQuery() {

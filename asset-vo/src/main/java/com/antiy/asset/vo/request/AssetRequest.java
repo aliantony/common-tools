@@ -5,11 +5,9 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.List;
-
 /**
  * <p> AssetRequest 请求对象 </p>
  *
@@ -110,8 +108,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    @Size(message = "资产操作系统不能超过30位", max = 30)
-    private String                  operationSystem;
+    private Long                  operationSystem;
     /**
      * 系统位数
      */
@@ -273,11 +270,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.assetStatus = assetStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 

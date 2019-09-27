@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetTopologyDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetTopology">
+        <id column="id" property="id"/>
+        <result column="topology_type" property="topologyType"/>
+        <result column="relation" property="relation"/>
+        <result column="create_user" property="createUser"/>
+        <result column="gmt_create" property="gmtCreate"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="assetResultMap" type="com.antiy.asset.entity.Asset">
+        <id column="id" property="id"/>
+        <result column="asset_group" property="assetGroup"/>
+        <result column="number" property="number"/>
+        <result column="name" property="name"/>
+        <result column="category_model_name" property="categoryModelName"/>
+        <result column="area_id" property="areaId"/>
+        <result column="category_model" property="categoryModel"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="asset_status" property="assetStatus"/>
+        <result column="operation_system" property="operationSystem"/>
+        <result column="responsible_user_id" property="responsibleUserId"/>
+        <result column="responsible_user_name" property="responsibleUserName"/>
+        <result column="house_location" property="houseLocation"/>
+        <result column="vul_count" property="vulCount"/>
+        <result column="patch_count" property="patchCount"/>
+        <result column="alarm_count" property="alarmCount"/>
+        <result column="department_name" property="departmentName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, topology_type AS topologyType, relation, create_user AS createUser, gmt_create AS gmtCreate
+    </sql>
+
+    <sql id="Table_Name">
+        asset_topology
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" topologyType != null">
+            topology_type,
+        </if>
+        <if test=" relation != null">
+            relation,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" topologyType != null">
+            #{topologyType },
+        </if>
+        <if test=" relation != null">
+            #{relation },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" topologyType != null">
+            topology_type = #{topologyType },
+        </if>
+        <if test=" relation != null">
+            relation = #{relation },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" topologyType != null">
+            and topology_type = #{topologyType }
+        </if>
+    </sql>
+
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+        and asset.status=1
+        <if test=" areaIds != null and areaIds.length >0">
+            and area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" assetGroup != null and assetGroup != ''">
+            and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
+            #{assetGroup} and b.status = 1)
+        </if>
+        <if test=" ip != null">
+            and air.ip like binary
+            CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test="assetStatus != null">
+            and asset_status = #{assetStatus}
+        </if>
+        <if test=" categoryModels != null and categoryModels.length > 0">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" categoryModel != null and categoryModel != ''">
+            and category_model = #{categoryModel}
+        </if>
+        <if test=" responsibleUserName != null and responsibleUserName != ''">
+            and asset_user.`name` like CONCAT('%',replace(replace(#{responsibleUserName},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" ids != null and ids.length >0">
+            and asset.id in
+            <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+
+    </sql>
+
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetTopology">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetTopology">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.antiy.asset.entity.AssetTopology" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetTopology" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultType="com.antiy.asset.entity.AssetTopology">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetTopology"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <select id="findTopologyCountByCategory" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(id) from asset a where exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
+        <if test=" categoryModels != null and categoryModels.length >0 ">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length >0 ">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        and status=1
+    </select>
+
+    <select id="findTopologyIdByCategory" resultType="java.lang.String"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select a.id from asset a where exists (
+        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
+        )
+        <if test=" categoryModels != null and categoryModels.length >0 ">
+            and category_model in
+            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" assetStatusList != null">
+            and asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" areaIds != null and areaIds.length >0 ">
+            and area_id in
+            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" osList != null and osList.size() >0 ">
+            and operation_system in
+            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
+                #{item}
+            </foreach>
+        </if>
+        and status=1
+    </select>
+
+    <select id="findTopologyListAsset" resultMap="assetResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select
+        asset.id,
+        asset.area_id,
+        asset.asset_group,
+        asset.category_model,
+        asset.name,
+        asset_user.name as responsible_user_name,
+        asset.responsible_user_id,
+        <if test="queryVulCount == true">
+            IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
+        </if>
+        <if test="queryPatchCount == true">
+            IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
+        </if>
+        <if test="queryAlarmCount == true">
+            IFNULL(
+            asset_alarm_rel_1.alarm_count,
+            0
+            ) AS alarm_count,
+        </if>
+        <if test="queryDepartmentName == true">
+            department.name as department_name,
+        </if>
+        GROUP_CONCAT(air.ip) AS ips
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        <if test="queryVulCount == true">
+            LEFT JOIN (
+            SELECT
+            avr.asset_id,
+            count(avr.vul_status != 5 OR NULL) vul_count
+            FROM
+            vuln_asset_rel avr
+            INNER JOIN vuln_info v ON v.id = avr.vul_id
+            WHERE
+            v. STATUS = 1
+            and avr.status=1
+            <if test=" ids != null and ids.length >0">
+                and asset_id in
+                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            GROUP BY
+            asset_id
+            ) asset_vul_rel_1 ON asset_vul_rel_1.asset_id = asset.id
+        </if>
+        <if test="queryPatchCount == true">
+            LEFT JOIN (
+            SELECT
+            apr.asset_id,
+            count(apr.patch_status = 3 ) patch_count
+            FROM
+            patch_asset_rel apr
+            INNER JOIN patch_info p ON p.id = apr.patch_id
+            WHERE
+            p. STATUS = 1
+            and apr.status=1
+            <if test=" ids != null and ids.length >0">
+                and asset_id in
+                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            GROUP BY
+            asset_id
+            ) asset_patch_rel_1 ON asset_patch_rel_1.asset_id = asset.id
+        </if>
+        <if test="queryAlarmCount == true">
+            LEFT JOIN (
+            SELECT
+            acr.asset_id,
+            count(*) alarm_count
+            FROM
+            alarm_current_records acr
+            GROUP BY
+            asset_id
+            ) asset_alarm_rel_1 ON asset_alarm_rel_1.asset_id = asset.id
+        </if>
+        <if test="queryDepartmentName == true">
+            LEFT JOIN asset_department department ON asset_user.department_id = department.id
+        </if>
+        <where>
+            <trim prefixOverrides="and">
+                and air.status = 1
+                and asset_user.status = 1
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+        group by asset.id
+    </select>
+
+    <select id="findTopologyListAssetCount" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select count(*) from (
+        select
+        asset.id
+        from asset asset
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        <where>
+            <trim prefixOverrides="and">
+                and air.status = 1
+                and asset_user.status = 1
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+        group by asset.id
+        ) a
+    </select>
+
+    <select id="countAssetByOs" resultType="com.antiy.asset.entity.AssetCountResult" parameterType="com.antiy.asset.vo.query.AssetQuery">
+        SELECT
+        count(*) as num,
+        serial_name as code
+        FROM
+        asset
+        LEFT JOIN asset_cpe_filter filter ON asset.operation_system = filter.business_id
+        WHERE
+        asset. STATUS = 1
+        and filter.status=1
+        <if test=" areaIds != null and areaIds.length >0">
+            and area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        GROUP BY
+        serial_name
+    </select>
+</mapper>

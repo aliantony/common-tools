@@ -325,35 +325,6 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        if (Objects.isNull(assetLinkRelationQuery.getCategoryModels())
-            || assetLinkRelationQuery.getCategoryModels().size() <= 0) {
-            // Map<String, String> category = assetCategoryModelService.getSecondCategoryMap();
-            // category.forEach((k, v) -> {
-            // try {
-            // if (v.equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-            // // 计算设备下所有品类型号
-            // assetLinkRelationQuery.setPcCategoryModels(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-            // } else if (v.equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-            // // 网络设备下所有品类型号
-            // assetLinkRelationQuery.setNetCategoryModels(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(DataTypeUtils.stringToInteger(k)));
-            // }
-            // } catch (Exception e) {
-            // logger.error("获取{}子品类型号出错", v, e.getStackTrace());
-            // }
-            //
-            // });
-        } else {
-            List<Integer> categoryModels = Lists.newArrayList();
-            // for (int i = 0; i < assetLinkRelationQuery.getCategoryModels().size(); i++) {
-            // categoryModels.addAll(assetCategoryModelService.findAssetCategoryModelIdsById(
-            // DataTypeUtils.stringToInteger(assetLinkRelationQuery.getCategoryModels().get(i))));
-            // }
-            assetLinkRelationQuery
-                .setCategoryModels(Arrays.asList(DataTypeUtils.integerArrayToStringArray(categoryModels)));
-        }
-
         List<String> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
         statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
@@ -366,10 +337,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkedCountResponseList)) {
-            return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(), 0,
-                assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+            return new PageResult<>(assetLinkRelationQuery.getPageSize(), 0, assetLinkRelationQuery.getCurrentPage(),
+                Lists.newArrayList());
         }
-        return new PageResult<AssetLinkedCountResponse>(assetLinkRelationQuery.getPageSize(),
+        return new PageResult<>(assetLinkRelationQuery.getPageSize(),
             this.queryAssetLinkedCount(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkedCountResponseList);
     }
@@ -409,8 +380,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        for (AssetLinkedCount assetResponse : assetResponseList) {
-            String categoryModel = assetResponse.getCategoryModel();
+        /*for (AssetLinkedCount assetResponse : assetResponseList) {
+            //String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
                 // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
@@ -422,7 +393,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 // cache.put(categoryModel, second);
                 // }
             }
-        }
+        }*/
     }
 
     private void processLinkRelation(List<AssetLinkRelation> assetResponseList,
@@ -431,7 +402,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        for (AssetLinkRelation assetResponse : assetResponseList) {
+       /* for (AssetLinkRelation assetResponse : assetResponseList) {
             String categoryModel = assetResponse.getCategoryModel();
             String cacheId = cache.get(categoryModel);
             if (Objects.nonNull(cacheId)) {
@@ -444,42 +415,22 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                 // cache.put(categoryModel, second);
                 // }
             }
-        }
+        }*/
     }
 
     @Override
     public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
-        Integer portSize = assetLinkRelationDao
-            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
-        List<Integer> portCount = Lists.newArrayList();
-        if (portSize != null && portSize > 0) {
-            for (int i = 1; i <= portSize; i++) {
-                portCount.add(i);
-            }
-            assetLinkRelationQuery.setPortCount(portCount);
-        }
         List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
-        // Map<String, String> categoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        // processLinkRelation(assetResponseList, categoryMap);
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 
     public Integer queryLinkedCountAssetByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
-        Integer portSize = assetLinkRelationDao
-            .queryPortSize(DataTypeUtils.stringToInteger(assetLinkRelationQuery.getPrimaryKey()));
-        List<Integer> portCount = Lists.newArrayList();
-        if (portSize != null && portSize > 0) {
-            for (int i = 1; i <= portSize; i++) {
-                portCount.add(i);
-            }
-            assetLinkRelationQuery.setPortCount(portCount);
-        }
         return assetLinkRelationDao.queryLinkedCountAssetByAssetId(assetLinkRelationQuery);
     }
 
@@ -488,10 +439,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
-            return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(), 0,
+            return new PageResult<>(assetLinkRelationQuery.getPageSize(), 0,
                 assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
         }
-        return new PageResult<AssetLinkRelationResponse>(assetLinkRelationQuery.getPageSize(),
+        return new PageResult<>(assetLinkRelationQuery.getPageSize(),
             this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkRelationResponseList);
     }

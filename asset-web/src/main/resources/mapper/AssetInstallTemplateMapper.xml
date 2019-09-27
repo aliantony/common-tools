@@ -8,15 +8,19 @@
         <result column="name" property="name"/>
         <result column="number_code" property="numberCode"/>
         <result column="category_model" property="categoryModel"/>
-        <result column="check_status" property="checkStatus"/>
+        <result column="current_status" property="currentStatus"/>
         <result column="operation_system" property="operationSystem"/>
         <result column="operation_system_name" property="operationSystemName"/>
-        <result column="enable" property="enable"/>
         <result column="description" property="description"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="status" property="status"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, number_code, category_model, check_status, operation_system, operation_system_name, enable, description
+        id, name, number_code, category_model, current_status, operation_system, operation_system_name, description, gmt_create, gmt_modified, create_user, modified_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -34,8 +38,8 @@
         <if test=" categoryModel != null">
             category_model,
         </if>
-        <if test=" checkStatus != null">
-            check_status,
+        <if test=" currentStatus != null">
+            current_status,
         </if>
         <if test=" operationSystem != null">
             operation_system,
@@ -43,11 +47,23 @@
         <if test=" operationSystemName != null">
             operation_system_name,
         </if>
-        <if test=" enable != null">
-            enable,
-        </if>
         <if test=" description != null">
             description,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user,
+        </if>
+        <if test=" status != null">
+            status,
         </if>
     </sql>
 
@@ -61,8 +77,8 @@
         <if test=" categoryModel != null">
             #{categoryModel },
         </if>
-        <if test=" checkStatus != null">
-            #{checkStatus },
+        <if test=" currentStatus != null">
+            #{currentStatus },
         </if>
         <if test=" operationSystem != null">
             #{operationSystem },
@@ -70,11 +86,23 @@
         <if test=" operationSystemName != null">
             #{operationSystemName },
         </if>
-        <if test=" enable != null">
-            #{enable },
-        </if>
         <if test=" description != null">
             #{description },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            #{modifiedUser },
+        </if>
+        <if test=" status != null">
+            #{status },
         </if>
     </sql>
 
@@ -88,8 +116,8 @@
         <if test=" categoryModel != null">
             category_model = #{categoryModel },
         </if>
-        <if test=" checkStatus != null">
-            check_status = #{checkStatus },
+        <if test=" currentStatus != null">
+            current_status = #{currentStatus },
         </if>
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
@@ -97,26 +125,38 @@
         <if test=" operationSystemName != null">
             operation_system_name = #{operationSystemName },
         </if>
-        <if test=" enable != null">
-            enable = #{enable },
-        </if>
         <if test=" description != null">
             description = #{description },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
         </if>
     </sql>
 
     <sql id="Where_Column_List">
         <if test=" name != null">
-            and name = #{name }
+            and `name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" numberCode != null">
-            and number_code = #{numberCode }
+            and number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" categoryModel != null">
             and category_model = #{categoryModel }
         </if>
-        <if test=" checkStatus != null">
-            and check_status = #{checkStatus }
+        <if test=" currentStatus != null">
+            and current_status = #{currentStatus }
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
@@ -124,12 +164,23 @@
         <if test=" operationSystemName != null">
             and operation_system_name = #{operationSystemName }
         </if>
-        <if test=" enable != null">
-            and enable = #{enable }
-        </if>
         <if test=" description != null">
             and description = #{description }
         </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifiedUser != null">
+            and modified_user = #{modifiedUser }
+        </if>
+        and status = 1
+
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetInstallTemplate" useGeneratedKeys="true"
@@ -182,6 +233,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
     </select>
 
@@ -189,7 +241,9 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
+        order by gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -228,8 +282,14 @@
             asset AS a inner  join
             asset_install_template AS ait
         on
-            ait.status=1
-            AND a.id=#{assetId}
+
+            a.id=#{assetId}
 	        AND a.install_template_id = ait.id
+    </select>
+    <select id="queryTemplateOs" resultType="java.lang.String">
+        SELECT DISTINCT operation_system_name  FROM `asset_install_template` where status=1 ;
+    </select>
+    <select id="queryTemplateStatus" resultType="int">
+        SELECT  DISTINCT current_status  FROM `asset_install_template` where status=1 ;
     </select>
 </mapper>

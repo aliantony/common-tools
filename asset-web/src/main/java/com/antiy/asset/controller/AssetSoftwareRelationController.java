@@ -91,7 +91,7 @@ public class AssetSoftwareRelationController {
     @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installedList", method = RequestMethod.POST)
-    public ActionResponse<List<AssetSoftwareInstallResponse>> queryInstalledList(@ApiParam("查询条件") @RequestBody InstallQuery query) throws Exception {
+    public ActionResponse<List<AssetSoftwareInstallResponse>> queryInstalledList(@ApiParam("查询条件") @RequestBody QueryCondition query) throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.queryInstalledList(query));
     }
     /**

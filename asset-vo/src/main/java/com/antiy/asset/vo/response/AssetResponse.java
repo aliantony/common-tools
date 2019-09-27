@@ -1,12 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -46,6 +46,17 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("mac")
     private List<AssetMacRelationResponse> mac;
+
+    /**
+     * ips
+     */
+    @ApiModelProperty("ips用于列表展示")
+    private String                         ips;
+    /**
+     * mac
+     */
+    @ApiModelProperty("mac用于列表展示")
+    private String                         macs;
     /**
      * 序列号
      */
@@ -68,6 +79,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("品类名称")
     private String                         categoryModelName;
     /**
+     * 品类名称
+     */
+    @ApiModelProperty("版本")
+    private String                         version;
+    /**
      * 厂商
      */
     @ApiModelProperty("厂商")
@@ -81,8 +97,7 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    @Encode
-    private String                         operationSystem;
+    private Long                         operationSystem;
 
     /**
      * 操作系统名
@@ -111,12 +126,28 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("责任人名称")
     private String                         responsibleUserName;
-
     /**
-     * 上报来源,1-自动上报，2-人工上报
+     * 配置模板id
+     */
+    @ApiModelProperty("配置模板id")
+    @Encode
+    private String                         baselineTemplateId;
+    /**
+     * 装机模板id
+     */
+    @Encode
+    @ApiModelProperty("装机模板id")
+    private String                         installTemplateId;
+    /**
+     * 上报来源
      */
     @ApiModelProperty("上报来源")
     private Integer                        assetSource;
+    /**
+     * 上报来源名称
+     */
+    @ApiModelProperty("上报来源名称")
+    private String                         assetSourceName;
     /**
      * 1核心2重要3一般
      */
@@ -133,6 +164,7 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("使用到期时间")
     private Long                           serviceLife;
+
     /**
      * 制造日期
      */
@@ -143,6 +175,8 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("保修期")
     private String                         warranty;
+    @ApiModelProperty("联系电话")
+    private String                         contactTel;
     /**
      * 资产准入状态
      */
@@ -159,11 +193,6 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("首次入网时间")
     private Long                           firstEnterNett;
-    /**
-     * 首次入网时间
-     */
-    @ApiModelProperty("首次发现时间")
-    private Long                           firstDiscoverTime;
     /**
      * 行政区划主键
      */
@@ -206,20 +235,52 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
 
+    public String getAssetSourceName() {
+        return assetSourceName;
+    }
+
+    public void setAssetSourceName(String assetSourceName) {
+        this.assetSourceName = AssetSourceEnum.getNameByCode(assetSource);
+    }
+
+    public String getIps() {
+        return ips;
+    }
+
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
+    }
+
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public String getInstallTemplateId() {
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(String installTemplateId) {
+        this.installTemplateId = installTemplateId;
+    }
+
+    public void setIps(String ips) {
+        this.ips = ips;
+    }
+
+    public String getMacs() {
+        return macs;
+    }
+
+    public void setMacs(String macs) {
+        this.macs = macs;
+    }
+
     public String getOperationSystemNotice() {
         return operationSystemNotice;
     }
 
     public void setOperationSystemNotice(String operationSystemNotice) {
         this.operationSystemNotice = operationSystemNotice;
-    }
-
-    public Long getFirstDiscoverTime() {
-        return firstDiscoverTime;
-    }
-
-    public void setFirstDiscoverTime(Long firstDiscoverTime) {
-        this.firstDiscoverTime = firstDiscoverTime;
     }
 
     public String getInstallTypeName() {
@@ -376,11 +437,11 @@ public class AssetResponse extends BaseResponse {
         this.assetStatus = assetStatus;
     }
 
-    public String getOperationSystem() {
+    public Long getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(String operationSystem) {
+    public void setOperationSystem(Long operationSystem) {
         this.operationSystem = operationSystem;
     }
 
@@ -504,19 +565,37 @@ public class AssetResponse extends BaseResponse {
         this.mac = mac;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
+    }
+
     @Override
     public String toString() {
         return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
-               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", serial='" + serial + '\''
-               + ", categoryModel='" + categoryModel + '\'' + ", categoryType=" + categoryType + ", categoryModelName='"
-               + categoryModelName + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", ips='" + ips + '\''
+               + ", macs='" + macs + '\'' + ", serial='" + serial + '\'' + ", categoryModel=" + categoryModel
+               + ", categoryType=" + categoryType + ", categoryModelName='" + categoryModelName + '\'' + ", version='"
+               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
                + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
                + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
                + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
-               + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree + ", describle='"
-               + describle + '\'' + ", serviceLife=" + serviceLife + ", buyDate=" + buyDate + ", warranty='" + warranty
-               + '\'' + ", admittanceStatus=" + admittanceStatus + ", gmtCreate=" + gmtCreate + ", firstEnterNett="
-               + firstEnterNett + ", firstDiscoverTime=" + firstDiscoverTime + ", areaId='" + areaId + '\''
+               + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
+               + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + +'\''
+               + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus=" + admittanceStatus
+               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='" + areaId + '\''
                + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
                + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
                + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
