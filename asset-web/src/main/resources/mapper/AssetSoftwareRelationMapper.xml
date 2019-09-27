@@ -799,8 +799,14 @@
                 </if>
             </otherwise>
         </choose>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
+        <if test="query.supplier != null and query.supplier != ''">
+            and supplier = #{supplier}
+        </if>
+        <if test="query.productName != null and query.productName != ''">
+            and product_name = #{productName}
+        </if>
+        <if test="query.pageSize !=-1">
+            LIMIT #{query.pageSize} offset #{query.pageOffset}
         </if>
     </select>
     <!--查询可关联的软件数量-->
