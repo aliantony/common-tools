@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
 
@@ -26,17 +27,31 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     AssetTemplateRelationResponse queryTemplateByAssetId(Integer assetId) throws Exception;
 
     /**
-     * 查询所有装机模板操作系统名称(去重)
+     * 模板查询-所有装机模板操作系统名称(去重)
      *
      * @return
      */
-    List<String> queryTemplateOs();
+    List<AssetInstallTemplateOsResponse> queryTemplateOs();
 
     /**
-     * 查询所有装机模板操作系统状态(去重)
+     * 模板查询-所有装机模板操作系统状态(去重)
      *
      * @return
      */
     List<Integer> queryTemplateStatus();
 
+    /**
+     * 查询模板编号是否存在
+     *
+     * @param numberCode
+     * @return
+     */
+    Integer queryNumberCode(String numberCode);
+
+    /**
+     * 模板创建/编辑-查询操作系统 匹配知识库
+     *
+     * @return
+     */
+    List<AssetInstallTemplateOsResponse> queryOs();
 }

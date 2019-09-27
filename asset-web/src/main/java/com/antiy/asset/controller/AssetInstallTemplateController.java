@@ -4,19 +4,15 @@ import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
-import com.antiy.asset.vo.response.AssetInstallTemplateCheckResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateOsAndStatusResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.kafka.common.protocol.types.Field;
+import org.hibernate.validator.internal.xml.binding.MethodType;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -36,15 +32,48 @@ public class AssetInstallTemplateController {
     private IAssetInstallTemplateCheckService iAssetInstallTemplateCheckService;
 
     /**
-     * 装机模板综合查询： 模板列表
+     * 装机模板综合查询
      *
      * @return
      */
-    @ApiOperation(value = "查询装机模板操作系统和状态接口")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsAndStatusResponse.class),})
-    @RequestMapping(value = "/query/operationSystemAndStatus", method = RequestMethod.POST)
-    public ActionResponse queryOsAndStatus() {
-        return ActionResponse.success(iAssetInstallTemplateService.queryOsAndStatus());
+    @ApiOperation(value = "模板列表查询-模板状态")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
+    @RequestMapping(value = "/query/statusList", method = RequestMethod.POST)
+    public ActionResponse queryStatusList() {
+        return ActionResponse.success(iAssetInstallTemplateService.queryTemplateStatus());
+    }
+
+    /**
+     * 装机模板综合查询
+     *
+     * @return
+     */
+    @ApiOperation(value = "模板列表查询-适用操作系统")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class),})
+    @RequestMapping(value = "/query/osList", method = RequestMethod.POST)
+    public ActionResponse queryOsList() {
+        return ActionResponse.success(iAssetInstallTemplateService.queryTemplateOs());
+    }
+
+    /**
+     * 模板编号查询： 查询是否存在
+     *
+     * @param numberCode 模板编号
+     * @return
+     */
+    @ApiOperation("模板创建/编辑-模板编号去重查询")
+    @ApiResponse(code = 200, message = "ok", response = Integer.class)
+    @RequestMapping(path = {"/query/numberCode"}, method = {RequestMethod.POST})
+    public ActionResponse queryNumberCode(@RequestParam @ApiParam(value = "模板编号", required = true) String numberCode) {
+        ParamterExceptionUtils.isBlank(numberCode, "模板编号不能为空");
+        return ActionResponse.success(iAssetInstallTemplateService.queryNumberCode(numberCode.trim()));
+    }
+
+    @ApiOperation("模板创建/编辑-操作系统查询")
+    @ApiResponse(code = 200, message = "ok", response = String.class)
+    @RequestMapping(value = "/query/os", method = RequestMethod.POST)
+    public ActionResponse queryOs() {
+        return ActionResponse.success(iAssetInstallTemplateService.queryOs());
     }
 
     /**
