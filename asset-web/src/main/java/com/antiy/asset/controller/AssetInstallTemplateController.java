@@ -58,15 +58,15 @@ public class AssetInstallTemplateController {
     /**
      * 模板编号查询： 查询是否存在
      *
-     * @param numberCode 模板编号
+     * @param query 模板
      * @return
      */
     @ApiOperation("模板创建/编辑-模板编号去重查询")
     @ApiResponse(code = 200, message = "ok", response = Integer.class)
     @RequestMapping(path = {"/query/numberCode"}, method = {RequestMethod.POST})
-    public ActionResponse queryNumberCode(@RequestParam @ApiParam(value = "模板编号", required = true) String numberCode) {
-        ParamterExceptionUtils.isBlank(numberCode, "模板编号不能为空");
-        return ActionResponse.success(iAssetInstallTemplateService.queryNumberCode(numberCode.trim()));
+    public ActionResponse queryNumberCode(@RequestBody @ApiParam(value = "AssetInstallTemplateQuery", required = true) AssetInstallTemplateQuery query) {
+        ParamterExceptionUtils.isBlank(query.getNumberCode(), "模板编号不能为空");
+        return ActionResponse.success(iAssetInstallTemplateService.queryNumberCode(query.getNumberCode().trim()));
     }
 
     @ApiOperation("模板创建/编辑-操作系统查询")
