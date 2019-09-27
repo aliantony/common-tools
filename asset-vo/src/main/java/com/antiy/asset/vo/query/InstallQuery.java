@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.query;
 
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -21,7 +20,7 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty(value = "基准模板id", required = true)
     @Encode
-    private String  installTemplateId;
+    private String  baselineTemplateId;
     /**
      * 是否是批量操作
      */
@@ -44,12 +43,20 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
         this.assetId = assetId;
     }
 
-    public String getInstallTemplateId() {
-        return installTemplateId;
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
     }
 
-    public void setInstallTemplateId(String installTemplateId) {
-        this.installTemplateId = installTemplateId;
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
+    }
+
+    public boolean isBatch() {
+        return isBatch;
+    }
+
+    public void setBatch(boolean batch) {
+        isBatch = batch;
     }
 
     @Override

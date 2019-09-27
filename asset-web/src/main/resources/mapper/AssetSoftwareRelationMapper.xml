@@ -760,11 +760,11 @@
             and t1.status = 1
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select sw_type from baseline_template where id = #{installTemplateId}
+        select sw_type from baseline_template where id = #{baselineTemplateId}
     </select>
     <!--模板的软件-->
     <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select software_id from baseline_template_software where id = #{installTemplateId}
+        select software_id from baseline_template_software where id = #{baselineTemplateId}
     </select>
     <!--查询可关联的软件-->
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
