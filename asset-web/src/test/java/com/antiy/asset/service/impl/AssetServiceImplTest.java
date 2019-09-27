@@ -15,9 +15,9 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.base.*;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.LicenseUtil;
@@ -54,7 +54,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 
@@ -1683,7 +1682,7 @@ public class AssetServiceImplTest {
         assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
-        assetResponse.setOperationSystem(1L);
+        assetResponse.setOperationSystem("1");
 
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
@@ -1742,7 +1741,7 @@ public class AssetServiceImplTest {
         assetRequest.setAreaId("1");
         assetRequest.setManufacturer("1");
         assetRequest.setAssetStatus(0);
-        assetRequest.setOperationSystem(1L);
+        assetRequest.setOperationSystem("1");
         assetRequest.setSystemBit(0);
         assetRequest.setFirmwareVersion("1");
         assetRequest.setUuid("1");

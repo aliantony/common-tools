@@ -81,7 +81,7 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/noRegister", method = RequestMethod.POST)
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
-        
+
         Integer count = assetService.assetNoRegister(assetStatusChangeRequest);
         return ActionResponse.success(count);
     }

@@ -282,8 +282,8 @@
             asset AS a inner  join
             asset_install_template AS ait
         on
-            ait.status=1
-            AND a.id=#{assetId}
+
+            a.id=#{assetId}
 	        AND a.install_template_id = ait.id
     </select>
     <select id="queryTemplateOs" resultType="java.lang.String">
