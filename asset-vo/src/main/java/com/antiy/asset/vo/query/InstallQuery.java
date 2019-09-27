@@ -26,6 +26,26 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty(value = "是否是批量操作", required = true)
     private boolean isBatch;
+    @ApiModelProperty(value = "厂商", required = true)
+    private String  supplier;
+    @ApiModelProperty(value = "名称", required = true)
+    private String  productName;
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
     public boolean getIsBatch() {
         return isBatch;
