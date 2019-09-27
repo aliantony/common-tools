@@ -777,6 +777,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
@@ -816,6 +817,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
