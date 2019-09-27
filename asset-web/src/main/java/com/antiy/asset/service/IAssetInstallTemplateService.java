@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsAndStatusResponse;
+import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.BaseRequest;
@@ -22,8 +23,34 @@ import java.util.List;
 public interface IAssetInstallTemplateService extends IBaseService<AssetInstallTemplate> {
 
 
-    AssetInstallTemplateOsAndStatusResponse queryOsAndStatus();
+    /**
+     * 模板查询-操作系统(去重)
+     *
+     * @return
+     */
+    List<AssetInstallTemplateOsResponse> queryTemplateOs();
 
+    /**
+     * 模板查询-状态(去重)
+     *
+     * @return
+     */
+    List<Integer> queryTemplateStatus();
+
+    /**
+     * 查询模板编号是否存在
+     *
+     * @param numberCode
+     * @return
+     */
+    Integer queryNumberCode(String numberCode);
+
+    /**
+     * 模板创建/编辑-查询操作系统
+     *
+     * @return
+     */
+    List<AssetInstallTemplateOsResponse> queryOs();
 
     /**
      * 保存
