@@ -231,6 +231,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
             StatusLogResponse outer = new StatusLogResponse();
             BeanUtils.copyProperties(inner,outer);
             outer.setDescribe(inner.getOperateUserName()+inner.getOriginStatus().describe(inner.getProcessResult()));
+            outer.setFileInfo(HtmlUtils.htmlUnescape(inner.getFileInfo()));
             responses.add(outer);
         }
         return ActionResponse.success(responses);
@@ -240,7 +241,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     public ActionResponse batchQueryAssetPreStatusInfo(List<String> ids) {
         List<AssetStatusNote> assetStatusNotes = assetOperationRecordDao.queryAssetPreStatusInfo(ids);
         List<AssetPreStatusInfoResponse> responses = new ArrayList<>();
-        assetStatusNotes.forEach(e->responses.add(new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(),e.getFileInfo())));
+        assetStatusNotes.forEach(e->responses.add(new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(),HtmlUtils.htmlUnescape(e.getFileInfo()))));
         return ActionResponse.success(responses);
     }
 
