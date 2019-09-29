@@ -173,16 +173,16 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "模板包含的软件列表", notes = "传入模板ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/softList", method = RequestMethod.POST)
-    public ActionResponse<PageResult<AssetHardSoftLibResponse>> querySoftList(PrimaryKeyQuery query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "装机模板Id不能为空");
+    public ActionResponse<PageResult<AssetHardSoftLibResponse>> querySoftList(@RequestBody PrimaryKeyQuery query) throws Exception {
+        ParamterExceptionUtils.isBlank(query.getPid(), "装机模板Id不能为空");
         return ActionResponse.success(iAssetInstallTemplateService.querySoftPage(query));
     }
 
     @ApiOperation(value = "模板包含的补丁列表", notes = "传入模板ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/patchList", method = RequestMethod.POST)
-    public ActionResponse<PageResult<AssetHardSoftLibResponse>> queryPatchList(PrimaryKeyQuery query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "装机模板Id不能为空");
+    public ActionResponse<PageResult<PatchInfoResponse>> queryPatchList(@RequestBody PrimaryKeyQuery query) throws Exception {
+        ParamterExceptionUtils.isBlank(query.getPid(), "装机模板Id不能为空");
         return ActionResponse.success(iAssetInstallTemplateService.queryPatchPage(query));
     }
 }

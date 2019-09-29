@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>CPE表</p>
@@ -17,7 +16,7 @@ public class AssetHardSoftLib extends BaseEntity {
     /**
      * 业务主键
      */
-    private Long              businessId;
+    private String            businessId;
     /**
      * 编号
      */
@@ -103,11 +102,11 @@ public class AssetHardSoftLib extends BaseEntity {
      */
     private Integer           status;
 
-    public Long getBusinessId() {
+    public String getBusinessId() {
         return businessId;
     }
 
-    public void setBusinessId(Long businessId) {
+    public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
 

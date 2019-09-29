@@ -16,10 +16,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -128,7 +125,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public PageResult<AssetHardSoftLibResponse> queryPatchPage(PrimaryKeyQuery query) {
-        return null;
+    public PageResult<PatchInfoResponse> queryPatchPage(PrimaryKeyQuery query) {
+        Integer count = assetInstallTemplateDao.queryPatchCount(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+        }
+        List<PatchInfoResponse> patchInfoResponseList = BeanConvert
+            .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), patchInfoResponseList);
     }
 }

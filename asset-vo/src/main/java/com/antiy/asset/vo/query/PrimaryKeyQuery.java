@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
-import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,16 +10,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class PrimaryKeyQuery extends ObjectQuery {
     @ApiModelProperty("业务主键")
-    @Encode
-    private String primaryKey;
+    private String pid;
 
-    @Override
-    public String getPrimaryKey() {
-        return primaryKey;
+    public String getPid() {
+        return pid;
     }
 
-    @Override
-    public void setPrimaryKey(String primaryKey) {
-        this.primaryKey = primaryKey;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 }
