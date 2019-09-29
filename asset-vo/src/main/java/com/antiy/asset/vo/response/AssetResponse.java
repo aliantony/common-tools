@@ -97,7 +97,7 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private Long                         operationSystem;
+    private String                         operationSystem;
 
     /**
      * 操作系统名
@@ -437,11 +437,11 @@ public class AssetResponse extends BaseResponse {
         this.assetStatus = assetStatus;
     }
 
-    public Long getOperationSystem() {
+    public String getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(Long operationSystem) {
+    public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
     }
 

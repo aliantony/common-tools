@@ -1682,7 +1682,7 @@ public class AssetServiceImplTest {
         assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
-        assetResponse.setOperationSystem(1L);
+//        assetResponse.setOperationSystem(1L);
 
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
