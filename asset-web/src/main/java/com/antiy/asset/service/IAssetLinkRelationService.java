@@ -9,7 +9,6 @@ import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.request.UseableIpRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 通联关系表 服务类 </p>
@@ -135,9 +134,9 @@ public interface IAssetLinkRelationService extends IBaseService<AssetLinkRelatio
     ActionResponse saveAssetLinkRelationList(List<AssetLinkRelationRequest> assetLinkRelationRequestList);
 
     /**
-     * 查询生于ip
+     * 查询生于ip端口
      * @param useableIpRequest
      * @return
      */
-    List<String> queryUseableIp(UseableIpRequest useableIpRequest);
+    List<IpPortResponse> queryUseableIp(UseableIpRequest useableIpRequest);
 }

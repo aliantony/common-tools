@@ -282,22 +282,20 @@
         </foreach>
     </update>
 
-    <select id="queryTemplateByAssetId" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
+    <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
         SELECT
             ait.id,
             ait.`name`,
             ait.number_code as numberCode,
             ait.description  ,
-            a.install_template_correlation_gmt as installTemplateCorrelationGmt,
             ( SELECT count( * ) FROM asset_software_install_template WHERE asset_software_install_template.install_template_id = ait.id ) AS softwareCount,
             ( SELECT count( * ) FROM asset_patch_install_template WHERE asset_patch_install_template.install_template_id = ait.id ) AS patchCount
         FROM
-            asset AS a inner  join
             asset_install_template AS ait
-        on
+        where
 
-            a.id=#{assetId}
-	        AND a.install_template_id = ait.id
+            ait.id=#{templateId}
+
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1

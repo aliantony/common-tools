@@ -205,7 +205,7 @@ public class AssetLinkRelationController {
     }
 
     /**
-     * 查询剩余的ip
+     * 查询剩余的ip和端口
      * @param useableIpRequest
      * @return
      * @throws Exception
@@ -214,7 +214,7 @@ public class AssetLinkRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/useableip", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:linkrelation:queryUseableIp')")
-    public ActionResponse queryUseableIp(@ApiParam(value = "useableIpRequest")@RequestBody UseableIpRequest useableIpRequest) throws Exception {
+    public ActionResponse queryUseableIpPort(@ApiParam(value = "useableIpRequest")@RequestBody UseableIpRequest useableIpRequest) throws Exception {
         return ActionResponse.success(iAssetLinkRelationService.queryUseableIp(useableIpRequest));
     }
 }
