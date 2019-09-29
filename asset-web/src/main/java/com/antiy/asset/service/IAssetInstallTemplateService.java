@@ -6,10 +6,7 @@ import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
-import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -121,5 +118,5 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param query
      * @return
      */
-    PageResult<AssetHardSoftLibResponse> queryPatchPage(PrimaryKeyQuery query);
+    PageResult<PatchInfoResponse> queryPatchPage(PrimaryKeyQuery query);
 }
