@@ -37,8 +37,8 @@ public class AssetOperationRecordController {
     /**
      * 查找资产操作历史
      *
-     * @param queryCondition
-     * @return actionResponse
+     * @param queryCondition 分装主键vo
+     * @return actionResponse 响应数据
      */
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
