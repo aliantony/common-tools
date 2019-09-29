@@ -2704,6 +2704,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetDao.queryBaselineTemplate();
     }
 
+    @Override
+    public List<String> getAllSupplierofSafetyEquipment() {
+        List<String> supplierList=assetDao.getAllSupplierofSafetyEquipment();
+        return supplierList;
+    }
+
+    @Override
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier) {
+        List<String>nameList=assetDao.getAllNameofSafetyEquipmentBySupplier(supplier);
+        return nameList;
+    }
+
+    @Override
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName) {
+        List<String> versionList=assetDao.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName);
+        return versionList;
+    }
+
     private void operationRecord(String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
