@@ -47,7 +47,7 @@ public class AssetSysServiceLibController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSysServiceLib") AssetSysServiceLibRequest assetSysServiceLibRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetSysServiceLib") @RequestBody AssetSysServiceLibRequest assetSysServiceLibRequest) throws Exception {
         return ActionResponse.success(iAssetSysServiceLibService.updateAssetSysServiceLib(assetSysServiceLibRequest));
     }
 
@@ -59,8 +59,8 @@ public class AssetSysServiceLibController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSysServiceLibResponse.class, responseContainer = "List"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetSysServiceLib") AssetSysServiceLibQuery assetSysServiceLibQuery) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetSysServiceLib") @RequestBody AssetSysServiceLibQuery assetSysServiceLibQuery) throws Exception {
         return ActionResponse.success(iAssetSysServiceLibService.queryPageAssetSysServiceLib(assetSysServiceLibQuery));
     }
 
@@ -72,8 +72,8 @@ public class AssetSysServiceLibController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSysServiceLibResponse.class), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
+    public ActionResponse queryById(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetSysServiceLibService.queryAssetSysServiceLibById(queryCondition));
     }
 
@@ -86,7 +86,7 @@ public class AssetSysServiceLibController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
+    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") @RequestBody BaseRequest baseRequest) throws Exception {
         return ActionResponse.success(iAssetSysServiceLibService.deleteAssetSysServiceLibById(baseRequest));
     }
 }

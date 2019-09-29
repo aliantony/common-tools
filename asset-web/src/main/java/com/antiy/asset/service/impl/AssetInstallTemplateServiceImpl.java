@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.BeanConvert;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetInstallTemplateService;
-import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
