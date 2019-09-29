@@ -5,6 +5,7 @@ import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.List;
@@ -27,7 +28,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * id
      */
     @ApiModelProperty("businessId")
-    @Encode
     private String                  businessId;
     /**
      * id
@@ -41,6 +41,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("装机模板id")
     @Encode
     private String                  installTemplateId;
+
     /**
      * 资产zu
      */
@@ -457,4 +458,5 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
                + ", admittanceStatus=" + admittanceStatus + ", firstEnterNett=" + firstEnterNett + ", describle='"
                + describle + '\'' + '}';
     }
+
 }

@@ -140,7 +140,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetAssemblyDao                                                    assetAssemblyDao;
     @Resource
-    private AssetOperationRecordDao       operationRecordDao;
+    private AssetOperationRecordDao                                             operationRecordDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -270,10 +270,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         });
 
         if (id != null && id > 0) {
-            // 启动流程
+
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(String.valueOf(id));
-            activityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
+            activityRequest.setProcessDefinitionKey("assetAdmittance");
             activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
             // 如果流程引擎为空,直接返回错误信息
@@ -471,7 +471,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
                 LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(patchCountList)) {
-                return new ArrayList<AssetResponse>();
+                return new ArrayList<>();
             }
             patchCountMaps = patchCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[patchCountMaps.size()];
@@ -494,7 +494,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return new ArrayList<AssetResponse>();
             }
             alarmCountMaps = alarmCountList.stream()
-                .collect(Collectors.toMap(idcount -> idcount.getId(), IdCount::getCount));
+                .collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
         }
@@ -1011,6 +1011,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse.setAreaName(sysArea.getFullName());
         // 设置品类型号名
         assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
+        // 设置操作系统
+        if (asset.getOperationSystem() != null) {
+            assetResponse.setOperationSystem(asset.getOperationSystem().toString());
+        }
         // 获取资产组
         List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
             .convert(assetGroupRelationDao.queryByAssetId(asset.getId()), AssetGroupResponse.class);
@@ -2636,9 +2640,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetOperationRecord;
         // assetOperationRecordDao.insert(assetOperationRecord);
     }
+
     @Override
     @Transactional
-    public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception{
+    public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String[] assetId = assetStatusChangeRequest.getAssetId();
 
         // 查询资产当前状态
@@ -2646,39 +2651,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(currentAssetList)) {
             throw new BusinessException("资产不存在");
         }
-        for(Asset currentAsset:currentAssetList){
+        for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 throw new BusinessException("资产状态已改变");
             }
         }
-        for(Asset currentAsset:currentAssetList){
+        for (Asset currentAsset : currentAssetList) {
             operationRecord(currentAsset.getId().toString());
         }
         // 硬件完成流程
         if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
             ActionResponse actionResponse = activityClient
-                    .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
+                .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
             // 流程调用失败不更改资产状态
             if (null == actionResponse
-                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
             }
         }
 
-        for(Asset currentAsset:currentAssetList){
+        for (Asset currentAsset : currentAssetList) {
 
             // 记录日志
             if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
-                        currentAsset.getId(), currentAsset.getName(), assetStatusChangeRequest,
-                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                LogUtils.recordOperLog(
+                    new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(), currentAsset.getName(),
+                        assetStatusChangeRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             } else {
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(),
-                        currentAsset.getId(), assetDao.getNumberById(currentAsset.getId().toString()), assetStatusChangeRequest,
-                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
+                    assetDao.getNumberById(currentAsset.getId().toString()), assetStatusChangeRequest,
+                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             }
 
-            //更新状态
+            // 更新状态
             Asset asset = new Asset();
             asset.setId(currentAsset.getId());
             asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
@@ -2692,6 +2697,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
         return assetId.length;
+    }
+
+    @Override
+    public List<SelectResponse> queryBaselineTemplate() {
+        return assetDao.queryBaselineTemplate();
     }
 
     private void operationRecord(String id) throws Exception {
@@ -2714,7 +2724,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         operationRecordDao.insert(operationRecord);
     }
-
 
     @Override
     public Integer queryAssetCountByAreaIds(List<Integer> areaIds) {
@@ -2784,7 +2793,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        //query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
+        // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -2805,7 +2814,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
-
 
     /**
      * 通过ID判断操作系统是否存在且是叶子节点

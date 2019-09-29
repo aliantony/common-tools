@@ -30,6 +30,13 @@ public interface ActivityClient {
     ActionResponse completeTask(ActivityHandleRequest request);
 
     /**
+     * 处理流程
+     * @param request
+     * @return
+     */
+    ActionResponse completeTaskBatch(List<ActivityHandleRequest> request);
+
+    /**
      * 查询当前用户的代办任务
      * @return
      */

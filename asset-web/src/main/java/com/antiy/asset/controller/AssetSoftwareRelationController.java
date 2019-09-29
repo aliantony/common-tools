@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
@@ -105,6 +106,11 @@ public class AssetSoftwareRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/installableList", method = RequestMethod.POST)
     public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstallableList(@ApiParam("查询条件") @RequestBody InstallQuery query) throws Exception {
+        if (StringUtils.isNotBlank(query.getAssetId())) {
+            query.setIsBatch(false);
+        } else {
+            query.setIsBatch(true);
+        }
         return ActionResponse.success(iAssetSoftwareRelationService.queryInstallableList(query));
     }
 

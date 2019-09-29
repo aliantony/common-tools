@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.query;
 
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -21,12 +20,32 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty(value = "基准模板id", required = true)
     @Encode
-    private String  installTemplateId;
+    private String  baselineTemplateId;
     /**
      * 是否是批量操作
      */
     @ApiModelProperty(value = "是否是批量操作", required = true)
     private boolean isBatch;
+    @ApiModelProperty(value = "厂商", required = true)
+    private String  supplier;
+    @ApiModelProperty(value = "名称", required = true)
+    private String  productName;
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
     public boolean getIsBatch() {
         return isBatch;
@@ -44,12 +63,12 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
         this.assetId = assetId;
     }
 
-    public String getInstallTemplateId() {
-        return installTemplateId;
+    public String getBaselineTemplateId() {
+        return baselineTemplateId;
     }
 
-    public void setInstallTemplateId(String installTemplateId) {
-        this.installTemplateId = installTemplateId;
+    public void setBaselineTemplateId(String baselineTemplateId) {
+        this.baselineTemplateId = baselineTemplateId;
     }
 
     @Override

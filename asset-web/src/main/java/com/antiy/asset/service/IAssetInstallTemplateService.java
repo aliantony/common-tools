@@ -1,17 +1,19 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
+import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
-import com.antiy.asset.vo.response.AssetInstallTemplateOsAndStatusResponse;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-
-import java.util.List;
 
 /**
  * <p> 装机模板 服务类 </p>
@@ -21,9 +23,34 @@ import java.util.List;
  */
 public interface IAssetInstallTemplateService extends IBaseService<AssetInstallTemplate> {
 
+    /**
+     * 模板查询-操作系统(去重)
+     *
+     * @return
+     */
+    List<AssetInstallTemplateOsResponse> queryTemplateOs();
 
-    AssetInstallTemplateOsAndStatusResponse queryOsAndStatus();
+    /**
+     * 模板查询-状态(去重)
+     *
+     * @return
+     */
+    List<Integer> queryTemplateStatus();
 
+    /**
+     * 查询模板编号是否存在
+     *
+     * @param numberCode
+     * @return
+     */
+    Integer queryNumberCode(String numberCode);
+
+    /**
+     * 模板创建/编辑-查询操作系统
+     *
+     * @return
+     */
+    List<AssetInstallTemplateOsResponse> queryOs();
 
     /**
      * 保存
@@ -82,4 +109,17 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      */
     AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception;
 
+    /**
+     * 模板软件查询
+     * @param query
+     * @return
+     */
+    PageResult<AssetHardSoftLibResponse> querySoftPage(PrimaryKeyQuery query);
+
+    /**
+     * 补丁列表查询
+     * @param query
+     * @return
+     */
+    PageResult<AssetHardSoftLibResponse> queryPatchPage(PrimaryKeyQuery query);
 }

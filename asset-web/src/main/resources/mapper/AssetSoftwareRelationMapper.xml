@@ -760,11 +760,11 @@
             and t1.status = 1
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select sw_type from baseline_template where id = #{installTemplateId}
+        select sw_type from baseline_template where id = #{baselineTemplateId}
     </select>
     <!--模板的软件-->
     <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select software_id from baseline_template_software where id = #{installTemplateId}
+        select software_id from baseline_template_software where id = #{baselineTemplateId}
     </select>
     <!--查询可关联的软件-->
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
@@ -777,6 +777,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
@@ -799,8 +800,14 @@
                 </if>
             </otherwise>
         </choose>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
+        <if test="query.supplier != null and query.supplier != ''">
+            and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="query.productName != null and query.productName != ''">
+            and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="query.pageSize !=-1">
+            LIMIT #{query.pageSize} offset #{query.pageOffset}
         </if>
     </select>
     <!--查询可关联的软件数量-->
@@ -810,6 +817,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
@@ -833,6 +841,12 @@
                 </if>
             </otherwise>
         </choose>
+        <if test="query.supplier != null and query.supplier != ''">
+            and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="query.productName != null and query.productName != ''">
+            and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
+        </if>
     </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
@@ -849,7 +863,7 @@
         create_user
         )
         values
-        <foreach collection="list" item="item"  separator=",">
+        <foreach collection="list" item="item" separator=",">
             (
             #{item.assetId},
             #{item.softwareId},
