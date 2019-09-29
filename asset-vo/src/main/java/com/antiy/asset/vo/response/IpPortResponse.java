@@ -1,11 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @Author: lvliang
  * @Date: 2019/9/29 14:02
  */
+@ApiModel
 public class IpPortResponse {
     @ApiModelProperty("IP")
     private String  ip;

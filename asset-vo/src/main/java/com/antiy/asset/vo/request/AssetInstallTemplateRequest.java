@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 /**
  * <p> AssetInstallTemplateRequest 请求对象 </p>
  *
@@ -48,6 +51,8 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      * 是否启用：0-禁用，1-启用
      */
     @ApiModelProperty("是否启用：0-禁用，1-启用")
+    @Min(value = 0, message = "是否启用只能为0，1")
+    @Max(value = 1, message = "是否启用只能为0，1")
     private Integer enable;
     /**
      * 描述
@@ -121,7 +126,6 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
 
     @Override
     public void validate() throws RequestParamValidateException {
-
     }
 
 }

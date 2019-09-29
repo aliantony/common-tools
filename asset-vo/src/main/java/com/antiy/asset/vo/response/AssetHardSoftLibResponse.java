@@ -2,78 +2,107 @@ package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * <p> AssetHardSoftLibResponse 响应对象 </p>
  *
  * @author zhangyajun
  * @since 2018-12-27
  */
-
+@ApiModel
 public class AssetHardSoftLibResponse extends BaseResponse {
     /**
      * 业务主键
      */
+    @ApiModelProperty("业务主键")
     private String  businessId;
     /**
-     * 编号
+     * 类型编号
      */
+    @ApiModelProperty("类型编号")
     private Integer number;
     /**
-     * 类型：a-应用软件 h-硬件 o-操作系统
+     * 类型：a：应用软件 h:硬件 o:操作系统
      */
+    @ApiModelProperty("类型：a：应用软件 h:硬件 o:操作系统")
     private String  type;
+    /**
+     * 类型名称
+     */
+    @ApiModelProperty("类型名称")
+    private String  typeName;
     /**
      * 供应商
      */
+    @ApiModelProperty("厂商")
     private String  supplier;
     /**
-     * 产品名
+     * 名称
      */
+    @ApiModelProperty("名称")
     private String  productName;
     /**
      * 版本号
      */
+    @ApiModelProperty("版本号")
     private String  version;
     /**
      * 更新信息
      */
+    @ApiModelProperty("更新信息")
     private String  upgradeMsg;
     /**
      * 系统版本
      */
+    @ApiModelProperty("系统版本")
     private String  sysVersion;
     /**
      * 语言
      */
+    @ApiModelProperty("语言")
     private String  language;
     /**
      * 软件版本
      */
+    @ApiModelProperty("软件版本")
     private String  softVersion;
     /**
      * 软件平台
      */
+    @ApiModelProperty("软件平台")
     private String  softPlatform;
     /**
      * 硬件平台
      */
+    @ApiModelProperty("硬件平台")
     private String  hardPlatform;
     /**
      * 其他
      */
+    @ApiModelProperty("其他")
     private String  other;
     /**
-     * 数据来源：1-CPE，2-MANUAL
+     * 是否入库：1已入库、2未入库
      */
-    private Integer dataSource;
-    /**
-     * 是否入库：1-已入库、2-未入库
-     */
+    @ApiModelProperty("是否入库：1已入库、2未入库")
     private Integer isStorage;
     /**
      * cpe路径
      */
+    @ApiModelProperty("cpe路径")
     private String  cpeUri;
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String  memo;
+    /**
+     * 收录时间
+     */
+    @ApiModelProperty("收录时间")
+    private Long    gmtCreate;
 
     public String getBusinessId() {
         return businessId;
@@ -97,6 +126,14 @@ public class AssetHardSoftLibResponse extends BaseResponse {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getSupplier() {
@@ -179,14 +216,6 @@ public class AssetHardSoftLibResponse extends BaseResponse {
         this.other = other;
     }
 
-    public Integer getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(Integer dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public Integer getIsStorage() {
         return isStorage;
     }
@@ -201,5 +230,21 @@ public class AssetHardSoftLibResponse extends BaseResponse {
 
     public void setCpeUri(String cpeUri) {
         this.cpeUri = cpeUri;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 }

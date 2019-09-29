@@ -20,6 +20,8 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -70,11 +72,31 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         // TODO
         return responseConverter.convert(assetHardSoftLibList, AssetHardSoftLibResponse.class);
     }
+    @Override
+    public List<AssetHardSoftLibResponse> queryHardSoftLibList(AssetHardSoftLibQuery query) throws Exception {
+        List<AssetHardSoftLib> hardSoftLibList = assetHardSoftLibDao.queryHardSoftLibList(query);
+        return responseConverter.convert(hardSoftLibList, AssetHardSoftLibResponse.class);
+    }
 
     @Override
+    public Integer queryHardSoftLibCount(AssetHardSoftLibQuery query) throws Exception {
+        return assetHardSoftLibDao.queryHardSoftLibCount(query);
+    }
+    @Override
     public PageResult<AssetHardSoftLibResponse> queryPageAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception {
-        return new PageResult<AssetHardSoftLibResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetHardSoftLib(query));
+        if (!Objects.isNull(query.getBusinessId()) && StringUtils.isNotBlank(query.getSourceType())) {
+            List<Long> ids = assetHardSoftLibDao.exceptIds(query.getBusinessId(), query.getSourceType(),
+                    query.getAssetType().getName());
+            query.setExceptIds(ids);
+        }
+        Integer count = this.queryHardSoftLibCount(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+        }
+        if (count < query.getPageSize() * query.getCurrentPage()) {
+            query.setCurrentPage((int) Math.ceil((double) count / query.getPageSize()));
+        }
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.queryHardSoftLibList(query));
     }
 
     @Override
