@@ -128,8 +128,11 @@
 
     <sql id="where">
         <trim prefix="WHERE" prefixOverrides="AND | OR ">
-            <if test="assetId != null and assetId.length() > 0">
-               and lib.business_id not in (select business_id from asset_assembly where asset_id = #{assetId} and status = 1)
+            <if test="excludeAssemblyIds != null and excludeAssemblyIds.size() > 0">
+                and lib.business_id not in
+               <foreach collection="excludeAssemblyIds" item="aid" separator="," open="(" close=")">
+                   #{aid}
+               </foreach>
             </if>
             <if test="supplier != null and supplier.length() > 0">
                 and supplier like CONCAT('',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
@@ -141,13 +144,12 @@
         </trim>
     </sql>
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) from asset_assembly_lib lib left join asset_assembly a on lib.business_id = a.business_id
+        select count(1) from asset_assembly_lib lib
         <include refid="where"></include>
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select lib.type, lib.supplier, lib.product_name, lib.business_id from asset_assembly_lib lib
-        left join asset_assembly a on lib.business_id = a.business_id
         <include refid="where"></include>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
