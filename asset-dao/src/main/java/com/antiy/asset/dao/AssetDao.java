@@ -269,6 +269,13 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer updateAssetBatch(@Param("assetList") List<Asset> assetList);
 
     /**
+     * 使用gmt_create和id更新资产状态asset_status字段
+     * @param asset
+     * @return
+     */
+    Integer updateAssetStatusWithLock(Asset asset);
+
+    /**
      *
      */
     Asset getByAssetId(@Param("id") String id);
