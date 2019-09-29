@@ -1556,17 +1556,17 @@
                 `status` = #{asset.status}
             </if>
             where id = #{asset.id}
-            and gmt_modified = #{asset.gmtModified}
         </foreach>
     </update>
+
     <update id="updateAssetStatusWithLock" parameterType="com.antiy.asset.entity.Asset">
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{assetStatus},
-        status = #{status}
-        where id = #{id}
-        and gmt_modified = #{gmtModified}
+        asset_status = #{asset.assetStatus},
+        status = #{asset.status}
+        where id = #{asset.id}
+        and asset_status = #{lastAssetStatus}
     </update>
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
