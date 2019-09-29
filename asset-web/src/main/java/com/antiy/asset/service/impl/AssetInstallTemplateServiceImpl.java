@@ -1,28 +1,28 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.vo.request.BatchQueryRequest;
-import com.antiy.asset.vo.request.SysArea;
-import com.antiy.common.utils.LoginUserUtil;
-import org.apache.commons.compress.utils.Lists;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetInstallTemplateService;
+import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
+import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p> 装机模板 服务实现类 </p>
@@ -113,7 +113,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception {
         AssetTemplateRelationResponse templateRelationResponse = assetInstallTemplateDao
-            .queryTemplateByAssetId(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
+            .queryTemplateById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
         return templateRelationResponse;
     }
 
