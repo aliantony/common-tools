@@ -777,6 +777,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
@@ -800,10 +801,10 @@
             </otherwise>
         </choose>
         <if test="query.supplier != null and query.supplier != ''">
-            and supplier = #{query.supplier}
+            and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
         <if test="query.productName != null and query.productName != ''">
-            and product_name = #{query.productName}
+            and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="query.pageSize !=-1">
             LIMIT #{query.pageSize} offset #{query.pageOffset}
@@ -816,6 +817,7 @@
         from asset_hard_soft_lib
         where
         status = 1
+        and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
@@ -840,10 +842,10 @@
             </otherwise>
         </choose>
         <if test="query.supplier != null and query.supplier != ''">
-            and supplier = #{query.supplier}
+            and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
         <if test="query.productName != null and query.productName != ''">
-            and product_name = #{query.productName}
+            and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
     </select>
     <!--删除资产与软件的关联关系-->

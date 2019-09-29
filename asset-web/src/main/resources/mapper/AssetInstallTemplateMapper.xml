@@ -298,4 +298,30 @@
     <select id="queryOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT id as osCode,product_name as osName FROM `asset_cpe_filter` where status=1
     </select>
+    <select id="querySoftCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
+        select count(1) from asset_software_install_template where install_template_id = #{primaryKey}
+    </select>
+    <select id="querySoftList" resultType="com.antiy.asset.entity.AssetHardSoftLib"
+            parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
+        select
+            t2.id,
+            t2.business_id,
+            t2.number,
+            t2.type,
+            t2.supplier,
+            t2.product_name,
+            t2.version,
+            t2.upgrade_msg,
+            t2.sys_version,
+            t2.language,
+            t2.soft_version,
+            t2.soft_platform,
+            t2.hard_platform,
+            t2.other
+        from asset_software_install_template t1 left join asset_hard_soft_lib t2 on t1.software_id = t2.business_id and t1.status = 1 and t2.status = 1
+        where
+        t1.install_template_id = #{primaryKey}
+    </select>
+
+
 </mapper>

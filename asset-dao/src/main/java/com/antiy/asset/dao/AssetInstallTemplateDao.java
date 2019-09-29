@@ -1,11 +1,13 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+
+import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
-
-import java.util.List;
 
 /**
  * <p> 装机模板 Mapper 接口 </p>
@@ -54,4 +56,8 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      * @return
      */
     List<AssetInstallTemplateOsResponse> queryOs();
+
+    Integer querySoftCount(PrimaryKeyQuery query);
+
+    List<AssetHardSoftLib> querySoftList(PrimaryKeyQuery query);
 }

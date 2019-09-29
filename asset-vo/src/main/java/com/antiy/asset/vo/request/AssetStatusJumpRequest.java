@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangxin
@@ -19,16 +21,25 @@ import java.util.List;
  */
 public class AssetStatusJumpRequest extends BasicRequest implements ObjectValidator {
 
-    @ApiModelProperty("资产Id数组")
+    // @ApiModelProperty("资产Id数组")
+    // @NotEmpty(message = "资产数据格式不正确")
+    // private List<String> assetIdList;
+
+    @ApiModelProperty("资产信息")
     @NotEmpty(message = "资产数据格式不正确")
-    private List<String> assetIdList;
+    private List<StatusJumpAssetInfo> assetInfoList;
+
+    @ApiModelProperty(value = "流程表单数据,JSON串")
+    private Map formData;
+
 
     @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
     private AssetFlowEnum assetFlowEnum;
 
-    @ApiModelProperty(value = "流程引擎数据")
-    private ActivityHandleRequest activityHandleRequest;
+    //
+    // @ApiModelProperty(value = "流程引擎数据")
+    // private ActivityHandleRequest activityHandleRequest;
 
     @ApiModelProperty(value = "资产变更流程信息")
     private ManualStartActivityRequest manualStartActivityRequest;
@@ -55,12 +66,20 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
     private Boolean waitCorrectToWaitRegister = Boolean.FALSE;
 
-    public ActivityHandleRequest getActivityHandleRequest() {
-        return activityHandleRequest;
+    public List<StatusJumpAssetInfo> getAssetInfoList() {
+        return assetInfoList;
     }
 
-    public void setActivityHandleRequest(ActivityHandleRequest activityHandleRequest) {
-        this.activityHandleRequest = activityHandleRequest;
+    public void setAssetInfoList(List<StatusJumpAssetInfo> assetInfoList) {
+        this.assetInfoList = assetInfoList;
+    }
+
+    public Map getFormData() {
+        return formData;
+    }
+
+    public void setFormData(Map formData) {
+        this.formData = formData;
     }
 
     public ManualStartActivityRequest getManualStartActivityRequest() {
@@ -103,14 +122,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         this.fileInfo = fileInfo;
     }
 
-    public List<String> getAssetIdList() {
-        return assetIdList;
-    }
-
-    public void setAssetIdList(List<String> assetIdList) {
-        this.assetIdList = assetIdList;
-    }
-
     public Boolean getWaitCorrectToWaitRegister() {
         return waitCorrectToWaitRegister;
     }
@@ -121,11 +132,12 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (activityHandleRequest == null && manualStartActivityRequest == null) {
+        if (formData == null && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程不能为空");
         }
-        // 通过:校验下一步执行人;不通过:备注信息不能为空
-        if (getAgree() != null && getAgree()) {
+        // 通过:入网/退役/检查不校验,其他校验下一步执行人;不通过:备注信息不能为空
+        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        if (Boolean.TRUE.equals(agree) && checkConfigUser) {
             ParamterExceptionUtils.isTrue(CollectionUtils.isNotEmpty(getManualStartActivityRequest().getConfigUserIds()), "下一步执行人员错误");
         } else {
             ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), "备注信息不能为空");
@@ -135,9 +147,9 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @Override
     public String toString() {
         return "AssetStatusJumpRequest{" +
-                "assetIdList=" + assetIdList +
+                "assetInfos=" + assetInfoList +
                 ", assetFlowEnum=" + assetFlowEnum +
-                ", activityHandleRequest=" + activityHandleRequest +
+                ", formData=" + formData +
                 ", manualStartActivityRequest=" + manualStartActivityRequest +
                 ", agree=" + agree +
                 ", note='" + note + '\'' +
