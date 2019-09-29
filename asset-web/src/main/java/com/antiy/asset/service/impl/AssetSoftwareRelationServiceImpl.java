@@ -122,12 +122,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 模板的软件
         List<Long> softwareIds = assetSoftwareRelationDao.querySoftwareIds(query);
         // 已安装的软件
-        List<Long> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
+        List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
         if (Objects.equals(nameListType, 2) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
-                softwareIds.add(a);
+                softwareIds.add(Long.parseLong(a));
             });
         }
         // 模板是白名单需排除白名单中已安装过的软件

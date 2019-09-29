@@ -21,7 +21,7 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
      * 软件ID
      */
     @ApiModelProperty("软件ID")
-    private Long   softwareId;
+    private String softwareId;
 
     /**
      * 名称
@@ -93,11 +93,11 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
         this.assetId = assetId;
     }
 
-    public Long getSoftwareId() {
+    public String getSoftwareId() {
         return softwareId;
     }
 
-    public void setSoftwareId(Long softwareId) {
+    public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
 }
