@@ -26,10 +26,7 @@ import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.request.UseableIpRequest;
-import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.asset.vo.response.AssetLinkedCountResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
@@ -313,14 +310,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     @Override
-    public List<String> queryUseableIp(UseableIpRequest useableIpRequest) {
-        // 网络设备
-        if (useableIpRequest.getCategoryType().isNet()) {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(), "isNet");
-        } else if (useableIpRequest.getCategoryType().isPc()) {
-            return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId(), "isPc");
-        }
-        return Lists.newArrayList();
+    public List<IpPortResponse> queryUseableIp(UseableIpRequest useableIpRequest) {
+        return assetLinkRelationDao.queryUseableIp(useableIpRequest.getAssetId());
     }
 
     @Override
@@ -380,20 +371,12 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        /*for (AssetLinkedCount assetResponse : assetResponseList) {
-            //String categoryModel = assetResponse.getCategoryModel();
-            String cacheId = cache.get(categoryModel);
-            if (Objects.nonNull(cacheId)) {
-                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
-            } else {
-                // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                // categoryMap.keySet());
-                // if (Objects.nonNull(second)) {
-                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
-                // cache.put(categoryModel, second);
-                // }
-            }
-        }*/
+        /* for (AssetLinkedCount assetResponse : assetResponseList) { //String categoryModel =
+         * assetResponse.getCategoryModel(); String cacheId = cache.get(categoryModel); if (Objects.nonNull(cacheId)) {
+         * // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId))); } else { // String second
+         * = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all, // categoryMap.keySet()); //
+         * if (Objects.nonNull(second)) { // assetResponse.setCategoryType(new
+         * CategoryType(secondCategoryMap.get(second))); // cache.put(categoryModel, second); // } } } */
     }
 
     private void processLinkRelation(List<AssetLinkRelation> assetResponseList,
@@ -402,20 +385,12 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         Map<String, String> cache = new HashMap<>();
         // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
         // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-       /* for (AssetLinkRelation assetResponse : assetResponseList) {
-            String categoryModel = assetResponse.getCategoryModel();
-            String cacheId = cache.get(categoryModel);
-            if (Objects.nonNull(cacheId)) {
-                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
-            } else {
-                // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-                // categoryMap.keySet());
-                // if (Objects.nonNull(second)) {
-                // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
-                // cache.put(categoryModel, second);
-                // }
-            }
-        }*/
+        /* for (AssetLinkRelation assetResponse : assetResponseList) { String categoryModel =
+         * assetResponse.getCategoryModel(); String cacheId = cache.get(categoryModel); if (Objects.nonNull(cacheId)) {
+         * // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId))); } else { // String second
+         * = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all, // categoryMap.keySet()); //
+         * if (Objects.nonNull(second)) { // assetResponse.setCategoryType(new
+         * CategoryType(secondCategoryMap.get(second))); // cache.put(categoryModel, second); // } } } */
     }
 
     @Override
@@ -439,8 +414,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
-            return new PageResult<>(assetLinkRelationQuery.getPageSize(), 0,
-                assetLinkRelationQuery.getCurrentPage(), Lists.newArrayList());
+            return new PageResult<>(assetLinkRelationQuery.getPageSize(), 0, assetLinkRelationQuery.getCurrentPage(),
+                Lists.newArrayList());
         }
         return new PageResult<>(assetLinkRelationQuery.getPageSize(),
             this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
