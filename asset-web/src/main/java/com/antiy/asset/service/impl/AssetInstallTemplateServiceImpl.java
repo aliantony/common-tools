@@ -5,6 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.request.BatchQueryRequest;
+import com.antiy.asset.vo.request.SysArea;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -101,9 +104,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public String deleteAssetInstallTemplateById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetInstallTemplateDao.deleteById(baseRequest.getStringId()).toString();
+    public int deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception {
+        ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
+        return assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
+            LoginUserUtil.getLoginUser().getName());
     }
 
     @Override

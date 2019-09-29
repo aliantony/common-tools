@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.BatchQueryRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -140,14 +141,14 @@ public class AssetInstallTemplateController {
     /**
      * 通过ID删除
      *
-     * @param baseRequest
+     * @param batchQueryRequest
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetInstallTemplateService.deleteAssetInstallTemplateById(baseRequest));
+    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") @RequestBody BatchQueryRequest batchQueryRequest) throws Exception {
+        return ActionResponse.success(iAssetInstallTemplateService.deleteAssetInstallTemplateById(batchQueryRequest));
     }
 
     @ApiOperation(value = "资产关联的装机模板信息", notes = "传入资产ID")

@@ -9,6 +9,7 @@ import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p> 装机模板 Mapper 接口 </p>
@@ -84,4 +85,10 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
 
 
     List<PatchInfo> queryPatchList(PrimaryKeyQuery query);
+
+    /**
+     * 批量删除
+     */
+    int batchDeleteTemplate(@Param("ids") List<String> ids, @Param("gmtModified") Long gmtModified,
+                            @Param("modifiedUser") String modifiedUser);
 }

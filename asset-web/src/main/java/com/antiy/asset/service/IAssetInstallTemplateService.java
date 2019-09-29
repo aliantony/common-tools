@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
+import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
@@ -92,10 +93,10 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
     /**
      * 通过ID删除
      *
-     * @param baseRequest
+     * @param request
      * @return
      */
-    String deleteAssetInstallTemplateById(BaseRequest baseRequest) throws Exception;
+    int deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception;
 
     /**
      * 通过资产ID查询
