@@ -512,6 +512,12 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="removeBusinessIds != null and removeBusinessIds.size() > 0">
+                and business_id not in
+                <foreach collection="removeBusinessIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
             and a.status = 1
         </trim>
         ORDER BY id DESC LIMIT #{pageOffset}, #{pageSize} ) t2
@@ -558,6 +564,12 @@
             <if test="exceptIds != null and exceptIds.size() > 0">
                 and business_id not in
                 <foreach collection="exceptIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="removeBusinessIds != null and removeBusinessIds.size() > 0">
+                and business_id not in
+                <foreach collection="removeBusinessIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </if>

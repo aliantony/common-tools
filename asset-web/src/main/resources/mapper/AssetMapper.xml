@@ -1556,17 +1556,17 @@
                 `status` = #{asset.status}
             </if>
             where id = #{asset.id}
-            and gmt_modified = #{asset.gmtModified}
         </foreach>
     </update>
+
     <update id="updateAssetStatusWithLock" parameterType="com.antiy.asset.entity.Asset">
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{assetStatus},
-        status = #{status}
-        where id = #{id}
-        and gmt_modified = #{gmtModified}
+        asset_status = #{asset.assetStatus},
+        status = #{asset.status}
+        where id = #{asset.id}
+        and asset_status = #{lastAssetStatus}
     </update>
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -1641,5 +1641,23 @@ AND a.`status` = 1
         FROM
             asset asset
             INNER JOIN baseline_template bt ON asset.baseline_template_id = bt.id
+    </select>
+    <select id="getAllSupplierofSafetyEquipment" resultType="java.lang.String">
+       SELECT manufacturer
+       FROM   asset
+       where  category_model =3
+       GROUP  BY manufacturer
+    </select>
+    <select id="getAllNameofSafetyEquipmentBySupplier" resultType="java.lang.String">
+        SELECT name
+        FROM  asset
+        where category_model =3 AND   manufacturer=#{supplier}
+        GROUP  BY name
+    </select>
+    <select id="getAllVersionofSafetyEquipment" resultType="java.lang.String">
+        SELECT  version
+        from  asset
+        where  category_model =3 AND   manufacturer=#{supplier} AND name=#{name}
+        GROUP  BY version
     </select>
 </mapper>
