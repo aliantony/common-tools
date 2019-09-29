@@ -54,7 +54,12 @@ public enum AssetStatusEnum {
     /**
      * 已退役
      */
-    RETIRE(11, "已退役");
+    RETIRE(11, "已退役"),
+
+    /**
+     * 代码中正在进行资产操作
+     */
+    IN_PROCESS(99, "正在处理");
 
     AssetStatusEnum(Integer code, String msg) {
         this.code = code;

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class StatusJumpAssetInfo {
     @ApiModelProperty("资产Id")
-    @NotBlank(message = "资产数据格式不正确")
+    @NotBlank(message = "资产数据id不正确")
     private String assetId;
 
     @ApiModelProperty(value = "任务Id")
