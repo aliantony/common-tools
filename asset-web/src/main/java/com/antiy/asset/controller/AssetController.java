@@ -18,7 +18,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -500,5 +499,31 @@ public class AssetController {
     public ActionResponse<List<SelectResponse>> queryBaselineTemplate() throws Exception {
         return ActionResponse.success(iAssetService.queryBaselineTemplate());
     }
-
+    /**
+     * 获取安全设备全部厂商
+     */
+    @ApiOperation(value = "获取安全设备全部厂商列表", notes = "无参")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
+    public List<String> getAllSupplierofSafetyEquipment(){
+        List<String> supplierList=iAssetService.getAllSupplierofSafetyEquipment();
+        return supplierList;
+    }
+    /**
+     * 根据厂商获取安全设备名称列表
+     */
+    @ApiOperation(value = "根据厂商获取安全设备名称列表", notes = "无参")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier){
+        List<String> nameList=iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier);
+        return nameList;
+    }
+    /**
+     * 获取安全设备版本
+     */
+    @ApiOperation(value = "获取安全设备版本列表", notes = "无参")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
+    public List<String> getAllVersionofSafetyEquipment(String supplier,String safetyEquipmentName){
+        List<String> versionList=iAssetService.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName);
+        return versionList;
+    }
 }

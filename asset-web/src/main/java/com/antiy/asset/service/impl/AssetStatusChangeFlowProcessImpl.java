@@ -74,7 +74,7 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
             }
         });
 
-        setInProcess(assetsInDb);
+        setInProcess(assetsInDb, statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode());
 
         // 2.提交至工作流
         boolean activitySuccess = true;
@@ -94,28 +94,28 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         return ActionResponse.success();
     }
 
-    private void setInProcess(List<Asset> assetsInDb) {
-        // 更改为资产正在处理中
+    private void setInProcess(List<Asset> assetsInDb, Integer lastAssetStatus) {
+        // 更改为资产正在处理中 status=0,AssetStatus=99 IN_PROCESS
         List<Asset> updateAssetList = new ArrayList<>(assetsInDb.size());
         assetsInDb.forEach(e -> {
             Asset asset = new Asset();
             asset.setId(e.getId());
-            asset.setGmtModified(e.getGmtModified());
+            // asset.setAssetStatus(AssetStatusEnum.IN_PROCESS.getCode());
             asset.setStatus(0);
-            asset.setAssetStatus(AssetStatusEnum.IN_PROCESS.getCode());
             updateAssetList.add(asset);
         });
+
         transactionTemplate.execute(transactionStatus -> {
             updateAssetList.forEach(asset -> {
                 try {
-                    int effectRow = assetDao.updateAssetStatusWithLock(asset);
+                    int effectRow = assetDao.updateAssetStatusWithLock(asset, lastAssetStatus);
                     if (effectRow <= 0) {
                         throw new BusinessException("资产更新失败");
                     }
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     LogUtils.warn(logger, "资产更新失败{}", e);
-                    throw new BusinessException("当前选中的资产已被其他人员操作,请刷新页面后重试");
+                    throw new BusinessException("操作失败,请刷新页面后重试");
                 }
             });
             return null;

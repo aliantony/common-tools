@@ -57,6 +57,17 @@ public class AssetHardSoftLibQuery extends ObjectQuery {
     @ApiModelProperty("类型（组件assembly,协议protocol,依赖服务dependService,提供服务supplyService）查询关联的硬件/软件时才需传")
     private String        sourceType;
 
+    @ApiModelProperty("去重id")
+    private List<String>  removeBusinessIds;
+
+    public List<String> getRemoveBusinessIds() {
+        return removeBusinessIds;
+    }
+
+    public void setRemoveBusinessIds(List<String> removeBusinessIds) {
+        this.removeBusinessIds = removeBusinessIds;
+    }
+
     public String getType() {
         return type;
     }
