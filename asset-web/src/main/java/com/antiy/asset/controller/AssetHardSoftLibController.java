@@ -1,5 +1,15 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
@@ -13,19 +23,8 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  *
@@ -74,8 +73,8 @@ public class AssetHardSoftLibController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class, responseContainer = "List"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetHardSoftLib") AssetHardSoftLibQuery assetHardSoftLibQuery) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetHardSoftLib") @RequestBody AssetHardSoftLibQuery assetHardSoftLibQuery) throws Exception {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageAssetHardSoftLib(assetHardSoftLibQuery));
     }
 
@@ -106,7 +105,7 @@ public class AssetHardSoftLibController {
     }
 
     @ApiOperation(value = "分页查询资产关联的软件信息列表", notes = "必传资产ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SoftwareResponse.class, responseContainer = "actionResponse")})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SoftwareResponse.class, responseContainer = "actionResponse") })
     @RequestMapping(value = "/software/list", method = RequestMethod.POST)
     public ActionResponse getPageSoftwarePage(@ApiParam(value = "assetId") @RequestBody AssetSoftwareQuery queryCondition) {
         return ActionResponse.success(iAssetHardSoftLibService.getPageSoftWareList(queryCondition));

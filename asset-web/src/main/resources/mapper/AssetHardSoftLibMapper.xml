@@ -452,4 +452,144 @@
         GROUP BY product_name limit 50) temp INNER JOIN asset_cpe_filter filter on filter.product_name =
         temp.value
     </select>
+
+    <!--软硬件列表查询-->
+    <select id="queryHardSoftLibList" resultMap="BaseResultMap"
+            parameterType="com.antiy.asset.vo.query.AssetHardSoftLibQuery">
+        SELECT
+        t1.id,
+        t1.business_id,
+        t1.number,
+        t1.type,
+        t1.supplier,
+        t1.product_name,
+        t1.version,
+        t1.upgrade_msg,
+        t1.sys_version,
+        t1.LANGUAGE,
+        t1.soft_version,
+        t1.soft_platform,
+        t1.hard_platform,
+        t1.is_storage,
+        t1.cpe_uri,
+        t1.gmt_create
+        FROM
+        ( SELECT id FROM asset_hard_soft_lib a
+        force index(index_relation)
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <choose>
+                <when test='assetType.name == "a"'>
+                    <choose>
+                        <when test='type =="a"'>
+                            and a.type = 'a'
+                        </when>
+                        <when test='type =="o"'>
+                            and a.type = 'o'
+                        </when>
+                        <otherwise>
+                            and a.type in ('a','o')
+                        </otherwise>
+                    </choose>
+                </when>
+                <when test='assetType.name == "h"'>
+                    and a.type = 'h'
+                </when>
+            </choose>
+            <if test=" productName != null and productName != ''">
+                and a.product_name like CONCAT('%', replace(replace(REPLACE
+                (#{productName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+            </if>
+            <if test=" supplier != null and supplier != ''">
+                and a.supplier like CONCAT('%', replace(replace(REPLACE (#{supplier},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test=" isStorage != null">
+                and a.is_storage = #{isStorage }
+            </if>
+            <if test="exceptIds != null and exceptIds.size() > 0">
+                and business_id not in
+                <foreach collection="exceptIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            and a.status = 1
+        </trim>
+        ORDER BY id DESC LIMIT #{pageOffset}, #{pageSize} ) t2
+        LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
+        ORDER BY
+        t1.id DESC
+    </select>
+    <select id="queryHardSoftLibCount" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetHardSoftLibQuery">
+        select
+        count(1) count
+        from
+        asset_hard_soft_lib a force index(index_relation)
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <choose>
+                <when test='assetType.name == "a"'>
+                    <choose>
+                        <when test='type =="a"'>
+                            and a.type = 'a'
+                        </when>
+                        <when test='type =="o"'>
+                            and a.type = 'o'
+                        </when>
+                        <otherwise>
+                            and a.type in ('a','o')
+                        </otherwise>
+                    </choose>
+                </when>
+                <when test='assetType.name == "h"'>
+                    and a.type = 'h'
+                </when>
+            </choose>
+            <if test=" productName != null and productName != ''">
+                and a.product_name like CONCAT('%', replace(replace(REPLACE
+                (#{productName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+            </if>
+            <if test=" supplier != null and supplier != ''">
+                and a.supplier like CONCAT('%', replace(replace(REPLACE (#{supplier},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test=" isStorage != null">
+                and a.is_storage = #{isStorage }
+            </if>
+            <if test="exceptIds != null and exceptIds.size() > 0">
+                and business_id not in
+                <foreach collection="exceptIds" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            and a.status = 1
+        </trim>
+    </select>
+    <!--排除已存在的资产id-->
+    <select id="exceptIds" resultType="java.lang.Long">
+        <choose>
+            <when test="assetType == 'h'">
+                select hard_id from asset_hard_assembly_relation where assembly_id = #{businessId} and status = 1
+            </when>
+            <when test="assetType == 'a'">
+                <choose>
+                    <when test="sourceType == 'assembly'">
+                        select soft_id from asset_assembly_soft_relation where assembly_id = #{businessId} and status =
+                        1
+                    </when>
+                    <when test="sourceType == 'protocol'">
+                        select soft_id from asset_soft_protocol_relation where protocol_id = #{businessId} and status =
+                        1
+                    </when>
+                    <when test="sourceType == 'dependService'">
+                        select soft_id from asset_soft_service_relation where service_id = #{businessId} and status = 1
+                    </when>
+                    <when test="sourceType == 'supplyService'">
+                        select soft_id from asset_soft_service_lib where service_id = #{businessId} and status = 1
+                    </when>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
