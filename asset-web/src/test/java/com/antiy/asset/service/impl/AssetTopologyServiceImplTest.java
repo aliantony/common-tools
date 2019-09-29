@@ -4,7 +4,6 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
 import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.EmergencyClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.LoginUtil;
@@ -114,10 +113,27 @@ public class AssetTopologyServiceImplTest {
         AssetLink assetLink = new AssetLink();
         assetLink.setParentAssetId(parentId);
         assetLink.setAssetId(assetId);
-        assetLink.setCategoryModal(4);
-        assetLink.setParentCategoryModal(5);
+        assetLink.setParentCategoryModal(2);
+        assetLink.setCategoryModal(1);
         return assetLink;
+    }
 
+    public AssetLink generateAssetLink2(String parentId, String assetId) {
+        AssetLink assetLink = new AssetLink();
+        assetLink.setParentAssetId(parentId);
+        assetLink.setAssetId(assetId);
+        assetLink.setCategoryModal(2);
+        assetLink.setParentCategoryModal(1);
+        return assetLink;
+    }
+
+    public AssetLink generateAssetLink3(String parentId, String assetId) {
+        AssetLink assetLink = new AssetLink();
+        assetLink.setParentAssetId(parentId);
+        assetLink.setAssetId(assetId);
+        assetLink.setCategoryModal(2);
+        assetLink.setParentCategoryModal(2);
+        return assetLink;
     }
 
     @Test
@@ -249,7 +265,7 @@ public class AssetTopologyServiceImplTest {
 
         // 情况3
         when(assetLinkRelationDao.findLinkRelation(any()))
-                .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(0);
         Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
 
@@ -273,28 +289,30 @@ public class AssetTopologyServiceImplTest {
         Assert.assertEquals("success", assetTopologyService.queryListByIp(assetQuery).getStatus());
     }
 
+    @Test
+    public void getTopologyGraph() throws Exception {
+        AssetLink assetLink = generateAssetLink("2", "4");
+        AssetLink assetLink1 = generateAssetLink2("8", "4");
+        AssetLink assetLink2 = generateAssetLink("8", "9");
+        AssetLink assetLink3 = generateAssetLink2("10", "2");
+        AssetLink assetLink4 = generateAssetLink3("12", "10");
+        AssetLink assetLink5 = generateAssetLink3("10", "111");
+        AssetLink assetLink6 = generateAssetLink3("10", "112");
+        AssetLink assetLink7 = generateAssetLink3("10", "113");
+        AssetLink assetLink8 = generateAssetLink2("50", "111");
+        AssetLink assetLink9 = generateAssetLink2("50", "112");
+
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), assetLink, assetLink1, assetLink2, assetLink3,
+                assetLink4, assetLink5, assetLink6, assetLink7, assetLink8, assetLink9));
+        Assert.assertEquals("success", assetTopologyService.getTopologyGraph().getStatus());
+
+    }
     // @Test
     // public void getTopologyGraphTest() throws Exception {
-    // AssetLink assetLink = generateAssetLink("2", "4");
-    // assetLink.setCategoryModal(17);
-    // assetLink.setParentCategoryModal(6);
-    // AssetLink assetLink1 = generateAssetLink("4", "8");
-    // assetLink1.setCategoryModal(16);
-    // assetLink1.setParentCategoryModal(17);
-    // AssetLink assetLink2 = generateAssetLink("8", "9");
-    // assetLink2.setCategoryModal(4);
-    // assetLink2.setParentCategoryModal(16);
-    // AssetLink assetLink3 = generateAssetLink("2", "10");
-    // assetLink3.setCategoryModal(6);
-    // assetLink3.setParentCategoryModal(6);
-    //
-    // when(assetLinkRelationDao.findLinkRelation(any()))
-    // .thenReturn(Arrays.asList(generateAssetLink("1", "2"), assetLink, assetLink1, assetLink2));
     // when(baseDao.getAll()).thenReturn(getAssetCategoryModelList());
     // when(assetCategoryModelDao.getNextLevelCategoryByName(any())).thenReturn(getSecondAssetCategoryModelList());
-    // Assert.assertEquals("success", assetTopologyService.getTopologyGraph().getStatus());
     //
     // }
-    //
 
 }
