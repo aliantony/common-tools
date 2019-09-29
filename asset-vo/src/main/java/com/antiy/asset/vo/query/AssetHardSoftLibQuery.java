@@ -2,6 +2,8 @@ package com.antiy.asset.vo.query;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.antiy.asset.vo.enums.AssetTypeEnum;
 import com.antiy.common.base.ObjectQuery;
 
@@ -19,7 +21,8 @@ public class AssetHardSoftLibQuery extends ObjectQuery {
     /**
      * 资产类型
      */
-    @ApiModelProperty("资产类型，hard硬件，soft软件")
+    @ApiModelProperty("资产类型，HARD硬件，SOFT软件,OS操作系统")
+    @NotNull(message = "资产类型不能为空")
     private AssetTypeEnum assetType;
     /**
      * 资产类型
