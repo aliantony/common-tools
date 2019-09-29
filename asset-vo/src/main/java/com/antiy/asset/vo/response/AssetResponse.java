@@ -235,6 +235,12 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
 
+    @ApiModelProperty(value = "配置模板关联时间")
+    private Long                           baselineTemplateCorrelationGmt;
+
+    @ApiModelProperty(value = "装机模板关联时间")
+    private Long                           installTemplateCorrelationGmt;
+
     public String getAssetSourceName() {
         return assetSourceName;
     }
@@ -543,6 +549,22 @@ public class AssetResponse extends BaseResponse {
 
     public CategoryType getCategoryType() {
         return categoryType;
+    }
+
+    public Long getBaselineTemplateCorrelationGmt() {
+        return baselineTemplateCorrelationGmt;
+    }
+
+    public void setBaselineTemplateCorrelationGmt(Long baselineTemplateCorrelationGmt) {
+        this.baselineTemplateCorrelationGmt = baselineTemplateCorrelationGmt;
+    }
+
+    public Long getInstallTemplateCorrelationGmt() {
+        return installTemplateCorrelationGmt;
+    }
+
+    public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
+        this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
     }
 
     public void setCategoryType(CategoryType categoryType) {

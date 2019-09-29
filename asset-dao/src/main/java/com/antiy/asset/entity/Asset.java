@@ -227,6 +227,10 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("告警数量")
     private String            alarmCount;
 
+    private Long              baselineTemplateCorrelationGmt;
+
+    private Long              installTemplateCorrelationGmt;
+
     public String getAssetSourceName() {
         return assetSourceName;
     }
@@ -242,10 +246,6 @@ public class Asset extends BaseEntity {
     public void setCategoryModelName(String categoryModelName) {
         this.categoryModelName = categoryModelName;
     }
-
-    private Long baselineTemplateCorrelationGmt;
-
-    private Long installTemplateCorrelationGmt;
 
     public Long getBusinessId() {
         return businessId;

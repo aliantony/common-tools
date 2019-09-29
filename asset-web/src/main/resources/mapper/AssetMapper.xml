@@ -1525,7 +1525,7 @@
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
-        SELECT id,asset_status,number,first_enter_nett FROM asset
+        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status FROM asset
         WHERE status = 1
         <if test="ids != null and ids.size() > 0">
             and asset.id in
@@ -1543,11 +1543,30 @@
             <if test="#{asset.firstEnterNett} != null">
                 first_enter_nett = #{asset.firstEnterNett},
             </if>
-            asset_status = #{asset.assetStatus},
-            gmt_modified = #{asset.gmtModified },
-            modify_user = #{asset.modifyUser }
+            <if test="#{asset.assetStatus} != null">
+                asset_status = #{asset.assetStatus},
+            </if>
+            <if test="#{asset.gmtModified} != null">
+                gmt_modified = #{asset.gmtModified},
+            </if>
+            <if test="#{asset.modifyUser} != null">
+                modify_user = #{asset.modifyUser},
+            </if>
+            <if test="#{asset.status} != null">
+                `status` = #{asset.status}
+            </if>
             where id = #{asset.id}
+            and gmt_modified = #{asset.gmtModified}
         </foreach>
+    </update>
+    <update id="updateAssetStatusWithLock" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        set
+        asset_status = #{assetStatus},
+        status = #{status}
+        where id = #{id}
+        and gmt_modified = #{gmtModified}
     </update>
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">

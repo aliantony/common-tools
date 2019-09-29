@@ -5,15 +5,18 @@ import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
+import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> 装机模板 服务实现类 </p>
@@ -137,5 +141,23 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         List<PatchInfoResponse> patchInfoResponseList = BeanConvert
             .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), patchInfoResponseList);
+    }
+
+    @Override
+    public int enableInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
+        AssetInstallTemplate assetInstallTemplate = this.getById(request.getStringId());
+        if (Objects.equals(request.getEnable(), 1)) {
+            BusinessExceptionUtils.isTrue(Objects.equals(assetInstallTemplate.getCurrentStatus(),
+                AssetInstallTemplateStatusEnum.FOBIDDEN.getCode()), "模板状态错误");
+            assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.ENABLE.getCode());
+        }
+        if (Objects.equals(request.getEnable(), 0)) {
+            BusinessExceptionUtils.isTrue(Objects.equals(assetInstallTemplate.getCurrentStatus(),
+                AssetInstallTemplateStatusEnum.ENABLE.getCode()), "模板状态错误");
+            assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.FOBIDDEN.getCode());
+        }
+        assetInstallTemplate.setGmtModified(System.currentTimeMillis());
+        assetInstallTemplate.setModifiedUser(LoginUserUtil.getLoginUser().getUsername());
+        return assetInstallTemplateDao.update(assetInstallTemplate);
     }
 }
