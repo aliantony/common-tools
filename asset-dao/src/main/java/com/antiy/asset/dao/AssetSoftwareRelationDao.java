@@ -3,7 +3,6 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.antiy.common.base.QueryCondition;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.AssetSoftware;
@@ -14,6 +13,7 @@ import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.QueryCondition;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>

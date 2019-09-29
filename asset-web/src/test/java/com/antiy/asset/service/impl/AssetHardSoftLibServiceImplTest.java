@@ -1,19 +1,12 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.AssetHardSoftLibDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
+import static com.antiy.common.utils.LoginUserUtil.getLoginUser;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,13 +24,20 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.antiy.common.utils.LoginUserUtil.getLoginUser;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.AssetHardSoftLibDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
+import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -118,12 +118,12 @@ public class AssetHardSoftLibServiceImplTest {
         query.setSupplier("s");
         List<AssetHardSoftLib> assetHardSoftLibs = new ArrayList<>();
         AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
-        assetHardSoftLib.setBusinessId(1L);
+        assetHardSoftLib.setBusinessId("1");
         assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
         assetHardSoftLibs.add(assetHardSoftLib);
         Mockito.when(assetHardSoftLibDao.queryHardSoftLibByVersion(Mockito.any())).thenReturn(assetHardSoftLibs);
-        Assert.assertEquals("1.001.02.073",assetHardSoftLibService.pulldownVersion(query).get(0).getValue());
+        Assert.assertEquals("1.001.02.073", assetHardSoftLibService.pulldownVersion(query).get(0).getValue());
     }
 }

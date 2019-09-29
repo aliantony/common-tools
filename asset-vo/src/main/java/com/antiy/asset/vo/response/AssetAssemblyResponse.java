@@ -29,7 +29,6 @@ public class AssetAssemblyResponse extends BaseResponse {
      * 组件主键
      */
     @ApiModelProperty("组件主键")
-    @Encode
     private String           businessId;
     /**
      * 组件类型

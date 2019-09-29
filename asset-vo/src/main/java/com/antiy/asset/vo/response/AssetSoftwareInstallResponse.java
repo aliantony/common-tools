@@ -21,7 +21,6 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
      * 软件ID
      */
     @ApiModelProperty("软件ID")
-    @Encode
     private String softwareId;
 
     /**
@@ -101,5 +100,4 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
     public void setSoftwareId(String softwareId) {
         this.softwareId = softwareId;
     }
-
 }

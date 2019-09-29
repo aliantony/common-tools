@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.antiy.asset.vo.response.IpPortResponse;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.*;
@@ -133,10 +134,9 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     /**
      * 查询可用ip
      * @param assetId
-     * @param type
      * @return
      */
-    List<String> queryUseableIp(@Param("assetId") String assetId, @Param("type") String type);
+    List<IpPortResponse> queryUseableIp(@Param("assetId") String assetId);
 
     /**
      * 已管控拓扑管理的资产的资产组信息(下拉) queryGroupList

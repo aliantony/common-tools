@@ -1,9 +1,13 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.entity.PatchInfo;
+import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,11 +24,11 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     /**
      * 通过资产ID查询
      *
-     * @param assetId
+     * @param templateId
      * @return
      * @throws Exception
      */
-    AssetTemplateRelationResponse queryTemplateByAssetId(Integer assetId) throws Exception;
+    AssetTemplateRelationResponse queryTemplateById(Integer templateId) throws Exception;
 
     /**
      * 模板查询-所有装机模板操作系统名称(去重)
@@ -54,4 +58,37 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      * @return
      */
     List<AssetInstallTemplateOsResponse> queryOs();
+
+    /**
+     * 查询装机模板的软件数量
+     *
+     * @param query
+     * @return
+     */
+    Integer querySoftCount(PrimaryKeyQuery query);
+
+    /**
+     * 查询装机模板的软件列表
+     *
+     * @param query
+     * @return
+     */
+    List<AssetHardSoftLib> querySoftList(PrimaryKeyQuery query);
+
+    /**
+     * 查询装机模板的补丁数量
+     *
+     * @param query
+     * @return
+     */
+    Integer queryPatchCount(PrimaryKeyQuery query);
+
+
+    List<PatchInfo> queryPatchList(PrimaryKeyQuery query);
+
+    /**
+     * 批量删除
+     */
+    int batchDeleteTemplate(@Param("ids") List<String> ids, @Param("gmtModified") Long gmtModified,
+                            @Param("modifiedUser") String modifiedUser);
 }

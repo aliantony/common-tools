@@ -228,12 +228,35 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
         </trim>
     </select>
-
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test=" service != null">
+                and service like CONCAT('%',replace(replace(replace (#{service},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" displayName != null">
+                and display_name like CONCAT('%',replace(replace(replace
+                (#{displayName},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" serviceClasses != null">
+                and service_classes = #{serviceClasses }
+            </if>
+            <if test=" isStorage != null">
+                and is_storage = #{isStorage }
+            </if>
+            <if test='serviceType == "dependService" and serviceBusinessId != null'>
+                and business_id != #{serviceBusinessId}
+            </if>
+            <if test="serviceIdList !=null and serviceIdList.size()>0">
+                and business_id in
+                <foreach collection="serviceIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <include refid="except"/>
+            and status = 1
         </trim>
     </select>
 
@@ -241,9 +264,128 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test=" service != null">
+                and service like CONCAT('%',replace(replace(replace (#{service},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" displayName != null">
+                and display_name like CONCAT('%',replace(replace(replace
+                (#{displayName},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" serviceClasses != null">
+                and service_classes = #{serviceClasses }
+            </if>
+            <if test=" isStorage != null">
+                and is_storage = #{isStorage }
+            </if>
+            <if test='serviceType == "dependService" and serviceBusinessId != null'>
+                and business_id != #{serviceBusinessId}
+            </if>
+            <if test="serviceIdList !=null and serviceIdList.size()>0">
+                and business_id in
+                <foreach collection="serviceIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <include refid="except"/>
+            and status = 1
         </trim>
+        order by id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <sql id="Table_Name_By_Type">
+        <if test="type == 'softwareDepend'">
+            asset_soft_service_relation
+        </if>
+        <if test="type == 'protocol'">
+            asset_service_protocol_relation
+        </if>
+        <if test="type == 'softwareProvide'">
+            asset_soft_service_lib
+        </if>
+        <if test="type == 'port'">
+            asset_service_port_relation
+        </if>
+        <if test="type == 'patchServer'">
+            patch_mapping_server
+        </if>
+        <if test="type == 'vulServer'">
+            vuln_server
+        </if>
+    </sql>
+    <sql id="except">
+        <if test="serviceType!=null and serviceBusinessId != null">
+            <choose>
+                <when test='serviceType == "softwareDepend"'>
+                    and business_id NOT IN (
+                    SELECT
+                    service_id
+                    FROM
+                    asset_soft_service_relation
+                    WHERE
+                    STATUS = 1
+                    AND soft_id = #{serviceBusinessId}
+                    )
+                </when>
+                <when test='serviceType == "protocol"'>
+                    and business_id NOT IN (
+                    SELECT
+                    service_id
+                    FROM
+                    asset_service_protocol_relation
+                    WHERE
+                    STATUS = 1
+                    AND protocol_id = #{serviceBusinessId}
+                    )
+                </when>
+                <when test='serviceType == "dependService"'>
+                    and business_id NOT IN (
+                    SELECT
+                    depend_service
+                    FROM
+                    asset_service_depend
+                    WHERE
+                    STATUS = 1
+                    AND service_id = #{serviceBusinessId}
+                    )
+                </when>
+                <when test='serviceType == "softwareProvide"'>
+                    and business_id NOT IN (
+                    SELECT
+                    service_id
+                    FROM
+                    asset_soft_service_lib
+                    WHERE
+                    STATUS = 1
+                    AND soft_id = #{serviceBusinessId}
+                    )
+                </when>
+                <when test='serviceType == "patchServer"'>
+                    and business_id NOT IN (
+                    SELECT
+                    server_id
+                    FROM
+                    patch_mapping_server
+                    WHERE
+                    STATUS = 1
+                    AND antiy_patch_number = #{serviceBusinessId}
+                    )
+                </when>
+                <when test='serviceType == "vulServer"'>
+                    and business_id NOT IN (
+                    SELECT
+                    service_id
+                    FROM
+                    vuln_server
+                    WHERE
+                    STATUS = 1
+                    AND antiy_vuln_id = #{serviceBusinessId}
+                    )
+                </when>
+            </choose>
+        </if>
+
+    </sql>
 </mapper>

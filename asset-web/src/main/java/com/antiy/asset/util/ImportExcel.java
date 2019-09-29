@@ -263,7 +263,7 @@ public class ImportExcel {
                     val = cell.getNumericCellValue();
                     // 判断是否为科学计数法（包含E、e、+等符号）
                     if (val.toString().indexOf("E") != -1 || val.toString().indexOf("e") != -1
-                        || val.toString().indexOf("+") != -1) {
+                            || val.toString().indexOf("+") != -1) {
                         BigDecimal bd = new BigDecimal(val + "");
                         val = bd.toPlainString();
                     }
@@ -293,7 +293,7 @@ public class ImportExcel {
      * @return
      */
     public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException,
-                                                   NoSuchMethodException, InvocationTargetException {
+            NoSuchMethodException, InvocationTargetException {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
         boolean flag = true;
@@ -340,7 +340,7 @@ public class ImportExcel {
                 if ((val == null || StringUtils.isBlank(val.toString())) && ef.required()) {
                     failNums++;
                     sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                        .append(",");
+                            .append(",");
                     log.error("数据不能为空,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                     flag = false;
                     break;
@@ -349,7 +349,7 @@ public class ImportExcel {
                     if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
                         failNums++;
                         sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                            .append(",");
+                                .append(",");
                         log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                         flag = false;
                         break;
@@ -359,7 +359,7 @@ public class ImportExcel {
                         if (val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length()) {
                             failNums++;
                             sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
-                                .append(",数据长度超出").append(",");
+                                    .append(",数据长度超出").append(",");
                             log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
                             flag = false;
                             break;
@@ -368,7 +368,7 @@ public class ImportExcel {
                         if (val.toString().length() > ef.length()) {
                             failNums++;
                             sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
-                                .append(",数据长度超出").append(",");
+                                    .append(",数据长度超出").append(",");
                             log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
                             flag = false;
                             break;
@@ -403,7 +403,7 @@ public class ImportExcel {
                             failNums++;
                             flag = false;
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(":").append(val).append(",");
+                                    .append(ef.title()).append(":").append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                             break;
                         }
@@ -429,13 +429,13 @@ public class ImportExcel {
                             flag = false;
                             failNums++;
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(val).append(",");
+                                    .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                             break;
                         } catch (ParseException e) {
                             failNums++;
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                .append(ef.title()).append(val).append(",");
+                                    .append(ef.title()).append(val).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
                         }
                     } else if (valType == Double.class) {

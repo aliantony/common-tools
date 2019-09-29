@@ -32,7 +32,6 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -134,7 +133,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 模板是白名单需排除白名单中已安装过的软件
         else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
-                softwareIds.remove(DataTypeUtils.stringToInteger(a));
+                softwareIds.remove(a);
             });
         }
         if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {

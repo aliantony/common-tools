@@ -97,7 +97,7 @@ public class AssetResponse extends BaseResponse {
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private Long                         operationSystem;
+    private String                         operationSystem;
 
     /**
      * 操作系统名
@@ -234,6 +234,12 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "告警个数")
     private String                         alarmCount;
+
+    @ApiModelProperty(value = "配置模板关联时间")
+    private Long                           baselineTemplateCorrelationGmt;
+
+    @ApiModelProperty(value = "装机模板关联时间")
+    private Long                           installTemplateCorrelationGmt;
 
     public String getAssetSourceName() {
         return assetSourceName;
@@ -437,11 +443,11 @@ public class AssetResponse extends BaseResponse {
         this.assetStatus = assetStatus;
     }
 
-    public Long getOperationSystem() {
+    public String getOperationSystem() {
         return operationSystem;
     }
 
-    public void setOperationSystem(Long operationSystem) {
+    public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
     }
 
@@ -543,6 +549,22 @@ public class AssetResponse extends BaseResponse {
 
     public CategoryType getCategoryType() {
         return categoryType;
+    }
+
+    public Long getBaselineTemplateCorrelationGmt() {
+        return baselineTemplateCorrelationGmt;
+    }
+
+    public void setBaselineTemplateCorrelationGmt(Long baselineTemplateCorrelationGmt) {
+        this.baselineTemplateCorrelationGmt = baselineTemplateCorrelationGmt;
+    }
+
+    public Long getInstallTemplateCorrelationGmt() {
+        return installTemplateCorrelationGmt;
+    }
+
+    public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
+        this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
     }
 
     public void setCategoryType(CategoryType categoryType) {

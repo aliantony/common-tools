@@ -26,7 +26,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetAssembly", description = "资产组件关系表")
 @RestController
-@RequestMapping("/v1/asset/assetassembly")
+@RequestMapping("/api/v1/asset/assetassembly")
 public class AssetAssemblyController {
 
     @Resource
