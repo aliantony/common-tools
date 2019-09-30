@@ -56,6 +56,7 @@ public class AssetStatusNote {
 	public String getFileInfo() {
 		return fileInfo;
 	}
+
 	public AssetChangeDetailEnum getOriginStatus() {
 		return originStatus;
 	}
@@ -63,6 +64,7 @@ public class AssetStatusNote {
 	public void setOriginStatus(AssetChangeDetailEnum originStatus) {
 		this.originStatus = originStatus;
 	}
+
 	public void setFileInfo(String fileInfo) {
 		this.fileInfo = fileInfo;
 	}
