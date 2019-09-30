@@ -2667,7 +2667,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
             ActionResponse actionResponse = activityClient
                 .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
-            // 流程调用失败不更改资产状态
+            //             // 流程调用失败不更改资产状态
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());

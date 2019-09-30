@@ -46,7 +46,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     /**
      * 本次处理结果:同意true,不同意false
      */
-    @NotNull(message = "执行意见必填")
     @ApiModelProperty(value = "执行意见")
     private Boolean agree;
 
@@ -134,8 +133,12 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         if (formData == null && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程不能为空");
         }
+
         // 通过:入网/退役/检查不校验,其他校验下一步执行人;不通过:备注信息不能为空
-        boolean needCheckConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        boolean needCheckAgree = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        if (needCheckAgree) {
+            ParamterExceptionUtils.isNull(agree, "执行意见必填");
+        }
         if (Boolean.FALSE.equals(agree)) {
             ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), "备注信息不能为空");
         }
