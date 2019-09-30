@@ -324,7 +324,7 @@
     <!-- 查询上一步资产动态 -->
     <select id="queryAssetPreStatusInfo" resultType="AssetStatusNote">
     select
-    a.id,a.target_object_id as assetId,note,a.gmt_create,file_info as fileInfo
+    a.id,a.target_object_id as assetId,note,a.gmt_create,file_info as fileInfo,a.origin_status as  originStatus
     from
     <include refid="Table_Name"/> a
     inner join

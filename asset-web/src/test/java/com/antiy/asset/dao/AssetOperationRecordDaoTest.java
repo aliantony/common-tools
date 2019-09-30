@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.entity.AssetStatusNote;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 资产状态变更dao
@@ -22,7 +24,7 @@ public class AssetOperationRecordDaoTest {
 //			System.out.println(e.getOriginStatus().describe(e.getProcessResult()));
 //		});
 		dao.queryAssetAllStatusInfo("1").stream().forEach(e->{
-			System.out.println(e.getFileInfo());
+			System.out.println(e);
 		});
 	}
 

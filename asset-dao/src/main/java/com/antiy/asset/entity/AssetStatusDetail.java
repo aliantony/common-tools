@@ -1,16 +1,12 @@
 package com.antiy.asset.entity;
 
-import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
 
 /**
  * @author zhouye
  * 资产状态动态详细描述
  */
 public class AssetStatusDetail extends AssetStatusNote {
-	/**
-	 * 当前状态
-	 */
-	private AssetChangeDetailEnum originStatus;
+
 	/**
 	 * 操作人id
 	 */
@@ -29,13 +25,7 @@ public class AssetStatusDetail extends AssetStatusNote {
 	 */
 	private Long gmtCreate;
 
-	public AssetChangeDetailEnum getOriginStatus() {
-		return originStatus;
-	}
 
-	public void setOriginStatus(AssetChangeDetailEnum originStatus) {
-		this.originStatus = originStatus;
-	}
 
 	public Integer getOperateUserId() {
 		return operateUserId;
@@ -73,9 +63,8 @@ public class AssetStatusDetail extends AssetStatusNote {
 
 	@Override
 	public String toString() {
-		return "AssetStatusDetail{" +
-				"originStatus=" + originStatus +
-				", operateUserId=" + operateUserId +
+		return super.toString()+"AssetStatusDetail{" +
+				"operateUserId=" + operateUserId +
 				", operateUserName='" + operateUserName + '\'' +
 				", processResult='" + processResult + '\'' +
 				", gmtCreate=" + gmtCreate +
