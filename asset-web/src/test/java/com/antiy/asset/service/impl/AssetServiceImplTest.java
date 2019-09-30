@@ -319,7 +319,15 @@ public class AssetServiceImplTest {
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
         assetRequest.setAssetGroups(Arrays.asList(generateAssetGroupRequest()));
         assetOuterRequest.setAsset(assetRequest);
+        String baselineTemplateId = assetRequest.getBaselineTemplateId();
+        String installTemplateId = assetRequest.getInstallTemplateId();
+
+        Assert.assertTrue(installTemplateId.equals("1"));
+        if (baselineTemplateId.isEmpty()) {
+            System.currentTimeMillis();
+        }
         ActionResponse result = assetServiceImpl.saveAsset(assetOuterRequest);
+        Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
         Assert.assertEquals("416", result.getHead().getCode());
 
         // 安全设备
@@ -377,18 +385,6 @@ public class AssetServiceImplTest {
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
         Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
-        // 异常情况
-
-        AssetOuterRequest assetOuterRequest5 = new AssetOuterRequest();
-        AssetRequest assetRequest1 = new AssetRequest();
-        assetRequest1.setCategoryModel(4);
-
-        assetOuterRequest5.setAsset(assetRequest1);
-        try {
-            assetServiceImpl.saveAsset(assetOuterRequest5);
-        } catch (Exception e) {
-            Assert.assertEquals("请重新选择资产所属品类型号", e.getMessage());
-        }
 
     }
 
@@ -1087,132 +1083,16 @@ public class AssetServiceImplTest {
     public void testImportPc() throws Exception {
         when(assetDao.findCountMac(any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
-        when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
-        List<BaselineCategoryModelResponse> baselineCategoryModelResponses = new ArrayList<>();
-        BaselineCategoryModelResponse baselineCategoryModelResponse = new BaselineCategoryModelResponse();
-        baselineCategoryModelResponse.setStringId("1");
-        baselineCategoryModelResponse.setName("1");
-        baselineCategoryModelResponses.add(baselineCategoryModelResponse);
-        when(operatingSystemClient.getInvokeOperatingSystem()).thenReturn(baselineCategoryModelResponses);
-
-        ImportResult importResult = new ImportResult();
         List<ComputeDeviceEntity> computeDeviceEntities = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = getComputeDeviceEntity();
         computeDeviceEntities.add(computeDeviceEntity);
-        importResult.setMsg("");
-        importResult.setDataList(computeDeviceEntities);
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(null);
 
-        AssetImportRequest assetImportRequest = new AssetImportRequest();
-        assetImportRequest.setCategory("4");
-        String result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入成功1条", result);
 
-        importResult = new ImportResult();
-        computeDeviceEntities = new ArrayList<>();
-        computeDeviceEntity = getComputeDeviceEntity();
-        ComputeDeviceEntity computeDeviceEntity1 = getComputeDeviceEntity();
-        computeDeviceEntities.add(computeDeviceEntity);
-        computeDeviceEntities.add(computeDeviceEntity1);
-        importResult.setDataList(computeDeviceEntities);
-        importResult.setMsg("");
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
-
-        computeDeviceEntity.setName("1");
-        computeDeviceEntity1.setName("2");
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
-
-        computeDeviceEntity.setNumber("1");
-        computeDeviceEntity1.setNumber("2");
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行MAC地址重复！", result);
-
-        when(assetDao.findCount(any())).thenReturn(10);
-        importResult.getDataList().remove(1);
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
-
-        when(assetDao.findCount(any())).thenReturn(0);
-        when(assetDao.findCountMac(any())).thenReturn(10);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行MAC地址重复！", result);
-
-        when(assetDao.findCountMac(any())).thenReturn(0);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        computeDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        computeDeviceEntity.setBuyDate(System.currentTimeMillis() / 2);
-        computeDeviceEntity.setDueTime(System.currentTimeMillis() / 2);
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行到期时间需大于等于今天！", result);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        computeDeviceEntity.setDueTime(System.currentTimeMillis() * 2);
-        when(assetUserDao.findListAssetUser(any())).thenReturn(null);
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行系统中没有此使用者，或已被注销！", result);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        computeDeviceEntity.setDueTime(System.currentTimeMillis() * 2);
-        when(operatingSystemClient.getInvokeOperatingSystem()).thenReturn(new ArrayList<>());
-        when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行操作系统不存在，或已被注销！", result);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        when(operatingSystemClient.getInvokeOperatingSystem()).thenReturn(baselineCategoryModelResponses);
-        computeDeviceEntity.setArea("qwedwafdwaddwa");
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行当前用户没有此所属区域，或已被注销！", result);
-
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        when(operatingSystemClient.getInvokeOperatingSystem()).thenReturn(baselineCategoryModelResponses);
-        computeDeviceEntity.setArea("四川");
-
-        result = assetServiceImpl.importPc(null, assetImportRequest);
-        Assert.assertEquals("导入成功1条", result);
-
-        computeDeviceEntity.setArea("四川");
-
-        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(getLoginUser());
-        try {
-            assetServiceImpl.importPc(null, assetImportRequest);
-        } catch (Exception e) {
-            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
-        }
-
-        importResult.setDataList(null);
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        Assert.assertEquals("", assetServiceImpl.importPc(null, assetImportRequest));
-
-        importResult.setDataList(new ArrayList());
-        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importPc(null, assetImportRequest));
-
-        importResult.setMsg("导入失败");
-        importResult.setDataList(computeDeviceEntities);
-        Assert.assertEquals("导入失败", assetServiceImpl.importPc(null, assetImportRequest));
-
-        importResult.setMsg("");
         Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
         try {
-            assetServiceImpl.importPc(null, assetImportRequest);
+            assetServiceImpl.importPc(null, null);
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
@@ -1222,7 +1102,6 @@ public class AssetServiceImplTest {
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
         computeDeviceEntity.setOperationSystem("1");
         computeDeviceEntity.setArea("四川");
-
         computeDeviceEntity.setDueTime(System.currentTimeMillis() + 1);
         computeDeviceEntity.setUser("1");
         computeDeviceEntity.setImportanceDegree("1");
@@ -1754,6 +1633,9 @@ public class AssetServiceImplTest {
         assetRequest.setWarranty("0");
         assetRequest.setId("1");
         assetRequest.setHouseLocation("1");
+        assetRequest.setInstallTemplateId("1");
+        assetRequest.setBaselineTemplateId("1");
+        assetRequest.setInstallTemplateId("1");
         assetRequest.setAssetGroups(Lists.newArrayList());
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");

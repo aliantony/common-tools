@@ -5,14 +5,12 @@ import com.antiy.common.utils.LogUtils;
 import org.slf4j.Logger;
 
 import java.io.*;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 public class ZipUtil {
     private static final int            BUFFER = 8192;
     private static final Logger logger = LogUtils.get(ZipUtil.class);
+    private static final String SUFFIX_NAME = "zip";
 
     /**
      *
@@ -110,4 +108,77 @@ public class ZipUtil {
         }
     }
 
+    /**
+     * 解压文件 filePath所代表文件系统不能与targetStr一致
+     * @param filePath 压缩文件路径
+     * @param targetStr 解压至所在文件目录
+     * @param name 如果名字为空则用原来的名字
+     */
+    public static void decompression(String filePath, String targetStr, String name) {
+        isCheckFileNameInZip(filePath);
+        File source = new File(filePath);
+        if (source.exists()) {
+            ZipInputStream zis = null;
+            BufferedOutputStream bos = null;
+            try {
+                zis = new ZipInputStream(new FileInputStream(source));
+                ZipEntry entry = null;
+                while ((entry = zis.getNextEntry()) != null && !entry.isDirectory()) {
+                    File target = new File(targetStr, name == null ? entry.getName() : name);
+                    if (!target.getParentFile().exists()) {
+                        target.getParentFile().mkdirs();// 创建文件父目录
+                    }
+                    // 写入文件
+                    bos = new BufferedOutputStream(new FileOutputStream(target));
+                    int read = 0;
+                    byte[] buffer = new byte[1024 * 10];
+                    while ((read = zis.read(buffer, 0, buffer.length)) != -1) {
+                        bos.write(buffer, 0, read);
+                    }
+                    bos.flush();
+                }
+                zis.closeEntry();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                closeQuietly(zis, bos);
+            }
+        }
+    }
+
+    /**
+     * 关闭一个或多个流对象
+     *
+     * @param closeables 可关闭的流对象列表
+     */
+    private static void closeQuietly(Closeable... closeables) {
+        try {
+            if (closeables != null && closeables.length > 0) {
+                for (Closeable closeable : closeables) {
+                    if (closeable != null) {
+                        closeable.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // do nothing
+        }
+    }
+
+    /**
+     * 校验目标文件名称是否是zip格式
+     * @param zipFile
+     * @return
+     */
+    private static int isCheckFileNameInZip(String zipFile) {
+        int las = zipFile.lastIndexOf(".");
+        if (las == -1) {
+            throw new RuntimeException(zipFile + " is not zip format! this format = ??? ");
+        }
+        String format = zipFile.substring(las + 1);
+        if (!SUFFIX_NAME.equalsIgnoreCase(format)) {
+            throw new RuntimeException(zipFile + " is not zip format! this format = " + format);
+        }
+        return las;
+    }
 }
