@@ -23,7 +23,9 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 
-
+/**
+ * 资产状态变更相关单元测试
+ */
 public class AssetOperationRecordServiceImplTest extends MockContext {
 	@Resource
 	private IAssetOperationRecordService service;
@@ -37,13 +39,13 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 * 线下登记资产正向流程
 	 */
 	@Test
-	public void queryUnderLineAssetAllStatusInfo() {
+	public void queryUnderLineAssetAllStatusInfo() throws Exception{
 		Director director = new Director(new UnderInNetBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
 		given(dao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
 		ActionResponse response = service.queryAssetAllStatusInfo("1");
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
-		System.out.println(gson.toJson(response.getBody()));
+		System.out.println(jsonSuperHero.write(response).toString());
 	}
 	/**
 	 * 线上登记资产正向流程
@@ -55,7 +57,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 		given(dao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
 		ActionResponse response = service.queryAssetAllStatusInfo("1");
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
-		System.out.println(gson.toJson(response.getBody()));
+		System.out.println(response.getBody());
 	}
 
 	/**

@@ -18,10 +18,12 @@ public class AssetOperationRecordDaoTest {
 
 	@Test
 	public void queryAssetAllStatusInfo() throws Exception{
+//		dao.queryAssetAllStatusInfo("1").stream().forEach(e->{
+//			System.out.println(e.getOriginStatus().describe(e.getProcessResult()));
+//		});
 		dao.queryAssetAllStatusInfo("1").stream().forEach(e->{
-			System.out.println(e.getOriginStatus().describe(e.getProcessResult()));
+			System.out.println(e.getFileInfo());
 		});
-
 	}
 
 	@Test
