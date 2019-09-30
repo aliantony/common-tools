@@ -241,7 +241,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     public ActionResponse batchQueryAssetPreStatusInfo(List<String> ids) {
         List<AssetStatusNote> assetStatusNotes = assetOperationRecordDao.queryAssetPreStatusInfo(ids);
         List<AssetPreStatusInfoResponse> responses = new ArrayList<>();
-        assetStatusNotes.forEach(e->responses.add(new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(),HtmlUtils.htmlUnescape(e.getFileInfo()))));
+        assetStatusNotes.forEach(e->responses.add(new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(),HtmlUtils.htmlUnescape(e.getFileInfo()),e.getOriginStatus().getValue())));
         return ActionResponse.success(responses);
     }
 

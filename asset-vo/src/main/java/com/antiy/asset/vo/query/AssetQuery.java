@@ -145,6 +145,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @Max(message = "上报来源最大为2", value = 2)
     @Min(message = "上报来源最小为1", value = 1)
     private Integer       assetSource;
+
+    private List<Integer> assetSourceList;
     /**
      * 0-不重要(not_major),1- 一般(general),3-重要(major),
      */
@@ -271,6 +273,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("基准模板id")
     @Encode
     private String        baselineTemplateId;
+
+    public List<Integer> getAssetSourceList() {
+        return assetSourceList;
+    }
+
+    public void setAssetSourceList(List<Integer> assetSourceList) {
+        this.assetSourceList = assetSourceList;
+    }
 
     public String getBaselineTemplateId() {
         return baselineTemplateId;

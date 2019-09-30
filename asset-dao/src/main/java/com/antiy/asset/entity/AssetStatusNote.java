@@ -1,5 +1,7 @@
 package com.antiy.asset.entity;
 
+import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
+
 /**
  * @author zhouye
  * 资产状态上一步变更备注
@@ -18,6 +20,10 @@ public class AssetStatusNote {
 	private String id;
 	private String assetId;
 	private String note;
+	/**
+	 * 当前状态
+	 */
+	private AssetChangeDetailEnum originStatus;
 	/**
 	 * 文件json
 	 */
@@ -51,6 +57,14 @@ public class AssetStatusNote {
 		return fileInfo;
 	}
 
+	public AssetChangeDetailEnum getOriginStatus() {
+		return originStatus;
+	}
+
+	public void setOriginStatus(AssetChangeDetailEnum originStatus) {
+		this.originStatus = originStatus;
+	}
+
 	public void setFileInfo(String fileInfo) {
 		this.fileInfo = fileInfo;
 	}
@@ -61,6 +75,7 @@ public class AssetStatusNote {
 				"id='" + id + '\'' +
 				", assetId='" + assetId + '\'' +
 				", note='" + note + '\'' +
+				", originStatus=" + originStatus +
 				", fileInfo='" + fileInfo + '\'' +
 				'}';
 	}

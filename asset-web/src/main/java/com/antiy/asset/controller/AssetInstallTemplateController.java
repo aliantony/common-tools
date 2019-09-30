@@ -1,29 +1,24 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.entity.AssetInstallTemplate;
-import com.antiy.asset.vo.request.BatchQueryRequest;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
+import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -167,11 +162,11 @@ public class AssetInstallTemplateController {
         return ActionResponse.success(iAssetInstallTemplateService.deleteAssetInstallTemplateById(batchQueryRequest));
     }
 
-    @ApiOperation(value = "资产关联的装机模板信息", notes = "传入资产ID")
+    @ApiOperation(value = "资产关联的装机模板信息", notes = "传入模板ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetTemplateRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/relationInfo", method = RequestMethod.POST)
     public AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "资产Id不能为空");
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "模板Id不能为空");
         AssetTemplateRelationResponse assetTemplateRelationResponse = iAssetInstallTemplateService
             .queryTemplateByAssetId(queryCondition);
         return assetTemplateRelationResponse;

@@ -15,6 +15,13 @@ public class AssetPreStatusInfoResponse {
 		this.fileInfo = fileInfo;
 	}
 
+	public AssetPreStatusInfoResponse(String assetId, String note, String fileInfo, Integer originStatus) {
+		this.assetId = assetId;
+		this.note = note;
+		this.fileInfo = fileInfo;
+		this.originStatus = originStatus;
+	}
+
 	/**
 	 * 资产id
 	 */
@@ -28,6 +35,10 @@ public class AssetPreStatusInfoResponse {
 	 * 文件信息
 	 */
 	private String fileInfo;
+	/**
+	 * 上一步状态
+	 */
+	private Integer originStatus;
 
 	public String getNote() {
 		return note;
@@ -53,12 +64,21 @@ public class AssetPreStatusInfoResponse {
 		this.assetId = assetId;
 	}
 
+	public Integer getOriginStatus() {
+		return originStatus;
+	}
+
+	public void setOriginStatus(Integer originStatus) {
+		this.originStatus = originStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "AssetPreStatusInfoResponse{" +
 				"assetId='" + assetId + '\'' +
 				", note='" + note + '\'' +
 				", fileInfo='" + fileInfo + '\'' +
+				", originStatus=" + originStatus +
 				'}';
 	}
 }
