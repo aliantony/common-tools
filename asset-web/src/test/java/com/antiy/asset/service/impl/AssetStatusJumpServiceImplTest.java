@@ -9,7 +9,6 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.LoginUser;
@@ -49,10 +48,10 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LoginUserUtil.class, LogUtils.class})
 @PowerMockIgnore("javax.management.*")
-public class AssetStatusChangeFlowProcessImplTest {
+public class AssetStatusJumpServiceImplTest {
 
     @InjectMocks
-    private static AssetStatusChangeFlowProcessImpl statusChangeFlowProcess = new AssetStatusChangeFlowProcessImpl();
+    private static AssetStatusJumpServiceImpl statusChangeFlowProcess = new AssetStatusJumpServiceImpl();
 
     @Mock
     private AssetDao assetDao;
@@ -77,9 +76,6 @@ public class AssetStatusChangeFlowProcessImplTest {
 
     static {
         jumpRequest.setAgree(Boolean.TRUE);
-        List<String> ids = new ArrayList<>();
-        ids.add("1");
-        ids.add("2");
         List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
         StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
         assetInfo.setAssetId("1");
@@ -92,7 +88,7 @@ public class AssetStatusChangeFlowProcessImplTest {
 
     @Before
     public void before() throws Exception {
-        MockitoAnnotations.initMocks(AssetStatusChangeFlowProcessImplTest.class);
+        MockitoAnnotations.initMocks(AssetStatusJumpServiceImplTest.class);
         LoginUser loginUser = new LoginUser();
         loginUser.setId(8);
         loginUser.setUsername("admin");
@@ -113,7 +109,7 @@ public class AssetStatusChangeFlowProcessImplTest {
 
     @After
     public void after() {
-        AssetStatusChangeFlowProcessImpl assetStatusChangeFlowProcess = null;
+        AssetStatusJumpServiceImpl assetStatusChangeFlowProcess = null;
         AssetDao assetDao = null;
         AssetLinkRelationDao assetLinkRelationDao = null;
         AssetOperationRecordDao assetOperationRecordDao = null;
@@ -130,9 +126,6 @@ public class AssetStatusChangeFlowProcessImplTest {
     public void changeStatus() throws Exception {
         AssetStatusJumpRequest jumpRequest = new AssetStatusJumpRequest();
         jumpRequest.setAgree(Boolean.TRUE);
-        List<String> ids = new ArrayList<>();
-        ids.add("1");
-        ids.add("2");
         List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
         StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
         assetInfo.setAssetId("1");
@@ -146,6 +139,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
@@ -173,6 +167,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         statusChangeFlowProcess.changeStatus(jumpRequest);
 
@@ -195,6 +190,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_NET.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
@@ -212,6 +208,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
@@ -230,6 +227,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
@@ -248,6 +246,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         Mockito.when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
 
@@ -270,6 +269,7 @@ public class AssetStatusChangeFlowProcessImplTest {
         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("当前选中的资产已被其他人员操作,请刷新页面后重试");

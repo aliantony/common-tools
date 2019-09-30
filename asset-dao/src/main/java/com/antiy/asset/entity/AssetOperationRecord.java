@@ -41,7 +41,7 @@ public class AssetOperationRecord extends BaseEntity {
     private Integer createUser;
 
     /**
-     * 处理结果
+     * 处理结果. 0拒绝1同意
      */
     private Integer processResult;
 
@@ -49,6 +49,16 @@ public class AssetOperationRecord extends BaseEntity {
      * 原始状态
      */
     private Integer originStatus;
+
+    /**
+     * 输入的备注信息
+     */
+    private String note;
+
+    /**
+     * 上传的文件信息;JSON数组
+     */
+    private String fileInfo;
 
 
     public Integer getOriginStatus() {
@@ -123,6 +133,22 @@ public class AssetOperationRecord extends BaseEntity {
         this.processResult = processResult;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
+    }
+
     @Override
     public String toString() {
         return "AssetOperationRecord{" +
@@ -135,6 +161,8 @@ public class AssetOperationRecord extends BaseEntity {
                 ", createUser=" + createUser +
                 ", processResult=" + processResult +
                 ", originStatus=" + originStatus +
+                ", note='" + note + '\'' +
+                ", fileInfo='" + fileInfo + '\'' +
                 '}';
     }
 }

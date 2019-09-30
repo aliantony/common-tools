@@ -288,93 +288,51 @@
 
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select
+        SELECT
         asset.id,
         asset.area_id,
         asset.asset_group,
         asset.category_model,
-        asset.name,
-        asset_user.name as responsible_user_name,
+        asset. NAME,
+        asset_user. NAME AS responsible_user_name,
         asset.responsible_user_id,
         <if test="queryVulCount == true">
-            IFNULL(asset_vul_rel_1.vul_count,0) as vul_count,
+            count(DISTINCT avr.id) as vul_count,
         </if>
         <if test="queryPatchCount == true">
-            IFNULL(asset_patch_rel_1.patch_count,0) as patch_count,
+            count(DISTINCT apr.id) as patch_count,
         </if>
         <if test="queryAlarmCount == true">
-            IFNULL(
-            asset_alarm_rel_1.alarm_count,
-            0
-            ) AS alarm_count,
+            count(DISTINCT acr.id) as alarm_count,
         </if>
         <if test="queryDepartmentName == true">
             department.name as department_name,
         </if>
-        GROUP_CONCAT(air.ip) AS ips
-        from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id
-        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        GROUP_CONCAT(DISTINCT air.ip) AS ips
+        FROM
+        asset asset
+        LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
+        AND air. STATUS = 1
+        LEFT JOIN asset_user asset_user ON asset.responsible_user_id = asset_user.id
+        AND asset. STATUS = 1
         <if test="queryVulCount == true">
-            LEFT JOIN (
-            SELECT
-            avr.asset_id,
-            count(avr.vul_status != 5 OR NULL) vul_count
-            FROM
-            vuln_asset_rel avr
-            INNER JOIN vuln_info v ON v.id = avr.vul_id
-            WHERE
-            v. STATUS = 1
-            and avr.status=1
-            <if test=" ids != null and ids.length >0">
-                and asset_id in
-                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
-                    #{id}
-                </foreach>
-            </if>
-            GROUP BY
-            asset_id
-            ) asset_vul_rel_1 ON asset_vul_rel_1.asset_id = asset.id
+          LEFT JOIN vuln_asset_rel avr ON avr.asset_id = asset.id
+          AND avr. STATUS = 1
+          AND avr.vul_status != 5
         </if>
         <if test="queryPatchCount == true">
-            LEFT JOIN (
-            SELECT
-            apr.asset_id,
-            count(apr.patch_status = 3 ) patch_count
-            FROM
-            patch_asset_rel apr
-            INNER JOIN patch_info p ON p.id = apr.patch_id
-            WHERE
-            p. STATUS = 1
-            and apr.status=1
-            <if test=" ids != null and ids.length >0">
-                and asset_id in
-                <foreach index="index" item="id" collection="ids" open="(" separator="," close=")">
-                    #{id}
-                </foreach>
-            </if>
-            GROUP BY
-            asset_id
-            ) asset_patch_rel_1 ON asset_patch_rel_1.asset_id = asset.id
+          LEFT JOIN patch_asset_rel apr ON apr.asset_id = asset.id
+          AND apr.patch_status = 3
+          AND apr. STATUS = 1
         </if>
         <if test="queryAlarmCount == true">
-            LEFT JOIN (
-            SELECT
-            acr.asset_id,
-            count(*) alarm_count
-            FROM
-            alarm_current_records acr
-            GROUP BY
-            asset_id
-            ) asset_alarm_rel_1 ON asset_alarm_rel_1.asset_id = asset.id
+            LEFT JOIN alarm_current_records acr ON acr.asset_id = asset.id
         </if>
         <if test="queryDepartmentName == true">
-            LEFT JOIN asset_department department ON asset_user.department_id = department.id
+            LEFT JOIN asset_department department ON asset_user.department_id = department.id and department.status=1
         </if>
         <where>
             <trim prefixOverrides="and">
-                and air.status = 1
-                and asset_user.status = 1
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
@@ -388,11 +346,9 @@
         asset.id
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
-        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id and asset_user.status = 1
         <where>
             <trim prefixOverrides="and">
-                and air.status = 1
-                and asset_user.status = 1
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>

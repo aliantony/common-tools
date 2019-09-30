@@ -8,7 +8,7 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
-import com.antiy.asset.service.IAssetStatusChangeProcessService;
+import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetConfigValidateRefuseReqeust;
@@ -54,7 +54,7 @@ public class AssetStatusJumpController {
     private IAssetSoftwareRelationService softwareRelationService;
 
     @Resource
-    private IAssetStatusChangeProcessService assetStatusChangeFlowProcessImpl;
+    private IAssetStatusJumpService assetStatusChangeFlowProcessImpl;
 
     /**
      * 资产状态跃迁
