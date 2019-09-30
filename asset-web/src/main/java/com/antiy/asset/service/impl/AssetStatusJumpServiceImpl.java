@@ -6,7 +6,7 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetStatusChangeProcessService;
+import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
  * @date: 2019/1/23 15:38
  * @description: 硬件资产状态跃迁
  */
-@Service("assetStatusChangeFlowProcessImpl")
-public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProcessService {
-    private static final Logger logger = LogUtils.get(AssetStatusChangeFlowProcessImpl.class);
+@Service
+public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
+    private static final Logger logger = LogUtils.get(AssetStatusJumpServiceImpl.class);
     @Resource
     private AssetDao assetDao;
     @Resource
@@ -70,11 +70,13 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         // 当前所有资产的可执行操作与当前状态一致
         assetsInDb.forEach(asset -> {
             if (!asset.getAssetStatus().equals(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode())) {
+                LogUtils.warn(logger, "资产状态不匹配 request:{}", statusJumpRequest);
                 throw new BusinessException("当前选中的资产已被其他人员操作,请刷新页面后重试");
             }
         });
 
-        setInProcess(assetsInDb, statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode());
+        // 先更改为下一个状态,后续失败进行回滚
+        setInProcess(statusJumpRequest, assetsInDb);
 
         // 2.提交至工作流
         boolean activitySuccess = true;
@@ -94,14 +96,15 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         return ActionResponse.success();
     }
 
-    private void setInProcess(List<Asset> assetsInDb, Integer lastAssetStatus) {
-        // 更改为资产正在处理中 status=0,AssetStatus=99 IN_PROCESS
+    private void setInProcess(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
+        Integer lastAssetStatus = statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode();
+
         List<Asset> updateAssetList = new ArrayList<>(assetsInDb.size());
         assetsInDb.forEach(e -> {
             Asset asset = new Asset();
             asset.setId(e.getId());
-            // asset.setAssetStatus(AssetStatusEnum.IN_PROCESS.getCode());
-            asset.setStatus(0);
+            asset.setAssetStatus(AssetStatusJumpEnum.getNextStatus(statusJumpRequest.getAssetFlowEnum(), statusJumpRequest.getAgree(),
+                    statusJumpRequest.getWaitCorrectToWaitRegister(), asset.getFirstEnterNett() != null).getCode());
             updateAssetList.add(asset);
         });
 
@@ -169,36 +172,39 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
      * 如果是退役,删除通联关系
      *
      * @param statusJumpRequest
-     * @param assetsInDb
+     * @param assetsInDb 库中的数据
      */
     private void updateData(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
-        Long currentTime = System.currentTimeMillis();
         List<AssetOperationRecord> operationRecordList = new ArrayList<>();
         List<Asset> updateAssetList = new ArrayList<>();
         List<Integer> deleteLinkRelationIdList = new ArrayList<>();
+
+        Long currentTime = System.currentTimeMillis();
+        Integer loginUserId = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null;
+        String loginUserName = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getName() : "";
+
         assetsInDb.forEach(asset -> {
             AssetStatusEnum nextStatus = AssetStatusJumpEnum.getNextStatus(statusJumpRequest.getAssetFlowEnum(), statusJumpRequest.getAgree(),
                     statusJumpRequest.getWaitCorrectToWaitRegister(), asset.getFirstEnterNett() != null);
-            // 保存操作记录流程
-            AssetOperationRecord assetOperationRecord = convertAssetOperationRecord(asset.getStringId(), statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus(),
-                    nextStatus.getCode(), currentTime, statusJumpRequest.getAgree());
-            operationRecordList.add(assetOperationRecord);
 
             // 首次入网,设置首次入网时间(检查资产主表时间为空时写入入网时间)
-            if (nextStatus.getCode().equals(AssetStatusEnum.NET_IN.getCode()) && asset.getFirstEnterNett() == null) {
-                asset.setFirstEnterNett(System.currentTimeMillis());
+            if (AssetFlowEnum.NET_IN.equals(statusJumpRequest.getAssetFlowEnum()) && asset.getFirstEnterNett() == null) {
+                asset.setFirstEnterNett(currentTime);
             }
-            asset.setAssetStatus(nextStatus.getCode());
-            asset.setGmtModified(System.currentTimeMillis());
-            asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-            updateAssetList.add(asset);
 
             // 退役删除通联关系
             if (AssetFlowEnum.RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
                 deleteLinkRelationIdList.add(asset.getId());
             }
-        });
 
+            asset.setAssetStatus(nextStatus.getCode());
+            asset.setGmtModified(currentTime);
+            asset.setModifyUser(loginUserId);
+            updateAssetList.add(asset);
+
+            // 保存操作记录
+            operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUserId, loginUserName, asset.getStringId(), nextStatus.getCode()));
+        });
         transactionTemplate.execute(transactionStatus -> {
             try {
                 if (CollectionUtils.isNotEmpty(operationRecordList)) {
@@ -219,29 +225,21 @@ public class AssetStatusChangeFlowProcessImpl implements IAssetStatusChangeProce
         });
     }
 
-    /**
-     * 转换操作记录
-     *
-     * @param assetId
-     * @param currentAssetStatus
-     * @param nextAssetStatus
-     * @param gmtCreateTime      当前时间
-     * @param agree              同意true/拒绝false
-     * @return
-     */
-    private AssetOperationRecord convertAssetOperationRecord(String assetId, AssetStatusEnum currentAssetStatus, Integer nextAssetStatus, Long gmtCreateTime,
-                                                             boolean agree) {
+    private AssetOperationRecord convertAssetOperationRecord(AssetStatusJumpRequest statusJumpRequest, Long currentTime, Integer loginUserId, String loginUserName, String assetId, Integer nextStatus) {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setOriginStatus(currentAssetStatus.getCode());
-        assetOperationRecord.setTargetStatus(nextAssetStatus);
-        assetOperationRecord.setContent(AssetFlowEnum.getMsgByAssetStatus(currentAssetStatus));
+        assetOperationRecord.setOriginStatus(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode());
+        assetOperationRecord.setTargetStatus(nextStatus);
+        assetOperationRecord.setContent(AssetFlowEnum.getMsgByAssetStatus(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus()));
         assetOperationRecord.setTargetObjectId(assetId);
-        assetOperationRecord.setGmtCreate(gmtCreateTime);
-        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setProcessResult(agree ? 1 : 0);
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setGmtCreate(currentTime);
+        assetOperationRecord.setOperateUserId(loginUserId);
+        assetOperationRecord.setProcessResult(statusJumpRequest.getAgree() ? 1 : 0);
+        assetOperationRecord.setOperateUserName(loginUserName);
+        assetOperationRecord.setCreateUser(loginUserId);
+        assetOperationRecord.setNote(statusJumpRequest.getNote());
+        assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo());
         return assetOperationRecord;
     }
+
 }
 

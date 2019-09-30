@@ -1,5 +1,6 @@
 package com.antiy.asset.dto;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import java.util.List;
 public class StatusJumpAssetInfo {
     @ApiModelProperty("资产Id")
     @NotBlank(message = "资产数据id不正确")
+    @Encode
     private String assetId;
 
     @ApiModelProperty(value = "任务Id")

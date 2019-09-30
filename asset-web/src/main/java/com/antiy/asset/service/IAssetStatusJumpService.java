@@ -8,7 +8,7 @@ import com.antiy.common.base.ActionResponse;
  * @date: 2019/1/22 15:05
  * @description:
  */
-public interface IAssetStatusChangeProcessService {
+public interface IAssetStatusJumpService {
 
     /**
      * 资产状态跃迁
@@ -16,5 +16,5 @@ public interface IAssetStatusChangeProcessService {
      * @return
      * @throws Exception
      */
-    ActionResponse  changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception;
+    ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception;
 }
