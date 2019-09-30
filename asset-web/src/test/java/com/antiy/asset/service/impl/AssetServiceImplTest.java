@@ -664,9 +664,23 @@ public class AssetServiceImplTest {
 
     @Test
     public void testCountCategory() throws Exception {
-        when(assetDao.findCountByCategoryModel(any())).thenReturn(0);
+        /**
+         *
+         * 统计品类型号 Map中的数据 key--品类型号 value--总数
+         */
+        List<Map<String, Object>> categoryModelCount = new ArrayList<>();
+        Map<String, Object> map1=new HashMap<>();
+        map1.put("key",1);
+        map1.put("value",100l);
+        Map<String, Object> map2=new HashMap<>();
+        map2.put("key",2);
+        map2.put("value",200l);
+        categoryModelCount.add(map1);
+        categoryModelCount.add(map2);
+        when(assetDao.countCategoryModel(any(), any())).thenReturn(categoryModelCount);
 
         List<EnumCountResponse> result = assetServiceImpl.countCategory();
+
         Assert.assertNotNull(result);
     }
 

@@ -1519,7 +1519,7 @@
         asset_id
         FROM
         asset
-        LEFT JOIN alarm_current_records record ON record.asset_id = asset.id
+        INNER JOIN alarm_current_records record ON record.asset_id = asset.id
         WHERE
         1 = 1
         AND asset_id IS NOT NULL
