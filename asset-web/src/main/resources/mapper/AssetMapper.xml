@@ -740,13 +740,24 @@
         </if>
 
         <if test=" multipleQuery != null and multipleQuery != ''">
-            and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or air.ip like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or amr.mac like binary
-            CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            )
+            <choose>
+                <when test="unknownAssets">
+                    and (air.ip like binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or amr.mac like binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    )
+                </when>
+                <otherwise>
+                    and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or air.ip like binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    or amr.mac like binary
+                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    )
+                </otherwise>
+            </choose>
         </if>
         <if test="assetName != null">
             and asset.name =#{assetName}
@@ -812,6 +823,12 @@
         </if>
         <if test=" assetSource != null and assetSource != ''">
             and asset.asset_source = #{assetSource }
+        </if>
+        <if test=" assetSourceList != null and assetSourceList.size() > 0">
+            and asset.asset_source in
+            <foreach collection="assetSourceList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         <if test=" importanceDegree != null">
             and asset.importance_degree = #{importanceDegree }

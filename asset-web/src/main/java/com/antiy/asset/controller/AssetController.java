@@ -1,9 +1,23 @@
 package com.antiy.asset.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
@@ -16,16 +30,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -68,6 +74,15 @@ public class AssetController {
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
             asset.setSortName("asset.id");
+        }
+        // 是否未知资产列表查询
+        if (asset.getUnknownAssets() && Objects.isNull(asset.getAssetSource())) {
+            asset.setAssetSourceList(new ArrayList() {
+                {
+                    add(AssetSourceEnum.ASSET_DETECTION.getCode());
+                    add(AssetSourceEnum.AGENCY_REPORT.getCode());
+                }
+            });
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
@@ -263,7 +278,6 @@ public class AssetController {
         iAssetService.changeStatusById(id, targetStatus);
         return ActionResponse.success();
     }
-
 
     /**
      * 查询通联设置厂商下拉接口
@@ -487,6 +501,7 @@ public class AssetController {
     public ActionResponse findAlarmAssetCount() throws Exception {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
+
     /**
      * 资产列表查询-基准模板下拉项信息
      * @author zhangyajun
@@ -499,31 +514,34 @@ public class AssetController {
     public ActionResponse<List<SelectResponse>> queryBaselineTemplate() throws Exception {
         return ActionResponse.success(iAssetService.queryBaselineTemplate());
     }
+
     /**
      * 获取安全设备全部厂商
      */
     @ApiOperation(value = "获取安全设备全部厂商列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllSupplierofSafetyEquipment(){
-        List<String> supplierList=iAssetService.getAllSupplierofSafetyEquipment();
+    public List<String> getAllSupplierofSafetyEquipment() {
+        List<String> supplierList = iAssetService.getAllSupplierofSafetyEquipment();
         return supplierList;
     }
+
     /**
      * 根据厂商获取安全设备名称列表
      */
     @ApiOperation(value = "根据厂商获取安全设备名称列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier){
-        List<String> nameList=iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier);
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier) {
+        List<String> nameList = iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier);
         return nameList;
     }
+
     /**
      * 获取安全设备版本
      */
     @ApiOperation(value = "获取安全设备版本列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllVersionofSafetyEquipment(String supplier,String safetyEquipmentName){
-        List<String> versionList=iAssetService.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName);
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName) {
+        List<String> versionList = iAssetService.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName);
         return versionList;
     }
 }
