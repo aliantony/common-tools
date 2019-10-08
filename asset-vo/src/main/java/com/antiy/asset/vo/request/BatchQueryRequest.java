@@ -16,7 +16,7 @@ public class BatchQueryRequest extends BasicRequest {
 		this.ids = ids;
 	}
 
-	//@Encode
+	@Encode
 	List<String> ids;
 
 	public List<String> getIds() {

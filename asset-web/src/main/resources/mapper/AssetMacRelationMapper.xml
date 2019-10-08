@@ -129,6 +129,13 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="checkRepeat" resultType="java.lang.Integer">
+        select count(1) from asset_mac_relation where mac in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        and status = 1
+    </select>
     <!--删除资产mac关系-->
     <delete id="deleteByAssetId">
         update asset_mac_relation set status = 0 where assetId = #{assetId}

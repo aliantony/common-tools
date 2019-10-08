@@ -14,6 +14,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import com.antiy.common.base.ActionResponse;
 
@@ -34,6 +35,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     @Value("${distribute.baseline}")
     private String     distributeBaselineUrl;
 
+    @Value("${baselineWaitingConfigUrl}")
+    private String     baselineWaitingConfigUrl;
+
     @Resource
     private BaseClient baseClient;
 
@@ -49,17 +53,24 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse updateAssetVerify(String assetId) {
         UpdateAssetVerifyRequest updateAssetVerifyRequest = new UpdateAssetVerifyRequest();
         updateAssetVerifyRequest.setAssetId(assetId);
-        return (ActionResponse) baseClient.post(updateAssetVerifyRequest, new ParameterizedTypeReference<ActionResponse>() {
-        }, updateAssetVerifyUrl);
+        return (ActionResponse) baseClient.post(updateAssetVerifyRequest,
+            new ParameterizedTypeReference<ActionResponse>() {
+            }, updateAssetVerifyUrl);
     }
 
     @Override
     public ActionResponse distributeBaseline(String assetId) {
         JSONObject param = new JSONObject();
         param.put("stringId", assetId);
-        return (ActionResponse) baseClient.post(param,
-            new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
         }, distributeBaselineUrl);
+    }
+
+    @Override
+    public ActionResponse baselineConfig(BaselineWaitingConfigRequest baselineWaitingConfigRequest) {
+        return (ActionResponse) baseClient.post(baselineWaitingConfigRequest,
+            new ParameterizedTypeReference<ActionResponse>() {
+            }, baselineWaitingConfigUrl);
     }
 
 }
