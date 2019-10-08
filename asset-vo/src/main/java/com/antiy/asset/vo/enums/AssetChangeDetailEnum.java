@@ -8,7 +8,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum{
 	/**
 	 * 无状态-0
 	 */
-	OPERATION_NO("无上一步状态", 0),
+	OPERATION_NO("无上一步状态", 0) ,
 	/**
 	 * 登记资产-1
 	 */
