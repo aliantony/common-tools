@@ -171,12 +171,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
-                    // 存入业务id,基准为空,进入实施,不为空进入网
+                    // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     String ssk=requestAsset.getBaselineTemplateId();
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
-                        asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        String admittanceResult = (String) request.getManualStartActivityRequest().getFormData()
+                            .get("admittanceResult");
+                        asset.setAssetStatus(
+                            "safetyCheck".equals(admittanceResult) ? AssetStatusEnum.WAIT_CHECK.getCode()
+                                : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                     }
