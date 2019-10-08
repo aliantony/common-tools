@@ -5,7 +5,7 @@ import com.antiy.asset.service.IAssetTemplateService;
 import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.query.OsQuery;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.utils.LoginUserUtil;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Override
     public List<String> getAllSystemOs() throws Exception {
         OsQuery osQuery = new OsQuery();
-        List<SelectResponse> osList = iAssetHardSoftLibService.pullDownOs(osQuery);
-        return osList.stream().map(SelectResponse::getValue).collect(Collectors.toList());
+        List<OsSelectResponse> osList = iAssetHardSoftLibService.pullDownOs(osQuery);
+        return osList.stream().map(OsSelectResponse::getValue).collect(Collectors.toList());
     }
 }

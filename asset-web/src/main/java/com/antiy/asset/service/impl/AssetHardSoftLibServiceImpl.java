@@ -11,13 +11,11 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.BusinessSelectResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +68,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         // TODO
         return responseConverter.convert(assetHardSoftLibList, AssetHardSoftLibResponse.class);
     }
+
     @Override
     public List<AssetHardSoftLibResponse> queryHardSoftLibList(AssetHardSoftLibQuery query) throws Exception {
         List<AssetHardSoftLib> hardSoftLibList = assetHardSoftLibDao.queryHardSoftLibList(query);
@@ -82,11 +79,12 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public Integer queryHardSoftLibCount(AssetHardSoftLibQuery query) throws Exception {
         return assetHardSoftLibDao.queryHardSoftLibCount(query);
     }
+
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception {
         if (!Objects.isNull(query.getBusinessId()) && StringUtils.isNotBlank(query.getSourceType())) {
             List<Long> ids = assetHardSoftLibDao.exceptIds(query.getBusinessId(), query.getSourceType(),
-                    query.getAssetType().getName());
+                query.getAssetType().getName());
             query.setExceptIds(ids);
         }
         Integer count = this.queryHardSoftLibCount(query);
@@ -124,10 +122,10 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     }
 
     @Override
-    public List<SelectResponse> pullDownOs(OsQuery query) {
+    public List<OsSelectResponse> pullDownOs(OsQuery query) {
         query.setType("o");
         query.setIsfilter(true);
-        List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
+        List<OsSelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
         return osList;
     }
 
@@ -142,16 +140,16 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     }
 
     @Override
-    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException {
-        List<SelectResponse> result = new ArrayList<>();
+    public List<BusinessSelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException {
+        List<BusinessSelectResponse> result = new ArrayList<>();
         if (query.getVersion() != null) {
             String posStr = query.getName() + query.getSupplier();
-            query.setPos(posStr.length() + 9);
+            query.setPos(posStr.length() + 10);
             query.setVersion(query.getVersion().replace(" ", ":"));
         }
         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
         for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
-            SelectResponse response = new SelectResponse();
+            BusinessSelectResponse response = new BusinessSelectResponse();
             // 特殊处理
             // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分 且：用空格代替
             String m = assetHardSoftLib.getSupplier() + assetHardSoftLib.getProductName();

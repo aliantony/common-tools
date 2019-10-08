@@ -96,7 +96,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param request
      * @return
      */
-    int deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception;
+    String deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception;
 
     /**
      * 通过资产ID查询

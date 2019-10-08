@@ -167,7 +167,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         assetTopologyQuery.setAssetStatusList(statusList);
         List<AssetGroup> assetGroupList = assetLinkRelationDao.queryGroupList(assetTopologyQuery);
         List<SelectResponse> selectResponseList = new ArrayList<>(assetGroupList.size());
-        assetGroupList.stream().forEach(e -> {
+        assetGroupList.forEach(e -> {
             SelectResponse selectResponse = new SelectResponse();
             selectResponse.setValue(e.getName());
             selectResponse.setId(e.getStringId());

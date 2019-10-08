@@ -7,6 +7,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.validation.constraints.NotEmpty;
@@ -20,10 +21,6 @@ import java.util.Map;
  */
 public class AssetStatusJumpRequest extends BasicRequest implements ObjectValidator {
 
-    // @ApiModelProperty("资产Id数组")
-    // @NotEmpty(message = "资产数据格式不正确")
-    // private List<String> assetIdList;
-
     @ApiModelProperty("资产信息")
     @NotEmpty(message = "资产数据格式不正确")
     private List<StatusJumpAssetInfo> assetInfoList;
@@ -35,10 +32,6 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
     private AssetFlowEnum assetFlowEnum;
-
-    //
-    // @ApiModelProperty(value = "流程引擎数据")
-    // private ActivityHandleRequest activityHandleRequest;
 
     @ApiModelProperty(value = "资产变更流程信息")
     private ManualStartActivityRequest manualStartActivityRequest;
@@ -131,16 +124,22 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @Override
     public void validate() throws RequestParamValidateException {
         if (formData == null && manualStartActivityRequest == null) {
-            ParamterExceptionUtils.isTrue(false, "请求流程不能为空");
+            ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
+        }
+
+        if (assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE)) {
+            agree = Boolean.TRUE;
+        } else {
+            ParamterExceptionUtils.isNull(agree, "执行意见必填");
         }
 
         // 通过:入网/退役/检查不校验,其他校验下一步执行人;不通过:备注信息不能为空
-        boolean needCheckAgree = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
-        if (needCheckAgree) {
-            ParamterExceptionUtils.isNull(agree, "执行意见必填");
-        }
-        if (Boolean.FALSE.equals(agree)) {
-            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), "备注信息不能为空");
+        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        if (Boolean.TRUE.equals(agree) && checkConfigUser) {
+            ParamterExceptionUtils.isNull(formData, "formData参数错误");
+            ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
+        } else if (Boolean.FALSE.equals(agree)) {
+            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
         }
     }
 

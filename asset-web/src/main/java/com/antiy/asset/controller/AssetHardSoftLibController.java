@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.BusinessSelectResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +18,26 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  *
@@ -117,7 +130,7 @@ public class AssetHardSoftLibController {
      * @return actionResponse
      */
     @ApiOperation(value = "操作系统下拉选项", notes = "操作系统")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class), })
     @RequestMapping(value = "/pullDown/os", method = RequestMethod.POST)
     public ActionResponse pullDownOs(@RequestBody(required = false) OsQuery osQuery) {
         return ActionResponse.success(iAssetHardSoftLibService.pullDownOs(osQuery));
@@ -163,7 +176,7 @@ public class AssetHardSoftLibController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/pullDown/version", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownVersion')")
-    public ActionResponse<List<SelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+    public ActionResponse<List<BusinessSelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getSupplier(), "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getName(), "名称不能为空");
