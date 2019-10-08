@@ -325,42 +325,41 @@
 
     <select id="findPulldownUnconnectedGroup" resultMap="BaseResultMap"
             parameterType="com.antiy.common.base.ObjectQuery">
-        select distinct grou.id,grou.`name` from asset_group_relation relation LEFT JOIN asset ON
-        asset.id=relation.asset_id
+        SELECT
+        DISTINCT grou.name,grou.id
+        FROM
+        (
+        SELECT
+        a.id
+        FROM
+        asset a
+        LEFT JOIN asset_ip_relation b ON a.id = b.asset_id
+        AND b. STATUS = 1
+        LEFT JOIN asset_link_relation d ON (
+        (
+        a.id = d.asset_id
+        AND b.ip = d.asset_ip
+        )
+        OR (
+        a.id = d.parent_asset_id
+        AND b.ip = d.parent_asset_ip
+        )
+        )
+        WHERE
+        a. STATUS = 1
+        <if test="primaryKey !=null">
+            and a.id !=#{primaryKey}
+        </if>
+        <include refid="Multiple_Query"/>
+        GROUP BY
+        a.id
+        HAVING
+        count(b.id) > count(d.id)
+        ) t
+        LEFT JOIN asset_group_relation relation on relation.asset_id=t.id
         LEFT JOIN asset_group grou on grou.id=relation.asset_group_id
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Multiple_Query"></include>
-                and asset.id not in (
-                select distinct asset_id from
-                (
-                (select DISTINCT netcard.asset_id from asset_network_card netcard where netcard.status=1
-                GROUP BY netcard.asset_id HAVING count(netcard.asset_id) &lt;=
-                (select count(id) FROM asset_link_relation where asset_id=netcard.asset_id or
-                 parent_asset_id=netcard.asset_id and status=1))
-                union
-                (select DISTINCT relation.asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                union
-                (select DISTINCT relation.parent_asset_id from asset_link_relation relation
-                LEFT JOIN asset_network_equipment net on net.asset_id=relation.parent_asset_id
-                where (select count(id) from asset_link_relation where asset_id=net.asset_id or
-                parent_asset_id=net.asset_id and status=1) >= net.port_size
-                and relation.status=1 and net.status=1)
-                ) as assets
-                )
-                and grou.`name` is not null
-                and asset.status=1
-                and grou.status=1
-                and relation.status=1
-                <if test="primaryKey !=null">
-                    and asset.id != #{primaryKey}
-                </if>
-            </trim>
-        </where>
+        where relation.status=1
+        and grou.status=1
     </select>
     <select id="getNameById" resultType="java.lang.String" parameterType="java.lang.String">
         select

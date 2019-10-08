@@ -131,6 +131,40 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>asset-web</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application.yml</exclude>
+                    <exclude>application-*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+            </resource>
+
+            <!-- 过滤配置文件到config目录 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <targetPath>config</targetPath>
+                <includes>
+                    <include>application.yml</include>
+                    <include>application-*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+
+            <!-- 过滤脚本文件到bin目录 -->
+            <resource>
+                <directory>src/bin</directory>
+                <filtering>true</filtering>
+                <targetPath>bin</targetPath>
+                <includes>
+                    <include>*.sh</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -155,7 +189,25 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
 </project>
