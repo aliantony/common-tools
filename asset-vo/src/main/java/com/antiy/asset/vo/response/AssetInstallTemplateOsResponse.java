@@ -10,15 +10,15 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class AssetInstallTemplateOsResponse {
     @ApiModelProperty("操作系统编号")
-    Integer osCode;
+    String osCode;
     @ApiModelProperty("操作系统名称")
     String osName;
 
-    public Integer getOsCode() {
+    public String getOsCode() {
         return osCode;
     }
 
-    public void setOsCode(Integer osCode) {
+    public void setOsCode(String osCode) {
         this.osCode = osCode;
     }
 
