@@ -1,10 +1,11 @@
 package com.antiy.asset.dao;
 
-import com.antiy.common.base.IBaseDao;
-import com.antiy.asset.entity.AssetMacRelation;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.antiy.asset.entity.AssetMacRelation;
+import com.antiy.common.base.IBaseDao;
 
 /**
  * <p> 资产-MAC关系表 Mapper 接口 </p>
@@ -24,4 +25,11 @@ public interface AssetMacRelationDao extends IBaseDao<AssetMacRelation> {
      * @param assetMacRelationList
      */
     void insertBatch(@Param("assetMacRelationList") List<AssetMacRelation> assetMacRelationList);
+
+    /**
+     * mac判重
+     * @param macs
+     * @return
+     */
+    Integer checkRepeat(@Param("list") List<String> macs);
 }

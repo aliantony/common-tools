@@ -3,6 +3,7 @@ package com.antiy.asset.intergration;
 import java.util.List;
 
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -32,5 +33,12 @@ public interface BaseLineClient {
      * @return
      */
     ActionResponse distributeBaseline(String assetId);
+
+    /**
+     * 配置启动流程
+     * @param baselineWaitingConfigRequest
+     * @return
+     */
+    ActionResponse baselineConfig(BaselineWaitingConfigRequest baselineWaitingConfigRequest);
 
 }
