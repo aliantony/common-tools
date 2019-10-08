@@ -12,6 +12,7 @@ import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
 import com.antiy.asset.vo.response.BusinessSelectResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.*;
@@ -24,8 +25,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -121,10 +120,10 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     }
 
     @Override
-    public List<SelectResponse> pullDownOs(OsQuery query) {
+    public List<OsSelectResponse> pullDownOs(OsQuery query) {
         query.setType("o");
         query.setIsfilter(true);
-        List<SelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
+        List<OsSelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
         return osList;
     }
 

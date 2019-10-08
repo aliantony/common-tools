@@ -10,8 +10,11 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
@@ -105,6 +108,8 @@ public class AssetStatusJumpServiceImplTest {
             TransactionCallback arg= (TransactionCallback) argument[0];
             return arg.doInTransaction(new SimpleTransactionStatus());
         });
+
+        when(activityClient.completeTaskBatch(Mockito.anyList())).thenReturn(ActionResponse.success());
     }
 
     @After
@@ -215,12 +220,15 @@ public class AssetStatusJumpServiceImplTest {
 
 
     /**
-     * 退役
+     * 退役-成功
      * @throws Exception
      */
     @Test
     public void changeStatus5() throws Exception {
         jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        jumpRequest.setManualStartActivityRequest(manualStartActivityRequest);
+
         List<Asset> assets = new ArrayList<>();
         Asset asset = new Asset();
         asset.setId(1);
@@ -228,7 +236,12 @@ public class AssetStatusJumpServiceImplTest {
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.success());
+        statusChangeFlowProcess.changeStatus(jumpRequest);
 
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败,请刷新后重试");
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
 
@@ -237,8 +250,30 @@ public class AssetStatusJumpServiceImplTest {
      * 数据库操作更新失败
      * @throws Exception
      */
+    // @Test
+    // public void changeStatusException() throws Exception {
+    //     jumpRequest.setAssetFlowEnum(AssetFlowEnum.TEMPLATE_IMPL);
+    //     List<Asset> assets = new ArrayList<>();
+    //     Asset asset = new Asset();
+    //     asset.setId(1);
+    //     asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+    //     assets.add(asset);
+    //     when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+    //     when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+    //
+    //     Mockito.when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
+    //
+    //     expectedException.expect(BusinessException.class);
+    //     expectedException.expectMessage("操作失败,请稍后重试");
+    //     statusChangeFlowProcess.changeStatus(jumpRequest);
+    // }
+
+    /**
+     * 数据库操作更新异常 updateAssetStatusWithLock
+     * @throws Exception
+     */
     @Test
-    public void changeStatusException() throws Exception {
+    public void changeStatusException2() throws Exception {
         jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
         List<Asset> assets = new ArrayList<>();
         Asset asset = new Asset();
@@ -246,12 +281,31 @@ public class AssetStatusJumpServiceImplTest {
         asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
         assets.add(asset);
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
-        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
-
-        Mockito.when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenThrow(new RuntimeException(("SQL")));
+        when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
 
         expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("操作失败,请稍后重试");
+        expectedException.expectMessage("操作失败,请刷新页面后重试");
+        statusChangeFlowProcess.changeStatus(jumpRequest);
+    }
+
+    /**
+     * 数据库操作更新失败 updateAssetStatusWithLock
+     * @throws Exception
+     */
+    @Test
+    public void changeStatusException3() throws Exception {
+        jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
+        List<Asset> assets = new ArrayList<>();
+        Asset asset = new Asset();
+        asset.setId(1);
+        asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+        assets.add(asset);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(0);
+
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败,请刷新页面后重试");
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
 

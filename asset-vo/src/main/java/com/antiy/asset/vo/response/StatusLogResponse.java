@@ -1,5 +1,8 @@
 package com.antiy.asset.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StatusLogResponse extends AssetPreStatusInfoResponse {
 	private String describe;
 	private Long gmtCreate;

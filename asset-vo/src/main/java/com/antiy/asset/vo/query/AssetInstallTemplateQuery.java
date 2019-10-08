@@ -11,7 +11,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetInstallTemplateQuery extends ObjectQuery {
-
+    @ApiModelProperty("基准模板主键id")
+    private String baselineId;
     @ApiModelProperty("模板名称")
     private String name;
     @ApiModelProperty("模板编号")
@@ -36,6 +37,14 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
     private String modifiedUser;
     @ApiModelProperty("模板状态")
     private Integer status;
+
+    public String getBaselineId() {
+        return baselineId;
+    }
+
+    public void setBaselineId(String baselineId) {
+        this.baselineId = baselineId;
+    }
 
     public String getName() {
         return name;
@@ -136,7 +145,8 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
     @Override
     public String toString() {
         return "AssetInstallTemplateQuery{" +
-                "name='" + name + '\'' +
+                "baselineId='" + baselineId + '\'' +
+                ", name='" + name + '\'' +
                 ", numberCode='" + numberCode + '\'' +
                 ", categoryModel=" + categoryModel +
                 ", currentStatus=" + currentStatus +

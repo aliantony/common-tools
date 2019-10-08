@@ -22,12 +22,12 @@ public enum AssetFlowEnum {
 
     // 新增
     REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产"),
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "实施"),
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "验证"),
+    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "实施"),
+    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "验证"),
     NET_IN(AssetStatusEnum.WAIT_NET, "入网"),
-    CHECK(AssetStatusEnum.WAIT_CHECK, "检查"),
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, "整改"),
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "拟退役"),
+    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查"),
+    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改"),
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "implementUserId", "拟退役"),
     RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役"),
     CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产"),
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
@@ -37,14 +37,30 @@ public enum AssetFlowEnum {
      * 资产当前状态
      */
     private AssetStatusEnum currentAssetStatus;
+    /**
+     *
+     * 工作流中formData中对应的key
+     */
+    private String activityKey;
 
     /**
      * 对应流程信息
      */
     private String  msg;
+
+    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String msg) {
+        this.currentAssetStatus = currentAssetStatus;
+        this.activityKey = activityKey;
+        this.msg = msg;
+    }
+
     AssetFlowEnum(AssetStatusEnum currentAssetStatus, String msg) {
         this.currentAssetStatus = currentAssetStatus;
         this.msg = msg;
+    }
+
+    public String getActivityKey() {
+        return activityKey;
     }
 
     public String getMsg() {
