@@ -1,17 +1,32 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.common.utils.LoginUserUtil.getLoginUser;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.AssetHardSoftLibDao;
+import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
+import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
+import com.antiy.asset.vo.response.SoftwareResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -24,20 +39,12 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.AssetHardSoftLibDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.antiy.common.utils.LoginUserUtil.getLoginUser;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -125,5 +132,27 @@ public class AssetHardSoftLibServiceImplTest {
         assetHardSoftLibs.add(assetHardSoftLib);
         Mockito.when(assetHardSoftLibDao.queryHardSoftLibByVersion(Mockito.any())).thenReturn(assetHardSoftLibs);
         Assert.assertEquals("1.001.02.073", assetHardSoftLibService.pulldownVersion(query).get(0).getValue());
+    }
+
+    @Test
+    public void pulldownOs() {
+        OsQuery query = new OsQuery();
+        List<OsSelectResponse> osList = new ArrayList<>();
+        Mockito.when(assetHardSoftLibDao.pullDownOs(query)).thenReturn(osList);
+        assetHardSoftLibService.pullDownOs(query);
+    }
+
+    @Test
+    public void getPageSoftWareList() {
+        AssetSoftwareQuery query = new AssetSoftwareQuery();
+        query.setAssetId("1");
+        query.setCurrentPage(1);
+        query.setPageSize(10);
+        Mockito.when(assetSoftwareRelationDao.countSoftwareByAssetId(Mockito.any())).thenReturn(0);
+        assetHardSoftLibService.getPageSoftWareList(query);
+        Mockito.when(assetSoftwareRelationDao.countSoftwareByAssetId(Mockito.any())).thenReturn(10);
+        List<SoftwareResponse> result = new ArrayList<>();
+        Mockito.when(assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query)).thenReturn(result);
+        assetHardSoftLibService.getPageSoftWareList(query);
     }
 }
