@@ -1282,13 +1282,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests, Integer categoryModel) {
-        // 现有ip
-        List<String> ips = Lists.newArrayList();
         // 1. 删除旧的资产ip关系
         assetIpRelationDao.deleteByAssetId(id);
         // 2. 批量保存资产ip关系
         if (CollectionUtils.isNotEmpty(ipRelationRequests)) {
-            ips = ipRelationRequests.stream().map(AssetIpRelationRequest::getIp).collect(Collectors.toList());
             List<AssetIpRelation> assetIpRelationList = Lists.newArrayList();
             Integer assetId = DataTypeUtils.stringToInteger(id);
             ipRelationRequests.stream().forEach(ip -> {
