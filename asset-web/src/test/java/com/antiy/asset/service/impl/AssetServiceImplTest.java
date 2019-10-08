@@ -1615,7 +1615,7 @@ public class AssetServiceImplTest {
         List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
         Assert.assertEquals(Arrays.asList("String"), result);
 
-        result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
+        result = assetServiceImpl.pulldownUnconnectedManufacturer(0, "1");
         Assert.assertEquals(Arrays.asList("String"), result);
 
     }
