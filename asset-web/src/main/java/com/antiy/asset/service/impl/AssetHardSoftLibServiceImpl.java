@@ -11,13 +11,10 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.BusinessSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
@@ -142,8 +139,8 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     }
 
     @Override
-    public List<SelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException {
-        List<SelectResponse> result = new ArrayList<>();
+    public List<BusinessSelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException {
+        List<BusinessSelectResponse> result = new ArrayList<>();
         if (query.getVersion() != null) {
             String posStr = query.getName() + query.getSupplier();
             query.setPos(posStr.length() + 9);
@@ -151,7 +148,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         }
         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
         for (AssetHardSoftLib assetHardSoftLib : assetHardSoftLibs) {
-            SelectResponse response = new SelectResponse();
+            BusinessSelectResponse response = new BusinessSelectResponse();
             // 特殊处理
             // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分 且：用空格代替
             String m = assetHardSoftLib.getSupplier() + assetHardSoftLib.getProductName();

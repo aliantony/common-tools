@@ -635,7 +635,8 @@ CREATE TABLE `asset_hard_soft_lib` (
   UNIQUE KEY `index_business_id` (`business_id`) USING BTREE COMMENT '业务主键唯一索引',
   KEY `index_gmt_create` (`gmt_create`) USING BTREE,
   KEY `id_type_status` (`id`,`type`,`status`,`product_name`,`supplier`) USING BTREE,
-  KEY `index_relation` (`id`,`business_id`,`type`,`is_storage`,`supplier`,`product_name`,`status`) USING BTREE
+  KEY `index_relation` (`id`,`business_id`,`type`,`is_storage`,`supplier`,`product_name`,`status`) USING BTREE,
+  KEY `idx_type_name_supplier` (`type`,`supplier`,`product_name`)USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

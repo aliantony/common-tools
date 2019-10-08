@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.response.BusinessSelectResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -163,7 +164,7 @@ public class AssetHardSoftLibController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/pullDown/version", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownVersion')")
-    public ActionResponse<List<SelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
+    public ActionResponse<List<BusinessSelectResponse>> pulldownVersion(@ApiParam(value = "下拉查询类") @RequestBody AssetPulldownQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getSupplier(), "厂商不能为空");
         ParamterExceptionUtils.isNull(query.getName(), "名称不能为空");

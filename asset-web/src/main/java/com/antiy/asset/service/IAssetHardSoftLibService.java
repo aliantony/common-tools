@@ -10,6 +10,7 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.BusinessSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.BaseRequest;
@@ -90,7 +91,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     List<String> pulldownName(AssetPulldownQuery query);
 
-    List<SelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException;
+    List<BusinessSelectResponse> pulldownVersion(AssetPulldownQuery query) throws UnsupportedEncodingException;
 
     /**
      * 分页查询
