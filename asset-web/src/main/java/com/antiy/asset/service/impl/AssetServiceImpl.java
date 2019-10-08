@@ -173,7 +173,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
-                    String ssk=requestAsset.getBaselineTemplateId();
+                    String ssk = requestAsset.getBaselineTemplateId();
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         String admittanceResult = (String) request.getManualStartActivityRequest().getFormData()
@@ -501,8 +501,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isEmpty(alarmCountList)) {
                 return new ArrayList<AssetResponse>();
             }
-            alarmCountMaps = alarmCountList.stream()
-                .collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
+            alarmCountMaps = alarmCountList.stream().collect(Collectors.toMap(IdCount::getId, IdCount::getCount));
             String[] ids = new String[alarmCountMaps.size()];
             query.setIds(alarmCountMaps.keySet().toArray(ids));
         }
@@ -2668,7 +2667,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
             ActionResponse actionResponse = activityClient
                 .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
-            //             // 流程调用失败不更改资产状态
+            // // 流程调用失败不更改资产状态
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
@@ -2711,19 +2710,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<String> getAllSupplierofSafetyEquipment() {
-        List<String> supplierList=assetDao.getAllSupplierofSafetyEquipment();
+        List<String> supplierList = assetDao.getAllSupplierofSafetyEquipment();
         return supplierList;
     }
 
     @Override
     public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier) {
-        List<String>nameList=assetDao.getAllNameofSafetyEquipmentBySupplier(supplier);
+        List<String> nameList = assetDao.getAllNameofSafetyEquipmentBySupplier(supplier);
         return nameList;
     }
 
     @Override
     public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName) {
-        List<String> versionList=assetDao.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName);
+        List<String> versionList = assetDao.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName);
         return versionList;
     }
 
@@ -2797,26 +2796,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
-        // Map<String, String> categoryMap = assetCategoryModelService.getSecondCategoryMap();
-        List<Integer> categoryCondition = new ArrayList<>();
-        // List<AssetCategoryModel> all = assetCategoryModelService.getAll();
-        // for (Map.Entry<String, String> entry : categoryMap.entrySet()) {
         if ((isNet == null) || isNet == 1) {
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.COMPUTE_DEVICE.getMsg())) {
-            // categoryCondition.addAll(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
-            // }
-            // if (entry.getValue().equals(AssetSecondCategoryEnum.NETWORK_DEVICE.getMsg())) {
-            // categoryCondition.addAll(
-            // assetCategoryModelService.findAssetCategoryModelIdsById(Integer.parseInt(entry.getKey()), all));
-            // }
+            query.setCategoryModels(
+                new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
+        } else {
+            query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
         }
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
-        // query.setCategoryModels(DataTypeUtils.integerArrayToStringArray(categoryCondition));
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
@@ -2905,7 +2894,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer queryNormalCount() {
         AssetQuery query = new AssetQuery();
         // 已入网、待退役资产
-        query.setAssetStatusList(Arrays.asList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.WAIT_RETIRE.getCode()));
+        query
+            .setAssetStatusList(Arrays.asList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.WAIT_RETIRE.getCode()));
 
         // 当前用户所在区域
         query.setAreaIds(
