@@ -138,7 +138,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         if (Boolean.TRUE.equals(agree) && checkConfigUser) {
             ParamterExceptionUtils.isNull(formData, "formData参数错误");
             ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
-        } else {
+        } else if (Boolean.FALSE.equals(agree)) {
             ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
         }
     }
