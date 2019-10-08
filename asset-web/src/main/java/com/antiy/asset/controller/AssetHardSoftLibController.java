@@ -1,15 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
@@ -17,14 +7,26 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  *
@@ -117,7 +119,7 @@ public class AssetHardSoftLibController {
      * @return actionResponse
      */
     @ApiOperation(value = "操作系统下拉选项", notes = "操作系统")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class), })
     @RequestMapping(value = "/pullDown/os", method = RequestMethod.POST)
     public ActionResponse pullDownOs(@RequestBody(required = false) OsQuery osQuery) {
         return ActionResponse.success(iAssetHardSoftLibService.pullDownOs(osQuery));

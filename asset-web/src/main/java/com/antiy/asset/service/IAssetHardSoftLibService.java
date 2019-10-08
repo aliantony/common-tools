@@ -1,8 +1,5 @@
 package com.antiy.asset.service;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
@@ -10,12 +7,16 @@ import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * <p> CPE表 服务类 </p>
@@ -79,7 +80,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
      *
      * @return
      */
-    List<SelectResponse> pullDownOs(OsQuery query);
+    List<OsSelectResponse> pullDownOs(OsQuery query);
 
     /**
      * 查询下拉的厂商信息
