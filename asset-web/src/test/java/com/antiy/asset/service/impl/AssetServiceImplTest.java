@@ -62,7 +62,7 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
-                  LogHandle.class, ZipUtil.class })
+        LogHandle.class, ZipUtil.class })
 // @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
@@ -168,8 +168,8 @@ public class AssetServiceImplTest {
 
         // 模拟用户登录
         LoginUser loginUser = JSONObject.parseObject(
-            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
-            LoginUser.class);
+                "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+                LoginUser.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
         Map<String, Object> map = new HashMap<>();
         map.put("principal", loginUser);
@@ -201,7 +201,7 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(LogHandle.class);
         PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
         PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.any(), Mockito.any(),
-            Mockito.any());
+                Mockito.any());
 
         when(transactionTemplate.execute(Mockito.<TransactionCallback> any())).thenAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
@@ -313,7 +313,7 @@ public class AssetServiceImplTest {
         baselineCategoryModelNodeResponse.setStringId("1");
         baselineCategoryModelNodeResponseArrayList.add(baselineCategoryModelNodeResponse);
         when(operatingSystemClient.getInvokeOperatingSystemTree())
-            .thenReturn(baselineCategoryModelNodeResponseArrayList);
+                .thenReturn(baselineCategoryModelNodeResponseArrayList);
 
         AssetRequest assetRequest = generateAssetRequest();
         // 普通资产
@@ -474,7 +474,7 @@ public class AssetServiceImplTest {
         when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAlarmCountByAssetIds(any()))
-            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
+                .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
         List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
         BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
         categoryModelResponse.setStringId("1");
@@ -709,7 +709,7 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
-            .thenReturn(generateAssetNetworkEquipmentList());
+                .thenReturn(generateAssetNetworkEquipmentList());
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -1000,7 +1000,7 @@ public class AssetServiceImplTest {
         }
 
         when(activityClient.manualStartProcess(any()))
-            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
+                .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1014,8 +1014,8 @@ public class AssetServiceImplTest {
         SecurityContextHolder.setContext(securityContext);
 
         LoginUser loginUser = JSONObject.parseObject(
-            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
-            LoginUser.class);
+                "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+                LoginUser.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
         Map<String, Object> map = new HashMap<>();
         map.put("principal", loginUser);
@@ -1094,7 +1094,7 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(ZipUtil.class);
         PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
         when(RequestContextHolder.getRequestAttributes())
-            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+                .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
     }
 

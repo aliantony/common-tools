@@ -2,8 +2,10 @@ package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.response.BusinessSelectResponse;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
@@ -32,15 +34,15 @@ import java.util.List;
 @SpringBootTest
 public class AssetHardSoftLibControllerTest {
 
-    private static final String PREFIX_URL = "/api/v1/asset/assethardsoftlib";
+    private static final String        PREFIX_URL = "/api/v1/asset/assethardsoftlib";
 
     @InjectMocks
     private AssetHardSoftLibController assetHardSoftLibController;
 
     @Mock
-    public IAssetHardSoftLibService iAssetHardSoftLibService;
+    public IAssetHardSoftLibService    iAssetHardSoftLibService;
 
-    private MockMvc mockMvc;
+    private MockMvc                    mockMvc;
 
     @Before
     public void setUp() {
@@ -59,7 +61,7 @@ public class AssetHardSoftLibControllerTest {
         PageResult<SoftwareResponse> pageResult = new PageResult<>(10, 1, 1, resultList);
         Mockito.when(iAssetHardSoftLibService.getPageSoftWareList(Mockito.any())).thenReturn(pageResult);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/software/list")
-                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
@@ -76,9 +78,57 @@ public class AssetHardSoftLibControllerTest {
         resultList.add(response);
         Mockito.when(iAssetHardSoftLibService.pullDownOs(Mockito.any())).thenReturn(resultList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/os")
-                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
+    }
+
+    @Test
+    public void pulldownSupplier() throws Exception {
+        AssetPulldownQuery query = new AssetPulldownQuery();
+        List<String> resultList = new ArrayList();
+        resultList.add("1");
+        Mockito.when(iAssetHardSoftLibService.pulldownSupplier(Mockito.any())).thenReturn(resultList);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/supplier")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+        Assert.assertEquals(resultList, actionResponse.getBody());
+    }
+
+    @Test
+    public void pulldownName() throws Exception {
+        List<String> resultList = new ArrayList();
+        resultList.add("1");
+        AssetPulldownQuery query = new AssetPulldownQuery();
+        query.setSupplier("1");
+        Mockito.when(iAssetHardSoftLibService.pulldownName(Mockito.any())).thenReturn(resultList);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/name")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+        Assert.assertEquals(resultList, actionResponse.getBody());
+    }
+
+    @Test
+    public void pulldownVersion() throws Exception {
+        List<BusinessSelectResponse> resultList = new ArrayList();
+        BusinessSelectResponse businessSelectResponse = new BusinessSelectResponse();
+        businessSelectResponse.setId("1");
+        businessSelectResponse.setValue("cpe:/h:3com:3crwe747a:-");
+        resultList.add(businessSelectResponse);
+        AssetPulldownQuery query = new AssetPulldownQuery();
+        query.setSupplier("1");
+        query.setName("1");
+        Mockito.when(iAssetHardSoftLibService.pulldownVersion(Mockito.any())).thenReturn(resultList);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/version")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+        Assert.assertEquals(JSONObject.toJSON(resultList), actionResponse.getBody());
     }
 }
