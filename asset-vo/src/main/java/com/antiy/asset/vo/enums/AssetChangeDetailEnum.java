@@ -6,6 +6,10 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetChangeDetailEnum implements ValuedEnum{
 	/**
+	 * 无状态-0
+	 */
+	OPERATION_NO("无上一步状态", 0),
+	/**
 	 * 登记资产-1
 	 */
 	OPERATION_HARDWARE_REGISTER("登记资产。",AssetStatusEnum.WAIT_REGISTER.getCode()),
