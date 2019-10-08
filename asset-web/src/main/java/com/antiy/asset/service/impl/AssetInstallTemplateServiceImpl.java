@@ -83,7 +83,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         AssetInstallTemplate assetInstallTemplate = requestConverter.convert(request, AssetInstallTemplate.class);
         assetInstallTemplate.setGmtModified(System.currentTimeMillis());
         assetInstallTemplate.setModifiedUser(LoginUserUtil.getLoginUser().getName());
-        return assetInstallTemplateDao.update(assetInstallTemplate).toString();
+        if (assetInstallTemplateDao.update(assetInstallTemplate).toString().equals("1")) {
+            return "更新成功，请刷新界面";
+        }
+        return "更新失败";
     }
 
     @Override
@@ -124,10 +127,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public int deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception {
+    public String deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception {
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
-        return assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
+        int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
                 LoginUserUtil.getLoginUser().getName());
+        if (count < request.getIds().size()) {
+            return "状态为拒绝的模板才能被删除";
+        }
+        return "删除成功，请刷新界面";
     }
 
     @Override
