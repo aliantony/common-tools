@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,12 +92,25 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     public PageResult<AssetInstallTemplateResponse> queryPageAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
-        Integer count = this.findCount(query);
+        String baselineId = query.getBaselineId();
+        PageResult<AssetInstallTemplateResponse> responsePageResult = null;
+
+        Integer count = baselineId == null ? this.findCount(query) : assetInstallTemplateDao.findFilteredCount(query);
         if (count == 0 || count == null) {
-            return null;
+
+            return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
-        return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
-            this.queryListAssetInstallTemplate(query));
+        Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
+        if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
+            responsePageResult = new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
+                    assetInstallTemplateDao.queryTemplateInfo(query));
+        }
+        //根据配置模板id过滤包含黑名单软件的装机模板
+        else {
+            responsePageResult = new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
+                    assetInstallTemplateDao.queryFilteredTemplate(query));
+        }
+        return responsePageResult;
     }
 
     @Override
