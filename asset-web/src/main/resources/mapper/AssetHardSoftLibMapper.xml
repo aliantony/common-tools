@@ -430,7 +430,7 @@
         limit 50
     </select>
 
-    <select id="pullDownOs" resultType="com.antiy.asset.vo.response.SelectResponse">
+    <select id="pullDownOs" resultType="com.antiy.asset.vo.response.OsSelectResponse">
         select filter.product_name as value,temp.id from (
         SELECT
         min(business_id) as id ,product_name as value
