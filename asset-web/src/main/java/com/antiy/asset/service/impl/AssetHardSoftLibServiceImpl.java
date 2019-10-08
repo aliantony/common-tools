@@ -68,6 +68,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         // TODO
         return responseConverter.convert(assetHardSoftLibList, AssetHardSoftLibResponse.class);
     }
+
     @Override
     public List<AssetHardSoftLibResponse> queryHardSoftLibList(AssetHardSoftLibQuery query) throws Exception {
         List<AssetHardSoftLib> hardSoftLibList = assetHardSoftLibDao.queryHardSoftLibList(query);
@@ -78,11 +79,12 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public Integer queryHardSoftLibCount(AssetHardSoftLibQuery query) throws Exception {
         return assetHardSoftLibDao.queryHardSoftLibCount(query);
     }
+
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception {
         if (!Objects.isNull(query.getBusinessId()) && StringUtils.isNotBlank(query.getSourceType())) {
             List<Long> ids = assetHardSoftLibDao.exceptIds(query.getBusinessId(), query.getSourceType(),
-                    query.getAssetType().getName());
+                query.getAssetType().getName());
             query.setExceptIds(ids);
         }
         Integer count = this.queryHardSoftLibCount(query);
@@ -142,7 +144,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         List<BusinessSelectResponse> result = new ArrayList<>();
         if (query.getVersion() != null) {
             String posStr = query.getName() + query.getSupplier();
-            query.setPos(posStr.length() + 9);
+            query.setPos(posStr.length() + 10);
             query.setVersion(query.getVersion().replace(" ", ":"));
         }
         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao.queryHardSoftLibByVersion(query);
