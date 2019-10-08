@@ -179,7 +179,6 @@
         <if test=" modifiedUser != null">
             and modified_user = #{modifiedUser }
         </if>
-        and status = 1
 
     </sql>
 
@@ -233,6 +232,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            and status=1
             <include refid="Where_Column_List"></include>
         </trim>
     </select>
@@ -241,9 +241,17 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            and status=1
             <include refid="Where_Column_List"></include>
         </trim>
-        order by gmt_create desc
+        order by
+        <if test="baselineId != null">
+            gmt_modified
+        </if>
+        <if test="baselineId == null">
+            gmt_create
+        </if>
+        desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -353,6 +361,115 @@
         where
         t1.install_template_id = #{pid}
     </select>
+    <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
+            resultType="java.lang.Integer">
+        select sw_type from baseline_template where id=#{baselineId}
+    </select>
+    <select id="findFilteredCount" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) from (SELECT
+        ait.id AS stringId,
+        ait.NAME AS NAME,
+        ait.number_code AS numberCode,
+        ait.gmt_modified AS gmtModified,
+        ait.description AS description,
+        count( DISTINCT asit.software_id ) AS softNum,
+        count( DISTINCT apit.patch_id ) AS patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
+        WHERE
+        asit.software_id NOT IN (
+        SELECT DISTINCT
+        ahsl.business_id
+        FROM
+        baseline_template_software bts
+        INNER JOIN baseline_template bt ON bts.template_id = bt.id
+        INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        AND bt.sw_type = 2
+        AND bt.id = #{baselineId}
+        )
+        <include refid="Where_Column_List"></include>
+        and ait.status=1
+        GROUP BY
+        ait.id) t
+    </select>
+    <select id="queryTemplateInfo" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
+            parameterType="com.antiy.common.base.ObjectQuery">
 
-
+        SELECT
+        ait.id as stringId,
+        ait.name as name,
+        ait.number_code as numberCode,
+        ait.gmt_modified as gmtModified,
+        ait.description as description,
+        ait.category_model as categoryModel,
+        ait.current_status as currentStatus,
+        ait.operation_system as operationSystem,
+        ait.operation_system_name as operationSystemName,
+        ait.gmt_create as gmtCreate,
+        count(DISTINCT asit.software_id) as softNum,
+        count(DISTINCT apit.patch_id) as patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            and ait.status=1
+            <include refid="Where_Column_List"></include>
+        </trim>
+        GROUP BY
+        ait.id
+        order by
+        <if test="baselineId != null">
+            ait.gmt_modified
+        </if>
+        <if test="baselineId == null">
+            ait.gmt_create
+        </if>
+        desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="queryFilteredTemplate" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        ait.id AS stringId,
+        ait.NAME AS NAME,
+        ait.number_code AS numberCode,
+        ait.gmt_modified AS gmtModified,
+        ait.description AS description,
+        count( DISTINCT asit.software_id ) AS softNum,
+        count( DISTINCT apit.patch_id ) AS patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
+        WHERE
+        asit.software_id NOT IN (
+        SELECT DISTINCT
+        ahsl.business_id
+        FROM
+        baseline_template_software bts
+        INNER JOIN baseline_template bt ON bts.template_id = bt.id
+        INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        AND bt.sw_type = 2
+        AND bt.id = #{baselineId}
+        )
+        <include refid="Where_Column_List"></include>
+        GROUP BY
+        ait.id
+        order by
+        <if test="baselineId != null">
+            ait.gmt_modified
+        </if>
+        <if test="baselineId == null">
+            ait.gmt_create
+        </if>
+        desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
 </mapper>

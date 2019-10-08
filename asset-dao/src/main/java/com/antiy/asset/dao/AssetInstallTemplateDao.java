@@ -5,8 +5,10 @@ import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
+import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -91,4 +93,12 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      */
     int batchDeleteTemplate(@Param("ids") List<String> ids, @Param("gmtModified") Long gmtModified,
                             @Param("modifiedUser") String modifiedUser);
+
+    Integer queryBaselineTemplateType(ObjectQuery query);
+
+    Integer findFilteredCount(ObjectQuery query);
+
+    List<AssetInstallTemplateResponse> queryTemplateInfo(ObjectQuery query);
+
+    List<AssetInstallTemplateResponse> queryFilteredTemplate(ObjectQuery query);
 }
