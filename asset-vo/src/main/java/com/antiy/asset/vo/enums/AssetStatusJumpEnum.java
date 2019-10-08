@@ -40,7 +40,7 @@ public enum AssetStatusJumpEnum {
     /**
      * 拟退役
      */
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.WAIT_RETIRE),
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_RETIRE),
     /**
      * 退役
      */
@@ -103,8 +103,8 @@ public enum AssetStatusJumpEnum {
      * @param isNetIn 已入网 是true，否false
      * @return AssetStatusEnum
      */
-    public static AssetStatusEnum getNextStatus(AssetFlowEnum assetFlowEnum, boolean isAgree,
-                                                boolean isWaitCorrectToWaitRegister, boolean isNetIn) {
+    public static AssetStatusEnum getNextStatus(AssetFlowEnum assetFlowEnum, Boolean isAgree,
+                                                Boolean isWaitCorrectToWaitRegister, boolean isNetIn) {
         if (assetFlowEnum == null || assetFlowEnum.getCurrentAssetStatus() == null) {
             return null;
         }

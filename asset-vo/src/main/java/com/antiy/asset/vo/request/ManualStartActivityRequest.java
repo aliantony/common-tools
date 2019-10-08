@@ -32,7 +32,6 @@ public class ManualStartActivityRequest {
      * 表单数据
      */
     @ApiModelProperty(value = "流程表单数据,JSON串")
-    // @NotBlank(message = "流程处理数据不能为空")
     private Map          formData;
 
     @ApiModelProperty(value = "配置人员")

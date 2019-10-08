@@ -1,19 +1,22 @@
 package com.antiy.asset.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.util.LoginUtil;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.SysArea;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +27,10 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -35,8 +41,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ RedisKeyUtil.class })
-@SpringBootTest
+@PrepareForTest({ RedisKeyUtil.class, LoginUserUtil.class })
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 public class AssetTopologyServiceImplTest {
     @Mock
@@ -72,7 +77,25 @@ public class AssetTopologyServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        LoginUtil.generateDefaultLoginUser();
+        // 模拟用户登录
+        LoginUser loginUser = JSONObject.parseObject(
+            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+            LoginUser.class);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
+        Map<String, Object> map = new HashMap<>();
+        map.put("principal", loginUser);
+        token.setDetails(map);
+
+        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
+        org.springframework.security.core.context.SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
+        SecurityContextHolder.setContext(securityContext);
+        PowerMockito.mockStatic(LoginUserUtil.class);
+        loginUser =new LoginUser();
+        loginUser.setUsername("a");
+        loginUser.setAreas(Arrays.asList(new SysArea()));
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         PowerMockito.mockStatic(RedisKeyUtil.class);
         List<Double> list = Arrays.asList(1d, 2d, 3d);
         ReflectionTestUtils.setField(assetTopologyService, "middlePoint", list);

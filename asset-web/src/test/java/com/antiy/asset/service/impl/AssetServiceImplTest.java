@@ -148,6 +148,8 @@ public class AssetServiceImplTest {
     @Mock
     private AssetIpRelationDao                                                  assetIpRelationDao;
     @Mock
+    private AssetAssemblyDao                                                    assetAssemblyDao;
+    @Mock
     private AssetMacRelationDao                                                 assetMacRelationDao;
     @Spy
     private BaseConverter<AssetIpRelation, AssetIpRelationResponse>             ipResponseConverter;
@@ -319,16 +321,18 @@ public class AssetServiceImplTest {
         assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
         assetRequest.setAssetGroups(Arrays.asList(generateAssetGroupRequest()));
         assetOuterRequest.setAsset(assetRequest);
-        String baselineTemplateId = assetRequest.getBaselineTemplateId();
-        String installTemplateId = assetRequest.getInstallTemplateId();
-
-        Assert.assertTrue(installTemplateId.equals("1"));
-        if (baselineTemplateId.isEmpty()) {
-            System.currentTimeMillis();
-        }
+        List<AssetAssemblyRequest> assetAssemblyRequests = generateAssetAssemblyRequestList();
+        assetOuterRequest.setAssemblyRequestList(assetAssemblyRequests);
+        assetOuterRequest.setIpRelationRequests(generateAssetipRequestList());
+        assetOuterRequest.setMacRelationRequests(generateAssetmacRequestList());
+        when(assetMacRelationDao.insert(any())).thenReturn(0);
+        when(assetIpRelationDao.insert(any())).thenReturn(0);
+        assetAssemblyDao.insertBatch(anyList());
         ActionResponse result = assetServiceImpl.saveAsset(assetOuterRequest);
         Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
-        Assert.assertEquals("416", result.getHead().getCode());
+        assetRequest.setBaselineTemplateId("");
+        ActionResponse result1 = assetServiceImpl.saveAsset(assetOuterRequest);
+        Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
 
         // 安全设备
         AssetOuterRequest assetOuterRequest1 = new AssetOuterRequest();
@@ -338,7 +342,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result6 = assetServiceImpl.saveAsset(assetOuterRequest1);
-        Assert.assertEquals("416", result6.getHead().getCode());
+        Assert.assertEquals("200", result6.getHead().getCode());
 
         // 网络设备
         AssetOuterRequest assetOuterRequest2 = new AssetOuterRequest();
@@ -348,7 +352,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result7 = assetServiceImpl.saveAsset(assetOuterRequest2);
-        Assert.assertEquals("416", result7.getHead().getCode());
+        Assert.assertEquals("200", result7.getHead().getCode());
 
         // 存储设备
         AssetOuterRequest assetOuterRequest3 = new AssetOuterRequest();
@@ -357,7 +361,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest3.setManualStartActivityRequest(generateAssetManualStart());
         ActionResponse result8 = assetServiceImpl.saveAsset(assetOuterRequest3);
-        Assert.assertEquals("416", result8.getHead().getCode());
+        Assert.assertEquals("200", result8.getHead().getCode());
 
         // ip重复
         when(assetDao.findCountMac(any())).thenReturn(10);
@@ -383,8 +387,9 @@ public class AssetServiceImplTest {
 
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
-        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
+        Integer execute = transactionTemplate.execute(transactionStatus -> Integer.valueOf(0));
 
     }
 
@@ -1624,10 +1629,40 @@ public class AssetServiceImplTest {
         return assetGroup;
     }
 
+    private List<AssetAssemblyRequest> generateAssetAssemblyRequestList() {
+        AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
+        List<AssetAssemblyRequest> assetAssemblyRequests = Lists.newArrayList();
+        assetAssemblyRequest.setAmount(1);
+        assetAssemblyRequest.setAssetId("1");
+        assetAssemblyRequest.setBusinessId("1");
+        assetAssemblyRequests.add(assetAssemblyRequest);
+        return assetAssemblyRequests;
+    }
+
+    private List<AssetIpRelationRequest> generateAssetipRequestList() {
+        AssetIpRelationRequest assetAssemblyRequest = new AssetIpRelationRequest();
+        List<AssetIpRelationRequest> assetAssemblyRequests = Lists.newArrayList();
+        assetAssemblyRequest.setIp("1.1.12.12");
+        assetAssemblyRequest.setAssetId(1);
+        assetAssemblyRequest.setNet(1);
+        assetAssemblyRequests.add(assetAssemblyRequest);
+        return assetAssemblyRequests;
+    }
+
+    private List<AssetMacRelationRequest> generateAssetmacRequestList() {
+        AssetMacRelationRequest assetAssemblyRequest = new AssetMacRelationRequest();
+        List<AssetMacRelationRequest> assetAssemblyRequests = Lists.newArrayList();
+        assetAssemblyRequest.setMac("00-00-00-00-00");
+        assetAssemblyRequest.setAssetId(1);
+        assetAssemblyRequests.add(assetAssemblyRequest);
+        return assetAssemblyRequests;
+    }
+
     private AssetRequest generateAssetRequest() {
         AssetRequest assetRequest = new AssetRequest();
         assetRequest.setFirstEnterNett(0L);
         assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("1");
         assetRequest.setNumber("1");
         assetRequest.setName("1");
         assetRequest.setSerial("1");

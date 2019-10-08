@@ -47,6 +47,10 @@ public class AssetInstallTemplateResponse {
 
     @ApiModelProperty("修改人")
     private String modifiedUser;
+    @ApiModelProperty("补丁数量")
+    private Integer patchNum;
+    @ApiModelProperty("软件数量")
+    private Integer softNum;
 
     public String getStringId() {
         return stringId;
@@ -144,6 +148,22 @@ public class AssetInstallTemplateResponse {
         this.modifiedUser = modifiedUser;
     }
 
+    public Integer getPatchNum() {
+        return patchNum;
+    }
+
+    public void setPatchNum(Integer patchNum) {
+        this.patchNum = patchNum;
+    }
+
+    public Integer getSoftNum() {
+        return softNum;
+    }
+
+    public void setSoftNum(Integer softNum) {
+        this.softNum = softNum;
+    }
+
     @Override
     public String toString() {
         return "AssetInstallTemplateResponse{" +
@@ -159,6 +179,8 @@ public class AssetInstallTemplateResponse {
                 ", gmtModified=" + gmtModified +
                 ", createUser='" + createUser + '\'' +
                 ", modifiedUser='" + modifiedUser + '\'' +
+                ", patchNum=" + patchNum +
+                ", softNum=" + softNum +
                 '}';
     }
 }
