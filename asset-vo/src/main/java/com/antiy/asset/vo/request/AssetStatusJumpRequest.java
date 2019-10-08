@@ -7,6 +7,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.validation.constraints.NotEmpty;
@@ -47,7 +48,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      * 本次处理结果:同意true,不同意false
      */
     @ApiModelProperty(value = "执行意见")
-    private Boolean agree;
+    private Boolean agree = Boolean.TRUE;
 
     /**
      * 方案内容:输入的备注信息
@@ -135,13 +136,19 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         }
 
         // 通过:入网/退役/检查不校验,其他校验下一步执行人;不通过:备注信息不能为空
-        boolean needCheckAgree = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
-        if (needCheckAgree) {
+        if (!assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE)) {
             ParamterExceptionUtils.isNull(agree, "执行意见必填");
         }
-        if (Boolean.FALSE.equals(agree)) {
-            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), "备注信息不能为空");
-        }
+
+        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        if (Boolean.TRUE.equals(agree) && checkConfigUser) {
+            ParamterExceptionUtils.isNull(formData, "formData参数错误");
+            ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
+        } else {
+            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
+    }
+
+
     }
 
     @Override
