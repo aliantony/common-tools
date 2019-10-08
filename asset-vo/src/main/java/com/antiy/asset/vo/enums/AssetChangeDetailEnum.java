@@ -5,10 +5,7 @@ package com.antiy.asset.vo.enums;
  * 资产动态信息记录
  */
 public enum AssetChangeDetailEnum implements ValuedEnum{
-	/**
-	 * 无状态-0
-	 */
-	OPERATION_NO("无上一步状态", 0) ,
+
 	/**
 	 * 登记资产-1
 	 */
@@ -52,7 +49,11 @@ public enum AssetChangeDetailEnum implements ValuedEnum{
 	/**
 	 * 已退役-11
 	 */
-	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode());
+	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode()),
+	/**
+	 * 无状态-0
+	 */
+	OPERATION_NO("无上一步状态", Integer.valueOf(0)) ;
 	AssetChangeDetailEnum(String name, int value) {
 		this.name = name;
 		this.value = value;
