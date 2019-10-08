@@ -16,10 +16,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -37,14 +34,14 @@ import java.util.Objects;
  */
 @Service
 public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstallTemplate>
-                                             implements IAssetInstallTemplateService {
+        implements IAssetInstallTemplateService {
 
-    private Logger                                                            logger = LogUtils.get(this.getClass());
+    private Logger logger = LogUtils.get(this.getClass());
 
     @Resource
-    private AssetInstallTemplateDao                                           assetInstallTemplateDao;
+    private AssetInstallTemplateDao assetInstallTemplateDao;
     @Resource
-    private BaseConverter<AssetInstallTemplateRequest, AssetInstallTemplate>  requestConverter;
+    private BaseConverter<AssetInstallTemplateRequest, AssetInstallTemplate> requestConverter;
     @Resource
     private BaseConverter<AssetInstallTemplate, AssetInstallTemplateResponse> responseConverter;
 
@@ -63,6 +60,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     public Integer queryNumberCode(String numberCode) {
+        if (numberCode == null || numberCode.isEmpty()) {
+            return 0;
+        }
         return assetInstallTemplateDao.queryNumberCode(numberCode);
     }
 
@@ -81,6 +81,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
         AssetInstallTemplate assetInstallTemplate = requestConverter.convert(request, AssetInstallTemplate.class);
+        assetInstallTemplate.setGmtModified(System.currentTimeMillis());
+        assetInstallTemplate.setModifiedUser(LoginUserUtil.getLoginUser().getName());
         return assetInstallTemplateDao.update(assetInstallTemplate).toString();
     }
 
@@ -117,7 +119,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public AssetInstallTemplateResponse queryAssetInstallTemplateById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetInstallTemplateResponse assetInstallTemplateResponse = responseConverter.convert(
-            assetInstallTemplateDao.getById(queryCondition.getPrimaryKey()), AssetInstallTemplateResponse.class);
+                assetInstallTemplateDao.getById(queryCondition.getPrimaryKey()), AssetInstallTemplateResponse.class);
         return assetInstallTemplateResponse;
     }
 
@@ -125,13 +127,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public int deleteAssetInstallTemplateById(BatchQueryRequest request) throws Exception {
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
         return assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
-            LoginUserUtil.getLoginUser().getName());
+                LoginUserUtil.getLoginUser().getName());
     }
 
     @Override
     public AssetTemplateRelationResponse queryTemplateByAssetId(QueryCondition queryCondition) throws Exception {
         AssetTemplateRelationResponse templateRelationResponse = assetInstallTemplateDao
-            .queryTemplateById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
+                .queryTemplateById(DataTypeUtils.stringToInteger(queryCondition.getPrimaryKey()));
         return templateRelationResponse;
     }
 
@@ -142,7 +144,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         List<AssetHardSoftLibResponse> assetHardSoftLibResponseList = BeanConvert
-            .convert(assetInstallTemplateDao.querySoftList(query), AssetHardSoftLibResponse.class);
+                .convert(assetInstallTemplateDao.querySoftList(query), AssetHardSoftLibResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetHardSoftLibResponseList);
     }
 
@@ -153,7 +155,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         List<PatchInfoResponse> patchInfoResponseList = BeanConvert
-            .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+                .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), patchInfoResponseList);
     }
 
@@ -162,12 +164,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         AssetInstallTemplate assetInstallTemplate = this.getById(request.getStringId());
         if (Objects.equals(request.getEnable(), 1)) {
             BusinessExceptionUtils.isTrue(Objects.equals(assetInstallTemplate.getCurrentStatus(),
-                AssetInstallTemplateStatusEnum.FOBIDDEN.getCode()), "模板状态错误");
+                    AssetInstallTemplateStatusEnum.FOBIDDEN.getCode()), "模板状态错误");
             assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.ENABLE.getCode());
         }
         if (Objects.equals(request.getEnable(), 0)) {
             BusinessExceptionUtils.isTrue(Objects.equals(assetInstallTemplate.getCurrentStatus(),
-                AssetInstallTemplateStatusEnum.ENABLE.getCode()), "模板状态错误");
+                    AssetInstallTemplateStatusEnum.ENABLE.getCode()), "模板状态错误");
             assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.FOBIDDEN.getCode());
         }
         assetInstallTemplate.setGmtModified(System.currentTimeMillis());
