@@ -2641,7 +2641,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String[] assetId = assetStatusChangeRequest.getAssetId();
-
+        if(assetId==null || assetId.length==0){
+            return 0;
+        }
         // 查询资产当前状态
         List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetId);
         if (CollectionUtils.isEmpty(currentAssetList)) {
