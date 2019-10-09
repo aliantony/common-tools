@@ -725,7 +725,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds (processTemplateRequest.getIds ().toArray ( new String[]{}));
+        assetQuery.setTemplateList(processTemplateRequest.getIds());
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
