@@ -38,16 +38,16 @@ import java.util.Objects;
 @Service
 public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLib> implements IAssetHardSoftLibService {
 
-    private Logger                                                    logger = LogUtils.get(this.getClass());
+    private Logger logger = LogUtils.get(this.getClass());
 
     @Resource
-    private AssetHardSoftLibDao                                       assetHardSoftLibDao;
+    private AssetHardSoftLibDao assetHardSoftLibDao;
     @Resource
-    private BaseConverter<AssetHardSoftLibRequest, AssetHardSoftLib>  requestConverter;
+    private BaseConverter<AssetHardSoftLibRequest, AssetHardSoftLib> requestConverter;
     @Resource
     private BaseConverter<AssetHardSoftLib, AssetHardSoftLibResponse> responseConverter;
     @Resource
-    private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
+    private AssetSoftwareRelationDao assetSoftwareRelationDao;
 
     @Override
     public String saveAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception {
@@ -84,7 +84,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public PageResult<AssetHardSoftLibResponse> queryPageAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception {
         if (!Objects.isNull(query.getBusinessId()) && StringUtils.isNotBlank(query.getSourceType())) {
             List<Long> ids = assetHardSoftLibDao.exceptIds(query.getBusinessId(), query.getSourceType(),
-                query.getAssetType().getName());
+                    query.getAssetType().getName());
             query.setExceptIds(ids);
         }
         Integer count = this.queryHardSoftLibCount(query);
@@ -101,7 +101,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public AssetHardSoftLibResponse queryAssetHardSoftLibById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetHardSoftLibResponse assetHardSoftLibResponse = responseConverter
-            .convert(assetHardSoftLibDao.getById(queryCondition.getPrimaryKey()), AssetHardSoftLibResponse.class);
+                .convert(assetHardSoftLibDao.getById(queryCondition.getPrimaryKey()), AssetHardSoftLibResponse.class);
         return assetHardSoftLibResponse;
     }
 
@@ -160,4 +160,22 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         return result;
     }
 
+    @Override
+    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetSoftwareQuery query) {
+
+        Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+        }
+        if (count < query.getPageSize() * query.getCurrentPage()) {
+            query.setCurrentPage((int) Math.ceil((double) count / query.getPageSize()));
+        }
+        List<AssetHardSoftLib> softWares = assetHardSoftLibDao.querySoftWares(query);
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responseConverter.convert(softWares, AssetHardSoftLibResponse.class));
+    }
+
+    @Override
+    public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId) {
+        return responseConverter.convert(assetHardSoftLibDao.querySoftsRelations(templateId), AssetHardSoftLibResponse.class);
+    }
 }

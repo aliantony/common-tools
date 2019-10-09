@@ -250,11 +250,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
         List<Map<String, Object>> result = assetDao
             .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+        Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
             categoryResponse.setNum(Integer.valueOf(map.get("value") + ""));
             categoryResponse.setAsset_name(AssetCategoryEnum.getNameByCode(Integer.valueOf(map.get("key").toString())));
             categoryResponseList.add(categoryResponse);
+            set.add(Integer.valueOf(map.get("key").toString()));
+        }
+        if (set.size() < AssetCategoryEnum.values().length) {
+            for (AssetCategoryEnum assetCategoryEnum : AssetCategoryEnum.values()) {
+                if (!set.contains(assetCategoryEnum.getCode())) {
+                    TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
+                    categoryResponse.setNum(0);
+                    categoryResponse.setAsset_name(assetCategoryEnum.getName());
+                    categoryResponseList.add(categoryResponse);
+                }
+            }
         }
         topologyCategoryCountResponse.setData(categoryResponseList);
         topologyCategoryCountResponse.setStatus("success");
