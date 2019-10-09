@@ -1160,7 +1160,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetCount != null && assetCount > 0) {
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
-            String nextStepUserId = "";
             Asset assetObj = assetDao.getById(assetId);
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
@@ -1186,13 +1185,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String nextStep = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
                         .get("admittanceResult");
                     if ("safetyCheck".equals(nextStep)) {
-                        nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                            .get("safetyCheckUser");
                         // 更新资产状态为待检查
                         updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
                     } else if ("templateImplement".equals(nextStep)) {
-                        nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                            .get("templateImplementUser");
                         // 更新资产状态为待实施
                         updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                             assetId);
@@ -1206,6 +1201,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // 资产变更
                 else {
+                    String nextStepUserId =  (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
+                            .get("baselineConfigUserId");
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
                     baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
@@ -1222,7 +1219,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // ------------------对接配置模块------------------end
                     // 更新资产状态为变更中
-                    updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
+                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(),
                         assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
