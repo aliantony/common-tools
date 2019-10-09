@@ -800,6 +800,12 @@
                 </if>
             </otherwise>
         </choose>
+        <if test="query.exceptIds != null and query.exceptIds.size() > 0">
+            and business_id not in
+            <foreach collection="query.exceptIds" item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
@@ -841,6 +847,12 @@
                 </if>
             </otherwise>
         </choose>
+        <if test="query.exceptIds != null and query.exceptIds.size() > 0">
+            and business_id not in
+            <foreach collection="query.exceptIds" item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
