@@ -9,7 +9,6 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetStatusChangeRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
@@ -42,7 +41,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -331,24 +329,5 @@ public class AssetStatusJumpServiceImplTest {
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
 
-    /**
-     * 不予登记
-     */
-    @Test
-    public void noRegist(){
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
-        List<Asset> assetList=new ArrayList<>();
-        Asset asset=new Asset();
-        asset.setId(1);
-        asset.setName("chen");
 
-        Asset asset2=new Asset();
-        asset2.setId(1);
-        asset2.setName("chen");
-        assetList.add(asset);
-        assetList.add(asset2);
-
-        when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
-    }
 }

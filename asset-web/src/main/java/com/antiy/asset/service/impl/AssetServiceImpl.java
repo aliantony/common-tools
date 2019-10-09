@@ -1,36 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -64,6 +33,35 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -132,8 +130,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private OperatingSystemClient                                               operatingSystemClient;
     @Resource
-    private BaseLineClient                                                      baseLineClient;
-    @Resource
     private IRedisService                                                       redisService;
     @Resource
     private AssetClient                                                         assetClient;
@@ -148,6 +144,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetAssemblyDao                                                    assetAssemblyDao;
     @Resource
     private AssetOperationRecordDao                                             operationRecordDao;
+    @Resource
+    private BaseLineClient  baseLineClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -688,7 +686,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // List<AssetResponse> list = this
         // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-        List<AssetEntity> assetEntities1 = getAssetEntities(baseRequest);
+        List<AssetEntity> assetEntities1 = getAssetEntities (baseRequest);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
         // 下载资产列表
@@ -699,9 +697,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        // if (!baseRequest.isFlag()) {
-        // File template = baseLineClient.getTemplate (baseRequest.getIds ());
-        // }
+//        if (!baseRequest.isFlag()) {
+//            File template = baseLineClient.getTemplate (baseRequest.getIds ());
+//        }
 
         // 创造模板文件
 
@@ -727,7 +725,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds(processTemplateRequest.getIds().toArray(new String[] {}));
+        assetQuery.setIds (processTemplateRequest.getIds ().toArray ( new String[]{}));
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
@@ -1209,8 +1207,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // 资产变更
                 else {
-                    String nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                        .get("baselineConfigUserId");
+                    String nextStepUserId =  (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
+                            .get("baselineConfigUserId");
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
                     baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
@@ -1227,7 +1225,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // ------------------对接配置模块------------------end
                     // 更新资产状态为变更中
-                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
+                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(),
+                        assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
@@ -2642,7 +2641,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String[] assetId = assetStatusChangeRequest.getAssetId();
-        if (assetId == null || assetId.length == 0) {
+        if(assetId==null || assetId.length==0){
             return 0;
         }
         // 查询资产当前状态
@@ -2651,18 +2650,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("资产不存在");
         }
         for (Asset currentAsset : currentAssetList) {
+            boolean flag=(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()));
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 throw new BusinessException("资产状态已改变");
             }
         }
-        /* for (Asset currentAsset : currentAssetList) { operationRecord(currentAsset.getId().toString()); } */
-        /* // 硬件完成流程 if (assetStatusChangeRequest.getActivityHandleRequest() != null) { ActionResponse actionResponse =
-         * activityClient .completeTask(assetStatusChangeRequest.getActivityHandleRequest()); // 流程调用失败不更改资产状态 if (null
-         * == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-         * throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes()); } } */
-        List<Asset> assetList = new ArrayList<>(currentAssetList.size());
+       /* for (Asset currentAsset : currentAssetList) {
+            operationRecord(currentAsset.getId().toString());
+        }*/
+     /*   // 硬件完成流程
+        if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
+            ActionResponse actionResponse = activityClient
+                .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
+            // 流程调用失败不更改资产状态
+            if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
+            }
+        }*/
+        List <Asset> assetList=new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
-            // 记录资产状态变更信息到操作记录表
+            //记录资产状态变更信息到操作记录表
             operationRecord(currentAsset.getId().toString());
             // 记录日志
             if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
@@ -2679,14 +2687,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             asset.setId(currentAsset.getId());
             asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-            if (LoginUserUtil.getLoginUser() == null) {
-                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-            } else {
-                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            }
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
             assetList.add(asset);
         }
-        // 更新状态
+        //更新状态
         assetDao.updateAssetBatch(assetList);
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
@@ -2700,25 +2704,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<String> getAllSupplierofSafetyEquipment(String supplier) {
-        List<String> supplierList = assetDao.getAllSupplierofSafetyEquipment(supplier);
+        List<String> supplierList=assetDao.getAllSupplierofSafetyEquipment(supplier);
         return supplierList;
     }
 
     @Override
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name) {
-        List<String> nameList = assetDao.getAllNameofSafetyEquipmentBySupplier(supplier, name);
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name) {
+        List<String>nameList=assetDao.getAllNameofSafetyEquipmentBySupplier(supplier,name);
         return nameList;
     }
 
     @Override
-    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version) {
-        List<String> versionList = assetDao.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName, version);
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version) {
+        List<String> versionList=assetDao.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName,version);
         return versionList;
     }
-
     @Override
     public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
-        return getAssetEntities(request);
+        return   getAssetEntities (request);
 
     }
 
@@ -2732,14 +2735,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
-
-        if (LoginUserUtil.getLoginUser() == null) {
-            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-        } else {
-            operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        }
-
+        operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecordDao.insert(operationRecord);
     }
 
