@@ -2646,9 +2646,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException("资产状态已改变");
             }
         }
-        for (Asset currentAsset : currentAssetList) {
+       /* for (Asset currentAsset : currentAssetList) {
             operationRecord(currentAsset.getId().toString());
-        }
+        }*/
      /*   // 硬件完成流程
         if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
             ActionResponse actionResponse = activityClient
@@ -2659,9 +2659,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
             }
         }*/
-
+        List <Asset> assetList=new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
-
+            //记录资产状态变更信息到操作记录表
+            operationRecord(currentAsset.getId().toString());
             // 记录日志
             if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
                 LogUtils.recordOperLog(
@@ -2682,8 +2683,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             } else {
                 asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
             }
-            assetDao.update(asset);
+            assetList.add(asset);
         }
+        //更新状态
+        assetDao.updateAssetBatch(assetList);
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
         return assetId.length;
