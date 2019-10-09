@@ -10,10 +10,10 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetInstallTemplateResponse {
+public class AssetInstallTemplateResponse  {
 
     @ApiModelProperty("模板id")
-    //@Encode
+    @Encode
     private String stringId;
     @ApiModelProperty("模板名称")
     private String name;

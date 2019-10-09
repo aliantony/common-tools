@@ -1,18 +1,18 @@
-package com.antiy.asset.vo.enums;
+package com.antiy.asset.vo.request;
+
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.ValuedEnum;
 
 /**
  * @author zhouye
  * 资产动态信息记录
  */
-public enum AssetChangeDetailEnum implements ValuedEnum{
-	/**
-	 * 无状态-0
-	 */
-	OPERATION_NO("无上一步状态", 0),
+public enum AssetChangeDetailEnum implements ValuedEnum {
+
 	/**
 	 * 登记资产-1
 	 */
-	OPERATION_HARDWARE_REGISTER("登记资产。",AssetStatusEnum.WAIT_REGISTER.getCode()),
+	OPERATION_HARDWARE_REGISTER("登记资产。", AssetStatusEnum.WAIT_REGISTER.getCode()),
 	/**
 	 * 不予登记-2
 	 */
@@ -52,7 +52,11 @@ public enum AssetChangeDetailEnum implements ValuedEnum{
 	/**
 	 * 已退役-11
 	 */
-	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode());
+	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode()),
+	/**
+	 * 无状态-0
+	 */
+	OPERATION_NO("无上一步状态", Integer.valueOf(0)) ;
 	AssetChangeDetailEnum(String name, int value) {
 		this.name = name;
 		this.value = value;
