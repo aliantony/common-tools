@@ -129,6 +129,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private OperatingSystemClient                                               operatingSystemClient;
     @Resource
+    private BaseLineClient                                                      baseLineClient;
+    @Resource
     private IRedisService                                                       redisService;
     @Resource
     private AssetClient                                                         assetClient;
@@ -143,8 +145,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetAssemblyDao                                                    assetAssemblyDao;
     @Resource
     private AssetOperationRecordDao                                             operationRecordDao;
-    @Resource
-    private BaseLineClient                                                      baseLineClient;
+                                                     baseLineClient;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -685,12 +686,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // List<AssetResponse> list = this
         // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setPageSize(Constants.ALL_PAGE);
-        assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
+        List<AssetEntity> assetEntities1 = getAssetEntities (baseRequest);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
         // 下载资产列表
@@ -701,9 +697,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        if (!baseRequest.isFlag()) {
-            System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
-        }
+//        if (!baseRequest.isFlag()) {
+//            File template = baseLineClient.getTemplate (baseRequest.getIds ());
+//        }
 
         // 创造模板文件
 
@@ -725,6 +721,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 记录临时文件删除是否成功
         loggerIsDelete(zip);
         deleteTemp(dictionaryFile, files);
+    }
+
+    private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setIds (processTemplateRequest.getIds ().toArray ( new String[]{}));
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
+        return assetEntityConvert.convert(list, AssetEntity.class);
     }
 
     /**
@@ -2713,6 +2719,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version) {
         List<String> versionList=assetDao.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName,version);
         return versionList;
+    }
+    @Override
+    public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
+        return   getAssetEntities (request);
+
     }
 
     private void operationRecord(String id) throws Exception {

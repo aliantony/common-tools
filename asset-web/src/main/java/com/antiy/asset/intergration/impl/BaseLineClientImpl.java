@@ -1,22 +1,22 @@
 package com.antiy.asset.intergration.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import com.antiy.asset.vo.request.BaseLineTemplateRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import com.antiy.common.base.ActionResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.util.List;
 
 /**
  * @author: zhangbing
@@ -34,6 +34,8 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Value("${distribute.baseline}")
     private String     distributeBaselineUrl;
+    @Value("${baseline.template}")
+    private String     getTemplateUrl;
 
     @Value("${baselineWaitingConfigUrl}")
     private String     baselineWaitingConfigUrl;
@@ -56,6 +58,16 @@ public class BaseLineClientImpl implements BaseLineClient {
         return (ActionResponse) baseClient.post(updateAssetVerifyRequest,
             new ParameterizedTypeReference<ActionResponse>() {
             }, updateAssetVerifyUrl);
+    }
+
+    @Override
+    @AssetLog(description = "下载基准模板")
+    public File getTemplate(List<String> assetIdList) {
+        BaseLineTemplateRequest baseLineTemplateRequest = new BaseLineTemplateRequest();
+        baseLineTemplateRequest.setCheckType(2);
+        baseLineTemplateRequest.setAssetIdList(assetIdList);
+        return (File) baseClient.get(baseLineTemplateRequest, new ParameterizedTypeReference<ActionResponse>() {
+        }, getTemplateUrl);
     }
 
     @Override
