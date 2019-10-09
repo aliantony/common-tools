@@ -1,15 +1,18 @@
-package com.antiy.asset.vo.enums;
+package com.antiy.asset.vo.request;
+
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.ValuedEnum;
 
 /**
  * @author zhouye
  * 资产动态信息记录
  */
-public enum AssetChangeDetailEnum implements ValuedEnum{
+public enum AssetChangeDetailEnum implements ValuedEnum {
 
 	/**
 	 * 登记资产-1
 	 */
-	OPERATION_HARDWARE_REGISTER("登记资产。",AssetStatusEnum.WAIT_REGISTER.getCode()),
+	OPERATION_HARDWARE_REGISTER("登记资产。", AssetStatusEnum.WAIT_REGISTER.getCode()),
 	/**
 	 * 不予登记-2
 	 */

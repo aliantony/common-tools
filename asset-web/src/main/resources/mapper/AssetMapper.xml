@@ -1662,19 +1662,28 @@ AND a.`status` = 1
     <select id="getAllSupplierofSafetyEquipment" resultType="java.lang.String">
        SELECT manufacturer
        FROM   asset
-       where  category_model =3
+       where  category_model =3 and status=1
+       <if test="supplier !=null ">
+            and manufacturer LIKE  CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+       </if>
        GROUP  BY manufacturer
     </select>
     <select id="getAllNameofSafetyEquipmentBySupplier" resultType="java.lang.String">
         SELECT name
         FROM  asset
-        where category_model =3 AND   manufacturer=#{supplier}
+        where status=1 and category_model =3 AND   manufacturer=#{supplier}
+        <if test="name !=null">
+            and name LIKE  CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
         GROUP  BY name
     </select>
     <select id="getAllVersionofSafetyEquipment" resultType="java.lang.String">
         SELECT  version
         from  asset
-        where  category_model =3 AND   manufacturer=#{supplier} AND name=#{name}
+        where  status=1 and category_model =3 AND   manufacturer=#{supplier} AND name=#{name}
+        <if test="version !=null">
+            and version LIKE  CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+        </if>
         GROUP  BY version
     </select>
 </mapper>

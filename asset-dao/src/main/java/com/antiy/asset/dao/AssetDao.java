@@ -298,9 +298,9 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     List<SelectResponse> queryBaselineTemplate();
 
-    List<String> getAllSupplierofSafetyEquipment();
+    List<String> getAllSupplierofSafetyEquipment(@Param("supplier") String supplier);
 
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier);
+    List<String> getAllNameofSafetyEquipmentBySupplier(@Param("supplier") String supplier,@Param("name")String name);
 
-    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,@Param("name") String safetyEquipmentName);
+    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,@Param("name") String safetyEquipmentName,@Param("version") String version);
 }

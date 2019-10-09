@@ -311,13 +311,13 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 获取安全设备全部厂商
      */
-    List<String> getAllSupplierofSafetyEquipment();
+    List<String> getAllSupplierofSafetyEquipment(String supplier);
     /**
      * 根据厂商获取安全设备名称列表
      * @return
      */
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier);
+    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name);
 
 
-    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName);
+    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
 }

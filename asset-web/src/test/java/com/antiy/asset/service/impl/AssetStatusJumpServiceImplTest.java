@@ -9,6 +9,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.request.AssetStatusChangeRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
@@ -41,6 +42,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -328,5 +330,20 @@ public class AssetStatusJumpServiceImplTest {
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("当前选中的资产已被其他人员操作,请刷新页面后重试");
         statusChangeFlowProcess.changeStatus(jumpRequest);
+    }
+
+    /**
+     * 不予登记
+     */
+    @Test
+    public void noRegist(){
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        List<Asset> assetList=new ArrayList<>();
+        Asset asset=new Asset();
+        asset.setId(1);
+        asset.setName("chen");
+
+        when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
     }
 }
