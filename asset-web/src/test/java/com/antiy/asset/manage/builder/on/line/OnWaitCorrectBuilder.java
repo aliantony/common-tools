@@ -3,7 +3,7 @@ package com.antiy.asset.manage.builder.on.line;
 
 import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.manage.builder.Builder;
-import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
+import com.antiy.asset.vo.request.AssetChangeDetailEnum;
 
 import java.util.List;
 

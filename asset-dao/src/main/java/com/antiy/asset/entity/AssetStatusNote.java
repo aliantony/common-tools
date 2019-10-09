@@ -1,6 +1,6 @@
 package com.antiy.asset.entity;
 
-import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
+import com.antiy.asset.vo.request.AssetChangeDetailEnum;
 
 /**
  * @author zhouye
