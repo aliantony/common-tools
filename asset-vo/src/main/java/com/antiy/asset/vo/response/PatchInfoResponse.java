@@ -121,6 +121,10 @@ public class PatchInfoResponse extends BaseEntity {
         this.networkStatus = "0".equals(networkStatus) ? "不需要用户联网" : "1".equals(networkStatus) ? "需要用户联网" : "";
     }
 
+    public String getPatchLevel() {
+        return patchLevel;
+    }
+
     public String getAntiyPatchNumber() {
         return antiyPatchNumber;
     }
