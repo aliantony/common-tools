@@ -124,7 +124,6 @@ public class PatchInfoResponse extends BaseEntity {
     public String getPatchLevel() {
         return patchLevel;
     }
-
     public String getAntiyPatchNumber() {
         return antiyPatchNumber;
     }
