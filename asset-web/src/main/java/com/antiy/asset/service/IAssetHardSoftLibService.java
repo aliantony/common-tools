@@ -29,6 +29,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 保存
+     *
      * @param request
      * @return
      */
@@ -36,6 +37,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 修改
+     *
      * @param request
      * @return
      */
@@ -43,6 +45,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 查询对象集合
+     *
      * @param query
      * @return
      */
@@ -50,6 +53,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 分页查询
+     *
      * @param query
      * @return
      */
@@ -57,6 +61,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 通过ID查询
+     *
      * @param queryCondition
      * @return
      */
@@ -64,6 +69,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 通过ID删除
+     *
      * @param baseRequest
      * @return
      */
@@ -71,6 +77,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 分页查询资产关联的软件信息列表
+     *
      * @param queryCondition
      * @return
      */
@@ -96,6 +103,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 分页查询
+     *
      * @param query
      * @return
      */
@@ -103,8 +111,24 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
 
     /**
      * 分页查询
+     *
      * @param query
      * @return
      */
     Integer queryHardSoftLibCount(AssetHardSoftLibQuery query) throws Exception;
+
+    /**
+     * 软件列表分页（装机模板-添加软件）
+     *
+     * @param query
+     * @return
+     */
+    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetSoftwareQuery query);
+
+    /**
+     * 软件列表（装机模板-关联软件）
+     *
+     * @return
+     */
+    public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId);
 }

@@ -604,4 +604,96 @@
             </otherwise>
         </choose>
     </select>
+    <select id="queryCountSoftWares" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        select count(1) from (SELECT
+        t1.id,
+        t1.business_id,
+        t1.number,
+        t1.type,
+        t1.supplier,
+        t1.product_name,
+        t1.version,
+        t1.upgrade_msg,
+        t1.sys_version,
+        t1.LANGUAGE,
+        t1.soft_version,
+        t1.soft_platform,
+        t1.hard_platform,
+        t1.is_storage,
+        t1.cpe_uri,
+        t1.gmt_create
+        from asset_hard_soft_lib t1
+        <trim prefix="where" prefixOverrides="And">
+            And type='a'
+            <if test=" name != null and name != ''">
+                and t1.product_name like CONCAT('%', replace(replace(REPLACE
+                (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+            </if>
+            <if test=" manufacturer != null and manufacturer != ''">
+                and t1.supplier like CONCAT('%', replace(replace(REPLACE
+                (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            and locate(soft_platform,#{operationSystem})>0
+        </trim>
+        ) t2
+    </select>
+    <!--    查询所有软件(与资产无关）-->
+    <select id="querySoftWares" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+        SELECT
+        t1.id,
+        t1.business_id,
+        t1.number,
+        t1.type,
+        t1.supplier,
+        t1.product_name,
+        t1.version,
+        t1.upgrade_msg,
+        t1.sys_version,
+        t1.LANGUAGE,
+        t1.soft_version,
+        t1.soft_platform,
+        t1.hard_platform,
+        t1.is_storage,
+        t1.cpe_uri,
+        t1.gmt_create
+        from asset_hard_soft_lib t1
+        <trim prefix="where" prefixOverrides="And">
+            And type='a'
+            <if test=" name != null and name != ''">
+                and t1.product_name like CONCAT('%', replace(replace(REPLACE
+                (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+            </if>
+            <if test=" manufacturer != null and manufacturer != ''">
+                and t1.supplier like CONCAT('%', replace(replace(REPLACE
+                (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            and locate(soft_platform,#{operationSystem})>0
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="querySoftsRelations" resultMap="BaseResultMap">
+      SELECT
+        t2.id,
+        t2.business_id,
+        t2.number,
+        t2.type,
+        t2.supplier,
+        t2.product_name,
+        t2.version,
+        t2.upgrade_msg,
+        t2.sys_version,
+        t2.LANGUAGE,
+        t2.soft_version,
+        t2.soft_platform,
+        t2.hard_platform,
+        t2.is_storage,
+        t2.cpe_uri,
+        t2.gmt_create
+        from asset_software_install_template t1 LEFT JOIN asset_hard_soft_lib t2 ON t1.software_id=t2.business_id and t1.install_template_id=#{templateId}
+    </select>
 </mapper>

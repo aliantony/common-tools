@@ -183,4 +183,15 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplate.setModifiedUser(LoginUserUtil.getLoginUser().getUsername());
         return assetInstallTemplateDao.update(assetInstallTemplate);
     }
+
+    @Override
+    public List<PatchInfoResponse> queryPatchs(PrimaryKeyQuery query) {
+        Integer count = assetInstallTemplateDao.queryPatchCount(query);
+        if (count <= 0) {
+            return Lists.newArrayList();
+        }
+        return BeanConvert
+                .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+    }
+
 }

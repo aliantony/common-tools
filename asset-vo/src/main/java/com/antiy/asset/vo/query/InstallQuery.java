@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -14,22 +16,32 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty(value = "资产id", required = true)
     @Encode
-    private String  assetId;
+    private String       assetId;
     /**
      * 配置基准模板
      */
     @ApiModelProperty(value = "基准模板id", required = true)
     @Encode
-    private String  baselineTemplateId;
+    private String       baselineTemplateId;
     /**
      * 是否是批量操作
      */
     @ApiModelProperty(value = "是否是批量操作", required = true)
-    private boolean isBatch;
+    private boolean      isBatch;
     @ApiModelProperty(value = "厂商", required = true)
-    private String  supplier;
+    private String       supplier;
     @ApiModelProperty(value = "名称", required = true)
-    private String  productName;
+    private String       productName;
+    @ApiModelProperty(value = "需排除的软件id", required = true)
+    private List<String> exceptIds;
+
+    public List<String> getExceptIds() {
+        return exceptIds;
+    }
+
+    public void setExceptIds(List<String> exceptIds) {
+        this.exceptIds = exceptIds;
+    }
 
     public String getSupplier() {
         return supplier;
