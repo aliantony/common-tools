@@ -220,10 +220,17 @@ public class AssetInstallTemplateController {
     }
 
 
-    @ApiOperation(value = "装机模板创建/编辑-关联软件查询", notes = "软件列表")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class),})
+    @ApiOperation(value = "装机模板编辑-关联软件查询", notes = "软件列表")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class),})
     @RequestMapping(value = "/query/softs", method = RequestMethod.POST)
     public ActionResponse querySoftsRelations(@RequestParam @ApiParam(required = true, value = "模板id") String templateId) {
         return ActionResponse.success(iAssetHardSoftLibService.querySoftsRelations(templateId));
+    }
+
+    @ApiOperation(value = "装机模板编辑-关联补丁查询", notes = "补丁列表")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = PatchInfoResponse.class),})
+    @RequestMapping(value = "/query/patchs", method = RequestMethod.POST)
+    public ActionResponse queryPatchsRelations(@RequestBody @ApiParam(required = true, value = "模板id") PrimaryKeyQuery query) {
+        return ActionResponse.success(iAssetInstallTemplateService.queryPatchs(query));
     }
 }
