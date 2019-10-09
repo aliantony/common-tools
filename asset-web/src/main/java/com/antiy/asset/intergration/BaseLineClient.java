@@ -1,10 +1,11 @@
 package com.antiy.asset.intergration;
 
-import java.util.List;
-
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.common.base.ActionResponse;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author: zhangbing
@@ -33,6 +34,13 @@ public interface BaseLineClient {
      * @return
      */
     ActionResponse distributeBaseline(String assetId);
+
+    /**
+     * 模板下载
+     * @param assetIdList
+     * @return
+     */
+    File getTemplate(List<String> assetIdList);
 
     /**
      * 配置启动流程

@@ -1,37 +1,15 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
-import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.*;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.config.kafka.KafkaConfig;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.*;
-import com.antiy.common.utils.DataTypeUtils;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -53,14 +31,39 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSON;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AssetClient;
+import com.antiy.asset.intergration.BaseLineClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.config.kafka.KafkaConfig;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -129,6 +132,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private OperatingSystemClient                                               operatingSystemClient;
     @Resource
+    private BaseLineClient                                                      baseLineClient;
+    @Resource
     private IRedisService                                                       redisService;
     @Resource
     private AssetClient                                                         assetClient;
@@ -143,8 +148,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetAssemblyDao                                                    assetAssemblyDao;
     @Resource
     private AssetOperationRecordDao                                             operationRecordDao;
-    @Resource
-    private BaseLineClient                                                      baseLineClient;
+
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -685,12 +689,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // List<AssetResponse> list = this
         // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setPageSize(Constants.ALL_PAGE);
-        assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
+        List<AssetEntity> assetEntities1 = getAssetEntities (baseRequest);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
         // 下载资产列表
@@ -701,9 +700,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        if (!baseRequest.isFlag()) {
-            System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
-        }
+//        if (!baseRequest.isFlag()) {
+//            File template = baseLineClient.getTemplate (baseRequest.getIds ());
+//        }
 
         // 创造模板文件
 
@@ -725,6 +724,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 记录临时文件删除是否成功
         loggerIsDelete(zip);
         deleteTemp(dictionaryFile, files);
+    }
+
+    private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setIds (processTemplateRequest.getIds ().toArray ( new String[]{}));
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
+        return assetEntityConvert.convert(list, AssetEntity.class);
     }
 
     /**
@@ -2635,7 +2644,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String[] assetId = assetStatusChangeRequest.getAssetId();
-
+        if(assetId==null || assetId.length==0){
+            return 0;
+        }
         // 查询资产当前状态
         List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetId);
         if (CollectionUtils.isEmpty(currentAssetList)) {
@@ -2713,6 +2724,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version) {
         List<String> versionList=assetDao.getAllVersionofSafetyEquipment(supplier,safetyEquipmentName,version);
         return versionList;
+    }
+    @Override
+    public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
+        return   getAssetEntities (request);
+
     }
 
     private void operationRecord(String id) throws Exception {

@@ -59,6 +59,20 @@ public class AssetController {
     }
 
     /**
+     * 根据资产ID 得把模板实体
+     *
+     * @param asset
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据资产ID得把模板实体", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/assetsTemplate", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
+    public ActionResponse assetsTemplate(@RequestBody(required = false) @ApiParam(value = "asset") ProcessTemplateRequest asset) throws Exception {
+        return ActionResponse.success(iAssetService.assetsTemplate(asset));
+    }
+
+    /**
      * 批量查询
      *
      * @param asset

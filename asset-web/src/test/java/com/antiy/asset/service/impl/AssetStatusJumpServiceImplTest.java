@@ -104,7 +104,6 @@ public class AssetStatusJumpServiceImplTest {
         // 操作日志
         PowerMockito.mockStatic(LogUtils.class);
         PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
-
         Mockito.when(transactionTemplate.execute(Mockito.any())).thenAnswer((Answer) invocation -> {
             Object[] argument = invocation.getArguments();
             TransactionCallback arg= (TransactionCallback) argument[0];
@@ -343,6 +342,12 @@ public class AssetStatusJumpServiceImplTest {
         Asset asset=new Asset();
         asset.setId(1);
         asset.setName("chen");
+
+        Asset asset2=new Asset();
+        asset2.setId(1);
+        asset2.setName("chen");
+        assetList.add(asset);
+        assetList.add(asset2);
 
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
     }

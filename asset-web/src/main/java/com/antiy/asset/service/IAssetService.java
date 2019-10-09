@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -320,4 +321,6 @@ public interface IAssetService extends IBaseService<Asset> {
 
 
     List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
+
+    List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 }

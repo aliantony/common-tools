@@ -1,11 +1,14 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.dao.AssetInstallTemplateDao;
+import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
+import com.antiy.asset.vo.request.ProcessTemplateRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
@@ -13,12 +16,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -36,7 +35,11 @@ public class AssetInstallTemplateController {
     @Resource
     private IAssetInstallTemplateService iAssetInstallTemplateService;
     @Resource
+    private AssetInstallTemplateDao assetInstallTemplateDao;
+    @Resource
     private IAssetInstallTemplateCheckService iAssetInstallTemplateCheckService;
+    @Resource
+    public IAssetHardSoftLibService iAssetHardSoftLibService;
 
     /**
      * 装机模板综合查询
@@ -60,6 +63,18 @@ public class AssetInstallTemplateController {
     @RequestMapping(value = "/query/osList", method = RequestMethod.POST)
     public ActionResponse queryOsList() {
         return ActionResponse.success(iAssetInstallTemplateService.queryTemplateOs());
+    }
+
+    /**
+     * 装机模板根据资产id查询
+     *
+     * @return
+     */
+    @ApiOperation(value = "装机模板根据资产id查询")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class),})
+    @RequestMapping(value = "/query/assetList", method = RequestMethod.POST)
+    public ActionResponse queryOsList(@RequestBody ProcessTemplateRequest processTemplateRequest) {
+        return ActionResponse.success(assetInstallTemplateDao.findByAssetIds(processTemplateRequest.getComIds()));
     }
 
     /**
@@ -202,5 +217,13 @@ public class AssetInstallTemplateController {
     public ActionResponse<PageResult<PatchInfoResponse>> queryPatchList(@RequestBody PrimaryKeyQuery query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPid(), "装机模板Id不能为空");
         return ActionResponse.success(iAssetInstallTemplateService.queryPatchPage(query));
+    }
+
+
+    @ApiOperation(value = "装机模板创建/编辑-关联软件查询", notes = "软件列表")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class),})
+    @RequestMapping(value = "/query/softs", method = RequestMethod.POST)
+    public ActionResponse querySoftsRelations(@RequestParam @ApiParam(required = true, value = "模板id") String templateId) {
+        return ActionResponse.success(iAssetHardSoftLibService.querySoftsRelations(templateId));
     }
 }
