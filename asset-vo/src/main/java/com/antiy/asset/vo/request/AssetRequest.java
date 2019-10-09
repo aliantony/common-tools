@@ -25,7 +25,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @Encode
     private String                  id;
     /**
-     * id
+     * businessId
      */
     @ApiModelProperty("businessId")
     private String                  businessId;
