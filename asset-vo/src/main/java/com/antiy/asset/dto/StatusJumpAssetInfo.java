@@ -4,8 +4,6 @@ import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 /**
  * @author zhangxin
