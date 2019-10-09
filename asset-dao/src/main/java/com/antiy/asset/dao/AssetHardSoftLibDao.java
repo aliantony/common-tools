@@ -3,6 +3,7 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
+import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.base.IBaseDao;
@@ -36,6 +37,7 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
 
     /**
      * 排除已存在关系的资产id
+     *
      * @param businessId
      * @param sourceType
      * @return
@@ -52,4 +54,16 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      * @return
      */
     List<AssetHardSoftLib> queryHardSoftLibList(AssetHardSoftLibQuery query);
+
+
+    Integer queryCountSoftWares(AssetSoftwareQuery query);
+
+    /**
+     * 软件列表
+     *
+     * @return
+     */
+    List<AssetHardSoftLib> querySoftWares(AssetSoftwareQuery query);
+
+    List<AssetHardSoftLib> querySoftsRelations(String templateId);
 }
