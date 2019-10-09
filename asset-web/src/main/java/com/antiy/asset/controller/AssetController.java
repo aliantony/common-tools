@@ -1,18 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -30,8 +17,18 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author zhangyajun
@@ -520,8 +517,9 @@ public class AssetController {
      */
     @ApiOperation(value = "获取安全设备全部厂商列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllSupplierofSafetyEquipment() {
-        List<String> supplierList = iAssetService.getAllSupplierofSafetyEquipment();
+    @RequestMapping(value = "/safetyEquipment/supplier", method = RequestMethod.POST)
+    public List<String> getAllSupplierofSafetyEquipment(String supplier) {
+        List<String> supplierList = iAssetService.getAllSupplierofSafetyEquipment(supplier);
         return supplierList;
     }
 
@@ -530,8 +528,9 @@ public class AssetController {
      */
     @ApiOperation(value = "根据厂商获取安全设备名称列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier) {
-        List<String> nameList = iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier);
+    @RequestMapping(value = "/safetyEquipment/name", method = RequestMethod.POST)
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name) {
+        List<String> nameList = iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier,name);
         return nameList;
     }
 
@@ -540,8 +539,9 @@ public class AssetController {
      */
     @ApiOperation(value = "获取安全设备版本列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
-    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName) {
-        List<String> versionList = iAssetService.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName);
+    @RequestMapping(value = "/safetyEquipment/version", method = RequestMethod.POST)
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version) {
+        List<String> versionList = iAssetService.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName,version);
         return versionList;
     }
 }
