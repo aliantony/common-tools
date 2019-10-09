@@ -1,7 +1,7 @@
 package com.antiy.asset.manage.builder;
 
 import com.antiy.asset.entity.AssetStatusDetail;
-import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
+import com.antiy.asset.vo.request.AssetChangeDetailEnum;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
