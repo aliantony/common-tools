@@ -2650,6 +2650,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("资产不存在");
         }
         for (Asset currentAsset : currentAssetList) {
+            boolean flag=(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()));
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 throw new BusinessException("资产状态已改变");
             }
@@ -2686,11 +2687,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             asset.setId(currentAsset.getId());
             asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-            if (LoginUserUtil.getLoginUser() == null) {
-                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-            } else {
-                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            }
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
             assetList.add(asset);
         }
         //更新状态
@@ -2738,14 +2735,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
-
-        if (LoginUserUtil.getLoginUser() == null) {
-            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-        } else {
-            operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        }
-
+        operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecordDao.insert(operationRecord);
     }
 

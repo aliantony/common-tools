@@ -20,6 +20,7 @@ import com.antiy.common.base.BaseResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -28,7 +29,9 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
@@ -106,7 +109,8 @@ public class AssetServiceImplTest {
     AssetUserDao                                                                assetUserDao;
     @Mock
     AssetGroupRelationDao                                                       assetGroupRelationDao;
-
+    @Mock
+    private AssetOperationRecordDao                                             operationRecordDao;
     @Mock
     ExcelDownloadUtil                                                           excelDownloadUtil;
     @Spy
@@ -161,7 +165,8 @@ public class AssetServiceImplTest {
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Spy
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
-
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -1727,6 +1732,94 @@ public class AssetServiceImplTest {
         Assert.assertEquals("1", assetServiceImpl.queryNormalCount() + "");
     }
 
+    /**
+     * 不予登记
+     */
+    @Test
+    public void assetNoRegister() throws Exception {
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        List<Asset> assetList=new ArrayList<>();
+        Asset asset=new Asset();
+        asset.setId(1);
+        asset.setName("chen");
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        Asset asset2=new Asset();
+        asset2.setId(1);
+        asset2.setName("强");
+        asset2.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        assetList.add(asset);
+        assetList.add(asset2);
+
+        when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
+        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
+        Assert.assertEquals(2,2);
+    }
+    @Test
+    public void assetNoRegister2() throws Exception {
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{});
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest);
+        Assert.assertEquals(0,0);
+    }
+    @Test
+    public void assetNoRegister3() throws Exception {
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("资产不存在");
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest);
+
+    }
+    @Test
+    public void assetNoRegister4() throws Exception {
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        List<Asset> assetList=new ArrayList<>();
+        Asset asset=new Asset();
+        asset.setId(1);
+        asset.setName("chen");
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        Asset asset2=new Asset();
+        asset2.setId(1);
+        asset2.setName("强");
+        asset2.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
+        assetList.add(asset);
+        assetList.add(asset2);
+        when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
+        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("资产状态已改变");
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
+    }
+    @Test
+    public void assetNoRegister5() throws Exception {
+
+        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        List<Asset> assetList=new ArrayList<>();
+        Asset asset=new Asset();
+        asset.setId(1);
+        asset.setName("chen");
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        Asset asset2=new Asset();
+        asset2.setId(1);
+        asset2.setName("强");
+        asset2.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        assetList.add(asset);
+        assetList.add(asset2);
+        when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
+        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
+        when( assetDao.getNumberById(any())).thenReturn("12");
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
+        Assert.assertEquals(2,2);
+
+    }
     public void queryUuidByAreaIds() throws Exception {
         AreaIdRequest areaIdRequest = new AreaIdRequest();
         try {
