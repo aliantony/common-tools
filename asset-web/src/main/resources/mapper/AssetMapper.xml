@@ -1644,9 +1644,10 @@ AND a.`status` = 1
 
 
     <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,asset_status as assetStatus
+        SELECT id,name,asset_status as assetStatus
         FROM asset
-        WHERE id IN
+        WHERE status=1
+        AND  id IN
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
