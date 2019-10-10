@@ -253,9 +253,9 @@ public class AssetController {
     @ApiOperation(value = "判断mac是否重复,true重复", notes = "传入资产mac")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
-    public ActionResponse CheckRepeatMAC(@ApiParam(value = "资产mac") @RequestParam String mac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(mac));
+    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
+    public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac()));
     }
 
     /**
@@ -267,10 +267,9 @@ public class AssetController {
     @ApiOperation(value = "判断编号是否重复，true重复", notes = "传入资产编号")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatNumber", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
-    public ActionResponse CheckRepeatNumber(@ApiParam(value = "资产编号") @RequestParam String number) throws Exception {
-
-        return ActionResponse.success(iAssetService.CheckRepeatNumber(number));
+    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
+    public ActionResponse CheckRepeatNumber(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatNumber(numberMac.getNumber()));
     }
 
     /**

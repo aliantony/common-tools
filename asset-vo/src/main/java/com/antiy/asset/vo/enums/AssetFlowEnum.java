@@ -74,12 +74,12 @@ public enum AssetFlowEnum {
     /**
      * 通过资产状态获取当前流程描述msg
      *
-     * @param AssetStatusEnum
-     * @return
+     * @param assetStatusEnum
+     * @return string
      */
-    public static String  getMsgByAssetStatus(AssetStatusEnum AssetStatusEnum) {
+    public static String  getMsgByAssetStatus(AssetStatusEnum assetStatusEnum) {
         for (AssetFlowEnum value : AssetFlowEnum.values()) {
-            if (value.getCurrentAssetStatus().equals(AssetStatusEnum)) {
+            if (value.getCurrentAssetStatus().equals(assetStatusEnum)) {
                 return value.getMsg();
             }
         }

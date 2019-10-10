@@ -4,6 +4,7 @@ import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
@@ -28,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p> CPE表 服务实现类 </p>
@@ -48,6 +50,8 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     private BaseConverter<AssetHardSoftLib, AssetHardSoftLibResponse> responseConverter;
     @Resource
     private AssetSoftwareRelationDao assetSoftwareRelationDao;
+    @Resource
+    private IAssetInstallTemplateService iAssetInstallTemplateService;
 
     @Override
     public String saveAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception {
@@ -152,8 +156,10 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
             BusinessSelectResponse response = new BusinessSelectResponse();
             // 特殊处理
             // 版本为 cpe_uri 除前缀厂商名产品名的部分， cpe:/a:厂商名:产品名:后面的部分 且：用空格代替
-            String m = assetHardSoftLib.getSupplier() + assetHardSoftLib.getProductName();
-            response.setValue(assetHardSoftLib.getCpeUri().substring(9 + m.length()));
+            String m = Optional.ofNullable(assetHardSoftLib.getSupplier()).orElse("")
+                    + Optional.ofNullable(assetHardSoftLib.getProductName()).orElse("");
+            response.setValue(
+                    Optional.ofNullable(assetHardSoftLib.getCpeUri()).map(str -> str.substring(9 + m.length())).orElse(""));
             response.setId(Objects.toString(assetHardSoftLib.getBusinessId()));
             result.add(response);
         }
@@ -162,7 +168,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetSoftwareQuery query) {
-
+        query.setOperationSystem(iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName());
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
@@ -171,11 +177,13 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
             query.setCurrentPage((int) Math.ceil((double) count / query.getPageSize()));
         }
         List<AssetHardSoftLib> softWares = assetHardSoftLibDao.querySoftWares(query);
-        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responseConverter.convert(softWares, AssetHardSoftLibResponse.class));
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                responseConverter.convert(softWares, AssetHardSoftLibResponse.class));
     }
 
     @Override
     public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId) {
-        return responseConverter.convert(assetHardSoftLibDao.querySoftsRelations(templateId), AssetHardSoftLibResponse.class);
+        return responseConverter.convert(assetHardSoftLibDao.querySoftsRelations(templateId),
+                AssetHardSoftLibResponse.class);
     }
 }

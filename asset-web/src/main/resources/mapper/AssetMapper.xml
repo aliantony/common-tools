@@ -728,6 +728,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test="areaIds==null and ids != null and ids.length > 0">
+            and asset.id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
 
         <if test=" assetGroup != null and assetGroup != ''">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
@@ -848,6 +854,13 @@
         <if test="associateGroup and existAssociateIds != null ">
             and asset.id not in (
             <foreach index="index" item="item" collection="existAssociateIds" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="templateList != null and templateList.size() > 0 ">
+            and asset.id in (
+            <foreach index="index" item="item" collection="templateList" separator=",">
                 #{item}
             </foreach>
             )

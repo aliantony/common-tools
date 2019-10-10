@@ -9,7 +9,6 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetStatusChangeRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
@@ -20,10 +19,7 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,7 +38,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -79,17 +74,17 @@ public class AssetStatusJumpServiceImplTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    static {
-        jumpRequest.setAgree(Boolean.TRUE);
-        List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
-        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
-        assetInfo.setAssetId("1");
-        assetInfo.setTaskId("12");
-        assetInfoList.add(assetInfo);
-        jumpRequest.setAssetInfoList(assetInfoList);
-        // jumpRequest.setActivityHandleRequest(new ActivityHandleRequest());
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.TO_WAIT_RETIRE);
-    }
+    // static {
+    //     jumpRequest.setAgree(Boolean.TRUE);
+    //     List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
+    //     StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
+    //     assetInfo.setAssetId("1");
+    //     assetInfo.setTaskId("12");
+    //     assetInfoList.add(assetInfo);
+    //     jumpRequest.setAssetInfoList(assetInfoList);
+    //     // jumpRequest.setActivityHandleRequest(new ActivityHandleRequest());
+    //     jumpRequest.setAssetFlowEnum(AssetFlowEnum.TO_WAIT_RETIRE);
+    // }
 
     @Before
     public void before() throws Exception {
@@ -115,14 +110,14 @@ public class AssetStatusJumpServiceImplTest {
 
     @After
     public void after() {
-        AssetStatusJumpServiceImpl assetStatusChangeFlowProcess = null;
-        AssetDao assetDao = null;
-        AssetLinkRelationDao assetLinkRelationDao = null;
-        AssetOperationRecordDao assetOperationRecordDao = null;
-        AesEncoder aesEncoder = null;
-        BaseLineClient baseLineClient = null;
-        ActivityClient activityClient = null;
-        TransactionTemplate transactionTemplate = null;
+        statusChangeFlowProcess = null;
+        assetDao = null;
+        assetLinkRelationDao = null;
+        assetOperationRecordDao = null;
+        aesEncoder = null;
+        baseLineClient = null;
+        activityClient = null;
+        transactionTemplate = null;
     }
 
     /**
@@ -130,24 +125,12 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatus() throws Exception {
-        AssetStatusJumpRequest jumpRequest = new AssetStatusJumpRequest();
-        jumpRequest.setAgree(Boolean.TRUE);
-        List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
-        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
-        assetInfo.setAssetId("1");
-        assetInfo.setTaskId("12");
-        assetInfoList.add(assetInfo);
-        jumpRequest.setAssetInfoList(assetInfoList);
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.REGISTER);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.REGISTER);
+
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_REGISTER));
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
     /**
@@ -155,32 +138,18 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatus1() throws Exception {
-        AssetStatusJumpRequest jumpRequest = new AssetStatusJumpRequest();
-        jumpRequest.setAgree(Boolean.TRUE);
-        List<String> ids = new ArrayList<>();
-        ids.add("1");
-        ids.add("2");
-        List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
-        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
-        assetInfo.setAssetId("1");
-        assetInfo.setTaskId("12");
-        assetInfoList.add(assetInfo);
-        jumpRequest.setAssetInfoList(assetInfoList);
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.TEMPLATE_IMPL);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
-        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        // 通过
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.TEMPLATE_IMPL);
 
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_TEMPLATE_IMPL));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
 
         // 拒绝
-        asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+        jumpRequest= getJumpRequest(AssetFlowEnum.TEMPLATE_IMPL);
         jumpRequest.setAgree(Boolean.FALSE);
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_TEMPLATE_IMPL));
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
     /**
@@ -189,16 +158,11 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatus2() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.NET_IN);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_NET.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
-        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.NET_IN);
 
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_NET));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
     /**
@@ -207,43 +171,32 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatus3() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.TO_WAIT_RETIRE);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.TO_WAIT_RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.success());
 
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
-
     /**
-     * 退役-成功
+     * 退役
      * @throws Exception
      */
     @Test
     public void changeStatus5() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
-        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-        jumpRequest.setManualStartActivityRequest(manualStartActivityRequest);
-
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
         when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.success());
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
 
-        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
-        expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("操作失败,请刷新后重试");
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        // 工作流请求异常
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
+        when(activityClient.completeTaskBatch(Mockito.anyList())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
 
@@ -275,15 +228,45 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatusException2() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.RETIRE);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenThrow(new RuntimeException(("SQL")));
         when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
+
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败,请刷新页面后重试");
+        statusChangeFlowProcess.changeStatus(jumpRequest);
+
+
+        when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException(("SQL")));
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败,请联系运维人员进行解决");
+        statusChangeFlowProcess.changeStatus(getJumpRequest(AssetFlowEnum.RETIRE));
+    }
+    /**
+     * 入网数据库操作更新异常 updateAssetBatch
+     * @throws Exception
+     */
+    @Test
+    public void changeStatusException2_1() throws Exception {
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_NET));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(assetDao.updateAssetBatch(Mockito.anyList())).thenThrow(new RuntimeException(("SQL")));
+
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败,请联系运维人员进行解决");
+        statusChangeFlowProcess.changeStatus(getJumpRequest(AssetFlowEnum.NET_IN));
+    }
+
+    /**
+     * 数据库操作更新失败,返回结果!=1 updateAssetStatusWithLock
+     * @throws Exception
+     */
+    @Test
+    public void changeStatusException3() throws Exception {
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.RETIRE);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(0);
 
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("操作失败,请刷新页面后重试");
@@ -291,24 +274,47 @@ public class AssetStatusJumpServiceImplTest {
     }
 
     /**
-     * 数据库操作更新失败 updateAssetStatusWithLock
+     * 工作流请求处理失败-非启动退役
      * @throws Exception
      */
     @Test
-    public void changeStatusException3() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
-        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(0);
+    public void changeStatusException4() throws Exception {
+        // 1失败
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.NET_IN);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_NET));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(activityClient.completeTaskBatch(Mockito.anyList())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
 
-        expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("操作失败,请刷新页面后重试");
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 2异常
+        when(activityClient.completeTaskBatch(Mockito.anyList())).thenThrow(new BusinessException("HHH"));
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
+
+    /**
+     * 工作流请求处理失败-启动退役
+     * @throws Exception
+     */
+    @Test
+    public void changeStatusException5() throws Exception {
+        // 1失败
+        AssetStatusJumpRequest jumpRequest = getJumpRequest(AssetFlowEnum.TO_WAIT_RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 2异常
+        jumpRequest = getJumpRequest(AssetFlowEnum.TO_WAIT_RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenThrow(new BusinessException("HHH"));
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+    }
+
 
 
     /**
@@ -317,13 +323,9 @@ public class AssetStatusJumpServiceImplTest {
      */
     @Test
     public void changeStatus6() throws Exception {
-        jumpRequest.setAssetFlowEnum(AssetFlowEnum.RETIRE);
-        List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-        assets.add(asset);
-        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
         when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
 
         expectedException.expect(BusinessException.class);
@@ -331,24 +333,29 @@ public class AssetStatusJumpServiceImplTest {
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
 
+    public static AssetStatusJumpRequest getJumpRequest(AssetFlowEnum assetFlowEnum) {
+        AssetStatusJumpRequest jumpRequest = new AssetStatusJumpRequest();
+        jumpRequest.setAgree(Boolean.TRUE);
+        List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
+        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
+        assetInfo.setAssetId("1");
+        assetInfo.setTaskId("12");
+        assetInfoList.add(assetInfo);
+        jumpRequest.setAssetInfoList(assetInfoList);
+        jumpRequest.setAssetFlowEnum(assetFlowEnum);
+        return jumpRequest;
+    }
+
     /**
-     * 不予登记
+     * 数据库中已存在的资产信息
+     * @return
      */
-    @Test
-    public void noRegist(){
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
-        List<Asset> assetList=new ArrayList<>();
-        Asset asset=new Asset();
+    private List<Asset> getAssetInDb(AssetStatusEnum assetStatusEnum) {
+        List<Asset> assets = new ArrayList<>();
+        Asset asset = new Asset();
         asset.setId(1);
-        asset.setName("chen");
-
-        Asset asset2=new Asset();
-        asset2.setId(1);
-        asset2.setName("chen");
-        assetList.add(asset);
-        assetList.add(asset2);
-
-        when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
+        asset.setAssetStatus(assetStatusEnum.getCode());
+        assets.add(asset);
+        return assets;
     }
 }
