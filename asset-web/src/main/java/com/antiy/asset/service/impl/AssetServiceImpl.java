@@ -1241,7 +1241,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 }
             }
-            new Thread(new Runnable() {
+            /*new Thread(new Runnable() {
                 @Override
                 public void run() {
                     // 下发智甲
@@ -1262,7 +1262,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetExternalRequests.add(assetExternalRequest);
                     assetClient.issueAssetData(assetExternalRequests);
                 }
-            }).start();
+            }).start();*/
         }
         return assetCount;
     }
@@ -1307,7 +1307,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 3. 处理通联
         // 删除被删/改的IP端口通联关系
-        assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        if (categoryModel == 1 || categoryModel == 2) {
+            assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        }
     }
 
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
