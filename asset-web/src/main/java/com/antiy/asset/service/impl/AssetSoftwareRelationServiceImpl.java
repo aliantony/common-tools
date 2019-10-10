@@ -133,7 +133,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 模板是白名单需排除白名单中已安装过的软件
         else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
-                softwareIds.remove(a);
+                softwareIds.remove(Long.parseLong(a));
             });
         }
         if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {
