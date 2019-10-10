@@ -166,7 +166,7 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class),})
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@ApiParam(value = "主键封装对象")@RequestBody QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.queryAssetInstallTemplateById(queryCondition));
     }
 

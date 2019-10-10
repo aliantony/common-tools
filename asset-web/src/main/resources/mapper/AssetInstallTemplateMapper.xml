@@ -507,8 +507,8 @@
         insert into asset_install_template_check
         (install_template_id,user_id,result,gmt_create,create_user)
         <trim prefix="values" suffix=";" suffixOverrides=",">
-            <if test="userIds != null">
-                <foreach collection="userIds" item="userId" separator=",">
+            <if test="nextExecutor != null">
+                <foreach collection="nextExecutor" item="userId" separator=",">
                     (#{stringId},#{userId},1,#{gmtCreate},#{createUser})
                 </foreach>
             </if>
