@@ -5,6 +5,8 @@ import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
@@ -311,4 +313,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<String> getAllNameofSafetyEquipmentBySupplier(@Param("supplier") String supplier,@Param("name")String name);
 
     List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,@Param("name") String safetyEquipmentName,@Param("version") String version);
+
+    Boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception;
 }

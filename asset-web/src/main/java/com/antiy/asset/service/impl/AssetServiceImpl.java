@@ -2732,6 +2732,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
+    @Override
+    public boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        // 获取用户所在的区域
+        List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        request.setAreaIds(areaIdList);
+        assetDao.matchAssetByIpMac(request);
+        return false;
+    }
+
     private void operationRecord(String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();

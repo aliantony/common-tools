@@ -331,4 +331,6 @@ public interface IAssetService extends IBaseService<Asset> {
     List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
+
+    boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception;
 }
