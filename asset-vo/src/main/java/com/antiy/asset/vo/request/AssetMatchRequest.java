@@ -55,6 +55,7 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
         this.ipMac = ipMac;
     }
 
+
     @Override
     public void validate() throws RequestParamValidateException {
         if (CollectionUtils.isEmpty(this.ipMacs)) {

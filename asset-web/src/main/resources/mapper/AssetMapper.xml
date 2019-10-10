@@ -1717,7 +1717,7 @@ AND a.`status` = 1
             parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
         SELECT
         IF
-        ( count( 1 ) = 1, TRUE, FALSE ) as result
+        ( count( 1 ) > 1, TRUE, FALSE ) as result
         FROM
         (
         SELECT
@@ -1727,7 +1727,7 @@ AND a.`status` = 1
         asset_ip_relation iprel
         INNER JOIN asset ON iprel.asset_id = asset.id
         WHERE
-        iprel.ip = #{ip}
+        iprel.ip = #{ipMac.ip}
         AND asset.STATUS = 1
         AND iprel.`status` = 1
         <if test=" areaIds != null and areaIds.size() > 0">
@@ -1740,7 +1740,9 @@ AND a.`status` = 1
         INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
         AND macrel.`status` = 1
         WHERE
-        ip = #{ip}
-        AND mac = #{mac}
+        ip = #{ipMac.ip}
+        <if test="ipMac.mac != null">
+            AND mac = #{ipMac.mac}
+        </if>
     </select>
 </mapper>
