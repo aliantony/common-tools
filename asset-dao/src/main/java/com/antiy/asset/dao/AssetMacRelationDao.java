@@ -31,5 +31,5 @@ public interface AssetMacRelationDao extends IBaseDao<AssetMacRelation> {
      * @param macs
      * @return
      */
-    Integer checkRepeat(@Param("list") List<String> macs);
+    Integer checkRepeat(@Param("list") List<String> macs, @Param("id") String id);
 }

@@ -1108,7 +1108,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
-                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()));
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);

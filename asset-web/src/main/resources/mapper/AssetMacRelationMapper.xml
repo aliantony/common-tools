@@ -135,6 +135,7 @@
         <foreach collection="list" item="item" separator="," open="(" close=")">
             #{item}
         </foreach>
+        and asset_id != #{id}
         and status = 1
     </select>
     <!--删除资产mac关系-->
