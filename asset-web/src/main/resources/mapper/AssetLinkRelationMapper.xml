@@ -582,7 +582,27 @@
             </otherwise>
         </choose>
     </select>
-
+    <select id="checkIp" resultType="java.lang.Integer">
+        select count(1) from asset_link_relation
+        where
+        (
+        asset_id = #{id}
+        and asset_ip = #{ip}
+        <if test="port != null">
+            and asset_port = #{port}
+        </if>
+        and status = 1
+        )
+        or
+        (
+        parent_asset_id = #{id}
+        and parent_asset_ip = #{ip}
+        <if test="port != null">
+            and parent_asset_port = #{port}
+        </if>
+        and status = 1
+        )
+    </select>
     <update id="deleteRelationByAssetId" parameterType="java.util.Map">
         delete from asset_link_relation
         <where>

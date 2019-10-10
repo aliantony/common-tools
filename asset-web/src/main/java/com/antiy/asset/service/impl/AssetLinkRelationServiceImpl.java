@@ -33,6 +33,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -125,47 +126,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
         assetLinkRelation.setAssetId(request.getAssetId());
         assetLinkRelation.setParentAssetId(request.getParentAssetId());
-        String msg;
         // 1.校验子资产IP是否可用
-        List<String> assetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getAssetId(), true,
+        Integer count = assetLinkRelationDao.checkIp(request.getAssetId(), request.getAssetIp(),
             request.getAssetPort());
-        if (CollectionUtils.isNotEmpty(assetAddress)) {
-            // 所选资产是网络设备
-            if (StringUtils.isNotBlank(request.getAssetPort())) {
-                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "所选设备的网口已存在绑定关系，请勿重复设置");
-            } else {
-                // 所选资产是计算设备
-                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "所选设备的IP已存在绑定关系，请勿重复设置");
-            }
-        } else {
-            // 所选资产是网络设备
-            if (StringUtils.isNotBlank(request.getAssetPort())) {
-                ParamterExceptionUtils.isTrue(false, "所选设备的网口已存在绑定关系，请勿重复设置");
-            } else {
-                // 所选资产是计算设备
-                ParamterExceptionUtils.isTrue(false, "所选设备的IP已存在绑定关系，请勿重复设置");
-            }
+        if (count > 0) {
+            throw new BusinessException("所选设备IP已存在绑定关系，请勿重复设置");
         }
-
         // 2.校验父资产IP是否可用
-        List<String> parentAssetAddress = assetLinkRelationDao.queryIpAddressByAssetId(request.getParentAssetId(), true,
+        count = assetLinkRelationDao.checkIp(request.getParentAssetId(), request.getAssetPort(),
             request.getParentAssetPort());
-        if (CollectionUtils.isNotEmpty(parentAssetAddress)) {
-            // 关联资产是网络设备
-            if (StringUtils.isNotBlank(request.getParentAssetPort())) {
-                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "关联设备的网口已存在绑定关系，请勿重复设置");
-            } else {
-                // 关联资产是计算设备
-                ParamterExceptionUtils.isTrue(assetAddress.contains(request.getAssetIp()), "关联设备的IP已存在绑定关系，请勿重复设置");
-            }
-        } else {
-            // 关联资产是网络设备
-            if (StringUtils.isNotBlank(request.getParentAssetPort())) {
-                ParamterExceptionUtils.isTrue(false, "关联设备的网口已存在绑定关系，请勿重复设置");
-            } else {
-                // 关联资产是计算设备
-                ParamterExceptionUtils.isTrue(false, "关联设备的IP已存在绑定关系，请勿重复设置");
-            }
+        if (count > 0) {
+            throw new BusinessException("关联设备IP已存在绑定关系，请勿重复设置");
         }
 
         // 3.组装通联关系
