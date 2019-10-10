@@ -99,14 +99,14 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             AssetInstallTemplateCheckResponse templateCheckResponse=responseList.get(i);
             if(sysUser==null){
-                logger.info("该用户不存在");
+                LogUtils.info(logger,"该用户不存在");
                 templateCheckResponse.setName("");
             }else{
                 templateCheckResponse.setName(sysUser.getName());
             }
             AssetInstallTemplateCheckStautsEnum currentStatus = AssetInstallTemplateCheckStautsEnum.getStatusEnumByCode(templateCheckResponse.getResult());
             if(currentStatus==null){
-                logger.info("无效状态");
+                LogUtils.info(logger,"无效状态:{}",templateCheckResponse.getResult());
             }else{
                 templateCheckResponse.setResultStr(currentStatus.getMsg());
             }
