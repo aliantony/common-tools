@@ -1069,8 +1069,7 @@
         <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
             #{assetId}
         </foreach>
-        or
-        parent_asset_id in
+        or parent_asset_id in
         <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
             #{assetId}
         </foreach>

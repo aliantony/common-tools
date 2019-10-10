@@ -1,15 +1,37 @@
 package com.antiy.asset.service.impl;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSON;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.AssetClient;
+import com.antiy.asset.intergration.BaseLineClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.config.kafka.KafkaConfig;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -31,39 +53,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
-import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.*;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.config.kafka.KafkaConfig;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.*;
-import com.antiy.common.utils.DataTypeUtils;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2672,11 +2669,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException("资产状态已改变");
             }
         }
-        /* for (Asset currentAsset : currentAssetList) { operationRecord(currentAsset.getId().toString()); } */
-        /* // 硬件完成流程 if (assetStatusChangeRequest.getActivityHandleRequest() != null) { ActionResponse actionResponse =
-         * activityClient .completeTask(assetStatusChangeRequest.getActivityHandleRequest()); // 流程调用失败不更改资产状态 if (null
-         * == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-         * throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes()); } } */
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表
