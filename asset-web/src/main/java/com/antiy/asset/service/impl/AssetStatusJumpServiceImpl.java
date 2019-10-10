@@ -33,7 +33,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -150,8 +152,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             // 非启动退役流程
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             assetStatusRequest.getAssetInfoList().forEach(assetInfo -> {
+                // 由于工作流传参不能直接使用同一个formData对象,此处必须new新对象
+                Map<Object, Object> formData = new HashMap<Object, Object>(assetStatusRequest.getFormData());
+
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                activityHandleRequest.setFormData(assetStatusRequest.getFormData());
+                activityHandleRequest.setFormData(formData);
                 activityHandleRequest.setTaskId(assetInfo.getTaskId());
                 requestList.add(activityHandleRequest);
             });
