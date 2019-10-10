@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.response.BusinessSelectResponse;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.response.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,15 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetHardSoftLibService;
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -193,5 +186,16 @@ public class AssetHardSoftLibController {
     public ActionResponse queryPageSoft(@RequestBody AssetSoftwareQuery query) {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageSoft(query));
     }
-
+    /**
+     * cpe信息查询-软硬操作系统
+     *
+     * @param query 参数条件
+     * @return actionResponse 响应
+     */
+    @ApiOperation(value = "全量查询", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAllTypeResponse.class, responseContainer = "List"), })
+    @RequestMapping(value = "/query/all", method = RequestMethod.POST)
+    public ActionResponse queryAllList(@ApiParam(value = "query") @RequestBody AssetHardSoftOperQuery query) throws Exception {
+        return ActionResponse.success(iAssetHardSoftLibService.queryAssetList(query));
+    }
 }

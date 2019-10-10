@@ -253,10 +253,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())
-                        ? AssetStatusEnum.NET_IN.getCode()
-                        : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
                     assetOperationRecord.setProcessResult(1);
+                    assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -2725,6 +2724,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
         return getAssetEntities(request);
 
+    }
+
+    @Override
+    public List<IpMac> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        List<IpMac> ipMacList = new ArrayList<>();
+        // 获取用户所在的区域
+        List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        request.setAreaIds(areaIdList);
+        for (IpMac ipMac : request.getIpMacs()) {
+            request.setIpMac(ipMac);
+            if (!assetDao.matchAssetByIpMac(request)) {
+                ipMacList.add(ipMac);
+            }
+
+        }
+        return ipMacList;
     }
 
     private void operationRecord(String id) throws Exception {

@@ -2,17 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.antiy.asset.dao.AssetOperationRecordDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOperationRecord">
-        <id column="id" property="id"/>
-        <result column="target_object_id" property="targetObjectId"/>
-        <result column="target_status" property="targetStatus"/>
-        <result column="content" property="content"/>
-        <result column="create_user" property="createUser"/>
-        <result column="gmt_create" property="gmtCreate"/>
-        <result column="process_result" property="processResult"/>
-        <result column="origin_status" property="originStatus"/>
-    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, target_object_id AS targetObjectId, content, create_user AS createUser, gmt_create AS gmtCreate, target_status AS targetStatus,process_result AS processResult,origin_status, process_result AS processResult
@@ -20,6 +9,26 @@
     <sql id="AssetStatusNode">
         id,target_object_id AS assetId,note
     </sql>
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOperationRecord">
+        <id column="id" property="id"/>
+        <result column="target_object_id" property="targetObjectId"/>
+        <result column="origin_status" property="originStatus"/>
+        <result column="target_status" property="targetStatus"/>
+        <result column="content" property="content"/>
+        <result column="operate_user_id" property="operateUserId"/>
+        <result column="process_result" property="processResult"/>
+        <result column="operate_user_name" property="operateUserName"/>
+        <result column="note" property="note"/>
+        <result column="file_info" property="fileInfo"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="create_user" property="createUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+
     <sql id="Table_Name">
         asset_operation_record
     </sql>
@@ -28,6 +37,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" targetObjectId != null">
             target_object_id,
+        </if>
+        <if test=" originStatus != null">
+            origin_status,
         </if>
         <if test=" targetStatus != null">
             target_status,
@@ -38,27 +50,35 @@
         <if test=" operateUserId != null">
             operate_user_id,
         </if>
+        <if test=" processResult != null">
+            process_result,
+        </if>
         <if test=" operateUserName != null">
             operate_user_name,
+        </if>
+        <if test=" note != null">
+            note,
+        </if>
+        <if test=" fileInfo != null">
+            file_info,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
         </if>
-        <if test=" processResult != null">
-            process_result,
+        <if test=" createUser != null">
+            create_user,
         </if>
-        <if test=" originStatus != null">
-            origin_status
+        <if test=" status != null">
+            status,
         </if>
     </sql>
-    <sql id="IF_Base_Column_List_ForBatch">
-            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user
-    </sql>
-
 
     <sql id="IF_Value_Column_List">
         <if test=" targetObjectId != null">
             #{targetObjectId },
+        </if>
+        <if test=" originStatus != null">
+            #{originStatus },
         </if>
         <if test=" targetStatus != null">
             #{targetStatus },
@@ -69,19 +89,114 @@
         <if test=" operateUserId != null">
             #{operateUserId },
         </if>
+        <if test=" processResult != null">
+            #{processResult },
+        </if>
         <if test=" operateUserName != null">
             #{operateUserName },
+        </if>
+        <if test=" note != null">
+            #{note },
+        </if>
+        <if test=" fileInfo != null">
+            #{fileInfo },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
         </if>
-        <if test=" processResult != null">
-            #{processResult },
+        <if test=" createUser != null">
+            #{createUser },
         </if>
-        <if test=" originStatus != null">
-            #{originStatus }
+        <if test=" status != null">
+            #{status },
         </if>
     </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" targetObjectId != null">
+            target_object_id = #{targetObjectId },
+        </if>
+        <if test=" originStatus != null">
+            origin_status = #{originStatus },
+        </if>
+        <if test=" targetStatus != null">
+            target_status = #{targetStatus },
+        </if>
+        <if test=" content != null">
+            content = #{content },
+        </if>
+        <if test=" operateUserId != null">
+            operate_user_id = #{operateUserId },
+        </if>
+        <if test=" processResult != null">
+            process_result = #{processResult },
+        </if>
+        <if test=" operateUserName != null">
+            operate_user_name = #{operateUserName },
+        </if>
+        <if test=" note != null">
+            note = #{note },
+        </if>
+        <if test=" fileInfo != null">
+            file_info = #{fileInfo },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" targetObjectId != null">
+            and target_object_id = #{targetObjectId }
+        </if>
+        <if test=" originStatus != null">
+            and origin_status = #{originStatus }
+        </if>
+        <if test=" targetStatus != null">
+            and target_status = #{targetStatus }
+        </if>
+        <if test=" content != null">
+            and content = #{content }
+        </if>
+        <if test=" operateUserId != null">
+            and operate_user_id = #{operateUserId }
+        </if>
+        <if test=" processResult != null">
+            and process_result = #{processResult }
+        </if>
+        <if test=" operateUserName != null">
+            and operate_user_name = #{operateUserName }
+        </if>
+        <if test=" note != null">
+            and note = #{note }
+        </if>
+        <if test=" fileInfo != null">
+            and file_info = #{fileInfo }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+
+    <sql id="IF_Base_Column_List_ForBatch">
+            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user
+    </sql>
+
+
+
 
     <sql id="IF_Value_Column_List_ForBatch">
             #{entity.targetObjectId },
@@ -97,65 +212,6 @@
             #{entity.createUser }
     </sql>
 
-    <sql id="Set_Column_List">
-        <if test=" targetObjectId != null">
-            target_object_id = #{targetObjectId },
-        </if>
-        <if test=" targetStatus != null">
-            target_status = #{targetStatus },
-        </if>
-        <if test=" content != null">
-            content = #{content },
-        </if>
-        <if test=" operateUserId != null">
-            operate_user_id = #{operateUserId },
-        </if>
-        <if test=" operateUserName != null">
-            operate_user_name = #{operateUserName },
-        </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
-        <if test=" processResult != null">
-            process_result = #{processResult },
-        </if>
-        <if test=" originStatus != null">
-            origin_status = #{originStatus }
-        </if>
-    </sql>
-
-    <sql id="Where_Column_List">
-        <if test=" targetObjectId != null">
-            and target_object_id = #{targetObjectId }
-        </if>
-        <if test=" targetType != null">
-            and target_type = #{targetType }
-        </if>
-        <if test=" targetStatus != null">
-            and target_status = #{targetStatus }
-        </if>
-        <if test=" content != null">
-            and content = #{content }
-        </if>
-        <if test=" operateUserId != null">
-            and operate_user_id = #{operateUserId }
-        </if>
-        <if test=" operateUserName != null">
-            and operate_user_name = #{operateUserName }
-        </if>
-        <if test=" schemeId != null">
-            and scheme_id = #{schemeId }
-        </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" processResult != null">
-            and process_result = #{processResult }
-        </if>
-        <if test=" originStatus != null">
-            and origin_status = #{originStatus }
-        </if>
-    </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetOperationRecord" useGeneratedKeys="true"
             keyProperty="id">

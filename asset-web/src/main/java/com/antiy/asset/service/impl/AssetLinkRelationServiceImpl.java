@@ -123,7 +123,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
      * @param request
      * @param assetLinkRelation
      */
-    private void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
+    public void checkAssetIp(AssetLinkRelationRequest request, AssetLinkRelation assetLinkRelation) {
         assetLinkRelation.setAssetId(request.getAssetId());
         assetLinkRelation.setParentAssetId(request.getParentAssetId());
         // 1.校验子资产IP是否可用

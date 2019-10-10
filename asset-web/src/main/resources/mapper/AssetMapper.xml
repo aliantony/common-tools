@@ -1712,4 +1712,37 @@ AND a.`status` = 1
         </if>
         GROUP BY version
     </select>
+
+    <select id="matchAssetByIpMac" resultType="java.lang.Boolean"
+            parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
+        SELECT
+        IF
+        ( count( 1 ) &gt;= 1, TRUE, FALSE ) as result
+        FROM
+        (
+        SELECT
+        asset_id,
+        ip
+        FROM
+        asset_ip_relation iprel
+        INNER JOIN asset ON iprel.asset_id = asset.id
+        WHERE
+        iprel.ip = #{ipMac.ip}
+        AND asset.STATUS = 1
+        AND iprel.`status` = 1
+        <if test=" areaIds != null and areaIds.size() > 0">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ) ip_temp
+        INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
+        AND macrel.`status` = 1
+        WHERE
+        ip = #{ipMac.ip}
+        <if test="ipMac.mac != null">
+            AND mac = #{ipMac.mac}
+        </if>
+    </select>
 </mapper>

@@ -1,20 +1,10 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.BusinessSelectResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -131,4 +121,11 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
      * @return
      */
     public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId);
+
+    /**
+     * cpe信息查询-软硬操作系统
+     * @param query 查询条件vo
+     * @return 分页信息
+     */
+    ActionResponse<PageResult<AssetAllTypeResponse>> queryAssetList(AssetHardSoftOperQuery query);
 }
