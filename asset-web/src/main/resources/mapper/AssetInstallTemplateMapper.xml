@@ -473,4 +473,40 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <insert id="insertBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_software_install_template
+        (install_template_id,software_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="softBussinessIds != null">
+                <foreach collection="softBussinessIds" item="softBussinessId" separator=",">
+                    (#{stringId},#{softBussinessId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_patch_install_template
+        (install_template_id,patch_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="patchIds != null">
+                <foreach collection="patchIds" item="patchId" separator=",">
+                    (#{stringId},#{patchId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_install_template_check
+        (install_template_id,user_id,result,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="userIds != null">
+                <foreach collection="userIds" item="userId" separator=",">
+                    (#{stringId},#{userId},1,#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
 </mapper>

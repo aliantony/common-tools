@@ -223,8 +223,8 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "装机模板编辑-关联软件查询", notes = "软件列表")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class),})
     @RequestMapping(value = "/query/softs", method = RequestMethod.POST)
-    public ActionResponse querySoftsRelations(@RequestParam @ApiParam(required = true, value = "模板id") String templateId) {
-        return ActionResponse.success(iAssetHardSoftLibService.querySoftsRelations(templateId));
+    public ActionResponse querySoftsRelations(@RequestBody @ApiParam(required = true, value = "模板id") PrimaryKeyQuery query) {
+        return ActionResponse.success(iAssetHardSoftLibService.querySoftsRelations(query.getPid()));
     }
 
     @ApiOperation(value = "装机模板编辑-关联补丁查询", notes = "补丁列表")
@@ -233,4 +233,12 @@ public class AssetInstallTemplateController {
     public ActionResponse queryPatchsRelations(@RequestBody @ApiParam(required = true, value = "模板id") PrimaryKeyQuery query) {
         return ActionResponse.success(iAssetInstallTemplateService.queryPatchs(query));
     }
+
+    @ApiOperation(value = "模板创建-提交模板")
+    @ApiResponse(code = 200, message = "ok", response = String.class)
+    @RequestMapping(value = "/submit")
+    public ActionResponse createInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateRequest", required = true) AssetInstallTemplateRequest request) throws Exception {
+        return ActionResponse.success(iAssetInstallTemplateService.submitTemplateInfo(request));
+    }
+
 }
