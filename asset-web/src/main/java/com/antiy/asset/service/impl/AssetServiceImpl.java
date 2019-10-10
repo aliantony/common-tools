@@ -263,6 +263,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
