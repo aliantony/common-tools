@@ -1820,6 +1820,8 @@ public class AssetServiceImplTest {
         Assert.assertEquals(2,2);
 
     }
+
+    @Test
     public void queryUuidByAreaIds() throws Exception {
         AreaIdRequest areaIdRequest = new AreaIdRequest();
         try {
@@ -1830,6 +1832,19 @@ public class AssetServiceImplTest {
         areaIdRequest.setAreaIds(Arrays.asList("1"));
         Mockito.when(assetDao.findUuidByAreaIds(Mockito.any())).thenReturn(Arrays.asList("1", "2"));
         Assert.assertEquals(2, assetServiceImpl.queryUuidByAreaIds(areaIdRequest).size());
+
+    }
+
+    @Test
+    public void queryIdByAreaIds() throws Exception {
+        AreaIdRequest areaIdRequest = new AreaIdRequest();
+        try {
+            assetServiceImpl.queryIdByAreaIds(areaIdRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("区域ID不能为空", e.getMessage());
+        }
+        areaIdRequest.setAreaIds(Collections.singletonList("1"));
+        assetServiceImpl.queryIdByAreaIds(areaIdRequest);
 
     }
 
@@ -1860,5 +1875,4 @@ public class AssetServiceImplTest {
 
         }
     }
-
 }
