@@ -344,6 +344,14 @@
         where id = #{id}
     </select>
 
+    <select id="getByBusinessId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{businessId}
+    </select>
+
     <delete id="deleteById" parameterType="java.lang.String">
         delete from
         <include refid="Table_Name"></include>
@@ -695,5 +703,59 @@
         t2.cpe_uri,
         t2.gmt_create
         from asset_software_install_template t1 LEFT JOIN asset_hard_soft_lib t2 ON t1.software_id=t2.business_id and t1.install_template_id=#{templateId}
+    </select>
+    
+    <sql id="Asset_Query_Column_List">
+        t1.id,
+        t1.business_id,
+        t1.type,
+        t1.supplier,
+        t1.product_name,
+        t1.version,
+        t1.upgrade_msg,
+        t1.sys_version,
+        t1.LANGUAGE,
+        t1.soft_version,
+        t1.soft_platform,
+        t1.hard_platform,
+        t1.other
+    </sql>
+    <!-- cpe信息查询-软硬操作系统 -->
+    <sql id="Asset_Sub_Query_Common_Sql">
+         SELECT id FROM asset_hard_soft_lib force index(index_relation)
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test=" productName != null">
+                and product_name like CONCAT('%', replace(replace(REPLACE
+                (#{productName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+            </if>
+            <if test=" supplier != null">
+                and supplier like CONCAT('%', replace(replace(REPLACE (#{supplier},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            and is_storage = 1
+            and status = 1
+        </trim>
+        ORDER BY id DESC
+    </sql>
+    <select id="queryAssetList" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Asset_Query_Column_List"/>
+        FROM
+        (<include refid="Asset_Sub_Query_Common_Sql"/>
+          LIMIT #{pageOffset}, #{pageSize}
+        ) t2
+        LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
+        ORDER BY
+        t1.id DESC
+    </select>
+    <select id="queryAssetListCount" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery" resultType="java.lang.Integer">
+      SELECT
+        count(1)
+        FROM
+        (<include refid="Asset_Sub_Query_Common_Sql"/>
+        ) t2
+        LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
+        ORDER BY
+        t1.id DESC
     </select>
 </mapper>

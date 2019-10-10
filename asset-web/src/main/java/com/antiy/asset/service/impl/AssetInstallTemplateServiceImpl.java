@@ -8,6 +8,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.request.SysArea;
@@ -16,6 +17,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
@@ -198,8 +200,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     @Transactional
     public String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
-        if (request.getStringId()==null){
-            String unknowId="0";
+        if (request.getStringId() == null) {
+            String unknowId = "0";
             request.setStringId(unknowId);
         }
         request.setCreateUser(LoginUserUtil.getLoginUser().getId().toString());
@@ -213,6 +215,29 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplateDao.insertBatchSoft(request);
         assetInstallTemplateDao.insertBatchUser(request);
         return "提交成功";
+    }
+
+    @Override
+    @Transactional
+    public String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
+        request.setGmtModified(System.currentTimeMillis());
+        Integer loginUserId = LoginUserUtil.getLoginUser().getId();
+        if (!assetInstallTemplateDao.queryCheckTemplateUserId(request.getInstallTemplateId()).contains(loginUserId)) {
+            throw new BusinessException("非法操作");
+        }
+        Integer currentStatus = request.getResult() == 0 ? AssetInstallTemplateStatusEnum.REJECT.getCode() : AssetInstallTemplateStatusEnum.ENABLE.getCode();
+        request.setModifiedUser(loginUserId.toString());
+        //更新模板检查表
+        request.setResult(currentStatus);
+        assetInstallTemplateDao.checkTemplate(request);
+        //更新模板表状态
+        AssetInstallTemplate template = new AssetInstallTemplate();
+        template.setId(request.getInstallTemplateId());
+        template.setCurrentStatus(currentStatus);
+        template.setModifiedUser(loginUserId.toString());
+        template.setGmtModified(System.currentTimeMillis());
+        assetInstallTemplateDao.update(template);
+        return "审核结果提交成功";
     }
 
 }

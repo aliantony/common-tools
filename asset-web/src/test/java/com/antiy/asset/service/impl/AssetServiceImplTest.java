@@ -1822,6 +1822,12 @@ public class AssetServiceImplTest {
     }
 
     @Test
+    public void countCategory(){
+     //统计品类型号 Map中的数据 key--品类型号 value--总数
+    // List<Map<String, Object>> categoryModelCount = assetDao.countCategoryModel(areaIdsOfCurrentUser, status);
+    }
+
+    @Test
     public void queryUuidByAreaIds() throws Exception {
         AreaIdRequest areaIdRequest = new AreaIdRequest();
         try {

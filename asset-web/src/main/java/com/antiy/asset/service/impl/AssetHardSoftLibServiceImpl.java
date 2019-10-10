@@ -6,22 +6,16 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.BusinessSelectResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -185,5 +179,22 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId) {
         return responseConverter.convert(assetHardSoftLibDao.querySoftsRelations(templateId),
                 AssetHardSoftLibResponse.class);
+    }
+
+    @Override
+    public ActionResponse<PageResult<AssetAllTypeResponse>> queryAssetList(AssetHardSoftOperQuery query) {
+        Integer count = assetHardSoftLibDao.queryAssetListCount(query);
+        ArrayList<AssetAllTypeResponse> responses = new ArrayList<>();
+        PageResult<AssetAllTypeResponse> pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), responses);
+        if (count > 0) {
+            List<AssetHardSoftLib> assetLibs = assetHardSoftLibDao.queryAssetList(query);
+            for (AssetHardSoftLib source :
+                    assetLibs) {
+                AssetAllTypeResponse targetData = new AssetAllTypeResponse();
+                BeanUtils.copyProperties(source,targetData);
+                responses.add(targetData);
+            }
+        }
+        return ActionResponse.success(pageResult);
     }
 }
