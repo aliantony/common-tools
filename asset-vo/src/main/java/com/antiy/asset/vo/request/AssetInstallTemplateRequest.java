@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -77,7 +75,7 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @ApiModelProperty("关联的补丁主键id集合")
     private List<Integer> patchIds;
     @ApiModelProperty("模板审核的用户主键id集合")
-    private List<Integer> userIds;
+    private List<Integer> nextExecutor;
     @ApiModelProperty("创建时间")
     private long gmtCreate;
     @ApiModelProperty("修改时间")
@@ -103,12 +101,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
         this.patchIds = patchIds;
     }
 
-    public List<Integer> getUserIds() {
-        return userIds;
+    public List<Integer> getNextExecutor() {
+        return nextExecutor;
     }
 
-    public void setUserIds(List<Integer> userIds) {
-        this.userIds = userIds;
+    public void setNextExecutor(List<Integer> nextExecutor) {
+        this.nextExecutor = nextExecutor;
     }
 
     public String getStringId() {
