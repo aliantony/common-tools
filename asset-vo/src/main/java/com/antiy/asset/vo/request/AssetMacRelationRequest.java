@@ -5,7 +5,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -27,7 +26,6 @@ public class AssetMacRelationRequest extends BaseRequest implements ObjectValida
      * mac
      */
     @ApiModelProperty("mac")
-    @NotBlank(message = "mac不能为空")
     @Pattern(regexp = "^(([a-f0-9A-F]{2}:)|([a-f0-9A-F]{2}-)){5}[a-f0-9A-F]{2}$", message = "mac地址错误")
     @Size(message = "MAC地址长度应该为17位", max = 17, min = 17)
     private String  mac;

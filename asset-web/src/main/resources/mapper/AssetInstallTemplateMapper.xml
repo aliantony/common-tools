@@ -296,15 +296,17 @@
             ait.id,
             ait.`name`,
             ait.number_code as numberCode,
-            ait.description  ,
-            ( SELECT count( * ) FROM asset_software_install_template WHERE asset_software_install_template.install_template_id = ait.id ) AS softwareCount,
-            ( SELECT count( * ) FROM asset_patch_install_template WHERE asset_patch_install_template.install_template_id = ait.id ) AS patchCount
+            ait.description,
+            count(DISTINCT asset_software_install_template.id) as softwareCount,
+            count(DISTINCT asset_patch_install_template.id) as patchCount
+
         FROM
             asset_install_template AS ait
-        where
 
-            ait.id=#{templateId}
-
+            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id
+            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id
+            GROUP BY ait.id
+            HAVING ait.id=#{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
@@ -515,4 +517,28 @@
         </trim>
 
     </insert>
+    <select id="queryCheckTemplateUserId" resultType="java.lang.Integer">
+       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId}
+    </select>
+    <sql id="Set_InstallTemplate_Check_List">
+        <if test=" advice != null">
+            advice = #{advice },
+        </if>
+        <if test=" result != null">
+            result = #{result },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+    </sql>
+    <update id="checkTemplate" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
+        update asset_install_template_check
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_InstallTemplate_Check_List"></include>
+        </trim>
+        where install_template_id = #{installTemplateId }
+    </update>
 </mapper>

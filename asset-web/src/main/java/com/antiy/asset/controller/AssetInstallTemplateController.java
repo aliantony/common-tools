@@ -6,6 +6,7 @@ import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.request.ProcessTemplateRequest;
@@ -165,8 +166,8 @@ public class AssetInstallTemplateController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class),})
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象")@RequestBody QueryCondition queryCondition) throws Exception {
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
+    public ActionResponse queryById(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.queryAssetInstallTemplateById(queryCondition));
     }
 
@@ -239,6 +240,13 @@ public class AssetInstallTemplateController {
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public ActionResponse createInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateRequest", required = true) AssetInstallTemplateRequest request) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.submitTemplateInfo(request));
+    }
+
+    @ApiOperation(value = "模板审核")
+    @ApiResponse(code = 200, message = "ok", response = String.class)
+    @RequestMapping(value = "/check", method = RequestMethod.POST)
+    public ActionResponse checkInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateCheckRequest", required = true) AssetInstallTemplateCheckRequest request) throws Exception {
+        return ActionResponse.success(iAssetInstallTemplateService.checkTemplate(request));
     }
 
 }

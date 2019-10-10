@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -75,6 +76,7 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @ApiModelProperty("关联的补丁主键id集合")
     private List<Integer> patchIds;
     @ApiModelProperty("模板审核的用户主键id集合")
+    @Encode
     private List<Integer> nextExecutor;
     @ApiModelProperty("创建时间")
     private long gmtCreate;
