@@ -264,7 +264,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
+                    throw new BusinessException("插入重复键！");
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
