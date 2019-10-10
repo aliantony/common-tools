@@ -1021,12 +1021,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
         AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getById(Objects.toString(asset.getBusinessId()));
-        assetResponse.setManufacturer(assetHardSoftLib.getSupplier());
-        assetResponse.setName(assetHardSoftLib.getProductName());
-        String m = Optional.ofNullable(assetHardSoftLib.getSupplier()).orElse("")
-                   + Optional.ofNullable(assetHardSoftLib.getProductName()).orElse("");
-        assetResponse.setVersion(
-            Optional.ofNullable(assetHardSoftLib.getCpeUri()).map(str -> str.substring(9 + m.length())).orElse(""));
+        assetResponse
+            .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
+        assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
+        String m = Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse("")
+                   + Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse("");
+        assetResponse.setVersion(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getCpeUri)
+            .map(str -> str.substring(9 + m.length())).orElse(""));
         // 获取区域
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
