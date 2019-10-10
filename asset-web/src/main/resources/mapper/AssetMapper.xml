@@ -1727,7 +1727,7 @@ AND a.`status` = 1
         asset_ip_relation iprel
         INNER JOIN asset ON iprel.asset_id = asset.id
         WHERE
-        iprel.ip = #{ipMac.ip}
+        iprel.ip = #{ipMacPort.ip}
         AND asset.STATUS = 1
         AND iprel.`status` = 1
         <if test=" areaIds != null and areaIds.size() > 0">
@@ -1740,9 +1740,9 @@ AND a.`status` = 1
         INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
         AND macrel.`status` = 1
         WHERE
-        ip = #{ipMac.ip}
-        <if test="ipMac.mac != null">
-            AND mac = #{ipMac.mac}
+        ip = #{ipMacPort.ip}
+        <if test="ipMacPort.mac != null">
+            AND mac = #{ipMacPort.mac}
         </if>
     </select>
 </mapper>

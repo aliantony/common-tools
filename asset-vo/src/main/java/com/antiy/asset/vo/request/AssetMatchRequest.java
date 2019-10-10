@@ -22,15 +22,15 @@ import java.util.List;
 public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
     @ApiModelProperty("IP+MAC")
     @NotNull(message = "IP+MAC不能为空")
-    private List<IpMac>   ipMacs;
+    private List<IpMacPort> ipMacs;
 
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "当前用户区域集合")
+    @NotNull(message = "当前用户区域集合不能为空")
     private List<Integer> areaIds;
 
-    @ApiModelProperty(value = "当前用户区域集合", hidden = true)
-    private IpMac         ipMac;
+    @ApiModelProperty(value = "IpMacPort对象", hidden = true)
+    private IpMacPort       ipMacPort;
 
-    @ApiModelProperty(value = "当前用户区域集合", hidden = true)
     public List<Integer> getAreaIds() {
         return areaIds;
     }
@@ -39,22 +39,21 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
         this.areaIds = areaIds;
     }
 
-    public List<IpMac> getIpMacs() {
+    public List<IpMacPort> getIpMacs() {
         return ipMacs;
     }
 
-    public void setIpMacs(List<IpMac> ipMacs) {
+    public void setIpMacs(List<IpMacPort> ipMacs) {
         this.ipMacs = ipMacs;
     }
 
-    public IpMac getIpMac() {
-        return ipMac;
+    public IpMacPort getIpMacPort() {
+        return ipMacPort;
     }
 
-    public void setIpMac(IpMac ipMac) {
-        this.ipMac = ipMac;
+    public void setIpMacPort(IpMacPort ipMacPort) {
+        this.ipMacPort = ipMacPort;
     }
-
 
     @Override
     public void validate() throws RequestParamValidateException {
