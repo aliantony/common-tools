@@ -52,8 +52,7 @@
         </if>
     </sql>
     <sql id="IF_Base_Column_List_ForBatch">
-            target_object_id,target_status,content,operate_user_id,operate_user_name,gmt_create,process_result,origin_status
-
+            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user
     </sql>
 
 
@@ -83,15 +82,19 @@
             #{originStatus }
         </if>
     </sql>
+
     <sql id="IF_Value_Column_List_ForBatch">
             #{entity.targetObjectId },
+            #{entity.originStatus },
             #{entity.targetStatus },
             #{entity.content },
             #{entity.operateUserId },
             #{entity.operateUserName },
-            #{entity.gmtCreate },
+            #{entity.note },
+            #{entity.fileInfo },
             #{entity.processResult },
-            #{entity.originStatus }
+            #{entity.gmtCreate },
+            #{entity.createUser }
     </sql>
 
     <sql id="Set_Column_List">
@@ -175,9 +178,7 @@
         </trim>
         values
         <foreach collection="list" item="entity" separator=",">
-            (
-            <include refid="IF_Value_Column_List_ForBatch"></include>
-            )
+            (<include refid="IF_Value_Column_List_ForBatch"></include>)
         </foreach>
     </insert>
 

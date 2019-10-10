@@ -235,7 +235,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setProcessResult(statusJumpRequest.getAgree() ? 1 : 0);
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
-        assetOperationRecord.setNote(statusJumpRequest.getNote());
+        assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
         assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo());
         return assetOperationRecord;
     }
