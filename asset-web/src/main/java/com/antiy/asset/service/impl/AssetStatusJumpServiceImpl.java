@@ -8,11 +8,13 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
@@ -129,9 +131,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         // 1.拟退役需要启动流程,其他步骤完成流程
         if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())) {
             // 启动流程
-            assetStatusRequest.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            manualStartActivityRequest.setBusinessId(assetStatusRequest.getAssetInfoList().get(0).getAssetId());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_RETIRE.getCode());
+            manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
             try {
-                ActionResponse actionResponse = activityClient.manualStartProcess(assetStatusRequest.getManualStartActivityRequest());
+                ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
                 LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
                 if (actionResponse == null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     return false;
@@ -189,10 +195,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             // 首次入网,设置首次入网时间(检查资产主表时间为空时写入入网时间)
             if (AssetFlowEnum.NET_IN.equals(statusJumpRequest.getAssetFlowEnum()) && asset.getFirstEnterNett() == null) {
                 asset.setFirstEnterNett(currentTime);
-            }
-
-            // 退役删除通联关系
-            if (AssetFlowEnum.RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+            } else if (AssetFlowEnum.RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+                // 退役删除通联关系
                 deleteLinkRelationIdList.add(asset.getId());
             }
 
