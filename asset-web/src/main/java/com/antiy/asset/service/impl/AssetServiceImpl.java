@@ -43,6 +43,7 @@ import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
+import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -197,6 +198,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
+                    asset.setAssetSource(AssetSourceEnum.MANUAL_REGISTRATION.getCode());
                     assetDao.insert(asset);
 
                     // 记录操作日志和运行日志
@@ -1468,6 +1470,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setWarranty("2年");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setImportanceDegree("1");
+        otherDeviceEntity.setIp("192.158.58.58");
+        otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         dataList.add(otherDeviceEntity);
         return dataList;
     }

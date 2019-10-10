@@ -33,7 +33,6 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * id
      */
     @ApiModelProperty("基准模板id")
-    @Encode
     private String                  baselineTemplateId;
     /**
      * id
