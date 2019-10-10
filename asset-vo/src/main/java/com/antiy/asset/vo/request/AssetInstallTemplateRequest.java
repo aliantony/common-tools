@@ -1,13 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * <p> AssetInstallTemplateRequest 请求对象 </p>
@@ -25,11 +25,14 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
      * 模板名称
      */
     @ApiModelProperty("模板名称")
+    @Size(max = 80, min = 1)
+    @NotBlank(message = "模板名称不能为空")
     private String name;
     /**
      * 模板编号
      */
     @ApiModelProperty("模板编号")
+    @Size(max = 30, min = 1)
     private String numberCode;
     /**
      * 品类型号
@@ -65,7 +68,46 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
      * 描述
      */
     @ApiModelProperty("描述")
+    @Size(max = 500, min = 0)
     private String description;
+    @ApiModelProperty("关联的软件业务id集合")
+    private List<Long> softBussinessIds;
+    @ApiModelProperty("关联的补丁主键id集合")
+    private List<Integer> patchIds;
+    @ApiModelProperty("模板审核的用户主键id集合")
+    private List<Integer> nextExecutor;
+    @ApiModelProperty("创建时间")
+    private long gmtCreate;
+    @ApiModelProperty("修改时间")
+    private long gmtModified;
+    @ApiModelProperty("创建用户")
+    private String createUser;
+    @ApiModelProperty("修改用户")
+    private String modifiedUser;
+
+    public List<Long> getSoftBussinessIds() {
+        return softBussinessIds;
+    }
+
+    public void setSoftBussinessIds(List<Long> softBussinessIds) {
+        this.softBussinessIds = softBussinessIds;
+    }
+
+    public List<Integer> getPatchIds() {
+        return patchIds;
+    }
+
+    public void setPatchIds(List<Integer> patchIds) {
+        this.patchIds = patchIds;
+    }
+
+    public List<Integer> getNextExecutor() {
+        return nextExecutor;
+    }
+
+    public void setNextExecutor(List<Integer> nextExecutor) {
+        this.nextExecutor = nextExecutor;
+    }
 
     public String getStringId() {
         return stringId;
@@ -157,6 +199,38 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
 
     public Integer getId() {
         return Integer.valueOf(stringId);
+    }
+
+    public long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifiedUser() {
+        return modifiedUser;
+    }
+
+    public void setModifiedUser(String modifiedUser) {
+        this.modifiedUser = modifiedUser;
     }
 
     @Override

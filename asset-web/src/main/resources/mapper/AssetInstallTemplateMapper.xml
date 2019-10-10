@@ -316,7 +316,13 @@
         SELECT count(*) FROM `asset_install_template` WHERE number_code=#{numberCode} and status=1
     </select>
     <select id="queryOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
-        SELECT  business_id as osCode,product_name as osName FROM `asset_cpe_filter` where status=1
+        SELECT business_id as osCode,product_name as osName FROM `asset_cpe_filter`
+        <trim prefixOverrides="and" prefix="where">
+            <if test="osBusinessId !=null ">
+                business_id=#{osBusinessId}
+            </if>
+            and status=1
+        </trim>
     </select>
     <select id="querySoftCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
         select count(1) from asset_software_install_template where install_template_id = #{pid} and status = 1
@@ -473,4 +479,40 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <insert id="insertBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_software_install_template
+        (install_template_id,software_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="softBussinessIds != null">
+                <foreach collection="softBussinessIds" item="softBussinessId" separator=",">
+                    (#{stringId},#{softBussinessId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_patch_install_template
+        (install_template_id,patch_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="patchIds != null">
+                <foreach collection="patchIds" item="patchId" separator=",">
+                    (#{stringId},#{patchId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_install_template_check
+        (install_template_id,user_id,result,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="nextExecutor != null">
+                <foreach collection="nextExecutor" item="userId" separator=",">
+                    (#{stringId},#{userId},1,#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
 </mapper>

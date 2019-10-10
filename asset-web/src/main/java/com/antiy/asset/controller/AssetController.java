@@ -1,5 +1,18 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
@@ -17,18 +30,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -88,12 +91,10 @@ public class AssetController {
         }
         // 是否未知资产列表查询
         if (asset.getUnknownAssets() && Objects.isNull(asset.getAssetSource())) {
-            asset.setAssetSourceList(new ArrayList() {
-                {
-                    add(AssetSourceEnum.ASSET_DETECTION.getCode());
-                    add(AssetSourceEnum.AGENCY_REPORT.getCode());
-                }
-            });
+            List<Integer> sourceList = Lists.newArrayList();
+            sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
+            sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
+            asset.setAssetSourceList(sourceList);
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
@@ -253,9 +254,9 @@ public class AssetController {
     @ApiOperation(value = "判断mac是否重复,true重复", notes = "传入资产mac")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
-    public ActionResponse CheckRepeatMAC(@ApiParam(value = "资产mac") String mac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(mac));
+    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
+    public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac()));
     }
 
     /**
@@ -267,10 +268,9 @@ public class AssetController {
     @ApiOperation(value = "判断编号是否重复，true重复", notes = "传入资产编号")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatNumber", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
-    public ActionResponse CheckRepeatNumber(@ApiParam(value = "资产编号") String number) throws Exception {
-
-        return ActionResponse.success(iAssetService.CheckRepeatNumber(number));
+    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
+    public ActionResponse CheckRepeatNumber(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatNumber(numberMac.getNumber()));
     }
 
     /**
@@ -543,8 +543,8 @@ public class AssetController {
     @ApiOperation(value = "根据厂商获取安全设备名称列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
     @RequestMapping(value = "/safetyEquipment/name", method = RequestMethod.POST)
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name) {
-        List<String> nameList = iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier,name);
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name) {
+        List<String> nameList = iAssetService.getAllNameofSafetyEquipmentBySupplier(supplier, name);
         return nameList;
     }
 
@@ -554,8 +554,8 @@ public class AssetController {
     @ApiOperation(value = "获取安全设备版本列表", notes = "无参")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class), })
     @RequestMapping(value = "/safetyEquipment/version", method = RequestMethod.POST)
-    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version) {
-        List<String> versionList = iAssetService.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName,version);
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version) {
+        List<String> versionList = iAssetService.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName, version);
         return versionList;
     }
 }

@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
@@ -59,7 +60,7 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(@Param("osBusinessId") String osBusinessId);
 
     /**
      * 查询装机模板的软件数量
@@ -101,4 +102,28 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     List<AssetInstallTemplateResponse> queryTemplateInfo(ObjectQuery query);
 
     List<AssetInstallTemplateResponse> queryFilteredTemplate(ObjectQuery query);
+
+    /**
+     * 批量插入补丁与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchPatch(AssetInstallTemplateRequest request);
+
+    /**
+     * 批量插入软件与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchSoft(AssetInstallTemplateRequest request);
+
+    /**
+     * 批量插入审核用户与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchUser(AssetInstallTemplateRequest request);
 }

@@ -135,11 +135,12 @@
         <foreach collection="list" item="item" separator="," open="(" close=")">
             #{item}
         </foreach>
+        and asset_id != #{id}
         and status = 1
     </select>
     <!--删除资产mac关系-->
     <delete id="deleteByAssetId">
-        update asset_mac_relation set status = 0 where assetId = #{assetId}
+        update asset_mac_relation set status = 0 where asset_id = #{assetId}
     </delete>
     <!--批量保存资产mac关系-->
     <insert id="insertBatch">

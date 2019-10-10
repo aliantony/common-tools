@@ -48,7 +48,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(String osBusinessId);
 
     /**
      * 保存
@@ -138,4 +138,12 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @return
      */
     List<PatchInfoResponse> queryPatchs(PrimaryKeyQuery query);
+
+    /**
+     * 提交模板信息
+     *
+     * @param request
+     * @return
+     */
+    String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
 }

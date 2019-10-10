@@ -20,6 +20,7 @@ import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -67,8 +68,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public List<AssetInstallTemplateOsResponse> queryOs() {
-        return assetInstallTemplateDao.queryOs();
+    public List<AssetInstallTemplateOsResponse> queryOs(String osBusinessId) {
+        return assetInstallTemplateDao.queryOs(osBusinessId);
     }
 
     @Override
@@ -192,6 +193,26 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         return BeanConvert
                 .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+    }
+
+    @Override
+    @Transactional
+    public String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
+        if (request.getStringId()==null){
+            String unknowId="0";
+            request.setStringId(unknowId);
+        }
+        request.setCreateUser(LoginUserUtil.getLoginUser().getId().toString());
+        request.setGmtCreate(System.currentTimeMillis());
+        AssetInstallTemplate template = requestConverter.convert(request, AssetInstallTemplate.class);
+        template.setCategoryModel(1);
+        template.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
+        assetInstallTemplateDao.insert(template);
+        request.setStringId(template.getStringId());
+        assetInstallTemplateDao.insertBatchPatch(request);
+        assetInstallTemplateDao.insertBatchSoft(request);
+        assetInstallTemplateDao.insertBatchUser(request);
+        return "提交成功";
     }
 
 }
