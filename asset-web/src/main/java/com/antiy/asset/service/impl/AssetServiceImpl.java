@@ -1020,7 +1020,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getById(Objects.toString(asset.getBusinessId()));
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(condition.getPrimaryKey());
         assetResponse
             .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
         assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
@@ -1109,7 +1109,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
-                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),assetOuterRequest.getAsset().getId());
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),
+                assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
