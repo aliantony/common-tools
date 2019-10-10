@@ -123,6 +123,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
     </select>
 
@@ -131,6 +132,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
     </select>
 

@@ -1,18 +1,16 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -27,6 +25,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
     @Encode
     private String[]     ids;
+    /**
+     * 资产id列表(模板下载使用)
+     */
+    @Encode
+    private List<String> templateList;
 
     /**
      * 综合查询条件
@@ -707,5 +710,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setUnknownAssets(Boolean unknownAssets) {
         this.unknownAssets = unknownAssets;
+    }
+
+    public List<String> getTemplateList() {
+        return templateList;
+    }
+
+    public void setTemplateList(List<String> templateList) {
+        this.templateList = templateList;
     }
 }

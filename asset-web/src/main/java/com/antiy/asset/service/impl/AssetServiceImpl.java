@@ -263,6 +263,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("请勿重复提交！");
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
@@ -725,7 +727,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setIds (processTemplateRequest.getIds ().toArray ( new String[]{}));
+        assetQuery.setTemplateList(processTemplateRequest.getIds());
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
@@ -1018,6 +1020,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 获取主表信息
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
+        // 获取厂商，名称，版本
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getById(Objects.toString(asset.getBusinessId()));
+        assetResponse.setManufacturer(assetHardSoftLib.getSupplier());
+        assetResponse.setName(assetHardSoftLib.getProductName());
+        String m = Optional.ofNullable(assetHardSoftLib.getSupplier()).orElse("")
+                   + Optional.ofNullable(assetHardSoftLib.getProductName()).orElse("");
+        assetResponse.setVersion(
+            Optional.ofNullable(assetHardSoftLib.getCpeUri()).map(str -> str.substring(9 + m.length())).orElse(""));
         // 获取区域
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
@@ -1048,7 +1058,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetMacRelation> assetMacRelations = assetMacRelationDao.getByWhere(param);
         assetResponse.setMac(macResponseConverter.convert(assetMacRelations, AssetMacRelationResponse.class));
 
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode())) {
             List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
                 AssetNetworkEquipmentResponse assetNetworkEquipmentResponse = networkResponseConverter
@@ -1056,7 +1066,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterResponse.setAssetNetworkEquipment(assetNetworkEquipmentResponse);
             }
         }
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.SAFETY.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.SAFETY.getCode())) {
             List<AssetSafetyEquipment> assetSafetyEquipments = assetSafetyEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetSafetyEquipments)) {
                 AssetSafetyEquipmentResponse assetSafetyEquipmentResponse = safetyResponseConverter
@@ -1065,7 +1075,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode())) {
             List<AssetStorageMedium> assetStorageMedias = assetStorageMediumDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetStorageMedias)) {
                 AssetStorageMediumResponse assetStorageMediumResponse = storageResponseConverter
