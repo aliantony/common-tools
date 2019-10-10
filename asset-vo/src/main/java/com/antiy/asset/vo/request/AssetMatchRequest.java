@@ -24,6 +24,7 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
     @ApiModelProperty("MAC")
     @NotNull(message = "MAC不能为空")
     private String        mac;
+    @ApiModelProperty(hidden = true)
     private List<Integer> areaIds;
 
     @ApiModelProperty(value = "当前用户区域集合", hidden = true)
