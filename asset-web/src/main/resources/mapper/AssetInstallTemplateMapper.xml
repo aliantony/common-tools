@@ -316,7 +316,13 @@
         SELECT count(*) FROM `asset_install_template` WHERE number_code=#{numberCode} and status=1
     </select>
     <select id="queryOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
-        SELECT  business_id as osCode,product_name as osName FROM `asset_cpe_filter` where status=1
+        SELECT business_id as osCode,product_name as osName FROM `asset_cpe_filter`
+        <trim prefixOverrides="and" prefix="where">
+            <if test="osBusinessId !=null ">
+                business_id=#{osBusinessId}
+            </if>
+            and status=1
+        </trim>
     </select>
     <select id="querySoftCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
         select count(1) from asset_software_install_template where install_template_id = #{pid} and status = 1

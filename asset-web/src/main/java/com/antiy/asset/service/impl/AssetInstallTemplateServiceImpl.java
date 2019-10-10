@@ -68,8 +68,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public List<AssetInstallTemplateOsResponse> queryOs() {
-        return assetInstallTemplateDao.queryOs();
+    public List<AssetInstallTemplateOsResponse> queryOs(String osBusinessId) {
+        return assetInstallTemplateDao.queryOs(osBusinessId);
     }
 
     @Override

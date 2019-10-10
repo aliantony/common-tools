@@ -48,7 +48,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(String osBusinessId);
 
     /**
      * 保存

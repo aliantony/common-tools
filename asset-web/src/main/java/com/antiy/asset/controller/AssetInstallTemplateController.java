@@ -94,7 +94,7 @@ public class AssetInstallTemplateController {
     @ApiResponse(code = 200, message = "ok", response = String.class)
     @RequestMapping(value = "/query/os", method = RequestMethod.POST)
     public ActionResponse queryOs() {
-        return ActionResponse.success(iAssetInstallTemplateService.queryOs());
+        return ActionResponse.success(iAssetInstallTemplateService.queryOs(null));
     }
 
     /**
@@ -236,7 +236,7 @@ public class AssetInstallTemplateController {
 
     @ApiOperation(value = "模板创建-提交模板")
     @ApiResponse(code = 200, message = "ok", response = String.class)
-    @RequestMapping(value = "/submit")
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public ActionResponse createInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateRequest", required = true) AssetInstallTemplateRequest request) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.submitTemplateInfo(request));
     }

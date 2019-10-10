@@ -60,7 +60,7 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(@Param("osBusinessId") String osBusinessId);
 
     /**
      * 查询装机模板的软件数量
