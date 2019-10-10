@@ -1593,10 +1593,10 @@
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{asset.assetStatus},
-        status = #{asset.status}
+        asset_status = #{asset.assetStatus}
         where id = #{asset.id}
         and asset_status = #{lastAssetStatus}
+        and status = 1
     </update>
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
