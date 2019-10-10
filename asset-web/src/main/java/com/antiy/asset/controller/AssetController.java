@@ -254,8 +254,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
-    public ActionResponse CheckRepeatMAC(@ApiParam(value = "资产mac") String mac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(mac));
+    public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac()));
     }
 
     /**
@@ -268,9 +268,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/CheckRepeatNumber", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
-    public ActionResponse CheckRepeatNumber(String number) throws Exception {
-
-        return ActionResponse.success(iAssetService.CheckRepeatNumber(number));
+    public ActionResponse CheckRepeatNumber(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.CheckRepeatNumber(numberMac.getNumber()));
     }
 
     /**

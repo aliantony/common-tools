@@ -264,7 +264,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("插入重复键！");
+                    throw new BusinessException("编号重复！");
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
@@ -281,7 +281,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        if (id != null && id > 0) {
+        if (id != null && id > 0 && request.getManualStartActivityRequest() != null) {
 
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(String.valueOf(id));
@@ -296,8 +296,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
 
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
         }
         return ActionResponse.success();
     }
