@@ -3,11 +3,13 @@ package com.antiy.asset.vo.request;
 import javax.validation.constraints.NotNull;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
@@ -18,14 +20,15 @@ import java.util.List;
  */
 @ApiModel(value = "匹配对象")
 public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
-    @ApiModelProperty("IP")
-    @NotNull(message = "IP不能为空")
-    private String        ip;
-    @ApiModelProperty("MAC")
-    @NotNull(message = "MAC不能为空")
-    private String        mac;
+    @ApiModelProperty("IP+MAC")
+    @NotNull(message = "IP+MAC不能为空")
+    private List<IpMac>   ipMacs;
+
     @ApiModelProperty(hidden = true)
     private List<Integer> areaIds;
+
+    @ApiModelProperty(value = "当前用户区域集合", hidden = true)
+    private IpMac         ipMac;
 
     @ApiModelProperty(value = "当前用户区域集合", hidden = true)
     public List<Integer> getAreaIds() {
@@ -36,24 +39,26 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
         this.areaIds = areaIds;
     }
 
-    public String getIp() {
-        return ip;
+    public List<IpMac> getIpMacs() {
+        return ipMacs;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setIpMacs(List<IpMac> ipMacs) {
+        this.ipMacs = ipMacs;
     }
 
-    public String getMac() {
-        return mac;
+    public IpMac getIpMac() {
+        return ipMac;
     }
 
-    public void setMac(String mac) {
-        this.mac = mac;
+    public void setIpMac(IpMac ipMac) {
+        this.ipMac = ipMac;
     }
 
     @Override
     public void validate() throws RequestParamValidateException {
-
+        if (CollectionUtils.isEmpty(this.ipMacs)) {
+            throw new BusinessException("IP+MAC不能为空");
+        }
     }
 }

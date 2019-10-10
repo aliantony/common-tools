@@ -2727,12 +2727,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+    public List<IpMac> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        List<IpMac> ipMacList = new ArrayList<>();
         // 获取用户所在的区域
         List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         request.setAreaIds(areaIdList);
-        assetDao.matchAssetByIpMac(request);
-        return false;
+        for (IpMac ipMac : request.getIpMacs()) {
+            request.setIpMac(ipMac);
+            if (!assetDao.matchAssetByIpMac(request)) {
+                ipMacList.add(ipMac);
+            }
+
+        }
+        return ipMacList;
     }
 
     private void operationRecord(String id) throws Exception {
