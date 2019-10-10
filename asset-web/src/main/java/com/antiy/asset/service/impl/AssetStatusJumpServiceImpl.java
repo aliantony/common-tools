@@ -65,12 +65,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (CollectionUtils.isNotEmpty(assetIdList)) {
             assetsInDb = assetDao.findByIds(assetIdList);
         }
-        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "未查询到所选资产信息,请稍后重试");
+        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "所选资产已被操作,请刷新后重试");
 
         // 当前所有资产的可执行操作与当前状态一致
         assetsInDb.forEach(asset -> {
             if (!asset.getAssetStatus().equals(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode())) {
-                LogUtils.warn(logger, "资产状态不匹配 request:{}", statusJumpRequest);
+                LogUtils.info(logger, "资产状态不匹配 request:{}", statusJumpRequest);
                 throw new BusinessException("当前选中的资产已被其他人员操作,请刷新页面后重试");
             }
         });
@@ -79,13 +79,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         setInProcess(statusJumpRequest, assetsInDb);
 
         // 2.提交至工作流
-        boolean activitySuccess = true;
-        // boolean activitySuccess = startActivity(statusJumpRequest);
-        // if (!activitySuccess) {
-        //     assetDao.updateAssetBatch(assetsInDb);
-        //     LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
-        //     return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新后重试");
-        // }
+        // boolean activitySuccess = true;
+        boolean activitySuccess = startActivity(statusJumpRequest);
+        if (!activitySuccess) {
+            assetDao.updateAssetBatch(assetsInDb);
+            LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
+        }
 
         // 3.数据库操作
         updateData(statusJumpRequest, assetsInDb);
@@ -126,19 +126,18 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
-        // 1.退役需要启动流程,其他步骤完成流程
-        //TODO 退役启动流程
-        if (AssetFlowEnum.RETIRE.getCurrentAssetStatus().equals(assetStatusRequest.getAssetFlowEnum().getCurrentAssetStatus())) {
+        // 1.拟退役需要启动流程,其他步骤完成流程
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())) {
             // 启动流程
             assetStatusRequest.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getId().toString());
             try {
                 ActionResponse actionResponse = activityClient.manualStartProcess(assetStatusRequest.getManualStartActivityRequest());
                 LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
-                if (actionResponse == null || actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                if (actionResponse == null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     return false;
                 }
             } catch (Exception e) {
-                LogUtils.error(logger, "请求工作流数据异常: {}", e);
+                LogUtils.error(logger, "请求工作流数据异常:manualStartActivityRequest:{}, {}", assetStatusRequest.getManualStartActivityRequest(), e);
                 return false;
             }
         } else {
@@ -172,7 +171,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
      * 如果是退役,删除通联关系
      *
      * @param statusJumpRequest
-     * @param assetsInDb 库中的数据
+     * @param assetsInDb        库中的数据
      */
     private void updateData(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
         List<AssetOperationRecord> operationRecordList = new ArrayList<>();
@@ -207,19 +206,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
         transactionTemplate.execute(transactionStatus -> {
             try {
-                if (CollectionUtils.isNotEmpty(operationRecordList)) {
-                    assetOperationRecordDao.insertBatch(operationRecordList);
-                    Integer integer = assetDao.updateAssetBatch(updateAssetList);
-                    LogUtils.debug(logger,"row{}", integer);
-                }
+                assetOperationRecordDao.insertBatch(operationRecordList);
+                assetDao.updateAssetBatch(updateAssetList);
                 if (CollectionUtils.isNotEmpty(deleteLinkRelationIdList)) {
                     assetLinkRelationDao.deleteByAssetIdList(deleteLinkRelationIdList);
                 }
             } catch (Exception e) {
                 transactionStatus.setRollbackOnly();
-                LogUtils.error(logger, "数据库操作异常:{},插入资产操作记录operationRecordList:{},updateAssetList:{},assetLinkRelationDao: {}",
-                        e, operationRecordList, updateAssetList, deleteLinkRelationIdList);
-                throw new BusinessException("操作失败,请稍后重试");
+                LogUtils.error(logger, "数据库操作异常:{},插入资产操作记录operationRecordList:{},updateAssetList:{},assetLinkRelationDao: {}", e, operationRecordList, updateAssetList, deleteLinkRelationIdList);
+                throw new BusinessException("操作失败,请联系运维人员进行解决");
             }
             return null;
         });

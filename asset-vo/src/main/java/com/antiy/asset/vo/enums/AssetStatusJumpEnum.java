@@ -76,7 +76,7 @@ public enum AssetStatusJumpEnum {
     }
 
     public static AssetStatusEnum getNextStatus(AssetStatusEnum currentStatus, Boolean isAgree) {
-        if(currentStatus == null){
+        if (currentStatus == null) {
             return null;
         }
         for (AssetStatusJumpEnum statusJumpEnum : AssetStatusJumpEnum.values()) {
@@ -96,15 +96,14 @@ public enum AssetStatusJumpEnum {
     }
 
     /**
-     *
-     * @param assetFlowEnum 资产当前流程
-     * @param isAgree 当前操作是否通过。通过true，不通过false
+     * @param assetFlowEnum               资产当前流程
+     * @param isAgree                     当前操作是否通过。通过true，不通过false
      * @param isWaitCorrectToWaitRegister 整改到待登记 通过true，不通过false
-     * @param isNetIn 已入网 是true，否false
+     * @param isNetIn                     已入网 是true，否false
      * @return AssetStatusEnum
      */
     public static AssetStatusEnum getNextStatus(AssetFlowEnum assetFlowEnum, Boolean isAgree,
-                                                Boolean isWaitCorrectToWaitRegister, boolean isNetIn) {
+                                                boolean isWaitCorrectToWaitRegister, boolean isNetIn) {
         if (assetFlowEnum == null || assetFlowEnum.getCurrentAssetStatus() == null) {
             return null;
         }
