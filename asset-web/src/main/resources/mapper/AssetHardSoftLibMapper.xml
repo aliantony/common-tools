@@ -344,6 +344,14 @@
         where id = #{id}
     </select>
 
+    <select id="getByBusinessId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{businessId}
+    </select>
+
     <delete id="deleteById" parameterType="java.lang.String">
         delete from
         <include refid="Table_Name"></include>

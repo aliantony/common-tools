@@ -1500,6 +1500,18 @@
         and status = 1 and uuid is not null
         group by id
     </select>
+
+    <select id="findIdByAreaIds" resultType="java.lang.String"
+            parameterType="java.util.List">
+        select business_id from asset
+        WHERE area_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and business_id is not null
+        group by id
+    </select>
+
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id
@@ -1611,7 +1623,7 @@
         where asset.id=#{id}
     </select>
 
-    <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
+    <select id="getAssemblyInfoById" parameterType="java.lang.String" resultType="com.antiy.asset.entity.AssetAssembly">
   SELECT
   asset.id as assetId,
 	assembly.business_id as businessId,
@@ -1624,7 +1636,7 @@ FROM
 LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
 LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
 WHERE
-	asset.id = 1
+	asset.id = #{id}
   and asset.status=1
   and assembly.status=1
   and lib.status=1
@@ -1660,7 +1672,7 @@ AND a.`status` = 1
         SELECT id,name,asset_status as assetStatus
         FROM asset
         WHERE status=1
-        AND  id IN
+        AND id IN
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
@@ -1674,30 +1686,30 @@ AND a.`status` = 1
             INNER JOIN baseline_template bt ON asset.baseline_template_id = bt.id
     </select>
     <select id="getAllSupplierofSafetyEquipment" resultType="java.lang.String">
-       SELECT manufacturer
-       FROM   asset
-       where  category_model =3 and status=1
-       <if test="supplier !=null ">
-            and manufacturer LIKE  CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
-       </if>
-       GROUP  BY manufacturer
+        SELECT manufacturer
+        FROM asset
+        where category_model =3 and status=1
+        <if test="supplier !=null ">
+            and manufacturer LIKE CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY manufacturer
     </select>
     <select id="getAllNameofSafetyEquipmentBySupplier" resultType="java.lang.String">
         SELECT name
-        FROM  asset
-        where status=1 and category_model =3 AND   manufacturer=#{supplier}
+        FROM asset
+        where status=1 and category_model =3 AND manufacturer=#{supplier}
         <if test="name !=null">
-            and name LIKE  CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and name LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
-        GROUP  BY name
+        GROUP BY name
     </select>
     <select id="getAllVersionofSafetyEquipment" resultType="java.lang.String">
-        SELECT  version
-        from  asset
-        where  status=1 and category_model =3 AND   manufacturer=#{supplier} AND name=#{name}
+        SELECT version
+        from asset
+        where status=1 and category_model =3 AND manufacturer=#{supplier} AND name=#{name}
         <if test="version !=null">
-            and version LIKE  CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+            and version LIKE CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
         </if>
-        GROUP  BY version
+        GROUP BY version
     </select>
 </mapper>

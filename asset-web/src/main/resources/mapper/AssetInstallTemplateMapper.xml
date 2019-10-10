@@ -296,15 +296,17 @@
             ait.id,
             ait.`name`,
             ait.number_code as numberCode,
-            ait.description  ,
-            ( SELECT count( * ) FROM asset_software_install_template WHERE asset_software_install_template.install_template_id = ait.id ) AS softwareCount,
-            ( SELECT count( * ) FROM asset_patch_install_template WHERE asset_patch_install_template.install_template_id = ait.id ) AS patchCount
+            ait.description,
+            count(DISTINCT asset_software_install_template.id) as softwareCount,
+            count(DISTINCT asset_patch_install_template.id) as patchCount
+
         FROM
             asset_install_template AS ait
-        where
 
-            ait.id=#{templateId}
-
+            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id
+            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id
+            GROUP BY ait.id
+            HAVING ait.id=#{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1

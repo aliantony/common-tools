@@ -43,6 +43,7 @@ import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
+import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -197,6 +198,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
+                    asset.setAssetSource(AssetSourceEnum.MANUAL_REGISTRATION.getCode());
                     assetDao.insert(asset);
 
                     // 记录操作日志和运行日志
@@ -1020,7 +1022,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getById(Objects.toString(asset.getBusinessId()));
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(condition.getPrimaryKey());
         assetResponse
             .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
         assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
@@ -1109,7 +1111,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
-                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),assetOuterRequest.getAsset().getId());
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),
+                assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1467,6 +1470,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setWarranty("2年");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setImportanceDegree("1");
+        otherDeviceEntity.setIp("192.158.58.58");
+        otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         dataList.add(otherDeviceEntity);
         return dataList;
     }
@@ -2903,6 +2908,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception {
         if (CollectionUtils.isNotEmpty(request.getAreaIds())) {
             return assetDao.findUuidByAreaIds(request.getAreaIds());
+        } else {
+            throw new BusinessException("区域ID不能为空");
+        }
+
+    }
+
+    @Override
+    public List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception {
+        if (CollectionUtils.isNotEmpty(request.getAreaIds())) {
+            return assetDao.findIdByAreaIds(request.getAreaIds());
         } else {
             throw new BusinessException("区域ID不能为空");
         }

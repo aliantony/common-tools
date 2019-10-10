@@ -55,7 +55,6 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      */
     List<AssetHardSoftLib> queryHardSoftLibList(AssetHardSoftLibQuery query);
 
-
     Integer queryCountSoftWares(AssetSoftwareQuery query);
 
     /**
@@ -66,4 +65,6 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
     List<AssetHardSoftLib> querySoftWares(AssetSoftwareQuery query);
 
     List<AssetHardSoftLib> querySoftsRelations(String templateId);
+
+    AssetHardSoftLib getByBusinessId(@Param("businessId") String businessId);
 }

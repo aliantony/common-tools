@@ -248,6 +248,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     List<String> findUuidByAreaIds(List<String> areaIds) throws Exception;
 
+    /**
+     * 根据区域ID返回资产ID
+     * @param areaIds
+     * @return
+     * @throws Exception
+     */
+    List<String> findIdByAreaIds(List<String> areaIds) throws Exception;
+
     List<Integer> findAlarmAssetId(AssetQuery query);
 
     int findAlarmAssetCount(AssetQuery query);
