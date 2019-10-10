@@ -1717,7 +1717,7 @@ AND a.`status` = 1
             parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
         SELECT
         IF
-        ( count( 1 ) > 1, TRUE, FALSE ) as result
+        ( count( 1 ) &gt;= 1, TRUE, FALSE ) as result
         FROM
         (
         SELECT
