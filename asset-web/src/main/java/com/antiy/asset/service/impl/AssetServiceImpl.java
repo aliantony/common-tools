@@ -2909,6 +2909,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     }
 
+    @Override
+    public List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception {
+        if (CollectionUtils.isNotEmpty(request.getAreaIds())) {
+            return assetDao.findIdByAreaIds(request.getAreaIds());
+        } else {
+            throw new BusinessException("区域ID不能为空");
+        }
+
+    }
+
     @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
     public void listen(String data, Acknowledgment ack) {
         AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);

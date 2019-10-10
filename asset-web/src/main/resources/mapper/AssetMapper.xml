@@ -1500,6 +1500,18 @@
         and status = 1 and uuid is not null
         group by id
     </select>
+
+    <select id="findIdByAreaIds" resultType="java.lang.String"
+            parameterType="java.util.List">
+        select business_id from asset
+        WHERE area_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and uuid is not null
+        group by id
+    </select>
+
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id

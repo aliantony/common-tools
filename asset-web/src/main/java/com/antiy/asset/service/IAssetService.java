@@ -276,6 +276,14 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception;
 
+    /**
+     * 根据区域ID返回资产ID
+     *
+     * @return
+     * @throws Exception
+     */
+    List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception;
+
     Map findAlarmAssetCount();
 
     void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
