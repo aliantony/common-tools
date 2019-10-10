@@ -517,4 +517,28 @@
         </trim>
 
     </insert>
+    <select id="queryCheckTemplateUserId" resultType="java.lang.Integer">
+       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId}
+    </select>
+    <sql id="Set_InstallTemplate_Check_List">
+        <if test=" advice != null">
+            advice = #{advice },
+        </if>
+        <if test=" result != null">
+            result = #{result },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+    </sql>
+    <update id="checkTemplate" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
+        update asset_install_template_check
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_InstallTemplate_Check_List"></include>
+        </trim>
+        where install_template_id = #{installTemplateId }
+    </update>
 </mapper>

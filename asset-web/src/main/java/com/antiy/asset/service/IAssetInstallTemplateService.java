@@ -5,6 +5,7 @@ import java.util.List;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
@@ -146,4 +147,6 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @return
      */
     String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
+
+    String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception;
 }

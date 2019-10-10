@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
@@ -126,4 +127,8 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      * @return
      */
     Integer insertBatchUser(AssetInstallTemplateRequest request);
+
+    List<Integer> queryCheckTemplateUserId(@Param("installTemplateId") Integer installTemplateId);
+
+    Integer checkTemplate(AssetInstallTemplateCheckRequest request);
 }
