@@ -39,7 +39,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	private IAssetHardSoftLibService hardSoftLibService;
 	@MockBean
 	private AssetOperationRecordDao recordDao;
-	@MockBean
+	@Resource
 	private AssetHardSoftLibDao hardSoftLibDao;
 	@Before
 	public void setUp() throws Exception {
@@ -90,7 +90,8 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	@Test
 	public void queryAssetList() throws Exception{
 		AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
-		query.setProductName("1024");
+		query.setSupplier("antiy");
+		//query.setProductName("ie");
 /*		AssetHardSoftLib rowData = new AssetHardSoftLib();
 		rowData.setBusinessId(RandomStringUtils.random(18));
 		rowData.setNumber(1);

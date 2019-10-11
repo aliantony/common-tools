@@ -1,7 +1,5 @@
-package com.antiy.asset.vo.request;
+package com.antiy.asset.vo.enums;
 
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.ValuedEnum;
 
 /**
  * @author zhouye
@@ -56,7 +54,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 无状态-0
 	 */
-	OPERATION_NO("无上一步状态", Integer.valueOf(0)) ;
+	OPERATION_NO("登记资产。", 0) ;
 	AssetChangeDetailEnum(String name, int value) {
 		this.name = name;
 		this.value = value;
@@ -74,7 +72,8 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	public String getName() {
 		return ","+ name;
 	}
-	public String describe(String processResult){
+	public String
+	describe(String processResult){
 		String isPass ="1";
 		String pr ="";
 		if (processResult==null || "".equals(processResult)){
