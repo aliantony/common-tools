@@ -87,7 +87,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
         boolean isUpdateStatusOnly = request.getIsUpdateStatus() != 0;
         Integer templateId = request.getId();
-        Integer currentStatus = assetInstallTemplateDao.getById(templateId).getCurrentStatus();
+        Integer currentStatus = assetInstallTemplateDao.getById(templateId.toString()).getCurrentStatus();
         Integer requestStatus = request.getCurrentStatus();
         Integer enableCode = AssetInstallTemplateStatusEnum.ENABLE.getCode();
         Integer forbiddenCode = AssetInstallTemplateStatusEnum.FOBIDDEN.getCode();
@@ -153,6 +153,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplateDao.insertBatchUser(request);
         //将模板更新为待审核
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
+        assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
             return "编辑成功";
         }
@@ -263,8 +264,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         assetInstallTemplateDao.insert(template);
         request.setStringId(template.getStringId());
-        assetInstallTemplateDao.insertBatchPatch(request);
-        assetInstallTemplateDao.insertBatchSoft(request);
+        if (request.getPatchIds() != null && !request.getPatchIds().isEmpty()) {
+            assetInstallTemplateDao.insertBatchPatch(request);
+        }
+        if (request.getSoftBussinessIds() != null && !request.getSoftBussinessIds().isEmpty()) {
+            assetInstallTemplateDao.insertBatchSoft(request);
+        }
         assetInstallTemplateDao.insertBatchUser(request);
         return "提交成功";
     }
