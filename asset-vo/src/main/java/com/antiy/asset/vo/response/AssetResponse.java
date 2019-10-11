@@ -241,6 +241,9 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty(value = "装机模板关联时间")
     private Long                           installTemplateCorrelationGmt;
 
+    @ApiModelProperty(value = "解密id")
+    private String                         decryptId;
+
     public String getAssetSourceName() {
         return assetSourceName;
     }
@@ -601,6 +604,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setContactTel(String contactTel) {
         this.contactTel = contactTel;
+    }
+
+    public String getDecryptId() {
+        return decryptId;
+    }
+
+    public void setDecryptId(String decryptId) {
+        this.decryptId = decryptId;
     }
 
     @Override
