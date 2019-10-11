@@ -187,7 +187,7 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "资产关联的装机模板信息", notes = "传入模板ID")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetTemplateRelationResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/relationInfo", method = RequestMethod.POST)
-    public ActionResponse<AssetTemplateRelationResponse> queryTemplateByAssetId(QueryCondition queryCondition) throws Exception {
+    public ActionResponse<AssetTemplateRelationResponse> queryTemplateByAssetId(@RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "模板Id不能为空");
         AssetTemplateRelationResponse assetTemplateRelationResponse = iAssetInstallTemplateService
                 .queryTemplateByAssetId(queryCondition);
@@ -197,7 +197,7 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "模板审核信息", notes = "传入模板ID")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/auditInfo", method = RequestMethod.POST)
-    public ActionResponse<List<AssetInstallTemplateCheckResponse>> queryTemplateCheckByTemplateId(QueryCondition queryCondition) throws Exception {
+    public ActionResponse<List<AssetInstallTemplateCheckResponse>> queryTemplateCheckByTemplateId(@RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "装机模板Id不能为空");
         List<AssetInstallTemplateCheckResponse> templateCheckResponses = iAssetInstallTemplateCheckService
                 .queryTemplateCheckByTemplateId(queryCondition);
