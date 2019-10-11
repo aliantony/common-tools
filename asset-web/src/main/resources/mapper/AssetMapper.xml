@@ -1582,22 +1582,23 @@
         <foreach collection="assetList" separator=";" item="asset">
             update
             <include refid="Table_Name"></include>
-            set
-            <if test="#{asset.firstEnterNett} != null">
-                first_enter_nett = #{asset.firstEnterNett},
-            </if>
-            <if test="#{asset.assetStatus} != null">
-                asset_status = #{asset.assetStatus},
-            </if>
-            <if test="#{asset.gmtModified} != null">
-                gmt_modified = #{asset.gmtModified},
-            </if>
-            <if test="#{asset.modifyUser} != null">
-                modify_user = #{asset.modifyUser},
-            </if>
-            <if test="#{asset.status} != null">
-                `status` = #{asset.status}
-            </if>
+            <set>
+                <if test="asset.firstEnterNett != null">
+                    first_enter_nett = #{asset.firstEnterNett},
+                </if>
+                <if test="asset.assetStatus != null">
+                    asset_status = #{asset.assetStatus},
+                </if>
+                <if test="asset.gmtModified != null">
+                    gmt_modified = #{asset.gmtModified},
+                </if>
+                <if test="asset.modifyUser != null">
+                    modify_user = #{asset.modifyUser},
+                </if>
+                <if test="asset.status != null">
+                    `status` = #{asset.status}
+                </if>
+            </set>
             where id = #{asset.id}
         </foreach>
     </update>

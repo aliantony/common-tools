@@ -115,4 +115,18 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 		query.setProductName("1024");
 		System.out.println(jsonSuperHero.write(hardSoftLibService.queryAssetList(query)).toString());
 	}
+
+	@Test
+	public void queryDbAssetList() {
+		ActionResponse response = recordService.queryAssetAllStatusInfo("143");
+		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
+		System.out.println(response.getBody());
+	}
+
+	@Test
+	public void queryDbPreList() {
+		ActionResponse response = recordService.batchQueryAssetPreStatusInfo(Arrays.asList("180"));
+		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
+		System.out.println(gson.toJson(response.getBody()));
+	}
 }

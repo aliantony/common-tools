@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.BeanConvert;
@@ -55,11 +56,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public List<Integer> queryTemplateStatus() {
-        // List<Integer> statusCode = assetInstallTemplateDao.queryTemplateStatus();
-        //
-        // Stream.of(AssetInstallTemplateStatusEnum.values()).filter(v->v.getCode()==statusCode);
-        return assetInstallTemplateDao.queryTemplateStatus();
+    public List<AssetInstallTemplateStatusResponse> queryTemplateStatus() {
+        return assetInstallTemplateDao.queryTemplateStatus().stream().map(v -> new AssetInstallTemplateStatusResponse(v, AssetInstallTemplateStatusEnum.getEnumByCode(v).getStatus())).collect(Collectors.toList());
     }
 
     @Override
@@ -85,15 +83,15 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     @Transactional
     public String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
-        boolean isUpdateStatusOnly = request.getIsUpdateStatus() != 0;
+        boolean isUpdateStatusOnly = request.getIsUpdateStatus() == 0;
         Integer templateId = request.getId();
-        Integer currentStatus = assetInstallTemplateDao.getById(templateId).getCurrentStatus();
-        Integer requestStatus = request.getCurrentStatus();
-        Integer enableCode = AssetInstallTemplateStatusEnum.ENABLE.getCode();
-        Integer forbiddenCode = AssetInstallTemplateStatusEnum.FOBIDDEN.getCode();
-        Integer rejectCode = AssetInstallTemplateStatusEnum.REJECT.getCode();
-        if (requestStatus != enableCode || requestStatus != forbiddenCode || requestStatus != rejectCode) {
-            throw new RequestParamValidateException("模板状态参数不合法");
+        int currentStatus = assetInstallTemplateDao.getById(templateId.toString()).getCurrentStatus();
+        int requestStatus = request.getUpdateStatus() == null ? 0 : request.getUpdateStatus();
+        int enableCode = AssetInstallTemplateStatusEnum.ENABLE.getCode();
+        int forbiddenCode = AssetInstallTemplateStatusEnum.FOBIDDEN.getCode();
+        int rejectCode = AssetInstallTemplateStatusEnum.REJECT.getCode();
+        if (currentStatus != enableCode && currentStatus != forbiddenCode && currentStatus != rejectCode) {
+            throw new RequestParamValidateException("非法操作");
         }
         request.setGmtModified(System.currentTimeMillis());
         request.setModifiedUser(LoginUserUtil.getLoginUser().getStringId());
@@ -125,34 +123,48 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         Set<String> delSofts = new HashSet<>(preSoftBusinessRelation);
         delSofts.removeAll(curSoftBusinessRelation);
         curSoftBusinessRelation.removeAll(preSoftBusinessRelation);
-        request.setSoftBussinessIds(delSofts);
-        assetInstallTemplateDao.deleteBatchSoft(request);
-        request.setSoftBussinessIds(curSoftBusinessRelation);
-        assetInstallTemplateDao.insertBatchSoft(request);
-
+        if (!delSofts.isEmpty()) {
+            request.setSoftBussinessIds(delSofts);
+            assetInstallTemplateDao.deleteBatchSoft(request);
+        }
+        if (!curSoftBusinessRelation.isEmpty()) {
+            request.setSoftBussinessIds(curSoftBusinessRelation);
+            assetInstallTemplateDao.insertBatchSoft(request);
+        }
         PrimaryKeyQuery query = new PrimaryKeyQuery();
         query.setPid(templateId.toString());
-        Set<String> prePatchIdRelation = assetInstallTemplateDao.queryPatchList(query).stream().map(v -> v.getStringId()).collect(Collectors.toSet());
-        Set<Integer> curPatchIds = request.getPatchIds();
-        Set<Integer> delPatchs = new HashSet<>(curPatchIds);
+        Set<String> prePatchIdRelation = assetInstallTemplateDao.queryPatchIds(query);
+        Set<String> curPatchIds = request.getPatchIds();
+        Set<String> delPatchs = new HashSet<>(prePatchIdRelation);
         delPatchs.removeAll(curPatchIds);
         curPatchIds.removeAll(prePatchIdRelation);
-        request.setPatchIds(delPatchs);
-        assetInstallTemplateDao.deleteBatchPatch(request);
-        request.setPatchIds(curPatchIds);
-        assetInstallTemplateDao.insertBatchPatch(request);
+        if (!delPatchs.isEmpty()) {
+            request.setPatchIds(delPatchs);
+            assetInstallTemplateDao.deleteBatchPatch(request);
+        }
+        if (!curPatchIds.isEmpty()) {
+            request.setPatchIds(curPatchIds);
+            assetInstallTemplateDao.insertBatchPatch(request);
+        }
+
 
         Set<String> preExecutor = assetInstallTemplateDao.queryCheckTemplateUserId(templateId);
         Set<String> delExecutor = new HashSet<>(preExecutor);
         Set<String> nowExecutor = request.getNextExecutor();
         delExecutor.removeAll(nowExecutor);
         nowExecutor.removeAll(preExecutor);
-        request.setNextExecutor(delExecutor);
-        assetInstallTemplateDao.deleteBatchUser(request);
-        request.setNextExecutor(nowExecutor);
-        assetInstallTemplateDao.insertBatchUser(request);
+        if (!delExecutor.isEmpty()) {
+            request.setNextExecutor(delExecutor);
+            assetInstallTemplateDao.deleteBatchUser(request);
+        }
+        if (!nowExecutor.isEmpty()) {
+            request.setNextExecutor(nowExecutor);
+            assetInstallTemplateDao.insertBatchUser(request);
+        }
+
         //将模板更新为待审核
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
+        assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
             return "编辑成功";
         }
@@ -239,13 +251,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
 
     @Override
-    public List<PatchInfoResponse> queryPatchs(PrimaryKeyQuery query) {
-        Integer count = assetInstallTemplateDao.queryPatchCount(query);
-        if (count <= 0) {
-            return Lists.newArrayList();
+    public List<PatchInfoResponse> queryPatchs(String templateId) {
+
+        List<PatchInfo> list= assetInstallTemplateDao.queryPatchRelations(templateId);
+        if (list.isEmpty()){
+            return new ArrayList<>();
         }
         return BeanConvert
-                .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+                .convert(list, PatchInfoResponse.class);
     }
 
     @Override
@@ -263,8 +276,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         assetInstallTemplateDao.insert(template);
         request.setStringId(template.getStringId());
-        assetInstallTemplateDao.insertBatchPatch(request);
-        assetInstallTemplateDao.insertBatchSoft(request);
+        if (request.getPatchIds() != null && !request.getPatchIds().isEmpty()) {
+            assetInstallTemplateDao.insertBatchPatch(request);
+        }
+        if (request.getSoftBussinessIds() != null && !request.getSoftBussinessIds().isEmpty()) {
+            assetInstallTemplateDao.insertBatchSoft(request);
+        }
         assetInstallTemplateDao.insertBatchUser(request);
         return "提交成功";
     }

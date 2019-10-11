@@ -54,7 +54,7 @@ public class AssetStatusJumpController {
     private IAssetSoftwareRelationService softwareRelationService;
 
     @Resource
-    private IAssetStatusJumpService assetStatusChangeFlowProcessImpl;
+    private IAssetStatusJumpService assetStatusJumpService;
 
     /**
      * 资产状态跃迁
@@ -67,7 +67,7 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
-        return assetStatusChangeFlowProcessImpl.changeStatus(statusJumpRequest);
+        return assetStatusJumpService.changeStatus(statusJumpRequest);
     }
 
     /**

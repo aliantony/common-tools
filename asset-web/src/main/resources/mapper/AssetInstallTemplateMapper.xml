@@ -421,9 +421,9 @@
             user_interaction as userInteraction,
             exclusive_install as exclusiveInstall,
             network_status as networkStatus
-        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id  and t1.status = 1 and t2.status = 1
+        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
         where
-        t1.install_template_id = #{pid}
+        t1.install_template_id = #{stringId} and t1.status=1  and t2.status = 1
     </select>
     <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="java.lang.Integer">
@@ -573,7 +573,7 @@
 
     </insert>
     <select id="queryCheckTemplateUserId" resultType="java.lang.Integer">
-       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId}
+       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId} and status=1
     </select>
     <sql id="Set_InstallTemplate_Check_List">
         <if test=" advice != null">
@@ -597,24 +597,46 @@
         where install_template_id = #{installTemplateId }
     </update>
     <update id="deleteBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
-        update asset_software_install_template set status=0,gmt_modified=#{gmtModified},modified_user={modifiedUser}
-        where install_template_id=#{installTemplateId } and software_id
+        update asset_software_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and software_id
         <foreach collection="softBussinessIds" item="softBussinessId" open="in (" close=")" separator=",">
             #{softBussinessId}
         </foreach>
     </update>
     <update id="deleteBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
-        update asset_patch_install_template set status=0,gmt_modified=#{gmtModified},modified_user={modifiedUser}
-        where install_template_id=#{installTemplateId } and patch_id
+        update asset_patch_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and patch_id
         <foreach collection="patchIds" item="patchId" open="in (" close=")" separator=",">
             #{patchId}
         </foreach>
     </update>
     <update id="deleteBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
-        update asset_install_template_check set status=0,gmt_modified=#{gmtModified},modified_user={modifiedUser}
-        where install_template_id=#{installTemplateId } and user_id
+        update asset_install_template_check set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and user_id
         <foreach collection="nextExecutor" item="nextExecutor" open="in (" close=")" separator=",">
             #{nextExecutor}
         </foreach>
     </update>
+    <select id="queryPatchIds" resultType="String"
+            parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
+        select patch_id
+        from asset_patch_install_template
+        where
+        install_template_id = #{pid} and status=1
+    </select>
+    <select id="queryPatchRelations" resultType="com.antiy.asset.entity.PatchInfo">
+        select
+            patch_number as patchNumber,
+            antiy_patch_number as antiyPatchNumber,
+            patch_name as patchName,
+            patch_level as patchLevel,
+            path_source as pathSource,
+            hotfix,
+            user_interaction as userInteraction,
+            exclusive_install as exclusiveInstall,
+            network_status as networkStatus
+        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
+        where
+        t1.install_template_id = #{installTemplateId} and t1.status=1  and t2.status = 1
+    </select>
 </mapper>

@@ -262,6 +262,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
+                    assetOperationRecord.setStatus(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {

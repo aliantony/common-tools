@@ -7,10 +7,7 @@ import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -72,7 +69,7 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
     @ApiModelProperty("关联的软件业务id集合")
     private Set<String> softBussinessIds;
     @ApiModelProperty("关联的补丁主键id集合")
-    private Set<Integer> patchIds;
+    private Set<String> patchIds;
     @ApiModelProperty("模板审核的用户主键id集合")
     @Encode
     private Set<String> nextExecutor;
@@ -93,11 +90,11 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
         this.softBussinessIds = softBussinessIds;
     }
 
-    public Set<Integer> getPatchIds() {
+    public Set<String> getPatchIds() {
         return patchIds;
     }
 
-    public void setPatchIds(Set<Integer> patchIds) {
+    public void setPatchIds(Set<String> patchIds) {
         this.patchIds = patchIds;
     }
 
