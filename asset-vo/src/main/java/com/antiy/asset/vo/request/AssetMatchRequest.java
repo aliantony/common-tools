@@ -20,17 +20,17 @@ import java.util.List;
  */
 @ApiModel(value = "匹配对象")
 public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
-    @ApiModelProperty("IP+MAC")
-    @NotNull(message = "IP+MAC不能为空")
-    private List<IpMac>   ipMacs;
+    @ApiModelProperty(value = "IP+MAC+Port", required = true)
+    @NotNull(message = "IP+MAC+Port集合不能为空")
+    private List<IpMacPort> ipMacPorts;
 
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "当前用户区域集合")
+    @NotNull(message = "当前用户区域集合不能为空")
     private List<Integer> areaIds;
 
-    @ApiModelProperty(value = "当前用户区域集合", hidden = true)
-    private IpMac         ipMac;
+    @ApiModelProperty(value = "IpMacPort对象", hidden = true)
+    private IpMacPort       ipMacPort;
 
-    @ApiModelProperty(value = "当前用户区域集合", hidden = true)
     public List<Integer> getAreaIds() {
         return areaIds;
     }
@@ -39,27 +39,26 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
         this.areaIds = areaIds;
     }
 
-    public List<IpMac> getIpMacs() {
-        return ipMacs;
+    public List<IpMacPort> getIpMacPorts() {
+        return ipMacPorts;
     }
 
-    public void setIpMacs(List<IpMac> ipMacs) {
-        this.ipMacs = ipMacs;
+    public void setIpMacPorts(List<IpMacPort> ipMacPorts) {
+        this.ipMacPorts = ipMacPorts;
     }
 
-    public IpMac getIpMac() {
-        return ipMac;
+    public IpMacPort getIpMacPort() {
+        return ipMacPort;
     }
 
-    public void setIpMac(IpMac ipMac) {
-        this.ipMac = ipMac;
+    public void setIpMacPort(IpMacPort ipMacPort) {
+        this.ipMacPort = ipMacPort;
     }
-
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (CollectionUtils.isEmpty(this.ipMacs)) {
-            throw new BusinessException("IP+MAC不能为空");
+        if (CollectionUtils.isEmpty(this.ipMacPorts)) {
+            throw new BusinessException("IP+MAC+Port集合不能为空");
         }
     }
 }

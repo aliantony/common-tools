@@ -1,5 +1,36 @@
 package com.antiy.asset.service.impl;
 
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -32,35 +63,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1018,7 +1020,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(condition.getPrimaryKey());
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(Objects.toString(asset.getBusinessId()));
         assetResponse
             .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
         assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
@@ -1030,7 +1032,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        assetResponse.setAreaName(sysArea.getFullName());
+        assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
         // 设置品类型号名
         assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 设置操作系统
@@ -2508,6 +2510,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder builder = new StringBuilder();
         List<Asset> assets = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
             if (assetNumbers.contains(entity.getNumber())) {
@@ -2516,11 +2519,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
+            if (assetMac.contains(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
+                continue;
+            }
 
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
+                continue;
+            }
+            if (CheckRepeatMAC(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
                 continue;
             }
 
@@ -2580,6 +2595,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
+                assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
@@ -2727,15 +2743,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<IpMac> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
-        List<IpMac> ipMacList = new ArrayList<>();
+    public List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        List<IpMacPort> ipMacList = new ArrayList<>();
         // 获取用户所在的区域
-        List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        request.setAreaIds(areaIdList);
-        for (IpMac ipMac : request.getIpMacs()) {
-            request.setIpMac(ipMac);
+        // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        // request.setAreaIds(areaIdList);
+        for (IpMacPort ipMacPort : request.getIpMacPorts()) {
+            request.setIpMacPort(ipMacPort);
+            // 筛选异常资产
             if (!assetDao.matchAssetByIpMac(request)) {
-                ipMacList.add(ipMac);
+                ipMacList.add(ipMacPort);
             }
 
         }

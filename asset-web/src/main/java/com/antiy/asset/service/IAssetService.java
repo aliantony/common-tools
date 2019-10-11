@@ -332,5 +332,5 @@ public interface IAssetService extends IBaseService<Asset> {
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 
-    List<IpMac> matchAssetByIpMac(AssetMatchRequest request) throws Exception;
+    List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception;
 }
