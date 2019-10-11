@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.BeanConvert;
@@ -55,11 +56,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public List<Integer> queryTemplateStatus() {
-        // List<Integer> statusCode = assetInstallTemplateDao.queryTemplateStatus();
-        //
-        // Stream.of(AssetInstallTemplateStatusEnum.values()).filter(v->v.getCode()==statusCode);
-        return assetInstallTemplateDao.queryTemplateStatus();
+    public List<AssetInstallTemplateStatusResponse> queryTemplateStatus() {
+        return assetInstallTemplateDao.queryTemplateStatus().stream().map(v -> new AssetInstallTemplateStatusResponse(v, AssetInstallTemplateStatusEnum.getEnumByCode(v).getStatus())).collect(Collectors.toList());
     }
 
     @Override
@@ -253,13 +251,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
 
     @Override
-    public List<PatchInfoResponse> queryPatchs(PrimaryKeyQuery query) {
-        Integer count = assetInstallTemplateDao.queryPatchCount(query);
-        if (count <= 0) {
-            return Lists.newArrayList();
+    public List<PatchInfoResponse> queryPatchs(String templateId) {
+
+        List<PatchInfo> list= assetInstallTemplateDao.queryPatchRelations(templateId);
+        if (list.isEmpty()){
+            return new ArrayList<>();
         }
         return BeanConvert
-                .convert(assetInstallTemplateDao.queryPatchList(query), PatchInfoResponse.class);
+                .convert(list, PatchInfoResponse.class);
     }
 
     @Override

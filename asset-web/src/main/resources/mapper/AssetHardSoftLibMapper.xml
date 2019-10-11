@@ -702,7 +702,7 @@
         t2.is_storage,
         t2.cpe_uri,
         t2.gmt_create
-        from asset_software_install_template t1 LEFT JOIN asset_hard_soft_lib t2 ON t1.software_id=t2.business_id and t1.install_template_id=#{templateId}
+        from asset_software_install_template t1 LEFT JOIN asset_hard_soft_lib t2 ON t1.software_id=t2.business_id where t1.install_template_id=#{templateId} and t1.status=1 and t2.status=1
     </select>
     
     <sql id="Asset_Query_Column_List">

@@ -34,7 +34,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      *
      * @return
      */
-    List<Integer> queryTemplateStatus();
+    List<AssetInstallTemplateStatusResponse> queryTemplateStatus();
 
     /**
      * 查询模板编号是否存在
@@ -131,7 +131,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param query
      * @return
      */
-    List<PatchInfoResponse> queryPatchs(PrimaryKeyQuery query);
+    List<PatchInfoResponse> queryPatchs(String templateId);
 
     /**
      * 提交模板信息

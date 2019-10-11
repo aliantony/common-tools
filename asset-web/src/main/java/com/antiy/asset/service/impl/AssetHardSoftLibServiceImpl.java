@@ -177,7 +177,11 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public List<AssetHardSoftLibResponse> querySoftsRelations(String templateId) {
-        return responseConverter.convert(assetHardSoftLibDao.querySoftsRelations(templateId),
+        List<AssetHardSoftLib> list = assetHardSoftLibDao.querySoftsRelations(templateId);
+        if (list.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return responseConverter.convert(list,
                 AssetHardSoftLibResponse.class);
     }
 
@@ -191,7 +195,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
             for (AssetHardSoftLib source :
                     assetLibs) {
                 AssetAllTypeResponse targetData = new AssetAllTypeResponse();
-                BeanUtils.copyProperties(source,targetData);
+                BeanUtils.copyProperties(source, targetData);
                 responses.add(targetData);
             }
         }
