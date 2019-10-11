@@ -61,6 +61,8 @@ import java.io.File;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -1888,6 +1890,22 @@ public class AssetServiceImplTest {
         @Override
         public void acknowledge() {
 
+        }
+    }
+
+    @Test
+    public void matchAssetByIpMac() {
+        mockStatic(LoginUserUtil.class);
+        AssetMatchRequest matchRequest = mock(AssetMatchRequest.class);
+        IpMacPort ipMacPort = new IpMacPort();
+        List<IpMacPort> ipMacPortList = new ArrayList<>();
+        ipMacPortList.add(ipMacPort);
+        try {
+            when(assetDao.matchAssetByIpMac(matchRequest)).thenReturn(false);
+            when(matchRequest.getIpMacPorts()).thenReturn(ipMacPortList);
+            assetServiceImpl.matchAssetByIpMac(matchRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

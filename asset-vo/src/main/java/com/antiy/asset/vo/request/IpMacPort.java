@@ -11,9 +11,9 @@ import java.util.List;
  **/
 @ApiModel
 public class IpMacPort {
-    @ApiModelProperty("IP")
+    @ApiModelProperty(value = "IP", required = true)
     private String ip;
-    @ApiModelProperty("MAC")
+    @ApiModelProperty(value = "MAC")
     private String mac;
     @ApiModelProperty("端口")
     private List<Integer> portList;

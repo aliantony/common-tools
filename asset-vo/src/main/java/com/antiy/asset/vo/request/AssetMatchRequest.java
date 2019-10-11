@@ -20,7 +20,7 @@ import java.util.List;
  */
 @ApiModel(value = "匹配对象")
 public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
-    @ApiModelProperty("IP+MAC+Port")
+    @ApiModelProperty(value = "IP+MAC+Port", required = true)
     @NotNull(message = "IP+MAC+Port集合不能为空")
     private List<IpMacPort> ipMacPorts;
 
