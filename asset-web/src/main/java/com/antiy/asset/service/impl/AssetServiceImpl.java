@@ -2510,6 +2510,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder builder = new StringBuilder();
         List<Asset> assets = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
             if (assetNumbers.contains(entity.getNumber())) {
@@ -2518,11 +2519,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
+            if (assetMac.contains(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
+                continue;
+            }
 
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
+                continue;
+            }
+            if (CheckRepeatMAC(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
                 continue;
             }
 
@@ -2582,6 +2595,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
+                assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
