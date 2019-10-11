@@ -28,6 +28,7 @@ import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
+import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LicenseUtil;
@@ -70,6 +71,15 @@ public class AssetSoftwareRelationServiceImplTest {
         LoginUser loginUser = mock(LoginUser.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(new ArrayList<>());
+        List<String> osList = new ArrayList<>();
+        osList.add("1");
+        when(assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()))
+            .thenReturn(osList);
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse baselineCategoryModelResponse = new BaselineCategoryModelResponse();
+        baselineCategoryModelResponse.setStringId("1");
+        categoryModelResponseList.add(baselineCategoryModelResponse);
+        when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
         softwareRelationService.findOS();
     }
 
