@@ -2734,10 +2734,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 获取用户所在的区域
         // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // request.setAreaIds(areaIdList);
-        for (IpMacPort ipMac : request.getIpMacPorts()) {
-            request.setIpMacPort(ipMac);
+        for (IpMacPort ipMacPort : request.getIpMacPorts()) {
+            request.setIpMacPort(ipMacPort);
+            // 筛选异常资产
             if (!assetDao.matchAssetByIpMac(request)) {
-                ipMacList.add(ipMac);
+                ipMacList.add(ipMacPort);
             }
 
         }
