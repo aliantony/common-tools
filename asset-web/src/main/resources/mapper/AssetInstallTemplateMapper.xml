@@ -233,7 +233,7 @@
                 update
                 <include refid="Table_Name"></include>
                 <trim prefix="set" suffixOverrides=",">
-                    set current_status = #{currentStatus },
+                      current_status = #{currentStatus },
                     <if test=" gmtModified != null">
                         gmt_modified = #{gmtModified },
                     </if>
@@ -563,12 +563,8 @@
     <insert id="insertBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
         insert into asset_install_template_check
         (install_template_id,user_id,result,gmt_create,create_user)
-        <trim prefix="values" suffix=";" suffixOverrides=",">
-            <if test="nextExecutor != null">
-                <foreach collection="nextExecutor" item="userId" separator=",">
-                    (#{stringId},#{userId},1,#{gmtCreate},#{createUser})
-                </foreach>
-            </if>
+        <trim prefix="values" suffix=";">
+            (#{stringId},#{createUser},1,#{gmtCreate},#{createUser})
         </trim>
 
     </insert>

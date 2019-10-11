@@ -630,7 +630,7 @@
             </if>
 
             and locate(soft_platform,#{operationSystem})>0
-            <if test="removeBusinessIds != null">
+            <if test="removeBusinessIds != null and removeBusinessIds.size>0">
                 and t1.business_id not in
                 <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
                     #{businessId}
@@ -672,7 +672,7 @@
                 '%')
             </if>
             and locate(soft_platform,#{operationSystem})>0
-            <if test="removeBusinessIds != null">
+            <if test="removeBusinessIds != null and removeBusinessIds.size>0">
                 and t1.business_id not in
                 <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
                     #{businessId}
