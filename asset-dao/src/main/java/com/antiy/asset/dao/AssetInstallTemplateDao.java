@@ -14,6 +14,7 @@ import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p> 装机模板 Mapper 接口 </p>
@@ -128,7 +129,19 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      */
     Integer insertBatchUser(AssetInstallTemplateRequest request);
 
-    List<Integer> queryCheckTemplateUserId(@Param("installTemplateId") Integer installTemplateId);
+    Set<String> queryCheckTemplateUserId(@Param("installTemplateId") Integer installTemplateId);
 
     Integer checkTemplate(AssetInstallTemplateCheckRequest request);
+
+    Integer updateStatus(AssetInstallTemplate template);
+
+    Integer deleteBatchSoft(AssetInstallTemplateRequest request);
+
+    Integer deleteBatchPatch(AssetInstallTemplateRequest request);
+
+    Integer deleteBatchUser(AssetInstallTemplateRequest request);
+
+    Set<String> queryPatchIds(PrimaryKeyQuery query);
+
+    List<PatchInfo> queryPatchRelations(@Param("installTemplateId") String installTemplateId);
 }

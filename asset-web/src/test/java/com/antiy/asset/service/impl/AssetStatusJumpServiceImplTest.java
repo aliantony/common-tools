@@ -36,6 +36,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -341,6 +342,7 @@ public class AssetStatusJumpServiceImplTest {
         assetInfo.setAssetId("1");
         assetInfo.setTaskId("12");
         assetInfoList.add(assetInfo);
+        jumpRequest.setFormData(new HashMap());
         jumpRequest.setAssetInfoList(assetInfoList);
         jumpRequest.setAssetFlowEnum(assetFlowEnum);
         return jumpRequest;
