@@ -53,7 +53,7 @@ public class AssetBusinessController {
     }
 
     /**
-     * 根据IP+MAC判断资产是否存在
+     * 根据IP/MAC判断资产是否存在
      *
      * @param assetMatchRequest
      * @return actionResponse

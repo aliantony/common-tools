@@ -20,9 +20,9 @@ import java.util.List;
  */
 @ApiModel(value = "匹配对象")
 public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
-    @ApiModelProperty("IP+MAC")
-    @NotNull(message = "IP+MAC不能为空")
-    private List<IpMacPort> ipMacs;
+    @ApiModelProperty("IP+MAC+Port")
+    @NotNull(message = "IP+MAC+Port集合不能为空")
+    private List<IpMacPort> ipMacPorts;
 
     @ApiModelProperty(value = "当前用户区域集合")
     @NotNull(message = "当前用户区域集合不能为空")
@@ -39,12 +39,12 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
         this.areaIds = areaIds;
     }
 
-    public List<IpMacPort> getIpMacs() {
-        return ipMacs;
+    public List<IpMacPort> getIpMacPorts() {
+        return ipMacPorts;
     }
 
-    public void setIpMacs(List<IpMacPort> ipMacs) {
-        this.ipMacs = ipMacs;
+    public void setIpMacPorts(List<IpMacPort> ipMacPorts) {
+        this.ipMacPorts = ipMacPorts;
     }
 
     public IpMacPort getIpMacPort() {
@@ -57,8 +57,8 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (CollectionUtils.isEmpty(this.ipMacs)) {
-            throw new BusinessException("IP+MAC不能为空");
+        if (CollectionUtils.isEmpty(this.ipMacPorts)) {
+            throw new BusinessException("IP+MAC+Port集合不能为空");
         }
     }
 }

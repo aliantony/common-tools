@@ -2734,7 +2734,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 获取用户所在的区域
         // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // request.setAreaIds(areaIdList);
-        for (IpMacPort ipMac : request.getIpMacs()) {
+        for (IpMacPort ipMac : request.getIpMacPorts()) {
             request.setIpMacPort(ipMac);
             if (!assetDao.matchAssetByIpMac(request)) {
                 ipMacList.add(ipMac);
