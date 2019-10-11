@@ -41,6 +41,11 @@ public class AssetOperationRecord extends BaseEntity {
     private Integer createUser;
 
     /**
+     * 状态：1-未删除,0-已删除
+     */
+    private Integer status;
+
+    /**
      * 处理结果. 0拒绝1同意
      */
     private Integer processResult;
@@ -123,6 +128,14 @@ public class AssetOperationRecord extends BaseEntity {
 
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getProcessResult() {
