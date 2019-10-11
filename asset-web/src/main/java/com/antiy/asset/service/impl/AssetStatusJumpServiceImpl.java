@@ -83,7 +83,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         setInProcess(statusJumpRequest, assetsInDb);
 
         // 2.提交至工作流
-        // boolean activitySuccess = true;
         boolean activitySuccess = startActivity(statusJumpRequest);
         if (!activitySuccess) {
             assetDao.updateAssetBatch(assetsInDb);
@@ -153,7 +152,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             assetStatusRequest.getAssetInfoList().forEach(assetInfo -> {
                 // 由于工作流传参不能直接使用同一个formData对象,此处必须new新对象
-                Map<Object, Object> formData = new HashMap<Object, Object>(assetStatusRequest.getFormData());
+                Map<Object, Object> formData = new HashMap<>(assetStatusRequest.getFormData());
 
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
                 activityHandleRequest.setFormData(formData);
@@ -237,7 +236,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        assetOperationRecord.setProcessResult(statusJumpRequest.getAgree() ? 1 : 0);
+        assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
