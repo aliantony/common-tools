@@ -626,6 +626,7 @@
     </select>
     <select id="queryPatchRelations" resultType="com.antiy.asset.entity.PatchInfo">
         select
+            t2.id as id,
             patch_number as patchNumber,
             antiy_patch_number as antiyPatchNumber,
             patch_name as patchName,

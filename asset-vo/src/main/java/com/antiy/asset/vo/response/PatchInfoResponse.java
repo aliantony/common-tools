@@ -11,7 +11,10 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2019-09-17
  */
 
-public class PatchInfoResponse extends BaseEntity {
+public class PatchInfoResponse {
+    @ApiModelProperty("补丁主键id")
+    private String stringId;
+
     /**
      * 安天补丁编号
      */
@@ -61,7 +64,7 @@ public class PatchInfoResponse extends BaseEntity {
 
     public void setPatchLevel(String patchLevel) {
         this.patchLevel = "1".equals(patchLevel) ? "重要"
-            : "2".equals(patchLevel) ? "中等" : "2".equals(patchLevel) ? "严重" : "";
+                : "2".equals(patchLevel) ? "中等" : "2".equals(patchLevel) ? "严重" : "";
     }
 
     public String getPathSource() {
@@ -88,6 +91,14 @@ public class PatchInfoResponse extends BaseEntity {
         this.userInteraction = "0".equals(userInteraction) ? "不需要用户交互" : "1".equals(userInteraction) ? "需要用户交互" : "";
     }
 
+    public String getStringId() {
+        return stringId;
+    }
+
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
+    }
+
     public String getPatchNumber() {
         return patchNumber;
     }
@@ -110,7 +121,7 @@ public class PatchInfoResponse extends BaseEntity {
 
     public void setExclusiveInstall(String exclusiveInstall) {
         this.exclusiveInstall = "0".equals(exclusiveInstall) ? "不需要独占方式安装"
-            : "1".equals(exclusiveInstall) ? "需要独占方式安装" : "";
+                : "1".equals(exclusiveInstall) ? "需要独占方式安装" : "";
     }
 
     public String getNetworkStatus() {
@@ -124,6 +135,7 @@ public class PatchInfoResponse extends BaseEntity {
     public String getPatchLevel() {
         return patchLevel;
     }
+
     public String getAntiyPatchNumber() {
         return antiyPatchNumber;
     }
