@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
@@ -7,8 +8,10 @@ import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p> AssetInstallTemplateRequest 请求对象 </p>
@@ -17,17 +20,12 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetInstallTemplateRequest implements ObjectValidator {
-    @ApiModelProperty("主键Id")
-    // @Encode
-    private String stringId;
-
+public class AssetInstallTemplateRequest extends BaseRequest implements ObjectValidator {
     /**
      * 模板名称
      */
     @ApiModelProperty("模板名称")
     @Size(max = 80, min = 1)
-    @NotBlank(message = "模板名称不能为空")
     private String name;
     /**
      * 模板编号
@@ -56,12 +54,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @ApiModelProperty("操作系统名称")
     private String operationSystemName;
     /**
-     * 是否启用：0-禁用，1-启用
+     * 0-启用/禁用
+     * 1-模板编辑
      */
-    @ApiModelProperty("是否启用：0-禁用，1-启用")
-    // @Min(value = 0, message = "是否启用只能为0，1")
-    // @Max(value = 1, message = "是否启用只能为0，1")
-    private Integer enable;
+    @ApiModelProperty("0-启用/禁用,1-模板编辑")
+   // @NotNull
+    private Integer isUpdateStatus;
     @ApiModelProperty("要更新的状态")
     @Range(message = "状态不合法", max = 4, min = 1)
     private Integer updateStatus;
@@ -72,12 +70,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @Size(max = 500, min = 0)
     private String description;
     @ApiModelProperty("关联的软件业务id集合")
-    private List<Long> softBussinessIds;
+    private Set<String> softBussinessIds;
     @ApiModelProperty("关联的补丁主键id集合")
-    private List<Integer> patchIds;
+    private Set<Integer> patchIds;
     @ApiModelProperty("模板审核的用户主键id集合")
     @Encode
-    private List<Integer> nextExecutor;
+    private Set<String> nextExecutor;
     @ApiModelProperty("创建时间")
     private long gmtCreate;
     @ApiModelProperty("修改时间")
@@ -87,36 +85,28 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @ApiModelProperty("修改用户")
     private String modifiedUser;
 
-    public List<Long> getSoftBussinessIds() {
+    public Set<String> getSoftBussinessIds() {
         return softBussinessIds;
     }
 
-    public void setSoftBussinessIds(List<Long> softBussinessIds) {
+    public void setSoftBussinessIds(Set<String> softBussinessIds) {
         this.softBussinessIds = softBussinessIds;
     }
 
-    public List<Integer> getPatchIds() {
+    public Set<Integer> getPatchIds() {
         return patchIds;
     }
 
-    public void setPatchIds(List<Integer> patchIds) {
+    public void setPatchIds(Set<Integer> patchIds) {
         this.patchIds = patchIds;
     }
 
-    public List<Integer> getNextExecutor() {
+    public Set<String> getNextExecutor() {
         return nextExecutor;
     }
 
-    public void setNextExecutor(List<Integer> nextExecutor) {
+    public void setNextExecutor(Set<String> nextExecutor) {
         this.nextExecutor = nextExecutor;
-    }
-
-    public String getStringId() {
-        return stringId;
-    }
-
-    public void setStringId(String stringId) {
-        this.stringId = stringId;
     }
 
     public String getName() {
@@ -167,12 +157,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
         this.operationSystemName = operationSystemName;
     }
 
-    public Integer getEnable() {
-        return enable;
+    public Integer getIsUpdateStatus() {
+        return isUpdateStatus;
     }
 
-    public void setEnable(Integer enable) {
-        this.enable = enable;
+    public void setIsUpdateStatus(Integer isUpdateStatus) {
+        this.isUpdateStatus = isUpdateStatus;
     }
 
     public String getDescription() {
@@ -197,10 +187,6 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
 
     public void setCurrentStatus(Integer updateStatus) {
         this.updateStatus = updateStatus;
-    }
-
-    public Integer getId() {
-        return Integer.valueOf(stringId);
     }
 
     public long getGmtCreate() {

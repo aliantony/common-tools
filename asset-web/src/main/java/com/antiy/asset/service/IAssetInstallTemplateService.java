@@ -124,13 +124,6 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      */
     PageResult<PatchInfoResponse> queryPatchPage(PrimaryKeyQuery query);
 
-    /**
-     * 启用禁用
-     *
-     * @param request
-     * @return
-     */
-    int enableInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
 
     /**
      * 补丁列表

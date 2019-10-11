@@ -144,21 +144,6 @@ public class AssetInstallTemplateController {
     }
 
     /**
-     * 启用/禁用装机模板
-     *
-     * @param request
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)启用/禁用装机模板", notes = "主键封装对象")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class),})
-    @RequestMapping(value = "/enable", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") @RequestBody AssetInstallTemplateRequest request) throws Exception {
-        ParamterExceptionUtils.isNull(request.getStringId(), "id不能为null");
-        ParamterExceptionUtils.isNull(request.getEnable(), "是否启用不能为null");
-        return ActionResponse.success(iAssetInstallTemplateService.enableInstallTemplate(request));
-    }
-
-    /**
      * 通过ID查询
      *
      * @param queryCondition
