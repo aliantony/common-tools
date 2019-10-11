@@ -293,7 +293,7 @@
         asset.area_id,
         asset.asset_group,
         asset.category_model,
-        asset. NAME,
+        lib. product_name as name,
         asset_user. NAME AS responsible_user_name,
         asset.responsible_user_id,
         <if test="queryVulCount == true">
@@ -311,6 +311,7 @@
         GROUP_CONCAT(DISTINCT air.ip) AS ips
         FROM
         asset asset
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.business_id
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
         AND air. STATUS = 1
         LEFT JOIN asset_user asset_user ON asset.responsible_user_id = asset_user.id
