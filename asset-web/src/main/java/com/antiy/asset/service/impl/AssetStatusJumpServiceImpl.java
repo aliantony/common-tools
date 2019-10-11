@@ -35,7 +35,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -151,18 +150,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             // 非启动退役流程
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             assetStatusRequest.getAssetInfoList().forEach(assetInfo -> {
-                // 由于工作流传参不能直接使用同一个formData对象,此处必须new新对象
-                Map<Object, Object> formData = new HashMap<>(assetStatusRequest.getFormData());
-
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                activityHandleRequest.setFormData(formData);
+                // 由于工作流传参接收问题,此处不能直接使用同一个formData对象,必须new新对象
+                activityHandleRequest.setFormData(new HashMap<Object, Object>(assetStatusRequest.getFormData()));
                 activityHandleRequest.setTaskId(assetInfo.getTaskId());
                 requestList.add(activityHandleRequest);
             });
 
             try {
                 ActionResponse actionResponse = activityClient.completeTaskBatch(requestList);
-                LogUtils.info(logger, "请求工作流结果: {}", actionResponse);
+                LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
                 // 如果流程引擎为空,直接返回错误信息
                 if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
