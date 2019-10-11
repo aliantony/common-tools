@@ -113,7 +113,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
      * @param query
      * @return
      */
-    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetSoftwareQuery query);
+    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query);
 
     /**
      * 软件列表（装机模板-关联软件）

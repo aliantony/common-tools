@@ -256,7 +256,7 @@ public class AssetController {
     @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
     public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac()));
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac(), numberMac.getId()));
     }
 
     /**

@@ -133,7 +133,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             throw new BusinessException("所选设备IP已存在绑定关系，请勿重复设置");
         }
         // 2.校验父资产IP是否可用
-        count = assetLinkRelationDao.checkIp(request.getParentAssetId(), request.getAssetPort(),
+        count = assetLinkRelationDao.checkIp(request.getParentAssetId(), request.getParentAssetIp(),
             request.getParentAssetPort());
         if (count > 0) {
             throw new BusinessException("关联设备IP已存在绑定关系，请勿重复设置");

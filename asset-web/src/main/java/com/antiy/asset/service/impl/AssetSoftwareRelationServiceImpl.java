@@ -70,23 +70,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     @Resource
     private CommandClientImpl                                                   commandClient;
 
-    private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {
-        if (StringUtils.isNotEmpty(assetSoftwareRelationResponse.getOperationSystem())) {
-            String[] ops = assetSoftwareRelationResponse.getOperationSystem().split(",");
-            StringBuilder stringBuilder = new StringBuilder();
-            List<BaselineCategoryModelResponse> categoryOsResponseList = redisService.getAllSystemOs();
-            for (String os : ops) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryOsResponseList) {
-                    if (os.equals(categoryModelResponse.getStringId())) {
-                        stringBuilder.append(categoryModelResponse.getName()).append(",");
-                    }
-                }
-            }
-            assetSoftwareRelationResponse.setOperationSystemName(
-                stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(",")));
-        }
-    }
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public Integer countAssetBySoftId(Integer id) {
@@ -172,9 +155,4 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         }
         return 0;
     }
-
-    private Integer countByAssetId(Integer assetId) {
-        return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
-    }
-
 }
