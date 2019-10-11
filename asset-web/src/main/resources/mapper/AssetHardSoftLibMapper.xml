@@ -349,7 +349,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
-        where id = #{businessId}
+        where business_id = #{businessId}
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">
