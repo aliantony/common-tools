@@ -232,7 +232,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
+        assetOperationRecord.setProcessResult(AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum()) ? null : Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
