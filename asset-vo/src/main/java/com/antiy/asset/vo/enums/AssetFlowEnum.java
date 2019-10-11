@@ -21,15 +21,15 @@ public enum AssetFlowEnum {
     // HARDWARE_CHANGE(21, "变更资产"),
 
     // 新增
-    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产"),
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "实施"),
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "验证"),
-    NET_IN(AssetStatusEnum.WAIT_NET, "入网"),
-    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查"),
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改"),
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "implementUserId", "拟退役"),
-    RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役"),
-    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产"),
+    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产信息"),
+    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "实施资产信息"),
+    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "验证资产信息"),
+    NET_IN(AssetStatusEnum.WAIT_NET, "入网资产信息"),
+    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查资产信息"),
+    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改资产信息"),
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "implementUserId", "拟退役资产信息"),
+    RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役资产信息"),
+    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产信息"),
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
             ;
 
@@ -44,7 +44,7 @@ public enum AssetFlowEnum {
     private String activityKey;
 
     /**
-     * 对应流程信息
+     * 对应流程信息,用于记录操作日志
      */
     private String  msg;
 
