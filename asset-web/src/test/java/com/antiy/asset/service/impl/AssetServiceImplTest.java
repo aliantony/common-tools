@@ -302,7 +302,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testSaveAsset() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.getById(any())).thenReturn(new AssetUser());
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
@@ -371,7 +371,7 @@ public class AssetServiceImplTest {
         Assert.assertEquals("200", result8.getHead().getCode());
 
         // ip重复
-        when(assetDao.findCountMac(any())).thenReturn(10);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         try {
             assetServiceImpl.saveAsset(assetOuterRequest1);
         } catch (Exception e) {
@@ -379,7 +379,7 @@ public class AssetServiceImplTest {
         }
 
         // 区域注销
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(redisUtil.getObject(any(), any(Class.class))).thenReturn(null);
         try {
             assetServiceImpl.saveAsset(assetOuterRequest1);
@@ -562,11 +562,7 @@ public class AssetServiceImplTest {
         Assert.assertTrue(result.size() > 0);
     }
 
-    @Test
-    public void testFindCountAssetNumber() throws Exception {
-        Integer result = assetServiceImpl.findCountAssetNumber("");
-        Assert.assertEquals(Integer.valueOf(0), result);
-    }
+
 
     @Test
     public void testFindPageAsset() throws Exception {
@@ -872,7 +868,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testChangeAsset() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
 
         when(assetNetworkEquipmentDao.getById(any())).thenReturn(generateAssetNetworkEquipment());
         when(assetSoftwareRelationDao.deleteByAssetId(anyInt())).thenReturn(0);
@@ -1107,7 +1103,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportPc() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
         List<ComputeDeviceEntity> computeDeviceEntities = new ArrayList<>();
@@ -1137,7 +1133,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportNet() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
@@ -1198,12 +1194,12 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行到期时间需大于等于今天！", result);
 
-        when(assetDao.findCountMac(any())).thenReturn(10);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         networkDeviceEntity.setDueDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产MAC地址重复！", result);
 
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(null);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行系统没有此使用者，或已被注销！", result);
@@ -1255,7 +1251,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportSecurity() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
@@ -1298,12 +1294,12 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行资产编号重复！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
-        when(assetDao.findCountMac(any())).thenReturn(10);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         safetyEquipmentEntiy.setDueDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产MAC地址重复！", result);
 
-        when(assetDao.findCountMac(any())).thenReturn(0);
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         safetyEquipmentEntiy.setBuyDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
@@ -1367,8 +1363,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testImportStory() throws Exception {
-        when(assetDao.findCountMac(any())).thenReturn(0);
-
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);

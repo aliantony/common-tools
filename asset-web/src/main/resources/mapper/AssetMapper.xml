@@ -1488,6 +1488,9 @@
 	FROM
 		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
 	WHERE
+        <if test="id!=null ">
+            id !={id} and
+        </if>
 	 a.`status` =1	AND m.`status` =1 and
 	 upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
     </select>

@@ -157,6 +157,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
         Long currentTimeMillis = System.currentTimeMillis();
+        final String[] admittanceResult = new String[1];
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -179,10 +180,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String ssk = requestAsset.getBaselineTemplateId();
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
-                        String admittanceResult = (String) request.getManualStartActivityRequest().getFormData()
+                        admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
                             .get("admittanceResult");
                         asset.setAssetStatus(
-                            "safetyCheck".equals(admittanceResult) ? AssetStatusEnum.WAIT_CHECK.getCode()
+                            "safetyCheck".equals(admittanceResult[0]) ? AssetStatusEnum.WAIT_CHECK.getCode()
                                 : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
@@ -296,8 +297,28 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.deleteById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
-
+            // 安全检查走基准
+            // if ("safetyCheck".equals(admittanceResult[0])) {
+            // BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+            // baselineAssetRegisterRequest.setAssetId(id);
+            // baselineAssetRegisterRequest
+            // .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
+            // baselineAssetRegisterRequest.setCheckType(requestAsset.getInstallType());
+            // baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+            // baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+            // baselineAssetRegisterRequest
+            // .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
+            // ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+            // // 如果基准为空,直接返回错误信息
+            // if (null == baselineCheck
+            // || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+            // // 调用失败，逻辑删登记的资产
+            // assetDao.deleteById(id);
+            // return baselineCheck == null ? baselineCheck.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
+            // }
+            // }
         }
+
         return ActionResponse.success();
     }
 
@@ -407,15 +428,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     // return countIp >= 1;
     // }
     @Override
-    public boolean CheckRepeatMAC(String mac) throws Exception {
-        Integer countIp = assetDao.findCountMac(mac);
+    public boolean CheckRepeatMAC(String mac, Integer id) throws Exception {
+        Integer countIp = assetDao.findCountMac(mac, id);
         return countIp >= 1;
     }
 
     @Override
     public boolean CheckRepeatNumber(String number) throws Exception {
-        Integer countAsset = findCountAssetNumber(number);
-        return countAsset >= 1;
+        return assetDao.findCountAssetNumber(number) >= 1;
     }
 
     @Override
@@ -578,10 +598,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", definitionKeyType);
             throw new BusinessException("获取工作流异常");
         }
-    }
-
-    public Integer findCountAssetNumber(String number) throws Exception {
-        return assetDao.findCountAssetNumber(number);
     }
 
     @Override
@@ -1020,7 +1036,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(Objects.toString(asset.getBusinessId()));
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao
+            .getByBusinessId(Objects.toString(asset.getBusinessId()));
         assetResponse
             .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
         assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
@@ -1242,28 +1259,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 }
             }
-            /*new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // 下发智甲
-                    AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
-                        AssetExternalRequest.class);
-                    try {
-                        assetExternalRequest.setAsset(BeanConvert
-                            .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
-                    } catch (Exception e) {
-                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e);
-                    }
-                    // 获取资产上安装的软件信息
-                    List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-                        .findInstalledSoft(assetOuterRequest.getAsset().getId());
-                    assetExternalRequest
-                        .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-                    List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-                    assetExternalRequests.add(assetExternalRequest);
-                    assetClient.issueAssetData(assetExternalRequests);
-                }
-            }).start();*/
+            /* new Thread(new Runnable() {
+             * @Override public void run() { // 下发智甲 AssetExternalRequest assetExternalRequest =
+             * BeanConvert.convertBean(assetOuterRequest, AssetExternalRequest.class); try {
+             * assetExternalRequest.setAsset(BeanConvert
+             * .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class)); } catch
+             * (Exception e) { LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e); } //
+             * 获取资产上安装的软件信息 List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
+             * .findInstalledSoft(assetOuterRequest.getAsset().getId()); assetExternalRequest
+             * .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+             * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
+             * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
+             * }).start(); */
         }
         return assetCount;
     }
@@ -1754,7 +1761,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -1817,7 +1824,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                 stringObjectHashMap.put("productName", entity.getOperationSystem());
                 AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                // asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                asset.setOperationSystem(assetCpeFilter.getBusinessId());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -1955,7 +1962,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -2161,7 +2168,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
                 continue;
             }
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
@@ -2511,6 +2518,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assets = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
         List<String> assetMac = new ArrayList<>();
+        List<AssetMacRelation> assetMacRelations = new ArrayList<>();
+        List<AssetIpRelation> assetIpRelations = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
             if (assetNumbers.contains(entity.getNumber())) {
@@ -2532,7 +2541,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -2615,6 +2624,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setDescrible(entity.getMemo());
                 asset.setCategoryModel(AssetCategoryEnum.OTHER.getCode());
                 assets.add(asset);
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setIp(entity.getIp());
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setMac(entity.getMac());
+                assetMacRelations.add(assetMacRelation);
+                assetIpRelations.add(assetIpRelation);
             }
 
             a++;
@@ -2628,10 +2643,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
             List<AssetOperationRecord> recordList = new ArrayList<>();
-            for (Asset asset : assets) {
-                recordList.add(assetRecord(asset.getStringId(), asset.getAreaId()));
+            for (int i = 0; i < assets.size(); i++) {
+                String stringId = assets.get(i).getStringId();
+                assetIpRelations.get(i).setAssetId(assets.get(i).getId());
+                assetMacRelations.get(i).setAssetId(assets.get(i).getId());
+                recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
+            assetIpRelationDao.insertBatch(assetIpRelations);
+            assetMacRelationDao.insertBatch(assetMacRelations);
             assetOperationRecordDao.insertBatch(recordList);
         }
 

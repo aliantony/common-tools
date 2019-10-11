@@ -293,7 +293,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    boolean CheckRepeatMAC(String mac) throws Exception;
+    boolean CheckRepeatMAC(String mac, Integer id) throws Exception;
 
     /**
      * 查询编号重复
