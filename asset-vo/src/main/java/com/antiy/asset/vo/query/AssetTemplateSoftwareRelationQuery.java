@@ -13,6 +13,10 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
 
     @ApiModelProperty("操作系统id")
     private String operationSystem;
+    @ApiModelProperty("名称")
+    private String name;
+    @ApiModelProperty("厂商")
+    private String manufacturer;
     @ApiModelProperty("移除软件关联id")
     private List<String> removeBusinessIds;
 
@@ -30,5 +34,21 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
 
     public void setRemoveBusinessIds(List<String> removeBusinessIds) {
         this.removeBusinessIds = removeBusinessIds;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 }
