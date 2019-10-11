@@ -13,7 +13,7 @@ public class ActivityWaitingQuery {
     private String user;
 
     /**
-     * 流程定义key，硬件 hard ,软件 soft
+     * 流程定义key，安全检查和模板实施都是assetAdmittance
      */
     private String processDefinitionKey;
 

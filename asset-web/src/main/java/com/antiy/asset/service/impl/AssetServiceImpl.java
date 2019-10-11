@@ -43,7 +43,6 @@ import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -256,10 +255,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())
-                        ? AssetStatusEnum.NET_IN.getCode()
-                        : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
                     assetOperationRecord.setProcessResult(1);
+                    assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -600,7 +598,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("assetAdmittance");
         dealProcess(query, processMap);
 
         int count = 0;
@@ -1244,7 +1242,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 }
             }
-            new Thread(new Runnable() {
+            /*new Thread(new Runnable() {
                 @Override
                 public void run() {
                     // 下发智甲
@@ -1265,7 +1263,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetExternalRequests.add(assetExternalRequest);
                     assetClient.issueAssetData(assetExternalRequests);
                 }
-            }).start();
+            }).start();*/
         }
         return assetCount;
     }
@@ -1310,7 +1308,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 3. 处理通联
         // 删除被删/改的IP端口通联关系
-        assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        if (categoryModel == 1 || categoryModel == 2) {
+            assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        }
     }
 
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
@@ -2670,11 +2670,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException("资产状态已改变");
             }
         }
-        /* for (Asset currentAsset : currentAssetList) { operationRecord(currentAsset.getId().toString()); } */
-        /* // 硬件完成流程 if (assetStatusChangeRequest.getActivityHandleRequest() != null) { ActionResponse actionResponse =
-         * activityClient .completeTask(assetStatusChangeRequest.getActivityHandleRequest()); // 流程调用失败不更改资产状态 if (null
-         * == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-         * throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes()); } } */
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表
@@ -2731,6 +2726,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
         return getAssetEntities(request);
 
+    }
+
+    @Override
+    public List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        List<IpMacPort> ipMacList = new ArrayList<>();
+        // 获取用户所在的区域
+        // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        // request.setAreaIds(areaIdList);
+        for (IpMacPort ipMacPort : request.getIpMacPorts()) {
+            request.setIpMacPort(ipMacPort);
+            // 筛选异常资产
+            if (!assetDao.matchAssetByIpMac(request)) {
+                ipMacList.add(ipMacPort);
+            }
+
+        }
+        return ipMacList;
     }
 
     private void operationRecord(String id) throws Exception {

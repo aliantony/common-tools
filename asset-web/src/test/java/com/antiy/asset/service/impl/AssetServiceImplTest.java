@@ -1820,6 +1820,23 @@ public class AssetServiceImplTest {
         Assert.assertEquals(2,2);
 
     }
+
+    @Test
+    public void countCategory() throws Exception {
+        List<Map<String, Object>> categoryModelCount=new ArrayList<>();
+        for(int i=0;i<10;i++){
+            Map<String,Object> map=new HashMap<>();
+            map.put("key",i);
+            map.put("value",20l);
+            categoryModelCount.add(map);
+        }
+        when(assetDao.countCategoryModel(any(),any())).thenReturn(categoryModelCount);
+        List<EnumCountResponse> enumCountResponses = assetServiceImpl.countCategory();
+        String s="[EnumCountResponse{msg='计算设备', code='[1]', number=20}, EnumCountResponse{msg='网络设备', code='[2]', number=20}, EnumCountResponse{msg='安全设备', code='[3]', number=20}, EnumCountResponse{msg='存储设备', code='[4]', number=20}, EnumCountResponse{msg='其它设备', code='[5]', number=20}]";
+        Assert.assertEquals(s,enumCountResponses.toString());
+    }
+
+    @Test
     public void queryUuidByAreaIds() throws Exception {
         AreaIdRequest areaIdRequest = new AreaIdRequest();
         try {
@@ -1830,6 +1847,19 @@ public class AssetServiceImplTest {
         areaIdRequest.setAreaIds(Arrays.asList("1"));
         Mockito.when(assetDao.findUuidByAreaIds(Mockito.any())).thenReturn(Arrays.asList("1", "2"));
         Assert.assertEquals(2, assetServiceImpl.queryUuidByAreaIds(areaIdRequest).size());
+
+    }
+
+    @Test
+    public void queryIdByAreaIds() throws Exception {
+        AreaIdRequest areaIdRequest = new AreaIdRequest();
+        try {
+            assetServiceImpl.queryIdByAreaIds(areaIdRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("区域ID不能为空", e.getMessage());
+        }
+        areaIdRequest.setAreaIds(Collections.singletonList("1"));
+        assetServiceImpl.queryIdByAreaIds(areaIdRequest);
 
     }
 
@@ -1860,5 +1890,4 @@ public class AssetServiceImplTest {
 
         }
     }
-
 }
