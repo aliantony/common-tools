@@ -256,7 +256,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
                     assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-                    assetOperationRecord.setProcessResult(1);
                     assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -2657,7 +2656,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setTargetObjectId(id);
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setContent("导入硬件资产");
-        assetOperationRecord.setProcessResult(1);
         assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
