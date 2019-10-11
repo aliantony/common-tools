@@ -138,5 +138,8 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     Integer deleteBatchSoft(AssetInstallTemplateRequest request);
 
     Integer deleteBatchPatch(AssetInstallTemplateRequest request);
+
     Integer deleteBatchUser(AssetInstallTemplateRequest request);
+
+    Set<String> queryPatchIds(PrimaryKeyQuery query);
 }
