@@ -1020,7 +1020,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(condition.getPrimaryKey());
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao.getByBusinessId(Objects.toString(asset.getBusinessId()));
         assetResponse
             .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
         assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
@@ -1032,7 +1032,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        assetResponse.setAreaName(sysArea.getFullName());
+        assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
         // 设置品类型号名
         assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 设置操作系统
