@@ -613,24 +613,9 @@
         </choose>
     </select>
     <select id="queryCountSoftWares" resultType="java.lang.Integer"
-            parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+            parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from (SELECT
-        t1.id,
-        t1.business_id,
-        t1.number,
-        t1.type,
-        t1.supplier,
-        t1.product_name,
-        t1.version,
-        t1.upgrade_msg,
-        t1.sys_version,
-        t1.LANGUAGE,
-        t1.soft_version,
-        t1.soft_platform,
-        t1.hard_platform,
-        t1.is_storage,
-        t1.cpe_uri,
-        t1.gmt_create
+        t1.id
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
             And type='a'
@@ -643,12 +628,20 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
+
             and locate(soft_platform,#{operationSystem})>0
+            <if test="removeBusinessIds != null">
+                and t1.business_id not in
+                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
+                    #{businessId}
+                </foreach>
+
+            </if>
         </trim>
         ) t2
     </select>
     <!--    查询所有软件(与资产无关）-->
-    <select id="querySoftWares" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetSoftwareQuery">
+    <select id="querySoftWares" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         t1.id,
         t1.business_id,
@@ -679,6 +672,13 @@
                 '%')
             </if>
             and locate(soft_platform,#{operationSystem})>0
+            <if test="removeBusinessIds != null">
+                and t1.business_id not in
+                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
+                    #{businessId}
+                </foreach>
+
+            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
@@ -704,7 +704,7 @@
         t2.gmt_create
         from asset_software_install_template t1 LEFT JOIN asset_hard_soft_lib t2 ON t1.software_id=t2.business_id where t1.install_template_id=#{templateId} and t1.status=1 and t2.status=1
     </select>
-    
+
     <sql id="Asset_Query_Column_List">
         t1.id,
         t1.business_id,
@@ -722,7 +722,7 @@
     </sql>
     <!-- cpe信息查询-软硬操作系统 -->
     <sql id="Asset_Sub_Query_Common_Sql">
-         SELECT id FROM asset_hard_soft_lib force index(index_relation)
+        SELECT id FROM asset_hard_soft_lib force index(index_relation)
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             <if test=" productName != null">
                 and product_name like CONCAT('%', replace(replace(REPLACE
@@ -737,22 +737,26 @@
         </trim>
         ORDER BY id DESC
     </sql>
-    <select id="queryAssetList" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery" resultMap="BaseResultMap">
+    <select id="queryAssetList" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery"
+            resultMap="BaseResultMap">
         SELECT
         <include refid="Asset_Query_Column_List"/>
         FROM
-        (<include refid="Asset_Sub_Query_Common_Sql"/>
-          LIMIT #{pageOffset}, #{pageSize}
+        (
+        <include refid="Asset_Sub_Query_Common_Sql"/>
+        LIMIT #{pageOffset}, #{pageSize}
         ) t2
         LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
         ORDER BY
         t1.id DESC
     </select>
-    <select id="queryAssetListCount" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery" resultType="java.lang.Integer">
-      SELECT
+    <select id="queryAssetListCount" parameterType="com.antiy.asset.vo.query.AssetHardSoftOperQuery"
+            resultType="java.lang.Integer">
+        SELECT
         count(1)
         FROM
-        (<include refid="Asset_Sub_Query_Common_Sql"/>
+        (
+        <include refid="Asset_Sub_Query_Common_Sql"/>
         ) t2
         LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
         ORDER BY

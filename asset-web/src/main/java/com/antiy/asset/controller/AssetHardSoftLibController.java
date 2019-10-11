@@ -183,7 +183,7 @@ public class AssetHardSoftLibController {
     @ApiOperation(value = "装机模板-添加软件", notes = "软件列表")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class),})
     @RequestMapping(value = "/query/softList", method = RequestMethod.POST)
-    public ActionResponse queryPageSoft(@RequestBody AssetSoftwareQuery query) {
+    public ActionResponse queryPageSoft(@RequestBody AssetTemplateSoftwareRelationQuery query) {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageSoft(query));
     }
     /**

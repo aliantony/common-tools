@@ -161,7 +161,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     }
 
     @Override
-    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetSoftwareQuery query) {
+    public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query) {
         query.setOperationSystem(iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName());
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
         if (count <= 0) {
