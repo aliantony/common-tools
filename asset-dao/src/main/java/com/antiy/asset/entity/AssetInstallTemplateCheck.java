@@ -23,7 +23,7 @@ public class AssetInstallTemplateCheck extends BaseEntity {
     /**
      *创建时间
      */
-    private String gmtCreate;
+    private Long gmtCreate;
     /**
      * 是否通过：0-拒绝，1-通过
      */
@@ -53,11 +53,11 @@ public class AssetInstallTemplateCheck extends BaseEntity {
         this.result = result;
     }
 
-    public String getGmtCreate() {
+    public Long getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(String gmtCreate) {
+    public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
