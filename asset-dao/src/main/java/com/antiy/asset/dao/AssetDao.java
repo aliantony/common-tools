@@ -1,5 +1,11 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.IdCount;
@@ -8,11 +14,6 @@ import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -270,8 +271,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     int findAlarmAssetCount(AssetQuery query);
 
     /**
-     * 通过资产id查询对应资产信息<br>
-     * 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
+     * 通过资产id查询对应资产信息<br> 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
      *
      * @param ids
      * @return
@@ -291,7 +291,8 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param lastAssetStatus
      * @return
      */
-    Integer updateAssetStatusWithLock(@Param("asset") Asset newAsset, @Param("lastAssetStatus") Integer lastAssetStatus);
+    Integer updateAssetStatusWithLock(@Param("asset") Asset newAsset,
+                                      @Param("lastAssetStatus") Integer lastAssetStatus);
 
     /**
      *
@@ -302,24 +303,33 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 统计品类
-     * @param areaIdsOfCurrentUser    当前登录用户对应的区域
-     * @param status      资产状体（不包含已退役资产状态）
+     * @param areaIdsOfCurrentUser 当前登录用户对应的区域
+     * @param status 资产状体（不包含已退役资产状态）
      * @return
      */
 
-    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
+    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser,
+                                                 @Param("status") List<Integer> status);
 
     Integer findCountAssetNumber(@Param("number") String number);
 
-    List<Asset> getAssetStatusListByIds(@Param("ids") String[]ids);
+    List<Asset> getAssetStatusListByIds(@Param("ids") String[] ids);
 
     List<SelectResponse> queryBaselineTemplate();
 
     List<String> getAllSupplierofSafetyEquipment(@Param("supplier") String supplier);
 
-    List<String> getAllNameofSafetyEquipmentBySupplier(@Param("supplier") String supplier,@Param("name")String name);
+    List<String> getAllNameofSafetyEquipmentBySupplier(@Param("supplier") String supplier, @Param("name") String name);
 
-    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,@Param("name") String safetyEquipmentName,@Param("version") String version);
+    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,
+                                                @Param("name") String safetyEquipmentName,
+                                                @Param("version") String version);
 
     Boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception;
+
+    /**
+     * 批量查询资产的安装类型
+     * @param assetId
+     */
+    Integer queryInstallType(@Param("assetId") String assetId);
 }
