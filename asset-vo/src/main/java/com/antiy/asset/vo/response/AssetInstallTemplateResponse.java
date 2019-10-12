@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
+
 /**
  * <p> AssetInstallTemplateResponse 响应对象 </p>
  *
@@ -10,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2018-12-27
  */
 
-public class AssetInstallTemplateResponse  {
+public class AssetInstallTemplateResponse {
 
     @ApiModelProperty("模板id")
     @Encode
@@ -51,6 +52,8 @@ public class AssetInstallTemplateResponse  {
     private Integer patchNum;
     @ApiModelProperty("软件数量")
     private Integer softNum;
+    @ApiModelProperty("配合基准那边给与明文id")
+    private String templateId;
 
     public String getStringId() {
         return stringId;
@@ -164,23 +167,11 @@ public class AssetInstallTemplateResponse  {
         this.softNum = softNum;
     }
 
-    @Override
-    public String toString() {
-        return "AssetInstallTemplateResponse{" +
-                "stringId='" + stringId + '\'' +
-                ", name='" + name + '\'' +
-                ", numberCode='" + numberCode + '\'' +
-                ", categoryModel=" + categoryModel +
-                ", currentStatus=" + currentStatus +
-                ", operationSystem=" + operationSystem +
-                ", operationSystemName='" + operationSystemName + '\'' +
-                ", description='" + description + '\'' +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", createUser='" + createUser + '\'' +
-                ", modifiedUser='" + modifiedUser + '\'' +
-                ", patchNum=" + patchNum +
-                ", softNum=" + softNum +
-                '}';
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
     }
 }

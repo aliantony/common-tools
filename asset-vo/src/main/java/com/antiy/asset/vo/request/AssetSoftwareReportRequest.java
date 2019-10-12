@@ -2,6 +2,8 @@ package com.antiy.asset.vo.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -21,10 +23,14 @@ public class AssetSoftwareReportRequest extends BasicRequest implements ObjectVa
 
     @ApiModelProperty("资产id")
     @Encode
-    private List<String> assetId;
+    private List<String>               assetId;
 
     @ApiModelProperty("软件id")
-    private List<Long>   softId;
+    private List<Long>                 softId;
+
+    @ApiModelProperty(value = "启动流程数据")
+    @Valid
+    private ManualStartActivityRequest manualStartActivityRequest;
 
     public List<String> getAssetId() {
         return assetId;
@@ -40,6 +46,14 @@ public class AssetSoftwareReportRequest extends BasicRequest implements ObjectVa
 
     public void setSoftId(List<Long> softId) {
         this.softId = softId;
+    }
+
+    public ManualStartActivityRequest getManualStartActivityRequest() {
+        return manualStartActivityRequest;
+    }
+
+    public void setManualStartActivityRequest(ManualStartActivityRequest manualStartActivityRequest) {
+        this.manualStartActivityRequest = manualStartActivityRequest;
     }
 
     @Override

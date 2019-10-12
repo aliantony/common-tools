@@ -26,7 +26,7 @@ public class AssetInstallTemplateCheckResponse extends BaseResponse {
     private String  resultStr;
 
     @ApiModelProperty("创建时间")
-    private String gmtCreate;
+    private Long gmtCreate;
 
     @ApiModelProperty("用户名")
     private String name;
@@ -39,11 +39,11 @@ public class AssetInstallTemplateCheckResponse extends BaseResponse {
         this.name = name;
     }
 
-    public String getGmtCreate() {
+    public Long getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(String gmtCreate) {
+    public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 

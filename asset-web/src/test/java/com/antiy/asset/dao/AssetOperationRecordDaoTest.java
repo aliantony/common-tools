@@ -15,7 +15,7 @@ import java.util.Arrays;
 @SpringBootTest
 public class AssetOperationRecordDaoTest {
 	@MockBean
-	AssetOperationRecordDao dao;
+	private AssetOperationRecordDao dao;
 
 	@Test
 	public void queryAssetAllStatusInfo() throws Exception{
