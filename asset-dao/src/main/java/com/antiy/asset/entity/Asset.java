@@ -28,6 +28,10 @@ public class Asset extends BaseEntity {
      */
     private String            installTemplateId;
     /**
+     * stepNode
+     */
+    private String            stepNode;
+    /**
      * 品类名称
      */
     private String            version;
@@ -657,5 +661,13 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
+    }
+
+    public String getStepNode() {
+        return stepNode;
+    }
+
+    public void setStepNode(String stepNode) {
+        this.stepNode = stepNode;
     }
 }

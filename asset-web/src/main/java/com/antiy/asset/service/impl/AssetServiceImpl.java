@@ -293,8 +293,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                // 调用失败，逻辑删登记的资产
-                assetDao.deleteById(id);
+                // 调用失败，直接删登记的资产
+                assetDao.deleteAssetById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
             // 安全检查走基准
@@ -312,8 +312,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 如果基准为空,直接返回错误信息
                 if (null == baselineCheck
                     || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                    // 调用失败，逻辑删登记的资产
-                    assetDao.deleteById(id);
+                    // 调用失败，直接删登记的资产
+                    assetDao.deleteAssetById(id);
                     return baselineCheck == null ? baselineCheck.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
                 }
             }

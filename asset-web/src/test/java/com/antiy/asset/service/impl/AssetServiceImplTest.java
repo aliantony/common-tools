@@ -307,6 +307,7 @@ public class AssetServiceImplTest {
     @Test
     public void testSaveAsset() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
         when(assetUserDao.getById(any())).thenReturn(new AssetUser());
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
