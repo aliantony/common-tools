@@ -222,70 +222,6 @@
         </if>
     </select>
 
-    <select id="findTopologyCountByCategory" resultType="int"
-            parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select count(id) from asset a where exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
-        )
-        <if test=" categoryModels != null and categoryModels.length >0 ">
-            and category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" assetStatusList != null">
-            and asset_status in
-            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" areaIds != null and areaIds.length >0 ">
-            and area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" osList != null and osList.size() >0 ">
-            and operation_system in
-            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        and status=1
-    </select>
-
-    <select id="findTopologyIdByCategory" resultType="java.lang.String"
-            parameterType="com.antiy.asset.vo.query.AssetQuery">
-        select a.id from asset a where exists (
-        select * from asset_link_relation relation where relation.status=1 and (asset_id = a.id or parent_asset_id=a.id)
-        )
-        <if test=" categoryModels != null and categoryModels.length >0 ">
-            and category_model in
-            <foreach collection="categoryModels" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" assetStatusList != null">
-            and asset_status in
-            <foreach collection="assetStatusList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" areaIds != null and areaIds.length >0 ">
-            and area_id in
-            <foreach collection="areaIds" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        <if test=" osList != null and osList.size() >0 ">
-            and operation_system in
-            <foreach collection="osList" open="(" close=")" separator="," index="index" item="item">
-                #{item}
-            </foreach>
-        </if>
-        and status=1
-    </select>
-
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
@@ -293,7 +229,7 @@
         asset.area_id,
         asset.asset_group,
         asset.category_model,
-        asset. NAME,
+        lib. product_name as name,
         asset_user. NAME AS responsible_user_name,
         asset.responsible_user_id,
         <if test="queryVulCount == true">
@@ -311,6 +247,7 @@
         GROUP_CONCAT(DISTINCT air.ip) AS ips
         FROM
         asset asset
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.business_id
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
         AND air. STATUS = 1
         LEFT JOIN asset_user asset_user ON asset.responsible_user_id = asset_user.id

@@ -21,6 +21,8 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产编号")
     private String                         number;
+    @ApiModelProperty("stepNode")
+    private String                         stepNode;
     /**
      * 资产名称
      */
@@ -130,14 +132,24 @@ public class AssetResponse extends BaseResponse {
      * 配置模板id
      */
     @ApiModelProperty("配置模板id")
-    @Encode
     private String                         baselineTemplateId;
+    /**
+     * 配置模板名称
+     */
+    @ApiModelProperty("配置模板名称")
+    private String                         baselineTemplateName;
     /**
      * 装机模板id
      */
-    @Encode
     @ApiModelProperty("装机模板id")
+    @Encode
     private String                         installTemplateId;
+    /**
+     * 装机模板id
+     */
+    @ApiModelProperty("不加密的装机模板id")
+    private String                         decryptInstallTemplateId;
+
     /**
      * 上报来源
      */
@@ -240,6 +252,17 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "装机模板关联时间")
     private Long                           installTemplateCorrelationGmt;
+
+    @ApiModelProperty(value = "解密id")
+    private String                         decryptId;
+
+    public String getBaselineTemplateName() {
+        return baselineTemplateName;
+    }
+
+    public void setBaselineTemplateName(String baselineTemplateName) {
+        this.baselineTemplateName = baselineTemplateName;
+    }
 
     public String getAssetSourceName() {
         return assetSourceName;
@@ -361,6 +384,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setAreaId(String areaId) {
         this.areaId = areaId;
+    }
+
+    public String getDecryptInstallTemplateId() {
+        return decryptInstallTemplateId;
+    }
+
+    public void setDecryptInstallTemplateId(String decryptInstallTemplateId) {
+        this.decryptInstallTemplateId = decryptInstallTemplateId;
     }
 
     public String getResponsibleUserName() {
@@ -603,6 +634,14 @@ public class AssetResponse extends BaseResponse {
         this.contactTel = contactTel;
     }
 
+    public String getDecryptId() {
+        return decryptId;
+    }
+
+    public void setDecryptId(String decryptId) {
+        this.decryptId = decryptId;
+    }
+
     @Override
     public String toString() {
         return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
@@ -622,5 +661,13 @@ public class AssetResponse extends BaseResponse {
                + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
                + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
                + ", alarmCount='" + alarmCount + '\'' + '}';
+    }
+
+    public String getStepNode() {
+        return stepNode;
+    }
+
+    public void setStepNode(String stepNode) {
+        this.stepNode = stepNode;
     }
 }

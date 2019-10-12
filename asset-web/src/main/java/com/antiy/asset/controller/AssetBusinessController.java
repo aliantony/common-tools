@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.request.AssetMatchRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +27,7 @@ public class AssetBusinessController {
     public IAssetService iAssetService;
 
     /**
-     * 保存
+     * 根据区域ID返回资产UUID
      *
      * @param areaIdRequest
      * @return actionResponse
@@ -34,9 +35,34 @@ public class AssetBusinessController {
     @ApiOperation(value = "根据区域ID返回资产UUID", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/uuidByAreaId", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:query:uuidByAreaId')")
     public ActionResponse queryUuidByAreaId(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
         return ActionResponse.success(iAssetService.queryUuidByAreaIds(areaIdRequest));
+    }
+
+    /**
+     * 根据区域ID返回资产ID
+     *
+     * @param areaIdRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据区域ID返回资产ID", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/idByAreaId", method = RequestMethod.POST)
+    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
+        return ActionResponse.success(iAssetService.queryIdByAreaIds(areaIdRequest));
+    }
+
+    /**
+     * 根据IP/MAC判断资产是否存在
+     *
+     * @param assetMatchRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据IP+MAC判断资产是否存在", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/match/assetByIpMac", method = RequestMethod.POST)
+    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "assetMatchRequest") AssetMatchRequest assetMatchRequest) throws Exception {
+        return ActionResponse.success(iAssetService.matchAssetByIpMac(assetMatchRequest));
     }
 
 }

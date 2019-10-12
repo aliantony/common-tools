@@ -3,11 +3,8 @@ package com.antiy.asset.dao;
 import java.util.List;
 
 import com.antiy.asset.entity.*;
-import com.antiy.asset.vo.query.AssetOperationRecordQuery;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
 
-import javax.validation.constraints.Pattern;
 
 /**
  * <p> 资产操作记录表 Mapper 接口 </p>
@@ -17,17 +14,11 @@ import javax.validation.constraints.Pattern;
  */
 public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> {
 
-    List<AssetOperationRecordBarPO> findAssetOperationRecordBarByAssetId(AssetOperationRecordQuery assetOperationRecordQuery);
-
-    Integer findCountAssetOperationRecordBarByAssetId(AssetOperationRecordQuery assetOperationRecordQuery);
-
     /**
-     * 通过ID获取最新的记录创建时间
-     * @param assetId
-     * @return
+     * 新增操作记录
+     * @param recordList 操作记录
+     * @return 影响行数
      */
-    Long getTimeByAssetId(String assetId);
-
     Integer insertBatch(List<AssetOperationRecord> recordList);
 
     /** 批量查询资产对应的上一步日志

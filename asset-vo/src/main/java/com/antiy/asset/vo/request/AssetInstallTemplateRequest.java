@@ -8,6 +8,9 @@ import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> AssetInstallTemplateRequest 请求对象 </p>
@@ -16,20 +19,18 @@ import javax.validation.constraints.Size;
  * @since 2018-12-27
  */
 
-public class AssetInstallTemplateRequest implements ObjectValidator {
-    @ApiModelProperty("主键Id")
-    // @Encode
-    private String stringId;
-
+public class AssetInstallTemplateRequest extends BaseRequest implements ObjectValidator {
     /**
      * 模板名称
      */
     @ApiModelProperty("模板名称")
+    @Size(max = 80, min = 1)
     private String name;
     /**
      * 模板编号
      */
     @ApiModelProperty("模板编号")
+    @Size(max = 30, min = 1)
     private String numberCode;
     /**
      * 品类型号
@@ -52,12 +53,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
     @ApiModelProperty("操作系统名称")
     private String operationSystemName;
     /**
-     * 是否启用：0-禁用，1-启用
+     * 0-启用/禁用
+     * 1-模板编辑
      */
-    @ApiModelProperty("是否启用：0-禁用，1-启用")
-    // @Min(value = 0, message = "是否启用只能为0，1")
-    // @Max(value = 1, message = "是否启用只能为0，1")
-    private Integer enable;
+    @ApiModelProperty("0-启用/禁用,1-模板编辑")
+    // @NotNull
+    private Integer isUpdateStatus;
     @ApiModelProperty("要更新的状态")
     @Range(message = "状态不合法", max = 4, min = 1)
     private Integer updateStatus;
@@ -65,14 +66,49 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
      * 描述
      */
     @ApiModelProperty("描述")
+    @Size(max = 500, min = 0)
     private String description;
+    @ApiModelProperty("关联的软件业务id集合")
+    private Set<String> softBussinessIds;
+    @ApiModelProperty("关联的补丁主键id集合")
+    private Set<String> patchIds;
+    @ApiModelProperty("模板审核的用户主键id集合")
+    private Set<String> nextExecutor;
+    @ApiModelProperty("创建时间")
+    private long gmtCreate;
+    @ApiModelProperty("修改时间")
+    private long gmtModified;
+    @ApiModelProperty("创建用户")
+    private String createUser;
+    @ApiModelProperty("修改用户")
+    private String modifiedUser;
+    @ApiModelProperty("任务id")
+    private String taskId;
+    @ApiModelProperty("执行人id")
+    private Map formData;
 
-    public String getStringId() {
-        return stringId;
+    public Set<String> getSoftBussinessIds() {
+        return softBussinessIds;
     }
 
-    public void setStringId(String stringId) {
-        this.stringId = stringId;
+    public void setSoftBussinessIds(Set<String> softBussinessIds) {
+        this.softBussinessIds = softBussinessIds;
+    }
+
+    public Set<String> getPatchIds() {
+        return patchIds;
+    }
+
+    public void setPatchIds(Set<String> patchIds) {
+        this.patchIds = patchIds;
+    }
+
+    public Set<String> getNextExecutor() {
+        return nextExecutor;
+    }
+
+    public void setNextExecutor(Set<String> nextExecutor) {
+        this.nextExecutor = nextExecutor;
     }
 
     public String getName() {
@@ -123,12 +159,12 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
         this.operationSystemName = operationSystemName;
     }
 
-    public Integer getEnable() {
-        return enable;
+    public Integer getIsUpdateStatus() {
+        return isUpdateStatus;
     }
 
-    public void setEnable(Integer enable) {
-        this.enable = enable;
+    public void setIsUpdateStatus(Integer isUpdateStatus) {
+        this.isUpdateStatus = isUpdateStatus;
     }
 
     public String getDescription() {
@@ -155,8 +191,60 @@ public class AssetInstallTemplateRequest implements ObjectValidator {
         this.updateStatus = updateStatus;
     }
 
-    public Integer getId() {
-        return Integer.valueOf(stringId);
+    public long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifiedUser() {
+        return modifiedUser;
+    }
+
+    public void setModifiedUser(String modifiedUser) {
+        this.modifiedUser = modifiedUser;
+    }
+
+    public Map getFormData() {
+        StringBuilder builder = new StringBuilder();
+        this.getNextExecutor().forEach(v -> {
+            builder.append(v);
+            builder.append(",");
+        });
+        builder.deleteCharAt(builder.length() - 1);
+        Map<String, String> map = new HashMap<>();
+        map.put("checkUser", builder.toString());
+        return map;
+    }
+
+    public void setFormData(Map formData) {
+        this.formData = formData;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     @Override

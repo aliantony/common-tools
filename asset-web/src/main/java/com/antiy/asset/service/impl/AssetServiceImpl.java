@@ -266,6 +266,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
         Long currentTimeMillis = System.currentTimeMillis();
+        final String[] admittanceResult = new String[1];
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -288,10 +289,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String ssk = requestAsset.getBaselineTemplateId();
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
-                        String admittanceResult = (String) request.getManualStartActivityRequest().getFormData()
+                        admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
                             .get("admittanceResult");
                         asset.setAssetStatus(
-                            "safetyCheck".equals(admittanceResult) ? AssetStatusEnum.WAIT_CHECK.getCode()
+                            "safetyCheck".equals(admittanceResult[0]) ? AssetStatusEnum.WAIT_CHECK.getCode()
                                 : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
@@ -306,6 +307,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
+                    asset.setAssetSource(AssetSourceEnum.MANUAL_REGISTRATION.getCode());
                     assetDao.insert(asset);
 
                     // 记录操作日志和运行日志
@@ -363,16 +365,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
                     assetOperationRecord.setOriginStatus(0);
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())
-                        ? AssetStatusEnum.NET_IN.getCode()
-                        : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-                    assetOperationRecord.setProcessResult(1);
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+                    assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
                     assetOperationRecord.setGmtCreate(currentTimeMillis);
+                    assetOperationRecord.setStatus(1);
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
+                } catch (DuplicateKeyException exception) {
+                    throw new BusinessException("编号重复！");
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
@@ -389,7 +392,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        if (id != null && id > 0) {
+        if (id != null && id > 0 && request.getManualStartActivityRequest() != null) {
 
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(String.valueOf(id));
@@ -399,14 +402,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                // 调用失败，逻辑删登记的资产
-                assetDao.deleteById(id);
+                // 调用失败，直接删登记的资产
+                assetDao.deleteAssetById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
-
-        } else {
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION);
+            // 安全检查走基准
+            if ("safetyCheck".equals(admittanceResult[0])) {
+                BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+                baselineAssetRegisterRequest.setAssetId(id);
+                baselineAssetRegisterRequest
+                    .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
+                baselineAssetRegisterRequest.setCheckType(requestAsset.getInstallType());
+                baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest
+                    .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
+                ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+                // 如果基准为空,直接返回错误信息
+                if (null == baselineCheck
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    assetDao.deleteAssetById(id);
+                    return baselineCheck == null ? baselineCheck.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
+                }
+            }
         }
+
         return ActionResponse.success();
     }
 
@@ -516,15 +537,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     // return countIp >= 1;
     // }
     @Override
-    public boolean CheckRepeatMAC(String mac) throws Exception {
-        Integer countIp = assetDao.findCountMac(mac);
+    public boolean CheckRepeatMAC(String mac, Integer id) throws Exception {
+        Integer countIp = assetDao.findCountMac(mac, id);
         return countIp >= 1;
     }
 
     @Override
     public boolean CheckRepeatNumber(String number) throws Exception {
-        Integer countAsset = findCountAssetNumber(number);
-        return countAsset >= 1;
+        return assetDao.findCountAssetNumber(number) >= 1;
     }
 
     @Override
@@ -689,10 +709,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    public Integer findCountAssetNumber(String number) throws Exception {
-        return assetDao.findCountAssetNumber(number);
-    }
-
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
         // 是否资产组关联资产查询
@@ -707,7 +723,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("hard");
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("assetAdmittance");
         dealProcess(query, processMap);
 
         int count = 0;
@@ -796,12 +812,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // List<AssetResponse> list = this
         // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setPageSize(Constants.ALL_PAGE);
-        assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        List<AssetEntity> assetEntities1 = assetEntityConvert.convert(list, AssetEntity.class);
+        List<AssetEntity> assetEntities1 = getAssetEntities(baseRequest);
 
         File assetFile = new File(dictionaryFile, "资产列表.xls");
         // 下载资产列表
@@ -812,9 +823,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         fileOutputStream1.close();
         CloseUtils.close(fileOutputStream1);
         // 入网流程不需要基准模板
-        if (!baseRequest.isFlag()) {
-            System.out.println("-----------why--------值=" + "dfd" + "," + "当前类=.()");
-        }
+        // if (!baseRequest.isFlag()) {
+        // File template = baseLineClient.getTemplate (baseRequest.getIds ());
+        // }
 
         // 创造模板文件
 
@@ -836,6 +847,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 记录临时文件删除是否成功
         loggerIsDelete(zip);
         deleteTemp(dictionaryFile, files);
+    }
+
+    private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setTemplateList(processTemplateRequest.getIds());
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.setAreaIds(
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
+        return assetEntityConvert.convert(list, AssetEntity.class);
     }
 
     /**
@@ -1122,12 +1143,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = assetDao.getByAssetId(condition.getPrimaryKey());
         // 获取主表信息
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
+        assetResponse.setDecryptId(Objects.toString(asset.getId()));
+        assetResponse.setDecryptInstallTemplateId(asset.getInstallTemplateId());
         assetOuterResponse.setAsset(assetResponse);
+        // 获取厂商，名称，版本
+        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao
+            .getByBusinessId(Objects.toString(asset.getBusinessId()));
+        assetResponse
+            .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
+        assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
+        String m = Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse("")
+                   + Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse("");
+        assetResponse.setVersion(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getCpeUri)
+            .map(str -> str.substring(9 + m.length())).orElse(""));
         // 获取区域
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        assetResponse.setAreaName(sysArea.getFullName());
+        assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
         // 设置品类型号名
         assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 设置操作系统
@@ -1153,7 +1186,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetMacRelation> assetMacRelations = assetMacRelationDao.getByWhere(param);
         assetResponse.setMac(macResponseConverter.convert(assetMacRelations, AssetMacRelationResponse.class));
 
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode())) {
             List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
                 AssetNetworkEquipmentResponse assetNetworkEquipmentResponse = networkResponseConverter
@@ -1161,7 +1194,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterResponse.setAssetNetworkEquipment(assetNetworkEquipmentResponse);
             }
         }
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.SAFETY.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.SAFETY.getCode())) {
             List<AssetSafetyEquipment> assetSafetyEquipments = assetSafetyEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetSafetyEquipments)) {
                 AssetSafetyEquipmentResponse assetSafetyEquipmentResponse = safetyResponseConverter
@@ -1170,7 +1203,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode().toString())) {
+        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode())) {
             List<AssetStorageMedium> assetStorageMedias = assetStorageMediumDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetStorageMedias)) {
                 AssetStorageMediumResponse assetStorageMediumResponse = storageResponseConverter
@@ -1204,7 +1237,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
-                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()));
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),
+                assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
@@ -1271,7 +1305,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetCount != null && assetCount > 0) {
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
-            String nextStepUserId = "";
             Asset assetObj = assetDao.getById(assetId);
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
@@ -1297,13 +1330,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String nextStep = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
                         .get("admittanceResult");
                     if ("safetyCheck".equals(nextStep)) {
-                        nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                            .get("safetyCheckUser");
                         // 更新资产状态为待检查
                         updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
                     } else if ("templateImplement".equals(nextStep)) {
-                        nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                            .get("templateImplementUser");
                         // 更新资产状态为待实施
                         updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                             assetId);
@@ -1317,6 +1346,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // 资产变更
                 else {
+                    String nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
+                        .get("baselineConfigUserId");
+                    List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
                     baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
@@ -1326,42 +1358,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
                     baselineWaitingConfigRequest.setReason("资产变更");
                     baselineWaitingConfigRequest.setSource(2);
-                    ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequest);
+                    baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+                    ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
                     }
                     // ------------------对接配置模块------------------end
                     // 更新资产状态为变更中
-                    updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
-                        assetId);
+                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 }
             }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // 下发智甲
-                    AssetExternalRequest assetExternalRequest = BeanConvert.convertBean(assetOuterRequest,
-                        AssetExternalRequest.class);
-                    try {
-                        assetExternalRequest.setAsset(BeanConvert
-                            .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class));
-                    } catch (Exception e) {
-                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e);
-                    }
-                    // 获取资产上安装的软件信息
-                    List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-                        .findInstalledSoft(assetOuterRequest.getAsset().getId());
-                    assetExternalRequest
-                        .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-                    List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-                    assetExternalRequests.add(assetExternalRequest);
-                    assetClient.issueAssetData(assetExternalRequests);
-                }
-            }).start();
+            /* new Thread(new Runnable() {
+             * @Override public void run() { // 下发智甲 AssetExternalRequest assetExternalRequest =
+             * BeanConvert.convertBean(assetOuterRequest, AssetExternalRequest.class); try {
+             * assetExternalRequest.setAsset(BeanConvert
+             * .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class)); } catch
+             * (Exception e) { LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e); } //
+             * 获取资产上安装的软件信息 List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
+             * .findInstalledSoft(assetOuterRequest.getAsset().getId()); assetExternalRequest
+             * .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
+             * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
+             * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
+             * }).start(); */
         }
         return assetCount;
     }
@@ -1384,7 +1406,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
             assetGroupRelationDao.insertBatch(assetGroupRelationList);
         }
-        return groupName.toString().substring(0, groupName.toString().length() - 1);
+        return StringUtils.isBlank(groupName.toString()) ? ""
+            : groupName.toString().substring(0, groupName.toString().length() - 1);
     }
 
     public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests, Integer categoryModel) {
@@ -1405,7 +1428,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 3. 处理通联
         // 删除被删/改的IP端口通联关系
-        assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        if (categoryModel == 1 || categoryModel == 2) {
+            assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+        }
     }
 
     public void dealMac(String id, List<AssetMacRelationRequest> macRelationRequests) {
@@ -1565,6 +1590,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setWarranty("2年");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setImportanceDegree("1");
+        otherDeviceEntity.setIp("192.158.58.58");
+        otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         dataList.add(otherDeviceEntity);
         return dataList;
     }
@@ -1847,7 +1874,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -1910,7 +1937,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 HashMap<String, Object> stringObjectHashMap = new HashMap<>();
                 stringObjectHashMap.put("productName", entity.getOperationSystem());
                 AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                // asset.setOperationSystem(assetCpeFilter.getBusinessId().toString());
+                asset.setOperationSystem(assetCpeFilter.getBusinessId());
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
                 asset.setAreaId(areaId);
@@ -2048,7 +2075,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -2254,7 +2281,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
                 continue;
             }
-            if (CheckRepeatMAC(entity.getMac())) {
+            if (CheckRepeatMAC(entity.getMac(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
@@ -2603,6 +2630,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         StringBuilder builder = new StringBuilder();
         List<Asset> assets = new ArrayList<>();
         List<String> assetNumbers = new ArrayList<>();
+        List<String> assetMac = new ArrayList<>();
+        List<AssetMacRelation> assetMacRelations = new ArrayList<>();
+        List<AssetIpRelation> assetIpRelations = new ArrayList<>();
         for (OtherDeviceEntity entity : resultDataList) {
 
             if (assetNumbers.contains(entity.getNumber())) {
@@ -2611,11 +2641,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
+            if (assetMac.contains(entity.getMac())) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
+                continue;
+            }
 
             if (CheckRepeatNumber(entity.getNumber())) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
+                continue;
+            }
+            if (CheckRepeatMAC(entity.getMac(), null)) {
+                repeat++;
+                a++;
+                builder.append("第").append(a).append("行").append("MAC地址重复！");
                 continue;
             }
 
@@ -2675,6 +2717,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
+                assetMac.add(entity.getMac());
                 Asset asset = new Asset();
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
                 asset.setGmtCreate(System.currentTimeMillis());
@@ -2694,6 +2737,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setDescrible(entity.getMemo());
                 asset.setCategoryModel(AssetCategoryEnum.OTHER.getCode());
                 assets.add(asset);
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setIp(entity.getIp());
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setMac(entity.getMac());
+                assetMacRelations.add(assetMacRelation);
+                assetIpRelations.add(assetIpRelation);
             }
 
             a++;
@@ -2707,10 +2756,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
             List<AssetOperationRecord> recordList = new ArrayList<>();
-            for (Asset asset : assets) {
-                recordList.add(assetRecord(asset.getStringId(), asset.getAreaId()));
+            for (int i = 0; i < assets.size(); i++) {
+                String stringId = assets.get(i).getStringId();
+                assetIpRelations.get(i).setAssetId(assets.get(i).getId());
+                assetMacRelations.get(i).setAssetId(assets.get(i).getId());
+                recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
+            assetIpRelationDao.insertBatch(assetIpRelations);
+            assetMacRelationDao.insertBatch(assetMacRelations);
             assetOperationRecordDao.insertBatch(recordList);
         }
 
@@ -2735,7 +2789,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setTargetObjectId(id);
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setContent("导入硬件资产");
-        assetOperationRecord.setProcessResult(1);
         assetOperationRecord.setOriginStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
@@ -2749,7 +2802,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional
     public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
         String[] assetId = assetStatusChangeRequest.getAssetId();
-
+        if (assetId == null || assetId.length == 0) {
+            return 0;
+        }
         // 查询资产当前状态
         List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetId);
         if (CollectionUtils.isEmpty(currentAssetList)) {
@@ -2760,22 +2815,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException("资产状态已改变");
             }
         }
+        List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
+            // 记录资产状态变更信息到操作记录表
             operationRecord(currentAsset.getId().toString());
-        }
-        // 硬件完成流程
-        if (assetStatusChangeRequest.getActivityHandleRequest() != null) {
-            ActionResponse actionResponse = activityClient
-                .completeTask(assetStatusChangeRequest.getActivityHandleRequest());
-            // // 流程调用失败不更改资产状态
-            if (null == actionResponse
-                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                throw new BusinessException(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
-            }
-        }
-
-        for (Asset currentAsset : currentAssetList) {
-
             // 记录日志
             if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
                 LogUtils.recordOperLog(
@@ -2791,13 +2834,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             asset.setId(currentAsset.getId());
             asset.setAssetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
-            if (LoginUserUtil.getLoginUser() == null) {
-                LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-            } else {
-                asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            }
-            assetDao.update(asset);
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+            assetList.add(asset);
         }
+        // 更新状态
+        assetDao.updateAssetBatch(assetList);
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
         return assetId.length;
@@ -2809,21 +2850,44 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> getAllSupplierofSafetyEquipment() {
-        List<String> supplierList = assetDao.getAllSupplierofSafetyEquipment();
+    public List<String> getAllSupplierofSafetyEquipment(String supplier) {
+        List<String> supplierList = assetDao.getAllSupplierofSafetyEquipment(supplier);
         return supplierList;
     }
 
     @Override
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier) {
-        List<String> nameList = assetDao.getAllNameofSafetyEquipmentBySupplier(supplier);
+    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name) {
+        List<String> nameList = assetDao.getAllNameofSafetyEquipmentBySupplier(supplier, name);
         return nameList;
     }
 
     @Override
-    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName) {
-        List<String> versionList = assetDao.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName);
+    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version) {
+        List<String> versionList = assetDao.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName, version);
         return versionList;
+    }
+
+    @Override
+    public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
+        return getAssetEntities(request);
+
+    }
+
+    @Override
+    public List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
+        List<IpMacPort> ipMacList = new ArrayList<>();
+        // 获取用户所在的区域
+        // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        // request.setAreaIds(areaIdList);
+        for (IpMacPort ipMacPort : request.getIpMacPorts()) {
+            request.setIpMacPort(ipMacPort);
+            // 筛选异常资产
+            if (!assetDao.matchAssetByIpMac(request)) {
+                ipMacList.add(ipMacPort);
+            }
+
+        }
+        return ipMacList;
     }
 
     private void operationRecord(String id) throws Exception {
@@ -2836,14 +2900,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
         operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
-
-        if (LoginUserUtil.getLoginUser() == null) {
-            LogUtils.info(logger, AssetEventEnum.GET_USER_INOF.getName() + " {}", "无法获取用户信息");
-        } else {
-            operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        }
-
+        operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecordDao.insert(operationRecord);
     }
 
@@ -2894,7 +2952,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
+    public Set<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
         if ((isNet == null) || isNet == 1) {
             query.setCategoryModels(
@@ -3007,6 +3065,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception {
         if (CollectionUtils.isNotEmpty(request.getAreaIds())) {
             return assetDao.findUuidByAreaIds(request.getAreaIds());
+        } else {
+            throw new BusinessException("区域ID不能为空");
+        }
+
+    }
+
+    @Override
+    public List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception {
+        if (CollectionUtils.isNotEmpty(request.getAreaIds())) {
+            return assetDao.findIdByAreaIds(request.getAreaIds());
         } else {
             throw new BusinessException("区域ID不能为空");
         }

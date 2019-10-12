@@ -4,6 +4,8 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
+import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
@@ -12,6 +14,7 @@ import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p> 装机模板 Mapper 接口 </p>
@@ -59,7 +62,7 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(@Param("osBusinessId") String osBusinessId);
 
     /**
      * 查询装机模板的软件数量
@@ -101,4 +104,45 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     List<AssetInstallTemplateResponse> queryTemplateInfo(ObjectQuery query);
 
     List<AssetInstallTemplateResponse> queryFilteredTemplate(ObjectQuery query);
+
+    /**
+     * 批量插入补丁与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchPatch(AssetInstallTemplateRequest request);
+
+    /**
+     * 批量插入软件与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchSoft(AssetInstallTemplateRequest request);
+
+    /**
+     * 批量插入审核用户与装机模板的关系
+     *
+     * @param request
+     * @return
+     */
+    Integer insertBatchUser(AssetInstallTemplateRequest request);
+
+    Set<String> queryCheckTemplateUserId(@Param("installTemplateId") Integer installTemplateId);
+
+    Integer checkTemplate(AssetInstallTemplateCheckRequest request);
+
+    Integer updateStatus(AssetInstallTemplate template);
+
+    Integer deleteBatchSoft(AssetInstallTemplateRequest request);
+
+    Integer deleteBatchPatch(AssetInstallTemplateRequest request);
+
+    Integer deleteBatchUser(AssetInstallTemplateRequest request);
+
+    Set<String> queryPatchIds(PrimaryKeyQuery query);
+
+    List<PatchInfo> queryPatchRelations(@Param("installTemplateId") String installTemplateId);
+    Integer insertTemplateCheckInfo(AssetInstallTemplateCheckRequest request);
 }

@@ -582,7 +582,27 @@
             </otherwise>
         </choose>
     </select>
-
+    <select id="checkIp" resultType="java.lang.Integer">
+        select count(1) from asset_link_relation
+        where
+        (
+        asset_id = #{id}
+        and asset_ip = #{ip}
+        <if test="port != null">
+            and asset_port = #{port}
+        </if>
+        and status = 1
+        )
+        or
+        (
+        parent_asset_id = #{id}
+        and parent_asset_ip = #{ip}
+        <if test="port != null">
+            and parent_asset_port = #{port}
+        </if>
+        and status = 1
+        )
+    </select>
     <update id="deleteRelationByAssetId" parameterType="java.util.Map">
         delete from asset_link_relation
         <where>
@@ -864,11 +884,12 @@
     <select id="pulldownUnconnectedManufacturer" resultType="string"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
-        a.manufacturer
+        lib.supplier
         FROM
         asset a
         LEFT JOIN asset_ip_relation b ON a.id = b.asset_id
         AND b. STATUS = 1
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id=a.business_id
         LEFT JOIN asset_link_relation d ON (
         (
         a.id = d.asset_id
@@ -881,10 +902,10 @@
         )
         WHERE
         a. STATUS = 1
+        and lib.supplier is not null
         <if test="primaryKey !=null">
             and a.id !=#{primaryKey}
         </if>
-        <include refid="Multiple_Query"/>
         GROUP BY
         a.id
         HAVING
@@ -1049,8 +1070,7 @@
         <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
             #{assetId}
         </foreach>
-        or
-        parent_asset_id in
+        or parent_asset_id in
         <foreach collection="assetIdList" item="assetId" open="(" close=")" separator=",">
             #{assetId}
         </foreach>

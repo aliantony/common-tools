@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,20 +20,17 @@ import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
+import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.base.*;
+import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
 
 /**
@@ -69,23 +65,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private AssetDao                                                            assetDao;
     @Resource
     private CommandClientImpl                                                   commandClient;
-
-    private void setOperationName(AssetSoftwareRelationResponse assetSoftwareRelationResponse) throws Exception {
-        if (StringUtils.isNotEmpty(assetSoftwareRelationResponse.getOperationSystem())) {
-            String[] ops = assetSoftwareRelationResponse.getOperationSystem().split(",");
-            StringBuilder stringBuilder = new StringBuilder();
-            List<BaselineCategoryModelResponse> categoryOsResponseList = redisService.getAllSystemOs();
-            for (String os : ops) {
-                for (BaselineCategoryModelResponse categoryModelResponse : categoryOsResponseList) {
-                    if (os.equals(categoryModelResponse.getStringId())) {
-                        stringBuilder.append(categoryModelResponse.getName()).append(",");
-                    }
-                }
-            }
-            assetSoftwareRelationResponse.setOperationSystemName(
-                stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(",")));
-        }
-    }
+    @Resource
+    private BaseLineClient                                                      baseLineClient;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
@@ -133,7 +114,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 模板是白名单需排除白名单中已安装过的软件
         else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
-                softwareIds.remove(a);
+                softwareIds.remove(Long.parseLong(a));
             });
         }
         if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {
@@ -170,11 +151,29 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             });
             return assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
+
+        String nextStepUserId = (String) softwareReportRequest.getManualStartActivityRequest().getFormData()
+            .get("baselineConfigUserId");
+        // ------------------对接配置模块------------------start
+        List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
+        assetIds.stream().forEach(assetId -> {
+            BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
+            baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+            baselineWaitingConfigRequest.setCheckType(assetDao.queryInstallType(assetId));
+            baselineWaitingConfigRequest.setConfigStatus(1);
+            baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
+            baselineWaitingConfigRequest.setReason("资产变更");
+            baselineWaitingConfigRequest.setSource(2);
+            baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+        });
+        ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
+        }
+        // ------------------对接配置模块------------------end
+
         return 0;
     }
-
-    private Integer countByAssetId(Integer assetId) {
-        return assetSoftwareRelationDao.countSoftwareByAssetId(assetId);
-    }
-
 }

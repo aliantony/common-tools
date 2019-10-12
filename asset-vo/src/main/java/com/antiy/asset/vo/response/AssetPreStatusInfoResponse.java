@@ -22,6 +22,12 @@ public class AssetPreStatusInfoResponse {
 		this.originStatus = originStatus;
 	}
 
+	public AssetPreStatusInfoResponse(String assetId, String note, Integer originStatus) {
+		this.assetId = assetId;
+		this.note = note;
+		this.originStatus = originStatus;
+	}
+
 	/**
 	 * 资产id
 	 */

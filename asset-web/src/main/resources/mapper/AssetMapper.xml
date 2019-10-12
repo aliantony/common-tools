@@ -14,6 +14,10 @@
         <result property="key" column="category_model"/>
         <result property="value" column="num"/>
     </resultMap>
+    <resultMap id="installMap" type="java.util.HashMap">
+        <result property="key" column="id"/>
+        <result property="value" column="install_type"/>
+    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -44,13 +48,16 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
+        <result column="step_node" property="stepNode"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="baseline_template_name" property="baselineTemplateName"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
         <result column="macs" property="macs"/>
+        <result column="step_node" property="stepNode"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -60,7 +67,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, step_node,number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -71,6 +78,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" businessId != null">
             business_id,
+        </if>
+        <if test=" stepNode != null">
+            step_node,
         </if>
         <if test=" assetGroup != null">
             asset_group,
@@ -190,6 +200,9 @@
         <if test=" businessId != null">
             #{businessId },
         </if>
+        <if test=" stepNode != null">
+            #{step_node },
+        </if>
         <if test=" assetGroup != null">
             #{assetGroup },
         </if>
@@ -305,6 +318,7 @@
     </sql>
     <sql id="IF_Value_Column_List_ForBatch">
             #{entity.number },
+            #{entity.stepNode },
             #{entity.name },
             #{entity.installType },
             #{entity.serial },
@@ -343,6 +357,7 @@
     <sql id="IF_Base_Column_List_ForBatch">
 
             number,
+            step_node,
             name,
             install_type,
             serial,
@@ -380,6 +395,9 @@
     <sql id="Set_Column_List">
         <if test=" businessId != null">
             business_id = #{businessId },
+        </if>
+        <if test=" stepNode != null">
+            step_node = #{stepNode },
         </if>
         <if test=" assetGroup != null">
             asset_group = #{assetGroup },
@@ -498,6 +516,9 @@
     <sql id="Where_Column_List">
         <if test=" businessId != null">
             and business_id = #{businessId }
+        </if>
+        <if test=" stepNode != null">
+            and step_node = #{stepNode },
         </if>
         <if test=" assetGroup != null">
             and asset_group = #{assetGroup }
@@ -618,6 +639,9 @@
         <if test=" number != null">
             and number = #{number }
         </if>
+        <if test=" stepNode != null">
+            and step_node = #{stepNode },
+        </if>
         <if test=" type != null">
             and type = #{type }
         </if>
@@ -692,6 +716,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="stringId != null and stringId != ''">
+            and asset.id = #{stringId}
+        </if>
         <if test="baselineTemplateId != null and baselineTemplateId != ''">
             and baseline_template_id = #{baselineTemplateId}
         </if>
@@ -722,6 +749,12 @@
             )
         </if>
 
+        <if test="areaIds==null and ids != null and ids.length > 0">
+            and asset.id in
+            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="areaIds==null and ids != null and ids.length > 0">
             and asset.id in
             <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
@@ -852,6 +885,13 @@
             </foreach>
             )
         </if>
+        <if test="templateList != null and templateList.size() > 0 ">
+            and asset.id in (
+            <foreach index="index" item="item" collection="templateList" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.Asset" useGeneratedKeys="true" keyProperty="id">
@@ -908,6 +948,12 @@
         set status = 0
         where id = #{id}
     </update>
+
+    <delete id="deleteAssetById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
         select
@@ -1080,11 +1126,12 @@
         asset.category_model,
         asset.admittance_status,
         asset.number,
-        asset.name,
+        ahsl2.product_name as name,
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset.manufacturer, asset_status,
+        ahsl2.supplier as manufacturer,
+        asset.asset_status,
         asset.operation_system,
         ahsl.product_name as operation_system_name,
         asset.house_location,
@@ -1103,16 +1150,19 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
-        asset.version,
+        ahsl2.version,
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs,
         asset.install_template_id,
-        asset.baseline_template_id
+        asset.baseline_template_id,
+        bt.tp_name as baseline_template_name
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
+        left join asset_hard_soft_lib ahsl2 on asset.business_id = ahsl2.business_id and ahsl2.status = 1
+        left join baseline_template bt on asset.baseline_template_id = bt.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1470,12 +1520,17 @@
         group by asset_id
     </select>
     <select id="findCountMac" resultType="java.lang.Integer">
- 	SELECT
-		count(1) count
-	FROM
-		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
-	WHERE
-	 a.`status` !=1	AND mac = #{mac}
+        SELECT
+        count(1) count
+        FROM
+        asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
+        WHERE
+        <if test="id!=null ">
+            a.id !=#{id} and
+        </if>
+        a.`status` =1 AND m.`status` =1 and
+        upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
+        '' ) )
     </select>
     <select id="findUuidByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
@@ -1487,6 +1542,18 @@
         and status = 1 and uuid is not null
         group by id
     </select>
+
+    <select id="findIdByAreaIds" resultType="java.lang.String"
+            parameterType="java.util.List">
+        select business_id from asset
+        WHERE area_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and business_id is not null
+        group by id
+    </select>
+
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id
@@ -1556,22 +1623,23 @@
         <foreach collection="assetList" separator=";" item="asset">
             update
             <include refid="Table_Name"></include>
-            set
-            <if test="#{asset.firstEnterNett} != null">
-                first_enter_nett = #{asset.firstEnterNett},
-            </if>
-            <if test="#{asset.assetStatus} != null">
-                asset_status = #{asset.assetStatus},
-            </if>
-            <if test="#{asset.gmtModified} != null">
-                gmt_modified = #{asset.gmtModified},
-            </if>
-            <if test="#{asset.modifyUser} != null">
-                modify_user = #{asset.modifyUser},
-            </if>
-            <if test="#{asset.status} != null">
-                `status` = #{asset.status}
-            </if>
+            <set>
+                <if test="asset.firstEnterNett != null">
+                    first_enter_nett = #{asset.firstEnterNett},
+                </if>
+                <if test="asset.assetStatus != null">
+                    asset_status = #{asset.assetStatus},
+                </if>
+                <if test="asset.gmtModified != null">
+                    gmt_modified = #{asset.gmtModified},
+                </if>
+                <if test="asset.modifyUser != null">
+                    modify_user = #{asset.modifyUser},
+                </if>
+                <if test="asset.status != null">
+                    `status` = #{asset.status}
+                </if>
+            </set>
             where id = #{asset.id}
         </foreach>
     </update>
@@ -1580,10 +1648,10 @@
         update
         <include refid="Table_Name"></include>
         set
-        asset_status = #{asset.assetStatus},
-        status = #{asset.status}
+        asset_status = #{asset.assetStatus}
         where id = #{asset.id}
         and asset_status = #{lastAssetStatus}
+        and status = 1
     </update>
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -1598,7 +1666,7 @@
         where asset.id=#{id}
     </select>
 
-    <select id="getAssemblyInfoById" parameterType="int" resultType="com.antiy.asset.entity.AssetAssembly">
+    <select id="getAssemblyInfoById" parameterType="java.lang.String" resultType="com.antiy.asset.entity.AssetAssembly">
   SELECT
   asset.id as assetId,
 	assembly.business_id as businessId,
@@ -1611,7 +1679,7 @@ FROM
 LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
 LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
 WHERE
-	asset.id = 1
+	asset.id = #{id}
   and asset.status=1
   and assembly.status=1
   and lib.status=1
@@ -1644,9 +1712,10 @@ AND a.`status` = 1
 
 
     <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,asset_status as assetStatus
+        SELECT id,name,asset_status as assetStatus
         FROM asset
-        WHERE id IN
+        WHERE status=1
+        AND id IN
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
@@ -1660,21 +1729,68 @@ AND a.`status` = 1
             INNER JOIN baseline_template bt ON asset.baseline_template_id = bt.id
     </select>
     <select id="getAllSupplierofSafetyEquipment" resultType="java.lang.String">
-       SELECT manufacturer
-       FROM   asset
-       where  category_model =3
-       GROUP  BY manufacturer
+        SELECT manufacturer
+        FROM asset
+        where category_model =3 and status=1
+        <if test="supplier !=null ">
+            and manufacturer LIKE CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY manufacturer
     </select>
     <select id="getAllNameofSafetyEquipmentBySupplier" resultType="java.lang.String">
         SELECT name
-        FROM  asset
-        where category_model =3 AND   manufacturer=#{supplier}
-        GROUP  BY name
+        FROM asset
+        where status=1 and category_model =3 AND manufacturer=#{supplier}
+        <if test="name !=null">
+            and name LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY name
     </select>
     <select id="getAllVersionofSafetyEquipment" resultType="java.lang.String">
-        SELECT  version
-        from  asset
-        where  category_model =3 AND   manufacturer=#{supplier} AND name=#{name}
-        GROUP  BY version
+        SELECT version
+        from asset
+        where status=1 and category_model =3 AND manufacturer=#{supplier} AND name=#{name}
+        <if test="version !=null">
+            and version LIKE CONCAT('%',replace(replace(#{version},'%','\%'),'_','\_'),'%')
+        </if>
+        GROUP BY version
+    </select>
+
+    <select id="matchAssetByIpMac" resultType="java.lang.Boolean"
+            parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
+        SELECT
+        IF
+        ( count( 1 ) &gt;= 1, TRUE, FALSE ) as result
+        FROM
+        (
+        SELECT
+        asset_id,
+        ip
+        FROM
+        asset_ip_relation iprel
+        INNER JOIN asset ON iprel.asset_id = asset.id
+        WHERE
+        iprel.ip = #{ipMacPort.ip}
+        AND asset.STATUS = 1
+        AND iprel.`status` = 1
+        <if test=" areaIds != null and areaIds.size() > 0">
+            and asset.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ) ip_temp
+        INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
+        AND macrel.`status` = 1
+        WHERE
+        ip = #{ipMacPort.ip}
+        <if test="ipMacPort.mac != null">
+            AND mac = #{ipMacPort.mac}
+        </if>
+    </select>
+    <select id="queryInstallType" resultType="java.lang.Integer">
+        select
+        install_type from asset where id = #{assetId}
+        and status = 1
     </select>
 </mapper>

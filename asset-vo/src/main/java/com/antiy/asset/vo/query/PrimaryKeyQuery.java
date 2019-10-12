@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class PrimaryKeyQuery extends ObjectQuery {
     @ApiModelProperty("业务主键")
+    @Encode
     private String pid;
 
     public String getPid() {

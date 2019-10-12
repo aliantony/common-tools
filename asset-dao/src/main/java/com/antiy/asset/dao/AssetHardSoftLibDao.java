@@ -1,11 +1,10 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
@@ -36,6 +35,7 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
 
     /**
      * 排除已存在关系的资产id
+     *
      * @param businessId
      * @param sourceType
      * @return
@@ -52,4 +52,31 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      * @return
      */
     List<AssetHardSoftLib> queryHardSoftLibList(AssetHardSoftLibQuery query);
+
+    /**
+     * cpe信息查询-软硬操作系统
+     *
+     * @param query 查询条件
+     * @return 数据
+     */
+    List<AssetHardSoftLib> queryAssetList(AssetHardSoftOperQuery query);
+
+    /**
+     * cpe信息查询-软硬操作系统
+     * @param query 查询条件
+     * @return 数量
+     */
+    Integer queryAssetListCount(AssetHardSoftOperQuery query);
+    Integer queryCountSoftWares(ObjectQuery query);
+
+    /**
+     * 软件列表
+     *
+     * @return
+     */
+    List<AssetHardSoftLib> querySoftWares(ObjectQuery query);
+
+    List<AssetHardSoftLib> querySoftsRelations(@Param("templateId") String templateId);
+
+    AssetHardSoftLib getByBusinessId(@Param("businessId") String businessId);
 }

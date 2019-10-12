@@ -3,7 +3,7 @@ package com.antiy.asset.manage.builder.under.line;
 
 import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.manage.builder.Builder;
-import com.antiy.asset.vo.request.AssetChangeDetailEnum;
+import com.antiy.asset.vo.enums.AssetChangeDetailEnum;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ public class UnderInNetBuilder extends Builder {
 	public void builder() {
 
 		List<AssetStatusDetail> res = next(new UnderWaitValidateBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_NET, true, true);
+
 		products.setProducts(res);
 	}
 }

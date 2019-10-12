@@ -5,13 +5,11 @@ import java.util.List;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
+import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 
 /**
  * <p> 装机模板 服务类 </p>
@@ -33,7 +31,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      *
      * @return
      */
-    List<Integer> queryTemplateStatus();
+    List<AssetInstallTemplateStatusResponse> queryTemplateStatus();
 
     /**
      * 查询模板编号是否存在
@@ -48,7 +46,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      *
      * @return
      */
-    List<AssetInstallTemplateOsResponse> queryOs();
+    List<AssetInstallTemplateOsResponse> queryOs(String osBusinessId);
 
     /**
      * 保存
@@ -64,7 +62,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param request
      * @return
      */
-    String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
+    ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
 
     /**
      * 查询对象集合
@@ -109,6 +107,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 模板软件查询
+     *
      * @param query
      * @return
      */
@@ -116,15 +115,28 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
 
     /**
      * 补丁列表查询
+     *
      * @param query
      * @return
      */
     PageResult<PatchInfoResponse> queryPatchPage(PrimaryKeyQuery query);
 
+
     /**
-     * 启用禁用
+     * 补丁列表
+     *
+     * @param query
+     * @return
+     */
+    List<PatchInfoResponse> queryPatchs(String templateId);
+
+    /**
+     * 提交模板信息
+     *
      * @param request
      * @return
      */
-    int enableInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
+    ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
+
+    String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception;
 }

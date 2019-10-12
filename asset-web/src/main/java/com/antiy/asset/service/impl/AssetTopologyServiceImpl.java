@@ -47,11 +47,13 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
@@ -97,11 +99,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private Double                              thirdLevelSpacing;
     @Value("${topology.third.level.height}")
     private Double                              thirdLevelHeight;
-
-    @Override
-    public List<String> queryCategoryModels() {
-        return assetLinkRelationDao.queryCategoryModes();
-    }
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
@@ -271,11 +268,23 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
         List<Map<String, Object>> result = assetDao
             .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+        Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
             categoryResponse.setNum(Integer.valueOf(map.get("value") + ""));
             categoryResponse.setAsset_name(AssetCategoryEnum.getNameByCode(Integer.valueOf(map.get("key").toString())));
             categoryResponseList.add(categoryResponse);
+            set.add(Integer.valueOf(map.get("key").toString()));
+        }
+        if (set.size() < AssetCategoryEnum.values().length) {
+            for (AssetCategoryEnum assetCategoryEnum : AssetCategoryEnum.values()) {
+                if (!set.contains(assetCategoryEnum.getCode())) {
+                    TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
+                    categoryResponse.setNum(0);
+                    categoryResponse.setAsset_name(assetCategoryEnum.getName());
+                    categoryResponseList.add(categoryResponse);
+                }
+            }
         }
         topologyCategoryCountResponse.setData(categoryResponseList);
         topologyCategoryCountResponse.setStatus("success");

@@ -8,11 +8,13 @@ import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusJumpEnum;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.RespBasicCode;
@@ -31,6 +33,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,12 +68,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (CollectionUtils.isNotEmpty(assetIdList)) {
             assetsInDb = assetDao.findByIds(assetIdList);
         }
-        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "未查询到所选资产信息,请稍后重试");
+        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "所选资产已被操作,请刷新后重试");
 
         // 当前所有资产的可执行操作与当前状态一致
         assetsInDb.forEach(asset -> {
             if (!asset.getAssetStatus().equals(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode())) {
-                LogUtils.warn(logger, "资产状态不匹配 request:{}", statusJumpRequest);
+                LogUtils.info(logger, "资产状态不匹配 request:{}", statusJumpRequest);
                 throw new BusinessException("当前选中的资产已被其他人员操作,请刷新页面后重试");
             }
         });
@@ -79,13 +82,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         setInProcess(statusJumpRequest, assetsInDb);
 
         // 2.提交至工作流
-        boolean activitySuccess = true;
-        // boolean activitySuccess = startActivity(statusJumpRequest);
-        // if (!activitySuccess) {
-        //     assetDao.updateAssetBatch(assetsInDb);
-        //     LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
-        //     return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新后重试");
-        // }
+        boolean activitySuccess = startActivity(statusJumpRequest);
+        if (!activitySuccess) {
+            assetDao.updateAssetBatch(assetsInDb);
+            LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
+        }
 
         // 3.数据库操作
         updateData(statusJumpRequest, assetsInDb);
@@ -126,19 +128,22 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
-        // 1.退役需要启动流程,其他步骤完成流程
-        //TODO 退役启动流程
-        if (AssetFlowEnum.RETIRE.getCurrentAssetStatus().equals(assetStatusRequest.getAssetFlowEnum().getCurrentAssetStatus())) {
+        // 1.拟退役需要启动流程,其他步骤完成流程
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())) {
             // 启动流程
-            assetStatusRequest.getManualStartActivityRequest().setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            manualStartActivityRequest.setBusinessId(assetStatusRequest.getAssetInfoList().get(0).getAssetId());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode());
+            manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
             try {
-                ActionResponse actionResponse = activityClient.manualStartProcess(assetStatusRequest.getManualStartActivityRequest());
-                LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
-                if (actionResponse == null || actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
+                LogUtils.info(logger, "请求工作流参数:{},请求工作流结果: {}", manualStartActivityRequest, JsonUtil.object2Json(actionResponse));
+                if (actionResponse == null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     return false;
                 }
             } catch (Exception e) {
-                LogUtils.error(logger, "请求工作流数据异常: {}", e);
+                LogUtils.error(logger, "请求工作流数据异常:manualStartActivityRequest:{}, 异常:{}", assetStatusRequest.getManualStartActivityRequest(), e);
                 return false;
             }
         } else {
@@ -146,14 +151,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             assetStatusRequest.getAssetInfoList().forEach(assetInfo -> {
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                activityHandleRequest.setFormData(assetStatusRequest.getFormData());
+                // 由于工作流传参接收问题,此处不能直接使用同一个formData对象,必须new新对象
+                activityHandleRequest.setFormData(new HashMap<Object, Object>(assetStatusRequest.getFormData()));
                 activityHandleRequest.setTaskId(assetInfo.getTaskId());
                 requestList.add(activityHandleRequest);
             });
 
             try {
                 ActionResponse actionResponse = activityClient.completeTaskBatch(requestList);
-                LogUtils.info(logger, "请求工作流结果: {}", actionResponse);
+                LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
                 // 如果流程引擎为空,直接返回错误信息
                 if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -172,7 +178,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
      * 如果是退役,删除通联关系
      *
      * @param statusJumpRequest
-     * @param assetsInDb 库中的数据
+     * @param assetsInDb        库中的数据
      */
     private void updateData(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
         List<AssetOperationRecord> operationRecordList = new ArrayList<>();
@@ -190,10 +196,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             // 首次入网,设置首次入网时间(检查资产主表时间为空时写入入网时间)
             if (AssetFlowEnum.NET_IN.equals(statusJumpRequest.getAssetFlowEnum()) && asset.getFirstEnterNett() == null) {
                 asset.setFirstEnterNett(currentTime);
-            }
-
-            // 退役删除通联关系
-            if (AssetFlowEnum.RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+            } else if (AssetFlowEnum.RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+                // 退役删除通联关系
                 deleteLinkRelationIdList.add(asset.getId());
             }
 
@@ -202,24 +206,19 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setModifyUser(loginUserId);
             updateAssetList.add(asset);
 
-            // 保存操作记录
             operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUserId, loginUserName, asset.getStringId(), nextStatus.getCode()));
         });
         transactionTemplate.execute(transactionStatus -> {
             try {
-                if (CollectionUtils.isNotEmpty(operationRecordList)) {
-                    assetOperationRecordDao.insertBatch(operationRecordList);
-                    Integer integer = assetDao.updateAssetBatch(updateAssetList);
-                    LogUtils.debug(logger,"row{}", integer);
-                }
+                assetOperationRecordDao.insertBatch(operationRecordList);
+                assetDao.updateAssetBatch(updateAssetList);
                 if (CollectionUtils.isNotEmpty(deleteLinkRelationIdList)) {
                     assetLinkRelationDao.deleteByAssetIdList(deleteLinkRelationIdList);
                 }
             } catch (Exception e) {
                 transactionStatus.setRollbackOnly();
-                LogUtils.error(logger, "数据库操作异常:{},插入资产操作记录operationRecordList:{},updateAssetList:{},assetLinkRelationDao: {}",
-                        e, operationRecordList, updateAssetList, deleteLinkRelationIdList);
-                throw new BusinessException("操作失败,请稍后重试");
+                LogUtils.error(logger, "数据库操作异常:{},插入资产操作记录operationRecordList:{},updateAssetList:{},assetLinkRelationDao: {}", e, operationRecordList, updateAssetList, deleteLinkRelationIdList);
+                throw new BusinessException("操作失败,请联系运维人员进行解决");
             }
             return null;
         });
@@ -233,10 +232,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        assetOperationRecord.setProcessResult(statusJumpRequest.getAgree() ? 1 : 0);
+        assetOperationRecord.setProcessResult(AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum()) ? null : Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
-        assetOperationRecord.setNote(statusJumpRequest.getNote());
+        assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
         assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo());
         return assetOperationRecord;
     }

@@ -14,6 +14,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import com.antiy.common.base.ActionResponse;
@@ -35,6 +36,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     @Value("${distribute.baseline}")
     private String     distributeBaselineUrl;
 
+    @Value("${baseline.check}")
+    private String     baselineCheckUrl;
+
     @Value("${baselineWaitingConfigUrl}")
     private String     baselineWaitingConfigUrl;
 
@@ -46,6 +50,13 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse configRegister(List<ConfigRegisterRequest> request) {
         return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
         }, configRegisterUrl);
+    }
+
+    @Override
+    @AssetLog(description = "登记安全检查", operationType = AssetLogOperationType.ADD)
+    public ActionResponse baselineCheck(BaselineAssetRegisterRequest request) {
+        return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
+        }, baselineCheckUrl);
     }
 
     @Override
@@ -67,8 +78,8 @@ public class BaseLineClientImpl implements BaseLineClient {
     }
 
     @Override
-    public ActionResponse baselineConfig(BaselineWaitingConfigRequest baselineWaitingConfigRequest) {
-        return (ActionResponse) baseClient.post(baselineWaitingConfigRequest,
+    public ActionResponse baselineConfig(List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList) {
+        return (ActionResponse) baseClient.post(baselineWaitingConfigRequestList,
             new ParameterizedTypeReference<ActionResponse>() {
             }, baselineWaitingConfigUrl);
     }

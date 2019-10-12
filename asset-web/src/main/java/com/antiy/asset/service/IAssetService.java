@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -235,7 +237,7 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 通联设置的厂商下拉查询
      */
-    List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception;
+    Set<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception;
 
     /**
      * 告警管理查询资产信息
@@ -275,6 +277,14 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<String> queryUuidByAreaIds(AreaIdRequest request) throws Exception;
 
+    /**
+     * 根据区域ID返回资产ID
+     *
+     * @return
+     * @throws Exception
+     */
+    List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception;
+
     Map findAlarmAssetCount();
 
     void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
@@ -284,7 +294,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    boolean CheckRepeatMAC(String mac) throws Exception;
+    boolean CheckRepeatMAC(String mac, Integer id) throws Exception;
 
     /**
      * 查询编号重复
@@ -311,13 +321,17 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 获取安全设备全部厂商
      */
-    List<String> getAllSupplierofSafetyEquipment();
+    List<String> getAllSupplierofSafetyEquipment(String supplier);
     /**
      * 根据厂商获取安全设备名称列表
      * @return
      */
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier);
+    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name);
 
 
-    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName);
+    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
+
+    List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
+
+    List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception;
 }

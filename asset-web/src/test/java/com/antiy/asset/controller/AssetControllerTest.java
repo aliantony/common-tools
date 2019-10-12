@@ -2,13 +2,12 @@ package com.antiy.asset.controller;
 
 import static org.hamcrest.Matchers.containsString;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +29,6 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.EnumCountResponse;
-import com.antiy.asset.vo.response.IDResponse;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.JsonUtil;
 
 import util.ControllerUtil;
@@ -241,7 +232,7 @@ public class AssetControllerTest {
 
     @Test
     public void pulldownUnconnectedManufacturer() throws Exception {
-        List<String> manufacturer = new ArrayList<>();
+        Set<String> manufacturer = new HashSet<>();
         manufacturer.add("test");
         Mockito.when(iAssetService.pulldownUnconnectedManufacturer(Mockito.any(), Mockito.any()))
             .thenReturn(manufacturer);
@@ -252,6 +243,20 @@ public class AssetControllerTest {
         ActionResponse actual = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
             ActionResponse.class);
         Assert.assertEquals(manufacturer, actual.getBody());
+    }
+
+    @Test
+    public void getAssemblyInfo() throws Exception {
+        List<AssetAssemblyResponse> assetAssemblyResponses = new ArrayList<>();
+        assetAssemblyResponses.add(new AssetAssemblyResponse());
+        Mockito.when(iAssetService.getAssemblyInfo(Mockito.any())).thenReturn(assetAssemblyResponses);
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey("1");
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/get/assemblyInfo")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(queryCondition))).andReturn();
+        ActionResponse actual = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
+            ActionResponse.class);
+        Assert.assertEquals(JSONObject.toJSON(assetAssemblyResponses), actual.getBody());
     }
 
     @Test

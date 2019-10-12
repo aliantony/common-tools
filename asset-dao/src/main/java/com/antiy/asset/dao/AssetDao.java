@@ -1,17 +1,19 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -49,6 +51,14 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer findCountByCategoryModel(AssetQuery query) throws Exception;
 
     /**
+     * 真实删除
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    Integer deleteAssetById(@Param("id") Integer id) throws Exception;
+
+    /**
      * 通过品类型号查询资产列表
      *
      * @param query
@@ -70,7 +80,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param mac
      * @return
      */
-    Integer findCountMac(@Param("mac") String mac) throws Exception;
+    Integer findCountMac(@Param("mac") String mac, @Param("id") Integer id) throws Exception;
 
     /**
      * 统计厂商数量
@@ -248,13 +258,20 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     List<String> findUuidByAreaIds(List<String> areaIds) throws Exception;
 
+    /**
+     * 根据区域ID返回资产ID
+     * @param areaIds
+     * @return
+     * @throws Exception
+     */
+    List<String> findIdByAreaIds(List<String> areaIds) throws Exception;
+
     List<Integer> findAlarmAssetId(AssetQuery query);
 
     int findAlarmAssetCount(AssetQuery query);
 
     /**
-     * 通过资产id查询对应资产信息<br>
-     * 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
+     * 通过资产id查询对应资产信息<br> 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
      *
      * @param ids
      * @return
@@ -274,7 +291,8 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param lastAssetStatus
      * @return
      */
-    Integer updateAssetStatusWithLock(@Param("asset") Asset newAsset, @Param("lastAssetStatus") Integer lastAssetStatus);
+    Integer updateAssetStatusWithLock(@Param("asset") Asset newAsset,
+                                      @Param("lastAssetStatus") Integer lastAssetStatus);
 
     /**
      *
@@ -285,8 +303,8 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     /**
      * 统计品类
-     * @param areaIdsOfCurrentUser    当前登录用户对应的区域
-     * @param status      资产状体（不包含已退役资产状态）
+     * @param areaIdsOfCurrentUser 当前登录用户对应的区域
+     * @param status 资产状体（不包含已退役资产状态）
      * @return
      */
 
@@ -294,13 +312,23 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     Integer findCountAssetNumber(@Param("number") String number);
 
-    List<Asset> getAssetStatusListByIds(@Param("ids") String[]ids);
+    List<Asset> getAssetStatusListByIds(@Param("ids") String[] ids);
 
     List<SelectResponse> queryBaselineTemplate();
 
-    List<String> getAllSupplierofSafetyEquipment();
+    List<String> getAllSupplierofSafetyEquipment(@Param("supplier") String supplier);
 
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier);
+    List<String> getAllNameofSafetyEquipmentBySupplier(@Param("supplier") String supplier, @Param("name") String name);
 
-    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,@Param("name") String safetyEquipmentName);
+    List<String> getAllVersionofSafetyEquipment(@Param("supplier") String supplier,
+                                                @Param("name") String safetyEquipmentName,
+                                                @Param("version") String version);
+
+    Boolean matchAssetByIpMac(AssetMatchRequest request) throws Exception;
+
+    /**
+     * 批量查询资产的安装类型
+     * @param assetId
+     */
+    Integer queryInstallType(@Param("assetId") String assetId);
 }

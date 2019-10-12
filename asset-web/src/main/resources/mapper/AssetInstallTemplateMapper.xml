@@ -128,15 +128,15 @@
         <if test=" description != null">
             description = #{description },
         </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
+        <!-- <if test=" gmtCreate != null">
+             gmt_create = #{gmtCreate },
+         </if>-->
         <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
         </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
+        <!--    <if test=" createUser != null">
+                create_user = #{createUser },
+            </if>-->
         <if test=" modifiedUser != null">
             modified_user = #{modifiedUser },
         </if>
@@ -193,14 +193,69 @@
             <include refid="IF_Value_Column_List"></include>
         </trim>
     </insert>
+    <update id="updateStatus" parameterType="com.antiy.asset.entity.AssetInstallTemplate">
+        <choose>
+            <when test="currentStatus ==1">
+                update `asset_install_template_check` t1,
+                <include refid="Table_Name"></include>
+                t2
+                <trim prefix="set" suffixOverrides=",">
+                    t1.result = #{currentStatus },
+                    t2.current_status=#{currentStatus },
+                    <if test=" gmtModified != null">
+                        t1.gmt_modified = #{gmtModified },
+                        t2.gmt_modified = #{gmtModified },
+                    </if>
+                    <if test=" modifiedUser != null">
+                        t1.modified_user = #{modifiedUser },
+                        t2.modified_user = #{modifiedUser },
+                    </if>
+                    <if test=" name != null">
+                        t2.name = #{name },
+                    </if>
+                    <if test=" categoryModel != null">
+                        t2.category_model = #{categoryModel },
+                    </if>
+                    <if test=" operationSystem != null">
+                        t2.operation_system = #{operationSystem },
+                    </if>
+                    <if test=" operationSystemName != null">
+                        t2.operation_system_name = #{operationSystemName },
+                    </if>
+                    <if test=" description != null">
+                        t2.description = #{description },
+                    </if>
+                </trim>
+                where t1.install_template_id=#{id} and t1.status=1
+                and t2.id=#{id} and t2.status=1
+            </when>
+            <otherwise>
+                update
+                <include refid="Table_Name"></include>
+                <trim prefix="set" suffixOverrides=",">
+                    current_status = #{currentStatus },
+                    <if test=" gmtModified != null">
+                        gmt_modified = #{gmtModified },
+                    </if>
+                    <if test=" modifiedUser != null">
+                        modified_user = #{modifiedUser },
+                    </if>
+                </trim>
+                where id = #{id} and status=1
+            </otherwise>
+        </choose>
+
+    </update>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetInstallTemplate">
         update
         <include refid="Table_Name"></include>
+
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+
+        where id = #{id} and status=1
     </update>
 
     <!-- 根据主键查询 -->
@@ -234,6 +289,9 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and status=1
             <include refid="Where_Column_List"></include>
+            <if test="primaryKey !=null">
+                and id=#{primaryKey}
+            </if>
         </trim>
     </select>
 
@@ -293,17 +351,19 @@
 
     <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
         SELECT
-            ait.id,
-            ait.`name`,
-            ait.number_code as numberCode,
-            ait.description  ,
-            ( SELECT count( * ) FROM asset_software_install_template WHERE asset_software_install_template.install_template_id = ait.id ) AS softwareCount,
-            ( SELECT count( * ) FROM asset_patch_install_template WHERE asset_patch_install_template.install_template_id = ait.id ) AS patchCount
+                ait.id,
+                ait.`name`,
+                ait.number_code as numberCode,
+                ait.description,
+                count(DISTINCT asset_software_install_template.id) as softwareCount,
+                count(DISTINCT asset_patch_install_template.id) as patchCount
+
         FROM
             asset_install_template AS ait
-        where
 
-            ait.id=#{templateId}
+            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id
+            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id
+            WHERE ait.status=1 and ait.id=#{templateId} and asset_software_install_template.status=1  and asset_patch_install_template.status=1
 
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
@@ -316,7 +376,13 @@
         SELECT count(*) FROM `asset_install_template` WHERE number_code=#{numberCode} and status=1
     </select>
     <select id="queryOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
-        SELECT  business_id as osCode,product_name as osName FROM `asset_cpe_filter` where status=1
+        SELECT business_id as osCode,product_name as osName FROM `asset_cpe_filter`
+        <trim prefixOverrides="and" prefix="where">
+            <if test="osBusinessId !=null ">
+                business_id=#{osBusinessId}
+            </if>
+            and status=1
+        </trim>
     </select>
     <select id="querySoftCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
         select count(1) from asset_software_install_template where install_template_id = #{pid} and status = 1
@@ -338,9 +404,9 @@
             t2.soft_platform as softPlatform,
             t2.hard_platform as hardPlatform,
             t2.other
-        from asset_software_install_template t1 inner join asset_hard_soft_lib t2 on t1.software_id = t2.business_id and t1.status = 1 and t2.status = 1
+        from asset_software_install_template t1 inner join asset_hard_soft_lib t2 on t1.software_id = t2.business_id
         where
-        t1.install_template_id = #{pid}
+        t1.install_template_id = #{pid} and t1.status = 1 and t2.status = 1
     </select>
     <select id="queryPatchCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
@@ -358,9 +424,9 @@
             user_interaction as userInteraction,
             exclusive_install as exclusiveInstall,
             network_status as networkStatus
-        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id  and t1.status = 1 and t2.status = 1
+        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
         where
-        t1.install_template_id = #{pid}
+        t1.install_template_id = #{pid} and t1.status=1  and t2.status = 1
     </select>
     <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="java.lang.Integer">
@@ -368,13 +434,7 @@
     </select>
     <select id="findFilteredCount" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from (SELECT
-        ait.id AS stringId,
-        ait.NAME AS NAME,
-        ait.number_code AS numberCode,
-        ait.gmt_modified AS gmtModified,
-        ait.description AS description,
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        ait.id
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
@@ -389,9 +449,13 @@
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
+        and bts.status=1
+        and ahsl.status=1
         )
         <include refid="Where_Column_List"></include>
         and ait.status=1
+        and asit.status=1
+        and apit.status=1
         GROUP BY
         ait.id) t
     </select>
@@ -400,6 +464,7 @@
 
         SELECT
         ait.id as stringId,
+        ait.id as templateId,
         ait.name as name,
         ait.number_code as numberCode,
         ait.gmt_modified as gmtModified,
@@ -418,6 +483,11 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
             <include refid="Where_Column_List"></include>
+            <if test="primaryKey !=null">
+                and ait.id=#{primaryKey}
+            </if>
+            and asit.status=1
+            and apit.status=1
         </trim>
         GROUP BY
         ait.id
@@ -437,6 +507,7 @@
             parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         ait.id AS stringId,
+        ait.id AS templateId,
         ait.NAME AS NAME,
         ait.number_code AS numberCode,
         ait.gmt_modified AS gmtModified,
@@ -457,7 +528,12 @@
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
+        and ahsl.status=1
+        and bts.status=1
         )
+        and ait.status=1
+        and asit.status=1
+        and apit.status=1
         <include refid="Where_Column_List"></include>
         GROUP BY
         ait.id
@@ -472,5 +548,167 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <insert id="insertBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_software_install_template
+        (install_template_id,software_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="softBussinessIds != null">
+                <foreach collection="softBussinessIds" item="softBussinessId" separator=",">
+                    (#{stringId},#{softBussinessId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_patch_install_template
+        (install_template_id,patch_id,gmt_create,create_user)
+        <trim prefix="values" suffix=";" suffixOverrides=",">
+            <if test="patchIds != null">
+                <foreach collection="patchIds" item="patchId" separator=",">
+                    (#{stringId},#{patchId},#{gmtCreate},#{createUser})
+                </foreach>
+            </if>
+        </trim>
+
+    </insert>
+    <insert id="insertBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        insert into asset_install_template_check
+        (install_template_id,user_id,result,gmt_create,create_user)
+        <trim prefix="values" suffix=";">
+            (#{stringId},#{createUser},1,#{gmtCreate},#{createUser})
+        </trim>
+
+    </insert>
+    <insert id="insertTemplateCheckInfo" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
+        insert into asset_install_template_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test=" stringId != null">
+                install_template_id,
+            </if>
+            <if test=" userId != null">
+                user_id,
+            </if>
+            <if test=" advice != null">
+                advice,
+            </if>
+            <if test=" result != null">
+                result,
+            </if>
+            <if test=" gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test=" gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test=" createUser != null">
+                create_user,
+            </if>
+            <if test=" modifiedUser != null">
+                modified_user,
+            </if>
+
+        </trim>
+
+        <trim prefix="values (" suffix=");" suffixOverrides=",">
+            <if test=" stringId != null">
+                #{stringId},
+            </if>
+            <if test=" userId != null">
+                #{userId},
+            </if>
+            <if test=" advice != null">
+                #{advice},
+            </if>
+            <if test=" result != null">
+                #{result},
+            </if>
+            <if test=" gmtCreate != null">
+                #{gmtCreate},
+            </if>
+            <if test=" gmtModified != null">
+                #{gmtModified},
+            </if>
+            <if test=" createUser != null">
+                #{createUser},
+            </if>
+            <if test=" modifiedUser != null">
+                #{modifiedUser},
+            </if>
+
+        </trim>
+
+    </insert>
+    <select id="queryCheckTemplateUserId" resultType="java.lang.Integer">
+       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId} and status=1
+    </select>
+    <sql id="Set_InstallTemplate_Check_List">
+        <if test=" advice != null">
+            advice = #{advice },
+        </if>
+        <if test=" result != null">
+            result = #{result },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+    </sql>
+    <update id="checkTemplate" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
+        update asset_install_template_check
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_InstallTemplate_Check_List"></include>
+        </trim>
+        where install_template_id = #{installTemplateId } and status=1
+    </update>
+    <update id="deleteBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        update asset_software_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and software_id
+        <foreach collection="softBussinessIds" item="softBussinessId" open="in (" close=")" separator=",">
+            #{softBussinessId}
+        </foreach>
+        and status=1
+    </update>
+    <update id="deleteBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        update asset_patch_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and patch_id
+        <foreach collection="patchIds" item="patchId" open="in (" close=")" separator=",">
+            #{patchId}
+        </foreach>
+        and status=1
+    </update>
+    <update id="deleteBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
+        update asset_install_template_check set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
+        where install_template_id=#{stringId } and user_id
+        <foreach collection="nextExecutor" item="nextExecutor" open="in (" close=")" separator=",">
+            #{nextExecutor}
+        </foreach>
+        and status=1
+    </update>
+    <select id="queryPatchIds" resultType="String"
+            parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
+        select patch_id
+        from asset_patch_install_template
+        where
+        install_template_id = #{pid} and status=1
+    </select>
+    <select id="queryPatchRelations" resultType="com.antiy.asset.entity.PatchInfo">
+        select
+            t2.id as id,
+            patch_number as patchNumber,
+            antiy_patch_number as antiyPatchNumber,
+            patch_name as patchName,
+            patch_level as patchLevel,
+            path_source as pathSource,
+            hotfix,
+            user_interaction as userInteraction,
+            exclusive_install as exclusiveInstall,
+            network_status as networkStatus
+        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
+        where
+        t1.install_template_id = #{installTemplateId} and t1.status=1  and t2.status = 1
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 public class OtherDeviceEntity {
 
@@ -19,7 +20,6 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "name", align = 1, title = "名称(必填)", required = true)
     private String name;
-
 
     /**
      * 使用者
@@ -48,7 +48,16 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
     private Long   buyDate;
-
+    /**
+     * ip地址
+     */
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", required = false, dataType = DataTypeEnum.IP)
+    private String ip;
+    /**
+     * ip地址
+     */
+    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", required = false, dataType = DataTypeEnum.MAC)
+    private String mac;
     /**
      * 序列号
      */
@@ -66,6 +75,21 @@ public class OtherDeviceEntity {
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String memo;
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public String getName() {
         return name;

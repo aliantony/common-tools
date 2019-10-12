@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.antiy.asset.vo.response.IpPortResponse;
 import org.apache.ibatis.annotations.Param;
@@ -57,6 +58,15 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
     List<String> queryIpAddressByAssetId(@Param(value = "assetId") String assetId,
                                          @Param(value = "enable") Boolean enable,
                                          @Param(value = "assetPort") String assetPort);
+
+    /**
+     * 查询资产对应的IP地址
+     * @param assetId 资产Id
+     * @return
+     */
+    Integer checkIp(@Param(value = "id") String assetId, @Param(value = "ip") String ip,
+                                    @Param(value = "port") String assetPort);
+
 
     /**
      * 批量删除通联关系,父节点或者子节点为当前资产Id的均会删除
@@ -164,7 +174,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @param assetQuery
      * @return
      */
-    List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
+    Set<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
 
     /**
      * 查询通联关系及对应品类
