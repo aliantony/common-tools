@@ -39,7 +39,7 @@ public enum AssetFlowEnum {
     private AssetStatusEnum currentAssetStatus;
     /**
      *
-     * 工作流中formData中对应的key
+     * 工作流中formData中对应的下一步用户key
      */
     private String activityKey;
 

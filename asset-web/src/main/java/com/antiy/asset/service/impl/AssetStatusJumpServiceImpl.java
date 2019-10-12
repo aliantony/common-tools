@@ -134,16 +134,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
             manualStartActivityRequest.setBusinessId(assetStatusRequest.getAssetInfoList().get(0).getAssetId());
-            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_RETIRE.getCode());
+            manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode());
             manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
             try {
                 ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
-                LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
+                LogUtils.info(logger, "请求工作流参数:{},请求工作流结果: {}", manualStartActivityRequest, JsonUtil.object2Json(actionResponse));
                 if (actionResponse == null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     return false;
                 }
             } catch (Exception e) {
-                LogUtils.error(logger, "请求工作流数据异常:manualStartActivityRequest:{}, {}", assetStatusRequest.getManualStartActivityRequest(), e);
+                LogUtils.error(logger, "请求工作流数据异常:manualStartActivityRequest:{}, 异常:{}", assetStatusRequest.getManualStartActivityRequest(), e);
                 return false;
             }
         } else {
