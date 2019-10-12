@@ -280,7 +280,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("首次发现时间结束时间")
     private Long          firstEnterEndTime;
     @ApiModelProperty("基准模板id")
-    @Encode
+
     private String        baselineTemplateId;
 
     public String getStringId() {
