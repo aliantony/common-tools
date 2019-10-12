@@ -167,6 +167,7 @@ public class AssetServiceImplTest {
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Spy
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     @Before
@@ -1563,7 +1564,7 @@ public class AssetServiceImplTest {
         Assert.assertEquals(Integer.valueOf(0), result);
     }
 
-    @Test
+    @Test()
     public void testExportData() throws Exception {
         AssetResponse assetResponse = new AssetResponse();
         assetResponse.setAreaName("");
@@ -1575,7 +1576,6 @@ public class AssetServiceImplTest {
         assetResponse.setAdmittanceStatus(0);
         assetResponse.setCategoryModelName("");
         assetResponse.setAssetGroup("");
-
         assetResponse.setNumber("");
         assetResponse.setName("");
         assetResponse.setSerial("");
@@ -1583,31 +1583,49 @@ public class AssetServiceImplTest {
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
 //        assetResponse.setOperationSystem(1L);
-
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
-
         assetResponse.setAssetSource(0);
         assetResponse.setImportanceDegree(0);
-
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
         assetResponse.setWarranty("0");
         assetResponse.setAssetGroups(Lists.newArrayList());
         assetResponse.setGmtCreate(0L);
         assetResponse.setFirstEnterNett(0L);
-
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 
         PageResult<AssetResponse> result = new PageResult<>();
+
         result.setItems(Arrays.asList(assetResponse));
 
         doReturn(result).when(assetServiceImpl).findPageAsset(any());
+
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setStart(1);
         assetQuery.setEnd(100);
+
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        AssetQuery assetQuery2 = new AssetQuery();
+        assetQuery2.setStart(1);
+        assetQuery2.setEnd(100);
+        assetQuery2.setUnknownAssets(true);
+        assetServiceImpl.exportData(assetQuery2, new Response(), new Request());
+        PageResult<AssetResponse> result2 = new PageResult<>();
+        doReturn(result2).when(assetServiceImpl).findPageAsset(any());
+        result2.setItems(new ArrayList<AssetResponse>());
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("导出数据为空");
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        AssetQuery assetQuery3 = new AssetQuery();
+        assetQuery3.setStart(1);
+        assetQuery3.setEnd(100);
+        assetQuery3.setUnknownAssets(true);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("导出数据为空");
+        assetServiceImpl.exportData(assetQuery3, new Response(), new Request());
+
     }
 
     @Test

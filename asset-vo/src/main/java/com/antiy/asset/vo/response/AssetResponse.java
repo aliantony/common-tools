@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -133,6 +134,11 @@ public class AssetResponse extends BaseResponse {
     @Encode
     private String                         baselineTemplateId;
     /**
+     * 配置模板名称
+     */
+    @ApiModelProperty("配置模板名称")
+    private String                         baselineTemplateName;
+    /**
      * 装机模板id
      */
     @Encode
@@ -240,6 +246,17 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "装机模板关联时间")
     private Long                           installTemplateCorrelationGmt;
+
+    @ApiModelProperty(value = "解密id")
+    private String                         decryptId;
+
+    public String getBaselineTemplateName() {
+        return baselineTemplateName;
+    }
+
+    public void setBaselineTemplateName(String baselineTemplateName) {
+        this.baselineTemplateName = baselineTemplateName;
+    }
 
     public String getAssetSourceName() {
         return assetSourceName;
@@ -601,6 +618,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setContactTel(String contactTel) {
         this.contactTel = contactTel;
+    }
+
+    public String getDecryptId() {
+        return decryptId;
+    }
+
+    public void setDecryptId(String decryptId) {
+        this.decryptId = decryptId;
     }
 
     @Override

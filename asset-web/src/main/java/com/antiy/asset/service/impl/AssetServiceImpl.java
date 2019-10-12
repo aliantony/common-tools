@@ -1034,6 +1034,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = assetDao.getByAssetId(condition.getPrimaryKey());
         // 获取主表信息
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
+        assetResponse.setDecryptId(Objects.toString(asset.getId()));
         assetOuterResponse.setAsset(assetResponse);
         // 获取厂商，名称，版本
         AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao
