@@ -132,7 +132,6 @@ public class AssetResponse extends BaseResponse {
      * 配置模板id
      */
     @ApiModelProperty("配置模板id")
-    @Encode
     private String                         baselineTemplateId;
     /**
      * 配置模板名称
@@ -142,7 +141,6 @@ public class AssetResponse extends BaseResponse {
     /**
      * 装机模板id
      */
-    @Encode
     @ApiModelProperty("装机模板id")
     private String                         installTemplateId;
     /**

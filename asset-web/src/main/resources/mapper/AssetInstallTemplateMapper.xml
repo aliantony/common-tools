@@ -289,6 +289,9 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and status=1
             <include refid="Where_Column_List"></include>
+            <if test="primaryKey !=null">
+                and ait.id=#{primaryKey}
+            </if>
         </trim>
     </select>
 
@@ -481,6 +484,9 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
             <include refid="Where_Column_List"></include>
+            <if test="primaryKey !=null">
+                and ait.id=#{primaryKey}
+            </if>
         </trim>
         GROUP BY
         ait.id

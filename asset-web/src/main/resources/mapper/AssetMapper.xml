@@ -57,6 +57,7 @@
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
         <result column="macs" property="macs"/>
+        <result column="step_node" property="stepNode"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -1525,7 +1526,7 @@
         asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
         WHERE
         <if test="id!=null ">
-            id !={id} and
+            a.id !=#{id} and
         </if>
         a.`status` =1 AND m.`status` =1 and
         upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
