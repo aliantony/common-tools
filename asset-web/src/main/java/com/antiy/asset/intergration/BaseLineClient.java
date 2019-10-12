@@ -46,9 +46,9 @@ public interface BaseLineClient {
 
     /**
      * 配置启动流程
-     * @param baselineWaitingConfigRequest
+     * @param baselineWaitingConfigRequestList
      * @return
      */
-    ActionResponse baselineConfig(BaselineWaitingConfigRequest baselineWaitingConfigRequest);
+    ActionResponse baselineConfig(List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList);
 
 }

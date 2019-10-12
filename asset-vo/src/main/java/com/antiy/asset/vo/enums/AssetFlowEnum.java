@@ -27,7 +27,7 @@ public enum AssetFlowEnum {
     NET_IN(AssetStatusEnum.WAIT_NET, "入网资产信息"),
     CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查资产信息"),
     CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改资产信息"),
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "implementUserId", "拟退役资产信息"),
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "拟退役资产信息"),
     RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役资产信息"),
     CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产信息"),
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
@@ -39,7 +39,7 @@ public enum AssetFlowEnum {
     private AssetStatusEnum currentAssetStatus;
     /**
      *
-     * 工作流中formData中对应的key
+     * 工作流中formData中对应的下一步用户key
      */
     private String activityKey;
 

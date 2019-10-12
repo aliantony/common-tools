@@ -90,4 +90,16 @@ public class ManualStartActivityRequest {
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
     }
+
+    @Override
+    public String toString() {
+        return "ManualStartActivityRequest{" +
+                "assignee='" + assignee + '\'' +
+                ", businessId='" + businessId + '\'' +
+                ", processDefinitionKey='" + processDefinitionKey + '\'' +
+                ", formData=" + formData +
+                ", configUserIds=" + configUserIds +
+                ", suggest='" + suggest + '\'' +
+                '}';
+    }
 }

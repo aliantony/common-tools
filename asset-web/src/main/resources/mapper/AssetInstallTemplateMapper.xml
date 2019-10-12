@@ -290,7 +290,7 @@
             and status=1
             <include refid="Where_Column_List"></include>
             <if test="primaryKey !=null">
-                and ait.id=#{primaryKey}
+                and id=#{primaryKey}
             </if>
         </trim>
     </select>
@@ -361,9 +361,9 @@
         FROM
             asset_install_template AS ait
 
-            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id and asset_software_install_template.status=1
-            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id and asset_patch_install_template.status=1
-            WHERE ait.status=1 and ait.id=#{templateId}
+            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id
+            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id
+            WHERE ait.status=1 and ait.id=#{templateId} and asset_software_install_template.status=1  and asset_patch_install_template.status=1
 
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
@@ -404,9 +404,9 @@
             t2.soft_platform as softPlatform,
             t2.hard_platform as hardPlatform,
             t2.other
-        from asset_software_install_template t1 inner join asset_hard_soft_lib t2 on t1.software_id = t2.business_id and t1.status = 1 and t2.status = 1
+        from asset_software_install_template t1 inner join asset_hard_soft_lib t2 on t1.software_id = t2.business_id
         where
-        t1.install_template_id = #{pid}
+        t1.install_template_id = #{pid} and t1.status = 1 and t2.status = 1
     </select>
     <select id="queryPatchCount" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
@@ -434,13 +434,7 @@
     </select>
     <select id="findFilteredCount" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from (SELECT
-        ait.id AS stringId,
-        ait.NAME AS NAME,
-        ait.number_code AS numberCode,
-        ait.gmt_modified AS gmtModified,
-        ait.description AS description,
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        ait.id
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
@@ -455,9 +449,13 @@
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
+        and bts.status=1
+        and ahsl.status=1
         )
         <include refid="Where_Column_List"></include>
         and ait.status=1
+        and asit.status=1
+        and apit.status=1
         GROUP BY
         ait.id) t
     </select>
@@ -466,6 +464,7 @@
 
         SELECT
         ait.id as stringId,
+        ait.id as templateId,
         ait.name as name,
         ait.number_code as numberCode,
         ait.gmt_modified as gmtModified,
@@ -487,6 +486,8 @@
             <if test="primaryKey !=null">
                 and ait.id=#{primaryKey}
             </if>
+            and asit.status=1
+            and apit.status=1
         </trim>
         GROUP BY
         ait.id
@@ -506,6 +507,7 @@
             parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         ait.id AS stringId,
+        ait.id AS templateId,
         ait.NAME AS NAME,
         ait.number_code AS numberCode,
         ait.gmt_modified AS gmtModified,
@@ -526,7 +528,12 @@
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
+        and ahsl.status=1
+        and bts.status=1
         )
+        and ait.status=1
+        and asit.status=1
+        and apit.status=1
         <include refid="Where_Column_List"></include>
         GROUP BY
         ait.id
@@ -655,7 +662,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_InstallTemplate_Check_List"></include>
         </trim>
-        where install_template_id = #{installTemplateId }
+        where install_template_id = #{installTemplateId } and status=1
     </update>
     <update id="deleteBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
         update asset_software_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
@@ -663,6 +670,7 @@
         <foreach collection="softBussinessIds" item="softBussinessId" open="in (" close=")" separator=",">
             #{softBussinessId}
         </foreach>
+        and status=1
     </update>
     <update id="deleteBatchPatch" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
         update asset_patch_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
@@ -670,6 +678,7 @@
         <foreach collection="patchIds" item="patchId" open="in (" close=")" separator=",">
             #{patchId}
         </foreach>
+        and status=1
     </update>
     <update id="deleteBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
         update asset_install_template_check set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
@@ -677,6 +686,7 @@
         <foreach collection="nextExecutor" item="nextExecutor" open="in (" close=")" separator=",">
             #{nextExecutor}
         </foreach>
+        and status=1
     </update>
     <select id="queryPatchIds" resultType="String"
             parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">

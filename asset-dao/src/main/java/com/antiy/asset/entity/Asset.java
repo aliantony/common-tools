@@ -16,7 +16,7 @@ public class Asset extends BaseEntity {
     private static final long serialVersionUID = 1L;
     private Long              businessId;
     /**
-     * 配置模板id
+     * 配置模板idbaselineTemplateId
      */
     private String            baselineTemplateId;
     /**

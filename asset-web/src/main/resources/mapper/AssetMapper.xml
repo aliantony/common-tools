@@ -14,6 +14,10 @@
         <result property="key" column="category_model"/>
         <result property="value" column="num"/>
     </resultMap>
+    <resultMap id="installMap" type="java.util.HashMap">
+        <result property="key" column="id"/>
+        <result property="value" column="install_type"/>
+    </resultMap>
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -1516,16 +1520,17 @@
         group by asset_id
     </select>
     <select id="findCountMac" resultType="java.lang.Integer">
- 	SELECT
-		count(1) count
-	FROM
-		asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
-	WHERE
+        SELECT
+        count(1) count
+        FROM
+        asset_mac_relation m LEFT JOIN asset a ON m.asset_id=a.id
+        WHERE
         <if test="id!=null ">
-            id !={id} and
+            a.id !=#{id} and
         </if>
-	 a.`status` =1	AND m.`status` =1 and
-	 upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-', '' ) )
+        a.`status` =1 AND m.`status` =1 and
+        upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
+        '' ) )
     </select>
     <select id="findUuidByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
@@ -1782,5 +1787,10 @@ AND a.`status` = 1
         <if test="ipMacPort.mac != null">
             AND mac = #{ipMacPort.mac}
         </if>
+    </select>
+    <select id="queryInstallType" resultType="java.lang.Integer">
+        select
+        install_type from asset where id = #{assetId}
+        and status = 1
     </select>
 </mapper>
