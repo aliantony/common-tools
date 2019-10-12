@@ -3,26 +3,33 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
+import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
+import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
-import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
-import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
-import com.antiy.asset.vo.request.BatchQueryRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.entity.SysMessageRequest;
+import com.antiy.biz.message.SysMessageSender;
 import com.antiy.common.base.*;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.kafka.common.protocol.types.Field;
+import org.apache.zookeeper.OpResult;
+import org.aspectj.bridge.MessageUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.misc.MessageUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -49,7 +56,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     private BaseConverter<AssetInstallTemplate, AssetInstallTemplateResponse> responseConverter;
     @Resource
     public IAssetHardSoftLibService iAssetHardSoftLibService;
-
+    @Resource
+    private ActivityClient activityClient;
+    @Resource
+    private SysMessageSender sysMessageSender;
+    @Resource
+    private AesEncoder aesEncoder;
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
         return assetInstallTemplateDao.queryTemplateOs();
@@ -82,7 +94,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     @Transactional
-    public String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
+    public ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
         boolean isUpdateStatusOnly = request.getIsUpdateStatus() == 0;
         Integer templateId = request.getId();
         int currentStatus = assetInstallTemplateDao.getById(templateId.toString()).getCurrentStatus();
@@ -106,14 +118,15 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                 throw new BusinessException("状态非法修改");
             }
             if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
-                return "更新状态成功";
+                return ActionResponse.success("更新状态成功");
             }
-            return "更新状态失败";
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "更新状态失败");
         }
         //编辑模板
         //todo 用户角色权限
         // Set<SysRole> roles=  LoginUserUtil.getLoginUser().getSysRoles();//.forEach(v->System.out.println(v.getName()));
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
+        assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         assetInstallTemplateDao.update(assetInstallTemplate);
 
         //以前关联的软件和现在关联的软件求差集
@@ -146,29 +159,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             request.setPatchIds(curPatchIds);
             assetInstallTemplateDao.insertBatchPatch(request);
         }
-
-
-        Set<String> preExecutor = assetInstallTemplateDao.queryCheckTemplateUserId(templateId);
-        Set<String> delExecutor = new HashSet<>(preExecutor);
-        Set<String> nowExecutor = request.getNextExecutor();
-        delExecutor.removeAll(nowExecutor);
-        nowExecutor.removeAll(preExecutor);
-        if (!delExecutor.isEmpty()) {
-            request.setNextExecutor(delExecutor);
-            assetInstallTemplateDao.deleteBatchUser(request);
-        }
-        if (!nowExecutor.isEmpty()) {
-            request.setNextExecutor(nowExecutor);
-            assetInstallTemplateDao.insertBatchUser(request);
-        }
-
+        this.insertCheckTemplateInfo(request);
         //将模板更新为待审核
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
         assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
-            return "编辑成功";
+            return sendTask(request, assetInstallTemplate);
         }
-        return "编辑失败";
+        return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "编辑失败");
     }
 
 
@@ -253,8 +251,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public List<PatchInfoResponse> queryPatchs(String templateId) {
 
-        List<PatchInfo> list= assetInstallTemplateDao.queryPatchRelations(templateId);
-        if (list.isEmpty()){
+        List<PatchInfo> list = assetInstallTemplateDao.queryPatchRelations(templateId);
+        if (list.isEmpty()) {
             return new ArrayList<>();
         }
         return BeanConvert
@@ -263,7 +261,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     @Transactional
-    public String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
+    public ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
         if (request.getStringId() == null) {
             String unknowId = "0";
             request.setStringId(unknowId);
@@ -282,31 +280,85 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (request.getSoftBussinessIds() != null && !request.getSoftBussinessIds().isEmpty()) {
             assetInstallTemplateDao.insertBatchSoft(request);
         }
-        assetInstallTemplateDao.insertBatchUser(request);
-        return "提交成功";
+        this.insertCheckTemplateInfo(request);
+        return sendTask(request, template);
     }
 
     @Override
     @Transactional
     public String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
-        request.setGmtModified(System.currentTimeMillis());
         Integer loginUserId = LoginUserUtil.getLoginUser().getId();
-        if (!assetInstallTemplateDao.queryCheckTemplateUserId(request.getInstallTemplateId()).contains(loginUserId)) {
+        ActivityWaitingQuery query = new ActivityWaitingQuery();
+        query.setUser(loginUserId.toString());
+        query.setProcessDefinitionKey("installTemplate");
+        List<WaitingTaskReponse> waitingTaskReponseList = activityClient.queryAllWaitingTask(query).getBody().stream().filter(v -> v.getBusinessId().equals(request.getStringId())).collect(Collectors.toList());
+        if (waitingTaskReponseList.size() == 0) {
             throw new BusinessException("非法操作");
         }
+        if (waitingTaskReponseList.size() > 1) {
+            throw new BusinessException("任务重复");
+        }
         Integer currentStatus = request.getResult() == 0 ? AssetInstallTemplateStatusEnum.REJECT.getCode() : AssetInstallTemplateStatusEnum.ENABLE.getCode();
-        request.setModifiedUser(loginUserId.toString());
         //更新模板检查表
-        request.setResult(currentStatus);
-        assetInstallTemplateDao.checkTemplate(request);
+        Integer checkResult = request.getResult();
+        request.setResult(checkResult.equals(0) ? 2 : 3);
+        request.setCreateUser(loginUserId.toString());
+        request.setGmtCreate(System.currentTimeMillis());
+        request.setUserId(loginUserId);
+        Integer checkInfoResult = assetInstallTemplateDao.insertTemplateCheckInfo(request);
+        if (checkInfoResult == null || checkInfoResult.equals(0)) {
+            return "审核结果提交失败";
+        }
         //更新模板表状态
         AssetInstallTemplate template = new AssetInstallTemplate();
-        template.setId(request.getInstallTemplateId());
+        template.setId(request.getId());
         template.setCurrentStatus(currentStatus);
         template.setModifiedUser(loginUserId.toString());
-        template.setGmtModified(System.currentTimeMillis());
-        assetInstallTemplateDao.update(template);
-        return "审核结果提交成功";
+        template.setGmtModified(request.getGmtCreate());
+        Integer result = assetInstallTemplateDao.update(template);
+        ActivityHandleRequest handleRequest = new ActivityHandleRequest();
+        handleRequest.setTaskId(waitingTaskReponseList.get(0).getTaskId());
+        Map<String, String> map = new HashMap<>();
+        map.put("checkResult", String.valueOf(checkResult));
+        handleRequest.setFormData(map);
+        if (result != null && result == 1) {
+            activityClient.completeTask(handleRequest);
+            return "审核结果提交成功";
+        }
+        return "审核结果提交失败";
     }
 
+    private ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
+        ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
+        activityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
+        activityRequest.setBusinessId(template.getStringId());
+        activityRequest.setFormData(request.getFormData());
+        activityRequest.setProcessDefinitionKey("installTemplate");
+        return activityClient.manualStartProcess(activityRequest);
+    }
+
+    private Integer insertCheckTemplateInfo(AssetInstallTemplateRequest request) {
+        AssetInstallTemplateCheckRequest checkRequest = new AssetInstallTemplateCheckRequest();
+        checkRequest.setStringId(request.getStringId());
+        // 1提交审核
+        checkRequest.setResult(1);
+        checkRequest.setUserId(Integer.valueOf(request.getCreateUser()));
+        checkRequest.setGmtCreate(request.getGmtCreate());
+        checkRequest.setCreateUser(request.getCreateUser());
+        return assetInstallTemplateDao.insertTemplateCheckInfo(checkRequest);
+    }
+
+    private void sendMessage(AssetInstallTemplateRequest request) {
+
+      List<SysMessageRequest> messageRequestList= request.getNextExecutor().stream().map(v->{
+            SysMessageRequest messageRequest=new SysMessageRequest();
+            messageRequest.setOrigin(1);
+            messageRequest.setSendUserId(LoginUserUtil.getLoginUser().getId());
+            messageRequest.setReceiveUserId(Integer.valueOf(aesEncoder.decode(v,LoginUserUtil.getLoginUser().getName())));
+            messageRequest.setContent("您有一条由orang2提交的[模板审核]任务,请尽快处理");
+            messageRequest.setTopic("模板审核");
+            return  messageRequest;
+        }).collect(Collectors.toList());
+        sysMessageSender.batchSendMessage(messageRequestList);
+    }
 }
