@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>装机模板审核表</p>
@@ -13,11 +12,6 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetInstallTemplateCheck extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 装机模板主键
-     */
-    private Integer           installTemplateId;
     /**
      * 用户主键
      */
@@ -27,17 +21,13 @@ public class AssetInstallTemplateCheck extends BaseEntity {
      */
     private String            advice;
     /**
+     *创建时间
+     */
+    private String gmtCreate;
+    /**
      * 是否通过：0-拒绝，1-通过
      */
     private Integer           result;
-
-    public Integer getInstallTemplateId() {
-        return installTemplateId;
-    }
-
-    public void setInstallTemplateId(Integer installTemplateId) {
-        this.installTemplateId = installTemplateId;
-    }
 
     public Integer getUserId() {
         return userId;
@@ -63,9 +53,22 @@ public class AssetInstallTemplateCheck extends BaseEntity {
         this.result = result;
     }
 
+    public String getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
     @Override
     public String toString() {
-        return "AssetInstallTemplateCheck{" + ", installTemplateId=" + installTemplateId + ", userId=" + userId
-               + ", advice=" + advice + ", result=" + result + "}";
+        return "AssetInstallTemplateCheck{" +
+                "installTemplateId=" +
+                ", userId=" + userId +
+                ", advice='" + advice + '\'' +
+                ", gmtCreate='" + gmtCreate + '\'' +
+                ", result=" + result +
+                '}';
     }
 }

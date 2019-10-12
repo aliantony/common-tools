@@ -9,10 +9,7 @@ import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 
 /**
  * <p> 装机模板 服务类 </p>
@@ -65,7 +62,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param request
      * @return
      */
-    String updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
+    ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
 
     /**
      * 查询对象集合
@@ -139,7 +136,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      * @param request
      * @return
      */
-    String submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
+    ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
 
     String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception;
 }

@@ -144,4 +144,5 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     Set<String> queryPatchIds(PrimaryKeyQuery query);
 
     List<PatchInfo> queryPatchRelations(@Param("installTemplateId") String installTemplateId);
+    Integer insertTemplateCheckInfo(AssetInstallTemplateCheckRequest request);
 }

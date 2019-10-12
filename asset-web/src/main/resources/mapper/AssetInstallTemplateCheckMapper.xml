@@ -145,7 +145,7 @@
     <select id="queryTemplateCheckByTemplateId" resultType="com.antiy.asset.entity.AssetInstallTemplateCheck">
 
        SELECT
-            id as installTemplateId,
+            id,
             user_id as userId,
             advice,
             result,

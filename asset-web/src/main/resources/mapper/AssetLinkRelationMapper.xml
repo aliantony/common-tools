@@ -884,11 +884,12 @@
     <select id="pulldownUnconnectedManufacturer" resultType="string"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
-        a.manufacturer
+        lib.supplier
         FROM
         asset a
         LEFT JOIN asset_ip_relation b ON a.id = b.asset_id
         AND b. STATUS = 1
+        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id=a.business_id
         LEFT JOIN asset_link_relation d ON (
         (
         a.id = d.asset_id
@@ -901,10 +902,10 @@
         )
         WHERE
         a. STATUS = 1
+        and lib.supplier is not null
         <if test="primaryKey !=null">
             and a.id !=#{primaryKey}
         </if>
-        <include refid="Multiple_Query"/>
         GROUP BY
         a.id
         HAVING

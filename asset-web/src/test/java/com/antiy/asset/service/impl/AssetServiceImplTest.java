@@ -25,6 +25,7 @@ import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
@@ -67,7 +68,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
-        LogHandle.class, ZipUtil.class })
+                  LogHandle.class, ZipUtil.class })
 // @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
@@ -169,15 +170,17 @@ public class AssetServiceImplTest {
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
 
     @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    public ExpectedException                                                    expectedException = ExpectedException
+        .none();
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         // 模拟用户登录
         LoginUser loginUser = JSONObject.parseObject(
-                "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
-                LoginUser.class);
+            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+            LoginUser.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
         Map<String, Object> map = new HashMap<>();
         map.put("principal", loginUser);
@@ -209,7 +212,7 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(LogHandle.class);
         PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
         PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.any(), Mockito.any(),
-                Mockito.any());
+            Mockito.any());
 
         when(transactionTemplate.execute(Mockito.<TransactionCallback> any())).thenAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
@@ -304,6 +307,7 @@ public class AssetServiceImplTest {
     @Test
     public void testSaveAsset() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
         when(assetUserDao.getById(any())).thenReturn(new AssetUser());
         when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
         when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
@@ -321,7 +325,7 @@ public class AssetServiceImplTest {
         baselineCategoryModelNodeResponse.setStringId("1");
         baselineCategoryModelNodeResponseArrayList.add(baselineCategoryModelNodeResponse);
         when(operatingSystemClient.getInvokeOperatingSystemTree())
-                .thenReturn(baselineCategoryModelNodeResponseArrayList);
+            .thenReturn(baselineCategoryModelNodeResponseArrayList);
 
         AssetRequest assetRequest = generateAssetRequest();
         // 普通资产
@@ -482,7 +486,7 @@ public class AssetServiceImplTest {
         when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
         when(assetDao.queryAlarmCountByAssetIds(any()))
-                .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
         List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
         BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
         categoryModelResponse.setStringId("1");
@@ -562,8 +566,6 @@ public class AssetServiceImplTest {
         Map<String, WaitingTaskReponse> result = assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
         Assert.assertTrue(result.size() > 0);
     }
-
-
 
     @Test
     public void testFindPageAsset() throws Exception {
@@ -678,12 +680,12 @@ public class AssetServiceImplTest {
          * 统计品类型号 Map中的数据 key--品类型号 value--总数
          */
         List<Map<String, Object>> categoryModelCount = new ArrayList<>();
-        Map<String, Object> map1=new HashMap<>();
-        map1.put("key",1);
-        map1.put("value",100l);
-        Map<String, Object> map2=new HashMap<>();
-        map2.put("key",2);
-        map2.put("value",200l);
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("key", 1);
+        map1.put("value", 100l);
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("key", 2);
+        map2.put("value", 200l);
         categoryModelCount.add(map1);
         categoryModelCount.add(map2);
         when(assetDao.countCategoryModel(any(), any())).thenReturn(categoryModelCount);
@@ -713,7 +715,7 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
-                .thenReturn(generateAssetNetworkEquipmentList());
+            .thenReturn(generateAssetNetworkEquipmentList());
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -803,13 +805,13 @@ public class AssetServiceImplTest {
         asset.setAdmittanceStatus(0);
         asset.setOperationSystem(1L);
 
-//        asset.setLatitude("");
-//        asset.setLongitude("");
+        // asset.setLatitude("");
+        // asset.setLongitude("");
         asset.setHouseLocation("");
         asset.setFirmwareVersion("");
         asset.setUuid("");
 
-//        asset.setEmail("");
+        // asset.setEmail("");
         asset.setAssetSource(0);
         asset.setImportanceDegree(0);
         asset.setDescrible("");
@@ -1004,7 +1006,7 @@ public class AssetServiceImplTest {
         }
 
         when(activityClient.manualStartProcess(any()))
-                .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
+            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "123"));
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1018,8 +1020,8 @@ public class AssetServiceImplTest {
         SecurityContextHolder.setContext(securityContext);
 
         LoginUser loginUser = JSONObject.parseObject(
-                "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
-                LoginUser.class);
+            "{ \"id\":8, \"username\":\"zhangbing\", \"password\":\"$2a$10$hokzLPdz15q9XFuNB8HA0ObV9j301oxkFBlsJUCe/8iWBvql5gBdO\", \"name\":\"张冰\", \"duty\":\"部门经历\", \"department\":\"A是不\", \"phone\":\"123\", \"email\":\"string123@email\", \"status\":1, \"errorCount\":4, \"lastLoginTime\":1553737022175, \"lastModifiedPassword\":1550657104216, \"sysRoles\":[ { \"id\":9, \"code\":\"config_admin\", \"name\":\"配置管理员\", \"description\":\"\" } ], \"areas\":[ { \"id\":10, \"parentId\":2, \"levelType\":2, \"fullName\":\"金牛区\", \"shortName\":\"1\", \"fullSpell\":\"1\", \"shortSpell\":\"1\", \"status\":1, \"demo\":\"\" }, { \"id\":112, \"parentId\":0, \"levelType\":1, \"fullName\":\"四川省成都市\", \"status\":1, \"demo\":\"\" } ], \"enabled\":true, \"accountNonExpired\":true, \"accountNonLocked\":true, \"credentialsNonExpired\":true } ",
+            LoginUser.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginUser, "123");
         Map<String, Object> map = new HashMap<>();
         map.put("principal", loginUser);
@@ -1098,7 +1100,7 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(ZipUtil.class);
         PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
         when(RequestContextHolder.getRequestAttributes())
-                .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
         MockHttpServletRequest request2 = new MockHttpServletRequest();
         request2.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
@@ -1127,7 +1129,6 @@ public class AssetServiceImplTest {
         ComputeDeviceEntity computeDeviceEntity = getComputeDeviceEntity();
         computeDeviceEntities.add(computeDeviceEntity);
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(null);
-
 
         Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
         try {
@@ -1598,7 +1599,7 @@ public class AssetServiceImplTest {
         assetResponse.setCategoryModel(1);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
-//        assetResponse.setOperationSystem(1L);
+        // assetResponse.setOperationSystem(1L);
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
         assetResponse.setAssetSource(0);
@@ -1646,9 +1647,9 @@ public class AssetServiceImplTest {
 
     @Test
     public void testPulldownUnconnectedManufacturer() throws Exception {
-        when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Arrays.asList("String"));
+        when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Sets.newHashSet("String"));
 
-        List<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
+        Set<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
         Assert.assertEquals(Arrays.asList("String"), result);
 
         result = assetServiceImpl.pulldownUnconnectedManufacturer(0, "1");
@@ -1768,14 +1769,14 @@ public class AssetServiceImplTest {
      */
     @Test
     public void assetNoRegister() throws Exception {
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
-        List<Asset> assetList=new ArrayList<>();
-        Asset asset=new Asset();
+        AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[] { "1", "2" });
+        List<Asset> assetList = new ArrayList<>();
+        Asset asset = new Asset();
         asset.setId(1);
         asset.setName("chen");
         asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        Asset asset2=new Asset();
+        Asset asset2 = new Asset();
         asset2.setId(1);
         asset2.setName("强");
         asset2.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
@@ -1783,88 +1784,92 @@ public class AssetServiceImplTest {
         assetList.add(asset2);
 
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
-        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
-        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
+        AssetStatusChangeRequest assetStatusChangeRequest1 = new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[] { "1", "2" });
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
-        Assert.assertEquals(2,2);
+        Assert.assertEquals(2, 2);
     }
+
     @Test
     public void assetNoRegister2() throws Exception {
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{});
+        AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[] {});
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest);
-        Assert.assertEquals(0,0);
+        Assert.assertEquals(0, 0);
     }
+
     @Test
     public void assetNoRegister3() throws Exception {
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
+        AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[] { "1", "2" });
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(null);
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("资产不存在");
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest);
 
     }
+
     @Test
     public void assetNoRegister4() throws Exception {
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
-        List<Asset> assetList=new ArrayList<>();
-        Asset asset=new Asset();
+        AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[] { "1", "2" });
+        List<Asset> assetList = new ArrayList<>();
+        Asset asset = new Asset();
         asset.setId(1);
         asset.setName("chen");
         asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        Asset asset2=new Asset();
+        Asset asset2 = new Asset();
         asset2.setId(1);
         asset2.setName("强");
         asset2.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
         assetList.add(asset);
         assetList.add(asset2);
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
-        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
-        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
+        AssetStatusChangeRequest assetStatusChangeRequest1 = new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[] { "1", "2" });
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("资产状态已改变");
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
     }
+
     @Test
     public void assetNoRegister5() throws Exception {
 
-        AssetStatusChangeRequest assetStatusChangeRequest=new AssetStatusChangeRequest();
-        assetStatusChangeRequest.setAssetId(new String[]{"1","2"});
-        List<Asset> assetList=new ArrayList<>();
-        Asset asset=new Asset();
+        AssetStatusChangeRequest assetStatusChangeRequest = new AssetStatusChangeRequest();
+        assetStatusChangeRequest.setAssetId(new String[] { "1", "2" });
+        List<Asset> assetList = new ArrayList<>();
+        Asset asset = new Asset();
         asset.setId(1);
         asset.setName("chen");
         asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        Asset asset2=new Asset();
+        Asset asset2 = new Asset();
         asset2.setId(1);
         asset2.setName("强");
         asset2.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         assetList.add(asset);
         assetList.add(asset2);
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
-        AssetStatusChangeRequest assetStatusChangeRequest1=new AssetStatusChangeRequest();
-        assetStatusChangeRequest1.setAssetId(new String[]{"1","2"});
-        when( assetDao.getNumberById(any())).thenReturn("12");
+        AssetStatusChangeRequest assetStatusChangeRequest1 = new AssetStatusChangeRequest();
+        assetStatusChangeRequest1.setAssetId(new String[] { "1", "2" });
+        when(assetDao.getNumberById(any())).thenReturn("12");
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
-        Assert.assertEquals(2,2);
+        Assert.assertEquals(2, 2);
 
     }
 
     @Test
     public void countCategory() throws Exception {
-        List<Map<String, Object>> categoryModelCount=new ArrayList<>();
-        for(int i=0;i<10;i++){
-            Map<String,Object> map=new HashMap<>();
-            map.put("key",i);
-            map.put("value",20l);
+        List<Map<String, Object>> categoryModelCount = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("key", i);
+            map.put("value", 20l);
             categoryModelCount.add(map);
         }
-        when(assetDao.countCategoryModel(any(),any())).thenReturn(categoryModelCount);
+        when(assetDao.countCategoryModel(any(), any())).thenReturn(categoryModelCount);
         List<EnumCountResponse> enumCountResponses = assetServiceImpl.countCategory();
-        String s="[EnumCountResponse{msg='计算设备', code='[1]', number=20}, EnumCountResponse{msg='网络设备', code='[2]', number=20}, EnumCountResponse{msg='安全设备', code='[3]', number=20}, EnumCountResponse{msg='存储设备', code='[4]', number=20}, EnumCountResponse{msg='其它设备', code='[5]', number=20}]";
-        Assert.assertEquals(s,enumCountResponses.toString());
+        String s = "[EnumCountResponse{msg='计算设备', code='[1]', number=20}, EnumCountResponse{msg='网络设备', code='[2]', number=20}, EnumCountResponse{msg='安全设备', code='[3]', number=20}, EnumCountResponse{msg='存储设备', code='[4]', number=20}, EnumCountResponse{msg='其它设备', code='[5]', number=20}]";
+        Assert.assertEquals(s, enumCountResponses.toString());
     }
 
     @Test
