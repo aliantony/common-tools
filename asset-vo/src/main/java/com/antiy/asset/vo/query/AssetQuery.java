@@ -20,6 +20,12 @@ import java.util.List;
  */
 
 public class AssetQuery extends ObjectQuery implements ObjectValidator {
+
+    /**
+     * 资产id,消息通知跳转使用
+     */
+    @Encode
+    private String       stringId;
     /**
      * 资产id列表
      */
@@ -276,6 +282,14 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("基准模板id")
     @Encode
     private String        baselineTemplateId;
+
+    public String getStringId() {
+        return stringId;
+    }
+
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
+    }
 
     public List<Integer> getAssetSourceList() {
         return assetSourceList;
