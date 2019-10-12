@@ -57,7 +57,7 @@ CREATE TABLE `asset` (
   `baseline_template_id` int(11) DEFAULT NULL COMMENT '基准模板主键',
   `baseline_template_correlation_gmt` bigint(20) DEFAULT '0' COMMENT '资产与基准模板关联时间',
   `install_template_correlation_gmt` bigint(20) DEFAULT '0' COMMENT '资产与装机模板关联时间',
-  `step_node` varchar(16) DEFAULT NULL COMMENT '登记时选择下一步节点',
+  `step_node` varchar(16) DEFAULT NULL COMMENT '登记时选择下一步节点:安全检查-safetyCheck ,模板实施templateImplement',
   `memo` varchar(300) DEFAULT NULL COMMENT '备注',
   `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
@@ -237,7 +237,7 @@ DROP TABLE IF EXISTS `asset_ip_relation`;
 CREATE TABLE `asset_ip_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `asset_id` int(11) NOT NULL COMMENT '资产主表',
-  `ip` varchar(15) NOT NULL COMMENT 'IP',
+  `ip` varchar(15) DEFAULT NULL COMMENT 'IP',
   `net` int(11) DEFAULT NULL COMMENT '网口',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
