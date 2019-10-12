@@ -430,7 +430,7 @@
     </select>
     <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="java.lang.Integer">
-        select sw_type from baseline_template where id=#{baselineId} and status=1
+        select sw_type from baseline_template where id=#{baselineId}
     </select>
     <select id="findFilteredCount" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from (SELECT
@@ -450,7 +450,6 @@
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
         and bts.status=1
-        and bt.status=1
         and ahsl.status=1
         )
         <include refid="Where_Column_List"></include>
@@ -529,7 +528,6 @@
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND bt.sw_type = 2
         AND bt.id = #{baselineId}
-        and bt.status=1
         and ahsl.status=1
         and bts.status=1
         )
