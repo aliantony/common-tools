@@ -297,6 +297,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
      * @return
      * @throws Exception
      */
+    @Override
     public AssetTopologyNodeResponse getTopologyGraph() throws Exception {
         AssetTopologyNodeResponse assetTopologyNodeResponse = new AssetTopologyNodeResponse();
         assetTopologyNodeResponse.setStatus("success");
@@ -668,6 +669,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
     }
 
+    @Override
     public AssetTopologyAlarmResponse getAlarmTopology() throws Exception {
         AssetQuery query = new AssetQuery();
         initQuery(query);
