@@ -233,7 +233,7 @@
                 update
                 <include refid="Table_Name"></include>
                 <trim prefix="set" suffixOverrides=",">
-                      current_status = #{currentStatus },
+                    current_status = #{currentStatus },
                     <if test=" gmtModified != null">
                         gmt_modified = #{gmtModified },
                     </if>
@@ -423,7 +423,7 @@
             network_status as networkStatus
         from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
         where
-        t1.install_template_id = #{stringId} and t1.status=1  and t2.status = 1
+        t1.install_template_id = #{pid} and t1.status=1  and t2.status = 1
     </select>
     <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="java.lang.Integer">
@@ -565,6 +565,65 @@
         (install_template_id,user_id,result,gmt_create,create_user)
         <trim prefix="values" suffix=";">
             (#{stringId},#{createUser},1,#{gmtCreate},#{createUser})
+        </trim>
+
+    </insert>
+    <insert id="insertTemplateCheckInfo" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
+        insert into asset_install_template_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test=" stringId != null">
+                install_template_id,
+            </if>
+            <if test=" userId != null">
+                user_id,
+            </if>
+            <if test=" advice != null">
+                advice,
+            </if>
+            <if test=" result != null">
+                result,
+            </if>
+            <if test=" gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test=" gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test=" createUser != null">
+                create_user,
+            </if>
+            <if test=" modifiedUser != null">
+                modified_user,
+            </if>
+
+        </trim>
+
+        <trim prefix="values (" suffix=");" suffixOverrides=",">
+            <if test=" stringId != null">
+                #{stringId},
+            </if>
+            <if test=" userId != null">
+                #{userId},
+            </if>
+            <if test=" advice != null">
+                #{advice},
+            </if>
+            <if test=" result != null">
+                #{result},
+            </if>
+            <if test=" gmtCreate != null">
+                #{gmtCreate},
+            </if>
+            <if test=" gmtModified != null">
+                #{gmtModified},
+            </if>
+            <if test=" createUser != null">
+                #{createUser},
+            </if>
+            <if test=" modifiedUser != null">
+                #{modifiedUser},
+            </if>
+
         </trim>
 
     </insert>
