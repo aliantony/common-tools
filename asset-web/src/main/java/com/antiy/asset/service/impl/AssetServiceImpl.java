@@ -2841,7 +2841,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
+    public Set<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
         if ((isNet == null) || isNet == 1) {
             query.setCategoryModels(

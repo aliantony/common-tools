@@ -18,6 +18,4 @@ public interface AssetTopologyDao extends IBaseDao<AssetTopology> {
     Integer findTopologyListAssetCount(AssetQuery query);
 
     List<Asset> findTopologyListAsset(AssetQuery query);
-
-    List<AssetCountResult> countAssetByOs(AssetQuery query);
 }
