@@ -15,6 +15,7 @@ import com.antiy.asset.vo.response.AssetAllTypeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.utils.JsonUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	private IAssetHardSoftLibService hardSoftLibService;
 	@MockBean
 	private AssetOperationRecordDao recordDao;
-	@Resource
+	@MockBean
 	private AssetHardSoftLibDao hardSoftLibDao;
 	@Before
 	public void setUp() throws Exception {
@@ -52,6 +53,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	public void queryUnderLineAssetAllStatusInfo() throws Exception {
 		Director director = new Director(new UnderInNetBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
+		statusDetails.get(0).setFileInfo("");
 		given(recordDao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
 		ActionResponse response = recordService.queryAssetAllStatusInfo("1");
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
@@ -78,6 +80,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	public void batchQueryAssetPreStatusInfo() {
 		Director director = new Director(new OnWaitCheckBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
+		statusDetails.get(0).setFileInfo("");
 		given(recordDao.queryAssetPreStatusInfo(Arrays.asList("1", "2"))).willReturn(new ArrayList<>(statusDetails));
 		ActionResponse response = recordService.batchQueryAssetPreStatusInfo(Arrays.asList("1", "2"));
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
@@ -92,7 +95,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 		AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
 		query.setSupplier("antiy");
 		//query.setProductName("ie");
-/*		AssetHardSoftLib rowData = new AssetHardSoftLib();
+		AssetHardSoftLib rowData = new AssetHardSoftLib();
 		rowData.setBusinessId(RandomStringUtils.random(18));
 		rowData.setNumber(1);
 		rowData.setType(RandomStringUtils.random(10));
@@ -104,19 +107,33 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 		rowData.setSoftVersion(RandomStringUtils.random(18));
 		rowData.setSupplier(RandomStringUtils.random(18));
 		rowData.setUpgradeMsg(RandomStringUtils.random(18));
-		rowData.setSysVersion(RandomStringUtils.random(18));*/
+		rowData.setSysVersion(RandomStringUtils.random(18));
+		ArrayList<AssetHardSoftLib> list = new ArrayList<>();
+		list.add(rowData);
+		given(hardSoftLibDao.queryAssetList(query)).willReturn(list);
+		given(hardSoftLibDao.queryAssetListCount(query)).willReturn(1);
 		ActionResponse<PageResult<AssetAllTypeResponse>> response = hardSoftLibService.queryAssetList(query);
 
 		System.out.println(jsonSuperHero.write(response).toString());
 	}
 
+	/**
+	 *
+	 * 测试真实db数据
+	 * @throws Exception 业务异常
+	 */
 	@Test
-	public void queryAssetListCount() throws Exception{
+	public void queryDbAssetListCount() throws Exception{
 		AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
 		query.setProductName("1024");
 		System.out.println(jsonSuperHero.write(hardSoftLibService.queryAssetList(query)).toString());
 	}
 
+	/**
+	 *
+	 * 测试真实db数据
+	 * @throws Exception 业务异常
+	 */
 	@Test
 	public void queryDbAssetList() {
 		ActionResponse response = recordService.queryAssetAllStatusInfo("143");

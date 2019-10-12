@@ -56,7 +56,7 @@ public class AssetOperationRecordControllerTest extends MockContext {
 
     /**
      * 查询资产动态
-     * @throws Exception
+     * @throws Exception 业务异常
      */
     @Test
     public void queryList() throws Exception {

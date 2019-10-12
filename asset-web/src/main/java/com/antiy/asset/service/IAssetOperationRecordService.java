@@ -17,19 +17,7 @@ import com.antiy.common.base.IBaseService;
  */
 public interface IAssetOperationRecordService extends IBaseService<AssetOperationRecord> {
 
-    /**
-     * 通过资产主键查询资产操作记录
-     * @param assetOperationRecordQuery
-     * @return
-     */
-    List<NameValueVo> queryStatusBar(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
 
-    /**
-     * 通过资产主键查询资产操作记录,根据时间排序
-     * @param assetOperationRecordQuery
-     * @return
-     */
-    List<AssetOperationRecordBarResponse> queryStatusBarOrderByTime(AssetOperationRecordQuery assetOperationRecordQuery) throws Exception;
 
     /**
      *  v1.1 版本 资产详情页，资产动态查询接口

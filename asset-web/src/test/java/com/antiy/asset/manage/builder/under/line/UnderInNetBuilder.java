@@ -16,6 +16,7 @@ public class UnderInNetBuilder extends Builder {
 	public void builder() {
 
 		List<AssetStatusDetail> res = next(new UnderWaitValidateBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_NET, true, true);
+
 		products.setProducts(res);
 	}
 }
