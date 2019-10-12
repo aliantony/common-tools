@@ -1,39 +1,60 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Stream;
-
-import javax.annotation.Resource;
-
-import com.antiy.asset.entity.*;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetCountResult;
+import com.antiy.asset.entity.AssetGroup;
+import com.antiy.asset.entity.AssetLink;
+import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
+import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.AssetTopologyAlarmResponse;
+import com.antiy.asset.vo.response.AssetTopologyIpSearchResposne;
+import com.antiy.asset.vo.response.AssetTopologyJsonData;
+import com.antiy.asset.vo.response.AssetTopologyNodeResponse;
+import com.antiy.asset.vo.response.AssetTopologyRelation;
+import com.antiy.asset.vo.response.AssetTopologyViewAngle;
+import com.antiy.asset.vo.response.CountTopologyResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.TopologyAssetResponse;
+import com.antiy.asset.vo.response.TopologyCategoryCountResponse;
+import com.antiy.asset.vo.response.TopologyListResponse;
+import com.antiy.asset.vo.response.TopologyOsCountResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
 
 /**
  * 资产拓扑管理
@@ -392,7 +413,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     public TopologyOsCountResponse countTopologyOs() throws Exception {
         AssetQuery query = new AssetQuery();
-        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
         query.setAssetStatusList(getAssetUseableStatus());
         List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);

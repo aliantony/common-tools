@@ -1,17 +1,15 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import com.antiy.asset.vo.enums.ReportFormType;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * <p> AssetCpu 查询条件 </p>
@@ -30,7 +28,7 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
     private String         format;
 
     @ApiModelProperty(value = "区域ID 不用传")
-    private List<Integer>  areaIds;
+    private List<String>  areaIds;
 
     @ApiModelProperty(value = "报表类型 分别为总数统计/新增趋势统计", example = "ALL,NEW,TABLE")
     private ReportFormType reportFormType;
@@ -67,11 +65,11 @@ public class AssetReportCategoryCountQuery extends ObjectQuery implements Object
         this.showCycleType = showCycleType;
     }
 
-    public List<Integer> getAreaIds() {
+    public List<String> getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(List<Integer> areaIds) {
+    public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
     }
 

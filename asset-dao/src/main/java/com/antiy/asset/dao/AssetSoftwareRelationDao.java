@@ -1,10 +1,5 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
@@ -14,6 +9,10 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.QueryCondition;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -58,7 +57,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      *
      * @return
      */
-    List<String> findOS(@Param(value = "areaIds") List<Integer> areaIds) throws Exception;
+    List<String> findOS(@Param(value = "areaIds") List<String> areaIds) throws Exception;
 
     /**
      * 查询软件关联的硬件

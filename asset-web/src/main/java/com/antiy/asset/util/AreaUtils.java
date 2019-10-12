@@ -1,13 +1,12 @@
 package com.antiy.asset.util;
 
+import com.antiy.common.base.SysArea;
+import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
-import com.antiy.common.base.SysArea;
-import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * @author: zhangbing
@@ -21,7 +20,7 @@ public class AreaUtils {
      * @param areaId
      * @return 如果返回null，则说明不存在下级节点
      */
-    private List<Integer> getNextArea(Integer areaId) {
+    private List<String> getNextArea(Integer areaId) {
         List<SysArea> childAreaList = LoginUserUtil.getLoginUser().getAreas();;
         if (null != areaId) {
             childAreaList = LoginUserUtil.getLoginUser().getAreas().stream()

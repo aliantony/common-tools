@@ -1,18 +1,16 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-import java.util.Objects;
-
-import javax.validation.constraints.NotBlank;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: zhangbing
@@ -55,7 +53,7 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
     private String                       topAreaName;
     // 用户登陆的区域查询条件
     @ApiModelProperty(value = "区域列表 不用传")
-    private List<Integer>                areaIds;
+    private List<String>                areaIds;
     @ApiModelProperty(value = "资产组ids 不用传")
     private List<Integer>                groupIds;
     @ApiModelProperty(value = "状态列表 不用传")
@@ -130,11 +128,11 @@ public class ReportQueryRequest extends BasicRequest implements ObjectValidator 
         this.timeType = timeType;
     }
 
-    public List<Integer> getAreaIds() {
+    public List<String> getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(List<Integer> areaIds) {
+    public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
     }
 

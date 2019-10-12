@@ -77,7 +77,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Object>> countManufacturer(@Param("areaIds") List<Integer> areaIds,
+    List<Map<String, Object>> countManufacturer(@Param("areaIds") List<String> areaIds,
                                                 @Param("assetStatusList") List<Integer> statusList);
 
     /**
@@ -85,7 +85,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    List<Map<String, Object>> countStatus(@Param("areaIds") List<Integer> areaIds);
+    List<Map<String, Object>> countStatus(@Param("areaIds") List<String> areaIds);
 
     /**
      * 通过ID列表查询资产列表
@@ -125,7 +125,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds,
+    List<IdCount> queryAssetVulCount(@Param(value = "areaIds") List<String> areaIds,
                                      @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
 
     /**
@@ -134,7 +134,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds,
+    List<IdCount> queryAssetPatchCount(@Param(value = "areaIds") List<String> areaIds,
                                        @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
 
     /**
@@ -142,14 +142,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    Integer queryAllAssetPatchCount(@Param(value = "areaIds") List<Integer> areaIds);
+    Integer queryAllAssetPatchCount(@Param(value = "areaIds") List<String> areaIds);
 
     /**
      * 查询漏洞的资产总数
      *
      * @return
      */
-    Integer queryAllAssetVulCount(@Param(value = "areaIds") List<Integer> areaIds);
+    Integer queryAllAssetVulCount(@Param(value = "areaIds") List<String> areaIds);
 
     /**
      * 流程引擎返回的的id排序
@@ -206,7 +206,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer updateStatus(Asset asset) throws Exception;
 
-    List<String> findAssetIds(@Param("areaIds") List<Integer> areaIds);
+    List<String> findAssetIds(@Param("areaIds") List<String> areaIds);
 
     Integer insertBatch(List<Asset> assets);
 
@@ -218,7 +218,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
-                                 @Param(value = "areaIds") List<Integer> areaIds);
+                                 @Param(value = "areaIds") List<String> areaIds);
 
     Integer changeAsset(Asset asset);
 
@@ -290,7 +290,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
 
-    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<Integer> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
+    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<String> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
 
     Integer findCountAssetNumber(@Param("number") String number);
 

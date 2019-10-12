@@ -1,11 +1,10 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetTopology 查询条件 </p>
@@ -31,7 +30,7 @@ public class AssetTopologyQuery extends ObjectQuery {
     /**
      * 登录用户所属区域ids
      */
-    private List<Integer> userAreaIds;
+    private List<String> userAreaIds;
 
     private List<Integer> assetStatusList;
 
@@ -51,11 +50,11 @@ public class AssetTopologyQuery extends ObjectQuery {
         this.topologyType = topologyType;
     }
 
-    public List<Integer> getUserAreaIds() {
+    public List<String> getUserAreaIds() {
         return userAreaIds;
     }
 
-    public void setUserAreaIds(List<Integer> userAreaIds) {
+    public void setUserAreaIds(List<String> userAreaIds) {
         this.userAreaIds = userAreaIds;
     }
 
