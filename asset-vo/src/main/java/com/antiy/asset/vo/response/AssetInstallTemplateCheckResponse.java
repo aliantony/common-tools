@@ -12,8 +12,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetInstallTemplateCheckResponse extends BaseResponse {
 
-    @ApiModelProperty("装机模板主键")
-    private Integer           installTemplateId;
 
     @ApiModelProperty("用户主键")
     private Integer           userId;
@@ -28,7 +26,7 @@ public class AssetInstallTemplateCheckResponse extends BaseResponse {
     private String  resultStr;
 
     @ApiModelProperty("创建时间")
-    private Long gmtCreate;
+    private String gmtCreate;
 
     @ApiModelProperty("用户名")
     private String name;
@@ -41,20 +39,12 @@ public class AssetInstallTemplateCheckResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Long getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Long gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
-    }
-
-    public Integer getInstallTemplateId() {
-        return installTemplateId;
-    }
-
-    public void setInstallTemplateId(Integer installTemplateId) {
-        this.installTemplateId = installTemplateId;
     }
 
     public Integer getUserId() {
@@ -92,7 +82,7 @@ public class AssetInstallTemplateCheckResponse extends BaseResponse {
     @Override
     public String toString() {
         return "AssetInstallTemplateCheckResponse{" +
-                "installTemplateId=" + installTemplateId +
+                "installTemplateId=" +
                 ", userId=" + userId +
                 ", advice='" + advice + '\'' +
                 ", result=" + result +
