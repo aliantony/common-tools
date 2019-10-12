@@ -1100,6 +1100,22 @@ public class AssetServiceImplTest {
         when(RequestContextHolder.getRequestAttributes())
                 .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
+        MockHttpServletRequest request2 = new MockHttpServletRequest();
+        request2.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request2, new MockHttpServletResponse()));
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+        MockHttpServletRequest request3 = new MockHttpServletRequest();
+        request3.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("发送客户端失败");
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", null, null);
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(new ServletRequestAttributes(request3, null));
+
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
     }
 
     @Test
