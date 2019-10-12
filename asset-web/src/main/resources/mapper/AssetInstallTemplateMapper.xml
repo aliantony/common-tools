@@ -423,7 +423,7 @@
             network_status as networkStatus
         from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
         where
-        t1.install_template_id = #{stringId} and t1.status=1  and t2.status = 1
+        t1.install_template_id = #{pid} and t1.status=1  and t2.status = 1
     </select>
     <select id="queryBaselineTemplateType" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="java.lang.Integer">
