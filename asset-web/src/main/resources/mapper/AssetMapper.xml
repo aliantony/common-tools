@@ -692,6 +692,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="stringId != null and stringId != ''">
+            and asset.id = #{stringId}
+        </if>
         <if test="baselineTemplateId != null and baselineTemplateId != ''">
             and baseline_template_id = #{baselineTemplateId}
         </if>
