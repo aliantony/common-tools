@@ -142,7 +142,14 @@ public class AssetResponse extends BaseResponse {
      * 装机模板id
      */
     @ApiModelProperty("装机模板id")
+    @Encode
     private String                         installTemplateId;
+    /**
+     * 装机模板id
+     */
+    @ApiModelProperty("不加密的装机模板id")
+    private String                         decryptInstallTemplateId;
+
     /**
      * 上报来源
      */
@@ -377,6 +384,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setAreaId(String areaId) {
         this.areaId = areaId;
+    }
+
+    public String getDecryptInstallTemplateId() {
+        return decryptInstallTemplateId;
+    }
+
+    public void setDecryptInstallTemplateId(String decryptInstallTemplateId) {
+        this.decryptInstallTemplateId = decryptInstallTemplateId;
     }
 
     public String getResponsibleUserName() {
