@@ -167,6 +167,7 @@ public class AssetServiceImplTest {
     private BaseConverter<AssetSafetyEquipment, AssetSafetyEquipmentResponse>   safetyResponseConverter;
     @Spy
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     @Before
@@ -1099,6 +1100,22 @@ public class AssetServiceImplTest {
         when(RequestContextHolder.getRequestAttributes())
                 .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "4", "5", "6", "7", "8" });
+        MockHttpServletRequest request2 = new MockHttpServletRequest();
+        request2.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request2, new MockHttpServletResponse()));
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+        MockHttpServletRequest request3 = new MockHttpServletRequest();
+        request3.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("发送客户端失败");
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", null, null);
+        when(RequestContextHolder.getRequestAttributes()).thenReturn(new ServletRequestAttributes(request3, null));
+
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
     }
 
     @Test
@@ -1563,7 +1580,7 @@ public class AssetServiceImplTest {
         Assert.assertEquals(Integer.valueOf(0), result);
     }
 
-    @Test
+    @Test()
     public void testExportData() throws Exception {
         AssetResponse assetResponse = new AssetResponse();
         assetResponse.setAreaName("");
@@ -1575,7 +1592,6 @@ public class AssetServiceImplTest {
         assetResponse.setAdmittanceStatus(0);
         assetResponse.setCategoryModelName("");
         assetResponse.setAssetGroup("");
-
         assetResponse.setNumber("");
         assetResponse.setName("");
         assetResponse.setSerial("");
@@ -1583,31 +1599,49 @@ public class AssetServiceImplTest {
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
 //        assetResponse.setOperationSystem(1L);
-
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
-
         assetResponse.setAssetSource(0);
         assetResponse.setImportanceDegree(0);
-
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
         assetResponse.setWarranty("0");
         assetResponse.setAssetGroups(Lists.newArrayList());
         assetResponse.setGmtCreate(0L);
         assetResponse.setFirstEnterNett(0L);
-
         assetResponse.setHouseLocation("");
         assetResponse.setStringId("");
 
         PageResult<AssetResponse> result = new PageResult<>();
+
         result.setItems(Arrays.asList(assetResponse));
 
         doReturn(result).when(assetServiceImpl).findPageAsset(any());
+
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setStart(1);
         assetQuery.setEnd(100);
+
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        AssetQuery assetQuery2 = new AssetQuery();
+        assetQuery2.setStart(1);
+        assetQuery2.setEnd(100);
+        assetQuery2.setUnknownAssets(true);
+        assetServiceImpl.exportData(assetQuery2, new Response(), new Request());
+        PageResult<AssetResponse> result2 = new PageResult<>();
+        doReturn(result2).when(assetServiceImpl).findPageAsset(any());
+        result2.setItems(new ArrayList<AssetResponse>());
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("导出数据为空");
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        AssetQuery assetQuery3 = new AssetQuery();
+        assetQuery3.setStart(1);
+        assetQuery3.setEnd(100);
+        assetQuery3.setUnknownAssets(true);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("导出数据为空");
+        assetServiceImpl.exportData(assetQuery3, new Response(), new Request());
+
     }
 
     @Test

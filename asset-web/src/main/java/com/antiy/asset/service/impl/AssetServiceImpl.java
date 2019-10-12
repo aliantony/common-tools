@@ -298,25 +298,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
             // 安全检查走基准
-            // if ("safetyCheck".equals(admittanceResult[0])) {
-            // BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
-            // baselineAssetRegisterRequest.setAssetId(id);
-            // baselineAssetRegisterRequest
-            // .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
-            // baselineAssetRegisterRequest.setCheckType(requestAsset.getInstallType());
-            // baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
-            // baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
-            // baselineAssetRegisterRequest
-            // .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
-            // ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
-            // // 如果基准为空,直接返回错误信息
-            // if (null == baselineCheck
-            // || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-            // // 调用失败，逻辑删登记的资产
-            // assetDao.deleteById(id);
-            // return baselineCheck == null ? baselineCheck.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
-            // }
-            // }
+            if ("safetyCheck".equals(admittanceResult[0])) {
+                BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+                baselineAssetRegisterRequest.setAssetId(id);
+                baselineAssetRegisterRequest
+                    .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
+                baselineAssetRegisterRequest.setCheckType(requestAsset.getInstallType());
+                baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest
+                    .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
+                ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+                // 如果基准为空,直接返回错误信息
+                if (null == baselineCheck
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+                    // 调用失败，逻辑删登记的资产
+                    assetDao.deleteById(id);
+                    return baselineCheck == null ? baselineCheck.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
+                }
+            }
         }
 
         return ActionResponse.success();

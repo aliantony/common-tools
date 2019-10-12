@@ -20,6 +20,10 @@ public class Asset extends BaseEntity {
      */
     private String            baselineTemplateId;
     /**
+     * 配置模板名称
+     */
+    private String            baselineTemplateName;
+    /**
      * 装机模板id
      */
     private String            installTemplateId;
@@ -230,6 +234,14 @@ public class Asset extends BaseEntity {
     private Long              baselineTemplateCorrelationGmt;
 
     private Long              installTemplateCorrelationGmt;
+
+    public String getBaselineTemplateName() {
+        return baselineTemplateName;
+    }
+
+    public void setBaselineTemplateName(String baselineTemplateName) {
+        this.baselineTemplateName = baselineTemplateName;
+    }
 
     public String getAssetSourceName() {
         return assetSourceName;

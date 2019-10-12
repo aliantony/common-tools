@@ -47,6 +47,7 @@
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="baseline_template_name" property="baselineTemplateName"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
@@ -692,6 +693,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="stringId != null and stringId != ''">
+            and asset.id = #{stringId}
+        </if>
         <if test="baselineTemplateId != null and baselineTemplateId != ''">
             and baseline_template_id = #{baselineTemplateId}
         </if>
@@ -1093,11 +1097,12 @@
         asset.category_model,
         asset.admittance_status,
         asset.number,
-        asset.name,
+        ahsl2.product_name as name,
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset.manufacturer, asset_status,
+        ahsl2.supplier as manufacturer,
+        asset.asset_status,
         asset.operation_system,
         ahsl.product_name as operation_system_name,
         asset.house_location,
@@ -1116,16 +1121,19 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
-        asset.version,
+        ahsl2.version,
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs,
         asset.install_template_id,
-        asset.baseline_template_id
+        asset.baseline_template_id,
+        bt.tp_name as baseline_template_name
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
+        left join asset_hard_soft_lib ahsl2 on asset.business_id = ahsl2.business_id and ahsl2.status = 1
+        left join baseline_template bt on asset.baseline_template_id = bt.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
