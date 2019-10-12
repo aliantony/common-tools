@@ -18,20 +18,20 @@
     <parent>
         <groupId>com.antiy</groupId>
         <artifactId>csos-parent</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>com.antiy</groupId>
             <artifactId>csos-common</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <artifactId>csos-biz</artifactId>
             <groupId>com.antiy</groupId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
