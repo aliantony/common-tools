@@ -7,6 +7,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.query.ConfigRegisterRequest;
 import com.antiy.asset.vo.request.BaseLineTemplateRequest;
+import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.request.UpdateAssetVerifyRequest;
 import com.antiy.common.base.ActionResponse;
@@ -34,8 +35,9 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Value("${distribute.baseline}")
     private String     distributeBaselineUrl;
-    @Value("${baseline.template}")
-    private String     getTemplateUrl;
+
+    @Value("${baseline.check}")
+    private String     baselineCheckUrl;
 
     @Value("${baselineWaitingConfigUrl}")
     private String     baselineWaitingConfigUrl;
@@ -51,6 +53,13 @@ public class BaseLineClientImpl implements BaseLineClient {
     }
 
     @Override
+    @AssetLog(description = "登记安全检查", operationType = AssetLogOperationType.ADD)
+    public ActionResponse baselineCheck(BaselineAssetRegisterRequest request) {
+        return (ActionResponse) baseClient.post(request, new ParameterizedTypeReference<ActionResponse>() {
+        }, baselineCheckUrl);
+    }
+
+    @Override
     @AssetLog(description = "修改资产到待验证")
     public ActionResponse updateAssetVerify(String assetId) {
         UpdateAssetVerifyRequest updateAssetVerifyRequest = new UpdateAssetVerifyRequest();
@@ -60,15 +69,6 @@ public class BaseLineClientImpl implements BaseLineClient {
             }, updateAssetVerifyUrl);
     }
 
-    @Override
-    @AssetLog(description = "下载基准模板")
-    public File getTemplate(List<String> assetIdList) {
-        BaseLineTemplateRequest baseLineTemplateRequest = new BaseLineTemplateRequest();
-        baseLineTemplateRequest.setCheckType(2);
-        baseLineTemplateRequest.setAssetIdList(assetIdList);
-        return (File) baseClient.get(baseLineTemplateRequest, new ParameterizedTypeReference<ActionResponse>() {
-        }, getTemplateUrl);
-    }
 
     @Override
     public ActionResponse distributeBaseline(String assetId) {

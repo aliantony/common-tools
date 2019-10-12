@@ -1,13 +1,12 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetHardSoftOperQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 
 /**
  * @author zhouye
@@ -15,15 +14,10 @@ import javax.annotation.Resource;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class HardSoftLibDaoTest {
-	@Resource
+	@MockBean
 	private AssetHardSoftLibDao dao;
 
-	@Test
-	public void queryHardSoftLibList() {
-		AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
-		query.setProductName("1024");
-		System.out.println(dao.queryHardSoftLibList(query));
-	}
+
 
 	@Test
 	public void queryAssetList() {

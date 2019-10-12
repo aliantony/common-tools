@@ -296,7 +296,6 @@
             LEFT JOIN asset_hard_assembly_relation relation ON lib.business_id = relation.assembly_id
         WHERE
             relation.status=1
-            and lib.status=1
          	and relation.hard_id = #{id}
     </select>
 </mapper>

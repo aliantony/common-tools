@@ -183,7 +183,7 @@ public class AssetHardSoftLibController {
     @ApiOperation(value = "装机模板-添加软件", notes = "软件列表")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = OsSelectResponse.class),})
     @RequestMapping(value = "/query/softList", method = RequestMethod.POST)
-    public ActionResponse queryPageSoft(@RequestBody AssetSoftwareQuery query) {
+    public ActionResponse queryPageSoft(@RequestBody AssetTemplateSoftwareRelationQuery query) {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageSoft(query));
     }
     /**
@@ -192,7 +192,7 @@ public class AssetHardSoftLibController {
      * @param query 参数条件
      * @return actionResponse 响应
      */
-    @ApiOperation(value = "全量查询", notes = "传入查询条件")
+    @ApiOperation(value = "应急补丁下拉菜单-cpe信息查询-软硬操作系统", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAllTypeResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/all", method = RequestMethod.POST)
     public ActionResponse queryAllList(@ApiParam(value = "query") @RequestBody AssetHardSoftOperQuery query) throws Exception {

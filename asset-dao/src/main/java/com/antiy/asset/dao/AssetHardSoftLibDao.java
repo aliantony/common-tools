@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
@@ -66,16 +67,16 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      * @return 数量
      */
     Integer queryAssetListCount(AssetHardSoftOperQuery query);
-    Integer queryCountSoftWares(AssetSoftwareQuery query);
+    Integer queryCountSoftWares(ObjectQuery query);
 
     /**
      * 软件列表
      *
      * @return
      */
-    List<AssetHardSoftLib> querySoftWares(AssetSoftwareQuery query);
+    List<AssetHardSoftLib> querySoftWares(ObjectQuery query);
 
-    List<AssetHardSoftLib> querySoftsRelations(String templateId);
+    List<AssetHardSoftLib> querySoftsRelations(@Param("templateId") String templateId);
 
     AssetHardSoftLib getByBusinessId(@Param("businessId") String businessId);
 }

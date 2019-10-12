@@ -6,7 +6,6 @@ import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
-import com.antiy.asset.vo.request.AssetRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +50,14 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer findCountByCategoryModel(AssetQuery query) throws Exception;
 
     /**
+     * 真实删除
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    Integer deleteAssetById(@Param("id") Integer id) throws Exception;
+
+    /**
      * 通过品类型号查询资产列表
      *
      * @param query
@@ -72,7 +79,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param mac
      * @return
      */
-    Integer findCountMac(@Param("mac") String mac) throws Exception;
+    Integer findCountMac(@Param("mac") String mac, @Param("id") Integer id) throws Exception;
 
     /**
      * 统计厂商数量

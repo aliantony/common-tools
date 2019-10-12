@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -236,7 +237,7 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 通联设置的厂商下拉查询
      */
-    List<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception;
+    Set<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) throws Exception;
 
     /**
      * 告警管理查询资产信息
@@ -293,7 +294,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    boolean CheckRepeatMAC(String mac) throws Exception;
+    boolean CheckRepeatMAC(String mac, Integer id) throws Exception;
 
     /**
      * 查询编号重复

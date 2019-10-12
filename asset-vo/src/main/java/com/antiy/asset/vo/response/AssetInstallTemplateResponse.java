@@ -92,8 +92,8 @@ public class AssetInstallTemplateResponse  {
         this.currentStatus = currentStatus;
     }
 
-    public Long getOperationSystem() {
-        return operationSystem;
+    public String getOperationSystem() {
+        return String.valueOf(operationSystem);
     }
 
     public void setOperationSystem(Long operationSystem) {

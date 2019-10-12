@@ -20,9 +20,17 @@ public class Asset extends BaseEntity {
      */
     private String            baselineTemplateId;
     /**
+     * 配置模板名称
+     */
+    private String            baselineTemplateName;
+    /**
      * 装机模板id
      */
     private String            installTemplateId;
+    /**
+     * stepNode
+     */
+    private String            stepNode;
     /**
      * 品类名称
      */
@@ -230,6 +238,14 @@ public class Asset extends BaseEntity {
     private Long              baselineTemplateCorrelationGmt;
 
     private Long              installTemplateCorrelationGmt;
+
+    public String getBaselineTemplateName() {
+        return baselineTemplateName;
+    }
+
+    public void setBaselineTemplateName(String baselineTemplateName) {
+        this.baselineTemplateName = baselineTemplateName;
+    }
 
     public String getAssetSourceName() {
         return assetSourceName;
@@ -645,5 +661,13 @@ public class Asset extends BaseEntity {
 
     public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
+    }
+
+    public String getStepNode() {
+        return stepNode;
+    }
+
+    public void setStepNode(String stepNode) {
+        this.stepNode = stepNode;
     }
 }

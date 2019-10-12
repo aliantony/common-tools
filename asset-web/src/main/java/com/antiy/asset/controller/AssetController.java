@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -256,7 +257,7 @@ public class AssetController {
     @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
     public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac()));
+        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac(), numberMac.getId()));
     }
 
     /**
@@ -300,7 +301,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
+    public ActionResponse<Set<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
         return ActionResponse
             .success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
     }
