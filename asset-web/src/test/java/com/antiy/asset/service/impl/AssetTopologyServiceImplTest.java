@@ -110,12 +110,6 @@ public class AssetTopologyServiceImplTest {
 
     }
 
-    @Test
-    public void queryCategoryModelsTest() {
-        when(assetLinkRelationDao.queryCategoryModes()).thenReturn(Arrays.asList("1", "2"));
-        Assert.assertEquals(2, assetTopologyService.queryCategoryModels().size());
-
-    }
 
     @Test
     public void queryAssetNodeInfoTest() throws Exception {
@@ -242,16 +236,6 @@ public class AssetTopologyServiceImplTest {
         Assert.assertEquals("success", assetTopologyService.countTopologyCategory().getStatus());
     }
 
-    @Test
-    public void countTopologyOs() throws Exception {
-        List<AssetCountResult> assetCountResults = new ArrayList<>();
-        AssetCountResult assetCountResult = new AssetCountResult();
-        assetCountResult.setCode("a");
-        assetCountResult.setNum(1);
-        assetCountResults.add(assetCountResult);
-        Mockito.when(assetTopologyDao.countAssetByOs(Mockito.any())).thenReturn(assetCountResults);
-        Assert.assertEquals("success", assetTopologyService.countTopologyOs().getStatus());
-    }
 
     public BaselineCategoryModelNodeResponse generateBaselineCategoryModalNode(String name, String id,
                                                                                String parentId) {

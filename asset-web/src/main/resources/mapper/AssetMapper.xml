@@ -44,13 +44,16 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
+        <result column="step_node" property="stepNode"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
+        <result column="baseline_template_name" property="baselineTemplateName"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
         <result column="ips" property="ips"/>
         <result column="macs" property="macs"/>
+        <result column="step_node" property="stepNode"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
@@ -60,7 +63,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, step_node,number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -71,6 +74,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" businessId != null">
             business_id,
+        </if>
+        <if test=" stepNode != null">
+            step_node,
         </if>
         <if test=" assetGroup != null">
             asset_group,
@@ -190,6 +196,9 @@
         <if test=" businessId != null">
             #{businessId },
         </if>
+        <if test=" stepNode != null">
+            #{step_node },
+        </if>
         <if test=" assetGroup != null">
             #{assetGroup },
         </if>
@@ -305,6 +314,7 @@
     </sql>
     <sql id="IF_Value_Column_List_ForBatch">
             #{entity.number },
+            #{entity.stepNode },
             #{entity.name },
             #{entity.installType },
             #{entity.serial },
@@ -343,6 +353,7 @@
     <sql id="IF_Base_Column_List_ForBatch">
 
             number,
+            step_node,
             name,
             install_type,
             serial,
@@ -380,6 +391,9 @@
     <sql id="Set_Column_List">
         <if test=" businessId != null">
             business_id = #{businessId },
+        </if>
+        <if test=" stepNode != null">
+            step_node = #{stepNode },
         </if>
         <if test=" assetGroup != null">
             asset_group = #{assetGroup },
@@ -498,6 +512,9 @@
     <sql id="Where_Column_List">
         <if test=" businessId != null">
             and business_id = #{businessId }
+        </if>
+        <if test=" stepNode != null">
+            and step_node = #{stepNode },
         </if>
         <if test=" assetGroup != null">
             and asset_group = #{assetGroup }
@@ -618,6 +635,9 @@
         <if test=" number != null">
             and number = #{number }
         </if>
+        <if test=" stepNode != null">
+            and step_node = #{stepNode },
+        </if>
         <if test=" type != null">
             and type = #{type }
         </if>
@@ -692,6 +712,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="stringId != null and stringId != ''">
+            and asset.id = #{stringId}
+        </if>
         <if test="baselineTemplateId != null and baselineTemplateId != ''">
             and baseline_template_id = #{baselineTemplateId}
         </if>
@@ -922,6 +945,12 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteAssetById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
     <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
@@ -1093,11 +1122,12 @@
         asset.category_model,
         asset.admittance_status,
         asset.number,
-        asset.name,
+        ahsl2.product_name as name,
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        asset.manufacturer, asset_status,
+        ahsl2.supplier as manufacturer,
+        asset.asset_status,
         asset.operation_system,
         ahsl.product_name as operation_system_name,
         asset.house_location,
@@ -1116,16 +1146,19 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
-        asset.version,
+        ahsl2.version,
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs,
         asset.install_template_id,
-        asset.baseline_template_id
+        asset.baseline_template_id,
+        bt.tp_name as baseline_template_name
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
+        left join asset_hard_soft_lib ahsl2 on asset.business_id = ahsl2.business_id and ahsl2.status = 1
+        left join baseline_template bt on asset.baseline_template_id = bt.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>

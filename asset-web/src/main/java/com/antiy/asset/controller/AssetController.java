@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -90,11 +91,13 @@ public class AssetController {
             asset.setSortName("asset.id");
         }
         // 是否未知资产列表查询
-        if (asset.getUnknownAssets() && Objects.isNull(asset.getAssetSource())) {
-            List<Integer> sourceList = Lists.newArrayList();
-            sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
-            sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
-            asset.setAssetSourceList(sourceList);
+        if (asset.getUnknownAssets()) {
+            if (Objects.isNull(asset.getAssetSource())) {
+                List<Integer> sourceList = Lists.newArrayList();
+                sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
+                sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
+                asset.setAssetSourceList(sourceList);
+            }
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
@@ -248,7 +251,6 @@ public class AssetController {
     /**
      * 判断mac是否重复
      *
-     * @param mac
      * @return actionResponse
      */
     @ApiOperation(value = "判断mac是否重复,true重复", notes = "传入资产mac")
@@ -262,7 +264,6 @@ public class AssetController {
     /**
      * 判断编号是否重复
      *
-     * @param number
      * @return actionResponse
      */
     @ApiOperation(value = "判断编号是否重复，true重复", notes = "传入资产编号")
@@ -300,7 +301,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/pulldown/unconnectedManufacturer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:pulldownManufacturer')")
-    public ActionResponse<List<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
+    public ActionResponse<Set<String>> pulldownUnconnectedManufacturer(@RequestBody UnconnectedManufacturerRequest request) throws Exception {
         return ActionResponse
             .success(iAssetService.pulldownUnconnectedManufacturer(request.getIsNet(), request.getPrimaryKey()));
     }

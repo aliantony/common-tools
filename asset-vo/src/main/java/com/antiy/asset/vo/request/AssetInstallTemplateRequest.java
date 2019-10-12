@@ -8,6 +8,8 @@ import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -55,7 +57,7 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      * 1-模板编辑
      */
     @ApiModelProperty("0-启用/禁用,1-模板编辑")
-   // @NotNull
+    // @NotNull
     private Integer isUpdateStatus;
     @ApiModelProperty("要更新的状态")
     @Range(message = "状态不合法", max = 4, min = 1)
@@ -71,7 +73,6 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
     @ApiModelProperty("关联的补丁主键id集合")
     private Set<String> patchIds;
     @ApiModelProperty("模板审核的用户主键id集合")
-    @Encode
     private Set<String> nextExecutor;
     @ApiModelProperty("创建时间")
     private long gmtCreate;
@@ -81,6 +82,10 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
     private String createUser;
     @ApiModelProperty("修改用户")
     private String modifiedUser;
+    @ApiModelProperty("任务id")
+    private String taskId;
+    @ApiModelProperty("执行人id")
+    private Map formData;
 
     public Set<String> getSoftBussinessIds() {
         return softBussinessIds;
@@ -216,6 +221,30 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
 
     public void setModifiedUser(String modifiedUser) {
         this.modifiedUser = modifiedUser;
+    }
+
+    public Map getFormData() {
+        StringBuilder builder = new StringBuilder();
+        this.getNextExecutor().forEach(v -> {
+            builder.append(v);
+            builder.append(",");
+        });
+        builder.deleteCharAt(builder.length() - 1);
+        Map<String, String> map = new HashMap<>();
+        map.put("checkUser", builder.toString());
+        return map;
+    }
+
+    public void setFormData(Map formData) {
+        this.formData = formData;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     @Override

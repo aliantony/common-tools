@@ -34,8 +34,6 @@ public class AssetInstallTemplateCheckRequest extends BaseRequest implements Obj
      * 用户主键
      */
     @ApiModelProperty("用户主键")
-//    @NotNull(message = "用户id不能为空")
-//    @Encode
     private Integer userId;
     /**
      * 审核意见
@@ -53,9 +51,17 @@ public class AssetInstallTemplateCheckRequest extends BaseRequest implements Obj
     private long gmtModified;
     @ApiModelProperty("修改用户")
     private String modifiedUser;
+    @ApiModelProperty("创建人")
+    private String createUser;
+    @ApiModelProperty("创建时间")
+    private long gmtCreate;
 
     public Integer getInstallTemplateId() {
-        return getId();
+        return installTemplateId;
+    }
+
+    public void setInstallTemplateId(Integer installTemplateId) {
+        this.installTemplateId = installTemplateId;
     }
 
     public Integer getUserId() {
@@ -96,6 +102,22 @@ public class AssetInstallTemplateCheckRequest extends BaseRequest implements Obj
 
     public void setModifiedUser(String modifiedUser) {
         this.modifiedUser = modifiedUser;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     @Override
