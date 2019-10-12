@@ -2,10 +2,7 @@ package com.antiy.asset.controller;
 
 import static org.hamcrest.Matchers.containsString;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 
@@ -235,7 +232,7 @@ public class AssetControllerTest {
 
     @Test
     public void pulldownUnconnectedManufacturer() throws Exception {
-        List<String> manufacturer = new ArrayList<>();
+        Set<String> manufacturer = new HashSet<>();
         manufacturer.add("test");
         Mockito.when(iAssetService.pulldownUnconnectedManufacturer(Mockito.any(), Mockito.any()))
             .thenReturn(manufacturer);

@@ -11,9 +11,6 @@ import com.antiy.asset.vo.response.*;
  * @date 2019/4/23 11:18
  */
 public interface IAssetTopologyService {
-
-    List<String> queryCategoryModels();
-
     /**
      * 查询节点信息
      * @param assetId
@@ -43,8 +40,6 @@ public interface IAssetTopologyService {
     TopologyListResponse getTopologyList(AssetQuery query) throws Exception;
 
     TopologyCategoryCountResponse countTopologyCategory() throws Exception;
-
-    TopologyOsCountResponse countTopologyOs() throws Exception;
 
     /**
      * 获取拓扑图

@@ -50,6 +50,14 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer findCountByCategoryModel(AssetQuery query) throws Exception;
 
     /**
+     * 真实删除
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    Integer deleteAssetById(@Param("id") Integer id) throws Exception;
+
+    /**
      * 通过品类型号查询资产列表
      *
      * @param query

@@ -30,26 +30,13 @@ public class AssetTopologyController {
     @Resource
     private IAssetTopologyService iAssetTopologyService;
 
-    /**
-     * 查询品类型号
-     *
-     * @param
-     * @return actionResponse
-     */
-    @ApiOperation(value = "查询品类型号", notes = "查询拓扑管理的品类型号")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = List.class), })
-    @RequestMapping(value = "/query/categoryModels", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:topology:queryCategoryModels')")
-    public ActionResponse queryCategoryModels() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.queryCategoryModels());
-    }
+
 
     @ApiOperation(value = "查询节点信息", notes = "传stringId参数")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = BaseRequest.class), })
     @RequestMapping(value = "/query/assetNodeInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryAssetNodeInfo')")
     public ActionResponse queryAssetNodeInfo(@ApiParam("条件") @RequestBody BaseRequest baseRequest) throws Exception {
-        // return ActionResponse.success();
         return ActionResponse.success(iAssetTopologyService.queryAssetNodeInfo(baseRequest.getStringId()));
     }
 
@@ -105,17 +92,6 @@ public class AssetTopologyController {
         return ActionResponse.success(iAssetTopologyService.countTopologyCategory());
     }
 
-    /**
-     * 查询拓扑列表
-     * @return
-     */
-    @ApiOperation("操作系统统计")
-    @RequestMapping(value = "/count/os", method = RequestMethod.POST)
-    @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse")
-    // @PreAuthorize(value = "hasAuthority('asset:topology:countTopologyOs')")
-    public ActionResponse countTopologyOs() throws Exception {
-        return ActionResponse.success(iAssetTopologyService.countTopologyOs());
-    }
 
     /**
      * 告警资产拓扑

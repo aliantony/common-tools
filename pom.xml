@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>csos-asset</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <modules>
         <module>asset-vo</module>
         <module>asset-dao</module>

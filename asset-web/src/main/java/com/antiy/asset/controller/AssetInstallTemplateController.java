@@ -221,7 +221,7 @@ public class AssetInstallTemplateController {
     @ApiResponse(code = 200, message = "ok", response = String.class)
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public ActionResponse createInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateRequest", required = true) AssetInstallTemplateRequest request) throws Exception {
-        return ActionResponse.success(iAssetInstallTemplateService.submitTemplateInfo(request));
+        return iAssetInstallTemplateService.submitTemplateInfo(request);
     }
 
     @ApiOperation(value = "模板审核")

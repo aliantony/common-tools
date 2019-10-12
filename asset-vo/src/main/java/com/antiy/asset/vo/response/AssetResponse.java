@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -22,6 +21,8 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产编号")
     private String                         number;
+    @ApiModelProperty("stepNode")
+    private String                         stepNode;
     /**
      * 资产名称
      */
@@ -131,7 +132,6 @@ public class AssetResponse extends BaseResponse {
      * 配置模板id
      */
     @ApiModelProperty("配置模板id")
-    @Encode
     private String                         baselineTemplateId;
     /**
      * 配置模板名称
@@ -141,7 +141,6 @@ public class AssetResponse extends BaseResponse {
     /**
      * 装机模板id
      */
-    @Encode
     @ApiModelProperty("装机模板id")
     private String                         installTemplateId;
     /**
@@ -647,5 +646,13 @@ public class AssetResponse extends BaseResponse {
                + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
                + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
                + ", alarmCount='" + alarmCount + '\'' + '}';
+    }
+
+    public String getStepNode() {
+        return stepNode;
+    }
+
+    public void setStepNode(String stepNode) {
+        this.stepNode = stepNode;
     }
 }

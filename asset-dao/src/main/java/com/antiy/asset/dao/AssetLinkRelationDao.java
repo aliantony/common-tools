@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.antiy.asset.vo.response.IpPortResponse;
 import org.apache.ibatis.annotations.Param;
@@ -173,7 +174,7 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @param assetQuery
      * @return
      */
-    List<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
+    Set<String> pulldownUnconnectedManufacturer(AssetQuery assetQuery);
 
     /**
      * 查询通联关系及对应品类

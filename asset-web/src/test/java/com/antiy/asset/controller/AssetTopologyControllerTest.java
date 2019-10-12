@@ -51,15 +51,6 @@ public class AssetTopologyControllerTest {
     }
 
     @Test
-    public void queryCategoryModels() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/query/categoryModels",
-                "{}");
-        when(iAssetTopologyService.queryCategoryModels()).thenReturn(new ArrayList<>());
-        String result = commonManager.getResult(mockMvc, requestBuilder);
-        Assert.assertEquals(TIP, AssertManager.EXPECTED_2, result);
-    }
-
-    @Test
     public void queryAssetNodeInfo() throws Exception {
         BaseRequest baseRequest = new BaseRequest();
         baseRequest.setStringId("1");
@@ -102,14 +93,6 @@ public class AssetTopologyControllerTest {
         when(iAssetTopologyService.countTopologyCategory()).thenReturn(new TopologyCategoryCountResponse());
         String result = commonManager.getResult(mockMvc, requestBuilder);
         Assert.assertEquals(TIP, "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":{\"status\":null,\"data\":null}}", result);
-    }
-
-    @Test
-    public void countTopologyOs() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/count/os", "{}");
-        when(iAssetTopologyService.countTopologyOs()).thenReturn(new TopologyOsCountResponse());
-        String result = commonManager.getResult(mockMvc, requestBuilder);
-        Assert.assertEquals(TIP,"{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":{\"status\":null,\"data\":null}}", result);
     }
 
     @Test
