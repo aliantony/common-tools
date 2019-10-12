@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import javax.annotation.Resource;
 
 import com.antiy.asset.entity.*;
-import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
@@ -76,11 +75,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private Double                              thirdLevelSpacing;
     @Value("${topology.third.level.height}")
     private Double                              thirdLevelHeight;
-
-    @Override
-    public List<String> queryCategoryModels() {
-        return assetLinkRelationDao.queryCategoryModes();
-    }
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
@@ -400,25 +394,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
         return query;
-    }
-
-    public TopologyOsCountResponse countTopologyOs() throws Exception {
-        AssetQuery query = new AssetQuery();
-        List<Integer> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-        query.setAssetStatusList(getAssetUseableStatus());
-        List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);
-        TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
-        List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
-        for (AssetCountResult result : assetCountResults) {
-            TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-            osResponse.setNum(result.getNum());
-            osResponse.setOs_type(result.getCode());
-            osResponseList.add(osResponse);
-        }
-        topologyOsCountResponse.setData(osResponseList);
-        topologyOsCountResponse.setStatus("success");
-        return topologyOsCountResponse;
     }
 
     private void setAreaName(AssetResponse response) throws Exception {
