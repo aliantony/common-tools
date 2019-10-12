@@ -13,28 +13,21 @@ import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.entity.SysMessageRequest;
-import com.antiy.biz.message.SysMessageSender;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.zookeeper.OpResult;
-import org.aspectj.bridge.MessageUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.misc.MessageUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p> 装机模板 服务实现类 </p>
@@ -58,10 +51,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
     private ActivityClient activityClient;
-//    @Resource
+    //    @Resource
 //    private SysMessageSender sysMessageSender;
     @Resource
     private AesEncoder aesEncoder;
+
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
         return assetInstallTemplateDao.queryTemplateOs();
@@ -179,7 +173,6 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public PageResult<AssetInstallTemplateResponse> queryPageAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
         String baselineId = query.getBaselineId();
-        PageResult<AssetInstallTemplateResponse> responsePageResult = null;
 
         Integer count = baselineId == null ? this.findCount(query) : assetInstallTemplateDao.findFilteredCount(query);
         if (count == 0 || count == null) {
@@ -188,15 +181,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
         if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
-            responsePageResult = new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
+            return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
                     assetInstallTemplateDao.queryTemplateInfo(query));
         }
         //根据配置模板id过滤包含黑名单软件的装机模板
-        else {
-            responsePageResult = new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
-                    assetInstallTemplateDao.queryFilteredTemplate(query));
-        }
-        return responsePageResult;
+        return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
+                assetInstallTemplateDao.queryFilteredTemplate(query));
     }
 
     @Override
@@ -348,17 +338,4 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         return assetInstallTemplateDao.insertTemplateCheckInfo(checkRequest);
     }
 
-    private void sendMessage(AssetInstallTemplateRequest request) {
-
-      List<SysMessageRequest> messageRequestList= request.getNextExecutor().stream().map(v->{
-            SysMessageRequest messageRequest=new SysMessageRequest();
-            messageRequest.setOrigin(1);
-            messageRequest.setSendUserId(LoginUserUtil.getLoginUser().getId());
-            messageRequest.setReceiveUserId(Integer.valueOf(aesEncoder.decode(v,LoginUserUtil.getLoginUser().getName())));
-            messageRequest.setContent("您有一条由orang2提交的[模板审核]任务,请尽快处理");
-            messageRequest.setTopic("模板审核");
-            return  messageRequest;
-        }).collect(Collectors.toList());
-    //    sysMessageSender.batchSendMessage(messageRequestList);
-    }
 }
