@@ -58,8 +58,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     public IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
     private ActivityClient activityClient;
-    @Resource
-    private SysMessageSender sysMessageSender;
+//    @Resource
+//    private SysMessageSender sysMessageSender;
     @Resource
     private AesEncoder aesEncoder;
     @Override
@@ -359,6 +359,6 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             messageRequest.setTopic("模板审核");
             return  messageRequest;
         }).collect(Collectors.toList());
-        sysMessageSender.batchSendMessage(messageRequestList);
+    //    sysMessageSender.batchSendMessage(messageRequestList);
     }
 }
