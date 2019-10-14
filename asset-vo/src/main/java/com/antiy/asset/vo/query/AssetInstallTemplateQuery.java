@@ -37,7 +37,8 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
     private String modifiedUser;
     @ApiModelProperty("模板状态")
     private Integer status;
-
+    @ApiModelProperty("模板id")
+    private String stringId;
     public String getBaselineId() {
         return baselineId;
     }
@@ -140,6 +141,14 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getStringId() {
+        return stringId;
+    }
+
+    public void setStringId(String stringId) {
+        this.stringId = stringId;
     }
 
     @Override
