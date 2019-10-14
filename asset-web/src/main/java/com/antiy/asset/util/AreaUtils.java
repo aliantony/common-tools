@@ -28,7 +28,7 @@ public class AreaUtils {
         }
 
         if (CollectionUtils.isNotEmpty(childAreaList)) {
-            return childAreaList.stream().map(SysArea::getId).collect(Collectors.toList());
+            return childAreaList.stream().map(e->DataTypeUtils.integerToString(e.getId())).collect(Collectors.toList());
         }
 
         ArrayList result = new ArrayList<Integer>();

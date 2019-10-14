@@ -197,7 +197,7 @@ public class AssetTopologyServiceImplTest {
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(generateAsset(), generateAsset()));
-        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        // when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
         AssetQuery query = new AssetQuery();
         query.setAreaIds(new String[] { "1", "2" });
         Assert.assertEquals(2, assetTopologyService.getTopologyList(query).getData().size());
@@ -249,7 +249,7 @@ public class AssetTopologyServiceImplTest {
 
     @Test
     public void getAlarmTopologyTest() throws Exception {
-        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        // when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);

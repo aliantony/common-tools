@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -149,7 +150,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         // 区域条件
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getAreaIds())) {
             assetLinkRelationQuery.setAreaIds(Arrays.asList(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()))));
         }
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);
