@@ -40,6 +40,8 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/api/v1/asset/statusjump")
 public class AssetStatusJumpController {
     private Logger                        logger = LogUtils.get(this.getClass());
+
+    @Value("fdsafdsfd")
     @Resource
     private IAssetService                 assetService;
     @Resource
