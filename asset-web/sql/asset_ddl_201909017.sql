@@ -30,7 +30,7 @@ CREATE TABLE `asset` (
   `name` varchar(32) DEFAULT NULL DEFAULT '' COMMENT '资产名称',
   `install_type` tinyint(3) DEFAULT '1' COMMENT '安装方式：1-人工，2-自动',
   `serial` varchar(32) DEFAULT '' COMMENT '序列号',
-  `area_id` int(11) DEFAULT NULL COMMENT '行政区划主键',
+  `area_id` varchar(12) DEFAULT NULL COMMENT '行政区划主键',
   `category_model` int(11) DEFAULT NULL COMMENT '品类型号',
   `manufacturer` varchar(80) DEFAULT NULL COMMENT '厂商',
   `asset_status` tinyint(3) DEFAULT '0' COMMENT '资产状态：1-待登记，2-不予登记，3-待实施，4-待验证，5-待入网，6-已入网,7-待检查，8-待整改，9-变更中, 10-待退役，11-已退役',
