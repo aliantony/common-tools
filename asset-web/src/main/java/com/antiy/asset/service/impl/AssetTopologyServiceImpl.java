@@ -132,7 +132,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 1.查询资产总数
         AssetQuery query = new AssetQuery();
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
+            DataTypeUtils.integerArrayToStringArray(new ArrayList<>(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
         // 1.1资产状态除去不予登记和登记
         List<Integer> assetStatusList = getAssetUseableStatus();
         query.setAssetStatusList(assetStatusList);
@@ -264,7 +264,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 查询第二级分类id
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-        List<Map<String, Object>> result = assetDao.countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()), getAssetUseableStatus());
+        List<Map<String, Object>> result = assetDao.countCategoryModel(new ArrayList<>(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()), getAssetUseableStatus());
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
@@ -410,7 +410,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private AssetQuery getAssetQuery() {
         AssetQuery query = new AssetQuery();
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
+            DataTypeUtils.integerArrayToStringArray(new ArrayList<>(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -722,7 +722,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private void initQuery(AssetQuery query) throws Exception {
         if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
+                DataTypeUtils.integerArrayToStringArray(new ArrayList<>(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
         }
         Integer[] category = new Integer[2];
         category[0] = AssetCategoryEnum.COMPUTER.getCode();
