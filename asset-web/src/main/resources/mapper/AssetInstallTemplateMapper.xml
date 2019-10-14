@@ -400,7 +400,7 @@
             t2.upgrade_msg as upgradeMsg,
             t2.sys_version as sysVersion,
             t2.language,
-            t2.soft_version as softVersions,
+            t2.soft_version as softVersion,
             t2.soft_platform as softPlatform,
             t2.hard_platform as hardPlatform,
             t2.other
