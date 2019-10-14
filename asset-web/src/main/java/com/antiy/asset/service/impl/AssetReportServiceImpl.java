@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 资产报表实现类
@@ -67,7 +68,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
         Map<String, Object> map;
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
         AssetReportResponse reportResponse = new AssetReportResponse();
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
@@ -511,7 +512,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     @Override
     public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
         checkParameter(query, showCycleType);
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);

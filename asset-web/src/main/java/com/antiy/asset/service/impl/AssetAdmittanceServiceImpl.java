@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -56,7 +57,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
 
         // 查询资产信息
@@ -92,7 +93,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
 
         int count = 0;
@@ -100,7 +101,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
         if (count <= 0) {
             if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
                 query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
             }
             count = this.findCountAsset(query);
         }
@@ -121,7 +122,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     public Integer findCountAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         return assetDao.findCount(query);
     }

@@ -537,13 +537,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                              Map<String, WaitingTaskReponse> processMap) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         // 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(
-                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(vulCountList)) {
                 return new ArrayList<AssetResponse>();
             }
@@ -560,7 +560,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, String> patchCountMaps = null;
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
-                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(patchCountList)) {
                 return new ArrayList<>();
             }
@@ -631,7 +631,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer findCountAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         return assetDao.findCount(query);
     }
@@ -672,7 +672,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         dealProcess(query, processMap);
@@ -680,7 +680,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int count = 0;
         // 如果会查询漏洞数量
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -688,7 +688,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果会查询补丁数据
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -705,7 +705,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (count <= 0) {
             if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
                 query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
             }
             count = this.findCountAsset(query);
         }
@@ -729,7 +729,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetQuery assetQuery = new AssetQuery();
         if (ArrayUtils.isEmpty(assetQuery.getAreaIds())) {
             assetQuery.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         assetQuery.setAssetStatusList(StatusEnumUtil.getAssetNotRetireStatus());
         Map map = new HashMap();
@@ -805,7 +805,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetQuery.setTemplateList(processTemplateRequest.getIds());
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()).toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         return assetEntityConvert.convert(list, AssetEntity.class);
     }
@@ -834,7 +834,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) throws Exception {
         if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         }
         // 只查已入网资产
         List<Integer> statusList = new ArrayList<>();
@@ -1014,7 +1014,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<EnumCountResponse> countManufacturer() throws Exception {
         int maxNum = 5;
-        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
         // 不统计已退役资产
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
@@ -1024,7 +1024,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countStatus() throws Exception {
-        List<String> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
         List<Map<String, Object>> searchResult = assetDao.countStatus(ids);
         Map<AssetStatusEnum, EnumCountResponse> resultMap = new HashMap<>();
         List<EnumCountResponse> resultList = new ArrayList<>();
@@ -1051,7 +1051,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countCategory() throws Exception {
-        List<String> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
 
         // 不统计已退役资产
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
@@ -2828,7 +2828,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception {
         List<IpMacPort> ipMacList = new ArrayList<>();
         // 获取用户所在的区域
-        // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        // List<Integer> areaIdList = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
         // request.setAreaIds(areaIdList);
         for (IpMacPort ipMacPort : request.getIpMacPorts()) {
             request.setIpMacPort(ipMacPort);
@@ -2876,7 +2876,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()).toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
@@ -2917,7 +2917,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         query.setAssetStatusList(statusList);
         query.setPrimaryKey(primaryKey);
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
 
@@ -2982,7 +2982,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public IDResponse findAssetIds() {
         IDResponse idResponse = new IDResponse();
-        List<String> list = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> list = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(list)) {
             return idResponse;
         }
@@ -2996,7 +2996,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return 0;
         }
         return assetDao.queryWaitRegistCount(AssetStatusEnum.WAIT_REGISTER.getCode(),
-            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
     }
 
     @Override
@@ -3008,7 +3008,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 当前用户所在区域
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())));
         return assetDao.queryNormalCount(query);
     }
 
