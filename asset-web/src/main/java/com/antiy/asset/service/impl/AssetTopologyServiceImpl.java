@@ -421,24 +421,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return query;
     }
 
-    public TopologyOsCountResponse countTopologyOs() throws Exception {
-        AssetQuery query = new AssetQuery();
-        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-        query.setAssetStatusList(getAssetUseableStatus());
-        List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);
-        TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
-        List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
-        for (AssetCountResult result : assetCountResults) {
-            TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-            osResponse.setNum(result.getNum());
-            osResponse.setOs_type(result.getCode());
-            osResponseList.add(osResponse);
-        }
-        topologyOsCountResponse.setData(osResponseList);
-        topologyOsCountResponse.setStatus("success");
-        return topologyOsCountResponse;
-    }
 
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
