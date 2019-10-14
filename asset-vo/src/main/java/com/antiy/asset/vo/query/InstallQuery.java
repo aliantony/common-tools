@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * 关联软件查询
@@ -21,7 +20,6 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
      * 配置基准模板
      */
     @ApiModelProperty(value = "基准模板id", required = true)
-    @Encode
     private String       baselineTemplateId;
     /**
      * 是否是批量操作
