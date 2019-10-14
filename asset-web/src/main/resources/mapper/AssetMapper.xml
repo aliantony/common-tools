@@ -48,7 +48,6 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
-        <result column="step_node" property="stepNode"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>

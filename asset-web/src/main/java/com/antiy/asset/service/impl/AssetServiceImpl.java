@@ -326,20 +326,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecordDao.insert(assetOperationRecord);
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
+                    transactionStatus.setRollbackOnly();
                     throw new BusinessException("编号重复！");
+                } catch (BusinessException e) {
+                    transactionStatus.setRollbackOnly();
+                    throw new BusinessException(e.getMessage());
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    if (e.getMessage().contains("失效")) {
-                        throw new BusinessException(e.getMessage());
-                    }
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
-                        "操作系统不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()), "使用者不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(!StringUtils.equals("当前区域不存在，或已经注销", e.getMessage()),
-                        "当前区域不存在，或已经注销");
+                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
+                    // "操作系统不存在，或已经注销");
+                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()),
+                    // "使用者不存在，或已经注销");
+                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("当前区域不存在，或已经注销", e.getMessage()),
+                    // "当前区域不存在，或已经注销");
+                    throw new BusinessException("操作失败");
                 }
-                return 0;
+                // return 0;
             }
         });
 
@@ -382,8 +385,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return ActionResponse.success();
     }
 
-    private void checkLocationNotBlank(AssetRequest request) throws Exception {
-    }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
