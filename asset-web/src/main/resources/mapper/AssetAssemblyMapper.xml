@@ -161,7 +161,7 @@
     </select>
     <!--删除资产与组件关系-->
     <delete id="deleteAssemblyRelation">
-        update asset_assembly set status = 1 where asset_id = #{assetId}
+        update asset_assembly set status = 0 where asset_id = #{assetId}
     </delete>
 
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetAssembly">
