@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -1574,34 +1575,52 @@ public class AssetServiceImplTest {
     public void testImportOhters() throws Exception {
 
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
-        when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
-        when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
         ImportResult importResult = new ImportResult();
+        ImportResult importResult1 = new ImportResult();
+        ImportResult importResult2 = new ImportResult();
+        ImportResult importResult3 = new ImportResult();
         List<OtherDeviceEntity> otherDeviceEntities = new ArrayList<>();
+        List<OtherDeviceEntity> otherDeviceEntities2 = new ArrayList<>();
         OtherDeviceEntity otherDeviceEntity = getOtherDeviceEntity();
+        importResult2.setDataList(otherDeviceEntities2);
+        otherDeviceEntities.add(otherDeviceEntity);
+
+        importResult3.setDataList(otherDeviceEntities);
+
+        importResult.setMsg("");
+        importResult2.setMsg("");
+        importResult3.setMsg("导入失败");
+
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult1);
+        String result11 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals(null, result11);
+
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult2);
+        String result12 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals("导入失败，模板中无数据！", result12);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult3);
+        String result13 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals("导入失败", result13);
         otherDeviceEntities.add(otherDeviceEntity);
         importResult.setDataList(otherDeviceEntities);
-        importResult.setMsg("");
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        when(assetHardSoftLibDao.countByWhere(any())).thenReturn(1);
         AssetImportRequest assetImportRequest = new AssetImportRequest();
-        assetImportRequest.setCategory("1");
+
         String result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入成功1条", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         OtherDeviceEntity otherDeviceEntity1 = getOtherDeviceEntity();
+        otherDeviceEntity1.setNumber("sds");
         otherDeviceEntities.add(otherDeviceEntity1);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！第9行MAC地址重复！", result);
 
-        otherDeviceEntity.setName("1");
-        otherDeviceEntity1.setName("2");
-        result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
+        Assert.assertEquals("导入失败，第7行该厂商不存在！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
@@ -1653,8 +1672,10 @@ public class AssetServiceImplTest {
     private OtherDeviceEntity getOtherDeviceEntity() {
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
         otherDeviceEntity.setNumber("123");
+        otherDeviceEntity.setManufacturer("123");
         otherDeviceEntity.setUser("123");
         otherDeviceEntity.setArea("四川");
+        otherDeviceEntity.setMac("12");
         otherDeviceEntity.setBuyDate(System.currentTimeMillis());
         otherDeviceEntity.setDueDate(System.currentTimeMillis() + 1);
         otherDeviceEntity.setImportanceDegree("1");
