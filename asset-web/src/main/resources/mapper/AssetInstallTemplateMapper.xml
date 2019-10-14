@@ -289,8 +289,8 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and status=1
             <include refid="Where_Column_List"></include>
-            <if test="primaryKey !=null">
-                and id=#{primaryKey}
+            <if test="stringId !=null">
+                and id=#{stringId}
             </if>
         </trim>
     </select>
@@ -483,8 +483,8 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
             <include refid="Where_Column_List"></include>
-            <if test="primaryKey !=null">
-                and ait.id=#{primaryKey}
+            <if test="stringId !=null">
+                and ait.id=#{stringId}
             </if>
             and asit.status=1
             and apit.status=1

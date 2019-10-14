@@ -8,6 +8,7 @@ import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
@@ -17,6 +18,8 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.biz.entity.SysMessageRequest;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
@@ -111,7 +114,17 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                     (requestStatus == forbiddenCode && currentStatus != enableCode)) {
                 throw new BusinessException("状态非法修改");
             }
+            if (requestStatus == enableCode) {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_ENABLE.getName(),
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, "启用装机模板:{}", assetInstallTemplate.toString());
+            } else {
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_FORBIDDEN.getName(),
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                LogUtils.info(logger, "禁用装机模板:{}", assetInstallTemplate.toString());
+            }
             if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
+
                 return ActionResponse.success("更新状态成功");
             }
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "更新状态失败");
@@ -158,6 +171,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
         assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_MODIFY.getName(),
+                    templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             return sendTask(request, assetInstallTemplate);
         }
         return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "编辑失败");
@@ -203,9 +219,18 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
                 LoginUserUtil.getLoginUser().getName());
         if (count < request.getIds().size()) {
-            return "状态为拒绝的模板才能被删除";
+            return "已经删除状态为拒绝的模板";
         }
-        return "删除成功，请刷新界面";
+        StringBuilder ids = new StringBuilder();
+        request.getIds().forEach(v -> {
+            ids.append(v);
+            ids.append(",");
+        });
+        ids.deleteCharAt(ids.length() - 1);
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_DELETE.getName(),
+                ids.toString(), null, request.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, "删除装机模板:{}", request.toString());
+        return "删除成功";
     }
 
     @Override
@@ -271,6 +296,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             assetInstallTemplateDao.insertBatchSoft(request);
         }
         this.insertCheckTemplateInfo(request);
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CREATION.getName(),
+                template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+        LogUtils.info(logger, "创建装机模板:{}", template.toString());
         return sendTask(request, template);
     }
 
@@ -311,8 +339,15 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         Map<String, String> map = new HashMap<>();
         map.put("checkResult", String.valueOf(checkResult));
         handleRequest.setFormData(map);
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(String.valueOf(template.getId()));
+        AssetInstallTemplateResponse response = queryAssetInstallTemplateById(queryCondition);
+
         if (result != null && result == 1) {
             activityClient.completeTask(handleRequest);
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CHECK.getName(),
+                    template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+            LogUtils.info(logger, "审核装机模板:{}", response.toString());
             return "审核结果提交成功";
         }
         return "审核结果提交失败";

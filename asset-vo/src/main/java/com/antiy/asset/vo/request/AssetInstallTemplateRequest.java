@@ -248,6 +248,30 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
     }
 
     @Override
+    public String toString() {
+        return "AssetInstallTemplateRequest{" +
+                "name='" + name + '\'' +
+                ", numberCode='" + numberCode + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", checkStatus=" + checkStatus +
+                ", operationSystem=" + operationSystem +
+                ", operationSystemName='" + operationSystemName + '\'' +
+                ", isUpdateStatus=" + isUpdateStatus +
+                ", updateStatus=" + updateStatus +
+                ", description='" + description + '\'' +
+                ", softBussinessIds=" + softBussinessIds +
+                ", patchIds=" + patchIds +
+                ", nextExecutor=" + nextExecutor +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", createUser='" + createUser + '\'' +
+                ", modifiedUser='" + modifiedUser + '\'' +
+                ", taskId='" + taskId + '\'' +
+                ", formData=" + formData +
+                '}';
+    }
+
+    @Override
     public void validate() throws RequestParamValidateException {
     }
 
