@@ -57,7 +57,7 @@ CREATE TABLE `asset` (
   `baseline_template_id` int(11) DEFAULT NULL COMMENT '基准模板主键',
   `baseline_template_correlation_gmt` bigint(20) DEFAULT '0' COMMENT '资产与基准模板关联时间',
   `install_template_correlation_gmt` bigint(20) DEFAULT '0' COMMENT '资产与装机模板关联时间',
-  `step_node` varchar(32) DEFAULT NULL COMMENT '登记时选择下一步节点:安全检查-safetyCheck ,模板实施templateImplement',
+  `step_node` varchar(30) DEFAULT NULL COMMENT '登记时选择下一步节点:安全检查-safetyCheck ,模板实施templateImplement',
   `memo` varchar(300) DEFAULT NULL COMMENT '备注',
   `gmt_create` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `gmt_modified` bigint(20) DEFAULT '0' COMMENT '更新时间',
