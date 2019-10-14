@@ -127,9 +127,9 @@ public class AssetLinkRelationServiceImplTest {
         mockStatic(LoginUserUtil.class);
         LoginUser loginUser = mock(LoginUser.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
-        List<Integer> area = new ArrayList<>();
-        area.add(1);
-        // when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(area);
+        List<String> area = new ArrayList<>();
+        area.add("1");
+        when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(area);
 
         when(assetLinkRelationDao.queryAssetLinkedCountList(query)).thenReturn(new ArrayList<>());
         assetLinkRelationService.queryAssetLinkedCountPage(query);
