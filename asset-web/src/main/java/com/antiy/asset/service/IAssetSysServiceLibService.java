@@ -21,19 +21,7 @@ import com.antiy.asset.entity.AssetSysServiceLib;
  */
 public interface IAssetSysServiceLibService extends IBaseService<AssetSysServiceLib> {
 
-    /**
-     * 保存
-     * @param request
-     * @return
-     */
-    String saveAssetSysServiceLib(AssetSysServiceLibRequest request) throws Exception;
 
-    /**
-     * 修改
-     * @param request
-     * @return
-     */
-    String updateAssetSysServiceLib(AssetSysServiceLibRequest request) throws Exception;
 
     /**
      * 查询对象集合
@@ -55,12 +43,5 @@ public interface IAssetSysServiceLibService extends IBaseService<AssetSysService
      * @return
      */
     AssetSysServiceLibResponse queryAssetSysServiceLibById(QueryCondition queryCondition) throws Exception;
-
-    /**
-     * 通过ID删除
-     * @param baseRequest
-     * @return
-     */
-    String deleteAssetSysServiceLibById(BaseRequest baseRequest) throws Exception;
 
 }

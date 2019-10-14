@@ -169,6 +169,8 @@ public class AssetServiceImplTest {
     @Spy
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
 
+    @Mock
+    private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     @Rule
     public ExpectedException                                                    expectedException = ExpectedException
         .none();
@@ -716,6 +718,13 @@ public class AssetServiceImplTest {
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
             .thenReturn(generateAssetNetworkEquipmentList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                        .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -731,6 +740,13 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetSafetyEquipmentDao.getByWhere(Mockito.any())).thenReturn(generateAssetSafetyEquipmentList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -746,6 +762,13 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 

@@ -26,4 +26,11 @@ public class BatchQueryRequest extends BasicRequest {
 	public void setIds(List<String> ids) {
 		this.ids = ids;
 	}
+
+	@Override
+	public String toString() {
+		return "BatchQueryRequest{" +
+				"ids=" + ids +
+				'}';
+	}
 }

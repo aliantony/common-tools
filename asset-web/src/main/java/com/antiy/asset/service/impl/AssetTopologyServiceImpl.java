@@ -4,13 +4,11 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetCountResult;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetLink;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
-import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -28,7 +26,6 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.TopologyAssetResponse;
 import com.antiy.asset.vo.response.TopologyCategoryCountResponse;
 import com.antiy.asset.vo.response.TopologyListResponse;
-import com.antiy.asset.vo.response.TopologyOsCountResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
@@ -54,6 +51,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
@@ -133,6 +131,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, String> resultMap = new HashMap<>(2);
         // 1.查询资产总数
         AssetQuery query = new AssetQuery();
+
         query.setAreaIds(
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 1.1资产状态除去不予登记和登记
@@ -266,8 +265,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 查询第二级分类id
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-        List<Map<String, Object>> result = assetDao
-            .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+        List<Map<String, Object>> result = assetDao.countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
@@ -421,24 +419,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return query;
     }
 
-    public TopologyOsCountResponse countTopologyOs() throws Exception {
-        AssetQuery query = new AssetQuery();
-        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
-        query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-        query.setAssetStatusList(getAssetUseableStatus());
-        List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);
-        TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
-        List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
-        for (AssetCountResult result : assetCountResults) {
-            TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-            osResponse.setNum(result.getNum());
-            osResponse.setOs_type(result.getCode());
-            osResponseList.add(osResponse);
-        }
-        topologyOsCountResponse.setData(osResponseList);
-        topologyOsCountResponse.setStatus("success");
-        return topologyOsCountResponse;
-    }
 
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,

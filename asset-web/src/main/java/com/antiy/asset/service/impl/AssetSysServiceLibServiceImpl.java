@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import com.antiy.common.utils.LogUtils;
 import org.springframework.stereotype.Service;
-import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.asset.entity.AssetSysServiceLib;
 import com.antiy.asset.dao.AssetSysServiceLibDao;
@@ -17,7 +16,7 @@ import com.antiy.asset.vo.response.AssetSysServiceLibResponse;
 import com.antiy.asset.vo.query.AssetSysServiceLibQuery;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> 服务表 服务实现类 </p>
@@ -39,29 +38,19 @@ public class AssetSysServiceLibServiceImpl extends BaseServiceImpl<AssetSysServi
     private BaseConverter<AssetSysServiceLib, AssetSysServiceLibResponse> responseConverter;
 
     @Override
-    public String saveAssetSysServiceLib(AssetSysServiceLibRequest request) throws Exception {
-        AssetSysServiceLib assetSysServiceLib = requestConverter.convert(request, AssetSysServiceLib.class);
-        assetSysServiceLibDao.insert(assetSysServiceLib);
-        return assetSysServiceLib.getStringId();
-    }
-
-    @Override
-    public String updateAssetSysServiceLib(AssetSysServiceLibRequest request) throws Exception {
-        AssetSysServiceLib assetSysServiceLib = requestConverter.convert(request, AssetSysServiceLib.class);
-        return assetSysServiceLibDao.update(assetSysServiceLib).toString();
-    }
-
-    @Override
     public List<AssetSysServiceLibResponse> queryListAssetSysServiceLib(AssetSysServiceLibQuery query) throws Exception {
         List<AssetSysServiceLib> assetSysServiceLibList = assetSysServiceLibDao.findQuery(query);
-        // TODO
         return responseConverter.convert(assetSysServiceLibList, AssetSysServiceLibResponse.class);
     }
 
     @Override
     public PageResult<AssetSysServiceLibResponse> queryPageAssetSysServiceLib(AssetSysServiceLibQuery query) throws Exception {
-        return new PageResult<AssetSysServiceLibResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetSysServiceLib(query));
+        Integer num = assetSysServiceLibDao.findCount(query);
+        if (Objects.equals(num, 0)) {
+            return new PageResult<>(query.getPageSize(), num, query.getCurrentPage(), new ArrayList<>());
+        }
+        return new PageResult<>(query.getPageSize(), num, query.getCurrentPage(),
+            this.queryListAssetSysServiceLib(query));
     }
 
     @Override
@@ -72,9 +61,4 @@ public class AssetSysServiceLibServiceImpl extends BaseServiceImpl<AssetSysServi
         return assetSysServiceLibResponse;
     }
 
-    @Override
-    public String deleteAssetSysServiceLibById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetSysServiceLibDao.deleteById(baseRequest.getStringId()).toString();
-    }
 }
