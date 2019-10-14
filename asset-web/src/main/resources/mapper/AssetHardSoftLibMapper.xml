@@ -638,9 +638,9 @@
             </choose>
 
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>
@@ -687,9 +687,9 @@
                 </otherwise>
             </choose>
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>
