@@ -267,8 +267,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 查询第二级分类id
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-        List<Map<String, Object>> result = assetDao
-            .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()), getAssetUseableStatus());
+        List<Map<String, Object>> result = assetDao.countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()), getAssetUseableStatus());
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
@@ -422,24 +421,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         return query;
     }
 
-    // public TopologyOsCountResponse countTopologyOs() throws Exception {
-    //     AssetQuery query = new AssetQuery();
-    //     List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
-    //     query.setAreaIds(ArrayTypeUtil.objectArrayToStringArray(areaIds.toArray()));
-    //     query.setAssetStatusList(getAssetUseableStatus());
-    //     List<AssetCountResult> assetCountResults = assetTopologyDao.countAssetByOs(query);
-    //     TopologyOsCountResponse topologyOsCountResponse = new TopologyOsCountResponse();
-    //     List<TopologyOsCountResponse.OsResponse> osResponseList = new ArrayList<>();
-    //     for (AssetCountResult result : assetCountResults) {
-    //         TopologyOsCountResponse.OsResponse osResponse = topologyOsCountResponse.new OsResponse();
-    //         osResponse.setNum(result.getNum());
-    //         osResponse.setOs_type(result.getCode());
-    //         osResponseList.add(osResponse);
-    //     }
-    //     topologyOsCountResponse.setData(osResponseList);
-    //     topologyOsCountResponse.setStatus("success");
-    //     return topologyOsCountResponse;
-    // }
 
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
