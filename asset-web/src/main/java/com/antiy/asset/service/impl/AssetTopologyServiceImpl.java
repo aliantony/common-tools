@@ -4,13 +4,11 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetCountResult;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetLink;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
-import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -28,7 +26,6 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.asset.vo.response.TopologyAssetResponse;
 import com.antiy.asset.vo.response.TopologyCategoryCountResponse;
 import com.antiy.asset.vo.response.TopologyListResponse;
-import com.antiy.asset.vo.response.TopologyOsCountResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
@@ -179,7 +176,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     @Override
     public List<SelectResponse> queryGroupList() {
         AssetTopologyQuery assetTopologyQuery = new AssetTopologyQuery();
-        assetTopologyQuery.setUserAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        assetTopologyQuery.setUserAreaIds(new ArrayList<>(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
