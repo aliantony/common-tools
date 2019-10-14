@@ -24,7 +24,6 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产id,消息通知跳转使用
      */
-    @Encode
     private String       stringId;
     /**
      * 资产id列表
