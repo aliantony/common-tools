@@ -22,48 +22,6 @@ import com.antiy.asset.entity.AssetAssemblyLib;
  */
 public interface IAssetAssemblyLibService extends IBaseService<AssetAssemblyLib> {
 
-    /**
-     * 保存
-     * @param request
-     * @return
-     */
-    String saveAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception;
-
-    /**
-     * 修改
-     * @param request
-     * @return
-     */
-    String updateAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception;
-
-    /**
-     * 查询对象集合
-     * @param query
-     * @return
-     */
-    List<AssetAssemblyLibResponse> queryListAssetAssemblyLib(AssetAssemblyLibQuery query) throws Exception;
-
-    /**
-     * 分页查询
-     * @param query
-     * @return
-     */
-    PageResult<AssetAssemblyLibResponse> queryPageAssetAssemblyLib(AssetAssemblyLibQuery query) throws Exception;
-
-    /**
-     * 通过ID查询
-     * @param queryCondition
-     * @return
-     */
-    AssetAssemblyLibResponse queryAssetAssemblyLibById(QueryCondition queryCondition) throws Exception;
-
-    /**
-     * 通过ID删除
-     * @param baseRequest
-     * @return
-     */
-    String deleteAssetAssemblyLibById(BaseRequest baseRequest) throws Exception;
-
     List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query);
 
 }
