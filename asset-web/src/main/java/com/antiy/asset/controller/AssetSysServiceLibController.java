@@ -26,32 +26,6 @@ public class AssetSysServiceLibController {
     public IAssetSysServiceLibService iAssetSysServiceLibService;
 
     /**
-     * 保存
-     *
-     * @param assetSysServiceLibRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetSysServiceLib") @RequestBody AssetSysServiceLibRequest assetSysServiceLibRequest) throws Exception {
-        return ActionResponse.success(iAssetSysServiceLibService.saveAssetSysServiceLib(assetSysServiceLibRequest));
-    }
-
-    /**
-     * 修改
-     *
-     * @param assetSysServiceLibRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetSysServiceLib") @RequestBody AssetSysServiceLibRequest assetSysServiceLibRequest) throws Exception {
-        return ActionResponse.success(iAssetSysServiceLibService.updateAssetSysServiceLib(assetSysServiceLibRequest));
-    }
-
-    /**
      * 批量查询
      *
      * @param assetSysServiceLibQuery
@@ -77,16 +51,5 @@ public class AssetSysServiceLibController {
         return ActionResponse.success(iAssetSysServiceLibService.queryAssetSysServiceLibById(queryCondition));
     }
 
-    /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") @RequestBody BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetSysServiceLibService.deleteAssetSysServiceLibById(baseRequest));
-    }
+
 }
