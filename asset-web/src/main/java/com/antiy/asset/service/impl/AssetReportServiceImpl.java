@@ -68,7 +68,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         ShowCycleType showCycleType = query.getShowCycleType();
         checkParameter(query, showCycleType);
         Map<String, Object> map;
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         AssetReportResponse reportResponse = new AssetReportResponse();
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);
@@ -512,7 +512,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     @Override
     public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
         ShowCycleType showCycleType = query.getShowCycleType();
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         checkParameter(query, showCycleType);
         if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
             query.setFormat(DAY);

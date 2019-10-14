@@ -150,7 +150,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         // 区域条件
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getAreaIds())) {
             assetLinkRelationQuery.setAreaIds(Arrays.asList(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()))));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())));
         }
         List<AssetLinkedCountResponse> assetLinkedCountResponseList = this
             .queryAssetLinkedCountList(assetLinkRelationQuery);

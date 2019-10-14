@@ -75,8 +75,7 @@ public class AssetSoftwareRelationServiceImplTest {
         when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(new ArrayList<>());
         List<String> osList = new ArrayList<>();
         osList.add("1");
-        when(assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList())))
-            .thenReturn(osList);
+        when(assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())).thenReturn(osList);
         List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
         BaselineCategoryModelResponse baselineCategoryModelResponse = new BaselineCategoryModelResponse();
         baselineCategoryModelResponse.setStringId("1");

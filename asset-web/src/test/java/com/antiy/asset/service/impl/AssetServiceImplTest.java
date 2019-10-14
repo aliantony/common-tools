@@ -232,7 +232,7 @@ public class AssetServiceImplTest {
         List<SysArea> areaList = new ArrayList<>();
         SysArea sysArea = new SysArea();
         sysArea.setFullName("四川");
-        sysArea.setId(1);
+        sysArea.setId("1");
         areaList.add(sysArea);
         loginUser.setAreas(areaList);
         return loginUser;

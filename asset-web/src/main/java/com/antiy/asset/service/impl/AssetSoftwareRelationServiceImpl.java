@@ -76,7 +76,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public List<SelectResponse> findOS() throws Exception {
-        List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        List<String> osList = assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         List<BaselineCategoryModelResponse> categoryModelResponseList = redisService.getAllSystemOs();
         List<SelectResponse> result = new ArrayList<>();
         for (BaselineCategoryModelResponse categoryModelResponse : categoryModelResponseList) {

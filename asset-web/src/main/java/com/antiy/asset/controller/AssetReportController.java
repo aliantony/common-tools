@@ -120,7 +120,7 @@ public class AssetReportController {
     @RequestMapping(value = "/query/groupCountTop", method = RequestMethod.POST)
     // @PreAuthorize("hasAuthority('asset:report:categoryAmountByTime')")
     public ActionResponse getAssetConutWithGroup(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
-        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetCountWithGroup(reportQueryRequest));
     }
 
@@ -137,7 +137,7 @@ public class AssetReportController {
     // @PreAuthorize("hasAuthority('asset:report:exportCategoryCount')")
     public void exportCategoryCount(@ApiParam("报表查询对象") AssetReportCategoryCountQuery assetReportCategoryCountQuery,
                                     HttpServletRequest request) throws Exception {
-        assetReportCategoryCountQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        assetReportCategoryCountQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         iAssetReportService.exportCategoryCount(assetReportCategoryCountQuery, request);
     }
 
@@ -153,7 +153,7 @@ public class AssetReportController {
     @RequestMapping(value = "/query/queryAssetGroupTable", method = RequestMethod.POST)
     // @PreAuthorize("hasAuthority('asset:report:queryAssetGroupTable')")
     public ActionResponse queryAssetGroupTable(@RequestBody ReportQueryRequest reportQueryRequest) throws Exception {
-        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return ActionResponse.success(iAssetReportService.getAssetGroupReportTable(reportQueryRequest));
     }
 
@@ -167,7 +167,7 @@ public class AssetReportController {
     @RequestMapping(value = "/query/exportAssetGroupTable", method = RequestMethod.GET)
     // @PreAuthorize("hasAuthority('asset:report:exportAssetGroupTable')")
     public void exportAssetGroupTable(@ApiParam(value = "查询条件") ReportQueryRequest reportQueryRequest) throws Exception {
-        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().map(DataTypeUtils::integerToString).collect(Collectors.toList()));
+        reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         iAssetReportService.exportAssetGroupTable(reportQueryRequest);
     }
 }
