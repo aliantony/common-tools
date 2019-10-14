@@ -41,7 +41,6 @@ import javax.validation.constraints.NotNull;
 public class AssetStatusJumpController {
     private Logger                        logger = LogUtils.get(this.getClass());
 
-    @Value("fdsafdsfd")
     @Resource
     private IAssetService                 assetService;
     @Resource
