@@ -19,6 +19,7 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/api/v1/asset/statusjump")
 public class AssetStatusJumpController {
     private Logger                        logger = LogUtils.get(this.getClass());
+
     @Resource
     private IAssetService                 assetService;
     @Resource
