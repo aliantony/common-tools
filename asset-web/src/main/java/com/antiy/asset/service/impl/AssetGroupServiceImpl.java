@@ -314,8 +314,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         } else {
             query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
         }
-        query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray(new String[0]));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());

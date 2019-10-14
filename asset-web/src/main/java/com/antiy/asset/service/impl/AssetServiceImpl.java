@@ -2856,8 +2856,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
         query.setPrimaryKey(primaryKey);
-        query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray(new String[0]));
         return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
 
