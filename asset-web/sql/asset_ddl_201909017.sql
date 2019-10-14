@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `asset_group`;
 CREATE TABLE `asset_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `purpose` varchar(128) DEFAULT NULL COMMENT '用途',
-  `important_degree` tinyint(3) NOT NULL COMMENT '重要程度：0-不重要,1- 一般,3-重要',
+  `important_degree` tinyint(3) DEFAULT NULL COMMENT '重要程度：0-不重要,1- 一般,3-重要',
   `name` varchar(90) NOT NULL COMMENT '名称',
   `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
   `gmt_modified` bigint(20) DEFAULT '0' COMMENT '修改时间',
