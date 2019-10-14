@@ -206,6 +206,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setModifyUser(loginUserId);
             updateAssetList.add(asset);
 
+            // 保存操作记录
             operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUserId, loginUserName, asset.getStringId(), nextStatus.getCode()));
         });
         transactionTemplate.execute(transactionStatus -> {
