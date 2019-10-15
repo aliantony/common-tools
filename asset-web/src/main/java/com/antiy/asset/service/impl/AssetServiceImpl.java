@@ -185,6 +185,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                         : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                        asset.setFirstEnterNett(currentTimeMillis);
                     }
 
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
@@ -308,7 +309,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
             baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
             baselineAssetRegisterRequest
-                    .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
+                .setCheckUser("safetyCheck".equals(admittanceResult[0])
+                    ? activityRequest.getFormData().get("safetyCheckUser").toString()
+                    : activityRequest.getFormData().get("templateImplementUser").toString());
             ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
@@ -851,7 +854,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return i + 1;
     }
 
-    private boolean checkSupplier(String supplier) {
+    boolean checkSupplier(String supplier) {
         HashMap<String, String> map = new HashMap<>();
         map.put("supplier", supplier);
         map.put("type", "h");
@@ -860,7 +863,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetHardSoftLibDao.countByWhere(map) > 0;
     }
 
-    private boolean checkName(String supplier, String productName) {
+    boolean checkName(String supplier, String productName) {
         HashMap<String, String> map = new HashMap<>();
         map.put("supplier", supplier);
         map.put("type", "h");

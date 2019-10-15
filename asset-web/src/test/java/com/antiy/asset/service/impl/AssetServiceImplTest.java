@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -787,13 +788,12 @@ public class AssetServiceImplTest {
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
             .thenReturn(generateAssetNetworkEquipmentList());
-        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
         assetHardSoftLib.setBusinessId("1");
         assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when( assetHardSoftLibDao
-                        .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -809,13 +809,12 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetSafetyEquipmentDao.getByWhere(Mockito.any())).thenReturn(generateAssetSafetyEquipmentList());
-        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
         assetHardSoftLib.setBusinessId("1");
         assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when( assetHardSoftLibDao
-                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -831,13 +830,12 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
-        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
         assetHardSoftLib.setBusinessId("1");
         assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when( assetHardSoftLibDao
-                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -1577,18 +1575,24 @@ public class AssetServiceImplTest {
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         ImportResult importResult = new ImportResult();
         ImportResult importResult4 = new ImportResult();
+        ImportResult importResult5 = new ImportResult();
         ImportResult importResult1 = new ImportResult();
         ImportResult importResult2 = new ImportResult();
         ImportResult importResult3 = new ImportResult();
         List<OtherDeviceEntity> otherDeviceEntities = new ArrayList<>();
+        List<OtherDeviceEntity> otherDeviceEntities3 = new ArrayList<>();
         List<OtherDeviceEntity> otherDeviceEntities2 = new ArrayList<>();
         OtherDeviceEntity otherDeviceEntity = getOtherDeviceEntity();
+        OtherDeviceEntity otherDeviceEntity3 = getOtherDeviceEntity();
         importResult2.setDataList(otherDeviceEntities2);
         otherDeviceEntities.add(otherDeviceEntity);
         importResult4.setDataList(otherDeviceEntities);
         importResult4.setMsg("");
         importResult3.setDataList(otherDeviceEntities);
-
+        otherDeviceEntity3.setManufacturer("dsdsds");
+        otherDeviceEntities3.add(otherDeviceEntity3);
+        importResult5.setDataList(otherDeviceEntities3);
+        importResult5.setMsg("");
         importResult.setMsg("");
         importResult2.setMsg("");
         importResult3.setMsg("导入失败");
@@ -1637,6 +1641,7 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行到期时间需大于等于今天！", result);
 
+
         otherDeviceEntity.setDueDate(System.currentTimeMillis() * 2);
         when(assetUserDao.findListAssetUser(any())).thenReturn(null);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
@@ -1650,8 +1655,18 @@ public class AssetServiceImplTest {
         when(assetDao.findCountMac(any(), any())).thenReturn(11);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行MAC地址重复！第8行MAC地址重复！", result);
+
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
+        when(assetHardSoftLibDao.countByWhere(any())).thenAnswer(InvocationOnMock::getArguments);
+
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult5);
+        String result32 = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行该厂商不存在！", result32);
+
         importResult.setMsg("");
         Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
+
         try {
             assetServiceImpl.importOhters(null, assetImportRequest);
         } catch (Exception e) {
@@ -1662,6 +1677,7 @@ public class AssetServiceImplTest {
     private OtherDeviceEntity getOtherDeviceEntity() {
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
         otherDeviceEntity.setNumber("123");
+        otherDeviceEntity.setName("123");
         otherDeviceEntity.setManufacturer("123");
         otherDeviceEntity.setUser("123");
         otherDeviceEntity.setArea("四川");
