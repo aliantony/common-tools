@@ -1,42 +1,25 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.manage.CommonManager;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
-import com.antiy.biz.util.CodeRedisUtil;
-import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -94,7 +77,6 @@ public class AssetInstallTemplateControllerTest {
     }
 
     @Test
-    @Ignore
     public void updateSingleTest() throws Exception {
         String expect = "更新状态成功";
         Mockito.doAnswer(invocation -> ActionResponse.success(expect)).when(iAssetInstallTemplateService).updateAssetInstallTemplate(Mockito.any());
@@ -103,7 +85,6 @@ public class AssetInstallTemplateControllerTest {
     }
 
     @Test
-    @Ignore
     public void queryListTest() throws Exception {
         int pageSize = 3;
         int currentPage = 2;
@@ -112,21 +93,20 @@ public class AssetInstallTemplateControllerTest {
         postResultActions("/query/list", "{\"numberCode\":\"xx1\"}")
                 .andExpect(jsonPath("$.body.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.body.currentPage").value(currentPage))
-                .andExpect(jsonPath("$.body.totalRecord").value(totalRecord))
-                .andExpect(jsonPath("$.body.item", Matchers.hasSize(0)));
+                .andExpect(jsonPath("$.body.totalRecords").value(totalRecord))
+                .andExpect(jsonPath("$.body.items", Matchers.hasSize(0)));
     }
 
     @Test
-    @Ignore
     public void queryByIdTest() throws Exception {
         String expect = "xx模板";
         Mockito.doAnswer(invocation -> {
             AssetInstallTemplateResponse response = new AssetInstallTemplateResponse();
             response.setName(expect);
             return response;
-        }).when(iAssetInstallTemplateService).queryPageAssetInstallTemplate(Mockito.any());
+        }).when(iAssetInstallTemplateService).queryAssetInstallTemplateById(Mockito.any());
         postResultActions("/query/id", "{\"primaryKey\":\"xx1\"}")
-                .andExpect(jsonPath("$.body.name", Matchers.hasValue(expect)));
+                .andExpect(jsonPath("$.body.name").value(expect));
     }
 
     @Test

@@ -164,8 +164,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String aid;
 
                     String areaId = requestAsset.getAreaId();
-                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        DataTypeUtils.stringToInteger(areaId));
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, areaId);
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(
