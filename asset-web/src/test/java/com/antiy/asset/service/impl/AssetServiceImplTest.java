@@ -1576,6 +1576,7 @@ public class AssetServiceImplTest {
 
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         ImportResult importResult = new ImportResult();
+        ImportResult importResult4 = new ImportResult();
         ImportResult importResult1 = new ImportResult();
         ImportResult importResult2 = new ImportResult();
         ImportResult importResult3 = new ImportResult();
@@ -1584,7 +1585,8 @@ public class AssetServiceImplTest {
         OtherDeviceEntity otherDeviceEntity = getOtherDeviceEntity();
         importResult2.setDataList(otherDeviceEntities2);
         otherDeviceEntities.add(otherDeviceEntity);
-
+        importResult4.setDataList(otherDeviceEntities);
+        importResult4.setMsg("");
         importResult3.setDataList(otherDeviceEntities);
 
         importResult.setMsg("");
@@ -1620,14 +1622,15 @@ public class AssetServiceImplTest {
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         when(assetDao.findCountAssetNumber(any())).thenReturn(10);
-        when(assetDao.findCountMac(any(), any())).thenReturn(10);
+
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行该厂商不存在！", result);
-
+        Assert.assertEquals("导入失败，第7行资产编号重复！第8行资产编号重复！", result);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult4);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
-        result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
+        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        String ohters = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
 
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() / 2);
         otherDeviceEntity.setDueDate(System.currentTimeMillis() / 2);
@@ -1637,31 +1640,16 @@ public class AssetServiceImplTest {
         otherDeviceEntity.setDueDate(System.currentTimeMillis() * 2);
         when(assetUserDao.findListAssetUser(any())).thenReturn(null);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行系统中没有此使用者，或已被注销！", result);
+        Assert.assertEquals("导入失败，第7行系统中没有此使用者，或已被注销！第8行系统中没有此使用者，或已被注销！", result);
 
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
         otherDeviceEntity.setArea("sdfsadfasd");
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行当前用户没有此所属区域，或已被注销！", result);
 
-        otherDeviceEntity.setArea("四川");
-        try {
-            assetServiceImpl.importOhters(null, assetImportRequest);
-        } catch (Exception e) {
-            Assert.assertEquals("导入失败，选择品类型号不存在，或已被注销！", e.getMessage());
-        }
-
-        importResult.setDataList(null);
-        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
-        Assert.assertEquals("", assetServiceImpl.importOhters(null, assetImportRequest));
-
-        importResult.setDataList(new ArrayList());
-        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importOhters(null, assetImportRequest));
-
-        importResult.setMsg("导入失败");
-        importResult.setDataList(otherDeviceEntities);
-        Assert.assertEquals("导入失败", assetServiceImpl.importOhters(null, assetImportRequest));
-
+        when(assetDao.findCountMac(any(), any())).thenReturn(11);
+        result = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行MAC地址重复！第8行MAC地址重复！", result);
         importResult.setMsg("");
         Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
         try {
