@@ -1792,9 +1792,18 @@ AND a.`status` = 1
     </select>
     <update id="updateRedundantFiled">
         <foreach collection="list" close="" separator=";" item="item">
-            update asset
-            SET name = #{item.productName},manufacturer = #{item.supplier}
-            where status=1 and business_id = #{item.businessId}
+            <choose>
+                <when test="item.type == h">
+                    update asset
+                    SET name = #{item.productName},manufacturer = #{item.supplier}
+                    where status=1 and business_id = #{item.businessId}
+                </when>
+                <when test="item.type == o">
+                    update asset
+                    SET operation_system_name = #{item.productName}
+                    where operation_system = #{item.businessId}
+                </when>
+            </choose>
         </foreach>
     </update>
 </mapper>

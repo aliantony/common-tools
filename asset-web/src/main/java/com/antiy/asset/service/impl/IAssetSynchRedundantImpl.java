@@ -37,9 +37,8 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
             throw new BusinessException("开始时间应小于结束时间");
         }
 
-        // 处理业务
+        // 更新名称、厂商、操作系统字段
         List<AssetHardSoftLib> hardSoftLibList = hardSoftLibDao.getCpeByTime(query);
-
         if (CollectionUtils.isNotEmpty(hardSoftLibList)) {
             return assetDao.updateRedundantFiled(hardSoftLibList);
         }
