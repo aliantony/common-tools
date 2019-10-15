@@ -715,6 +715,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="unknownAssets == false">
+            AND asset.id not in (select id from asset where asset_status = 1 and asset_source in (1,3))
+        </if>
         <if test="stringId != null and stringId != ''">
             and asset.id = #{stringId}
         </if>
@@ -866,10 +869,10 @@
             and asset.importance_degree = #{importanceDegree }
         </if>
         <if test="firstEnterStartTime != null">
-            and asset.first_enter_nett &gt;= #{firstEnterStartTime }
+            and asset.gmt_create &gt;= #{firstEnterStartTime }
         </if>
         <if test=" firstEnterEndTime != null">
-            and asset.first_enter_nett &lt;= #{firstEnterEndTime }
+            and asset.gmt_create &lt;= #{firstEnterEndTime }
         </if>
         <if test=" serviceLifeStartTime != null">
             and asset.service_life &gt;= #{serviceLifeStartTime }
@@ -1443,6 +1446,7 @@
     <select id="queryWaitRegistCount" resultType="java.lang.Integer">
         select count(1) from asset
         where asset_status = #{assetStatus}
+        and asset_source not in (1,3)
         and status = 1
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
@@ -1790,4 +1794,22 @@ AND a.`status` = 1
         install_type from asset where id = #{assetId}
         and status = 1
     </select>
+    <update id="updateRedundantFiled">
+        <foreach collection="list" close="" separator=";" item="item">
+            <choose>
+                <when test="item.type == 'h'.toString() ">
+                    update asset
+                    SET name = #{item.productName},manufacturer = #{item.supplier}
+                    where status=1 and business_id = #{item.businessId}
+                </when>
+                <when test="item.type == 'o'.toString() ">
+                    update asset
+                    SET operation_system_name = #{item.productName}
+                    where operation_system = #{item.businessId}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </foreach>
+    </update>
 </mapper>

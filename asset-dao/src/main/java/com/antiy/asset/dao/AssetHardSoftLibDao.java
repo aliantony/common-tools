@@ -33,6 +33,8 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
 
     int countByWhere(HashMap<String, String> map);
 
+    int countByWhere1(HashMap<String, String> map);
+
     /**
      * 排除已存在关系的资产id
      *
@@ -79,4 +81,11 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
     List<AssetHardSoftLib> querySoftsRelations(@Param("templateId") String templateId);
 
     AssetHardSoftLib getByBusinessId(@Param("businessId") String businessId);
+
+    /**
+     * 根据更新时间查询CPE信息
+     * @param cpeQuery
+     * @return
+     */
+    List<AssetHardSoftLib> getCpeByTime(AssetSynchCpeQuery cpeQuery);
 }

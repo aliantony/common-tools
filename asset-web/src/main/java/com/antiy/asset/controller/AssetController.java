@@ -1,24 +1,11 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
@@ -31,8 +18,19 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author zhangyajun
@@ -98,6 +96,7 @@ public class AssetController {
                 sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
                 asset.setAssetSourceList(sourceList);
             }
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
@@ -120,7 +119,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/queryAssetCountByAreaIds", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
-    public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) throws Exception {
+    public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) {
         return ActionResponse.success(
             iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
     }
@@ -151,7 +150,7 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/assemblyInfo", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
-    public ActionResponse getAssemblyInfo(@RequestBody @ApiParam(value = "asset") QueryCondition condition) throws Exception {
+    public ActionResponse getAssemblyInfo(@RequestBody @ApiParam(value = "asset") QueryCondition condition) {
         ParamterExceptionUtils.isNull(condition, "资产不能为空");
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetService.getAssemblyInfo(condition));
@@ -472,7 +471,7 @@ public class AssetController {
     @ApiOperation(value = "(无效)启动流程", notes = "启动流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/start/process", method = RequestMethod.POST)
-    public ActionResponse manualStartProcess(@ApiParam @RequestBody ManualStartActivityRequest manualStartActivityRequest) throws Exception {
+    public ActionResponse manualStartProcess(@ApiParam @RequestBody ManualStartActivityRequest manualStartActivityRequest) {
         manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.HARDWARE_ADMITTANCE.getCode());
         activityClient.manualStartProcess(manualStartActivityRequest);
         return ActionResponse.success();
@@ -481,7 +480,7 @@ public class AssetController {
     @ApiOperation(value = "(无效)处理流程", notes = "处理流程")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/deal/process", method = RequestMethod.POST)
-    public ActionResponse completeTask(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
+    public ActionResponse completeTask(@ApiParam @RequestBody ActivityHandleRequest activityHandleRequest) {
         activityClient.completeTask(activityHandleRequest);
         return ActionResponse.success();
     }
@@ -489,28 +488,28 @@ public class AssetController {
     @ApiOperation(value = "获取资产id列表", notes = "获取资产id列表")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assetIds", method = RequestMethod.POST)
-    public ActionResponse findAssetIds() throws Exception {
+    public ActionResponse findAssetIds() {
         return ActionResponse.success(iAssetService.findAssetIds());
     }
 
     @ApiOperation(value = "工作台硬件登记数量", notes = "获取资产id列表")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/waitRegistCount", method = RequestMethod.POST)
-    public ActionResponse queryWaitRegistCount() throws Exception {
+    public ActionResponse queryWaitRegistCount() {
         return ActionResponse.success(iAssetService.queryWaitRegistCount());
     }
 
     @ApiOperation(value = "正常资产数量统计", notes = "正常资产数量统计")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/normal/count", method = RequestMethod.POST)
-    public ActionResponse queryNormalCount() throws Exception {
+    public ActionResponse queryNormalCount() {
         return ActionResponse.success(iAssetService.queryNormalCount());
     }
 
     @ApiOperation(value = "告警资产数量统计", notes = "正常资产数量统计")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/alarm/count", method = RequestMethod.POST)
-    public ActionResponse findAlarmAssetCount() throws Exception {
+    public ActionResponse findAlarmAssetCount() {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
     }
 
@@ -523,7 +522,7 @@ public class AssetController {
     @ApiOperation(value = "资产列表查询-基准模板下拉项信息", notes = "无查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = SelectResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/baselineTemplate", method = RequestMethod.POST)
-    public ActionResponse<List<SelectResponse>> queryBaselineTemplate() throws Exception {
+    public ActionResponse<List<SelectResponse>> queryBaselineTemplate() {
         return ActionResponse.success(iAssetService.queryBaselineTemplate());
     }
 

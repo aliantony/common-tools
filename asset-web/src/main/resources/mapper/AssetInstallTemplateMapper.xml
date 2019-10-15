@@ -20,7 +20,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, number_code, category_model, current_status, operation_system, operation_system_name, description, gmt_create, gmt_modified, create_user, modified_user, status
+        id, name, number_code, category_model, current_status, operation_system, operation_system_name, description, gmt_create, gmt_modified, create_user, modified_user, status,executor
     </sql>
 
     <sql id="Table_Name">
@@ -149,6 +149,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" executor != null">
+            executor = #{executor },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -268,6 +271,7 @@
     <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
+
         from
         <include refid="Table_Name"></include>
         where id = #{id}
@@ -480,7 +484,6 @@
         ait.operation_system as operationSystem,
         ait.operation_system_name as operationSystemName,
         ait.gmt_create as gmtCreate,
-        ait.executor as executors,
         count(DISTINCT asit.software_id) as softNum,
         count(DISTINCT apit.patch_id) as patchNum
         FROM
