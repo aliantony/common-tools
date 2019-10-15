@@ -81,12 +81,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         // 先更改为下一个状态,后续失败进行回滚
         setInProcess(statusJumpRequest, assetsInDb);
 
-        // 2.提交至工作流
-        boolean activitySuccess = startActivity(statusJumpRequest);
-        if (!activitySuccess) {
-            assetDao.updateAssetBatch(assetsInDb);
-            LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
-            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
+        // 2.不是变更完成,提交至工作流
+        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
+            boolean activitySuccess = startActivity(statusJumpRequest);
+            if (!activitySuccess) {
+                assetDao.updateAssetBatch(assetsInDb);
+                LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
+            }
         }
 
         // 3.数据库操作
@@ -237,7 +239,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
-        assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo());
+        assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo() == null ? "" : statusJumpRequest.getFileInfo());
         return assetOperationRecord;
     }
 

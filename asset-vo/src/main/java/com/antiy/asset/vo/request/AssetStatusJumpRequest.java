@@ -122,18 +122,19 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (formData == null && manualStartActivityRequest == null) {
+        if (!(assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) && formData == null && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
         }
 
-        if (assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE)) {
+        if (assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) {
             agree = Boolean.TRUE;
         } else {
             ParamterExceptionUtils.isNull(agree, "执行意见必填");
         }
 
-        // 通过:入网/退役/检查不校验,其他校验下一步执行人;不通过:备注信息不能为空
-        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN) || assetFlowEnum.equals(AssetFlowEnum.CHECK));
+        // 通过:入网/退役/检查/变更完成不校验,其他校验下一步执行人;不通过:备注信息不能为空
+        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN)
+                || assetFlowEnum.equals(AssetFlowEnum.CHECK) || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE));
         if (Boolean.TRUE.equals(agree) && checkConfigUser) {
             ParamterExceptionUtils.isNull(getFormData(), "formData参数错误");
             ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
