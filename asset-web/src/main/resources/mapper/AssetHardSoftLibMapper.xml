@@ -376,6 +376,15 @@
             <include refid="Where_Column_List"></include>
         </trim>
     </select>
+    <select id="countByWhere1" resultType="int" parameterType="java.util.Map">
+        select
+        count(*)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
+        </trim>
+    </select>
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)

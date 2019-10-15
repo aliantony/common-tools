@@ -784,6 +784,9 @@
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
+                </if>
             </when>
             <when test="nameListType == 3">
                 and business_id in
@@ -797,6 +800,9 @@
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
                     </foreach>
+                </if>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
                 </if>
             </otherwise>
         </choose>
@@ -831,6 +837,9 @@
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
+                </if>
             </when>
             <when test="nameListType == 3">
                 and business_id in
@@ -844,6 +853,9 @@
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
                     </foreach>
+                </if>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
                 </if>
             </otherwise>
         </choose>
@@ -859,6 +871,9 @@
         <if test="query.productName != null and query.productName != ''">
             and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
+    </select>
+    <select id="queryOs" resultType="java.lang.String">
+        select serial_name from asset_cpe_filter where business_id = (select system from baseline_template where id = #{query.baselineTemplateId})
     </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
