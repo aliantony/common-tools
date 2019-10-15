@@ -2,14 +2,16 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.request.AssetMatchRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IAssetSynchRedundant;
+import com.antiy.asset.vo.query.AssetSynchCpeQuery;
 import com.antiy.asset.vo.request.AreaIdRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.*;
@@ -25,6 +27,9 @@ public class AssetBusinessController {
 
     @Resource
     public IAssetService iAssetService;
+
+    @Resource
+    private IAssetSynchRedundant synchRedundant;
 
     /**
      * 根据区域ID返回资产UUID
@@ -63,6 +68,19 @@ public class AssetBusinessController {
     @RequestMapping(value = "/match/assetByIpMac", method = RequestMethod.POST)
     public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "assetMatchRequest") AssetMatchRequest assetMatchRequest) throws Exception {
         return ActionResponse.success(iAssetService.matchAssetByIpMac(assetMatchRequest));
+    }
+
+    /**
+     * 更新冗余字段接口
+     *
+     * @param synchCpeQuery
+     * @return actionResponse
+     */
+    @ApiOperation(value = "更新冗余字段接口", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/update/redundantFiled", method = RequestMethod.POST)
+    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "assetMatchRequest") AssetSynchCpeQuery synchCpeQuery) throws Exception {
+        return ActionResponse.success(synchRedundant.synchRedundantAsset(synchCpeQuery));
     }
 
 }

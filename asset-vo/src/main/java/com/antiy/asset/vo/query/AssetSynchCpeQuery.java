@@ -17,7 +17,7 @@ public class AssetSynchCpeQuery extends ObjectQuery {
     /**
      * 结束时间
      */
-    @NotNull()
+    @NotNull(message = "结束时间不以为空")
     private Long end;
 
     public Long getStart() {

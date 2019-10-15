@@ -26,7 +26,7 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
     private AssetDao            assetDao;
 
     @Override
-    public void synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
+    public Integer synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
         Long start = query.getStart();
         Long end = query.getEnd();
         if (start == null || end == null) {
@@ -40,7 +40,8 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
         List<AssetHardSoftLib> hardSoftLibList = hardSoftLibDao.getCpeByTime(query);
 
         if (CollectionUtils.isNotEmpty(hardSoftLibList)) {
-            assetDao.updateRedundantFiled(hardSoftLibList);
+            return assetDao.updateRedundantFiled(hardSoftLibList);
         }
+        return null;
     }
 }
