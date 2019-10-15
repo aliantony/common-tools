@@ -869,10 +869,10 @@
             and asset.importance_degree = #{importanceDegree }
         </if>
         <if test="firstEnterStartTime != null">
-            and asset.first_enter_nett &gt;= #{firstEnterStartTime }
+            and asset.gmt_create &gt;= #{firstEnterStartTime }
         </if>
         <if test=" firstEnterEndTime != null">
-            and asset.first_enter_nett &lt;= #{firstEnterEndTime }
+            and asset.gmt_create &lt;= #{firstEnterEndTime }
         </if>
         <if test=" serviceLifeStartTime != null">
             and asset.service_life &gt;= #{serviceLifeStartTime }
