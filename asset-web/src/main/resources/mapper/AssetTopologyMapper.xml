@@ -96,9 +96,9 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         and asset.status=1
-        <if test=" userAreaIds != null and userAreaIds.size() >0">
+        <if test=" areaIds != null and areaIds.length >0">
             and area_id in
-            <foreach index="index" item="item" collection="userAreaIds" open="(" separator="," close=")">
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -227,9 +227,9 @@
         SELECT
         asset.id,
         asset.area_id,
+        asset.name,
         asset.asset_group,
         asset.category_model,
-        lib. product_name as name,
         asset_user. NAME AS responsible_user_name,
         asset.responsible_user_id,
         <if test="queryVulCount == true">
@@ -247,20 +247,19 @@
         GROUP_CONCAT(DISTINCT air.ip) AS ips
         FROM
         asset asset
-        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.business_id
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
         AND air. STATUS = 1
         LEFT JOIN asset_user asset_user ON asset.responsible_user_id = asset_user.id
         AND asset. STATUS = 1
         <if test="queryVulCount == true">
-          LEFT JOIN vuln_asset_rel avr ON avr.asset_id = asset.id
-          AND avr. STATUS = 1
-          AND avr.vul_status != 5
+            LEFT JOIN vuln_asset_rel avr ON avr.asset_id = asset.id
+            AND avr. STATUS = 1
+            AND avr.vul_status != 5
         </if>
         <if test="queryPatchCount == true">
-          LEFT JOIN patch_asset_rel apr ON apr.asset_id = asset.id
-          AND apr.patch_status = 3
-          AND apr. STATUS = 1
+            LEFT JOIN patch_asset_rel apr ON apr.asset_id = asset.id
+            AND apr.patch_status = 3
+            AND apr. STATUS = 1
         </if>
         <if test="queryAlarmCount == true">
             LEFT JOIN alarm_current_records acr ON acr.asset_id = asset.id
