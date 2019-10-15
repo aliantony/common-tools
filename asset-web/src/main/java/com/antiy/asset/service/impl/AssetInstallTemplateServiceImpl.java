@@ -203,14 +203,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
         if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
-            List<AssetInstallTemplateResponse> list = assetInstallTemplateDao.queryTemplateInfo(query);
-            list.forEach(v -> {
-                List<AssetSysUserResponse> sysUserList = Arrays.stream(v.getExecutors().split(","))
-                        .map(value -> getUserNameByUserId(Integer.valueOf(value))).collect(Collectors.toList());
-                v.setExecutor(sysUserList);
-            });
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                    list);
+                    assetInstallTemplateDao.queryTemplateInfo(query));
         }
         //根据配置模板id过滤包含黑名单软件的装机模板
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
@@ -220,8 +214,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public AssetInstallTemplateResponse queryAssetInstallTemplateById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
+        AssetInstallTemplate template = assetInstallTemplateDao.getById(queryCondition.getPrimaryKey());
         AssetInstallTemplateResponse assetInstallTemplateResponse = responseConverter.convert(
-                assetInstallTemplateDao.getById(queryCondition.getPrimaryKey()), AssetInstallTemplateResponse.class);
+                template, AssetInstallTemplateResponse.class);
+        List<AssetSysUserResponse> list = new ArrayList<>();
+        Arrays.stream(template.getExecutor().split(",")).forEach(v -> {
+            list.add(getUserNameByUserId(Integer.valueOf(v)));
+        });
+        assetInstallTemplateResponse.setExecutor(list);
         return assetInstallTemplateResponse;
     }
 

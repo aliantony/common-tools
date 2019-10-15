@@ -7,9 +7,9 @@ import java.util.Objects;
  * @Date: 2019/7/25 15:10
  */
 public enum AssetTypeEnum {
-                           HARD(1, "h"), SOFT(2, "a"), OS(3, "o");
+    HARD(1, "h"), SOFT(2, "a"), OS(3, "o"), ALL(4, "all");
     private Integer code;
-    private String  name;
+    private String name;
 
     AssetTypeEnum(Integer code, String name) {
         this.code = code;
