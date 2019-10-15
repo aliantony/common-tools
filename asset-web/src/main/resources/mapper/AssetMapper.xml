@@ -1793,4 +1793,11 @@ AND a.`status` = 1
         install_type from asset where id = #{assetId}
         and status = 1
     </select>
+    <update id="updateRedundantFiled">
+        <foreach collection="list" close="" separator=";" item="item">
+            update asset
+            SET name = #{item.productName},manufacturer = #{item.supplier}, operation_system = #{item.businessId}
+            where status=1 and business_id = #{item.businessId}
+        </foreach>
+    </update>
 </mapper>

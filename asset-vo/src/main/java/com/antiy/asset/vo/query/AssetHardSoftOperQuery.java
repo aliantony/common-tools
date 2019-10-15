@@ -16,6 +16,7 @@ public class AssetHardSoftOperQuery extends ObjectQuery {
 	 */
 	private String            productName;
 
+
 	public String getSupplier() {
 		return supplier;
 	}

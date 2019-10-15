@@ -762,4 +762,13 @@
         ORDER BY
         t1.id DESC
     </select>
+
+    <select id="getCpeByTime" parameterType="com.antiy.asset.vo.query.AssetSynchCpeQuery"
+            resultMap="BaseResultMap">
+        SELECT
+        business_id,supplier,product_name,cpe_uri
+        from
+        <include refid="Table_Name"/>
+        where gmt_modified &gt;= #{start} and gmt_modified &lt;= #{end}
+    </select>
 </mapper>
