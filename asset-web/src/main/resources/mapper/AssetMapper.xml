@@ -1446,6 +1446,7 @@
     <select id="queryWaitRegistCount" resultType="java.lang.Integer">
         select count(1) from asset
         where asset_status = #{assetStatus}
+        and asset_source not in (1,3)
         and status = 1
         <if test="areaIds != null and areaIds.size() > 0">
             and area_id in
