@@ -118,7 +118,10 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate")  @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
+        ParamterExceptionUtils.isBlank(assetInstallTemplateRequest.getName(), "模板名称必填");
+        ParamterExceptionUtils.isBlank(assetInstallTemplateRequest.getNumberCode(), "模板编号必填");
+        ParamterExceptionUtils.isNull(assetInstallTemplateRequest.getOperationSystem(), "操作系统必填");
         return ActionResponse
                 .success(iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest));
     }
@@ -218,6 +221,9 @@ public class AssetInstallTemplateController {
     @ApiResponse(code = 200, message = "ok", response = String.class)
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public ActionResponse createInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateRequest", required = true) AssetInstallTemplateRequest request) throws Exception {
+        ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
+        ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
+        ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
         return iAssetInstallTemplateService.submitTemplateInfo(request);
     }
 
