@@ -1,4 +1,4 @@
-package com.antiy.asset.service;
+package com.antiy.asset.service.impl;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.service.IAssetSynchRedundant;
 import com.antiy.asset.vo.query.AssetSynchCpeQuery;
 import com.antiy.common.exception.BusinessException;
 
