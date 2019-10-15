@@ -1036,16 +1036,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse.setDecryptId(Objects.toString(asset.getId()));
         assetResponse.setDecryptInstallTemplateId(asset.getInstallTemplateId());
         assetOuterResponse.setAsset(assetResponse);
-        // 获取厂商，名称，版本
-        AssetHardSoftLib assetHardSoftLib = assetHardSoftLibDao
-            .getByBusinessId(Objects.toString(asset.getBusinessId()));
-        assetResponse
-            .setManufacturer(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse(null));
-        assetResponse.setName(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse(null));
-        String m = Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getSupplier).orElse("")
-                   + Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getProductName).orElse("");
-        assetResponse.setVersion(Optional.ofNullable(assetHardSoftLib).map(AssetHardSoftLib::getCpeUri)
-            .map(str -> str.substring(9 + m.length())).orElse(""));
         // 获取区域
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
             DataTypeUtils.stringToInteger(asset.getAreaId()));
@@ -2524,7 +2514,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         // 授权数量限制校验
         anthNumValidate();
-
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();

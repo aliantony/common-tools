@@ -638,9 +638,9 @@
             </choose>
 
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>
@@ -687,9 +687,9 @@
                 </otherwise>
             </choose>
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>
@@ -775,5 +775,14 @@
         LEFT JOIN asset_hard_soft_lib t1 ON t1.id = t2.id
         ORDER BY
         t1.id DESC
+    </select>
+
+    <select id="getCpeByTime" parameterType="com.antiy.asset.vo.query.AssetSynchCpeQuery"
+            resultMap="BaseResultMap">
+        SELECT
+        business_id,supplier,product_name,cpe_uri
+        from
+        <include refid="Table_Name"/>
+        where gmt_modified &gt;= #{start} and gmt_modified &lt;= #{end}
     </select>
 </mapper>

@@ -14,12 +14,16 @@ import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.entity.SysMessageRequest;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
@@ -51,11 +55,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Resource
     private BaseConverter<AssetInstallTemplate, AssetInstallTemplateResponse> responseConverter;
     @Resource
+    private BaseConverter<SysUser, AssetSysUserResponse> userConverter;
+    @Resource
     public IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
     private ActivityClient activityClient;
-    //    @Resource
-//    private SysMessageSender sysMessageSender;
+    @Resource
+    private RedisUtil redisUtil;
     @Resource
     private AesEncoder aesEncoder;
 
@@ -197,11 +203,17 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
         if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
-            return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
-                    assetInstallTemplateDao.queryTemplateInfo(query));
+            List<AssetInstallTemplateResponse> list = assetInstallTemplateDao.queryTemplateInfo(query);
+            list.forEach(v -> {
+                List<AssetSysUserResponse> sysUserList = Arrays.stream(v.getExecutors().split(","))
+                        .map(value -> getUserNameByUserId(Integer.valueOf(value))).collect(Collectors.toList());
+                v.setExecutor(sysUserList);
+            });
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                    list);
         }
         //根据配置模板id过滤包含黑名单软件的装机模板
-        return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), count, query.getCurrentPage(),
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 assetInstallTemplateDao.queryFilteredTemplate(query));
     }
 
@@ -277,6 +289,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     @Transactional
     public ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
+        int result = queryNumberCode(request.getNumberCode());
+        if (result > 0) {
+            throw new RequestParamValidateException("模板编号已经存在");
+        }
         if (request.getStringId() == null) {
             String unknowId = "0";
             request.setStringId(unknowId);
@@ -287,6 +303,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         template.setCategoryModel(1);
         template.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
         template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
+        StringBuilder builders = new StringBuilder();
+        request.getNextExecutor().forEach(v -> {
+            builders.append(aesEncoder.decode(v, LoginUserUtil.getLoginUser().getUsername()));
+            builders.append(",");
+        });
+        template.setExecutor(builders.deleteCharAt(builders.length() - 1).toString());
         assetInstallTemplateDao.insert(template);
         request.setStringId(template.getStringId());
         if (request.getPatchIds() != null && !request.getPatchIds().isEmpty()) {
@@ -371,6 +393,28 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         checkRequest.setGmtCreate(request.getGmtCreate());
         checkRequest.setCreateUser(request.getCreateUser());
         return assetInstallTemplateDao.insertTemplateCheckInfo(checkRequest);
+    }
+
+    private AssetSysUserResponse getUserNameByUserId(Integer id) {
+        // 获取redis key
+        String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class, id);
+        SysUser user = null;
+        try {
+            user = redisUtil.getObject(key, SysUser.class);
+        } catch (Exception e) {
+            LogUtils.error(logger, "redis获取信息失败，用户信息：" + id + "获取失败");
+        }
+        AssetSysUserResponse sysUser = null;
+        if (user == null) {
+            sysUser = new AssetSysUserResponse();
+            sysUser.setName("");
+            sysUser.setUsername("");
+            sysUser.setStringId(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+
+        } else {
+            sysUser = userConverter.convert(user, AssetSysUserResponse.class);
+        }
+        return sysUser;
     }
 
 }
