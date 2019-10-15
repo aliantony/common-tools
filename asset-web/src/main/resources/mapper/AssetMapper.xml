@@ -1547,7 +1547,7 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and status = 1 and uuid is not null
+        and status = 1
         group by id
     </select>
 
