@@ -1540,6 +1540,17 @@
         group by id
     </select>
 
+    <select id="findUuidByAssetId" resultType="java.lang.String"
+            parameterType="java.util.List">
+        select uuid from asset
+        WHERE id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and uuid is not null
+        group by id
+    </select>
+
     <select id="findIdByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
         select business_id from asset

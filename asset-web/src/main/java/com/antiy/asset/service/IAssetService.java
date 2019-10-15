@@ -1,5 +1,14 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -9,13 +18,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -334,4 +336,12 @@ public interface IAssetService extends IBaseService<Asset> {
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 
     List<IpMacPort> matchAssetByIpMac(AssetMatchRequest request) throws Exception;
+
+    /**
+     * 根据资产ID返回资产UUID
+     *
+     * @return
+     * @throws Exception
+     */
+    List<String> queryUuidByAssetId(AssetIdRequest request) throws Exception;
 }
