@@ -310,10 +310,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
             baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
             baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
-            baselineAssetRegisterRequest
-                .setCheckUser("safetyCheck".equals(admittanceResult[0])
-                    ? activityRequest.getFormData().get("safetyCheckUser").toString()
-                    : activityRequest.getFormData().get("templateImplementUser").toString());
+            baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
+                ? activityRequest.getFormData().get("safetyCheckUser").toString()
+                : activityRequest.getFormData().get("templateImplementUser").toString());
             ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
