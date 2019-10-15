@@ -71,7 +71,7 @@ public class AssetBusinessController {
     }
 
     /**
-     * 更新冗余字段接口
+     * 更新冗余字段接口-routing项目用
      *
      * @param synchCpeQuery
      * @return actionResponse
@@ -79,7 +79,7 @@ public class AssetBusinessController {
     @ApiOperation(value = "更新冗余字段接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/redundantFiled", method = RequestMethod.POST)
-    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "assetMatchRequest") AssetSynchCpeQuery synchCpeQuery) throws Exception {
+    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "synchCpeQuery") AssetSynchCpeQuery synchCpeQuery) throws Exception {
         return ActionResponse.success(synchRedundant.synchRedundantAsset(synchCpeQuery));
     }
 
