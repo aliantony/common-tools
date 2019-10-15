@@ -619,7 +619,7 @@
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
             And type='a'
-            <if test=" name != null and name != ''">
+            <if test=" softwareName != null and name != ''">
                 and t1.product_name like CONCAT('%', replace(replace(REPLACE
                 (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
@@ -637,9 +637,9 @@
                 </otherwise>
             </choose>
 
-            <if test="removeBusinessIds != null and removeBusinessIds.size>0">
+            <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t1.id not in
-                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
                     #{softId}
                 </foreach>
 
@@ -669,7 +669,7 @@
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
             And type='a'
-            <if test=" name != null and name != ''">
+            <if test=" softwareName != null and name != ''">
                 and t1.product_name like CONCAT('%', replace(replace(REPLACE
                 (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
@@ -686,9 +686,9 @@
                     and locate(soft_platform,#{operationSystem})>0
                 </otherwise>
             </choose>
-            <if test="removeBusinessIds != null and removeBusinessIds.size>0">
+            <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t1.id not in
-                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
                     #{softId}
                 </foreach>
 
@@ -780,7 +780,7 @@
     <select id="getCpeByTime" parameterType="com.antiy.asset.vo.query.AssetSynchCpeQuery"
             resultMap="BaseResultMap">
         SELECT
-        business_id,supplier,product_name,cpe_uri
+        business_id,supplier,product_name,cpe_uri,type
         from
         <include refid="Table_Name"/>
         where gmt_modified &gt;= #{start} and gmt_modified &lt;= #{end}

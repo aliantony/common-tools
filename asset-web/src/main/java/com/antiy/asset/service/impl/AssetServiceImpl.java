@@ -164,8 +164,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String aid;
 
                     String areaId = requestAsset.getAreaId();
-                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        DataTypeUtils.stringToInteger(areaId));
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, areaId);
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     BusinessExceptionUtils.isTrue(
                         !Objects.isNull(
@@ -299,13 +298,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.deleteAssetById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
-            // 安全检查走基准
-            if ("safetyCheck".equals(admittanceResult[0])) {
+            // 安全检查 2 模板1
+
                 BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
                 baselineAssetRegisterRequest.setAssetId(id);
                 baselineAssetRegisterRequest
                     .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
-                baselineAssetRegisterRequest.setCheckType(requestAsset.getInstallType());
+            baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
                 baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
                 baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
                 baselineAssetRegisterRequest
@@ -317,7 +316,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 调用失败，直接删登记的资产
                     assetDao.deleteAssetById(id);
                     return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
-                }
+
             }
         }
 
@@ -535,7 +534,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetList.stream().forEach(a -> {
                 try {
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        DataTypeUtils.stringToInteger(a.getAreaId()));
+                        a.getAreaId());
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                     a.setAreaName(sysArea.getFullName());
                 } catch (Exception e) {
@@ -1038,7 +1037,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAsset(assetResponse);
         // 获取区域
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-            DataTypeUtils.stringToInteger(asset.getAreaId()));
+            asset.getAreaId());
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
         assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
         // 设置品类型号名

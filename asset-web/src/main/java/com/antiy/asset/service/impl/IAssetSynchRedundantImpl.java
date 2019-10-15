@@ -1,4 +1,4 @@
-package com.antiy.asset.service;
+package com.antiy.asset.service.impl;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.service.IAssetSynchRedundant;
 import com.antiy.asset.vo.query.AssetSynchCpeQuery;
 import com.antiy.common.exception.BusinessException;
 
@@ -26,7 +27,7 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
     private AssetDao            assetDao;
 
     @Override
-    public void synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
+    public Integer synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
         Long start = query.getStart();
         Long end = query.getEnd();
         if (start == null || end == null) {
@@ -36,11 +37,11 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
             throw new BusinessException("开始时间应小于结束时间");
         }
 
-        // 处理业务
+        // 更新名称、厂商、操作系统字段
         List<AssetHardSoftLib> hardSoftLibList = hardSoftLibDao.getCpeByTime(query);
-
         if (CollectionUtils.isNotEmpty(hardSoftLibList)) {
-            assetDao.updateRedundantFiled(hardSoftLibList);
+            return assetDao.updateRedundantFiled(hardSoftLibList);
         }
+        return null;
     }
 }

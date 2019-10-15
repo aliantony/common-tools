@@ -11,5 +11,5 @@ public interface IAssetSynchRedundant {
      * 同步更新冗余字段
      * @param query
      */
-    void synchRedundantAsset(AssetSynchCpeQuery query) throws Exception;
+    Integer synchRedundantAsset(AssetSynchCpeQuery query) throws Exception;
 }

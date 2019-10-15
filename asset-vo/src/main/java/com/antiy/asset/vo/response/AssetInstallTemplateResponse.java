@@ -57,8 +57,6 @@ public class AssetInstallTemplateResponse {
     private Integer softNum;
     @ApiModelProperty("配合基准那边给与明文id")
     private String templateId;
-    @ApiModelProperty("执行人ids")
-    private String executors;
     @ApiModelProperty("执行人信息")
     private List<AssetSysUserResponse> executor;
 
@@ -190,11 +188,4 @@ public class AssetInstallTemplateResponse {
         this.executor = executor;
     }
 
-    public String getExecutors() {
-        return executors;
-    }
-
-    public void setExecutors(String executors) {
-        this.executors = executors;
-    }
 }
