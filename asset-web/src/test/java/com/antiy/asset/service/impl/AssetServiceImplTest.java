@@ -1619,10 +1619,12 @@ public class AssetServiceImplTest {
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
+        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
+        when(assetDao.findCountMac(any(), any())).thenReturn(10);
+        when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行该厂商不存在！", result);
 
-        when(assetDao.findCount(any())).thenReturn(0);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
