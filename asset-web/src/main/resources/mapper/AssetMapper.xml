@@ -1793,7 +1793,7 @@ AND a.`status` = 1
     <update id="updateRedundantFiled">
         <foreach collection="list" close="" separator=";" item="item">
             update asset
-            SET name = #{item.productName},manufacturer = #{item.supplier}, operation_system = #{item.businessId}
+            SET name = #{item.productName},manufacturer = #{item.supplier}
             where status=1 and business_id = #{item.businessId}
         </foreach>
     </update>
