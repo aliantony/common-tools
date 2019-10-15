@@ -871,7 +871,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("status", "1");
         map.put("isStorage", "1");
         map.put("productName", productName);
-        return assetHardSoftLibDao.countByWhere(map) > 0;
+        return assetHardSoftLibDao.countByWhere1(map) > 0;
     }
 
     @Override

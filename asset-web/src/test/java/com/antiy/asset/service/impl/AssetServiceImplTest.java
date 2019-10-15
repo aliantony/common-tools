@@ -1612,7 +1612,7 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(1);
         AssetImportRequest assetImportRequest = new AssetImportRequest();
-
+        when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(1);
         String result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
@@ -1658,12 +1658,18 @@ public class AssetServiceImplTest {
 
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
-        when(assetHardSoftLibDao.countByWhere(any())).thenAnswer(InvocationOnMock::getArguments);
 
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult5);
         String result32 = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行该厂商不存在！", result32);
-
+        when(assetHardSoftLibDao.countByWhere(any())).thenReturn(11);
+        when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(0);
+        String result23 = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行该厂商下,不存在当前名称！", result23);
+        when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(11);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult5);
+        String result233 = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入成功1条", result233);
         importResult.setMsg("");
         Mockito.when(assetDao.insertBatch(Mockito.anyList())).thenThrow(new DuplicateKeyException(""));
 

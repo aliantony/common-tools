@@ -1,15 +1,14 @@
 package com.antiy.asset.dao;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.ObjectQuery;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p> CPE表 Mapper 接口 </p>
@@ -33,6 +32,8 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
     List<AssetHardSoftLib> queryHardSoftLibByVersion(AssetPulldownQuery query);
 
     int countByWhere(HashMap<String, String> map);
+
+    int countByWhere1(HashMap<String, String> map);
 
     /**
      * 排除已存在关系的资产id
