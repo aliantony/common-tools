@@ -149,6 +149,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" executor != null">
+            executor = #{executor },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
