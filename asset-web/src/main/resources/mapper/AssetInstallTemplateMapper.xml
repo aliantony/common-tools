@@ -65,6 +65,9 @@
         <if test=" status != null">
             status,
         </if>
+        <if test=" executor != null">
+            executor,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -103,6 +106,9 @@
         </if>
         <if test=" status != null">
             #{status },
+        </if>
+        <if test=" executor != null">
+            #{executor},
         </if>
     </sql>
 
@@ -400,7 +406,7 @@
             t2.upgrade_msg as upgradeMsg,
             t2.sys_version as sysVersion,
             t2.language,
-            t2.soft_version as softVersions,
+            t2.soft_version as softVersion,
             t2.soft_platform as softPlatform,
             t2.hard_platform as hardPlatform,
             t2.other
@@ -474,6 +480,7 @@
         ait.operation_system as operationSystem,
         ait.operation_system_name as operationSystemName,
         ait.gmt_create as gmtCreate,
+        ait.executor as executors,
         count(DISTINCT asit.software_id) as softNum,
         count(DISTINCT apit.patch_id) as patchNum
         FROM
@@ -486,8 +493,6 @@
             <if test="stringId !=null">
                 and ait.id=#{stringId}
             </if>
-            and asit.status=1
-            and apit.status=1
         </trim>
         GROUP BY
         ait.id

@@ -2514,7 +2514,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         // 授权数量限制校验
         anthNumValidate();
-
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
