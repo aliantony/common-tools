@@ -118,10 +118,7 @@ public class AssetInstallTemplateController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @Valid @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return ActionResponse.fail(RespBasicCode.PARAMETER_ERROR, bindingResult.getFieldError().getDefaultMessage());
-        }
+    public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate")  @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
         return ActionResponse
                 .success(iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest));
     }

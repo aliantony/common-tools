@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
     @ApiModelProperty("厂商")
     private String manufacturer;
     @ApiModelProperty("移除软件关联id")
+    @Encode
     private List<String> removeBusinessIds;
 
     public String getOperationSystem() {

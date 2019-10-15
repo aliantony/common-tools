@@ -1,7 +1,10 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.base.SysUser;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 
 /**
@@ -54,6 +57,10 @@ public class AssetInstallTemplateResponse {
     private Integer softNum;
     @ApiModelProperty("配合基准那边给与明文id")
     private String templateId;
+    @ApiModelProperty("执行人ids")
+    private String executors;
+    @ApiModelProperty("执行人信息")
+    private List<AssetSysUserResponse> executor;
 
     public String getStringId() {
         return stringId;
@@ -173,5 +180,21 @@ public class AssetInstallTemplateResponse {
 
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
+    }
+
+    public List<AssetSysUserResponse> getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(List<AssetSysUserResponse> executor) {
+        this.executor = executor;
+    }
+
+    public String getExecutors() {
+        return executors;
+    }
+
+    public void setExecutors(String executors) {
+        this.executors = executors;
     }
 }

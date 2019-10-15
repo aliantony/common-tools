@@ -21,6 +21,7 @@ import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -128,6 +130,8 @@ public class AssetServiceImplTest {
     @Mock
     AreaClient                                                                  areaClient;
     @Mock
+    BaseLineClient                                                              baseLineClient;
+    @Mock
     Logger                                                                      logger;
     @Mock
     AesEncoder                                                                  aesEncoder;
@@ -169,6 +173,8 @@ public class AssetServiceImplTest {
     @Spy
     private BaseConverter<AssetStorageMedium, AssetStorageMediumResponse>       storageResponseConverter;
 
+    @Mock
+    private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
     @Rule
     public ExpectedException                                                    expectedException = ExpectedException
         .none();
@@ -297,6 +303,39 @@ public class AssetServiceImplTest {
         manualStartActivityRequest.setBusinessId("1");
         List<String> userIds = new ArrayList<>();
         manualStartActivityRequest.setAssignee("1");
+        Map map = new HashMap();
+        map.put("admittanceResult", "safetyCheck");
+        map.put("safetyCheckUser", "safetyCheck");
+        manualStartActivityRequest.setFormData(map);
+        userIds.add("1");
+        manualStartActivityRequest.setConfigUserIds(userIds);
+        manualStartActivityRequest.setProcessDefinitionKey("1");
+        manualStartActivityRequest.setSuggest("1");
+        return manualStartActivityRequest;
+    }
+
+    private ManualStartActivityRequest generateAssetManualStart1() {
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        manualStartActivityRequest.setAssignee("1");
+        manualStartActivityRequest.setBusinessId("1");
+        List<String> userIds = new ArrayList<>();
+        manualStartActivityRequest.setAssignee("1");
+        Map map = new HashMap();
+        map.put("admittanceResult", "dsdsd");
+        manualStartActivityRequest.setFormData(map);
+        userIds.add("1");
+        manualStartActivityRequest.setConfigUserIds(userIds);
+        manualStartActivityRequest.setProcessDefinitionKey("1");
+        manualStartActivityRequest.setSuggest("1");
+        return manualStartActivityRequest;
+    }
+
+    private ManualStartActivityRequest generateAssetManualStart2() {
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        manualStartActivityRequest.setAssignee("1");
+        manualStartActivityRequest.setBusinessId("1");
+        List<String> userIds = new ArrayList<>();
+        manualStartActivityRequest.setAssignee("1");
         userIds.add("1");
         manualStartActivityRequest.setConfigUserIds(userIds);
         manualStartActivityRequest.setProcessDefinitionKey("1");
@@ -327,19 +366,29 @@ public class AssetServiceImplTest {
         when(operatingSystemClient.getInvokeOperatingSystemTree())
             .thenReturn(baselineCategoryModelNodeResponseArrayList);
 
-        AssetRequest assetRequest = generateAssetRequest();
-        // 普通资产
-        AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
-        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
-        assetRequest.setAssetGroups(Arrays.asList(generateAssetGroupRequest()));
-        assetOuterRequest.setAsset(assetRequest);
-        List<AssetAssemblyRequest> assetAssemblyRequests = generateAssetAssemblyRequestList();
-        assetOuterRequest.setAssemblyRequestList(assetAssemblyRequests);
-        assetOuterRequest.setIpRelationRequests(generateAssetipRequestList());
-        assetOuterRequest.setMacRelationRequests(generateAssetmacRequestList());
         when(assetMacRelationDao.insert(any())).thenReturn(0);
         when(assetIpRelationDao.insert(any())).thenReturn(0);
         assetAssemblyDao.insertBatch(anyList());
+        AssetRequest assetRequest = generateAssetRequest();
+        // 普通资产
+        AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
+
+        assetOuterRequest.setManualStartActivityRequest(generateAssetManualStart());
+        assetRequest.setAssetGroups(Arrays.asList(generateAssetGroupRequest()));
+        List<AssetAssemblyRequest> assetAssemblyRequests = generateAssetAssemblyRequestList();
+        assetOuterRequest.setAsset(assetRequest);
+        assetOuterRequest.setAssemblyRequestList(assetAssemblyRequests);
+        assetOuterRequest.setIpRelationRequests(generateAssetipRequestList());
+        assetOuterRequest.setMacRelationRequests(generateAssetmacRequestList());
+
+        AssetOuterRequest assetOuterRequest22 = new AssetOuterRequest();
+        assetOuterRequest22.setManualStartActivityRequest(generateAssetManualStart1());
+        assetOuterRequest22.setAsset(assetRequest);
+        assetOuterRequest22.setAssemblyRequestList(assetAssemblyRequests);
+        assetOuterRequest22.setIpRelationRequests(generateAssetipRequestList());
+        assetOuterRequest22.setMacRelationRequests(generateAssetmacRequestList());
+
+        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
         ActionResponse result = assetServiceImpl.saveAsset(assetOuterRequest);
         Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
         assetRequest.setBaselineTemplateId("");
@@ -400,8 +449,30 @@ public class AssetServiceImplTest {
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
         Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        // 异常情况
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
-        Integer execute = transactionTemplate.execute(transactionStatus -> Integer.valueOf(0));
+        // 异常情况
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.success());
+        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+
+        Mockito.when(assetDao.insert(Mockito.any())).thenThrow(new DuplicateKeyException(""));
+        try {
+            assetServiceImpl.saveAsset(assetOuterRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("编号重复！", e.getMessage());
+        }
+
+        AssetOuterRequest assetOuterRequest33 = new AssetOuterRequest();
+        assetOuterRequest33.setManualStartActivityRequest(generateAssetManualStart2());
+        assetOuterRequest33.setAsset(generateAssetRequest2());
+        assetOuterRequest33.setAssemblyRequestList(assetAssemblyRequests);
+        assetOuterRequest33.setIpRelationRequests(generateAssetipRequestList());
+        assetOuterRequest33.setMacRelationRequests(generateAssetmacRequestList());
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("操作失败");
+        assetServiceImpl.saveAsset(assetOuterRequest33);
 
     }
 
@@ -716,6 +787,13 @@ public class AssetServiceImplTest {
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
             .thenReturn(generateAssetNetworkEquipmentList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                        .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -731,6 +809,13 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetSafetyEquipmentDao.getByWhere(Mockito.any())).thenReturn(generateAssetSafetyEquipmentList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -746,6 +831,13 @@ public class AssetServiceImplTest {
         mockRedisUtil();
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
         Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
+        AssetHardSoftLib assetHardSoftLib=new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when( assetHardSoftLibDao
+                .getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -1483,34 +1575,52 @@ public class AssetServiceImplTest {
     public void testImportOhters() throws Exception {
 
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
-        when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
-        when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
         ImportResult importResult = new ImportResult();
+        ImportResult importResult1 = new ImportResult();
+        ImportResult importResult2 = new ImportResult();
+        ImportResult importResult3 = new ImportResult();
         List<OtherDeviceEntity> otherDeviceEntities = new ArrayList<>();
+        List<OtherDeviceEntity> otherDeviceEntities2 = new ArrayList<>();
         OtherDeviceEntity otherDeviceEntity = getOtherDeviceEntity();
+        importResult2.setDataList(otherDeviceEntities2);
+        otherDeviceEntities.add(otherDeviceEntity);
+
+        importResult3.setDataList(otherDeviceEntities);
+
+        importResult.setMsg("");
+        importResult2.setMsg("");
+        importResult3.setMsg("导入失败");
+
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult1);
+        String result11 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals(null, result11);
+
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult2);
+        String result12 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals("导入失败，模板中无数据！", result12);
+        when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult3);
+        String result13 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals("导入失败", result13);
         otherDeviceEntities.add(otherDeviceEntity);
         importResult.setDataList(otherDeviceEntities);
-        importResult.setMsg("");
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+        when(assetHardSoftLibDao.countByWhere(any())).thenReturn(1);
         AssetImportRequest assetImportRequest = new AssetImportRequest();
-        assetImportRequest.setCategory("1");
+
         String result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入成功1条", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         OtherDeviceEntity otherDeviceEntity1 = getOtherDeviceEntity();
+        otherDeviceEntity1.setNumber("sds");
         otherDeviceEntities.add(otherDeviceEntity1);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
+        Assert.assertEquals("导入失败，第8行资产编号重复！第9行MAC地址重复！", result);
 
-        otherDeviceEntity.setName("1");
-        otherDeviceEntity1.setName("2");
-        result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第8行资产编号重复！", result);
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
-        Assert.assertEquals("导入失败，第7行资产编号重复！", result);
+        Assert.assertEquals("导入失败，第7行该厂商不存在！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
@@ -1562,8 +1672,10 @@ public class AssetServiceImplTest {
     private OtherDeviceEntity getOtherDeviceEntity() {
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
         otherDeviceEntity.setNumber("123");
+        otherDeviceEntity.setManufacturer("123");
         otherDeviceEntity.setUser("123");
         otherDeviceEntity.setArea("四川");
+        otherDeviceEntity.setMac("12");
         otherDeviceEntity.setBuyDate(System.currentTimeMillis());
         otherDeviceEntity.setDueDate(System.currentTimeMillis() + 1);
         otherDeviceEntity.setImportanceDegree("1");
@@ -1701,6 +1813,40 @@ public class AssetServiceImplTest {
         assetRequest.setAdmittanceStatus(0);
         assetRequest.setBusinessId("1");
         assetRequest.setNumber("1");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setOperationSystem(1L);
+        assetRequest.setSystemBit(0);
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId("1");
+        assetRequest.setHouseLocation("1");
+        assetRequest.setInstallTemplateId("1");
+        assetRequest.setBaselineTemplateId("1");
+        assetRequest.setInstallTemplateId("1");
+        assetRequest.setAssetGroups(Lists.newArrayList());
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+        return assetRequest;
+    }
+
+    private AssetRequest generateAssetRequest2() {
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("1");
+        assetRequest.setNumber("11");
         assetRequest.setName("1");
         assetRequest.setSerial("1");
         assetRequest.setAreaId("1");

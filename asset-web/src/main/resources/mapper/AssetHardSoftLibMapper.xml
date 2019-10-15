@@ -628,12 +628,19 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
+            <choose>
+                <when test="operationSystem=='enterprise_linux'">
+                    and locate(#{operationSystem},soft_platform)>0
+                </when>
+                <otherwise>
+                    and locate(soft_platform,#{operationSystem})>0
+                </otherwise>
+            </choose>
 
-            and locate(soft_platform,#{operationSystem})>0
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>
@@ -671,11 +678,18 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
-            and locate(soft_platform,#{operationSystem})>0
+            <choose>
+                <when test="operationSystem=='enterprise_linux'">
+                    and locate(#{operationSystem},soft_platform)>0
+                </when>
+                <otherwise>
+                    and locate(soft_platform,#{operationSystem})>0
+                </otherwise>
+            </choose>
             <if test="removeBusinessIds != null and removeBusinessIds.size>0">
-                and t1.business_id not in
-                <foreach collection="removeBusinessIds" item="businessId" separator="," open="(" close=")">
-                    #{businessId}
+                and t1.id not in
+                <foreach collection="removeBusinessIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
                 </foreach>
 
             </if>

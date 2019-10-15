@@ -41,45 +41,6 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
     @Resource
     private BaseConverter<AssetAssembly, AssetAssemblyResponse>       assemblyResponseBaseConverter;
 
-    @Override
-    public String saveAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception {
-        AssetAssemblyLib assetAssemblyLib = requestConverter.convert(request, AssetAssemblyLib.class);
-        assetAssemblyLibDao.insert(assetAssemblyLib);
-        return assetAssemblyLib.getStringId();
-    }
-
-    @Override
-    public String updateAssetAssemblyLib(AssetAssemblyLibRequest request) throws Exception {
-        AssetAssemblyLib assetAssemblyLib = requestConverter.convert(request, AssetAssemblyLib.class);
-        return assetAssemblyLibDao.update(assetAssemblyLib).toString();
-    }
-
-    @Override
-    public List<AssetAssemblyLibResponse> queryListAssetAssemblyLib(AssetAssemblyLibQuery query) throws Exception {
-        List<AssetAssemblyLib> assetAssemblyLibList = assetAssemblyLibDao.findQuery(query);
-        // TODO
-        return responseConverter.convert(assetAssemblyLibList, AssetAssemblyLibResponse.class);
-    }
-
-    @Override
-    public PageResult<AssetAssemblyLibResponse> queryPageAssetAssemblyLib(AssetAssemblyLibQuery query) throws Exception {
-        return new PageResult<AssetAssemblyLibResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetAssemblyLib(query));
-    }
-
-    @Override
-    public AssetAssemblyLibResponse queryAssetAssemblyLibById(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
-        AssetAssemblyLibResponse assetAssemblyLibResponse = responseConverter
-            .convert(assetAssemblyLibDao.getById(queryCondition.getPrimaryKey()), AssetAssemblyLibResponse.class);
-        return assetAssemblyLibResponse;
-    }
-
-    @Override
-    public String deleteAssetAssemblyLibById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetAssemblyLibDao.deleteById(baseRequest.getStringId()).toString();
-    }
 
     @Override
     public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query) {

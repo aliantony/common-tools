@@ -45,24 +45,27 @@ public class AssetInstallTemplate extends BaseEntity {
     /**
      * 创建时间
      */
-    private Long              gmtCreate;
+    private Long gmtCreate;
     /**
      * 修改时间
      */
-    private Long              gmtModified;
+    private Long gmtModified;
     /**
      * 创建人
      */
-    private String            createUser;
+    private String createUser;
     /**
      * 修改人
      */
-    private String            modifiedUser;
-
+    private String modifiedUser;
+    /**
+     * 执行人id
+     */
+    private String executor;
     /**
      * 状态：1-正常，0-删除
      */
-    private Integer           status;
+    private Integer status;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -164,6 +167,14 @@ public class AssetInstallTemplate extends BaseEntity {
         this.status = status;
     }
 
+    public String getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(String executor) {
+        this.executor = executor;
+    }
+
     @Override
     public String toString() {
         return "AssetInstallTemplate{" +
@@ -178,6 +189,7 @@ public class AssetInstallTemplate extends BaseEntity {
                 ", gmtModified=" + gmtModified +
                 ", createUser='" + createUser + '\'' +
                 ", modifiedUser='" + modifiedUser + '\'' +
+                ", executor='" + executor + '\'' +
                 ", status=" + status +
                 '}';
     }

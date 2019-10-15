@@ -48,7 +48,6 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
-        <result column="step_node" property="stepNode"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
@@ -1126,14 +1125,14 @@
         asset.category_model,
         asset.admittance_status,
         asset.number,
-        ahsl2.product_name as name,
+        asset.name as name,
         asset_user.name as responsible_user_name,
         asset.install_type,
         asset.serial,
-        ahsl2.supplier as manufacturer,
+        asset.manufacturer as manufacturer,
         asset.asset_status,
         asset.operation_system,
-        ahsl.product_name as operation_system_name,
+        asset.operation_system as operation_system_name,
         asset.house_location,
         asset.latitude,
         asset.longitude,
@@ -1150,7 +1149,7 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.gmt_create,
-        ahsl2.version,
+        asset.version,
         GROUP_CONCAT(air.ip) AS ips,
         GROUP_CONCAT(amr.mac) AS macs,
         asset.install_template_id,
@@ -1160,8 +1159,6 @@
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        left join asset_hard_soft_lib ahsl on asset.operation_system = ahsl.business_id and ahsl.status = 1
-        left join asset_hard_soft_lib ahsl2 on asset.business_id = ahsl2.business_id and ahsl2.status = 1
         left join baseline_template bt on asset.baseline_template_id = bt.id
         <where>
             <trim prefixOverrides="and">
