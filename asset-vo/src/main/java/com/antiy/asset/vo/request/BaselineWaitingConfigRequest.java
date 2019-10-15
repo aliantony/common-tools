@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import java.util.Map;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * <p>
- * BaselineWaitingConfigRequest 请求对象
- * </p>
+ * <p> BaselineWaitingConfigRequest 请求对象 </p>
  *
  * @author shenliang
  * @since 2019-09-17
@@ -50,22 +51,32 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
      * 配置建议
      */
     @ApiModelProperty("配置建议")
-    private String advice;
+    private String  advice;
     /**
      * 配置原因
      */
     @ApiModelProperty("配置原因")
-    private String reason;
+    private String  reason;
+    /**
+     * 表单数据
+     */
+    @ApiModelProperty(value = "流程表单数据,JSON串")
+    private Map     formData;
+    /**
+     * 资产变更：资产主键&1&资产主键
+     */
+    @ApiModelProperty(value = "资产变更：资产主键&1&资产主键")
+    private String  businessId;
     /**
      * 记录创建时间
      */
     @ApiModelProperty("记录创建时间")
-    private Long gmtCreate;
+    private Long    gmtCreate;
     /**
      * 修改时间
      */
     @ApiModelProperty("修改时间")
-    private Long gmtModified;
+    private Long    gmtModified;
     /**
      * 记录创建人员id
      */
@@ -77,6 +88,21 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
     @ApiModelProperty("修改人id")
     private Integer modifiedUser;
 
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
+
+    public Map getFormData() {
+        return formData;
+    }
+
+    public void setFormData(Map formData) {
+        this.formData = formData;
+    }
 
     public Integer getAssetId() {
         return assetId;
@@ -86,7 +112,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
         this.assetId = assetId;
     }
 
-
     public Integer getSource() {
         return source;
     }
@@ -94,7 +119,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
     public void setSource(Integer source) {
         this.source = source;
     }
-
 
     public Integer getConfigStatus() {
         return configStatus;
@@ -104,7 +128,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
         this.configStatus = configStatus;
     }
 
-
     public Integer getCheckType() {
         return checkType;
     }
@@ -112,7 +135,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
     public void setCheckType(Integer checkType) {
         this.checkType = checkType;
     }
-
 
     public Integer getOperator() {
         return operator;
@@ -122,7 +144,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
         this.operator = operator;
     }
 
-
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -130,7 +151,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
     public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
-
 
     public Long getGmtModified() {
         return gmtModified;
@@ -140,7 +160,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
         this.gmtModified = gmtModified;
     }
 
-
     public Integer getCreateUser() {
         return createUser;
     }
@@ -148,7 +167,6 @@ public class BaselineWaitingConfigRequest extends BasicRequest implements Object
     public void setCreateUser(Integer createUser) {
         this.createUser = createUser;
     }
-
 
     public Integer getModifiedUser() {
         return modifiedUser;
