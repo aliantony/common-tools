@@ -1,8 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -1154,6 +1152,28 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
+                    // 校验装机模板是否被修改
+                    // 旧的装机模板id
+                    String installId = assetDao.getInstallTemplateId(assetOuterRequest.getAsset().getId());
+                    if (!StringUtils.equals(asset.getInstallTemplateId(), installId)) {
+                        // 删除旧的与资产关联的装机模板中的软件
+                        assetSoftwareRelationDao.deleteByInstallTemplateId(assetOuterRequest.getAsset().getId(),
+                            installId);
+                        // 保存新的装机模板中的id
+                        List<Long> sids = assetInstallTemplateDao.querySoftIds(asset.getInstallTemplateId());
+                        if (CollectionUtils.isNotEmpty(sids)) {
+                            List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+                            sids.stream().forEach(softId -> {
+                                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                                assetSoftwareRelation.setAssetId(assetOuterRequest.getAsset().getId());
+                                assetSoftwareRelation.setSoftwareId(softId);
+                                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                                assetSoftwareRelationList.add(assetSoftwareRelation);
+                            });
+                            assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+                        }
+                    }
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
                     // 处理ip

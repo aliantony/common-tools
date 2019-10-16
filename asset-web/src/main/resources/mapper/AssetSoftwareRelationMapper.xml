@@ -879,6 +879,10 @@
     <delete id="deleteSoftRealtion">
         update asset_software_relation set status = 0 where asset_id = #{id}
     </delete>
+    <update id="deleteByInstallTemplateId">
+        update asset_software_relation set status = 0 where asset_id = #{id} and software_id in
+        (select software_id from asset_software_install_template where install_template_id = #{installId})
+    </update>
     <!--保存资产软件关系-->
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
         insert into

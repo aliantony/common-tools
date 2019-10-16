@@ -1806,6 +1806,10 @@ AND a.`status` = 1
         install_type from asset where id = #{assetId}
         and status = 1
     </select>
+    <!--获取资产的装机模板id-->
+    <select id="getInstallTemplateId" resultType="java.lang.String">
+        select install_template_id from asset where identity = #{assetId}
+    </select>
     <update id="updateRedundantFiled">
         <foreach collection="list" close="" separator=";" item="item">
             <choose>

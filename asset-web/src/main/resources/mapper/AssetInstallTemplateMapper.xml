@@ -680,4 +680,7 @@
         where
         t1.install_template_id = #{installTemplateId} and t1.status=1  and t2.status = 1
     </select>
+    <select id="querySoftIds" resultType="java.lang.Long">
+        select software_id from asset_software_install_template where install_template_id = #{installTemplateId} and status = 1
+    </select>
 </mapper>

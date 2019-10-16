@@ -342,4 +342,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @throws Exception
      */
     List<String> findUuidByAssetId(List<String> assetIds) throws Exception;
+
+    /**
+     * 获取资产的装机模板
+     * @param assetId
+     * @return
+     */
+    String getInstallTemplateId(@Param("assetId") String assetId);
 }
