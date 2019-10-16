@@ -792,6 +792,6 @@
         business_id,supplier,product_name,cpe_uri,type
         from
         <include refid="Table_Name"/>
-        where gmt_modified &gt;= #{start} and gmt_modified &lt;= #{end}
+        where gmt_modified &gt;= #{startStamp} and gmt_modified &lt;= #{endStamp}
     </select>
 </mapper>

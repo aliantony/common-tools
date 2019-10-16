@@ -28,8 +28,8 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
 
     @Override
     public Integer synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
-        Long start = query.getStart();
-        Long end = query.getEnd();
+        Long start = query.getStartStamp();
+        Long end = query.getEndStamp();
         if (start == null || end == null) {
             throw new BusinessException("参数不能为空, 请检查参数");
         }
