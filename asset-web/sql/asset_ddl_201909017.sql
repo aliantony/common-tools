@@ -872,3 +872,15 @@ CREATE TABLE `asset_sys_service_lib` (
 -- Dump completed on 2019-09-19 13:04:07
 
 
+CREATE TABLE `asset_cpe_update_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) DEFAULT NULL COMMENT '文件名',
+  `result` varchar(16) DEFAULT NULL COMMENT '更新结果(success/fail)',
+  `update_num` int(11) DEFAULT NULL COMMENT '更新条数',
+  `repeat_num` int(11) DEFAULT NULL COMMENT '重复条数',
+  `reason` varchar(255) DEFAULT NULL COMMENT '失败理由',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
+  `update_duration` bigint(20) DEFAULT NULL COMMENT '更新时长',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
+
