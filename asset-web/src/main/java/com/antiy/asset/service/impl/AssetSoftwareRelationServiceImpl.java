@@ -24,6 +24,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
@@ -108,18 +109,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
-        if (Objects.equals(nameListType, 2) && !query.getIsBatch()) {
+        if (Objects.equals(nameListType, NameListTypeEnum.BLACK.getCode()) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.add(Long.parseLong(a));
             });
         }
         // 模板是白名单需排除白名单中已安装过的软件
-        else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
+        else if (Objects.equals(nameListType, NameListTypeEnum.WHITE.getCode()) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.remove(Long.parseLong(a));
             });
         }
-        if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {
+        if (Objects.equals(nameListType, NameListTypeEnum.WHITE.getCode()) && CollectionUtils.isEmpty(softwareIds)) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         Integer count = assetSoftwareRelationDao.queryInstallableCount(query, nameListType, softwareIds,
