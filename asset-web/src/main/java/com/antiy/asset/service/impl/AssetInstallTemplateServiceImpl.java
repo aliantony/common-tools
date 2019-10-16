@@ -455,6 +455,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     private boolean verifyUserRole(String... roleName) {
         Set<SysRole> set = LoginUserUtil.getLoginUser().getSysRoles();
+        if (set == null) {
+            return false;
+        }
         for (SysRole sysRole : set) {
             if (Arrays.asList(roleName).contains(sysRole.getName())) {
                 return true;

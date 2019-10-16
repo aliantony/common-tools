@@ -24,13 +24,13 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      * 模板名称
      */
     @ApiModelProperty("模板名称")
-    @Size(max = 80, min = 1)
+    @Size(max = 80, min = 1, message = "模板名称不能为空且不能超过80个字符")
     private String name;
     /**
      * 模板编号
      */
     @ApiModelProperty("模板编号")
-    @Size(max = 30, min = 1)
+    @Size(max = 30, min = 1, message = "模板编号不能为空且不能超过30个字符")
     private String numberCode;
     /**
      * 品类型号
@@ -66,7 +66,7 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      * 描述
      */
     @ApiModelProperty("描述")
-    @Size(max = 500, min = 0)
+    @Size(max = 500, min = 0, message = "描述不能超过500个字符")
     private String description;
     @ApiModelProperty("关联的软件业务id集合")
     private Set<String> softBussinessIds;
