@@ -227,8 +227,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
 
         //根据配置模板id过滤包含黑名单软件的装机模板
+        responses = assetInstallTemplateDao.queryFilteredTemplate(query);
+        responses.forEach(v -> v.setSoftBusinessIds(
+                iAssetHardSoftLibService.querySoftsRelations(v.getStringId()).stream().map(vaule -> vaule.getBusinessId()).collect(Collectors.toList())
+        ));
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                assetInstallTemplateDao.queryFilteredTemplate(query));
+                responses);
     }
 
     @Override
