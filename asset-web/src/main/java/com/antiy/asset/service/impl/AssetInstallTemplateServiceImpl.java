@@ -97,7 +97,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     @Transactional
-    public ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
+    public synchronized ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception {
 
         boolean isUpdateStatusOnly = request.getIsUpdateStatus() != null && request.getIsUpdateStatus() == 0;
         Integer templateId = request.getId();
@@ -202,9 +202,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public PageResult<AssetInstallTemplateResponse> queryPageAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
         //验证是否是业务运维员、安全管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[1])) {
-            throw new BusinessException("非法权限操作");
-        }
+//        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[1])) {
+//            throw new BusinessException("非法权限操作");
+//        }
+
         String baselineId = query.getBaselineId();
 
         Integer count = baselineId == null ? this.findCount(query) : assetInstallTemplateDao.findFilteredCount(query);
@@ -213,10 +214,18 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
         Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
+        List<AssetInstallTemplateResponse> responses = null;
         if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
+            responses = assetInstallTemplateDao.queryTemplateInfo(query);
+            List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
+            if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
+                responses.forEach(v -> v.setWaitingTask(queryTemplateTaskById(v.getStringId(), waitingTaskReponseList)));
+            }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                    assetInstallTemplateDao.queryTemplateInfo(query));
+                    responses);
         }
+
+
         //根据配置模板id过滤包含黑名单软件的装机模板
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 assetInstallTemplateDao.queryFilteredTemplate(query));
@@ -244,7 +253,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
-    public String deleteAssetInstallTemplateById(BatchQueryRequest request) {
+    public synchronized String deleteAssetInstallTemplateById(BatchQueryRequest request) {
         //验证是否是业务运维员
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
             throw new BusinessException("非法权限操作");
@@ -310,7 +319,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     @Transactional
-    public ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
+    public synchronized ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
         //验证是否是业务运维员
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
             throw new BusinessException("非法权限操作");
@@ -358,7 +367,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     @Transactional
-    public String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
+    public synchronized String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
         //验证是否是安全管理员
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[1])) {
             throw new BusinessException("非法权限操作");
@@ -367,13 +376,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         ActivityWaitingQuery query = new ActivityWaitingQuery();
         query.setUser(loginUserId.toString());
         query.setProcessDefinitionKey("installTemplate");
-        List<WaitingTaskReponse> waitingTaskReponseList = activityClient.queryAllWaitingTask(query).getBody().stream().filter(v -> v.getBusinessId().equals(request.getStringId())).collect(Collectors.toList());
-        if (waitingTaskReponseList.size() == 0) {
-            throw new BusinessException("非法操作");
+        WaitingTaskReponse waitingTaskReponse = queryTemplateTaskById(request.getStringId(), queryTemplateTasksByLoginId());
+        if (waitingTaskReponse == null) {
+            throw new BusinessException("该项操作暂无权限，请联系管理员");
         }
-        if (waitingTaskReponseList.size() > 1) {
-            throw new BusinessException("任务重复");
-        }
+
         Integer currentStatus = request.getResult() == 0 ? AssetInstallTemplateStatusEnum.REJECT.getCode() : AssetInstallTemplateStatusEnum.ENABLE.getCode();
         //更新模板检查表
         Integer checkResult = request.getResult();
@@ -393,7 +400,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         template.setGmtModified(request.getGmtCreate());
         Integer result = assetInstallTemplateDao.update(template);
         ActivityHandleRequest handleRequest = new ActivityHandleRequest();
-        handleRequest.setTaskId(waitingTaskReponseList.get(0).getTaskId());
+        handleRequest.setTaskId(waitingTaskReponse.getTaskId());
         Map<String, String> map = new HashMap<>();
         map.put("checkResult", String.valueOf(checkResult));
         handleRequest.setFormData(map);
@@ -464,6 +471,27 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
         }
         return false;
+    }
+
+    private List<WaitingTaskReponse> queryTemplateTasksByLoginId() {
+        ActivityWaitingQuery taskQuery = new ActivityWaitingQuery();
+        taskQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
+        taskQuery.setProcessDefinitionKey("installTemplate");
+        return activityClient.queryAllWaitingTask(taskQuery).getBody();
+    }
+
+    private WaitingTaskReponse queryTemplateTaskById(String id, List<WaitingTaskReponse> waitingTaskReponseList) {
+
+        if (waitingTaskReponseList == null && waitingTaskReponseList.size() == 0) {
+            return null;
+        } else {
+            List<WaitingTaskReponse> filter = waitingTaskReponseList.stream().filter(v -> v.getBusinessId().equals(id)).collect(Collectors.toList());
+            if (filter.size() > 1) {
+                throw new BusinessException("同一代办任务存在多条，脏数据未处理");
+            }
+            return filter.size() == 0 ? null : filter.get(0);
+        }
+
     }
 
 }

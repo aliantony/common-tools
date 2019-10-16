@@ -628,9 +628,9 @@
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
             And type='a'
-            <if test=" softwareName != null and name != ''">
+            <if test=" softwareName != null and softwareName != ''">
                 and t1.product_name like CONCAT('%', replace(replace(REPLACE
-                (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+                (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
             <if test=" manufacturer != null and manufacturer != ''">
                 and t1.supplier like CONCAT('%', replace(replace(REPLACE
@@ -678,9 +678,9 @@
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
             And type='a'
-            <if test=" softwareName != null and name != ''">
+            <if test=" softwareName != null and softwareName != ''">
                 and t1.product_name like CONCAT('%', replace(replace(REPLACE
-                (#{name},'\\','\\\\'),'%','\%'),'_','\_'), '%')
+                (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
             <if test=" manufacturer != null and manufacturer != ''">
                 and t1.supplier like CONCAT('%', replace(replace(REPLACE
