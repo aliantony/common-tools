@@ -15,8 +15,7 @@ public class AssetUnkonwEntity {
     @ApiModelProperty("mac")
     private String macs;
 
-    @ApiModelProperty("上报方式1")
-    private String assetSourceName;
+
     @ApiModelProperty("上报方式")
     private String assetSource;
     /**
@@ -40,14 +39,6 @@ public class AssetUnkonwEntity {
 
     public void setMacs(String macs) {
         this.macs = macs;
-    }
-
-    public String getAssetSourceName() {
-        return assetSourceName;
-    }
-
-    public void setAssetSourceName(String assetSourceName) {
-        this.assetSourceName = assetSourceName;
     }
 
     public String getGmtCreate() {

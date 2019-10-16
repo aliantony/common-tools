@@ -3115,7 +3115,8 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
         }
         assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
         if (null != asset.getAssetSource()) {
-            assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");
+
+            assetEntity.setAssetSource(AssetSourceEnum.getNameByCode(asset.getAssetSource()));
         }
         assetEntity.setFirstEnterNett(longToDateString(asset.getFirstEnterNett()));
         super.convert(asset, assetEntity);
