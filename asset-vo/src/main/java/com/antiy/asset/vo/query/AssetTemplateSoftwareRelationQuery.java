@@ -30,14 +30,6 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
         this.operationSystem = operationSystem;
     }
 
-    public List<String> getRemoveBusinessIds() {
-        return removeSoftIds;
-    }
-
-    public void setRemoveBusinessIds(List<String> removeBusinessIds) {
-        this.removeSoftIds = removeBusinessIds;
-    }
-
     public String getSoftwareName() {
         return softwareName;
     }
@@ -52,5 +44,13 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
 
     public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+    public List<String> getRemoveSoftIds() {
+        return removeSoftIds;
+    }
+
+    public void setRemoveSoftIds(List<String> removeSoftIds) {
+        this.removeSoftIds = removeSoftIds;
     }
 }

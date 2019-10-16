@@ -136,9 +136,6 @@ public class BeanConvert {
                         return String.valueOf(o);
                     } else if (Integer.class.equals(aClass)) {
                         return Integer.parseInt(o.toString());
-
-                    } else if (Long.class.equals(aClass)) {
-                        return Long.parseLong(o.toString());
                     }
                 }
                 return o;

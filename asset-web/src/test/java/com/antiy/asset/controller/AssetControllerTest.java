@@ -1,11 +1,13 @@
 package com.antiy.asset.controller;
 
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.containsString;
 
 import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 
+import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import org.junit.Assert;
@@ -60,6 +62,54 @@ public class AssetControllerTest {
         asset.setAsset(assetRequest);
         Mockito.when(iAssetService.saveAsset(Mockito.any())).thenReturn(ActionResponse.success("1"));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/save/single")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+    }
+
+    @Test
+    public void assetsTemplate() throws Exception {
+        // 构造参数
+        AssetOuterRequest asset = new AssetOuterRequest();
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        asset.setAsset(assetRequest);
+        List<AssetEntity> assetEntities = new ArrayList<>();
+        Mockito.when(iAssetService.assetsTemplate(Mockito.any())).thenReturn(assetEntities);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/assetsTemplate")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+    }
+
+    @Test
+    public void CheckRepeatMAC() throws Exception {
+        // 构造参数
+        AssetOuterRequest asset = new AssetOuterRequest();
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        asset.setAsset(assetRequest);
+        List<AssetEntity> assetEntities = new ArrayList<>();
+        Mockito.when(iAssetService.CheckRepeatMAC(Mockito.any(), Mockito.any())).thenReturn(true);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatMAC")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+    }
+
+    @Test
+    public void CheckRepeatNumber() throws Exception {
+        // 构造参数
+        AssetOuterRequest asset = new AssetOuterRequest();
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        asset.setAsset(assetRequest);
+        List<AssetEntity> assetEntities = new ArrayList<>();
+        Mockito.when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
@@ -192,22 +242,14 @@ public class AssetControllerTest {
         Assert.assertEquals(200, mvcResult.getResponse().getStatus());
     }
 
-    @Test
-    public void CheckRepeatNumber() throws Exception {
 
-        Mockito.when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
-        MvcResult mvcResult = mockMvc
-            .perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber").param("number", "1")).andReturn();
-        Assert.assertEquals(200, mvcResult.getResponse().getStatus());
-    }
-
-    @Test
-    public void CheckRepeatMAC() throws Exception {
-        Mockito.when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
-        MvcResult mvcResult = mockMvc
-            .perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber").param("mac", "1")).andReturn();
-        Assert.assertEquals(200, mvcResult.getResponse().getStatus());
-    }
+    // @Test
+    // public void CheckRepeatMAC() throws Exception {
+    // Mockito.when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
+    // MvcResult mvcResult = mockMvc
+    // .perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber").param("mac", "1")).andReturn();
+    // Assert.assertEquals(200, mvcResult.getResponse().getStatus());
+    // }
 
     @Test
     public void changeStatusById() throws Exception {
