@@ -16,9 +16,9 @@ APPLICATION_JAR="@build.finalName@.jar"
 PID=$(ps -ef | grep "${APPLICATION_JAR}" | grep -v grep | awk '{ print $2 }')
 if [[ -z "$PID" ]]
 then
-    echo ${APPLICATION} is already stopped
+    ${APPLICATION} is already stopped
 else
-    echo kill  ${PID}
+    kill  ${PID}
     #等待50秒
     for i in 1 10; do
      PID=$(ps -ef | grep "${APPLICATION_JAR}" | grep -v grep | awk '{ print $2 }')
