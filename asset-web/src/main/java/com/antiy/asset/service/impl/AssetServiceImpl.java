@@ -191,9 +191,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                         asset.setFirstEnterNett(currentTimeMillis);
                     }
-
+                    // 装机模板 .存入软件
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
                         asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
+
                     }
 
                     if (CollectionUtils.isNotEmpty(assetGroup)) {
@@ -213,6 +214,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     insertBatchAssetGroupRelation(asset, assetGroup);
                     // 返回的资产id
                     aid = asset.getStringId();
+                    // //装机模板 .存入软件
+                    if (StringUtils.isNotBlank(asset.getInstallTemplateId())) {
+                        List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao
+                            .querySoftsRelations(asset.getInstallTemplateId());
+                        List<AssetSoftwareRelation> assetSoftwareRelations = Lists.newArrayList();
+                        assetHardSoftLibs.forEach(assetHardSoftLib -> {
+                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                            assetSoftwareRelation.setAssetId(asset.getStringId());
+                            assetSoftwareRelation.setGmtCreate(currentTimeMillis);
+                            assetSoftwareRelation.setSoftwareId(Long.parseLong(assetHardSoftLib.getBusinessId()));
+                            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                            assetSoftwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                            assetSoftwareRelations.add(assetSoftwareRelation);
+                        });
+                        assetSoftwareRelationDao.insertBatch(assetSoftwareRelations);
+                    }
+
                     // 组件
                     if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
                         List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
