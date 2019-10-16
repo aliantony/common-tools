@@ -871,7 +871,7 @@ CREATE TABLE `asset_sys_service_lib` (
 
 -- Dump completed on 2019-09-19 13:04:07
 
-
+DROP TABLE IF EXISTS `asset_cpe_update_record`;
 CREATE TABLE `asset_cpe_update_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `file_name` varchar(255) DEFAULT NULL COMMENT '文件名',
