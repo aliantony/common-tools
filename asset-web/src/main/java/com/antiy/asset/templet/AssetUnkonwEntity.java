@@ -1,10 +1,6 @@
 package com.antiy.asset.templet;
 
-import com.antiy.common.utils.DateUtils;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.Date;
-import java.util.Objects;
 
 public class AssetUnkonwEntity {
 
@@ -19,15 +15,16 @@ public class AssetUnkonwEntity {
     @ApiModelProperty("mac")
     private String macs;
 
-    @ApiModelProperty("上报方式")
+    @ApiModelProperty("上报方式1")
     private String assetSourceName;
-
+    @ApiModelProperty("上报方式")
+    private String assetSource;
     /**
      * 首次发现时间
      */
     @ApiModelProperty("首次发现时间")
 
-    private Long   gmtCreate;
+    private String gmtCreate;
 
     public String getIps() {
         return ips;
@@ -54,17 +51,18 @@ public class AssetUnkonwEntity {
     }
 
     public String getGmtCreate() {
-        return longToDateString(gmtCreate);
+        return gmtCreate;
     }
 
-    public void setGmtCreate(Long gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    private String longToDateString(Long datetime) {
-        if (Objects.nonNull(datetime) && !Objects.equals(datetime, 0L)) {
-            return DateUtils.getDataString(new Date(datetime), DateUtils.WHOLE_FORMAT);
-        }
-        return "";
+    public String getAssetSource() {
+        return assetSource;
+    }
+
+    public void setAssetSource(String assetSource) {
+        this.assetSource = assetSource;
     }
 }
