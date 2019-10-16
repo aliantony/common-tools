@@ -187,6 +187,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setAssetStatus(
                             "safetyCheck".equals(admittanceResult[0]) ? AssetStatusEnum.WAIT_CHECK.getCode()
                                 : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        asset.setStepNode(
+                                "safetyCheck".equals(admittanceResult[0]) ? "safetyCheck" : "templateImplement");
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                         asset.setFirstEnterNett(currentTimeMillis);
