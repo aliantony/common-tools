@@ -1135,7 +1135,7 @@
         asset.manufacturer as manufacturer,
         asset.asset_status,
         asset.operation_system,
-        asset.operation_system as operation_system_name,
+        asset.operation_system_name as operation_system_name,
         asset.house_location,
         asset.latitude,
         asset.longitude,
