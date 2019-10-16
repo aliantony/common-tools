@@ -2807,7 +2807,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<String> queryUuidByAssetId(AssetIdRequest request) throws Exception {
         if (CollectionUtils.isNotEmpty(request.getAssetIds())) {
-            return assetDao.findIdByAreaIds(request.getAssetIds());
+            return assetDao.findUuidByAssetId(request.getAssetIds());
         } else {
             throw new BusinessException("区域ID不能为空");
         }
