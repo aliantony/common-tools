@@ -21,7 +21,7 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2019-01-02
  */
-@Api(value = "", description = "根据区域ID返回资产UUID")
+@Api(description = "资产业务接口")
 @RestController
 @RequestMapping("/api/v1/asset")
 public class AssetBusinessController {

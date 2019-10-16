@@ -1157,6 +1157,7 @@
         GROUP_CONCAT(amr.mac) AS macs,
         asset.install_template_id,
         asset.baseline_template_id,
+        asset.step_node,
         bt.tp_name as baseline_template_name
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1

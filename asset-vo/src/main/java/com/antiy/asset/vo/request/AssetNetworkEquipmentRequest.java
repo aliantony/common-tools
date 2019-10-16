@@ -37,14 +37,14 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      * 接口数目
      */
     @ApiModelProperty("接口数目")
-    @Max(value = 127, message = "网口数目大小不超过127")
+    @Max(value = 127, message = "接口数目大小不超过127")
     private Integer interfaceSize;
     /**
      * 端口数目
      */
     @ApiModelProperty("网口数目")
     @NotNull(message = "网口数目不为空")
-    @Max(value = 99, message = "网口数目大小不超过99")
+    @Max(value = 100, message = "网口数目大小不超过100")
     private Integer portSize;
     /**
      * 是否无线:2-否,1-是

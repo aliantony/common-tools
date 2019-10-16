@@ -1,6 +1,8 @@
 package com.antiy.asset.service.impl;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -1996,11 +1998,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (entity.getPortSize() <= 0 || entity.getPortSize() > 99) {
+            if (entity.getPortSize() <= 0 || entity.getPortSize() > 100) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("网口数目范围为1-99！");
+                builder.append("第").append(a).append("行").append("网口数目范围为1-100！");
                 continue;
+            }
+            if (entity.getInterfaceSize() != null) {
+                if (entity.getInterfaceSize() > 127) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("接口数目不大于127！");
+                    continue;
+                }
             }
 
             if (entity.getButDate() != null) {

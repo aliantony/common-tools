@@ -46,7 +46,7 @@ public class NetworkDeviceEntity {
     /**
      * 数目
      */
-    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 2)
+    @ExcelField(value = "portSize", align = 1, title = "网口数目(必填)", required = true, length = 3)
     private Integer portSize;
 
     /**
@@ -79,7 +79,7 @@ public class NetworkDeviceEntity {
     /**
      * 接口数目
      */
-    @ExcelField(value = "interfaceSize", align = 1, title = "接口数目", length = 7)
+    @ExcelField(value = "interfaceSize", align = 1, title = "接口数目", length = 3)
     private Integer interfaceSize;
     /**
      * IOS
