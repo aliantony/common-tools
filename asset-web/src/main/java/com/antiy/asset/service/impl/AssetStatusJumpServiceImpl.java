@@ -62,6 +62,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
+        LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
         List<Asset> assetsInDb = new ArrayList<>();
@@ -78,15 +79,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }
         });
 
-        // 先更改为下一个状态,后续失败进行回滚
-        setInProcess(statusJumpRequest, assetsInDb);
-
         // 2.不是变更完成,提交至工作流
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
+            // 先更改为下一个状态,后续失败进行回滚
+            setInProcess(statusJumpRequest, assetsInDb);
             boolean activitySuccess = startActivity(statusJumpRequest);
             if (!activitySuccess) {
                 assetDao.updateAssetBatch(assetsInDb);
-                LogUtils.warn(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
+                LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
             }
         }
@@ -235,7 +235,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        assetOperationRecord.setProcessResult(AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum()) ? null : Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+            assetOperationRecord.setProcessResult(null);
+        } else {
+            assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
+        }
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
