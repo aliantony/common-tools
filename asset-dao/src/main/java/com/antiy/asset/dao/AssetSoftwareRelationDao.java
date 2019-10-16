@@ -223,4 +223,11 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     String queryOs(@Param("query") InstallQuery query);
+
+    /**
+     * 通过装机模板id删除资产软件关系
+     * @param id
+     * @param installId
+     */
+    void deleteByInstallTemplateId(@Param("id") String id, @Param("installId") String installId);
 }
