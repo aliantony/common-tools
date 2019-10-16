@@ -1,5 +1,10 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
@@ -9,10 +14,6 @@ import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.QueryCondition;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -32,6 +33,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 通过资产id查询关联软件简要信息 id,名称,品类型号,软件大小,厂商,发布时间,端口,许可秘钥
+     *
      * @param query
      * @return
      */
@@ -39,6 +41,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 根据assetId资产id统计数量
+     *
      * @param assetId
      * @return
      */
@@ -61,13 +64,13 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询软件关联的硬件
+     *
      * @param softwareIds
      * @return
      */
     List<Map<String, Object>> countSoftwareRelAsset(@Param("softwareIds") List<Integer> softwareIds);
 
     /**
-     * 
      * @param assetId
      * @param softwareId
      * @return
@@ -76,6 +79,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 获取关联表的Id 列表
+     *
      * @param assetId 资产Id信息
      * @param softwareId 软件资产Id
      * @return
@@ -84,6 +88,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 删除资产下的软件
+     *
      * @param id
      * @return
      */
@@ -91,6 +96,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 新资产软件关系
+     *
      * @param assetSoftwareRelationList
      * @return
      */
@@ -106,6 +112,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询资产软件关系表
+     *
      * @param id
      * @return
      */
@@ -113,6 +120,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 安装列表查询
+     *
      * @param query
      * @return
      */
@@ -120,6 +128,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 安装列表数量查询
+     *
      * @param query
      * @return
      */
@@ -127,6 +136,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询资产上安装的软件，用于下发智甲
+     *
      * @param assetId
      * @return
      */
@@ -134,6 +144,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 等判断软件是否已经执行过安装操作
+     *
      * @param softwareId
      * @param assetIds
      * @return
@@ -142,6 +153,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 通过软件ID和资产ID获取配置状态
+     *
      * @param query
      * @return
      */
@@ -149,6 +161,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询资产已关联的软件列表
+     *
      * @param query
      * @return
      */
@@ -156,6 +169,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询基准模板名单类型
+     *
      * @param query
      * @return
      */
@@ -163,6 +177,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询基准模板中的软件
+     *
      * @param query
      * @return
      */
@@ -170,6 +185,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
 
     /**
      * 查询可关联软件列表
+     *
      * @param query
      * @param nameListType
      * @param softwareIds
@@ -178,10 +194,12 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     List<AssetSoftwareInstallResponse> queryInstallableList(@Param("query") InstallQuery query,
                                                             @Param("nameListType") Integer nameListType,
                                                             @Param("softwareIds") List<Long> softwareIds,
-                                                            @Param("installedSoftIds") List<String> installedSoftIds);
+                                                            @Param("installedSoftIds") List<String> installedSoftIds,
+                                                            @Param("os") String os);
 
     /**
      * 查询可关联软件数量
+     *
      * @param query
      * @param nameListType
      * @param softwareIds
@@ -189,11 +207,27 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      */
     Integer queryInstallableCount(@Param("query") InstallQuery query, @Param("nameListType") Integer nameListType,
                                   @Param("softwareIds") List<Long> softwareIds,
-                                  @Param("installedSoftIds") List<String> installedSoftIds);
+                                  @Param("installedSoftIds") List<String> installedSoftIds, @Param("os") String os);
 
     /**
      * 删除资产与软件的关联关系
+     *
      * @param id
      */
     void deleteSoftRealtion(@Param("id") String id);
+
+    /**
+     * 配置模板适用的操作系统
+     *
+     * @param query
+     * @return
+     */
+    String queryOs(@Param("query") InstallQuery query);
+
+    /**
+     * 通过装机模板id删除资产软件关系
+     * @param id
+     * @param installId
+     */
+    void deleteByInstallTemplateId(@Param("id") String id, @Param("installId") String installId);
 }

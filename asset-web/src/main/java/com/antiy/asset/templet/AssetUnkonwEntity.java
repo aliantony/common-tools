@@ -22,7 +22,7 @@ public class AssetUnkonwEntity {
      * 首次发现时间
      */
     @ApiModelProperty("首次发现时间")
-    private Long   gmtCreate;
+    private String gmtCreate;
 
     public String getIps() {
         return ips;
@@ -48,11 +48,11 @@ public class AssetUnkonwEntity {
         this.assetSourceName = assetSourceName;
     }
 
-    public Long getGmtCreate() {
+    public String getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Long gmtCreate) {
+    public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 }

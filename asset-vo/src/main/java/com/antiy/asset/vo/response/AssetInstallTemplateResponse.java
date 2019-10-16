@@ -59,6 +59,11 @@ public class AssetInstallTemplateResponse {
     private String templateId;
     @ApiModelProperty("执行人信息")
     private List<AssetSysUserResponse> executor;
+    @ApiModelProperty("代办任务")
+    private WaitingTaskReponse waitingTask;
+    @ApiModelProperty("软件业务ids")
+    private List<String> softBusinessIds;
+
 
     public String getStringId() {
         return stringId;
@@ -188,4 +193,19 @@ public class AssetInstallTemplateResponse {
         this.executor = executor;
     }
 
+    public WaitingTaskReponse getWaitingTask() {
+        return waitingTask;
+    }
+
+    public void setWaitingTask(WaitingTaskReponse waitingTask) {
+        this.waitingTask = waitingTask;
+    }
+
+    public List<String> getSoftBusinessIds() {
+        return softBusinessIds;
+    }
+
+    public void setSoftBusinessIds(List<String> softBusinessIds) {
+        this.softBusinessIds = softBusinessIds;
+    }
 }

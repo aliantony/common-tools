@@ -24,6 +24,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
@@ -91,7 +92,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
 
     @Override
-    public List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query) throws Exception {
+    public List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query) {
         // 查询资产已关联的软件列表
         return assetSoftwareRelationDao.queryInstalledList(query);
     }
@@ -100,33 +101,35 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public PageResult<AssetSoftwareInstallResponse> queryInstallableList(InstallQuery query) {
         // 模板黑白名单类型
         Integer nameListType = assetSoftwareRelationDao.queryNameListType(query);
+        // 模板黑白名单类型
+        String os = assetSoftwareRelationDao.queryOs(query);
         // 模板的软件
         List<Long> softwareIds = assetSoftwareRelationDao.querySoftwareIds(query);
         // 已安装的软件
         List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
-        if (Objects.equals(nameListType, 2) && !query.getIsBatch()) {
+        if (Objects.equals(nameListType, NameListTypeEnum.BLACK.getCode()) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.add(Long.parseLong(a));
             });
         }
         // 模板是白名单需排除白名单中已安装过的软件
-        else if (Objects.equals(nameListType, 3) && !query.getIsBatch()) {
+        else if (Objects.equals(nameListType, NameListTypeEnum.WHITE.getCode()) && !query.getIsBatch()) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.remove(Long.parseLong(a));
             });
         }
-        if (Objects.equals(nameListType, 3) && CollectionUtils.isEmpty(softwareIds)) {
+        if (Objects.equals(nameListType, NameListTypeEnum.WHITE.getCode()) && CollectionUtils.isEmpty(softwareIds)) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         Integer count = assetSoftwareRelationDao.queryInstallableCount(query, nameListType, softwareIds,
-            installedSoftIds);
+            installedSoftIds, os);
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-            assetSoftwareRelationDao.queryInstallableList(query, nameListType, softwareIds, installedSoftIds));
+            assetSoftwareRelationDao.queryInstallableList(query, nameListType, softwareIds, installedSoftIds, os));
     }
 
     @Override
@@ -165,6 +168,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
             baselineWaitingConfigRequest.setReason("资产变更");
             baselineWaitingConfigRequest.setSource(2);
+            baselineWaitingConfigRequest
+                .setFormData(softwareReportRequest.getManualStartActivityRequest().getFormData());
+            baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);

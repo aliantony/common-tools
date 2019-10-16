@@ -149,6 +149,9 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" executor != null">
+            executor = #{executor },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -200,57 +203,18 @@
         </trim>
     </insert>
     <update id="updateStatus" parameterType="com.antiy.asset.entity.AssetInstallTemplate">
-        <choose>
-            <when test="currentStatus ==1">
-                update `asset_install_template_check` t1,
-                <include refid="Table_Name"></include>
-                t2
-                <trim prefix="set" suffixOverrides=",">
-                    t1.result = #{currentStatus },
-                    t2.current_status=#{currentStatus },
-                    <if test=" gmtModified != null">
-                        t1.gmt_modified = #{gmtModified },
-                        t2.gmt_modified = #{gmtModified },
-                    </if>
-                    <if test=" modifiedUser != null">
-                        t1.modified_user = #{modifiedUser },
-                        t2.modified_user = #{modifiedUser },
-                    </if>
-                    <if test=" name != null">
-                        t2.name = #{name },
-                    </if>
-                    <if test=" categoryModel != null">
-                        t2.category_model = #{categoryModel },
-                    </if>
-                    <if test=" operationSystem != null">
-                        t2.operation_system = #{operationSystem },
-                    </if>
-                    <if test=" operationSystemName != null">
-                        t2.operation_system_name = #{operationSystemName },
-                    </if>
-                    <if test=" description != null">
-                        t2.description = #{description },
-                    </if>
-                </trim>
-                where t1.install_template_id=#{id} and t1.status=1
-                and t2.id=#{id} and t2.status=1
-            </when>
-            <otherwise>
-                update
-                <include refid="Table_Name"></include>
-                <trim prefix="set" suffixOverrides=",">
-                    current_status = #{currentStatus },
-                    <if test=" gmtModified != null">
-                        gmt_modified = #{gmtModified },
-                    </if>
-                    <if test=" modifiedUser != null">
-                        modified_user = #{modifiedUser },
-                    </if>
-                </trim>
-                where id = #{id} and status=1
-            </otherwise>
-        </choose>
-
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="set" suffixOverrides=",">
+            current_status = #{currentStatus },
+            <if test=" gmtModified != null">
+                gmt_modified = #{gmtModified },
+            </if>
+            <if test=" modifiedUser != null">
+                modified_user = #{modifiedUser },
+            </if>
+        </trim>
+        where id = #{id} and status=1
     </update>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetInstallTemplate">
@@ -715,5 +679,8 @@
         from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
         where
         t1.install_template_id = #{installTemplateId} and t1.status=1  and t2.status = 1
+    </select>
+    <select id="querySoftIds" resultType="java.lang.Long">
+        select software_id from asset_software_install_template where install_template_id = #{installTemplateId} and status = 1
     </select>
 </mapper>

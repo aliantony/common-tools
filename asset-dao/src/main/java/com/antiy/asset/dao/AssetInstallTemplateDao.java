@@ -1,5 +1,10 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
@@ -11,10 +16,6 @@ import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
 import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.ObjectQuery;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * <p> 装机模板 Mapper 接口 </p>
@@ -24,7 +25,7 @@ import java.util.Set;
  */
 public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> {
 
-    public List<AssetInstallTemplate> findByAssetIds(List<String> ids);
+    List<AssetInstallTemplate> findByAssetIds(List<String> ids);
 
     /**
      * 通过资产ID查询
@@ -145,4 +146,11 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
 
     List<PatchInfo> queryPatchRelations(@Param("installTemplateId") String installTemplateId);
     Integer insertTemplateCheckInfo(AssetInstallTemplateCheckRequest request);
+
+    /**
+     * 查询装机模板的软件id列表
+     * @param installTemplateId
+     * @return
+     */
+    List<Long> querySoftIds(@Param("installTemplateId") String installTemplateId);
 }

@@ -334,4 +334,19 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer queryInstallType(@Param("assetId") String assetId);
 
     Integer updateRedundantFiled(List<AssetHardSoftLib> hardSoftLibs) throws Exception;
+
+    /**
+     * 根资产ID返回资产UUID
+     * @param assetIds
+     * @return
+     * @throws Exception
+     */
+    List<String> findUuidByAssetId(List<String> assetIds) throws Exception;
+
+    /**
+     * 获取资产的装机模板
+     * @param assetId
+     * @return
+     */
+    String getInstallTemplateId(@Param("assetId") String assetId);
 }

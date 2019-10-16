@@ -1,13 +1,12 @@
 package com.antiy.asset.service.impl;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.antiy.common.utils.DataTypeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -75,7 +74,8 @@ public class AssetSoftwareRelationServiceImplTest {
         when(loginUser.getAreaIdsOfCurrentUser()).thenReturn(new ArrayList<>());
         List<String> osList = new ArrayList<>();
         osList.add("1");
-        when(assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser())).thenReturn(osList);
+        when(assetSoftwareRelationDao.findOS(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()))
+            .thenReturn(osList);
         List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
         BaselineCategoryModelResponse baselineCategoryModelResponse = new BaselineCategoryModelResponse();
         baselineCategoryModelResponse.setStringId("1");
@@ -111,7 +111,8 @@ public class AssetSoftwareRelationServiceImplTest {
         List<String> s = new ArrayList<>();
         s.add("1");
         when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(2);
-        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s)).thenReturn(1);
+        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, anyString()))
+            .thenReturn(1);
         softwareRelationService.queryInstallableList(installQuery);
     }
 

@@ -150,7 +150,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      * 上报来源,1-自动上报，2-人工上报
      */
     @ApiModelProperty("1, 资产探测,2, 人工登记,3,代理上报")
-    @Max(message = "上报来源最大为2", value = 2)
+    @Max(message = "上报来源最大为3", value = 3)
     @Min(message = "上报来源最小为1", value = 1)
     private Integer       assetSource;
 

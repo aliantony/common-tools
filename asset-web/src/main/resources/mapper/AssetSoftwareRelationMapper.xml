@@ -784,6 +784,9 @@
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
+                </if>
             </when>
             <when test="nameListType == 3">
                 and business_id in
@@ -797,6 +800,9 @@
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
                     </foreach>
+                </if>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
                 </if>
             </otherwise>
         </choose>
@@ -831,6 +837,9 @@
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
                 </foreach>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
+                </if>
             </when>
             <when test="nameListType == 3">
                 and business_id in
@@ -844,6 +853,9 @@
                     <foreach collection="installedSoftIds" item="item" open="(" close=")">
                         #{item}
                     </foreach>
+                </if>
+                <if test="os != null and os != ''">
+                    and soft_platform like concat('%',#{os},'%')
                 </if>
             </otherwise>
         </choose>
@@ -860,10 +872,17 @@
             and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
     </select>
+    <select id="queryOs" resultType="java.lang.String">
+        select serial_name from asset_cpe_filter where business_id = (select system from baseline_template where id = #{query.baselineTemplateId})
+    </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
         update asset_software_relation set status = 0 where asset_id = #{id}
     </delete>
+    <update id="deleteByInstallTemplateId">
+        update asset_software_relation set status = 0 where asset_id = #{id} and software_id in
+        (select software_id from asset_software_install_template where install_template_id = #{installId})
+    </update>
     <!--保存资产软件关系-->
     <insert id="insertBatch" parameterType="com.antiy.asset.entity.AssetSoftwareRelation">
         insert into
