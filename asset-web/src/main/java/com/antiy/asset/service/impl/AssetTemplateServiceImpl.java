@@ -44,7 +44,7 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> queryAllArea() throws Exception {
-        return LoginUserUtil.getLoginUser().getAreas().stream().filter(sysArea -> !"行政区划".equals(sysArea.getFullName()))
+        return LoginUserUtil.getLoginUser().getAreas().stream().filter(sysArea -> !"0".equals(sysArea.getParentId()))
             .map(sysArea -> sysArea.getFullName()).collect(Collectors.toList());
     }
 
