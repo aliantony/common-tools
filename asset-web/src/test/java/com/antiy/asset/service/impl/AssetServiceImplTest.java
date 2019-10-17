@@ -492,6 +492,10 @@ public class AssetServiceImplTest {
         ProcessTemplateRequest processTemplateRequest = new ProcessTemplateRequest();
         processTemplateRequest.setIds(Lists.newArrayList("2323"));
         List<AssetEntity> assetEntities = new ArrayList<>();
+        ActionResponse<List<WaitingTaskReponse>> listActionResponse = new ActionResponse<>();
+        List<WaitingTaskReponse> waitingTaskReponses = new ArrayList<>();
+
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(ActionResponse.success(waitingTaskReponses));
         when(assetServiceImpl.assetsTemplate(processTemplateRequest)).thenReturn(assetEntities);
 
     }
