@@ -1625,8 +1625,7 @@
                 #{item}
             </foreach>
         </if>
-        and  and asset.asset_status in (6,10)
-
+         and asset.asset_status in (6,10)
         GROUP BY
         asset_id
         ) alarm_asset
