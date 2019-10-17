@@ -1165,7 +1165,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
                         || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
                         || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
-                        dealInstallTemplete(asset.getInstallTemplateId(), assetOuterRequest.getAsset().getId());
+                        if (StringUtils.isNotBlank(asset.getInstallTemplateId())) {
+                            dealInstallTemplete(asset.getInstallTemplateId(), assetOuterRequest.getAsset().getId());
+                        }
                     }
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
@@ -1223,10 +1225,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
+                // 已退役、待登记，不予登记再登记
                 if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
                     || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
                     || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
-                    // 已退役、待登记，不予登记再登记
                     // 授权数量校验
                     anthNumValidate();
                     // 处理流程
