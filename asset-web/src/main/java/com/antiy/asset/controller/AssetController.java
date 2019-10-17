@@ -1,11 +1,21 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.enums.AssetSourceEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCountColumnarResponse;
@@ -18,19 +28,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -87,16 +86,6 @@ public class AssetController {
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
             asset.setSortName("asset.id");
-        }
-        // 是否未知资产列表查询
-        if (asset.getUnknownAssets()) {
-            if (Objects.isNull(asset.getAssetSource())) {
-                List<Integer> sourceList = Lists.newArrayList();
-                sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
-                sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
-                asset.setAssetSourceList(sourceList);
-            }
-            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }
