@@ -114,6 +114,9 @@
         <if test=" operationSystem != null">
             operation_system,
         </if>
+        <if test=" operationSystemName != null">
+            operation_system_name,
+        </if>
         <if test=" responsibleUserId != null">
             responsible_user_id,
         </if>
@@ -235,6 +238,10 @@
         <if test=" operationSystem != null">
             #{operationSystem },
         </if>
+        <if test=" operationSystemName != null">
+            #{operationSystemName },
+        </if>
+
         <if test=" responsibleUserId != null">
             #{responsibleUserId },
         </if>
@@ -327,6 +334,7 @@
             #{entity.assetStatus },
             #{entity.admittanceStatus },
             #{entity.operationSystem },
+            #{entity.operationSystemName },
             #{entity.responsibleUserId },
             #{entity.houseLocation },
             #{entity.firmwareVersion },
@@ -366,6 +374,7 @@
             asset_status,
             admittance_status,
             operation_system,
+            operationSystemName,
             responsible_user_id,
             house_location,
             firmware_version,
@@ -430,6 +439,9 @@
         </if>
         <if test=" operationSystem != null">
             operation_system = #{operationSystem },
+        </if>
+        <if test=" operationSystemName != null">
+            operation_system_name = #{operationSystemName },
         </if>
         <if test=" responsibleUserId != null">
             responsible_user_id = #{responsibleUserId },
@@ -552,6 +564,9 @@
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
         </if>
+        <if test=" operationSystemName != null">
+            and operation_system_name = #{operationSystemName }
+        </if>
         <if test=" responsibleUserId != null">
             and responsible_user_id = #{responsibleUserId }
         </if>
@@ -659,6 +674,9 @@
         </if>
         <if test=" operationSystem != null">
             and operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and operation_system_name = #{operationSystemName }
         </if>
         <if test=" systemBit != null">
             and system_bit = #{systemBit }
@@ -1226,6 +1244,7 @@
                 #{areaId}
             </foreach>
         </if>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY asset_status
     </select>
 
@@ -1707,6 +1726,7 @@ WHERE
         <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
             #{areaId}
         </foreach>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY category_model
     </select>
     <select id="findCountAssetNumber" resultType="int">

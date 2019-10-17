@@ -160,6 +160,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Long currentTimeMillis = System.currentTimeMillis();
         final String[] admittanceResult = new String[1];
         final String[] uuid = new String[1];
+        String msg = null;
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -218,17 +219,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (StringUtils.isNotBlank(asset.getInstallTemplateId())) {
                         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao
                             .querySoftsRelations(asset.getInstallTemplateId());
-                        List<AssetSoftwareRelation> assetSoftwareRelations = Lists.newArrayList();
-                        assetHardSoftLibs.forEach(assetHardSoftLib -> {
-                            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                            assetSoftwareRelation.setAssetId(asset.getStringId());
-                            assetSoftwareRelation.setGmtCreate(currentTimeMillis);
-                            assetSoftwareRelation.setSoftwareId(Long.parseLong(assetHardSoftLib.getBusinessId()));
-                            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                            assetSoftwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
-                            assetSoftwareRelations.add(assetSoftwareRelation);
-                        });
-                        assetSoftwareRelationDao.insertBatch(assetSoftwareRelations);
+                        if (CollectionUtils.isNotEmpty(assetHardSoftLibs)) {
+
+                            List<AssetSoftwareRelation> assetSoftwareRelations = Lists.newArrayList();
+                            assetHardSoftLibs.forEach(assetHardSoftLib -> {
+                                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                                assetSoftwareRelation.setAssetId(asset.getStringId());
+                                assetSoftwareRelation.setGmtCreate(currentTimeMillis);
+                                assetSoftwareRelation.setSoftwareId(Long.parseLong(assetHardSoftLib.getBusinessId()));
+                                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                                assetSoftwareRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                                assetSoftwareRelations.add(assetSoftwareRelation);
+                            });
+                            assetSoftwareRelationDao.insertBatch(assetSoftwareRelations);
+                        }
                     }
 
                     // 组件
@@ -335,11 +339,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 : activityRequest.getFormData().get("templateImplementUser").toString());
             // 如果没得uuid 安全检查
             ActionResponse baselineCheck;
+
             if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                baselineCheck.setBody("安全检查没得UUID");
+                msg = "无法获取到资产UUID，资产维护方式将默认:人工方式";
+            } else {
+                baselineCheck = baseLineClient.baselineCheck (baselineAssetRegisterRequest);
             }
-            baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
 
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
@@ -351,7 +357,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        return ActionResponse.success();
+        return ActionResponse.success (msg);
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -715,69 +721,69 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("currentAlarmAssetIdNum", assetDao.findAlarmAssetCount(assetQuery));
         return map;
     }
-
-    @Override
-    public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
-
-        // 根据时间戳创建文件夹，防止产生冲突
-        Long currentTime = System.currentTimeMillis();
-        // 创建临时文件夹
-        String dictionary = "/temp" + currentTime + "/模板" + currentTime;
-        File dictionaryFile = new File(dictionary);
-        if (!dictionaryFile.exists()) {
-            logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
-        }
-        File comFile = null;
-
-        // 需要下载装机模板
-        if (CollectionUtils.isNotEmpty(baseRequest.getComIds())) {
-            comFile = new File(dictionaryFile, "装机模板列表.xls");
-            List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao.findByAssetIds(baseRequest.getComIds());
-            // 下载装机模板列表
-            HSSFWorkbook hssfWorkbook = excelDownloadUtil.getHSSFWorkbook("装机模板列表", byAssetIds);
-            FileOutputStream fileOutputStream = new FileOutputStream(comFile);
-            hssfWorkbook.write(fileOutputStream);
-            CloseUtils.close(fileOutputStream);
-        }
-
-        // List<AssetResponse> list = this
-        // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-        List<AssetEntity> assetEntities1 = getAssetEntities(baseRequest);
-
-        File assetFile = new File(dictionaryFile, "资产列表.xls");
-        // 下载资产列表
-        HSSFWorkbook hssfWorkbook1 = excelDownloadUtil.getHSSFWorkbook("资产列表", assetEntities1);
-
-        FileOutputStream fileOutputStream1 = new FileOutputStream(assetFile);
-        hssfWorkbook1.write(fileOutputStream1);
-        fileOutputStream1.close();
-        CloseUtils.close(fileOutputStream1);
-        // 入网流程不需要基准模板
-        // if (!baseRequest.isFlag()) {
-        // File template = baseLineClient.getTemplate (baseRequest.getIds ());
-        // }
-
-        // 创造模板文件
-
-        List<File> fileList = new ArrayList<>();
-        fileList.add(assetFile);
-        if (!Objects.isNull(comFile)) {
-            fileList.add(comFile);
-        }
-
-        // 创造压缩文件
-        File zip = new File("/temp" + currentTime + "/模板.zip");
-
-        logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
-        // 压缩文件为zip压缩包
-        File[] files = fileList.toArray(new File[] {});
-        ZipUtil.compress(zip, files);
-        // 将文件流发送到客户端
-        sendStreamToClient(zip);
-        // 记录临时文件删除是否成功
-        loggerIsDelete(zip);
-        deleteTemp(dictionaryFile, files);
-    }
+    //
+    // @Override
+    // public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
+    //
+    // // 根据时间戳创建文件夹，防止产生冲突
+    // Long currentTime = System.currentTimeMillis();
+    // // 创建临时文件夹
+    // String dictionary = "/temp" + currentTime + "/模板" + currentTime;
+    // File dictionaryFile = new File(dictionary);
+    // if (!dictionaryFile.exists()) {
+    // logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
+    // }
+    // File comFile = null;
+    //
+    // // 需要下载装机模板
+    // if (CollectionUtils.isNotEmpty(baseRequest.getComIds())) {
+    // comFile = new File(dictionaryFile, "装机模板列表.xls");
+    // List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao.findByAssetIds(baseRequest.getComIds());
+    // // 下载装机模板列表
+    // HSSFWorkbook hssfWorkbook = excelDownloadUtil.getHSSFWorkbook("装机模板列表", byAssetIds);
+    // FileOutputStream fileOutputStream = new FileOutputStream(comFile);
+    // hssfWorkbook.write(fileOutputStream);
+    // CloseUtils.close(fileOutputStream);
+    // }
+    //
+    // // List<AssetResponse> list = this
+    // // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
+    // List<AssetEntity> assetEntities1 = getAssetEntities(baseRequest);
+    //
+    // File assetFile = new File(dictionaryFile, "资产列表.xls");
+    // // 下载资产列表
+    // HSSFWorkbook hssfWorkbook1 = excelDownloadUtil.getHSSFWorkbook("资产列表", assetEntities1);
+    //
+    // FileOutputStream fileOutputStream1 = new FileOutputStream(assetFile);
+    // hssfWorkbook1.write(fileOutputStream1);
+    // fileOutputStream1.close();
+    // CloseUtils.close(fileOutputStream1);
+    // // 入网流程不需要基准模板
+    // // if (!baseRequest.isFlag()) {
+    // // File template = baseLineClient.getTemplate (baseRequest.getIds ());
+    // // }
+    //
+    // // 创造模板文件
+    //
+    // List<File> fileList = new ArrayList<>();
+    // fileList.add(assetFile);
+    // if (!Objects.isNull(comFile)) {
+    // fileList.add(comFile);
+    // }
+    //
+    // // 创造压缩文件
+    // File zip = new File("/temp" + currentTime + "/模板.zip");
+    //
+    // logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
+    // // 压缩文件为zip压缩包
+    // File[] files = fileList.toArray(new File[] {});
+    // ZipUtil.compress(zip, files);
+    // // 将文件流发送到客户端
+    // sendStreamToClient(zip);
+    // // 记录临时文件删除是否成功
+    // loggerIsDelete(zip);
+    // deleteTemp(dictionaryFile, files);
+    // }
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
@@ -827,6 +833,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModel())) {
                 query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
             } else if (AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModel())) {
+        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
+            // 网络设备可关联计算设备和网络设备
+            if (query.getIsNet() == 2) {
                 query.setCategoryModels(
                     new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
             }
