@@ -1152,27 +1152,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
-                    // 校验装机模板是否被修改
-                    // 旧的装机模板id
-                    String installId = assetDao.getInstallTemplateId(assetOuterRequest.getAsset().getId());
-                    if (!StringUtils.equals(asset.getInstallTemplateId(), installId)) {
-                        // 删除旧的与资产关联的装机模板中的软件
-                        assetSoftwareRelationDao.deleteByInstallTemplateId(assetOuterRequest.getAsset().getId(),
-                            installId);
-                        // 保存新的装机模板中的id
-                        List<Long> sids = assetInstallTemplateDao.querySoftIds(asset.getInstallTemplateId());
-                        if (CollectionUtils.isNotEmpty(sids)) {
-                            List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
-                            sids.stream().forEach(softId -> {
-                                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                                assetSoftwareRelation.setAssetId(assetOuterRequest.getAsset().getId());
-                                assetSoftwareRelation.setSoftwareId(softId);
-                                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                                assetSoftwareRelationList.add(assetSoftwareRelation);
-                            });
-                            assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
-                        }
+                    if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
+                        || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
+                        dealInstallTemplete(asset.getInstallTemplateId(), assetOuterRequest.getAsset().getId());
                     }
                     // 1. 更新资产主表
                     int count = assetDao.changeAsset(asset);
@@ -1339,6 +1322,30 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
              * }).start(); */
         }
         return assetCount;
+    }
+
+    private void dealInstallTemplete(String newInstallId, String assetId) {
+        // 校验装机模板是否被修改
+        // 旧的装机模板id
+        String installId = assetDao.getInstallTemplateId(assetId);
+        if (!StringUtils.equals(newInstallId, installId)) {
+            // 删除旧的与资产关联的装机模板中的软件
+            assetSoftwareRelationDao.deleteByInstallTemplateId(assetId, installId);
+            // 保存新的装机模板中的id
+            List<Long> sids = assetInstallTemplateDao.querySoftIds(newInstallId);
+            if (CollectionUtils.isNotEmpty(sids)) {
+                List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
+                sids.stream().forEach(softId -> {
+                    AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+                    assetSoftwareRelation.setAssetId(assetId);
+                    assetSoftwareRelation.setSoftwareId(softId);
+                    assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+                    assetSoftwareRelationList.add(assetSoftwareRelation);
+                });
+                assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+            }
+        }
     }
 
     private String dealAssetGroup(String id, List<AssetGroupRequest> assetGroup) {
