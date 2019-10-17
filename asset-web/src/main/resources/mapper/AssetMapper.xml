@@ -1294,8 +1294,8 @@
         t1.asset_id as id,
         count(1) count
         FROM
-        vul_asset_rel t1
-        inner JOIN vul_info v ON t1.vul_id = v.id
+        vuln_asset_rel t1
+        inner JOIN vuln_info v ON t1.vul_id = v.id
         inner join asset t2
         on t1.asset_id =t2.id
         <where>
@@ -1367,7 +1367,7 @@
 
     <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
         select count(distinct (t1.asset_id)) from vuln_asset_rel t1
-        inner JOIN vul_info v ON t1.vul_id = v.id
+        inner JOIN vuln_info v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id
         where t1.vul_status != 5
         <if test="areaIds != null and areaIds.size() > 0">

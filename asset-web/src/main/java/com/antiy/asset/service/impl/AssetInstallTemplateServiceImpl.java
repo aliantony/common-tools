@@ -128,11 +128,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
             if (requestStatus == enableCode) {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_ENABLE.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "启用装机模板:{}", assetInstallTemplate.toString());
             } else {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_FORBIDDEN.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "禁用装机模板:{}", assetInstallTemplate.toString());
             }
             if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
@@ -150,6 +150,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
         ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
         ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
+        if (request.getSoftBussinessIds().size()==0 && request.getPatchIds().size()==0){
+            throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
+        }
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
@@ -189,7 +192,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_MODIFY.getName(),
-                    templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             return sendTask(request, assetInstallTemplate);
         }
@@ -285,7 +288,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         });
         ids.deleteCharAt(ids.length() - 1);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_DELETE.getName(),
-                ids.toString(), null, request.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                ids.toString(), null, request.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, "删除装机模板:{}", request.toString());
         return "删除成功";
     }
@@ -338,6 +341,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
             throw new BusinessException("非法权限操作");
         }
+        if (request.getSoftBussinessIds().size()==0 && request.getPatchIds().size()==0){
+            throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
+        }
         int result = queryNumberCode(request.getNumberCode());
         if (result > 0) {
             throw new RequestParamValidateException("模板编号已经存在");
@@ -361,7 +367,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         this.insertCheckTemplateInfo(request);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CREATION.getName(),
-                template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, "创建装机模板:{}", template.toString());
         return sendTask(request, template);
     }
@@ -425,7 +431,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (result != null && result == 1) {
             activityClient.completeTask(handleRequest);
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CHECK.getName(),
-                    template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "审核装机模板:{}", response.toString());
             return "审核结果提交成功";
         }
