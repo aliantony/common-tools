@@ -646,7 +646,7 @@
         a.area_id as areaId,
         a.name,
         a.number,
-        a.category_model,
+        a.category_model as categoryModel,
         count( b.id ) AS canBind,
         count( b.id ) - count( c.id ) AS noBind,
         a.gmt_create
@@ -663,8 +663,11 @@
                 #{item}
             </foreach>
         </if>
-        <if test="categoryModel != null">
-            and a.category_model= #{categoryModel}
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in

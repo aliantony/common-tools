@@ -821,15 +821,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
 
-        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
-            // 网络设备可关联计算设备和网络设备
-            if (query.getIsNet() == 1) {
+        if (query.getCategoryModels() == null || query.getCategoryModels().length == 0) {
+            // 查询资产的类型
+            Asset asset = assetDao.getByAssetId(query.getPrimaryKey());
+            if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModel())) {
+                query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
+            } else if (AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModel())) {
                 query.setCategoryModels(
                     new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
-            }
-            // 计算设备只能关联网络设备
-            else {
-                query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
             }
         }
 

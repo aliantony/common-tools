@@ -1275,8 +1275,8 @@
         t1.asset_id as id,
         count(1) count
         FROM
-        asset_vul_rel t1
-        inner JOIN vul v ON t1.vul_id = v.id
+        vul_asset_rel t1
+        inner JOIN vul_info v ON t1.vul_id = v.id
         inner join asset t2
         on t1.asset_id =t2.id
         <where>
@@ -1284,7 +1284,6 @@
             and t1.vul_status!=5
             and t2.status = 1
             AND v.STATUS = 1
-            AND v.vul_status = 4
             and t2.asset_status in(7,8)
             <if test="areaIds != null and areaIds.size() > 0">
                 and t2.area_id IN
@@ -1305,8 +1304,8 @@
         asset_id as id,
         count(1) as count
         FROM
-        asset_patch_rel t1
-        inner join patch p ON t1.patch_id = p.id
+        patch_asset_rel t1
+        inner join patch_info p ON t1.patch_id = p.id
         inner join asset t2
         on t1.asset_id =t2.id
         WHERE
@@ -1322,7 +1321,6 @@
         and t2.status =1
         and t2.asset_status in(7,8)
         AND p.STATUS = 1
-        AND p.patch_status = 3
         GROUP BY
         t1.asset_id
         <if test="pageSize !=-1">
@@ -1331,8 +1329,8 @@
     </select>
 
     <select id="queryAllAssetPatchCount" resultType="java.lang.Integer">
-        select count(distinct (t1.asset_id)) from asset_patch_rel t1
-        inner join patch p ON t1.patch_id = p.id
+        select count(distinct (t1.asset_id)) from patch_asset_rel t1
+        inner join patch_info p ON t1.patch_id = p.id
         inner join asset t2
         on t1.asset_id = t2.id
         where t1.patch_status != 5
@@ -1345,13 +1343,12 @@
         and t1.status = 1
         and t2.status = 1
         AND p.STATUS = 1
-        AND p.patch_status = 3
-        and t2.asset_status in(7,8)
+        and t2.asset_status in(6,10)
     </select>
 
     <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
-        select count(distinct (t1.asset_id)) from asset_vul_rel t1
-        inner JOIN vul v ON t1.vul_id = v.id
+        select count(distinct (t1.asset_id)) from vuln_asset_rel t1
+        inner JOIN vul_info v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id
         where t1.vul_status != 5
         <if test="areaIds != null and areaIds.size() > 0">
@@ -1363,8 +1360,7 @@
         and t1.status = 1
         and t2.status = 1
         AND v.STATUS = 1
-        AND v.vul_status = 4
-        and t2.asset_status in(7,8)
+        and t2.asset_status in(6,10)
     </select>
     <select id="sortAssetIds" resultType="java.lang.String">
         SELECT
