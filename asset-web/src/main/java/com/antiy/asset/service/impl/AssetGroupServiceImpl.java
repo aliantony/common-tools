@@ -308,7 +308,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public List<SelectResponse> queryUnconnectedGroupInfo(Integer isNet, String primaryKey) throws Exception {
         AssetQuery query = new AssetQuery();
-        if ((isNet == null) || isNet == 1) {
+        if ((isNet == null) || isNet == 2) {
             query.setCategoryModels(
                 new Integer[] { AssetCategoryEnum.NETWORK.getCode(), AssetCategoryEnum.COMPUTER.getCode() });
         } else {
