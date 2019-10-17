@@ -18,7 +18,7 @@ public class AccessExportConvert extends BaseConverter<AssetResponse, AccessExpo
             accessExport.setIp(assetResponse.getIps());
         }
         if (assetResponse.getMacs() != null) {
-            accessExport.setIp(assetResponse.getMacs());
+            accessExport.setMac(assetResponse.getMacs());
         }
         super.convert(assetResponse, accessExport);
     }
