@@ -146,6 +146,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             throw new BusinessException("非法权限操作");
         }
         //编辑模板
+        ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
+        ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
+        ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
