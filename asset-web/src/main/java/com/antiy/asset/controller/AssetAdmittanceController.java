@@ -128,7 +128,7 @@ public class AssetAdmittanceController {
             assetQuery.setStart(start - 1);
             assetQuery.setEnd(end - start + 1);
         }
-        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9));
+        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
         List<AssetResponse> assetList = assetService.findListAsset(assetQuery, null);
         if (!CollectionUtils.isNotEmpty(assetList)) {
             return ActionResponse.success("没有数据可以导出");

@@ -14,6 +14,12 @@ public class AccessExportConvert extends BaseConverter<AssetResponse, AccessExpo
             accessExport.setAdmittanceStatusString(
                 AdmittanceStatusEnum.getAdmittanceStatusEnum(assetResponse.getAdmittanceStatus()));
         }
+        if (assetResponse.getIps() != null) {
+            accessExport.setIp(assetResponse.getIps());
+        }
+        if (assetResponse.getMacs() != null) {
+            accessExport.setIp(assetResponse.getMacs());
+        }
         super.convert(assetResponse, accessExport);
     }
 }
