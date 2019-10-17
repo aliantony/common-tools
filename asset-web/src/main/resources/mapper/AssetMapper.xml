@@ -203,7 +203,7 @@
             #{businessId },
         </if>
         <if test=" stepNode != null">
-            #{step_node },
+            #{stepNode },
         </if>
         <if test=" assetGroup != null">
             #{assetGroup },
