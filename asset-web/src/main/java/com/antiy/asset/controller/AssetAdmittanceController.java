@@ -65,7 +65,7 @@ public class AssetAdmittanceController {
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:admittance:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
-        asset.setAssetStatusList(Arrays.asList(new Integer[] { 3, 4, 5, 6, 7, 8, 9 }));
+        asset.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
         asset.setAdmittance(true);
         return ActionResponse.success(assetAdmittanceService.findPageAsset(asset));
     }
