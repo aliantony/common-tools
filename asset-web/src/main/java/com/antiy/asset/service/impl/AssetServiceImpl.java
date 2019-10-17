@@ -1066,6 +1066,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 设置操作系统
         if (asset.getOperationSystem() != null) {
             assetResponse.setOperationSystem(asset.getOperationSystem().toString());
+            assetResponse.setOperationSystemName(asset.getOperationSystemName());
         }
         // 获取资产组
         List<AssetGroupResponse> assetGroupResponses = assetGroupResponseBaseConverter
