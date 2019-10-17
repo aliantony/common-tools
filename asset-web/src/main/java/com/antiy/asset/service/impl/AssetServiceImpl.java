@@ -622,6 +622,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
+        // 是否未知资产列表查询
+        if (query.getUnknownAssets()) {
+            if (Objects.isNull(query.getAssetSource())) {
+                List<Integer> sourceList = Lists.newArrayList();
+                sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
+                sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
+                query.setAssetSourceList(sourceList);
+            }
+            query.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        }
         // 是否资产组关联资产查询
         if (null != query.getAssociateGroup()) {
             ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
@@ -2901,8 +2911,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
         if (assetQuery.getUnknownAssets()) {
-            List<AssetUnkonwEntity> assetEntities = BeanConvert.convert(list, AssetUnkonwEntity.class);
-            downloadVO.setDownloadList(assetEntities);
+            List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
+            List<AssetUnkonwEntity> assetEntities1 = BeanConvert.convert(assetEntities, AssetUnkonwEntity.class);
+            downloadVO.setDownloadList(assetEntities1);
         } else {
 
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
@@ -3104,7 +3115,8 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
         }
         assetEntity.setResponsibleUserName(asset.getResponsibleUserName());
         if (null != asset.getAssetSource()) {
-            assetEntity.setAssetSource(asset.getAssetSource().compareTo(1) == 0 ? "自动上报" : "人工登记");
+
+            assetEntity.setAssetSource(AssetSourceEnum.getNameByCode(asset.getAssetSource()));
         }
         assetEntity.setFirstEnterNett(longToDateString(asset.getFirstEnterNett()));
         super.convert(asset, assetEntity);
