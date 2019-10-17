@@ -44,7 +44,7 @@ public class AssetOperationRecordControllerTest extends MockContext {
     private CommonManager commonManager;
     @Autowired
     private AesEncoder encoder;
-    LoginUser loginUser;
+    private LoginUser loginUser;
     @Before
     public void setup() {
         mvc = MockMvcBuilders.standaloneSetup(operationRecordController,hardSoftLibController).build();

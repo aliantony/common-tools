@@ -119,7 +119,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 
 	/**
 	 *
-	 * 测试真实db数据
+	 * 测试真实db数据-资产动态数量
 	 * @throws Exception 业务异常
 	 */
 	@Test
@@ -131,7 +131,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 
 	/**
 	 *
-	 * 测试真实db数据
+	 * 测试真实db数据-资产动态
 	 * @throws Exception 业务异常
 	 */
 	@Test
