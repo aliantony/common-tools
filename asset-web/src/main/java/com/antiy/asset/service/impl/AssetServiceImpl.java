@@ -830,7 +830,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
             // 网络设备可关联计算设备和网络设备
-            if (query.getIsNet() == 1) {
+            if (query.getIsNet() == 2) {
                 query.setCategoryModels(
                     new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
             }
@@ -2963,7 +2963,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Set<String> pulldownUnconnectedManufacturer(Integer isNet, String primaryKey) {
         AssetQuery query = new AssetQuery();
-        if ((isNet == null) || isNet == 1) {
+        if ((isNet == null) || isNet == 2) {
             query.setCategoryModels(
                 new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
         } else {
