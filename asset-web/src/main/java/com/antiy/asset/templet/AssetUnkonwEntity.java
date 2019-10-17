@@ -15,13 +15,14 @@ public class AssetUnkonwEntity {
     @ApiModelProperty("mac")
     private String macs;
 
-    @ApiModelProperty("上报方式")
-    private String assetSourceName;
 
+    @ApiModelProperty("上报方式")
+    private String assetSource;
     /**
      * 首次发现时间
      */
     @ApiModelProperty("首次发现时间")
+
     private String gmtCreate;
 
     public String getIps() {
@@ -40,19 +41,19 @@ public class AssetUnkonwEntity {
         this.macs = macs;
     }
 
-    public String getAssetSourceName() {
-        return assetSourceName;
-    }
-
-    public void setAssetSourceName(String assetSourceName) {
-        this.assetSourceName = assetSourceName;
-    }
-
     public String getGmtCreate() {
         return gmtCreate;
     }
 
     public void setGmtCreate(String gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getAssetSource() {
+        return assetSource;
+    }
+
+    public void setAssetSource(String assetSource) {
+        this.assetSource = assetSource;
     }
 }
