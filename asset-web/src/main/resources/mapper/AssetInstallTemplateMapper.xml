@@ -418,7 +418,7 @@
         baseline_template_software bts
         INNER JOIN baseline_template bt ON bts.template_id = bt.id
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        AND bt.sw_type = 2
+        AND bt.sw_type = 1
         AND bt.id = #{baselineId}
         and bts.status=1
         and ahsl.status=1
@@ -495,7 +495,7 @@
         baseline_template_software bts
         INNER JOIN baseline_template bt ON bts.template_id = bt.id
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        AND bt.sw_type = 2
+        AND bt.sw_type = 1
         AND bt.id = #{baselineId}
         and ahsl.status=1
         and bts.status=1
