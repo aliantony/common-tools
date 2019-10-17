@@ -344,7 +344,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                msg = "无法获取到资产UUID，资产维护方式将默认:人工方式";
+                msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+                    : "";
             } else {
 
                 baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);

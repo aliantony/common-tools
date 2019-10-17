@@ -155,10 +155,10 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <if test=" name != null">
+        <if test=" name != null and name !=''">
             and `name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
-        <if test=" numberCode != null">
+        <if test=" numberCode != null and numberCode !=''">
             and number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" categoryModel != null">
@@ -422,11 +422,30 @@
         where bt.sw_type = 1
         AND bt.id = #{baselineId}
         and bts.status=1
-        and ahsl.status=1
-        )
+        and ahsl.status=1 )
         <include refid="Where_Column_List"></include>
         GROUP BY
-        ait.id) t
+        ait.id
+        <!--没有软件的模板id-->
+        union
+        SELECT
+        t1.id
+        FROM
+        asset_install_template t1
+        LEFT JOIN (
+        SELECT DISTINCT
+        ait.id AS id
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
+        WHERE
+        ait.STATUS = 1
+        AND asit.STATUS = 1
+        ) t2 ON t1.id = t2.id
+        WHERE
+        t1.`status` = 1
+        AND t2.id IS NULL
+        ) t
     </select>
     <select id="queryTemplateInfo" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
             parameterType="com.antiy.common.base.ObjectQuery">
@@ -472,6 +491,7 @@
     </select>
     <select id="queryFilteredTemplate" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
             parameterType="com.antiy.common.base.ObjectQuery">
+        <!--有软件有补丁-->
         SELECT
         ait.id AS stringId,
         ait.id AS templateId,
@@ -491,8 +511,8 @@
         ahsl.business_id
         FROM
         baseline_template_software bts
-        INNER JOIN baseline_template bt ON bts.template_id = bt.id
-        INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        left JOIN baseline_template bt ON bts.template_id = bt.id
+        left JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         where bt.sw_type = 1
         AND bt.id = #{baselineId}
         and ahsl.status=1
@@ -501,17 +521,84 @@
         and ait.status=1
         and asit.status=1
         and apit.status=1
-        <include refid="Where_Column_List"></include>
+        <if test=" name != null and name !=''">
+            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+        </if>
         GROUP BY
         ait.id
-        order by
-        <if test="baselineId != null">
-            ait.gmt_modified
+
+       <!-- 无软件有补丁-->
+        union
+        SELECT
+        any_value ( t1.id ) AS stringId,
+        any_value ( t1.id ) AS templateId,
+        any_value ( t1.NAME ) AS NAME,
+        any_value ( t1.number_code ) AS numberCode,
+        any_value ( t1.gmt_modified ) AS gmtModified,
+        any_value ( t1.description ) AS description,
+        0 AS softNum ,
+        count(t3.`status`) as patchNum
+        FROM
+        asset_install_template t1
+        LEFT JOIN (
+        SELECT DISTINCT
+        ait.id AS id
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
+        WHERE
+        ait.STATUS = 1
+        AND asit.STATUS = 1
+        ) t2 ON t1.id = t2.id
+        left join asset_patch_install_template t3 on t1.id=t3.install_template_id
+        WHERE
+        t1.`status` = 1
+        and t3.`status`=1
+        AND t2.id IS NULL
+        <if test=" name != null and name !=''">
+            and t1.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
-        <if test="baselineId == null">
-            ait.gmt_create
+        <if test=" numberCode != null and numberCode !=''">
+            and t1.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
         </if>
-        desc
+        <!-- 有软件无补丁-->
+        union
+        SELECT
+        any_value ( t1.id ) AS stringId,
+        any_value ( t1.id ) AS templateId,
+        any_value ( t1.NAME ) AS NAME,
+        any_value ( t1.number_code ) AS numberCode,
+        any_value ( t1.gmt_modified ) AS gmtModified,
+        any_value ( t1.description ) AS description,
+        count( t3.`status` ) AS softNum,
+        0 AS patchNum
+        FROM
+        asset_install_template t1
+        LEFT JOIN (
+        SELECT DISTINCT
+        ait.id AS id
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_patch_install_template asit ON ait.id = asit.install_template_id
+        WHERE
+        ait.STATUS = 1
+        AND asit.STATUS = 1
+        ) t2 ON t1.id = t2.id
+        LEFT JOIN asset_software_install_template t3 ON t1.id = t3.install_template_id
+        WHERE
+        t1.`status` = 1
+        AND t3.`status` = 1
+        AND t2.id IS NULL
+        <if test=" name != null and name !=''">
+            and t1.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and t1.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+        </if>
+        order by gmtModified desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
