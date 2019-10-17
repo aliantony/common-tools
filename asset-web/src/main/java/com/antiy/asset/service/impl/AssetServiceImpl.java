@@ -160,6 +160,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Long currentTimeMillis = System.currentTimeMillis();
         final String[] admittanceResult = new String[1];
         final String[] uuid = new String[1];
+        String msg = null;
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -335,11 +336,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 : activityRequest.getFormData().get("templateImplementUser").toString());
             // 如果没得uuid 安全检查
             ActionResponse baselineCheck;
+
             if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                baselineCheck.setBody("安全检查没得UUID");
+                msg = "无法获取到资产UUID，资产维护方式将默认:人工方式";
+            } else {
+
+                baselineCheck = baseLineClient.baselineCheck (baselineAssetRegisterRequest);
             }
-            baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
 
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
@@ -351,7 +355,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        return ActionResponse.success();
+        return ActionResponse.success (msg);
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -2858,6 +2862,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
+
         return getAssetEntities(request);
 
     }

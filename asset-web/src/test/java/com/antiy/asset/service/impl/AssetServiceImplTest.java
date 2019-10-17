@@ -309,6 +309,8 @@ public class AssetServiceImplTest {
         Map map = new HashMap();
         map.put("admittanceResult", "safetyCheck");
         map.put("safetyCheckUser", "safetyCheck");
+        map.put("admittanceResult", "safetyCheck");
+        map.put("templateImplementUser", "safetyCheck");
         manualStartActivityRequest.setFormData(map);
         userIds.add("1");
         manualStartActivityRequest.setConfigUserIds(userIds);
@@ -483,6 +485,15 @@ public class AssetServiceImplTest {
     public void findAlarmAssetCountTest() {
         when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
         Assert.assertEquals(100, assetServiceImpl.findAlarmAssetCount().get("currentAlarmAssetIdNum"));
+    }
+
+    @Test
+    public void assetsTemplate() throws Exception {
+        ProcessTemplateRequest processTemplateRequest = new ProcessTemplateRequest();
+        processTemplateRequest.setIds(Lists.newArrayList("2323"));
+        List<AssetEntity> assetEntities = new ArrayList<>();
+        when(assetServiceImpl.assetsTemplate(processTemplateRequest)).thenReturn(assetEntities);
+
     }
 
     public AssetStorageMediumRequest generateAssetStorageMediumRequest() {
