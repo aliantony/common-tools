@@ -10,6 +10,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
+import com.antiy.asset.vo.enums.BaselineTemplateStatusEnum;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
@@ -146,6 +147,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             throw new BusinessException("非法权限操作");
         }
         //编辑模板
+        ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
+        ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
+        ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
@@ -215,7 +219,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
         List<AssetInstallTemplateResponse> responses = null;
-        if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
+        if (baselineId == null || (baselineId != null && (type == null || type != BaselineTemplateStatusEnum.BLACK_ITEM.getCode()))) {
             responses = assetInstallTemplateDao.queryTemplateInfo(query);
             List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
             if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
