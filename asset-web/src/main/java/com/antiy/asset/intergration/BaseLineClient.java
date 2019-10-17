@@ -29,6 +29,13 @@ public interface BaseLineClient {
     ActionResponse baselineCheck(BaselineAssetRegisterRequest request);
 
     /**
+     * 硬件登记调用配置安全检查接口
+     * @param request
+     * @return
+     */
+    ActionResponse baselineCheckNoUUID(BaselineAssetRegisterRequest request);
+
+    /**
      * 硬件带入网到待验证，调用验证接口
      * @param assetId
      * @return

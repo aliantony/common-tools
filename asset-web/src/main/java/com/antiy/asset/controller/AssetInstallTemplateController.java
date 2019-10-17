@@ -119,9 +119,6 @@ public class AssetInstallTemplateController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(assetInstallTemplateRequest.getName(), "模板名称必填");
-        ParamterExceptionUtils.isBlank(assetInstallTemplateRequest.getNumberCode(), "模板编号必填");
-        ParamterExceptionUtils.isNull(assetInstallTemplateRequest.getOperationSystem(), "操作系统必填");
         return ActionResponse
                 .success(iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest));
     }
