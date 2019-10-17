@@ -141,7 +141,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
             assetIds.stream().forEach(assetId -> {
                 // 1.先删除旧的关系表
-                assetSoftwareRelationDao.deleteSoftRealtion(assetId);
+                assetSoftwareRelationDao.deleteSoftRealtion(assetId, softIds);
                 // 2.插入新的关系
                 softIds.stream().forEach(softId -> {
                     AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();

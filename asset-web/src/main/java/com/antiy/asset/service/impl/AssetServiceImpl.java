@@ -1441,7 +1441,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) {
         // 1.先删除旧的关系表
-        assetSoftwareRelationDao.deleteSoftRealtion(id);
+        assetSoftwareRelationDao.deleteSoftRealtion(id, null);
         // 2.插入新的关系
         List<Long> softIds = softwareReportRequest.getSoftId();
         if (CollectionUtils.isNotEmpty(softIds)) {
