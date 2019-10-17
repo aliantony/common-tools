@@ -1,6 +1,9 @@
 package com.antiy.asset.service.impl;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -16,7 +19,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -344,7 +346,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
                 msg = "无法获取到资产UUID，资产维护方式将默认:人工方式";
             } else {
-                baselineCheck = baseLineClient.baselineCheck (baselineAssetRegisterRequest);
+
+                baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
             }
 
             // 如果基准为空,直接返回错误信息
@@ -357,7 +360,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
-        return ActionResponse.success (msg);
+        return ActionResponse.success(msg);
     }
 
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
@@ -833,9 +836,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModel())) {
                 query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
             } else if (AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModel())) {
-        if (Objects.isNull(query.getCategoryModels()) || query.getCategoryModels().length == 0) {
-            // 网络设备可关联计算设备和网络设备
-            if (query.getIsNet() == 2) {
                 query.setCategoryModels(
                     new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
             }
