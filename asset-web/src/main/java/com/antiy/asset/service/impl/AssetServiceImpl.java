@@ -344,7 +344,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                msg = "无法获取到资产UUID，资产维护方式将默认:人工方式";
+                msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+                    : "";
             } else {
 
                 baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
@@ -1237,6 +1238,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
+        // 记录资产操作流程
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        assetOperationRecord.setTargetObjectId(asset.getStringId());
+        assetOperationRecord.setOriginStatus(0);
+        assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setStatus(1);
         if (assetCount != null && assetCount > 0) {
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
@@ -1298,7 +1309,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetDao.deleteAssetById(DataTypeUtils.stringToInteger(assetId));
                             BusinessExceptionUtils.isTrue(baselineCheck != null, "调用基准失败");
                         }
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
+                    } else {
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                     }
+
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
                         Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
@@ -1330,6 +1347,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
                     }
                     // ------------------对接配置模块------------------end
+                    // 记录资产操作流程
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+                    assetOperationRecord.setContent(AssetFlowEnum.CORRECT.getMsg());
+                    assetOperationRecord.setProcessResult(null);
                     // 更新资产状态为变更中
                     updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
@@ -1349,7 +1370,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
              * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
              * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
              * }).start(); */
+        } else {
+            // 记录资产操作流程
+            assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+            assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
         }
+        assetOperationRecordDao.insert(assetOperationRecord);
         return assetCount;
     }
 
