@@ -159,6 +159,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
         Long currentTimeMillis = System.currentTimeMillis();
         final String[] admittanceResult = new String[1];
+        final String[] uuid = new String[1];
         Integer id = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -212,6 +213,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     insertBatchAssetGroupRelation(asset, assetGroup);
                     // 返回的资产id
                     aid = asset.getStringId();
+                    uuid[0] = asset.getUuid();
                     // //装机模板 .存入软件
                     if (StringUtils.isNotBlank(asset.getInstallTemplateId())) {
                         List<AssetHardSoftLib> assetHardSoftLibs = assetHardSoftLibDao
@@ -331,7 +333,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
                 ? activityRequest.getFormData().get("safetyCheckUser").toString()
                 : activityRequest.getFormData().get("templateImplementUser").toString());
-            ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+            // 如果没得uuid 安全检查
+            ActionResponse baselineCheck;
+            if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
+                baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
+                baselineCheck.setBody("安全检查没得UUID");
+            }
+            baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
                 || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
