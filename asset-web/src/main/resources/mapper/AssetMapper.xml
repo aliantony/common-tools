@@ -1226,6 +1226,7 @@
                 #{areaId}
             </foreach>
         </if>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY asset_status
     </select>
 
@@ -1711,6 +1712,7 @@ WHERE
         <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
             #{areaId}
         </foreach>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY category_model
     </select>
     <select id="findCountAssetNumber" resultType="int">
