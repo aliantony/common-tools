@@ -1117,7 +1117,7 @@
                 <if test="ips != null and ips.size() > 0">
                     and (asset_ip,asset_port) in
                     <foreach collection="ips" item="item" open="(" close=")" separator=",">
-                        (#{item.ip},#{item.net)
+                        (#{item.ip},#{item.net})
                     </foreach>
                 </if>
                 )
@@ -1127,7 +1127,7 @@
                 <if test="ips != null and ips.size() > 0">
                     and (parent_asset_ip,parent_asset_port) in
                     <foreach collection="ips" item="item" open="(" close=")" separator=",">
-                        (#{item.ip},#{item.net)
+                        (#{item.ip},#{item.net})
                     </foreach>
                 </if>
                 )
