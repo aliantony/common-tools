@@ -1226,6 +1226,7 @@
                 #{areaId}
             </foreach>
         </if>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY asset_status
     </select>
 
@@ -1711,6 +1712,7 @@ WHERE
         <foreach collection="areaIds" open=" IN (" close=")" separator="," item="areaId">
             #{areaId}
         </foreach>
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
         GROUP BY category_model
     </select>
     <select id="findCountAssetNumber" resultType="int">
@@ -1808,7 +1810,7 @@ AND a.`status` = 1
     </select>
     <!--获取资产的装机模板id-->
     <select id="getInstallTemplateId" resultType="java.lang.String">
-        select install_template_id from asset where identity = #{assetId}
+        select install_template_id from asset where id = #{assetId}
     </select>
     <update id="updateRedundantFiled">
         <foreach collection="list" close="" separator=";" item="item">

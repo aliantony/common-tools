@@ -10,6 +10,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
+import com.antiy.asset.vo.enums.BaselineTemplateStatusEnum;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
@@ -146,6 +147,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             throw new BusinessException("非法权限操作");
         }
         //编辑模板
+        ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
+        ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
+        ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
@@ -207,15 +211,21 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 //        }
 
         String baselineId = query.getBaselineId();
-
-        Integer count = baselineId == null ? this.findCount(query) : assetInstallTemplateDao.findFilteredCount(query);
+        Integer count = null;
+        Integer type = null;
+        boolean isBlackItem = true;
+        if (baselineId == null) {
+            count = this.findCount(query);
+        } else if (!(isBlackItem = (type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
+            count = this.findCount(query);
+        } else {
+            count = assetInstallTemplateDao.findFilteredCount(query);
+        }
         if (count == 0 || count == null) {
-
             return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
-        Integer type = assetInstallTemplateDao.queryBaselineTemplateType(query);
         List<AssetInstallTemplateResponse> responses = null;
-        if (baselineId == null || (baselineId != null && (type == null || type != 2))) {
+        if (baselineId == null || (baselineId != null && (type == null || !isBlackItem))) {
             responses = assetInstallTemplateDao.queryTemplateInfo(query);
             List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
             if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
@@ -356,7 +366,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         return sendTask(request, template);
     }
 
-    private void setTemplateInfo(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
+    private synchronized void setTemplateInfo(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
         template.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
         template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         List<String> executors = request.getNextExecutor().stream().collect(Collectors.toList());
@@ -422,7 +432,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         return "审核结果提交失败";
     }
 
-    private ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
+    private  synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
         activityRequest.setBusinessId(template.getStringId());

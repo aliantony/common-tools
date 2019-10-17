@@ -409,24 +409,22 @@
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
-        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
         WHERE
-        asit.software_id NOT IN (
+        ait.status=1
+        and asit.status=1
+        and asit.software_id NOT IN (
         SELECT DISTINCT
         ahsl.business_id
         FROM
         baseline_template_software bts
         INNER JOIN baseline_template bt ON bts.template_id = bt.id
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        AND bt.sw_type = 2
+        where bt.sw_type = 1
         AND bt.id = #{baselineId}
         and bts.status=1
         and ahsl.status=1
         )
         <include refid="Where_Column_List"></include>
-        and ait.status=1
-        and asit.status=1
-        and apit.status=1
         GROUP BY
         ait.id) t
     </select>
@@ -495,7 +493,7 @@
         baseline_template_software bts
         INNER JOIN baseline_template bt ON bts.template_id = bt.id
         INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        AND bt.sw_type = 2
+        where bt.sw_type = 1
         AND bt.id = #{baselineId}
         and ahsl.status=1
         and bts.status=1
