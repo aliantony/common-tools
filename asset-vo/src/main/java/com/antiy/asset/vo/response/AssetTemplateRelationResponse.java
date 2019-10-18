@@ -55,7 +55,21 @@ public class AssetTemplateRelationResponse {
         this.description = description;
     }
 
+    public Integer getSoftNnm() {
+        return softNnm;
+    }
 
+    public void setSoftNnm(Integer softNnm) {
+        this.softNnm = softNnm;
+    }
+
+    public Integer getPatchNum() {
+        return patchNum;
+    }
+
+    public void setPatchNum(Integer patchNum) {
+        this.patchNum = patchNum;
+    }
 
     @Override
     public String toString() {
