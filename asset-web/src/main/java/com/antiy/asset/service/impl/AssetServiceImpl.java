@@ -1321,14 +1321,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else {
                         baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
                     }
+
                     // 如果基准为空,直接返回错误信息
                     if (null == baselineCheck
                         || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
                         // 调用失败，直接删登记的资产
-                        assetDao.deleteAssetById(DataTypeUtils.stringToInteger(assetId));
-                        BusinessExceptionUtils.isTrue(baselineCheck != null, "调用流程引擎出错");
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
+                    }
+                    // 扫描
+                    ActionResponse scan = baseLineClient
+                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                    // 如果漏洞为空,直接返回错误信息
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        // 调用失败，直接删登记的资产
+                        return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
                     }
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
