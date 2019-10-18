@@ -882,6 +882,7 @@
         FROM
             asset_ip_relation t1
         where t1.asset_id = #{assetId}
+        and t1.status = 1
         and not exists(select 1 from asset_link_relation t2 where (t1.asset_id = t2.asset_id and t1.ip = t2.asset_ip ) or (t1.asset_id = t2.parent_asset_id and t1.ip = t2.parent_asset_ip) and t2.status =1 )
     </select>
     <select id="pulldownUnconnectedManufacturer" resultType="string"

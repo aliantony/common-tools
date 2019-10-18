@@ -150,7 +150,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
         ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
         ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
-        if (request.getSoftBussinessIds().size()==0 && request.getPatchIds().size()==0){
+        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
             throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
         }
         setTemplateInfo(request, assetInstallTemplate);
@@ -216,19 +216,23 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         String baselineId = query.getBaselineId();
         Integer count = null;
         Integer type = null;
-        boolean isBlackItem = true;
+        int index = 0;
         if (baselineId == null) {
             count = this.findCount(query);
-        } else if (!(isBlackItem = (type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
-            count = this.findCount(query);
+        } else if ((type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode()) {
+            count = assetInstallTemplateDao.CountFilterBlackItemTemplate(query);
+            index = 1;
+        } else if (type == BaselineTemplateStatusEnum.WHITE_ITEM.getCode()) {
+            count = assetInstallTemplateDao.CountWhiteItemTemplate(query);
+            index = 2;
         } else {
-            count = assetInstallTemplateDao.findFilteredCount(query);
+            count = this.findCount(query);
         }
         if (count == 0 || count == null) {
             return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
         List<AssetInstallTemplateResponse> responses = null;
-        if (baselineId == null || (baselineId != null && (type == null || !isBlackItem))) {
+        if (index == 0) {
             responses = assetInstallTemplateDao.queryTemplateInfo(query);
             List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
             if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
@@ -236,14 +240,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                     responses);
+        } else if (index == 1) {
+            responses = assetInstallTemplateDao.FilterBlackItemTemplate(query);
+        } else {
+            responses = assetInstallTemplateDao.findWhiteItemTemplate(query);
         }
-
-
-        //根据配置模板id过滤包含黑名单软件的装机模板
-        responses = assetInstallTemplateDao.queryFilteredTemplate(query);
-        responses.forEach(v -> v.setSoftBusinessIds(
-                iAssetHardSoftLibService.querySoftsRelations(v.getStringId()).stream().map(vaule -> vaule.getBusinessId()).collect(Collectors.toList())
-        ));
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 responses);
     }
@@ -341,7 +342,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
             throw new BusinessException("非法权限操作");
         }
-        if (request.getSoftBussinessIds().size()==0 && request.getPatchIds().size()==0){
+        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
             throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
         }
         int result = queryNumberCode(request.getNumberCode());
@@ -438,7 +439,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         return "审核结果提交失败";
     }
 
-    private  synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
+    private synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
         activityRequest.setBusinessId(template.getStringId());
