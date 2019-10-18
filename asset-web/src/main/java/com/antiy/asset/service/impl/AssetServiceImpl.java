@@ -1265,10 +1265,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                            assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                         } else {
                             updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                            assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
                         }
                     } else {
                         updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
@@ -1331,10 +1333,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if ("safetyCheck".equals(ar)) {
                         updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                     } else {
                         updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                             assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
                     }
                     ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                     if (actionResponse == null
