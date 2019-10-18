@@ -56,4 +56,19 @@ public class IAssetBaselineFileServiceImplTest extends MockContext {
 		Assert.assertTrue(result.get(0).getResult());
 		Assert.assertFalse(result.get(1).getResult());
 	}
+	/**
+	 * 测试资产实施流程 当assetid 为5的资产关联1个未处理附件 流程节点为待登记
+	 * 断言result：false
+	 */
+	@Test
+	public void queryBaselineFileIsExist_2() {
+		List<String> list = Arrays.asList("5", "6");
+		given(dao.queryBaselineCheckFileIsExist("5")).willReturn(1);
+		given(dao.queryBaselineCheckFileIsExist("6")).willReturn(0);
+		ActionResponse<List<AssetBaselineFileResponse>> response = service.queryBaselineFileIsExist(list, AssetStatusEnum.WAIT_REGISTER);
+		List<AssetBaselineFileResponse> result = response.getBody();
+		Assert.assertEquals(result.size(),2);
+		Assert.assertFalse(result.get(0).getResult());
+		Assert.assertFalse(result.get(1).getResult());
+	}
 }
