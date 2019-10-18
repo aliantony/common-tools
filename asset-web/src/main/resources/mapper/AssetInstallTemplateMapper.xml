@@ -432,13 +432,13 @@
             <if test=" currentStatus != null">
                 and  ait.current_status = #{currentStatus }
             </if>
-            <if test=" operationSystem != null">
+            <if test=" operationSystem != null and operationSystem !=''">
                 and  ait.operation_system = #{operationSystem }
             </if>
-            <if test=" operationSystemName != null">
+            <if test=" operationSystemName != null and operationSystemName !=''">
                 and  ait.operation_system_name = #{operationSystemName }
             </if>
-            <if test="stringId !=null">
+            <if test="stringId !=null and stringId !=''">
                 and ait.id=#{stringId}
             </if>
         </trim>
