@@ -360,14 +360,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             // 扫描
 
-                ActionResponse scan = baseLineClient
-                    .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
-                // 如果漏洞为空,直接返回错误信息
-                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                    // 调用失败，直接删登记的资产
-                    assetDao.deleteAssetById(id);
-                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
-
+            ActionResponse scan = baseLineClient
+                .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                // 调用失败，直接删登记的资产
+                assetDao.deleteAssetById(id);
+                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
 
             }
 
@@ -1176,6 +1175,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
+            HashSet macset = new HashSet(assetOuterRequest.getMacRelationRequests().stream()
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()));
+            ParamterExceptionUtils.isTrue(assetOuterRequest.getMacRelationRequests().size() == macset.size(),
+                "mac不能重复");
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
                 .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),
                 assetOuterRequest.getAsset().getId());
