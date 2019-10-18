@@ -64,9 +64,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Resource
     private AesEncoder aesEncoder;
 
-    private final String[] AUTHORITY_ROLE_NAME = {"业务运维员", "安全管理员","系统管理员"};
-    private static final String PROCESS_KEY_INSTALL="installTemplate";
-    private static final String AUTHORITY_EXCEPTION_PROMPT="该项操作暂无权限，请联系管理员";
+    private final String[] AUTHORITY_ROLE_NAME = {"业务运维员", "安全管理员", "系统管理员"};
+    private static final String PROCESS_KEY_INSTALL = "installTemplate";
+    private static final String AUTHORITY_EXCEPTION_PROMPT = "该项操作暂无权限，请联系管理员";
+
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
         return assetInstallTemplateDao.queryTemplateOs();
@@ -119,7 +120,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         //设置启用/禁用
         if (isUpdateStatusOnly) {
             //验证是否是安全管理员、系统管理员
-            if (!verifyUserRole(AUTHORITY_ROLE_NAME[1],AUTHORITY_ROLE_NAME[2])) {
+            if (!verifyUserRole(AUTHORITY_ROLE_NAME[1], AUTHORITY_ROLE_NAME[2])) {
                 throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
             }
             if ((requestStatus != enableCode && requestStatus != forbiddenCode) ||
@@ -144,7 +145,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
 
         //验证是否是业务运维员、系统管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[1])) {
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[1])) {
             throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         //编辑模板
@@ -195,6 +196,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_MODIFY.getName(),
                     templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
+            if (currentStatus == AssetInstallTemplateStatusEnum.REJECT.getCode()) {
+                return activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
+            }
             return sendTask(request, assetInstallTemplate);
         }
         return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "编辑失败");
@@ -269,7 +273,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     public synchronized String deleteAssetInstallTemplateById(BatchQueryRequest request) {
         //验证是否是业务运维员、系统管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[2])) {
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[2])) {
             throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
@@ -335,7 +339,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Transactional
     public synchronized ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
         //验证是否是业务运维员、系统管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[2])) {
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[2])) {
             throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         if (request.getSoftBussinessIds().isEmpty() && request.getPatchIds().isEmpty()) {
@@ -386,7 +390,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Transactional
     public synchronized String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
         //验证是否是安全管理员、系统管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[1],AUTHORITY_ROLE_NAME[2])) {
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[1], AUTHORITY_ROLE_NAME[2])) {
             throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         Integer loginUserId = LoginUserUtil.getLoginUser().getId();
@@ -416,11 +420,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         template.setModifiedUser(loginUserId.toString());
         template.setGmtModified(request.getGmtCreate());
         Integer result = assetInstallTemplateDao.update(template);
-        ActivityHandleRequest handleRequest = new ActivityHandleRequest();
-        handleRequest.setTaskId(waitingTaskReponse.getTaskId());
         Map<String, String> map = new HashMap<>();
         map.put("checkResult", String.valueOf(checkResult));
-        handleRequest.setFormData(map);
+        ActivityHandleRequest handleRequest = setActivityHandleRequest(map, waitingTaskReponse.getTaskId());
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey(String.valueOf(template.getId()));
         AssetInstallTemplateResponse response = queryAssetInstallTemplateById(queryCondition);
@@ -509,6 +511,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return filter.isEmpty() ? null : filter.get(0);
         }
 
+    }
+
+    private ActivityHandleRequest setActivityHandleRequest(Map formData, String taskId) {
+        ActivityHandleRequest handleRequest = new ActivityHandleRequest();
+        handleRequest.setTaskId(taskId);
+        handleRequest.setFormData(formData);
+        return handleRequest;
     }
 
 }
