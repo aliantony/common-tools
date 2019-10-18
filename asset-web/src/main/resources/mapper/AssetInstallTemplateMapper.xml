@@ -326,8 +326,8 @@
         ait.`name`,
         ait.number_code AS numberCode,
         ait.description,
-        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softwareCount,
-        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchCount
+        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softNum,
+        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchNum
         FROM
         asset_install_template AS ait
         WHERE
