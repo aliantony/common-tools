@@ -359,7 +359,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             }
             // 扫描
-            if (baselineAssetRegisterRequest.getCheckType() == 2) {
 
                 ActionResponse scan = baseLineClient
                     .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
@@ -369,7 +368,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetDao.deleteAssetById(id);
                     return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
 
-                }
+
             }
 
         }
