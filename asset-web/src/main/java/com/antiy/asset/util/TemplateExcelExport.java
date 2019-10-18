@@ -1,21 +1,10 @@
 package com.antiy.asset.util;
 
-import static com.antiy.asset.util.Constants.HIDDEN_SHEET_HEAD;
-import static com.antiy.asset.util.Constants.MAX_EXCEL_SELECT_LENGTH;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.antiy.asset.annotation.ExcelField;
+import com.antiy.common.utils.JsonUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import com.antiy.common.utils.SpringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -26,11 +15,20 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 
-import com.antiy.asset.annotation.ExcelField;
-import com.antiy.common.utils.JsonUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import com.antiy.common.utils.SpringUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.antiy.asset.util.Constants.HIDDEN_SHEET_HEAD;
+import static com.antiy.asset.util.Constants.MAX_EXCEL_SELECT_LENGTH;
 
 public class TemplateExcelExport {
     private static Logger          logger         = LogUtils.get();
@@ -292,7 +290,7 @@ public class TemplateExcelExport {
             if (annotationList.size() > 0 && StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())
                 || StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).defaultDataMethod())) {
 
-                List<String> datas = null;
+                List<String> datas = new ArrayList<>();
                 if (StringUtils.isNotBlank(((ExcelField) annotationList.get(i)[0]).dictType())) {
                     datas = Stream.of(CodeUtils.getCodeArray(((ExcelField) annotationList.get(i)[0]).dictType()))
                         .collect(Collectors.toList());
