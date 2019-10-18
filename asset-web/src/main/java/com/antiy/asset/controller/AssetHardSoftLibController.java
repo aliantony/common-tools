@@ -187,6 +187,7 @@ public class AssetHardSoftLibController {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageSoft(query));
     }
     /**
+     * @author zhouye
      * cpe信息查询-软硬操作系统
      *
      * @param query 参数条件
