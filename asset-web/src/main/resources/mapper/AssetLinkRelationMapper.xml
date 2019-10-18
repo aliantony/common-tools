@@ -774,6 +774,12 @@
         <if test="categoryModel != null">
             and a.category_model= #{categoryModel}
         </if>
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">

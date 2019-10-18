@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -147,6 +148,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
         statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
         assetLinkRelationQuery.setStatusList(statusList);
+        // 品类型号
+        if (CollectionUtils.isEmpty(assetLinkRelationQuery.getCategoryModels())) {
+            assetLinkRelationQuery.setCategoryModels(
+                Arrays.asList(AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode()));
+        }
         // 区域条件
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getAreaIds())) {
             assetLinkRelationQuery.setAreaIds(Arrays.asList(
