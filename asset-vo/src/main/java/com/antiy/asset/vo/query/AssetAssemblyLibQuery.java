@@ -11,15 +11,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetAssemblyLibQuery extends ObjectQuery {
-    private String primaryKey;
+    private String businessId;
 
-    @Override
-    public String getPrimaryKey() {
-        return primaryKey;
+    public String getBusinessId() {
+        return businessId;
     }
 
-    @Override
-    public void setPrimaryKey(String primaryKey) {
-        this.primaryKey = primaryKey;
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

@@ -43,7 +43,7 @@ public class AssetAssemblyLibController {
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssemblyById')")
     public ActionResponse<List<AssetAssemblyResponse>> queryAssemblyByHardSoftId(@ApiParam(value = "下拉查询类") @RequestBody AssetAssemblyLibQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "id不能为空");
-        ParamterExceptionUtils.isNull(query.getPrimaryKey(), "id不能为空");
+        ParamterExceptionUtils.isNull(query.getBusinessId(), "id不能为空");
         return ActionResponse.success(iAssetAssemblyLibService.queryAssemblyByHardSoftId(query));
     }
 }
