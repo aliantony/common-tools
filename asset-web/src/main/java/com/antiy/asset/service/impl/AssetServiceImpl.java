@@ -327,7 +327,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetDao.deleteAssetById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
-            // 安全检查 2 模板1
+            // 安全检查
 
             BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
             baselineAssetRegisterRequest.setAssetId(id);
@@ -347,7 +347,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
                     : "";
             } else {
-
                 baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
             }
 

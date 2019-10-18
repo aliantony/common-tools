@@ -20,7 +20,7 @@ public enum AssetInstallTemplateStatusEnum {
 
 
     public static AssetInstallTemplateStatusEnum getEnumByCode(Integer code) {
-        return Arrays.stream(AssetInstallTemplateStatusEnum.values()).filter(v -> v.getCode() == code).collect(Collectors.toList()).get(0);
+        return Arrays.stream(AssetInstallTemplateStatusEnum.values()).filter(v -> v.getCode() .equals(code)).collect(Collectors.toList()).get(0);
     }
 
     AssetInstallTemplateStatusEnum(Integer code, String status) {
@@ -28,22 +28,15 @@ public enum AssetInstallTemplateStatusEnum {
         this.status = status;
     }
 
-    Integer code;
-    String status;
+    private Integer code;
+    private String status;
 
     public Integer getCode() {
         return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

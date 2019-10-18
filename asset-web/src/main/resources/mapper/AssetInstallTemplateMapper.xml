@@ -326,8 +326,8 @@
         ait.`name`,
         ait.number_code AS numberCode,
         ait.description,
-        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softwareCount,
-        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchCount
+        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softNum,
+        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchNum
         FROM
         asset_install_template AS ait
         WHERE
@@ -432,13 +432,13 @@
             <if test=" currentStatus != null">
                 and  ait.current_status = #{currentStatus }
             </if>
-            <if test=" operationSystem != null">
+            <if test=" operationSystem != null and operationSystem !=''">
                 and  ait.operation_system = #{operationSystem }
             </if>
-            <if test=" operationSystemName != null">
+            <if test=" operationSystemName != null and operationSystemName !=''">
                 and  ait.operation_system_name = #{operationSystemName }
             </if>
-            <if test="stringId !=null">
+            <if test="stringId !=null and stringId !=''">
                 and ait.id=#{stringId}
             </if>
         </trim>

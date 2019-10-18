@@ -64,8 +64,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Resource
     private AesEncoder aesEncoder;
 
-    private final String[] AUTHORITY_ROLE_NAME = {"业务运维员", "安全管理员"};
-
+    private final String[] AUTHORITY_ROLE_NAME = {"业务运维员", "安全管理员","系统管理员"};
+    private static final String PROCESS_KEY_INSTALL="installTemplate";
+    private static final String AUTHORITY_EXCEPTION_PROMPT="该项操作暂无权限，请联系管理员";
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
         return assetInstallTemplateDao.queryTemplateOs();
@@ -117,9 +118,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         AssetInstallTemplate assetInstallTemplate = requestConverter.convert(request, AssetInstallTemplate.class);
         //设置启用/禁用
         if (isUpdateStatusOnly) {
-            //验证是否是安全管理员
-            if (!verifyUserRole(AUTHORITY_ROLE_NAME[1])) {
-                throw new BusinessException("非法权限操作");
+            //验证是否是安全管理员、系统管理员
+            if (!verifyUserRole(AUTHORITY_ROLE_NAME[1],AUTHORITY_ROLE_NAME[2])) {
+                throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
             }
             if ((requestStatus != enableCode && requestStatus != forbiddenCode) ||
                     (requestStatus == enableCode && currentStatus != forbiddenCode) ||
@@ -142,22 +143,22 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "更新状态失败");
         }
 
-        //验证是否是业务运维员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
-            throw new BusinessException("非法权限操作");
+        //验证是否是业务运维员、系统管理员
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[1])) {
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         //编辑模板
         ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
         ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
         ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
-        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
+        if (request.getSoftBussinessIds().isEmpty() && request.getPatchIds().isEmpty()) {
             throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
         }
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
         //以前关联的软件和现在关联的软件求差集
-        Set<String> preSoftBusinessRelation = iAssetHardSoftLibService.querySoftsRelations(templateId.toString()).stream().map(v -> v.getBusinessId()).collect(Collectors.toSet());
+        Set<String> preSoftBusinessRelation = iAssetHardSoftLibService.querySoftsRelations(templateId.toString()).stream().map(AssetHardSoftLibResponse::getBusinessId).collect(Collectors.toSet());
         //当前关联软件业务id集
         Set<String> curSoftBusinessRelation = request.getSoftBussinessIds();
         Set<String> delSofts = new HashSet<>(preSoftBusinessRelation);
@@ -208,34 +209,29 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     public PageResult<AssetInstallTemplateResponse> queryPageAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
-        //验证是否是业务运维员、安全管理员
-//        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[1])) {
-//            throw new BusinessException("非法权限操作");
-//        }
-
         String baselineId = query.getBaselineId();
         Integer count = null;
         Integer type = null;
         int index = 0;
         if (baselineId == null) {
             count = this.findCount(query);
-        } else if ((type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode()) {
+        } else if ((type = assetInstallTemplateDao.queryBaselineTemplateType(query)).equals(BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
             count = assetInstallTemplateDao.CountFilterBlackItemTemplate(query);
             index = 1;
-        } else if (type == BaselineTemplateStatusEnum.WHITE_ITEM.getCode()) {
+        } else if (type.equals(BaselineTemplateStatusEnum.WHITE_ITEM.getCode())) {
             count = assetInstallTemplateDao.CountWhiteItemTemplate(query);
             index = 2;
         } else {
             count = this.findCount(query);
         }
         if (count == 0 || count == null) {
-            return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
         List<AssetInstallTemplateResponse> responses = null;
         if (index == 0) {
             responses = assetInstallTemplateDao.queryTemplateInfo(query);
             List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
-            if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
+            if (waitingTaskReponseList != null && !waitingTaskReponseList.isEmpty()) {
                 responses.forEach(v -> v.setWaitingTask(queryTemplateTaskById(v.getStringId(), waitingTaskReponseList)));
             }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
@@ -251,9 +247,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     public AssetInstallTemplateResponse queryAssetInstallTemplateById(QueryCondition queryCondition) throws Exception {
-        //验证是否是业务运维员、安全管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0], AUTHORITY_ROLE_NAME[1])) {
-            throw new BusinessException("非法权限操作");
+        //验证是否是业务运维员、安全管理员、系统管理员
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME)) {
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetInstallTemplate template = assetInstallTemplateDao.getById(queryCondition.getPrimaryKey());
@@ -272,9 +268,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     @Override
     public synchronized String deleteAssetInstallTemplateById(BatchQueryRequest request) {
-        //验证是否是业务运维员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
-            throw new BusinessException("非法权限操作");
+        //验证是否是业务运维员、系统管理员
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[2])) {
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
         int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
@@ -338,11 +334,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     @Transactional
     public synchronized ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception {
-        //验证是否是业务运维员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
-            throw new BusinessException("非法权限操作");
+        //验证是否是业务运维员、系统管理员
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[0],AUTHORITY_ROLE_NAME[2])) {
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
-        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
+        if (request.getSoftBussinessIds().isEmpty() && request.getPatchIds().isEmpty()) {
             throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
         }
         int result = queryNumberCode(request.getNumberCode());
@@ -389,17 +385,17 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     @Override
     @Transactional
     public synchronized String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception {
-        //验证是否是安全管理员
-        if (!verifyUserRole(AUTHORITY_ROLE_NAME[1])) {
-            throw new BusinessException("非法权限操作");
+        //验证是否是安全管理员、系统管理员
+        if (!verifyUserRole(AUTHORITY_ROLE_NAME[1],AUTHORITY_ROLE_NAME[2])) {
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
         Integer loginUserId = LoginUserUtil.getLoginUser().getId();
         ActivityWaitingQuery query = new ActivityWaitingQuery();
         query.setUser(loginUserId.toString());
-        query.setProcessDefinitionKey("installTemplate");
+        query.setProcessDefinitionKey(PROCESS_KEY_INSTALL);
         WaitingTaskReponse waitingTaskReponse = queryTemplateTaskById(request.getStringId(), queryTemplateTasksByLoginId());
         if (waitingTaskReponse == null) {
-            throw new BusinessException("该项操作暂无权限，请联系管理员");
+            throw new BusinessException(AUTHORITY_EXCEPTION_PROMPT);
         }
 
         Integer currentStatus = request.getResult() == 0 ? AssetInstallTemplateStatusEnum.REJECT.getCode() : AssetInstallTemplateStatusEnum.ENABLE.getCode();
@@ -444,7 +440,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
         activityRequest.setBusinessId(template.getStringId());
         activityRequest.setFormData(request.getFormData());
-        activityRequest.setProcessDefinitionKey("installTemplate");
+        activityRequest.setProcessDefinitionKey(PROCESS_KEY_INSTALL);
         return activityClient.manualStartProcess(activityRequest);
     }
 
@@ -503,14 +499,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     private WaitingTaskReponse queryTemplateTaskById(String id, List<WaitingTaskReponse> waitingTaskReponseList) {
 
-        if (waitingTaskReponseList == null && waitingTaskReponseList.size() == 0) {
+        if (waitingTaskReponseList == null || waitingTaskReponseList.isEmpty()) {
             return null;
         } else {
             List<WaitingTaskReponse> filter = waitingTaskReponseList.stream().filter(v -> v.getBusinessId().equals(id)).collect(Collectors.toList());
             if (filter.size() > 1) {
                 throw new BusinessException("同一代办任务存在多条，脏数据未处理");
             }
-            return filter.size() == 0 ? null : filter.get(0);
+            return filter.isEmpty() ? null : filter.get(0);
         }
 
     }

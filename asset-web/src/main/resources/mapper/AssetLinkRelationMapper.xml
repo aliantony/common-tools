@@ -924,6 +924,7 @@
         a.category_model,
         a.number,
         a.name,
+        a.first_enter_nett,
         group_concat(b.ip) as ips,
         group_concat(c.mac) as macs
         from
@@ -939,6 +940,12 @@
         <if test="categoryModels != null and categoryModels.length > 0">
             and a.category_model in
             <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
@@ -982,6 +989,12 @@
         <if test="categoryModels != null and categoryModels.length > 0">
             and a.category_model in
             <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>

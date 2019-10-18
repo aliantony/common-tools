@@ -11,5 +11,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetAssemblyLibQuery extends ObjectQuery {
+    private String businessId;
 
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 }

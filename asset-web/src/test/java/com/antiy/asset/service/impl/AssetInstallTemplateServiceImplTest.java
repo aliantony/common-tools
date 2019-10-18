@@ -1,23 +1,27 @@
 package com.antiy.asset.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-
+import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
+import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateOsResponse;
+import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
+import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,27 +37,16 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.antiy.asset.dao.AssetInstallTemplateDao;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.query.PrimaryKeyQuery;
-import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -91,7 +84,7 @@ public class AssetInstallTemplateServiceImplTest {
         AssetTemplateRelationResponse assetTemplateRelationResponse = new AssetTemplateRelationResponse();
         assetTemplateRelationResponse.setDescription("csdf");
         assetTemplateRelationResponse.setName("che");
-        assetTemplateRelationResponse.setPatchCount(100);
+        assetTemplateRelationResponse.setPatchNum(100);
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("1");
         when(assetInstallTemplateDao.queryTemplateById(any())).thenReturn(assetTemplateRelationResponse);
