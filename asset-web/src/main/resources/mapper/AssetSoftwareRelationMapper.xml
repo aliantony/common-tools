@@ -877,7 +877,14 @@
     </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
-        update asset_software_relation set status = 0 where asset_id = #{id}
+        update asset_software_relation set status = 0
+        where asset_id = #{id}
+        <if test="softIds !=null and softId.size() > 0">
+            and software_id in
+            <foreach collection="softIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
     </delete>
     <update id="deleteByInstallTemplateId">
         update asset_software_relation set status = 0 where asset_id = #{id} and software_id in

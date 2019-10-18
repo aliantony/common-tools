@@ -43,9 +43,9 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
 
 
     @Override
-    public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(QueryCondition query) {
+    public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
         return assemblyResponseBaseConverter
-            .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getPrimaryKey()), AssetAssemblyResponse.class);
+            .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
     }
 
 }

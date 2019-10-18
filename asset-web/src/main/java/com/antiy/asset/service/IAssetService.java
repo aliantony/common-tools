@@ -165,7 +165,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @param assetOuterRequest 资产信息
      */
-    Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
+    ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
 
     /**
      * @param types 导出模板的类型
@@ -289,7 +289,7 @@ public interface IAssetService extends IBaseService<Asset> {
 
     Map findAlarmAssetCount();
 
-    void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
+    // void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
 
     /**
      * 查询mac重复
@@ -320,18 +320,19 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     List<SelectResponse> queryBaselineTemplate();
+
     /**
      * 获取安全设备全部厂商
      */
     List<String> getAllSupplierofSafetyEquipment(String supplier);
+
     /**
      * 根据厂商获取安全设备名称列表
      * @return
      */
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name);
+    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name);
 
-
-    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
+    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version);
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 

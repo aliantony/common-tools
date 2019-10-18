@@ -16,18 +16,17 @@ APPLICATION_JAR="@build.finalName@.jar"
 PID=$(ps -ef | grep "${APPLICATION_JAR}" | grep -v grep | awk '{ print $2 }')
 if [[ -z "$PID" ]]
 then
-    ${APPLICATION} is already stopped
+    echo ${APPLICATION} is already stopped
 else
     kill  ${PID}
     #等待50秒
-    for i in 1 10; do
+    for i in `seq 1 50`; do
      PID=$(ps -ef | grep "${APPLICATION_JAR}" | grep -v grep | awk '{ print $2 }')
      if [[ -z "$PID" ]]; then
        echo "stop server success"
-       break
+       exit 0
      fi
-     echo "sleep 5s"
-     sleep 5
+     sleep 1
     done
    #如果等待50秒还没有停止完，直接杀掉
    PID=$(ps -ef | grep "${APPLICATION_JAR}" | grep -v grep | awk '{ print $2 }')

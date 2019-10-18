@@ -15,10 +15,10 @@ public class AssetTemplateRelationResponse {
     private String description;
 
     @ApiModelProperty("软件总数")
-    private Integer softwareCount;
+    private Integer softNnm;
 
     @ApiModelProperty("补丁总数")
-    private Integer patchCount;
+    private Integer patchNum;
 
     @ApiModelProperty("装机模板关联时间")
     private Long installTemplateCorrelationGmt;
@@ -55,20 +55,20 @@ public class AssetTemplateRelationResponse {
         this.description = description;
     }
 
-    public Integer getSoftwareCount() {
-        return softwareCount;
+    public Integer getSoftNnm() {
+        return softNnm;
     }
 
-    public void setSoftwareCount(Integer softwareCount) {
-        this.softwareCount = softwareCount;
+    public void setSoftNnm(Integer softNnm) {
+        this.softNnm = softNnm;
     }
 
-    public Integer getPatchCount() {
-        return patchCount;
+    public Integer getPatchNum() {
+        return patchNum;
     }
 
-    public void setPatchCount(Integer patchCount) {
-        this.patchCount = patchCount;
+    public void setPatchNum(Integer patchNum) {
+        this.patchNum = patchNum;
     }
 
     @Override
@@ -77,8 +77,8 @@ public class AssetTemplateRelationResponse {
                 "name='" + name + '\'' +
                 ", numberCode='" + numberCode + '\'' +
                 ", description='" + description + '\'' +
-                ", softwareCount=" + softwareCount +
-                ", patchCount=" + patchCount +
+                ", softwareCount=" + softNnm +
+                ", patchCount=" + patchNum +
                 ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';
     }

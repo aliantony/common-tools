@@ -646,7 +646,7 @@
         a.area_id as areaId,
         a.name,
         a.number,
-        a.category_model,
+        a.category_model as categoryModel,
         count( b.id ) AS canBind,
         count( b.id ) - count( c.id ) AS noBind,
         a.gmt_create
@@ -663,8 +663,11 @@
                 #{item}
             </foreach>
         </if>
-        <if test="categoryModel != null">
-            and a.category_model= #{categoryModel}
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
@@ -770,6 +773,12 @@
         </if>
         <if test="categoryModel != null">
             and a.category_model= #{categoryModel}
+        </if>
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and a.category_model in
+            <foreach collection="categoryModels" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="statusList != null and statusList.size() > 0">
             and a.asset_status in
@@ -879,6 +888,7 @@
         FROM
             asset_ip_relation t1
         where t1.asset_id = #{assetId}
+        and t1.status = 1
         and not exists(select 1 from asset_link_relation t2 where (t1.asset_id = t2.asset_id and t1.ip = t2.asset_ip ) or (t1.asset_id = t2.parent_asset_id and t1.ip = t2.parent_asset_ip) and t2.status =1 )
     </select>
     <select id="pulldownUnconnectedManufacturer" resultType="string"
@@ -920,6 +930,7 @@
         a.category_model,
         a.number,
         a.name,
+        a.first_enter_nett,
         group_concat(b.ip) as ips,
         group_concat(c.mac) as macs
         from
@@ -935,6 +946,12 @@
         <if test="categoryModels != null and categoryModels.length > 0">
             and a.category_model in
             <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
@@ -978,6 +995,12 @@
         <if test="categoryModels != null and categoryModels.length > 0">
             and a.category_model in
             <foreach collection="categoryModels" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and a.asset_status in
+            <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
@@ -1114,7 +1137,7 @@
                 <if test="ips != null and ips.size() > 0">
                     and (asset_ip,asset_port) in
                     <foreach collection="ips" item="item" open="(" close=")" separator=",">
-                        (#{item.ip},#{item.net)
+                        (#{item.ip},#{item.net})
                     </foreach>
                 </if>
                 )
@@ -1124,7 +1147,7 @@
                 <if test="ips != null and ips.size() > 0">
                     and (parent_asset_ip,parent_asset_port) in
                     <foreach collection="ips" item="item" open="(" close=")" separator=",">
-                        (#{item.ip},#{item.net)
+                        (#{item.ip},#{item.net})
                     </foreach>
                 </if>
                 )

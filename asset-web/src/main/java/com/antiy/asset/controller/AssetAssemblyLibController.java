@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.AssetAssemblyLib;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,9 +41,9 @@ public class AssetAssemblyLibController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assembly/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssemblyById')")
-    public ActionResponse<List<AssetAssemblyResponse>> queryAssemblyByHardSoftId(@ApiParam(value = "下拉查询类") @RequestBody QueryCondition query) throws Exception {
+    public ActionResponse<List<AssetAssemblyResponse>> queryAssemblyByHardSoftId(@ApiParam(value = "下拉查询类") @RequestBody AssetAssemblyLibQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "id不能为空");
-        ParamterExceptionUtils.isNull(query.getPrimaryKey(), "id不能为空");
+        ParamterExceptionUtils.isNull(query.getBusinessId(), "id不能为空");
         return ActionResponse.success(iAssetAssemblyLibService.queryAssemblyByHardSoftId(query));
     }
 }

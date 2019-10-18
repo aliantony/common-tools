@@ -214,7 +214,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      *
      * @param id
      */
-    void deleteSoftRealtion(@Param("id") String id);
+    void deleteSoftRealtion(@Param("id") String id, @Param("softIds") List<Long> softIds);
 
     /**
      * 配置模板适用的操作系统

@@ -1,33 +1,12 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.BaseResponse;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.File;
+import java.util.*;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
@@ -39,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -61,12 +39,32 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.File;
-import java.util.*;
-
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.BaseResponse;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -492,6 +490,10 @@ public class AssetServiceImplTest {
         ProcessTemplateRequest processTemplateRequest = new ProcessTemplateRequest();
         processTemplateRequest.setIds(Lists.newArrayList("2323"));
         List<AssetEntity> assetEntities = new ArrayList<>();
+        ActionResponse<List<WaitingTaskReponse>> listActionResponse = new ActionResponse<>();
+        List<WaitingTaskReponse> waitingTaskReponses = new ArrayList<>();
+
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(ActionResponse.success(waitingTaskReponses));
         when(assetServiceImpl.assetsTemplate(processTemplateRequest)).thenReturn(assetEntities);
 
     }
@@ -629,7 +631,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testGetAllHardWaitingTask() throws Exception {
+    public void testGetAllHardWaitingTask() {
         ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
         WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
         waitingTaskReponse.setAssignee("");
@@ -664,7 +666,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testSaveReportAsset() throws Exception {
+    public void testSaveReportAsset() {
         // assetServiceImpl.saveReportAsset(Arrays.asList(new AssetOuterRequest()));
     }
 
@@ -683,7 +685,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testCheckRepeatAsset() throws Exception {
+    public void testCheckRepeatAsset() {
         when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(new Asset()));
 
         List<String[]> ipMac = new ArrayList<>();
@@ -735,7 +737,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testCountManufacturer() throws Exception {
+    public void testCountManufacturer() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("value", 1L);
 
@@ -746,7 +748,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testCountStatus() throws Exception {
+    public void testCountStatus() {
         when(assetDao.countStatus(any())).thenReturn(Arrays.asList(new HashMap<String, Object>() {
             {
                 put("key", 1);
@@ -759,7 +761,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testCountCategory() throws Exception {
+    public void testCountCategory() {
         /**
          *
          * 统计品类型号 Map中的数据 key--品类型号 value--总数
@@ -781,7 +783,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testQueryAssetByIds() throws Exception {
+    public void testQueryAssetByIds() {
         when(assetDao.queryAssetByIds(any())).thenReturn(Arrays.asList(new Asset()));
 
         List<AssetResponse> result = assetServiceImpl.queryAssetByIds(new Integer[] { 0 });
@@ -974,7 +976,7 @@ public class AssetServiceImplTest {
 
     @Test
     public void testChangeAsset() throws Exception {
-        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+
 
         when(assetNetworkEquipmentDao.getById(any())).thenReturn(generateAssetNetworkEquipment());
         when(assetSoftwareRelationDao.deleteByAssetId(anyInt())).thenReturn(0);
@@ -995,23 +997,7 @@ public class AssetServiceImplTest {
         assetRequest.setAssetGroups(assetGroupRequests);
         assetOuterRequest.setAsset(assetRequest);
 
-        int result = assetServiceImpl.changeAsset(assetOuterRequest);
-        Assert.assertEquals(10, result);
-
-        AssetCpuRequest assetCpu = generateAssetCpuRequest();
-        assetCpu.setId(null);
-
-        AssetMainboradRequest assetMainboradRequest = generateAssetMainboradRequest();
-        assetMainboradRequest.setId(null);
-
-        AssetHardDiskRequest assetHardDiskRequest = generateHardDiskRequest();
-        assetHardDiskRequest.setId(null);
-
-        AssetNetworkCardRequest assetNetworkCard = generateAssetNetworkCardRequest();
-        assetNetworkCard.setId(null);
-
-        AssetMemoryRequest assetMemoryRequest = generateAssetMemoryRequest();
-        assetMemoryRequest.setId(null);
+        ActionResponse result = assetServiceImpl.changeAsset(assetOuterRequest);
 
         result = assetServiceImpl.changeAsset(assetOuterRequest);
         Assert.assertEquals(10, result);
@@ -1898,7 +1884,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testQueryAssetCountByAreaIds() throws Exception {
+    public void testQueryAssetCountByAreaIds() {
         when(assetDao.queryAssetCountByAreaIds(any())).thenReturn(0);
 
         List<Integer> areaIds = new ArrayList<>();
@@ -1973,7 +1959,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testPulldownUnconnectedManufacturer() throws Exception {
+    public void testPulldownUnconnectedManufacturer() {
         when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Sets.newHashSet("String"));
 
         Set<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
@@ -2091,7 +2077,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testQueryAlarmAssetList() throws Exception {
+    public void testQueryAlarmAssetList() {
         AlarmAssetRequest alarmAssetRequest = new AlarmAssetRequest();
         when(assetDao.queryAlarmAssetList(any())).thenReturn(Arrays.asList(generateAsset()));
         alarmAssetRequest.setIp("1.2.3.4");
@@ -2100,7 +2086,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testFindAssetIds() throws Exception {
+    public void testFindAssetIds() {
         when(assetDao.findAssetIds(any())).thenReturn(Arrays.asList("1"));
         Assert.assertNotNull(assetServiceImpl.findAssetIds());
     }
@@ -2219,7 +2205,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void countCategory() throws Exception {
+    public void countCategory() {
         List<Map<String, Object>> categoryModelCount = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Map<String, Object> map = new HashMap<>();

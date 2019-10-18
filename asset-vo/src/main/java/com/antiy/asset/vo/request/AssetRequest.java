@@ -110,6 +110,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      */
     @ApiModelProperty("操作系统")
     private Long                    operationSystem;
+    @ApiModelProperty("操作系统名称")
+    private String                  operationSystemName;
     /**
      * 系统位数
      */
@@ -467,5 +469,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     public void setStepNode(String stepNode) {
         this.stepNode = stepNode;
+    }
+
+    public String getOperationSystemName() {
+        return operationSystemName;
+    }
+
+    public void setOperationSystemName(String operationSystemName) {
+        this.operationSystemName = operationSystemName;
     }
 }

@@ -14,6 +14,6 @@ import org.apache.ibatis.annotations.Param;
  * @since 2019-09-19
  */
 public interface AssetAssemblyLibDao extends IBaseDao<AssetAssemblyLib> {
-    List<AssetAssembly> queryAssemblyByHardSoftId(@Param("id") String id);
+    List<AssetAssembly> queryAssemblyByHardSoftId(@Param("businessId") String businessId);
 
 }
