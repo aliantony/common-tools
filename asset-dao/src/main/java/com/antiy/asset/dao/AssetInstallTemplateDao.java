@@ -100,11 +100,13 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
 
     Integer queryBaselineTemplateType(ObjectQuery query);
 
-    Integer findFilteredCount(ObjectQuery query);
+    Integer CountFilterBlackItemTemplate(ObjectQuery query);
+    Integer CountWhiteItemTemplate(ObjectQuery query);
 
     List<AssetInstallTemplateResponse> queryTemplateInfo(ObjectQuery query);
+    List<AssetInstallTemplateResponse> FilterBlackItemTemplate(ObjectQuery query);
+    List<AssetInstallTemplateResponse> findWhiteItemTemplate(ObjectQuery query);
 
-    List<AssetInstallTemplateResponse> queryFilteredTemplate(ObjectQuery query);
 
     /**
      * 批量插入补丁与装机模板的关系
@@ -122,35 +124,26 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      */
     Integer insertBatchSoft(AssetInstallTemplateRequest request);
 
-    /**
-     * 批量插入审核用户与装机模板的关系
-     *
-     * @param request
-     * @return
-     */
-    Integer insertBatchUser(AssetInstallTemplateRequest request);
-
-    Set<String> queryCheckTemplateUserId(@Param("installTemplateId") Integer installTemplateId);
-
-    Integer checkTemplate(AssetInstallTemplateCheckRequest request);
-
     Integer updateStatus(AssetInstallTemplate template);
 
     Integer deleteBatchSoft(AssetInstallTemplateRequest request);
 
     Integer deleteBatchPatch(AssetInstallTemplateRequest request);
 
-    Integer deleteBatchUser(AssetInstallTemplateRequest request);
 
     Set<String> queryPatchIds(PrimaryKeyQuery query);
 
     List<PatchInfo> queryPatchRelations(@Param("installTemplateId") String installTemplateId);
+
     Integer insertTemplateCheckInfo(AssetInstallTemplateCheckRequest request);
 
     /**
      * 查询装机模板的软件id列表
+     *
      * @param installTemplateId
      * @return
      */
     List<Long> querySoftIds(@Param("installTemplateId") String installTemplateId);
+
+
 }

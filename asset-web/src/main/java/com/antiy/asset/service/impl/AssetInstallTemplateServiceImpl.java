@@ -128,11 +128,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
             if (requestStatus == enableCode) {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_ENABLE.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "启用装机模板:{}", assetInstallTemplate.toString());
             } else {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_FORBIDDEN.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "禁用装机模板:{}", assetInstallTemplate.toString());
             }
             if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
@@ -150,6 +150,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         ParamterExceptionUtils.isBlank(request.getName(), "模板名称必填");
         ParamterExceptionUtils.isBlank(request.getNumberCode(), "模板编号必填");
         ParamterExceptionUtils.isNull(request.getOperationSystem(), "操作系统必填");
+        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
+            throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
+        }
         setTemplateInfo(request, assetInstallTemplate);
         assetInstallTemplateDao.update(assetInstallTemplate);
 
@@ -189,7 +192,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_MODIFY.getName(),
-                    templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             return sendTask(request, assetInstallTemplate);
         }
@@ -213,19 +216,23 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         String baselineId = query.getBaselineId();
         Integer count = null;
         Integer type = null;
-        boolean isBlackItem = true;
+        int index = 0;
         if (baselineId == null) {
             count = this.findCount(query);
-        } else if (!(isBlackItem = (type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
-            count = this.findCount(query);
+        } else if ((type = assetInstallTemplateDao.queryBaselineTemplateType(query)) == BaselineTemplateStatusEnum.BLACK_ITEM.getCode()) {
+            count = assetInstallTemplateDao.CountFilterBlackItemTemplate(query);
+            index = 1;
+        } else if (type == BaselineTemplateStatusEnum.WHITE_ITEM.getCode()) {
+            count = assetInstallTemplateDao.CountWhiteItemTemplate(query);
+            index = 2;
         } else {
-            count = assetInstallTemplateDao.findFilteredCount(query);
+            count = this.findCount(query);
         }
         if (count == 0 || count == null) {
             return new PageResult<AssetInstallTemplateResponse>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
         List<AssetInstallTemplateResponse> responses = null;
-        if (baselineId == null || (baselineId != null && (type == null || !isBlackItem))) {
+        if (index == 0) {
             responses = assetInstallTemplateDao.queryTemplateInfo(query);
             List<WaitingTaskReponse> waitingTaskReponseList = queryTemplateTasksByLoginId();
             if (waitingTaskReponseList != null && waitingTaskReponseList.size() > 0) {
@@ -233,14 +240,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                     responses);
+        } else if (index == 1) {
+            responses = assetInstallTemplateDao.FilterBlackItemTemplate(query);
+        } else {
+            responses = assetInstallTemplateDao.findWhiteItemTemplate(query);
         }
-
-
-        //根据配置模板id过滤包含黑名单软件的装机模板
-        responses = assetInstallTemplateDao.queryFilteredTemplate(query);
-        responses.forEach(v -> v.setSoftBusinessIds(
-                iAssetHardSoftLibService.querySoftsRelations(v.getStringId()).stream().map(vaule -> vaule.getBusinessId()).collect(Collectors.toList())
-        ));
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 responses);
     }
@@ -285,7 +289,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         });
         ids.deleteCharAt(ids.length() - 1);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_DELETE.getName(),
-                ids.toString(), null, request.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                ids.toString(), null, request.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, "删除装机模板:{}", request.toString());
         return "删除成功";
     }
@@ -338,6 +342,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (!verifyUserRole(AUTHORITY_ROLE_NAME[0])) {
             throw new BusinessException("非法权限操作");
         }
+        if (request.getSoftBussinessIds().size() == 0 && request.getPatchIds().size() == 0) {
+            throw new RequestParamValidateException("请至少选择一个软件或者一个补丁");
+        }
         int result = queryNumberCode(request.getNumberCode());
         if (result > 0) {
             throw new RequestParamValidateException("模板编号已经存在");
@@ -361,7 +368,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
         this.insertCheckTemplateInfo(request);
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CREATION.getName(),
-                template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, "创建装机模板:{}", template.toString());
         return sendTask(request, template);
     }
@@ -425,14 +432,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (result != null && result == 1) {
             activityClient.completeTask(handleRequest);
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CHECK.getName(),
-                    template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "审核装机模板:{}", response.toString());
             return "审核结果提交成功";
         }
         return "审核结果提交失败";
     }
 
-    private  synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
+    private synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getStringId());
         activityRequest.setBusinessId(template.getStringId());

@@ -155,10 +155,10 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <if test=" name != null">
+        <if test=" name != null and name !=''">
             and `name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
         </if>
-        <if test=" numberCode != null">
+        <if test=" numberCode != null and numberCode !=''">
             and number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" categoryModel != null">
@@ -322,20 +322,17 @@
 
     <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
         SELECT
-                ait.id,
-                ait.`name`,
-                ait.number_code as numberCode,
-                ait.description,
-                count(DISTINCT asset_software_install_template.id) as softwareCount,
-                count(DISTINCT asset_patch_install_template.id) as patchCount
-
+        ait.id,
+        ait.`name`,
+        ait.number_code AS numberCode,
+        ait.description,
+        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softwareCount,
+        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchCount
         FROM
-            asset_install_template AS ait
-
-            left JOIN  asset_software_install_template on   asset_software_install_template.install_template_id = ait.id
-            left join  asset_patch_install_template    on   asset_patch_install_template.install_template_id = ait.id
-            WHERE ait.status=1 and ait.id=#{templateId} and asset_software_install_template.status=1  and asset_patch_install_template.status=1
-
+        asset_install_template AS ait
+        WHERE
+        ait.STATUS = 1
+        AND ait.id =#{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
@@ -403,31 +400,6 @@
             resultType="java.lang.Integer">
         select sw_type from baseline_template where id=#{baselineId}
     </select>
-    <select id="findFilteredCount" resultType="java.lang.Integer" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1) from (SELECT
-        ait.id
-        FROM
-        asset_install_template ait
-        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
-        WHERE
-        ait.status=1
-        and asit.status=1
-        and asit.software_id NOT IN (
-        SELECT DISTINCT
-        ahsl.business_id
-        FROM
-        baseline_template_software bts
-        INNER JOIN baseline_template bt ON bts.template_id = bt.id
-        INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        where bt.sw_type = 1
-        AND bt.id = #{baselineId}
-        and bts.status=1
-        and ahsl.status=1
-        )
-        <include refid="Where_Column_List"></include>
-        GROUP BY
-        ait.id) t
-    </select>
     <select id="queryTemplateInfo" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
             parameterType="com.antiy.common.base.ObjectQuery">
 
@@ -447,71 +419,31 @@
         count(DISTINCT apit.patch_id) as patchNum
         FROM
         asset_install_template ait
-        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
-        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id AND asit.STATUS = 1
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id AND apit.STATUS = 1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
-            <include refid="Where_Column_List"></include>
+            <if test=" name != null and name !=''">
+                and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" numberCode != null and numberCode !=''">
+                and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+            </if>
+            <if test=" currentStatus != null">
+                and  ait.current_status = #{currentStatus }
+            </if>
+            <if test=" operationSystem != null">
+                and  ait.operation_system = #{operationSystem }
+            </if>
+            <if test=" operationSystemName != null">
+                and  ait.operation_system_name = #{operationSystemName }
+            </if>
             <if test="stringId !=null">
                 and ait.id=#{stringId}
             </if>
         </trim>
-        GROUP BY
-        ait.id
-        order by
-        <if test="baselineId != null">
-            ait.gmt_modified
-        </if>
-        <if test="baselineId == null">
-            ait.gmt_create
-        </if>
-        desc
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-    </select>
-    <select id="queryFilteredTemplate" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
-            parameterType="com.antiy.common.base.ObjectQuery">
-        SELECT
-        ait.id AS stringId,
-        ait.id AS templateId,
-        ait.NAME AS NAME,
-        ait.number_code AS numberCode,
-        ait.gmt_modified AS gmtModified,
-        ait.description AS description,
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
-        FROM
-        asset_install_template ait
-        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id
-        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id
-        WHERE
-        asit.software_id NOT IN (
-        SELECT DISTINCT
-        ahsl.business_id
-        FROM
-        baseline_template_software bts
-        INNER JOIN baseline_template bt ON bts.template_id = bt.id
-        INNER JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
-        where bt.sw_type = 1
-        AND bt.id = #{baselineId}
-        and ahsl.status=1
-        and bts.status=1
-        )
-        and ait.status=1
-        and asit.status=1
-        and apit.status=1
-        <include refid="Where_Column_List"></include>
-        GROUP BY
-        ait.id
-        order by
-        <if test="baselineId != null">
-            ait.gmt_modified
-        </if>
-        <if test="baselineId == null">
-            ait.gmt_create
-        </if>
-        desc
+        GROUP BY   ait.id
+        order by   ait.gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -537,14 +469,6 @@
                     (#{stringId},#{patchId},#{gmtCreate},#{createUser})
                 </foreach>
             </if>
-        </trim>
-
-    </insert>
-    <insert id="insertBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
-        insert into asset_install_template_check
-        (install_template_id,user_id,result,gmt_create,create_user)
-        <trim prefix="values" suffix=";">
-            (#{stringId},#{createUser},1,#{gmtCreate},#{createUser})
         </trim>
 
     </insert>
@@ -607,9 +531,7 @@
         </trim>
 
     </insert>
-    <select id="queryCheckTemplateUserId" resultType="java.lang.Integer">
-       select DISTINCT user_id from asset_install_template_check where install_template_id=#{installTemplateId} and status=1
-    </select>
+
     <sql id="Set_InstallTemplate_Check_List">
         <if test=" advice != null">
             advice = #{advice },
@@ -624,13 +546,6 @@
             modified_user = #{modifiedUser },
         </if>
     </sql>
-    <update id="checkTemplate" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest">
-        update asset_install_template_check
-        <trim prefix="SET" suffixOverrides=",">
-            <include refid="Set_InstallTemplate_Check_List"></include>
-        </trim>
-        where install_template_id = #{installTemplateId } and status=1
-    </update>
     <update id="deleteBatchSoft" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
         update asset_software_install_template set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
         where install_template_id=#{stringId } and software_id
@@ -644,14 +559,6 @@
         where install_template_id=#{stringId } and patch_id
         <foreach collection="patchIds" item="patchId" open="in (" close=")" separator=",">
             #{patchId}
-        </foreach>
-        and status=1
-    </update>
-    <update id="deleteBatchUser" parameterType="com.antiy.asset.vo.request.AssetInstallTemplateRequest">
-        update asset_install_template_check set status=0,gmt_modified=#{gmtModified},modified_user=#{modifiedUser}
-        where install_template_id=#{stringId } and user_id
-        <foreach collection="nextExecutor" item="nextExecutor" open="in (" close=")" separator=",">
-            #{nextExecutor}
         </foreach>
         and status=1
     </update>
@@ -681,4 +588,194 @@
     <select id="querySoftIds" resultType="java.lang.Long">
         select software_id from asset_software_install_template where install_template_id = #{installTemplateId} and status = 1
     </select>
+    <select id="CountFilterBlackItemTemplate" resultType="Integer"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1) from ( SELECT
+        DISTINCT ait.id AS stringId,
+        ait.id AS templateId,
+        ait.NAME AS NAME,
+        ait.number_code AS numberCode,
+        ait.gmt_modified AS gmtModified,
+        ait.description AS description,
+        count( DISTINCT asit.software_id ) AS softNum,
+        count( DISTINCT apit.patch_id ) AS patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+
+        LEFT JOIN ( SELECT DISTINCT
+        ahsl.business_id AS software_business_id
+        FROM
+        baseline_template bt
+        LEFT JOIN baseline_template_software bts ON bt.id = bts.template_id
+        AND bts.STATUS = 1
+        LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        AND ahsl.STATUS = 1
+        WHERE
+        bt.sw_type = 1
+        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        where ait.status=1
+        <if test=" name != null and name !=''">
+            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" currentStatus != null">
+            and ait.current_status = #{currentStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and ait.operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and ait.operation_system_name = #{operationSystemName }
+        </if>
+        GROUP BY ait.id HAVING count(t.software_business_id)=0
+        ) t
+    </select>
+    <select id="FilterBlackItemTemplate" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        DISTINCT ait.id AS stringId,
+        ait.id AS templateId,
+        ait.NAME AS NAME,
+        ait.number_code AS numberCode,
+        ait.gmt_modified AS gmtModified,
+        ait.description AS description,
+        count( DISTINCT asit.software_id ) AS softNum,
+        count( DISTINCT apit.patch_id ) AS patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+
+        LEFT JOIN ( SELECT DISTINCT
+        ahsl.business_id AS software_business_id
+        FROM
+        baseline_template bt
+        LEFT JOIN baseline_template_software bts ON bt.id = bts.template_id
+        AND bts.STATUS = 1
+        LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        AND ahsl.STATUS = 1
+        WHERE
+        bt.sw_type = 1
+        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        where ait.status=1
+        <if test=" name != null and name !=''">
+            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" currentStatus != null">
+            and ait.current_status = #{currentStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and ait.operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and ait.operation_system_name = #{operationSystemName }
+        </if>
+        GROUP BY ait.id HAVING count(t.software_business_id)=0
+        order by ait.gmt_modified desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="CountWhiteItemTemplate" resultType="Integer" parameterType="com.antiy.common.base.ObjectQuery">
+    select count(1) from ( SELECT
+    DISTINCT ait.id AS stringId,
+    ait.id AS templateId,
+    ait.NAME AS NAME,
+    ait.number_code AS numberCode,
+    ait.gmt_modified AS gmtModified,
+    ait.description AS description,
+
+    count( DISTINCT asit.software_id ) AS softNum,
+    count( DISTINCT apit.patch_id ) AS patchNum
+    FROM
+    asset_install_template ait
+    LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
+    LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+    LEFT JOIN ( SELECT DISTINCT
+    ahsl.business_id AS software_business_id
+    FROM
+    baseline_template bt
+    LEFT JOIN baseline_template_software bts ON bt.id = bts.template_id
+    AND bts.STATUS = 1
+    LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+    AND ahsl.STATUS = 1
+    WHERE
+    bt.sw_type = 0
+    AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+    where ait.status=1 and asit.software_id is not null
+    <if test=" name != null and name !=''">
+        and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+    </if>
+    <if test=" numberCode != null and numberCode !=''">
+        and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+    </if>
+    <if test=" currentStatus != null">
+        and ait.current_status = #{currentStatus }
+    </if>
+    <if test=" operationSystem != null">
+        and ait.operation_system = #{operationSystem }
+    </if>
+    <if test=" operationSystemName != null">
+        and ait.operation_system_name = #{operationSystemName }
+    </if>
+    GROUP BY ait.id HAVING count(t.software_business_id)=count(asit.software_id)
+    ) t
+    </select>
+    <select id="findWhiteItemTemplate" resultType="com.antiy.asset.vo.response.AssetInstallTemplateResponse"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        DISTINCT ait.id AS stringId,
+        ait.id AS templateId,
+        ait.NAME AS NAME,
+        ait.number_code AS numberCode,
+        ait.gmt_modified AS gmtModified,
+        ait.description AS description,
+
+        count( DISTINCT asit.software_id ) AS softNum,
+        count( DISTINCT apit.patch_id ) AS patchNum
+        FROM
+        asset_install_template ait
+        LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
+        LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+        LEFT JOIN ( SELECT DISTINCT
+        ahsl.business_id AS software_business_id
+        FROM
+        baseline_template bt
+        LEFT JOIN baseline_template_software bts ON bt.id = bts.template_id
+        AND bts.STATUS = 1
+        LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
+        AND ahsl.STATUS = 1
+        WHERE
+        bt.sw_type = 0
+        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        where ait.status=1 and asit.software_id is not null
+        <if test=" name != null and name !=''">
+            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" currentStatus != null">
+            and ait.current_status = #{currentStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and ait.operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and ait.operation_system_name = #{operationSystemName }
+        </if>
+        GROUP BY ait.id HAVING count(t.software_business_id)=count(asit.software_id)
+        order by ait.gmt_modified desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
 </mapper>
