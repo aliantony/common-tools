@@ -1145,7 +1145,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+    public ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
@@ -1169,6 +1169,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         final String[] admittanceResult = new String[1];
+        String msg = "";
+        final String[] uuid = new String[1];
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
@@ -1252,13 +1254,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-                // 已退役、待登记，不予登记再登记
-                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
-                    || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
-                    || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
-                    // 授权数量校验
-                    anthNumValidate();
-                    // 处理流程
+                // 已退役点登记，启动流程
+                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())) {
+                    if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
+                        asset.setBaselineTemplateId(asset.getBaselineTemplateId());
+                        admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
+                            .get("admittanceResult");
+                        // 记录操作流程的状态,更新资产状态
+                        if ("safetyCheck".equals(admittanceResult[0])) {
+                            updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(),
+                                assetId);
+                            assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                        } else {
+                            updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
+                                assetId);
+                            assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        }
+                    } else {
+                        updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
+                    }
                     ManualStartActivityRequest activityRequest = assetOuterRequest.getManualStartActivityRequest();
                     activityRequest.setBusinessId(assetId);
                     activityRequest.setProcessDefinitionKey("assetAdmittance");
@@ -1267,60 +1282,65 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 如果流程引擎为空,直接返回错误信息
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                        // 调用失败，逻辑删登记的资产
-                        assetDao.deleteById(assetId);
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                     }
-                    if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
-                        asset.setBaselineTemplateId(asset.getBaselineTemplateId());
-                        admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                            .get("admittanceResult");
-                        // 更新资产状态
-                        if ("safetyCheck".equals(admittanceResult[0])) {
-                            // 更新资产状态为待检查
-                            updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(),
-                                assetId);
-                        } else {
-                            // 更新资产状态为待实施
-                            updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
-                                assetId);
-                        }
-                    } else {
-                        // 更新资产状态为已入网
-                        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-                    }
-                    // 安全检查走基准
-                    if ("safetyCheck".equals(admittanceResult[0])) {
-                        BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
-                        baselineAssetRegisterRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
-                        baselineAssetRegisterRequest
-                            .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
-                        baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
-                        baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
-                        baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
-                        baselineAssetRegisterRequest
-                            .setCheckUser(activityRequest.getFormData().get("safetyCheckUser").toString());
-                        ActionResponse baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
-                        // 如果基准为空,直接返回错误信息
-                        if (null == baselineCheck
-                            || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                            // 调用失败，直接删登记的资产
-                            assetDao.deleteAssetById(DataTypeUtils.stringToInteger(assetId));
-                            BusinessExceptionUtils.isTrue(baselineCheck != null, "调用基准失败");
-                        }
-                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
-                        assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
-                    } else {
-                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-                        assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
-                    }
+                    // 安全检查 2 模板1
 
+                    BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+                    baselineAssetRegisterRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                    baselineAssetRegisterRequest
+                        .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
+                    baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
+                    baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                    baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                    baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
+                        ? activityRequest.getFormData().get("safetyCheckUser").toString()
+                        : activityRequest.getFormData().get("templateImplementUser").toString());
+                    // 如果没得uuid 安全检查
+                    ActionResponse baselineCheck;
+                    if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
+                        baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
+                        msg = InstallType.AUTOMATIC.getCode().equals(asset.getInstallType())
+                            ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+                            : "";
+                    } else {
+                        baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+                    }
+                    // 如果基准为空,直接返回错误信息
+                    if (null == baselineCheck
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+                        // 调用失败，直接删登记的资产
+                        assetDao.deleteAssetById(DataTypeUtils.stringToInteger(assetId));
+                        BusinessExceptionUtils.isTrue(baselineCheck != null, "调用流程引擎出错");
+                        return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                            : baselineCheck;
+                    }
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
                         Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
                         BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
                         JSON.toJSONString(assetOuterRequest));
+                }
+                // 不予登记、待登记点登记是完成任务
+                else if (AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                         || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
+                    ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
+                    String ar = (String) activityHandleRequest.getFormData().get("admittanceResult");
+                    // 下一步到安全检查
+                    if ("safetyCheck".equals(ar)) {
+                        updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                    } else {
+                        updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
+                            assetId);
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    }
+                    ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
+                    if (actionResponse == null
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+                    }
                 }
                 // 资产变更
                 else {
@@ -1375,7 +1395,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
         }
         assetOperationRecordDao.insert(assetOperationRecord);
-        return assetCount;
+        return ActionResponse.success(msg);
     }
 
     private void dealInstallTemplete(String newInstallId, String assetId) {

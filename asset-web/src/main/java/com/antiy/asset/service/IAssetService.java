@@ -1,5 +1,14 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -9,13 +18,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -163,7 +165,7 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @param assetOuterRequest 资产信息
      */
-    Integer changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
+    ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception;
 
     /**
      * @param types 导出模板的类型
@@ -318,18 +320,19 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     List<SelectResponse> queryBaselineTemplate();
+
     /**
      * 获取安全设备全部厂商
      */
     List<String> getAllSupplierofSafetyEquipment(String supplier);
+
     /**
      * 根据厂商获取安全设备名称列表
      * @return
      */
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier,String name);
+    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name);
 
-
-    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName,String version);
+    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version);
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 
