@@ -49,6 +49,13 @@ public interface BaseLineClient {
      */
     ActionResponse distributeBaseline(String assetId);
 
+    /**
+     * 入网下发基准
+     * @param assetId
+     * @return
+     */
+    ActionResponse scan(String assetId);
+
 
 
     /**

@@ -358,6 +358,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
 
             }
+            // 扫描
+            if (baselineAssetRegisterRequest.getCheckType() == 2) {
+
+                ActionResponse scan = baseLineClient
+                    .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+                // 如果漏洞为空,直接返回错误信息
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    assetDao.deleteAssetById(id);
+                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+
+                }
+            }
+
         }
 
         return ActionResponse.success(msg);

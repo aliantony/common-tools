@@ -310,6 +310,10 @@ public class ImportExcel {
             }
         }
         int numberOfCells = firstRow.getPhysicalNumberOfCells();
+        // 表头判定
+        // Iterator<Cell> cellIterator = firstRow.cellIterator ();
+        // StrBuilder strBuilder = new StrBuilder ();
+        // cellIterator.forEachRemaining (cell -> strBuilder.append (cell.getStringCellValue ()));
         if (length != numberOfCells) {
             sb.append("导入失败，模板不匹配,请重新选择对应模板！");
             return null;
