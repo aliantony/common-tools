@@ -1,15 +1,11 @@
 package com.antiy.asset.controller;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.containsString;
 
 import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +24,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetDetialCondition;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.JsonUtil;
 
 import util.ControllerUtil;
@@ -199,7 +198,7 @@ public class AssetControllerTest {
         AssetRequest assetRequest = new AssetRequest();
         assetRequest.setId("1");
         assetOuterRequest.setAsset(assetRequest);
-        Mockito.when(iAssetService.changeAsset(assetOuterRequest)).thenReturn(1);
+        Mockito.when(iAssetService.changeAsset(assetOuterRequest)).thenReturn(new ActionResponse());
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/change/asset")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(assetOuterRequest))).andReturn();
         Assert.assertThat(mvcResult.getResponse().getContentAsString(),
@@ -302,7 +301,7 @@ public class AssetControllerTest {
     }
 
     @Test
-    public void queryAssetByIds() throws Exception {
+    public void queryAssetByIds() {
 
     }
 
