@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
 
@@ -68,6 +70,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private CommandClientImpl                                                   commandClient;
     @Resource
     private BaseLineClient                                                      baseLineClient;
+    @Resource
+    private AesEncoder                                                          aesEncoder;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
@@ -134,6 +138,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest) {
+        int result = 0;
         List<String> assetIds = softwareReportRequest.getAssetId();
         List<Long> softIds = softwareReportRequest.getSoftId();
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
@@ -152,11 +157,14 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                     assetSoftwareRelationList.add(assetSoftwareRelation);
                 });
             });
-            return assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+            result = assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
 
-        String nextStepUserId = (String) softwareReportRequest.getManualStartActivityRequest().getFormData()
-            .get("baselineConfigUserId");
+        String nextStepUserId = aesEncoder.decode(
+            (String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
+            LoginUserUtil.getLoginUser().getUsername());
+        Map formData = softwareReportRequest.getManualStartActivityRequest().getFormData();
+        formData.put("baselineConfigUserId", nextStepUserId);
         // ------------------对接配置模块------------------start
         List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
         assetIds.stream().forEach(assetId -> {
@@ -168,8 +176,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
             baselineWaitingConfigRequest.setReason("资产变更");
             baselineWaitingConfigRequest.setSource(2);
-            baselineWaitingConfigRequest
-                .setFormData(softwareReportRequest.getManualStartActivityRequest().getFormData());
+            baselineWaitingConfigRequest.setFormData(formData);
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
@@ -180,6 +187,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         }
         // ------------------对接配置模块------------------end
 
-        return 0;
+        return result;
     }
 }
