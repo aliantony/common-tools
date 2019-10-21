@@ -725,7 +725,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        if (query.getCategoryModels() != null && query.getCategoryModels().length > 0) {
+        if (query.getCategoryModels() == null) {
             Integer[] category = new Integer[2];
             category[0] = AssetCategoryEnum.COMPUTER.getCode();
             category[1] = AssetCategoryEnum.NETWORK.getCode();
