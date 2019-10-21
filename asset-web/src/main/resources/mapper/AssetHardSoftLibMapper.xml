@@ -637,14 +637,7 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
-            <choose>
-                <when test="operationSystem=='enterprise_linux'">
-                    and (locate(#{operationSystem},soft_platform)>0 or soft_platform='any')
-                </when>
-                <otherwise>
-                    and (locate(soft_platform,#{operationSystem})>0 or soft_platform='any')
-                </otherwise>
-            </choose>
+            and soft_platform=#{operationSystem}
 
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t1.id not in
@@ -687,14 +680,7 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
-            <choose>
-                <when test="operationSystem=='enterprise_linux'">
-                    and (locate(#{operationSystem},soft_platform)>0 or soft_platform='any')
-                </when>
-                <otherwise>
-                    and (locate(soft_platform,#{operationSystem})>0 or soft_platform='any')
-                </otherwise>
-            </choose>
+            and soft_platform=#{operationSystem}
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t1.id not in
                 <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">

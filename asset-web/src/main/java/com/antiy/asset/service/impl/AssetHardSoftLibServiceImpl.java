@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.asset.vo.enums.AssetOperationSystemEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.*;
@@ -162,7 +163,8 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query) {
-        query.setOperationSystem(iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName());
+        String osName = iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName().replace('-', '_').replace('.', '_');
+        query.setOperationSystem(AssetOperationSystemEnum.valueOf(osName.toUpperCase()).getSerialName());
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
