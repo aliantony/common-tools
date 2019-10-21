@@ -879,7 +879,7 @@
     <delete id="deleteSoftRealtion">
         update asset_software_relation set status = 0
         where asset_id = #{id}
-        <if test="softIds !=null and softId.size() > 0">
+        <if test="softIds !=null and softIds.size() > 0">
             and software_id in
             <foreach collection="softIds" item="item" open="(" close=")" separator=",">
                 #{item}

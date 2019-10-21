@@ -699,6 +699,7 @@
     <select id="queryLinkedAssetListByAssetId" resultType="com.antiy.asset.entity.AssetLinkRelation"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
         SELECT
+        alr.id,
         asset.id AS assetId,
         asset.NAME AS assetName,
         asset.category_model AS categoryModel,
@@ -720,6 +721,7 @@
         asset.id )
         UNION
         SELECT
+        alr.id,
         asset.id AS assetId,
         asset.NAME AS assetName,
         asset.category_model AS categoryModel,
@@ -1046,6 +1048,10 @@
                 #{assetStatus}
             </foreach>
         </if>
+        AND (
+        asset1.id = grou.asset_id
+        OR asset2.id = grou.asset_id
+        )
         ) and status=1
         )
         AND status = 1

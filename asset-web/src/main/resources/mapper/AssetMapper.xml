@@ -1171,15 +1171,15 @@
         asset.baseline_template_id,
         asset.gmt_create,
         asset.version,
-        GROUP_CONCAT(air.ip) AS ips,
-        GROUP_CONCAT(amr.mac) AS macs,
+        GROUP_CONCAT(distinct air.ip) AS ips,
+        GROUP_CONCAT(distinct amr.mac) AS macs,
         asset.install_template_id,
         asset.baseline_template_id,
         asset.step_node,
         bt.tp_name as baseline_template_name
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
-        left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status = 1
+        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         left join baseline_template bt on asset.baseline_template_id = bt.id
         <where>
@@ -1722,6 +1722,7 @@ WHERE
             #{areaId}
         </foreach>
         AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND asset_source IN ( 1, 3 ) )
+        AND category_model is not null
         GROUP BY category_model
     </select>
     <select id="findCountAssetNumber" resultType="int">
