@@ -1371,8 +1371,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // 资产变更
                 else {
-                    String nextStepUserId = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
-                        .get("baselineConfigUserId");
+                    String nextStepUserId = aesEncoder.decode((String) assetOuterRequest.getManualStartActivityRequest()
+                        .getFormData().get("baselineConfigUserId"), LoginUserUtil.getLoginUser().getUsername());
+                    Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
+                    formData.put("baselineConfigUserId", nextStepUserId);
                     List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -1383,8 +1385,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
                     baselineWaitingConfigRequest.setReason("资产变更");
                     baselineWaitingConfigRequest.setSource(2);
-                    baselineWaitingConfigRequest
-                        .setFormData(assetOuterRequest.getManualStartActivityRequest().getFormData());
+                    baselineWaitingConfigRequest.setFormData(formData);
                     baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
                     baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
                     ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
