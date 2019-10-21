@@ -265,7 +265,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 查询第二级分类id
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
-        List<Map<String, Object>> result = assetDao.countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+        List<Map<String, Object>> result = assetDao
+            .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
@@ -418,7 +419,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         query.setAssetStatusList(statusList);
         return query;
     }
-
 
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
@@ -725,10 +725,12 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
-        Integer[] category = new Integer[2];
-        category[0] = AssetCategoryEnum.COMPUTER.getCode();
-        category[1] = AssetCategoryEnum.NETWORK.getCode();
-        query.setCategoryModels(category);
+        if (query.getCategoryModels() != null && query.getCategoryModels().length > 0) {
+            Integer[] category = new Integer[2];
+            category[0] = AssetCategoryEnum.COMPUTER.getCode();
+            category[1] = AssetCategoryEnum.NETWORK.getCode();
+            query.setCategoryModels(category);
+        }
         setStatusQuery(query);
     }
 }
