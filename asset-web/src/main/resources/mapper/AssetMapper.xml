@@ -734,7 +734,8 @@
     <sql id="Multiple_Query">
         asset.status = 1
         <if test="unknownAssets == false">
-            AND asset.id not in (select id from asset where asset_status = 1 and asset_source in (1,3))
+            AND asset.id not in (select id from asset where asset_status = 1 and asset_source in (1,3) and gmt_modified
+            = 0)
         </if>
         <if test="stringId != null and stringId != ''">
             and asset.id = #{stringId}
