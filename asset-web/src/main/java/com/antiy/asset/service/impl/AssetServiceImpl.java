@@ -344,8 +344,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                 baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
-                    : "";
+                // msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+                // : "";
             } else {
                 baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
             }
@@ -1318,9 +1318,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ActionResponse baselineCheck;
                     if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                         baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                        msg = InstallType.AUTOMATIC.getCode().equals(asset.getInstallType())
-                            ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
-                            : "";
+                        // msg = InstallType.AUTOMATIC.getCode().equals(asset.getInstallType())
+                        // ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+                        // : "";
                     } else {
                         baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
                     }

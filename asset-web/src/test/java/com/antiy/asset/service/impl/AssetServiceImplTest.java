@@ -325,6 +325,7 @@ public class AssetServiceImplTest {
         manualStartActivityRequest.setAssignee("1");
         Map map = new HashMap();
         map.put("admittanceResult", "dsdsd");
+        map.put("templateImplementUser", "dsdsd");
         manualStartActivityRequest.setFormData(map);
         userIds.add("1");
         manualStartActivityRequest.setConfigUserIds(userIds);
@@ -392,11 +393,22 @@ public class AssetServiceImplTest {
         assetOuterRequest22.setMacRelationRequests(generateAssetmacRequestList());
 
         ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+
         ActionResponse result = assetServiceImpl.saveAsset(assetOuterRequest);
         Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
-        assetRequest.setBaselineTemplateId("");
+        assetRequest.setBaselineTemplateId("1");
         ActionResponse result1 = assetServiceImpl.saveAsset(assetOuterRequest);
         Assert.assertEquals(0, assetRequest.getAssetStatus().intValue());
+
+        AssetOuterRequest assetOuterRequest41 = new AssetOuterRequest();
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.fail(RespBasicCode.ERROR));
+        when(baseLineClient.baselineCheckNoUUID(any())).thenReturn(ActionResponse.fail(RespBasicCode.ERROR));
+        assetOuterRequest41.setManualStartActivityRequest(generateAssetManualStart());
+        assetRequest.setName("2232fdfdfdf3232");
+        assetOuterRequest41.setAsset(assetRequest);
+        assetServiceImpl.saveAsset(assetOuterRequest41);
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheckNoUUID(any())).thenReturn(ActionResponse.success());
 
         // 安全设备
         AssetOuterRequest assetOuterRequest1 = new AssetOuterRequest();
@@ -406,7 +418,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result6 = assetServiceImpl.saveAsset(assetOuterRequest1);
-        Assert.assertEquals("200", result6.getHead().getCode());
+        Assert.assertEquals("416", result6.getHead().getCode());
 
         // 网络设备
         AssetOuterRequest assetOuterRequest2 = new AssetOuterRequest();
@@ -416,7 +428,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
 
         ActionResponse result7 = assetServiceImpl.saveAsset(assetOuterRequest2);
-        Assert.assertEquals("200", result7.getHead().getCode());
+        Assert.assertEquals("416", result7.getHead().getCode());
 
         // 存储设备
         AssetOuterRequest assetOuterRequest3 = new AssetOuterRequest();
@@ -425,7 +437,7 @@ public class AssetServiceImplTest {
         assetOuterRequest.setAsset(assetRequest);
         assetOuterRequest3.setManualStartActivityRequest(generateAssetManualStart());
         ActionResponse result8 = assetServiceImpl.saveAsset(assetOuterRequest3);
-        Assert.assertEquals("200", result8.getHead().getCode());
+        Assert.assertEquals("416", result8.getHead().getCode());
 
         // ip重复
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
@@ -451,14 +463,27 @@ public class AssetServiceImplTest {
 
         // 异常情况
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
-        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
         // 异常情况
         when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
-        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
 
         // 异常情况
         when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.success());
-        Assert.assertEquals("200", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+        Assert.assertEquals("416", assetServiceImpl.saveAsset(assetOuterRequest).getHead().getCode());
+
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        List<AssetHardSoftLib> assetHardSoftLibs = Lists.newArrayList();
+        assetHardSoftLibs.add(assetHardSoftLib);
+        when(assetHardSoftLibDao.querySoftsRelations(any())).thenReturn(assetHardSoftLibs);
+        AssetOuterRequest assetOuterRequest44 = new AssetOuterRequest();
+        AssetRequest assetRequest1 = generateAssetRequest2();
+        assetRequest1.setBaselineTemplateId("");
+        assetRequest1.setInstallTemplateId("1");
+        assetRequest1.setName("22323232");
+        assetOuterRequest44.setAsset(assetRequest1);
+        assetServiceImpl.saveAsset(assetOuterRequest44);
 
         Mockito.when(assetDao.insert(Mockito.any())).thenThrow(new DuplicateKeyException(""));
         try {
@@ -466,7 +491,6 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("编号重复！", e.getMessage());
         }
-
         AssetOuterRequest assetOuterRequest33 = new AssetOuterRequest();
         assetOuterRequest33.setManualStartActivityRequest(generateAssetManualStart2());
         assetOuterRequest33.setAsset(generateAssetRequest2());
