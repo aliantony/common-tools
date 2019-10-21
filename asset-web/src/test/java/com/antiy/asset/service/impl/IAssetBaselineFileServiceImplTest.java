@@ -9,7 +9,6 @@ import com.antiy.common.base.ActionResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.annotation.Resource;
@@ -17,7 +16,6 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 /**'资产-检查-结果验证流程关联资产是否已上传结果附件 单元测试
  * @author zhouye
@@ -46,7 +44,7 @@ public class IAssetBaselineFileServiceImplTest extends MockContext {
 	 * 断言result：true
 	 */
 	@Test
-	public void queryBaselineFileIsExist_1() {
+	public void queryBaselineFileIsExist_1 ()throws Exception {
 		List<String> list = Arrays.asList("5", "6");
 		given(dao.queryBaselineCheckFileIsExist("5")).willReturn(1);
 		given(dao.queryBaselineCheckFileIsExist("6")).willReturn(0);

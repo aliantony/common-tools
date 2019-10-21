@@ -18,22 +18,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetOperationRecordBarPO;
-import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetOperationRecordService;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.AssetOperationTableEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-import com.antiy.asset.vo.query.AssetOperationRecordQuery;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 
 /**
@@ -72,7 +60,14 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     public ActionResponse batchQueryAssetPreStatusInfo(List<String> ids) {
         List<AssetStatusNote> assetStatusNotes = assetOperationRecordDao.queryAssetPreStatusInfo(ids);
         List<AssetPreStatusInfoResponse> responses = new ArrayList<>();
-        for (AssetStatusNote e : assetStatusNotes) {
+        HashMap<String, AssetStatusNote> dbData = new HashMap<>(assetStatusNotes.size());
+        assetStatusNotes.forEach(e -> dbData.put(e.getAssetId(), e));
+        for (String assetId:
+             ids) {
+            AssetStatusNote e = dbData.getOrDefault(assetId, null);
+            if (e == null) {
+                continue;
+            }
             AssetPreStatusInfoResponse eachData = new AssetPreStatusInfoResponse(e.getAssetId(), e.getNote(), e.getOriginStatus().getValue());
             responses.add(eachData);
             if (StringUtils.isEmpty(e.getFileInfo())) {
@@ -81,6 +76,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
                 eachData.setFileInfo(HtmlUtils.htmlUnescape(e.getFileInfo()));
             }
         }
+
         return ActionResponse.success(responses);
     }
 

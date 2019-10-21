@@ -1119,6 +1119,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test="unknownAssets==true">
+            AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3 ) )
+        </if>
         and status=1
     </select>
 
@@ -1626,7 +1629,7 @@
                 #{item}
             </foreach>
         </if>
-         and asset.asset_status in (6,10)
+        and asset.asset_status in (6,10)
         GROUP BY
         asset_id
         ) alarm_asset
