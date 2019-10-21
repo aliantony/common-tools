@@ -669,20 +669,21 @@
         t1.cpe_uri,
         t1.gmt_create
         from asset_hard_soft_lib t1
+        INNER JOIN ( SELECT t2.id FROM asset_hard_soft_lib t2
         <trim prefix="where" prefixOverrides="And">
             And type='a'
             <if test=" softwareName != null and softwareName != ''">
-                and t1.product_name like CONCAT('%', replace(replace(REPLACE
+                and t2.product_name like CONCAT('%', replace(replace(REPLACE
                 (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
             <if test=" manufacturer != null and manufacturer != ''">
-                and t1.supplier like CONCAT('%', replace(replace(REPLACE
+                and t2.supplier like CONCAT('%', replace(replace(REPLACE
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
             and soft_platform=#{operationSystem}
             <if test="removeSoftIds != null and removeSoftIds.size>0">
-                and t1.id not in
+                and t2.id not in
                 <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
                     #{softId}
                 </foreach>
@@ -692,6 +693,7 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+        ) t3 ON t1.id = t3.id
     </select>
     <select id="querySoftsRelations" resultMap="BaseResultMap">
       SELECT
