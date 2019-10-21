@@ -2,7 +2,7 @@ package com.antiy.asset.vo.response;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class AssetTemplateRelationResponse {
+public class AssetTemplateRelationResponse extends  BaseResponse {
 
 
     @ApiModelProperty("模板名称")
