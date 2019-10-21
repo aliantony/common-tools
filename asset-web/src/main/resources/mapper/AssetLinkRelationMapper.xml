@@ -1048,6 +1048,10 @@
                 #{assetStatus}
             </foreach>
         </if>
+        AND (
+        asset1.id = grou.asset_id
+        OR asset2.id = grou.asset_id
+        )
         ) and status=1
         )
         AND status = 1
