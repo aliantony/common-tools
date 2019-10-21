@@ -1272,6 +1272,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
+            // 没有流程参数不走流程
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 已退役点登记，启动流程
                 if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())) {
@@ -1403,13 +1404,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // ------------------对接配置模块------------------end
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.CORRECT.getMsg());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                     assetOperationRecord.setProcessResult(null);
                     // 更新资产状态为变更中
                     updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                }
+            } else {
+                // 没有流程参数分为两种情况 普通变更 退役再登记（也可以不走流程）
+                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())) {
+                    updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
+                    // 记录资产操作流程
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+                    assetOperationRecord.setContent(AssetFlowEnum.NET_IN.getMsg());
+                } else {
+                    // 记录资产操作流程
+                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 }
             }
             /* new Thread(new Runnable() {
@@ -1424,10 +1437,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
              * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
              * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
              * }).start(); */
-        } else {
-            // 记录资产操作流程
-            assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-            assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
         }
         assetOperationRecordDao.insert(assetOperationRecord);
         return ActionResponse.success(msg);
