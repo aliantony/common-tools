@@ -189,6 +189,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                     templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             if (currentStatus == AssetInstallTemplateStatusEnum.REJECT.getCode()) {
+                ParamterExceptionUtils.isBlank(request.getTaskId(),"非流程任务发起人不能编辑");
                 return activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
             }
             return sendTask(request, assetInstallTemplate);
