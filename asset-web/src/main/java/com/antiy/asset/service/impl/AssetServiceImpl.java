@@ -358,6 +358,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
 
             }
+            // 扫描
+
+            ActionResponse scan = baseLineClient
+                .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                // 调用失败，直接删登记的资产
+                assetDao.deleteAssetById(id);
+                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+
+            }
+
         }
 
         return ActionResponse.success(msg);
@@ -1163,6 +1175,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // mac不能重复
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getMacRelationRequests())) {
+            HashSet macset = new HashSet(assetOuterRequest.getMacRelationRequests().stream()
+                .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()));
+            ParamterExceptionUtils.isTrue(assetOuterRequest.getMacRelationRequests().size() == macset.size(),
+                "mac不能重复");
             Integer mcount = assetMacRelationDao.checkRepeat(assetOuterRequest.getMacRelationRequests().stream()
                 .map(AssetMacRelationRequest::getMac).collect(Collectors.toList()),
                 assetOuterRequest.getAsset().getId());
@@ -1265,10 +1281,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                            assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                         } else {
                             updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                            assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
                         }
                     } else {
                         updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
@@ -1306,14 +1324,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else {
                         baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
                     }
+
                     // 如果基准为空,直接返回错误信息
                     if (null == baselineCheck
                         || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
                         // 调用失败，直接删登记的资产
-                        assetDao.deleteAssetById(DataTypeUtils.stringToInteger(assetId));
-                        BusinessExceptionUtils.isTrue(baselineCheck != null, "调用流程引擎出错");
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
+                    }
+                    // 扫描
+                    ActionResponse scan = baseLineClient
+                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                    // 如果漏洞为空,直接返回错误信息
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        // 调用失败，直接删登记的资产
+                        return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
                     }
                     // 记录操作日志和运行日志
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
@@ -1331,10 +1356,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if ("safetyCheck".equals(ar)) {
                         updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                     } else {
                         updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                             assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
                     }
                     ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                     if (actionResponse == null

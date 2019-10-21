@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class IAssetBaselineFileServiceImpl implements IAssetBaselineFileService {
 	@Resource
-	AssetBaselineFileDao dao;
+	private AssetBaselineFileDao dao;
 	@Override
 	public ActionResponse<List<AssetBaselineFileResponse>> queryBaselineFileIsExist(List<String> ids, AssetStatusEnum type) {
 		ArrayList<AssetBaselineFileResponse> dataList = new ArrayList<>();

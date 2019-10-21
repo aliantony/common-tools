@@ -41,6 +41,8 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Value("${baselineWaitingConfigUrl}")
     private String     baselineWaitingConfigUrl;
+    @Value("${scanUrl}")
+    private String     scanUrl;
 
     @Resource
     private BaseClient baseClient;
@@ -82,6 +84,14 @@ public class BaseLineClientImpl implements BaseLineClient {
         param.put("stringId", assetId);
         return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
         }, distributeBaselineUrl);
+    }
+
+    @Override
+    public ActionResponse scan(String assetId) {
+        JSONObject param = new JSONObject();
+        param.put("assetId", assetId);
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        }, scanUrl);
     }
 
     @Override
