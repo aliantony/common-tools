@@ -2986,6 +2986,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
+    @Override
+    public Integer countUnusual(AssetQuery query) throws Exception {
+        Integer count = 0;
+        // 如果会查询漏洞数量
+        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
+            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+
+        }
+
+        // 如果会查询补丁数据
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
+            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+
+        }
+        // 如果会查询告警数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            if (ArrayUtils.isEmpty(query.getAreaIds())) {
+                query.setAreaIds(ArrayTypeUtil
+                        .objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            }
+            count = assetDao.findAlarmAssetCount(query);
+
+        }
+        return count;
+    }
+
     private void operationRecord(String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
