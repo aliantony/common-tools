@@ -133,7 +133,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         AssetQuery query = new AssetQuery();
 
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 1.1资产状态除去不予登记和登记
         List<Integer> assetStatusList = getAssetUseableStatus();
         query.setAssetStatusList(assetStatusList);
@@ -217,7 +217,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             setListAreaName(assetResponseList);
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
             PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                assetResponseList);
+                    assetResponseList);
             TopologyListResponse topologyListResponse = new TopologyListResponse();
             List<TopologyListResponse.TopologyNode> topologyNodes = new ArrayList<>();
             for (AssetResponse assetResponse : assetResponseList) {
@@ -225,7 +225,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_area(assetResponse.getAreaName());
                 topologyNode.setAsset_ip(assetResponse.getIps());
                 topologyNode.setAsset_id(
-                    aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                        aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
                 topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
@@ -266,7 +266,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         TopologyCategoryCountResponse topologyCategoryCountResponse = new TopologyCategoryCountResponse();
         List<TopologyCategoryCountResponse.CategoryResponse> categoryResponseList = new ArrayList<>();
         List<Map<String, Object>> result = assetDao
-            .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
+                .countCategoryModel(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), getAssetUseableStatus());
         Set<Integer> set = new HashSet<>();
         for (Map<String, Object> map : result) {
             TopologyCategoryCountResponse.CategoryResponse categoryResponse = topologyCategoryCountResponse.new CategoryResponse();
@@ -340,7 +340,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             // id加密
             assetLink.setAssetId(aesEncoder.encode(assetLink.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
             assetLink.setParentAssetId(
-                aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
+                    aesEncoder.encode(assetLink.getParentAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         }
     }
 
@@ -348,7 +348,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                                    Map<String, List<String>> secondMap, Map<String, List<String>> secondThirdMap) {
         for (AssetLink assetLink : assetLinks) {
             if (Objects.equals(assetLink.getCategoryModal(), AssetCategoryEnum.NETWORK.getCode())
-                && Objects.equals(assetLink.getParentCategoryModal(), AssetCategoryEnum.NETWORK.getCode())) {
+                    && Objects.equals(assetLink.getParentCategoryModal(), AssetCategoryEnum.NETWORK.getCode())) {
                 // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
@@ -412,7 +412,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private AssetQuery getAssetQuery() {
         AssetQuery query = new AssetQuery();
         query.setAreaIds(
-            DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         List<Integer> statusList = new ArrayList<>();
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
@@ -422,7 +422,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     private void setAreaName(AssetResponse response) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-            Integer.parseInt(response.getAreaId()));
+                Integer.parseInt(response.getAreaId()));
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
         response.setAreaName(sysArea != null ? sysArea.getFullName() : null);
     }
@@ -561,7 +561,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                     List<Object> point = new ArrayList<>();
                     double size = getSize(entry.getValue().size());
                     List<Double> coordinateByParent = getCoordinateByParent(size, i, space, height, coordinates.get(0),
-                        coordinates.get(2));
+                            coordinates.get(2));
                     point.add(s);
                     point.addAll(coordinateByParent);
                     List<String> parent = new ArrayList<>();
@@ -696,7 +696,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             map.put("person_name", assetResponse.getResponsibleUserName());
             map.put("alert", assetResponse.getAlarmCount());
             map.put("asset_id",
-                aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                    aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
             map.put("asset_name", assetResponse.getName());
             map.put("firewall", null);
             map.put("rank", null);
@@ -723,7 +723,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private void initQuery(AssetQuery query) throws Exception {
         if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         if (query.getCategoryModels() == null) {
             Integer[] category = new Integer[2];
