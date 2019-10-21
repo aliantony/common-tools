@@ -17,6 +17,13 @@ public class AssetStatusNote {
 		this.fileInfo = fileInfo;
 	}
 
+	public AssetStatusNote(String assetId, String note, AssetChangeDetailEnum originStatus, String fileInfo) {
+		this.assetId = assetId;
+		this.note = note;
+		this.originStatus = originStatus;
+		this.fileInfo = fileInfo;
+	}
+
 	private String id;
 	private String assetId;
 	private String note;

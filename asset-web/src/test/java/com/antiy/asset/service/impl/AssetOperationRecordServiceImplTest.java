@@ -5,6 +5,7 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.manage.builder.Director;
+import com.antiy.asset.manage.builder.RegisterBuilder;
 import com.antiy.asset.manage.builder.on.line.OnWaitCheckBuilder;
 import com.antiy.asset.manage.builder.under.line.UnderInNetBuilder;
 import com.antiy.asset.service.IAssetHardSoftLibService;
@@ -141,9 +142,27 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 		System.out.println(response.getBody());
 	}
 
+	/**
+	 * 测试真是db数据-上一步资产动态
+	 */
 	@Test
 	public void queryDbPreList() {
-		ActionResponse response = recordService.batchQueryAssetPreStatusInfo(Arrays.asList("180"));
+		ActionResponse response = recordService.batchQueryAssetPreStatusInfo(Arrays.asList("148","143","142"));
+		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
+		System.out.println(gson.toJson(response.getBody()));
+	}
+	/**
+	 * 上一步资产备注查询-数据库中有数据未查出
+	 */
+	@Test
+	public void batchQueryAssetPreStatusInfo_1() {
+		Director director = new Director(new RegisterBuilder());
+		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
+		statusDetails.addAll(director.construct().getProducts());
+		statusDetails.get(0).setFileInfo("");
+		statusDetails.get(0).setAssetId("2");
+		given(recordDao.queryAssetPreStatusInfo(Arrays.asList("1", "2"))).willReturn(new ArrayList<>(statusDetails));
+		ActionResponse response = recordService.batchQueryAssetPreStatusInfo(Arrays.asList("1", "2"));
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
 		System.out.println(gson.toJson(response.getBody()));
 	}
