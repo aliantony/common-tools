@@ -1015,7 +1015,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int maxNum = 5;
         List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // 不统计已退役资产
-        List<Integer> status = Arrays.asList(6,10);
+        List<Integer> status = Arrays.asList(6, 10);
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
         List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, status);
         return CountTypeUtil.getEnumCountResponse(maxNum, list);
@@ -1211,8 +1211,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.getCategoryModel());
                     // 处理mac
                     dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
-                    // 处理软件
-                    dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequest());
+                    // 如果是再登记不会传软件信息,这里不做处理
+                    if (!Objects.isNull(assetOuterRequest.getSoftwareReportRequest())) {
+                        // 处理软件
+                        dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequest());
+                    }
                     // 处理组件
                     dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
@@ -1518,7 +1521,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) {
         // 1.先删除旧的关系表
-        assetSoftwareRelationDao.deleteSoftRealtion(id, null);
+        assetSoftwareRelationDao.deleteSoftRealtion(id, Lists.newArrayList());
         // 2.插入新的关系
         List<Long> softIds = softwareReportRequest.getSoftId();
         if (CollectionUtils.isNotEmpty(softIds)) {
