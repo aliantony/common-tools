@@ -322,7 +322,7 @@
 
     <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
         SELECT
-        ait.id,
+        ait.id as stringId,
         ait.`name`,
         ait.number_code AS numberCode,
         ait.description,
