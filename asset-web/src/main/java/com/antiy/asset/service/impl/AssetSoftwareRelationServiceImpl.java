@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -25,6 +26,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
@@ -170,7 +172,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetIds.stream().forEach(assetId -> {
             BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
             baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
-            baselineWaitingConfigRequest.setCheckType(assetDao.queryInstallType(assetId));
+            Integer installType = assetDao.queryInstallType(assetId);
+            if (Objects.isNull(installType)) {
+                baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
+            } else {
+                baselineWaitingConfigRequest.setCheckType(installType);
+            }
             baselineWaitingConfigRequest.setConfigStatus(1);
             baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
             baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
@@ -180,6 +187,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
+        System.out.println(JSON.toJSONString(baselineWaitingConfigRequestList));
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
