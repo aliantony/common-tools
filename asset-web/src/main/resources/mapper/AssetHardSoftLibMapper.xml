@@ -637,7 +637,7 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
-            and soft_platform=#{operationSystem}
+            and soft_platform like concat('%',#{operationSystem},'%')
 
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t1.id not in
@@ -681,7 +681,7 @@
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
-            and soft_platform=#{operationSystem}
+            and soft_platform like concat('%',#{operationSystem},'%')
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and t2.id not in
                 <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
