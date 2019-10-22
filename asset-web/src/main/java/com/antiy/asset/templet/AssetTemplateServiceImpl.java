@@ -1,4 +1,4 @@
-package com.antiy.asset.service.impl;
+package com.antiy.asset.templet;
 
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetTemplateService;
