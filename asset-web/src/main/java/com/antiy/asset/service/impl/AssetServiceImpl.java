@@ -1412,8 +1412,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 }
             } else {
-                // 没有流程参数分为两种情况 普通变更 退役再登记（也可以不走流程）
-                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())) {
+                // 没有流程参数分为两种情况 普通变更 再登记（也可以不走流程）
+                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
+                    || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
+                    || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())) {
                     updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(asset.getAssetStatus());
