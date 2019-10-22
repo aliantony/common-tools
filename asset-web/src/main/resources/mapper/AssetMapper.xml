@@ -1519,7 +1519,8 @@
     <!--获取用户所在区域正常资产的数量-->
     <select id="queryNormalCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(1) from asset
-        where asset_status in
+        where status=1
+        and asset_status in
         <foreach collection="assetStatusList" item="item" index="index" open="(" close=")" separator=",">
             #{item}
         </foreach>

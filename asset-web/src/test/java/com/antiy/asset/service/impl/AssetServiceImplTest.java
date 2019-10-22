@@ -1,12 +1,31 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.util.*;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.BaseResponse;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
@@ -39,32 +58,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.BaseResponse;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.util.*;
+
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -502,13 +501,6 @@ public class AssetServiceImplTest {
         assetServiceImpl.saveAsset(assetOuterRequest33);
 
     }
-
-    @Test
-    public void findAlarmAssetCountTest() {
-        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
-        Assert.assertEquals(100, assetServiceImpl.findAlarmAssetCount().get("currentAlarmAssetIdNum"));
-    }
-
     @Test
     public void assetsTemplate() throws Exception {
         ProcessTemplateRequest processTemplateRequest = new ProcessTemplateRequest();
@@ -760,29 +752,8 @@ public class AssetServiceImplTest {
         Assert.assertNotNull(result);
     }
 
-    @Test
-    public void testCountManufacturer() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("value", 1L);
 
-        when(assetDao.countManufacturer(any(), any())).thenReturn(Arrays.asList(map, map));
 
-        List<EnumCountResponse> result = assetServiceImpl.countManufacturer();
-        Assert.assertNotNull(result);
-    }
-
-    @Test
-    public void testCountStatus() {
-        when(assetDao.countStatus(any())).thenReturn(Arrays.asList(new HashMap<String, Object>() {
-            {
-                put("key", 1);
-                put("value", 1L);
-            }
-        }));
-
-        List<EnumCountResponse> result = assetServiceImpl.countStatus();
-        Assert.assertNotNull(result);
-    }
 
     @Test
     public void testCountCategory() {
@@ -2289,6 +2260,77 @@ public class AssetServiceImplTest {
         assetAssembly.setBusinessId("1");
         assetAssembly.setProductName("1");
         return assetAssembly;
+    }
+
+    @Test
+    public void countUnusual() throws Exception {
+
+        AssetQuery query =new AssetQuery();
+        int integer1 = assetServiceImpl.countUnusual(query);
+        Assert.assertEquals(0, integer1);
+        query.setQueryAlarmCount(false);
+        query.setQueryPatchCount(false);
+        query.setQueryVulCount(false);
+        Assert.assertEquals(0, (int)assetServiceImpl.countUnusual(query));
+        query.setQueryAlarmCount(true);
+        query.setQueryPatchCount(true);
+        query.setQueryVulCount(true);
+
+        when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
+        when(assetDao.queryAllAssetPatchCount(any())).thenReturn(11);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(12);
+        Assert.assertEquals(12, (int)assetServiceImpl.countUnusual(query));
+    }
+
+
+    @Test
+    public void countManufacturer() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map1=new HashMap<>();
+        map1.put("value",12L);
+        Map<String, Object> map2=new HashMap<>();
+        map2.put("value",20L);
+        list.add(map1);
+        list.add(map2);
+        when(assetDao.countManufacturer(any(),any())).thenReturn(null);
+        /*
+        CollectionUtils.isNotEmpty(list)
+         */
+        List<EnumCountResponse> enumCountResponses = assetServiceImpl.countManufacturer();
+        Assert.assertEquals(1,enumCountResponses.size());
+        /*
+        其他类型
+         */
+        when(assetDao.countManufacturer(any(),any())).thenReturn(list);
+        List<EnumCountResponse> enumCountResponses2 = assetServiceImpl.countManufacturer();
+        Assert.assertEquals(32,enumCountResponses2.get(0).getNumber());
+        map1.put("key","antiy");
+        map2.put("key","360");
+        /**
+         *
+         */
+        when(assetDao.countManufacturer(any(),any())).thenReturn(list);
+        List<EnumCountResponse> enumCountResponses3 = assetServiceImpl.countManufacturer();
+        String s="[EnumCountResponse{msg='antiy', code='[antiy]', number=12}, EnumCountResponse{msg='360', code='[360]', number=20}]";
+        Assert.assertEquals(s,enumCountResponses3.toString());
+    }
+
+    @Test
+    public void countStatus() {
+        List<Map<String, Object>> searchResult = new ArrayList<>();
+        Map<String, Object> map1=new HashMap<>();
+        map1.put("key",1);
+        map1.put("value",10L);
+        Map<String, Object> map2=new HashMap<>();
+        map2.put("key",15);
+        map2.put("value",12L);
+        searchResult.add(map1);
+        searchResult.add(map2);
+        when( assetDao.countStatus(any())).thenReturn(searchResult);
+        List<EnumCountResponse> enumCountResponses = assetServiceImpl.countStatus();
+
+       Assert.assertEquals(10,enumCountResponses.get(0).getNumber());
+
     }
 
     class MockAck implements Acknowledgment {
