@@ -862,8 +862,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
             assetResponseList.stream().forEach(assetLinkedCount -> {
                 String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
-                    com.antiy.asset.vo.request.SysArea.class,
-                    DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+                    com.antiy.asset.vo.request.SysArea.class, assetLinkedCount.getAreaId());
                 try {
                     com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
                         com.antiy.asset.vo.request.SysArea.class);
@@ -2987,7 +2986,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer countUnusual(AssetQuery query) throws Exception {
+    public Integer countUnusual(AssetQuery query) {
         Integer count = 0;
         // 如果会查询漏洞数量
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
@@ -3004,7 +3003,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
             if (ArrayUtils.isEmpty(query.getAreaIds())) {
                 query.setAreaIds(ArrayTypeUtil
-                        .objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+                    .objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
             }
             count = assetDao.findAlarmAssetCount(query);
 
