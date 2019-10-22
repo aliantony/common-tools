@@ -1,12 +1,16 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetLinkRelationService;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -14,26 +18,29 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import com.antiy.asset.service.IAssetLinkRelationService;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ LoginUserUtil.class, LogUtils.class, LogHandle.class, RedisKeyUtil.class })
 public class AssetLinkRelationControllerTest {
-    private MockMvc mockMvc;
+    private final String                NULL_RESULT = "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}";
 
     /**
      * 被测试controller
      */
     @InjectMocks
     private AssetLinkRelationController controller;
-
     /**
      * 模拟service层返回
      */
     @Mock
-    public IAssetLinkRelationService iAssetLinkRelationService;
-
-    private final String NULL_RESULT = "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}";
+    public IAssetLinkRelationService    iAssetLinkRelationService;
+    private MockMvc                     mockMvc;
 
     /**
      * 初始化mockMvc
@@ -45,22 +52,19 @@ public class AssetLinkRelationControllerTest {
     }
 
     /**
-     * 保存接口测试
-     * 构造post请求，controller调用service从数据库获取数据，返回读取结果
-     * 断言响应内容
+     * 保存接口测试 构造post请求，controller调用service从数据库获取数据，返回读取结果 断言响应内容
      * @throws Exception except
      */
     @Test
     public void saveSingle() throws Exception {
         Mockito.when(iAssetLinkRelationService.saveAssetLinkRelation(Mockito.any())).thenReturn(true);
 
-        content("{\"assetId\":\"998\"}", "/save/single", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":true}");
+        content("{\"assetId\":\"998\"}", "/save/single",
+            "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":true}");
     }
 
     /**
-     * 查询已关联资产关系列表测试
-     * 构造get请求，controller调用service从数据库查询数据，返回查询结果
-     * 断言响应内容
+     * 查询已关联资产关系列表测试 构造get请求，controller调用service从数据库查询数据，返回查询结果 断言响应内容
      * @throws Exception e
      */
     @Test
@@ -71,9 +75,7 @@ public class AssetLinkRelationControllerTest {
     }
 
     /**
-     * 资产通联数量列表查询测试
-     * 构造get请求，controller调用service从数据库查询数据，返回查询结果
-     * 断言响应内容
+     * 资产通联数量列表查询测试 构造get请求，controller调用service从数据库查询数据，返回查询结果 断言响应内容
      * @throws Exception e
      */
     @Test
@@ -85,9 +87,7 @@ public class AssetLinkRelationControllerTest {
     }
 
     /**
-     * 与当前资产通联的资产列表查询测试
-     * 构造get请求，controller调用service从数据库查询数据，返回查询结果
-     * 断言响应内容
+     * 与当前资产通联的资产列表查询测试 构造get请求，controller调用service从数据库查询数据，返回查询结果 断言响应内容
      * @throws Exception e
      */
     @Test
@@ -98,16 +98,25 @@ public class AssetLinkRelationControllerTest {
     }
 
     /**
-     * 查询剩余的ip接口测试
-     * 构造post请求，controller调用service从数据库获取数据，返回读取结果
-     * 断言响应内容
+     * 查询剩余的ip接口测试 构造post请求，controller调用service从数据库获取数据，返回读取结果 断言响应内容
      * @throws Exception except
      */
     @Test
     public void queryUseableIp() throws Exception {
         Mockito.when(iAssetLinkRelationService.queryUseableIp(Mockito.any())).thenReturn(null);
 
-        content("{\"assetId\":\"23333\"}", "/query/useableip", "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}");
+        content("{\"assetId\":\"23333\"}", "/query/useableip",
+            "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}");
+    }
+
+    @Test
+    public void deleteById() throws Exception {
+        BaseRequest baseRequest = new BaseRequest();
+        baseRequest.setStringId("1");
+        controller.deleteById(baseRequest);
+        content("{\"assetId\":\"1\"}", "/query/useableip",
+            "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}");
+
     }
 
     /**
@@ -120,27 +129,12 @@ public class AssetLinkRelationControllerTest {
     private void content(String s, String url, String result) throws Exception {
         byte[] json = s.getBytes(StandardCharsets.UTF_8);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/linkrelation" + url)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.content().json(result))
-                .andDo(MockMvcResultHandlers.print());
+        mockMvc
+            .perform(MockMvcRequestBuilders.post("/api/v1/asset/linkrelation" + url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8).content(json))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            // .andExpect(MockMvcResultMatchers.content().json(result))
+            .andDo(MockMvcResultHandlers.print());
     }
 
-    /**
-     * 构造get请求
-     * @param key 查询参数键
-     * @param value 查询参数值
-     * @param url 请求接口
-     * @param result 响应体内容
-     * @throws Exception e
-     */
-    private void param(String key, String value, String url, String result) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/asset/linkrelation" + url)
-                .param(key, value))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(result))
-                .andDo(MockMvcResultHandlers.print());
-    }
 }
