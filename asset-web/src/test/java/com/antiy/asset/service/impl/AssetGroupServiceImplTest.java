@@ -6,7 +6,9 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.dao.AssetGroupRelationDao;
 import com.antiy.asset.entity.AssetGroup;
+import com.antiy.asset.entity.AssetGroupRelation;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.query.AssetGroupQuery;
 import com.antiy.asset.vo.request.AssetGroupRequest;
 import com.antiy.asset.vo.request.RemoveAssociateAssetRequest;
@@ -18,11 +20,13 @@ import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.poi.ss.formula.functions.T;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.powermock.api.mockito.PowerMockito;
@@ -30,7 +34,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +46,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ BeanConvert.class, LoginUserUtil.class })
+@PrepareForTest({ BeanConvert.class, LoginUserUtil.class, LogUtils.class })
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 public class AssetGroupServiceImplTest {
     @InjectMocks
@@ -67,6 +70,7 @@ public class AssetGroupServiceImplTest {
     @Mock
     private IBaseDao<T>                                   baseDao;
 
+    public ExpectedException expectedException = ExpectedException.none();
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -93,6 +97,10 @@ public class AssetGroupServiceImplTest {
         loginUser1.setPassword("123456");
         PowerMockito.mockStatic(LoginUserUtil.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+
+        PowerMockito.mockStatic(LogUtils.class);
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
+
 
     }
 
@@ -165,17 +173,78 @@ public class AssetGroupServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("资产组名称重复", e.getMessage());
         }
-
-        Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(false);
-        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any()))
-            .thenThrow(new BusinessException("123"));
-
-        try {
-            assetGroupService.updateAssetGroup(request);
-        } catch (Exception e) {
-            Assert.assertNull(e.getMessage());
-        }
     }
+
+    /**
+     * 库中不存在,需要新增
+     * @throws Exception
+     */
+    @Test
+    public void updateAssetGroupTest2() throws Exception {
+        AssetGroupRequest request = getAssetGroupRequest();
+        AssetGroup assetGroup = getAssetGroup("zicha");
+
+        Mockito.when(assetGroupDao.getById(Mockito.any())).thenReturn(assetGroup);
+
+        PowerMockito.mockStatic(BeanConvert.class);
+        PowerMockito.when(BeanConvert.convert(request, AssetGroup.class)).thenReturn(assetGroup);
+
+        // case1: 库中不存在,需要新增
+        List<AssetGroupRelation> existedRelationList = new ArrayList<>();
+        Mockito.when(assetGroupRelationDao.listRelationByGroupId(Mockito.eq(DataTypeUtils.stringToInteger(request.getId()))))
+                .thenReturn(existedRelationList);
+
+        Mockito.when(assetGroupRelationDao.insertBatch(Mockito.any())).thenReturn(1);
+        Mockito.when(assetGroupDao.update(Mockito.any(AssetGroup.class))).thenReturn(1);
+        // 更新资产主表信息
+        List<String> assetGroupNameList = new ArrayList<>();
+        assetGroupNameList.add("test");
+        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any())).thenReturn(assetGroupNameList);
+        Assert.assertEquals(Integer.valueOf(1), assetGroupService.updateAssetGroup(request));
+
+        // case2: 库中不存在,需要新增
+        AssetGroupRelation relation = new AssetGroupRelation();
+        relation.setAssetId("3");
+        AssetGroupRelation relation2 = new AssetGroupRelation();
+        relation2.setAssetId("1");
+        existedRelationList.add(relation);
+        existedRelationList.add(relation2);
+        Mockito.when(assetGroupRelationDao.listRelationByGroupId(Mockito.eq(DataTypeUtils.stringToInteger(request.getId()))))
+                .thenReturn(existedRelationList);
+        Mockito.when( assetGroupRelationDao.deleteBatch(Mockito.anyList())).thenReturn(1);
+
+        Assert.assertEquals(Integer.valueOf(1), assetGroupService.updateAssetGroup(request));
+    }
+
+    /**
+     *case: 参数中没有资产ids;findAssetGroupNameByAssetId异常
+     */
+    @Test
+    public void updateAssetGroupTest3() throws Exception {
+        AssetGroupRequest request = getAssetGroupRequest();
+        request.setAssetIds(null);
+        AssetGroup assetGroup = getAssetGroup("zicha");
+        PowerMockito.mockStatic(BeanConvert.class);
+        PowerMockito.when(BeanConvert.convert(request, AssetGroup.class)).thenReturn(assetGroup);
+        Mockito.when(assetGroupDao.getById(Mockito.any())).thenReturn(assetGroup);
+
+        Mockito.when(assetGroupDao.removeDuplicate(Mockito.any())).thenReturn(false);
+        // case1: 库中不存在,需要新增
+        List<AssetGroupRelation> existedRelationList = new ArrayList<>();
+        Mockito.when(assetGroupRelationDao.listRelationByGroupId(Mockito.eq(DataTypeUtils.stringToInteger(request.getId()))))
+                .thenReturn(existedRelationList);
+        Mockito.when(assetGroupDao.update(Mockito.any())).thenReturn(1);
+        List<String> assetIdList = new ArrayList<>();
+        assetIdList.add("1");
+        Mockito.when(assetGroupRelationDao.findAssetIdByAssetGroupId(Mockito.anyString())).thenReturn(assetIdList);
+        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any()))
+                .thenThrow(new BusinessException("123"));
+
+        expectedException.expectMessage("123");
+        assetGroupService.updateAssetGroup(request);
+
+    }
+
 
     private AssetGroup getAssetGroup(String zicha) {
         AssetGroup assetGroup = new AssetGroup();
@@ -220,11 +289,17 @@ public class AssetGroupServiceImplTest {
             .thenReturn(assetResponseList);
         Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any())).thenReturn(assetList);
         List<AssetGroupResponse> actual = assetGroupService.findListAssetGroup(query);
-        Assert.assertTrue(assetResponseList.size() == actual.size());
+        Assert.assertEquals(assetResponseList.size(), actual.size());
 
         Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any()))
             .thenReturn(Arrays.asList("1", "2", "3"));
-        Assert.assertTrue(assetResponseList.size() == actual.size());
+        Assert.assertEquals(assetResponseList.size(), actual.size());
+
+        // 资产关联多个资产组,需要拼接多个名称
+        assetList.add("test2");
+        Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any())).thenReturn(assetList);
+        actual = assetGroupService.findListAssetGroup(query);
+        Assert.assertEquals(assetResponseList.size(), actual.size());
     }
 
     @Test
@@ -259,7 +334,7 @@ public class AssetGroupServiceImplTest {
         Mockito.when(selectConvert.convert(assetGroupList, SelectResponse.class)).thenReturn(selectResponseList);
 
         List<SelectResponse> actual = assetGroupService.queryGroupInfo();
-        Assert.assertTrue(selectResponseList.size() == actual.size());
+        Assert.assertEquals(selectResponseList.size(), actual.size());
     }
 
     @Test
@@ -277,6 +352,8 @@ public class AssetGroupServiceImplTest {
         actual = assetGroupService.queryUnconnectedGroupInfo(0, "1");
         Assert.assertEquals("test", actual.get(0).getValue());
 
+        actual = assetGroupService.queryUnconnectedGroupInfo(null, "1");
+        Assert.assertEquals("test", actual.get(0).getValue());
     }
 
     @Test
@@ -312,7 +389,7 @@ public class AssetGroupServiceImplTest {
         Mockito.when(assetGroupDao.findCreateUser()).thenReturn(assetGroupList);
 
         List<SelectResponse> actual = assetGroupService.queryCreateUser();
-        Assert.assertTrue(selectResponseList.size() == actual.size());
+        Assert.assertEquals(selectResponseList.size(), actual.size());
     }
 
     @Test
