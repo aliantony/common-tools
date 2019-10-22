@@ -1,11 +1,15 @@
 package com.antiy.asset.controller;
 
-import static org.hamcrest.Matchers.containsString;
-
-import java.util.*;
-
-import javax.ws.rs.core.MediaType;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
+import com.antiy.common.utils.JsonUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,19 +24,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
-import com.antiy.common.utils.JsonUtil;
-
 import util.ControllerUtil;
+
+import javax.ws.rs.core.MediaType;
+import java.util.*;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class AssetControllerTest {
@@ -59,7 +57,7 @@ public class AssetControllerTest {
         AssetRequest assetRequest = new AssetRequest();
         assetRequest.setId("1");
         asset.setAsset(assetRequest);
-        Mockito.when(iAssetService.saveAsset(Mockito.any())).thenReturn(ActionResponse.success("1"));
+        when(iAssetService.saveAsset(Mockito.any())).thenReturn(ActionResponse.success("1"));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/save/single")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -75,7 +73,7 @@ public class AssetControllerTest {
         assetRequest.setId("1");
         asset.setAsset(assetRequest);
         List<AssetEntity> assetEntities = new ArrayList<>();
-        Mockito.when(iAssetService.assetsTemplate(Mockito.any())).thenReturn(assetEntities);
+        when(iAssetService.assetsTemplate(Mockito.any())).thenReturn(assetEntities);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/assetsTemplate")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -91,7 +89,7 @@ public class AssetControllerTest {
         assetRequest.setId("1");
         asset.setAsset(assetRequest);
         List<AssetEntity> assetEntities = new ArrayList<>();
-        Mockito.when(iAssetService.CheckRepeatMAC(Mockito.any(), Mockito.any())).thenReturn(true);
+        when(iAssetService.CheckRepeatMAC(Mockito.any(), Mockito.any())).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatMAC")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -107,7 +105,7 @@ public class AssetControllerTest {
         assetRequest.setId("1");
         asset.setAsset(assetRequest);
         List<AssetEntity> assetEntities = new ArrayList<>();
-        Mockito.when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
+        when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -125,7 +123,7 @@ public class AssetControllerTest {
         List<AssetResponse> assetResponseList = new ArrayList();
         assetResponseList.add(assetResponse);
         PageResult<AssetResponse> pageResult = new PageResult<>(10, 1, 1, assetResponseList);
-        Mockito.when(iAssetService.findPageAsset(Mockito.any())).thenReturn(pageResult);
+        when(iAssetService.findPageAsset(Mockito.any())).thenReturn(pageResult);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/list")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -157,7 +155,7 @@ public class AssetControllerTest {
         assetResponseList.add(assetResponse);
         PageResult<AssetResponse> pageResult = new PageResult<>(10, 1, 1, assetResponseList);
 
-        Mockito.when(iAssetService.findUnconnectedAsset(Mockito.any())).thenReturn(pageResult);
+        when(iAssetService.findUnconnectedAsset(Mockito.any())).thenReturn(pageResult);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/unconnectedList")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
@@ -169,7 +167,7 @@ public class AssetControllerTest {
 
     @Test
     public void queryAssetCountByAreaIds() throws Exception {
-        Mockito.when(iAssetService.queryAssetCountByAreaIds(Mockito.any())).thenReturn(0);
+        when(iAssetService.queryAssetCountByAreaIds(Mockito.any())).thenReturn(0);
         AssetCountByAreaIdsRequest assetCountByAreaIdsRequest = new AssetCountByAreaIdsRequest();
         assetCountByAreaIdsRequest.setStringId("1");
         assetCountByAreaIdsRequest.setAreaIds(Arrays.asList("1", "2"));
@@ -183,7 +181,7 @@ public class AssetControllerTest {
 
     @Test
     public void queryById() throws Exception {
-        Mockito.when(iAssetService.getByAssetId(Mockito.any())).thenReturn(new AssetOuterResponse());
+        when(iAssetService.getByAssetId(Mockito.any())).thenReturn(new AssetOuterResponse());
         AssetDetialCondition assetDetialCondition = new AssetDetialCondition();
         assetDetialCondition.setPrimaryKey("1");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/id")
@@ -198,7 +196,7 @@ public class AssetControllerTest {
         AssetRequest assetRequest = new AssetRequest();
         assetRequest.setId("1");
         assetOuterRequest.setAsset(assetRequest);
-        Mockito.when(iAssetService.changeAsset(assetOuterRequest)).thenReturn(new ActionResponse());
+        when(iAssetService.changeAsset(assetOuterRequest)).thenReturn(new ActionResponse());
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/change/asset")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(assetOuterRequest))).andReturn();
         Assert.assertThat(mvcResult.getResponse().getContentAsString(),
@@ -209,7 +207,7 @@ public class AssetControllerTest {
     public void deleteById() throws Exception {
         BaseRequest request = new BaseRequest();
         request.setStringId("1");
-        Mockito.when(iAssetService.deleteById(Mockito.any())).thenReturn(1);
+        when(iAssetService.deleteById(Mockito.any())).thenReturn(1);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/delete")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(request))).andReturn();
         Assert.assertThat(mvcResult.getResponse().getContentAsString(),
@@ -235,7 +233,7 @@ public class AssetControllerTest {
 
     @Test
     public void changeStatus() throws Exception {
-        Mockito.when(iAssetService.changeStatus(Mockito.any(), Mockito.any())).thenReturn(1);
+        when(iAssetService.changeStatus(Mockito.any(), Mockito.any())).thenReturn(1);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/changeStatus/batch")
             .param("ids", "1").param("targetStatus", "1")).andReturn();
         Assert.assertEquals(200, mvcResult.getResponse().getStatus());
@@ -252,7 +250,7 @@ public class AssetControllerTest {
 
     @Test
     public void changeStatusById() throws Exception {
-        Mockito.when(iAssetService.changeStatus(Mockito.any(), Mockito.any())).thenReturn(1);
+        when(iAssetService.changeStatus(Mockito.any(), Mockito.any())).thenReturn(1);
         MvcResult mvcResult = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/asset/changeStatusById").param("id", "1").param("targetStatus", "1"))
             .andReturn();
@@ -275,7 +273,7 @@ public class AssetControllerTest {
     public void pulldownUnconnectedManufacturer() throws Exception {
         Set<String> manufacturer = new HashSet<>();
         manufacturer.add("test");
-        Mockito.when(iAssetService.pulldownUnconnectedManufacturer(Mockito.any(), Mockito.any()))
+        when(iAssetService.pulldownUnconnectedManufacturer(Mockito.any(), Mockito.any()))
             .thenReturn(manufacturer);
         UnconnectedManufacturerRequest unconnectedManufacturerRequest = new UnconnectedManufacturerRequest();
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -290,7 +288,7 @@ public class AssetControllerTest {
     public void getAssemblyInfo() throws Exception {
         List<AssetAssemblyResponse> assetAssemblyResponses = new ArrayList<>();
         assetAssemblyResponses.add(new AssetAssemblyResponse());
-        Mockito.when(iAssetService.getAssemblyInfo(Mockito.any())).thenReturn(assetAssemblyResponses);
+        when(iAssetService.getAssemblyInfo(Mockito.any())).thenReturn(assetAssemblyResponses);
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey("1");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/get/assemblyInfo")
@@ -311,7 +309,7 @@ public class AssetControllerTest {
         EnumCountResponse enumCountResponse = new EnumCountResponse();
         enumCountResponse.setMsg("test");
         enumCountResponseList.add(enumCountResponse);
-        Mockito.when(iAssetService.countCategory()).thenReturn(enumCountResponseList);
+        when(iAssetService.countCategory()).thenReturn(enumCountResponseList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/count/category")).andReturn();
         ActionResponse actionResponse = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
             ActionResponse.class);
@@ -324,7 +322,7 @@ public class AssetControllerTest {
         EnumCountResponse enumCountResponse = new EnumCountResponse();
         enumCountResponse.setMsg("test");
         enumCountResponseList.add(enumCountResponse);
-        Mockito.when(iAssetService.countStatus()).thenReturn(enumCountResponseList);
+        when(iAssetService.countStatus()).thenReturn(enumCountResponseList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/count/status")).andReturn();
         ActionResponse actionResponse = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
             ActionResponse.class);
@@ -333,7 +331,7 @@ public class AssetControllerTest {
 
     @Test
     public void queryNormalCount() throws Exception {
-        Mockito.when(iAssetService.queryNormalCount()).thenReturn(1);
+        when(iAssetService.queryNormalCount()).thenReturn(1);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/normal/count")).andReturn();
         ActionResponse actionResponse = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
             ActionResponse.class);
@@ -346,7 +344,7 @@ public class AssetControllerTest {
         EnumCountResponse enumCountResponse = new EnumCountResponse();
         enumCountResponse.setMsg("test");
         enumCountResponseList.add(enumCountResponse);
-        Mockito.when(iAssetService.countManufacturer()).thenReturn(enumCountResponseList);
+        when(iAssetService.countManufacturer()).thenReturn(enumCountResponseList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/count/manufacturer"))
             .andReturn();
         ActionResponse actionResponse = JsonUtil.json2Object(mvcResult.getResponse().getContentAsString(),
@@ -528,7 +526,7 @@ public class AssetControllerTest {
     public void manualStartProcess() throws Exception {
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         manualStartActivityRequest.setBusinessId("1");
-        Mockito.when(activityClient.manualStartProcess(Mockito.any())).thenReturn(ActionResponse.success());
+        when(activityClient.manualStartProcess(Mockito.any())).thenReturn(ActionResponse.success());
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/start/process")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(manualStartActivityRequest)))
             .andReturn();
@@ -539,7 +537,7 @@ public class AssetControllerTest {
     public void completeTask() throws Exception {
         ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
         activityHandleRequest.setTaskId("1");
-        Mockito.when(activityClient.completeTask(Mockito.any())).thenReturn(ActionResponse.success());
+        when(activityClient.completeTask(Mockito.any())).thenReturn(ActionResponse.success());
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/deal/process")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(activityHandleRequest)))
             .andReturn();
@@ -548,7 +546,7 @@ public class AssetControllerTest {
 
     @Test
     public void queryWaitRegistCount() throws Exception {
-        Mockito.when(iAssetService.queryWaitRegistCount()).thenReturn(0);
+        when(iAssetService.queryWaitRegistCount()).thenReturn(0);
         MvcResult mvcResult = mockMvc.perform(
             MockMvcRequestBuilders.post("/api/v1/asset/query/waitRegistCount").contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -557,7 +555,7 @@ public class AssetControllerTest {
 
     @Test
     public void findAssetIds() throws Exception {
-        Mockito.when(iAssetService.findAssetIds()).thenReturn(new IDResponse());
+        when(iAssetService.findAssetIds()).thenReturn(new IDResponse());
         MvcResult mvcResult = mockMvc
             .perform(
                 MockMvcRequestBuilders.post("/api/v1/asset/query/assetIds").contentType(MediaType.APPLICATION_JSON))
@@ -566,13 +564,16 @@ public class AssetControllerTest {
 
     }
 
-    @Test
-    public void findAlarmAssetCount() throws Exception {
-        Mockito.when(iAssetService.findAlarmAssetCount()).thenReturn(new HashMap());
-        MvcResult mvcResult = mockMvc
-            .perform(MockMvcRequestBuilders.post("/api/v1/asset/alarm/count").contentType(MediaType.APPLICATION_JSON))
-            .andReturn();
-        Assert.assertEquals(200, mvcResult.getResponse().getStatus());
 
+    @Test
+    public void countVul() throws Exception {
+        AssetQuery assetQuery=new AssetQuery();
+        assetQuery.setQueryVulCount(true);
+        when(iAssetService.countUnusual(assetQuery)).thenReturn(10);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/vul/count")
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(assetQuery)))
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":0}",contentAsString);
     }
 }

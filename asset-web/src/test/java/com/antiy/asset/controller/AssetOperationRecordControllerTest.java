@@ -62,7 +62,7 @@ public class AssetOperationRecordControllerTest extends MockContext {
     public void queryList() throws Exception {
 
         QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey(encoder.encode("2",loginUser.getPassword()));
+        condition.setPrimaryKey(encoder.encode("2",loginUser.getUsername()));
         MockHttpServletRequestBuilder requestBuilder = commonManager.postAction(URL_PREFIX + "/query",condition);
         String result = commonManager.getResult(mvc, requestBuilder);
         System.out.println(result);
@@ -75,7 +75,7 @@ public class AssetOperationRecordControllerTest extends MockContext {
     public void batchQueryPreStatusInfo() throws Exception{
         List<String> ids = new ArrayList<>();
         for (String id : Arrays.asList("1", "2")) {
-            ids.add(encoder.encode(id, loginUser.getPassword()));
+            ids.add(encoder.encode(id, loginUser.getUsername()));
         }
         BatchQueryRequest batchQueryRequest = new BatchQueryRequest(ids);
         String result = commonManager.getResult(mvc,  commonManager.postAction(URL_PREFIX + "/preNote/batch",batchQueryRequest));

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -21,6 +19,7 @@ import com.antiy.asset.entity.AssetLinkRelation;
 import com.antiy.asset.entity.AssetLinkedCount;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.util.BeanConvert;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetLinkRelationQuery;
@@ -74,7 +73,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             DataTypeUtils.stringToInteger(request.getAssetId()), assetDao.getById(request.getAssetId()).getNumber(),
             assetLinkRelation, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_LINK_RELATION_INSERT.getName() + "{}", assetLinkRelation);
-        return StringUtils.isNotBlank(assetLinkRelation.getStringId()) ? true : false;
+        return StringUtils.isNotBlank(assetLinkRelation.getStringId());
     }
 
     /**
@@ -174,7 +173,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     @Override
-    public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+    public List<AssetLinkedCountResponse> queryAssetLinkedCountList(AssetLinkRelationQuery assetLinkRelationQuery) {
         List<AssetLinkedCount> assetResponseList = assetLinkRelationDao
             .queryAssetLinkedCountList(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetResponseList)) {
@@ -182,7 +181,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         }
         assetResponseList.stream().forEach(assetLinkedCount -> {
             String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                DataTypeUtils.stringToInteger(assetLinkedCount.getAreaId()));
+                assetLinkedCount.getAreaId());
             try {
                 SysArea sysArea = redisUtil.getObject(newAreaKey, SysArea.class);
                 if (!Objects.isNull(sysArea)) {
@@ -196,7 +195,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     @Override
-    public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+    public List<AssetLinkRelationResponse> queryLinkedAssetListByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) {
         ParamterExceptionUtils.isBlank(assetLinkRelationQuery.getPrimaryKey(), "请选择资产");
         List<AssetLinkRelation> assetResponseList = assetLinkRelationDao
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);

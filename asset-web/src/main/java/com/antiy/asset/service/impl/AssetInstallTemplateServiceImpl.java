@@ -103,7 +103,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
         boolean isUpdateStatusOnly = request.getIsUpdateStatus() != null && request.getIsUpdateStatus() == 0;
         Integer templateId = request.getId();
-        int currentStatus = assetInstallTemplateDao.getById(templateId.toString()).getCurrentStatus();
+        AssetInstallTemplate template=assetInstallTemplateDao.getById(templateId.toString());
+        int currentStatus = template.getCurrentStatus();
         int requestStatus = request.getUpdateStatus() == null ? 0 : request.getUpdateStatus();
         int enableCode = AssetInstallTemplateStatusEnum.ENABLE.getCode();
         int forbiddenCode = AssetInstallTemplateStatusEnum.FOBIDDEN.getCode();
@@ -125,11 +126,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             }
             if (requestStatus == enableCode) {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_ENABLE.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
+                        templateId, template.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "启用装机模板:{}", assetInstallTemplate.toString());
             } else {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_FORBIDDEN.getName(),
-                        templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
+                        templateId, template.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
                 LogUtils.info(logger, "禁用装机模板:{}", assetInstallTemplate.toString());
             }
             if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
@@ -188,6 +189,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                     templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             if (currentStatus == AssetInstallTemplateStatusEnum.REJECT.getCode()) {
+                ParamterExceptionUtils.isBlank(request.getTaskId(),"非流程任务发起人不能编辑");
                 return activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
             }
             return sendTask(request, assetInstallTemplate);

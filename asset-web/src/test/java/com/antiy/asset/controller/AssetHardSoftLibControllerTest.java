@@ -1,10 +1,13 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.vo.query.AssetHardSoftLibQuery;
 import com.antiy.asset.vo.query.AssetPulldownQuery;
 import com.antiy.asset.vo.query.AssetSoftwareQuery;
 import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
 import com.antiy.asset.vo.response.BusinessSelectResponse;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
@@ -111,6 +114,23 @@ public class AssetHardSoftLibControllerTest {
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
         Assert.assertEquals(resultList, actionResponse.getBody());
+    }
+
+    @Test
+    public void queryList() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        List<AssetHardSoftLibResponse> libResponses = new ArrayList<>();
+        libResponses.add(new AssetHardSoftLibResponse());
+        Mockito.when(iAssetHardSoftLibService.queryPageAssetHardSoftLib(Mockito.any()))
+            .thenReturn(new PageResult<>(1, 1, 1, libResponses));
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/query/list")
+            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
+        Assert.assertEquals("200", actionResponse.getHead().getCode());
+        Assert.assertEquals(
+            "{\"pageSize\":1,\"totalRecords\":1,\"currentPage\":1,\"items\":[{}],\"totalPages\":1}",
+            JSONObject.toJSONString(actionResponse.getBody()));
     }
 
     @Test

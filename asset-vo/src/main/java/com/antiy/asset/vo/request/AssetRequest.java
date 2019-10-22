@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.request;
 
+import java.io.Serializable;
+import java.util.List;
+
+import javax.validation.constraints.*;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -160,7 +162,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      */
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
     // @NotNull(message = "上报来源不能为空")
-    @Max(message = "上报来源不能大于2", value = 2)
+    @Max(message = "上报来源不能大于3", value = 3)
     @Min(message = "上报来源不能小于1", value = 1)
     private Integer                 assetSource;
     /**
