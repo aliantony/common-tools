@@ -492,12 +492,12 @@ public class AssetController {
         return ActionResponse.success(iAssetService.queryNormalCount());
     }
 
-    @ApiOperation(value = "告警资产数量统计", notes = "正常资产数量统计")
+   /* @ApiOperation(value = "告警资产数量统计", notes = "正常资产数量统计")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/alarm/count", method = RequestMethod.POST)
     public ActionResponse findAlarmAssetCount() {
         return ActionResponse.success(iAssetService.findAlarmAssetCount());
-    }
+    }*/
 
     /**
      * 资产列表查询-基准模板下拉项信息
