@@ -674,7 +674,8 @@
         <trim prefix="where" prefixOverrides="And">
             And type='a'
             and status=1
-            and POSITION(#{operationSystem} in soft_platform)
+            and if(locate('-',#{operationSystem})>0,POSITION(#{operationSystem} in soft_platform),match(soft_platform)
+            against ('+windows*' in boolean mode))
             and is_storage=1
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and id not in
@@ -695,11 +696,11 @@
                 and product_name like CONCAT('%', replace(replace(REPLACE
                 (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
-            <if test="pageSize !=-1">
-                LIMIT #{pageSize} offset #{pageOffset}
-            </if>
-        </trim>
 
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
 
     </select>
     <select id="querySoftsRelations" resultMap="BaseResultMap">
