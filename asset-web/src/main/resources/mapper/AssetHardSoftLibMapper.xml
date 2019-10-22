@@ -674,8 +674,14 @@
         <trim prefix="where" prefixOverrides="And">
             And type='a'
             and status=1
-            and if(locate('-',#{operationSystem})>0,POSITION(#{operationSystem} in soft_platform),match(soft_platform)
-            against ('+windows*' in boolean mode))
+            <choose>
+                <when test="operationSystem.indexOf('-')>=0">
+                    and  POSITION(#{operationSystem} in soft_platform)
+                </when>
+                <otherwise>
+                    and   match(soft_platform) against (concat('+',#{operationSystem},'*') in boolean mode)
+                </otherwise>
+            </choose>
             and is_storage=1
             <if test="removeSoftIds != null and removeSoftIds.size>0">
                 and id not in
