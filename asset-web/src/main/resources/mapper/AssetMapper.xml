@@ -1120,7 +1120,8 @@
             </foreach>
         </if>
         <if test="unknownAssets==true">
-            AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3 ) )
+            AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN (
+            1, 3 ) )
         </if>
         and status=1
     </select>
@@ -1248,7 +1249,8 @@
                 #{areaId}
             </foreach>
         </if>
-        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3 ) )
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3
+        ) )
         GROUP BY asset_status
     </select>
 
@@ -1486,7 +1488,8 @@
         area_id = #{areaId },
         operation_system = #{operationSystem },
         responsible_user_id = #{responsibleUserId },
-
+        baseline_template_id = #{baselineTemplateId},
+        install_template_id = #{installTemplateId},
         house_location = #{houseLocation },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
@@ -1726,7 +1729,8 @@ WHERE
             #{areaId}
         </foreach>
 
-        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3 ) )
+        AND asset.id NOT IN ( SELECT id FROM asset WHERE asset_status = 1 AND gmt_modified=0 AND asset_source IN ( 1, 3
+        ) )
         AND category_model is not null
         GROUP BY category_model
     </select>
