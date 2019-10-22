@@ -38,18 +38,4 @@ public class AssetSysServiceLibController {
         return ActionResponse.success(iAssetSysServiceLibService.queryPageAssetSysServiceLib(assetSysServiceLibQuery));
     }
 
-    /**
-     * 通过ID查询
-     *
-     * @param queryCondition
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetSysServiceLibResponse.class), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
-        return ActionResponse.success(iAssetSysServiceLibService.queryAssetSysServiceLibById(queryCondition));
-    }
-
-
 }
