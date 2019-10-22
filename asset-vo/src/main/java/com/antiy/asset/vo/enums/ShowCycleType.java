@@ -12,7 +12,8 @@ public enum ShowCycleType {
                                                        "本月"), THIS_QUARTER("THIS_QUARTER",
                                                                            "本季度"), THIS_YEAR("THIS_YEAR",
                                                                                              "本年"), ASSIGN_TIME("ASSIGN_TIME",
-                                                                                                                "指定日期");
+                                                                                                                "指定日期"), ASSIGN_TIME1("ASSIGN_TIME1",
+                                                                                                                                      "单元测试使用");
 
     private String code;
 
