@@ -2970,7 +2970,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isNotEmpty(request.getAssetIds())) {
             return assetDao.findUuidByAssetId(request.getAssetIds());
         } else {
-            throw new BusinessException("区域ID不能为空");
+            throw new BusinessException("资产ID不能为空");
         }
     }
 
