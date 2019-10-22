@@ -87,44 +87,4 @@ public class AssetStatusJumpController {
         Integer count = assetService.assetNoRegister(assetStatusChangeRequest);
         return ActionResponse.success(count);
     }
-
-    /**
-     * 资产配置验证拒绝变更资产状态(配置模块中对资产验证拒绝时才调用此接口)
-     *
-     * @param baseRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "资产配置验证拒绝变更资产状态", notes = "传入实体对象信息")
-    @PreAuthorize("hasAuthority('asset:updateAssetStatus')")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/updateAssetStatus", method = RequestMethod.POST)
-    public ActionResponse updateAssetStatus(@ApiParam(value = "baseRequest") @RequestBody(required = false) AssetConfigValidateRefuseReqeust baseRequest) throws Exception {
-        Long currentTime = System.currentTimeMillis();
-        Asset asset = new Asset();
-        asset.setId(baseRequest.getId());
-        asset.setGmtModified(currentTime);
-        asset.setModifyUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        // TODO AssetStatusEnum
-        // asset.setAssetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-        // 记录操作记录
-        AssetOperationRecord operationRecord = new AssetOperationRecord();
-        operationRecord.setTargetObjectId(baseRequest.getStringId());
-        operationRecord.setOriginStatus(AssetStatusEnum.WAIT_VALIDATE.getCode());
-        // operationRecord.setTargetStatus(AssetStatusEnum.WAIT_SETTING.getCode());
-        operationRecord.setGmtCreate(currentTime);
-        // operationRecord.setContent(AssetFlowEnum.HARDWARE_BASELINE_VALIDATE.getMsg());
-        operationRecord
-            .setCreateUser(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        operationRecord
-            .setOperateUserId(LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null);
-        operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        operationRecord.setProcessResult(0);
-
-        // 记录验证拒绝的原因
-
-        operationRecordDao.insert(operationRecord);
-        LogUtils.info(logger, AssetEventEnum.ASSET_OPERATION_RECORD_INSERT.getName() + " {}",
-            operationRecord.toString());
-        return ActionResponse.success(assetDao.updateStatus(asset));
-    }
 }
