@@ -90,7 +90,7 @@ public class AssetBusinessController {
      * @param assetIdRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "根据区域ID返回资产UUID", notes = "传入实体对象信息")
+    @ApiOperation(value = "根据资产ID返回资产UUID", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/uuidByAssetId", method = RequestMethod.POST)
     public ActionResponse queryUuidByAssetId(@RequestBody(required = false) @ApiParam(value = "assetIdRequest") AssetIdRequest assetIdRequest) throws Exception {

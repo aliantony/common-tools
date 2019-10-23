@@ -6,8 +6,6 @@ import static org.powermock.api.mockito.PowerMockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.utils.DataTypeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -36,6 +34,7 @@ import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.LoginUser;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
@@ -141,7 +140,7 @@ public class AssetLinkRelationServiceImplTest {
         mockStatic(RedisKeyUtil.class);
         String newAreaKey = "1";
         when(RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                DataTypeUtils.stringToInteger("1"))).thenReturn(newAreaKey);
+            assetLinkedCount.getAreaId())).thenReturn(newAreaKey);
         when(redisUtil.getObject(newAreaKey, SysArea.class)).thenReturn(mock(SysArea.class));
         when(assetLinkRelationDao.queryAssetLinkedCountList(query)).thenReturn(assetLinkedCountList);
         assetLinkRelationService.queryAssetLinkedCountPage(query);

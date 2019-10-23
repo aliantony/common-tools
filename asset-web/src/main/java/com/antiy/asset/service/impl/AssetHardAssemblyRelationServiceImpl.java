@@ -39,46 +39,4 @@ public class AssetHardAssemblyRelationServiceImpl extends BaseServiceImpl<AssetH
     @Resource
     private BaseConverter<AssetHardAssemblyRelation, AssetHardAssemblyRelationResponse> responseConverter;
 
-    @Override
-    public String saveAssetHardAssemblyRelation(AssetHardAssemblyRelationRequest request) throws Exception {
-        AssetHardAssemblyRelation assetHardAssemblyRelation = requestConverter.convert(request,
-            AssetHardAssemblyRelation.class);
-        assetHardAssemblyRelationDao.insert(assetHardAssemblyRelation);
-        return assetHardAssemblyRelation.getStringId();
-    }
-
-    @Override
-    public String updateAssetHardAssemblyRelation(AssetHardAssemblyRelationRequest request) throws Exception {
-        AssetHardAssemblyRelation assetHardAssemblyRelation = requestConverter.convert(request,
-            AssetHardAssemblyRelation.class);
-        return assetHardAssemblyRelationDao.update(assetHardAssemblyRelation).toString();
-    }
-
-    @Override
-    public List<AssetHardAssemblyRelationResponse> queryListAssetHardAssemblyRelation(AssetHardAssemblyRelationQuery query) throws Exception {
-        List<AssetHardAssemblyRelation> assetHardAssemblyRelationList = assetHardAssemblyRelationDao.findQuery(query);
-        // TODO
-        return responseConverter.convert(assetHardAssemblyRelationList, AssetHardAssemblyRelationResponse.class);
-    }
-
-    @Override
-    public PageResult<AssetHardAssemblyRelationResponse> queryPageAssetHardAssemblyRelation(AssetHardAssemblyRelationQuery query) throws Exception {
-        return new PageResult<AssetHardAssemblyRelationResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetHardAssemblyRelation(query));
-    }
-
-    @Override
-    public AssetHardAssemblyRelationResponse queryAssetHardAssemblyRelationById(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
-        AssetHardAssemblyRelationResponse assetHardAssemblyRelationResponse = responseConverter.convert(
-            assetHardAssemblyRelationDao.getById(queryCondition.getPrimaryKey()),
-            AssetHardAssemblyRelationResponse.class);
-        return assetHardAssemblyRelationResponse;
-    }
-
-    @Override
-    public String deleteAssetHardAssemblyRelationById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetHardAssemblyRelationDao.deleteById(baseRequest.getStringId()).toString();
-    }
 }

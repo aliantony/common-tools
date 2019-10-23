@@ -899,7 +899,7 @@ CREATE TABLE `asset_cpe_update_record` (
   `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   `update_duration` bigint(20) DEFAULT NULL COMMENT '更新时长',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE更新记录表' ;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

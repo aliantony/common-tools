@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import java.io.Serializable;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -23,6 +24,10 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty("主键")
     @Encode
     private String  id;
+    @ApiModelProperty("组件名称")
+    private String  productName;
+    @ApiModelProperty("组件类型")
+    private String  type;
     /**
      * 资产主键
      */
@@ -64,6 +69,22 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
         this.amount = amount;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
@@ -79,7 +100,8 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetAssemblyRequest{" + "id='" + id + '\'' + ", assetId='" + assetId + '\'' + ", businessId='"
-               + businessId + '\'' + ", amount=" + amount + '}';
+        return "AssetAssemblyRequest{" + "id='" + id + '\'' + ", productName='" + productName + '\'' + ", type='" + type
+               + '\'' + ", assetId='" + assetId + '\'' + ", businessId='" + businessId + '\'' + ", amount=" + amount
+               + '}';
     }
 }

@@ -1,5 +1,11 @@
 package com.antiy.asset.controller;
 
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.util.List;
+
+import org.apache.commons.compress.utils.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +19,7 @@ import com.antiy.asset.service.AssetAdmittanceService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.download.ExcelDownloadUtil;
 
 /**
@@ -57,6 +64,12 @@ public class AssetAdmittanceControllerTest {
     }
 
     @Test
-    public void export() {
+    public void export() throws Exception {
+        List<AssetResponse> assetList = Lists.newArrayList();
+        AssetResponse assetResponse = new AssetResponse();
+        assetList.add(assetResponse);
+        AssetQuery assetQuery = mock(AssetQuery.class);
+        when(assetService.findListAsset(assetQuery, null)).thenReturn(assetList);
+        assetAdmittanceController.export(1, 1, 10, null, null);
     }
 }

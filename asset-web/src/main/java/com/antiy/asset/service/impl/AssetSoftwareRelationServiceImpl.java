@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -187,7 +186,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
-        System.out.println(JSON.toJSONString(baselineWaitingConfigRequestList));
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
