@@ -132,8 +132,7 @@ public class AssetInstallTemplateController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
-        return ActionResponse
-                .success(iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest));
+        return iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest);
     }
 
     /**

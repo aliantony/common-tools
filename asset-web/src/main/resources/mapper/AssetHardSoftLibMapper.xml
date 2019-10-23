@@ -675,7 +675,7 @@
             And type='a'
             and status=1
             <choose>
-                <when test="operationSystem.indexOf('-')>=0">
+                <when test="operationSystem.indexOf('-')>=0 or operationSystem =='linux'">
                     and  POSITION(#{operationSystem} in soft_platform)
                 </when>
                 <otherwise>

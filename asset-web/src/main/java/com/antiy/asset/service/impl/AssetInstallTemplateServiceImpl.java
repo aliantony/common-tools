@@ -103,7 +103,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
         boolean isUpdateStatusOnly = request.getIsUpdateStatus() != null && request.getIsUpdateStatus() == 0;
         Integer templateId = request.getId();
-        AssetInstallTemplate template=assetInstallTemplateDao.getById(templateId.toString());
+        AssetInstallTemplate template = assetInstallTemplateDao.getById(templateId.toString());
         int currentStatus = template.getCurrentStatus();
         int requestStatus = request.getUpdateStatus() == null ? 0 : request.getUpdateStatus();
         int enableCode = AssetInstallTemplateStatusEnum.ENABLE.getCode();
@@ -189,20 +189,20 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                     templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             if (currentStatus == AssetInstallTemplateStatusEnum.REJECT.getCode()) {
-                ParamterExceptionUtils.isBlank(request.getTaskId(),"非流程任务发起人不能编辑");
-                return activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
+                ParamterExceptionUtils.isBlank(request.getTaskId(), "非流程任务发起人不能编辑");
+                ActionResponse actionResponse=activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
+                if (null == actionResponse
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                    LogUtils.info(logger, "结束拒绝状态的模板工作流任务失败: {}", "模板编辑");
+                    BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+                }
+                return actionResponse;
             }
             return sendTask(request, assetInstallTemplate);
         }
         return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "编辑失败");
     }
 
-
-    @Override
-    public List<AssetInstallTemplateResponse> queryListAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
-        List<AssetInstallTemplate> assetInstallTemplateList = assetInstallTemplateDao.findQuery(query);
-        return responseConverter.convert(assetInstallTemplateList, AssetInstallTemplateResponse.class);
-    }
 
     @Override
     public PageResult<AssetInstallTemplateResponse> queryPageAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception {
@@ -408,7 +408,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         AssetInstallTemplateResponse response = queryAssetInstallTemplateById(queryCondition);
 
         if (result != null && result == 1) {
-            activityClient.completeTask(handleRequest);
+           ActionResponse actionResponse= activityClient.completeTask(handleRequest);
+            if (null == actionResponse
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                LogUtils.info(logger, "结束工作流任务失败: {}", "模板审核");
+                BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+            }
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CHECK.getName(),
                     template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, "审核装机模板:{}", response.toString());
@@ -423,7 +428,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         activityRequest.setBusinessId(template.getStringId());
         activityRequest.setFormData(request.getFormData());
         activityRequest.setProcessDefinitionKey(PROCESS_KEY_INSTALL);
-        return activityClient.manualStartProcess(activityRequest);
+        ActionResponse actionResponse=activityClient.manualStartProcess(activityRequest);
+        // 如果流程引擎为空,直接返回错误信息
+        if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            LogUtils.info(logger, "启动工作流失败: {}", PROCESS_KEY_INSTALL);
+            BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+        }
+        return actionResponse;
     }
 
     private Integer insertCheckTemplateInfo(AssetInstallTemplateRequest request) {
@@ -462,21 +474,23 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     private List<WaitingTaskReponse> queryTemplateTasksByLoginId() {
         ActivityWaitingQuery taskQuery = new ActivityWaitingQuery();
         taskQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
-        taskQuery.setProcessDefinitionKey("installTemplate");
-        return activityClient.queryAllWaitingTask(taskQuery).getBody();
+        taskQuery.setProcessDefinitionKey(PROCESS_KEY_INSTALL);
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient.queryAllWaitingTask(taskQuery);
+        // 如果流程引擎为空,直接返回错误信息
+        if (null == actionResponse
+                || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", PROCESS_KEY_INSTALL);
+            BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+        }
+        return actionResponse.getBody();
     }
 
     private WaitingTaskReponse queryTemplateTaskById(String id, List<WaitingTaskReponse> waitingTaskReponseList) {
-
-        if (waitingTaskReponseList == null || waitingTaskReponseList.isEmpty()) {
-            return null;
-        } else {
-            List<WaitingTaskReponse> filter = waitingTaskReponseList.stream().filter(v -> v.getBusinessId().equals(id)).collect(Collectors.toList());
-            if (filter.size() > 1) {
-                throw new BusinessException("同一代办任务存在多条，脏数据未处理");
-            }
-            return filter.isEmpty() ? null : filter.get(0);
+        List<WaitingTaskReponse> filter = waitingTaskReponseList.stream().filter(v -> v.getBusinessId().equals(id)).collect(Collectors.toList());
+        if (filter.size() > 1) {
+            throw new BusinessException("同一代办任务存在多条，脏数据未处理");
         }
+        return filter.isEmpty() ? null : filter.get(0);
 
     }
 
