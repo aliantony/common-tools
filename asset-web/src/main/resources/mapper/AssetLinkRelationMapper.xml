@@ -657,6 +657,7 @@
         c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
         WHERE
         b.asset_id IS NOT NULL
+        and a.status = 1
         <if test="areaIds != null and areaIds.size() > 0">
             and a.area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -767,6 +768,7 @@
         c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
         WHERE
         b.asset_id IS NOT NULL
+        and a.status = 1
         <if test="areaIds != null and areaIds.size() > 0">
             and a.area_id in
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
