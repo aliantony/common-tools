@@ -1,4 +1,5 @@
 package com.antiy.asset.controller;
+
 import com.antiy.asset.service.IAssetGroupRelationService;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.JsonUtil;
@@ -15,13 +16,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import util.ControllerUtil;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
@@ -62,6 +60,6 @@ public class AssetGroupRelationControllerTest {
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/grouprelation/hasRealtionAsset")
                 .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.object2Json(queryCondition))).andReturn();
-        Assert.assertEquals("true", ControllerUtil.getResponse(mvcResult).getBody());
+        Assert.assertEquals(true, ControllerUtil.getResponse(mvcResult).getBody());
     }
 }
