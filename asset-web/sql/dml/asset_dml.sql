@@ -1,6 +1,6 @@
----
----default common operation system
----
+-- -------------------------------
+-- default common operation system
+-- -------------------------------
 update asset_cpe_filter set business_id = (SELECT business_id FROM `asset_hard_soft_lib` WHERE `product_name` = 'os_x_server' limit 1) where `product_name` = 'os_x_server';
 
 update asset_cpe_filter set business_id = (SELECT business_id FROM `asset_hard_soft_lib` WHERE `product_name` = 'mac_os_x' limit 1) where `product_name` = 'mac_os_x';
