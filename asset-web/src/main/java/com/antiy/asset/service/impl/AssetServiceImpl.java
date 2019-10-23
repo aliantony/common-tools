@@ -1462,7 +1462,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .filter(a -> "DISK".equals(a.getType())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
-                    sb.append("###添加硬盘:").append(disk.getProductName());
+                    sb.append("###添加组件:").append("硬盘").append(disk.getProductName());
                 });
             } else {
                 List<String> oldDiskBusinessIds = oldDisks.stream().map(AssetAssemblyRequest::getBusinessId)
