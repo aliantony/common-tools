@@ -240,15 +240,6 @@ public class AssetUserServiceImplTest {
         Assert.assertTrue(assetUserList.size() == actual.size());
     }
 
-    @Test
-    public void importUserTest() {
-        List<AssetUser> assetUserList = new ArrayList<>();
-        AssetUser assetUser = new AssetUser();
-        assetUser.setName("test");
-        assetUserList.add(assetUser);
-        assetUserService.importUser(assetUserList);
-        Mockito.verify(assetUserDao).insertBatch(Mockito.any());
-    }
 
     @Test
     public void deleteUserByIdTest() throws Exception {

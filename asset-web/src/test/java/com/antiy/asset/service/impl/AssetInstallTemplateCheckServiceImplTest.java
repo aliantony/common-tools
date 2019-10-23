@@ -90,4 +90,5 @@ public class AssetInstallTemplateCheckServiceImplTest {
                 Assert.assertEquals("",k));
 
     }
+
 }

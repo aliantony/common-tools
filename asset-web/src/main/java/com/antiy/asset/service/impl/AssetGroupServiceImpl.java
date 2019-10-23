@@ -272,7 +272,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
             StringBuilder assetDetail = new StringBuilder();
             for (String assetName : assetList) {
-                if (assetList.size() == 1 || assetList.size() == assetList.size() - 1) {
+                if (assetList.size() == 1) {
                     assetDetail.append(assetName);
                 } else {
                     assetDetail.append(assetName).append(",");

@@ -90,7 +90,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) throws Exception {
+    public List<AssetUserResponse> findListAssetUser(AssetUserQuery query) {
         List<AssetUser> assetUser = assetUserDao.queryUserList(query);
         if (CollectionUtils.isNotEmpty(assetUser)) {
             assetUser.stream().forEach(a -> {
@@ -137,10 +137,6 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         return userSelectResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 
-    @Override
-    public void importUser(List<AssetUser> assetUserList) {
-        assetUserDao.insertBatch(assetUserList);
-    }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override

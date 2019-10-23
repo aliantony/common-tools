@@ -110,8 +110,6 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
             }else{
                 templateCheckResponse.setResultStr(currentStatus.getMsg());
             }
-
-
         }
         return responseList;
     }

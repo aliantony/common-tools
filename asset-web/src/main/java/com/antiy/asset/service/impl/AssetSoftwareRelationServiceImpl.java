@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
@@ -24,6 +26,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
@@ -31,6 +34,7 @@ import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
 
@@ -68,6 +72,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private CommandClientImpl                                                   commandClient;
     @Resource
     private BaseLineClient                                                      baseLineClient;
+    @Resource
+    private AesEncoder                                                          aesEncoder;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
@@ -134,6 +140,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
     @Override
     public Integer batchRelation(AssetSoftwareReportRequest softwareReportRequest) {
+        int result = 0;
         List<String> assetIds = softwareReportRequest.getAssetId();
         List<Long> softIds = softwareReportRequest.getSoftId();
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
@@ -152,27 +159,35 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
                     assetSoftwareRelationList.add(assetSoftwareRelation);
                 });
             });
-            return assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+            result = assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
 
-        String nextStepUserId = (String) softwareReportRequest.getManualStartActivityRequest().getFormData()
-            .get("baselineConfigUserId");
+        String nextStepUserId = aesEncoder.decode(
+            (String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
+            LoginUserUtil.getLoginUser().getUsername());
+        Map formData = softwareReportRequest.getManualStartActivityRequest().getFormData();
+        formData.put("baselineConfigUserId", nextStepUserId);
         // ------------------对接配置模块------------------start
         List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
         assetIds.stream().forEach(assetId -> {
             BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
             baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
-            baselineWaitingConfigRequest.setCheckType(assetDao.queryInstallType(assetId));
+            Integer installType = assetDao.queryInstallType(assetId);
+            if (Objects.isNull(installType)) {
+                baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
+            } else {
+                baselineWaitingConfigRequest.setCheckType(installType);
+            }
             baselineWaitingConfigRequest.setConfigStatus(1);
             baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
             baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
             baselineWaitingConfigRequest.setReason("资产变更");
             baselineWaitingConfigRequest.setSource(2);
-            baselineWaitingConfigRequest
-                .setFormData(softwareReportRequest.getManualStartActivityRequest().getFormData());
+            baselineWaitingConfigRequest.setFormData(formData);
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
+        System.out.println(JSON.toJSONString(baselineWaitingConfigRequestList));
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -180,6 +195,6 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         }
         // ------------------对接配置模块------------------end
 
-        return 0;
+        return result;
     }
 }

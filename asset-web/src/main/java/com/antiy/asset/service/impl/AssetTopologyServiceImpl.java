@@ -51,7 +51,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
@@ -131,7 +130,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, String> resultMap = new HashMap<>(2);
         // 1.查询资产总数
         AssetQuery query = new AssetQuery();
-
+        query.setUnknownAssets(true);
         query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         // 1.1资产状态除去不予登记和登记
