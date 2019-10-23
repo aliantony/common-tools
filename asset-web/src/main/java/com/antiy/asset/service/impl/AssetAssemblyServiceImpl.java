@@ -61,14 +61,14 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
     @Override
     public PageResult<AssetAssemblyResponse> queryPageAssetAssembly(AssetAssemblyQuery query) throws Exception {
         return new PageResult<AssetAssemblyResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
-            this.queryListAssetAssembly(query));
+                this.queryListAssetAssembly(query));
     }
 
     @Override
     public AssetAssemblyResponse queryAssetAssemblyById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetAssemblyResponse assetAssemblyResponse = responseConverter
-            .convert(assetAssemblyDao.getById(queryCondition.getPrimaryKey()), AssetAssemblyResponse.class);
+                .convert(assetAssemblyDao.getById(queryCondition.getPrimaryKey()), AssetAssemblyResponse.class);
         return assetAssemblyResponse;
     }
 
