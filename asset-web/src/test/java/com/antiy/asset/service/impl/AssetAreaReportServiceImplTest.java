@@ -1,7 +1,6 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetReportDao;
-import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -25,7 +24,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -108,8 +106,21 @@ public class AssetAreaReportServiceImplTest {
         allAssetCountMap.put("parent", 1);
         Map<String, Integer> allAssetCountMap2 = new HashMap<>();
         allAssetCountMap.put("parent2", 2);
+        Map<String, Integer> allAssetCountMap3 = new HashMap<>();
+        allAssetCountMap.put("parent3", 2);
+
+        Map<String, Integer> allAssetCountMap4 = new HashMap<>();
+        allAssetCountMap.put("parent4", 2);
+        Map<String, Integer> allAssetCountMap5 = new HashMap<>();
+        allAssetCountMap.put("parent5", 2);
+        Map<String, Integer> allAssetCountMap6 = new HashMap<>();
+        allAssetCountMap.put("parent6", 2);
+
         allAssetCount.add(allAssetCountMap);
         allAssetCount.add(allAssetCountMap2);
+        allAssetCount.add(allAssetCountMap3);
+        allAssetCount.add(allAssetCountMap5);
+        allAssetCount.add(allAssetCountMap6);
         allAssetCount.add(allAssetCountMap);
 
         AssetReportResponse expected = new AssetReportResponse();
@@ -137,7 +148,7 @@ public class AssetAreaReportServiceImplTest {
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
         // 情景一：TOP5为true
         AssetReportResponse actual = assetAreaReportService.getAssetWithArea(reportRequest);
-        Assert.assertEquals(expected.getAlldata().get(0), actual.getAlldata().get(0));
+        Assert.assertEquals("1", actual.getAlldata().get(0) + "");
 
         // 情景二：TOP5为false
         reportRequest.setTopFive(false);
@@ -145,6 +156,95 @@ public class AssetAreaReportServiceImplTest {
 
     }
 
+    @Test
+    public void getAssetWithAreaTest5() throws Exception {
+        AssetAreaReportRequest report = new AssetAreaReportRequest();
+        report.setParentAreaId("111");
+        report.setParentAreaName("parent");
+        List<String> childrenAradId = new ArrayList<>();
+        childrenAradId.add("2");
+        childrenAradId.add("3");
+        report.setChildrenAradIds(childrenAradId);
+        report.setStringId("1");
+        AssetAreaReportRequest report2 = new AssetAreaReportRequest();
+        report2.setParentAreaId("121");
+        report2.setParentAreaName("parent2");
+        ReportQueryRequest reportRequest = new ReportQueryRequest();
+        List<String> id = new ArrayList<>();
+        id.add("1");
+        reportRequest.setAreaIds(id);
+        reportRequest.setStartTime(0L);
+        reportRequest.setEndTime(1554285690000L);
+        reportRequest.setAssetStatus(1);
+        reportRequest.setTopFive(true);
+        reportRequest.setTimeType("1");
+        List<AssetAreaReportRequest> assetAreaId = new ArrayList<>();
+        assetAreaId.add(report);
+        assetAreaId.add(report2);
+        reportRequest.setAssetAreaIds(assetAreaId);
+
+        List<Map<String, Integer>> initData = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("areaId", 1);
+        Map<String, Integer> map2 = new HashMap<>();
+        map.put("assetCount", 1);
+        initData.add(map);
+        initData.add(map2);
+        List<Map<String, String>> addData = new ArrayList<>();
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("areaId", "1");
+        addData.add(dataMap);
+        List<Map<String, Integer>> allAssetCount = new ArrayList<>();
+        Map<String, Integer> allAssetCountMap = new HashMap<>();
+        allAssetCountMap.put("parent", 1);
+        Map<String, Integer> allAssetCountMap2 = new HashMap<>();
+        allAssetCountMap.put("parent2", 2);
+        Map<String, Integer> allAssetCountMap3 = new HashMap<>();
+        allAssetCountMap.put("parent3", 2);
+
+        Map<String, Integer> allAssetCountMap4 = new HashMap<>();
+        allAssetCountMap.put("parent4", 2);
+        Map<String, Integer> allAssetCountMap5 = new HashMap<>();
+        allAssetCountMap.put("parent5", 2);
+        Map<String, Integer> allAssetCountMap6 = new HashMap<>();
+        allAssetCountMap.put("parent6", 2);
+
+        allAssetCount.add(allAssetCountMap);
+        allAssetCount.add(allAssetCountMap2);
+        allAssetCount.add(allAssetCountMap3);
+        allAssetCount.add(allAssetCountMap5);
+        allAssetCount.add(allAssetCountMap6);
+        allAssetCount.add(allAssetCountMap);
+
+        AssetReportResponse expected = new AssetReportResponse();
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        ReportData reportData = new ReportData();
+        List<Integer> date = new ArrayList<>();
+        date.add(1);
+        reportData.setData(date);
+        List<ReportData> reportDataList = new ArrayList<>();
+        reportDataList.add(reportData);
+        date.add(2);
+        reportData.setData(date);
+        reportDataList.add(reportData);
+        expected.setList(reportDataList);
+        List<Integer> allDataList = new ArrayList<>();
+        allDataList.add(2);
+        expected.setAlldata(allDataList);
+        reportRequest.setTopAreaId("5");
+        reportRequest.setTopAreaName("1");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                Mockito.any())).thenReturn(addData);
+        when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
+
+        // 情景二：TOP5为false
+        reportRequest.setTopFive(true);
+        AssetReportResponse actual2 = assetAreaReportService.getAssetWithArea(reportRequest);
+
+    }
     @Test
     public void getAssetWithAreaTest1() throws Exception {
         AssetAreaReportRequest report = new AssetAreaReportRequest();
@@ -471,27 +571,71 @@ public class AssetAreaReportServiceImplTest {
         AssetAreaReportRequest report = new AssetAreaReportRequest();
         report.setParentAreaId("1");
         report.setParentAreaName("parent");
-
+        List<String> childrenAradId = new ArrayList<>();
+        childrenAradId.add("2");
+        childrenAradId.add("3");
+        report.setChildrenAradIds(childrenAradId);
+        report.setStringId("1");
+        AssetAreaReportRequest report2 = new AssetAreaReportRequest();
+        report2.setParentAreaId("1");
+        report2.setParentAreaName("parent2");
         ReportQueryRequest reportRequest = new ReportQueryRequest();
         List<String> id = new ArrayList<>();
         id.add("1");
         reportRequest.setAreaIds(id);
-        reportRequest.setStartTime(1554285690000L);
+        reportRequest.setStartTime(0L);
+        reportRequest.setEndTime(1554285690000L);
         reportRequest.setAssetStatus(1);
         reportRequest.setTopFive(true);
         reportRequest.setTimeType("1");
         List<AssetAreaReportRequest> assetAreaId = new ArrayList<>();
         assetAreaId.add(report);
+        assetAreaId.add(report2);
         reportRequest.setAssetAreaIds(assetAreaId);
 
+        List<Map<String, Integer>> initData = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("areaId", 1);
+        Map<String, Integer> map2 = new HashMap<>();
+        map.put("assetCount", 1);
+        initData.add(map);
+        initData.add(map2);
+        List<Map<String, String>> addData = new ArrayList<>();
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("areaId", "1");
+        addData.add(dataMap);
         List<Map<String, Integer>> allAssetCount = new ArrayList<>();
         Map<String, Integer> allAssetCountMap = new HashMap<>();
-        allAssetCountMap.put("a", 1);
-        allAssetCountMap.put("b", 2);
-        allAssetCountMap.put("c", 3);
-        allAssetCountMap.put("d", 4);
-        allAssetCountMap.put("e", 5);
+        allAssetCountMap.put("parent", 1);
+        Map<String, Integer> allAssetCountMap2 = new HashMap<>();
+        allAssetCountMap.put("parent2", 2);
         allAssetCount.add(allAssetCountMap);
+        allAssetCount.add(allAssetCountMap2);
+        allAssetCount.add(allAssetCountMap);
+
+        AssetReportResponse expected = new AssetReportResponse();
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        ReportData reportData = new ReportData();
+        List<Integer> date = new ArrayList<>();
+        date.add(1);
+        reportData.setData(date);
+        List<ReportData> reportDataList = new ArrayList<>();
+        reportDataList.add(reportData);
+        date.add(2);
+        reportData.setData(date);
+        reportDataList.add(reportData);
+        expected.setList(reportDataList);
+        List<Integer> allDataList = new ArrayList<>();
+        allDataList.add(2);
+        expected.setAlldata(allDataList);
+        reportRequest.setTopAreaId("5");
+        reportRequest.setTopAreaName("1");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+            Mockito.any())).thenReturn(addData);
+        when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
 
         AssetReportResponse assetReportResponse = new AssetReportResponse();
         List<String> dates = new ArrayList<>();
@@ -521,36 +665,83 @@ public class AssetAreaReportServiceImplTest {
         return httpServletRequest;
     }
 
+    private HttpServletRequest getRequest1() {
+        HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        ((MockHttpServletRequest) httpServletRequest).addHeader("user-agent", "msie");
+        return httpServletRequest;
+    }
+
     @Test
     public void exportAreaTableTest() throws Exception {
 
         AssetAreaReportRequest report = new AssetAreaReportRequest();
         report.setParentAreaId("1");
         report.setParentAreaName("parent");
+        List<String> childrenAradId = new ArrayList<>();
+        childrenAradId.add("2");
+        childrenAradId.add("3");
+        report.setChildrenAradIds(childrenAradId);
+        report.setStringId("1");
+        AssetAreaReportRequest report2 = new AssetAreaReportRequest();
+        report2.setParentAreaId("1");
+        report2.setParentAreaName("parent2");
         ReportQueryRequest reportRequest = new ReportQueryRequest();
         List<String> id = new ArrayList<>();
         id.add("1");
         reportRequest.setAreaIds(id);
-        reportRequest.setStartTime(1554285690000L);
+        reportRequest.setStartTime(0L);
+        reportRequest.setEndTime(1L);
         reportRequest.setAssetStatus(1);
         reportRequest.setTopFive(true);
-        reportRequest.setTopAreaId("1");
+        reportRequest.setTimeType("1");
         List<AssetAreaReportRequest> assetAreaId = new ArrayList<>();
         assetAreaId.add(report);
+        assetAreaId.add(report2);
         reportRequest.setAssetAreaIds(assetAreaId);
 
+        List<Map<String, Integer>> initData = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("areaId", 1);
+        Map<String, Integer> map2 = new HashMap<>();
+        map.put("assetCount", 1);
+        initData.add(map);
+        initData.add(map2);
+        List<Map<String, String>> addData = new ArrayList<>();
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("areaId", "1");
+        addData.add(dataMap);
         List<Map<String, Integer>> allAssetCount = new ArrayList<>();
         Map<String, Integer> allAssetCountMap = new HashMap<>();
-        allAssetCountMap.put("a", 1);
-        allAssetCountMap.put("b", 2);
-        allAssetCountMap.put("c", 3);
-        allAssetCountMap.put("d", 4);
-        allAssetCountMap.put("e", 5);
+        allAssetCountMap.put("parent", 1);
+        Map<String, Integer> allAssetCountMap2 = new HashMap<>();
+        allAssetCountMap.put("parent2", 2);
         allAssetCount.add(allAssetCountMap);
-        reportRequest.setStartTime(1L);
-        reportRequest.setEndTime(3L);
-        ReportForm expected = new ReportForm();
-        expected.setTitle("资产区域报表数据");
+        allAssetCount.add(allAssetCountMap2);
+        allAssetCount.add(allAssetCountMap);
+
+        AssetReportResponse expected = new AssetReportResponse();
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        ReportData reportData = new ReportData();
+        List<Integer> date = new ArrayList<>();
+        date.add(1);
+        reportData.setData(date);
+        List<ReportData> reportDataList = new ArrayList<>();
+        reportDataList.add(reportData);
+        date.add(2);
+        reportData.setData(date);
+        reportDataList.add(reportData);
+        expected.setList(reportDataList);
+        List<Integer> allDataList = new ArrayList<>();
+        allDataList.add(2);
+        expected.setAlldata(allDataList);
+        reportRequest.setTopAreaId("5");
+        reportRequest.setTopAreaName("1");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+            Mockito.any())).thenReturn(addData);
+        when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
 
@@ -586,6 +777,20 @@ public class AssetAreaReportServiceImplTest {
         assetAreaReportService.exportAreaTable(reportRequest);
         Mockito.verify(assetReportDao, times(5)).queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any());
 
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(getRequest1(), new MockHttpServletResponse()));
+        reportRequest.setTimeType("5");
+        assetAreaReportService.exportAreaTable(reportRequest);
+        Mockito.verify(assetReportDao, times(6)).queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any());
+
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(getRequest1(), new MockHttpServletResponse()));
+        reportRequest.setTimeType("6");
+        try {
+            assetAreaReportService.exportAreaTable(reportRequest);
+        } catch (Exception e) {
+            Assert.assertEquals("timeType参数异常", e.getMessage());
+        }
         // Mockito.verify()
     }
 
