@@ -21,46 +21,6 @@ import com.antiy.asset.entity.AssetHardAssemblyRelation;
  */
 public interface IAssetHardAssemblyRelationService extends IBaseService<AssetHardAssemblyRelation> {
 
-    /**
-     * 保存
-     * @param request
-     * @return
-     */
-    String saveAssetHardAssemblyRelation(AssetHardAssemblyRelationRequest request) throws Exception;
 
-    /**
-     * 修改
-     * @param request
-     * @return
-     */
-    String updateAssetHardAssemblyRelation(AssetHardAssemblyRelationRequest request) throws Exception;
-
-    /**
-     * 查询对象集合
-     * @param query
-     * @return
-     */
-    List<AssetHardAssemblyRelationResponse> queryListAssetHardAssemblyRelation(AssetHardAssemblyRelationQuery query) throws Exception;
-
-    /**
-     * 分页查询
-     * @param query
-     * @return
-     */
-    PageResult<AssetHardAssemblyRelationResponse> queryPageAssetHardAssemblyRelation(AssetHardAssemblyRelationQuery query) throws Exception;
-
-    /**
-     * 通过ID查询
-     * @param queryCondition
-     * @return
-     */
-    AssetHardAssemblyRelationResponse queryAssetHardAssemblyRelationById(QueryCondition queryCondition) throws Exception;
-
-    /**
-     * 通过ID删除
-     * @param baseRequest
-     * @return
-     */
-    String deleteAssetHardAssemblyRelationById(BaseRequest baseRequest) throws Exception;
 
 }
