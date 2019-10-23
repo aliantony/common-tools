@@ -47,7 +47,8 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
     @Override
     public String updateAssetAssembly(AssetAssemblyRequest request) throws Exception {
         AssetAssembly assetAssembly = requestConverter.convert(request, AssetAssembly.class);
-        return assetAssemblyDao.update(assetAssembly).toString();
+        Integer update = assetAssemblyDao.update(assetAssembly);
+        return update.toString();
     }
 
     @Override
