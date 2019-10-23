@@ -4,6 +4,7 @@ import com.antiy.asset.dao.AssetAssemblyLibDao;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetAssemblyLib;
 import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.query.AssetAssemblyLibQuery;
 import com.antiy.asset.vo.request.AssetAssemblyLibRequest;
 import com.antiy.asset.vo.response.AssetAssemblyLibResponse;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
@@ -52,8 +53,8 @@ public class AssetAssemblyLibServiceImplTest {
         assetAssembly.setProductName("1");
         list.add(assetAssembly);
         Mockito.when(assetAssemblyLibDao.queryAssemblyByHardSoftId(Mockito.any())).thenReturn(list);
-        QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey("1");
-//        Assert.assertEquals("1", assetAssemblyLibService.queryAssemblyByHardSoftId(condition).get(0).getProductName());
+        AssetAssemblyLibQuery query = new AssetAssemblyLibQuery();
+        query.setBusinessId("1");
+        Assert.assertEquals("1", assetAssemblyLibService.queryAssemblyByHardSoftId(query).get(0).getProductName());
     }
 }
