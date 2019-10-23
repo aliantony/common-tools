@@ -36,9 +36,3 @@ update asset_cpe_filter set business_id = (SELECT business_id FROM `csom`.`asset
 update asset_cpe_filter set business_id = (SELECT business_id FROM `csom`.`asset_hard_soft_lib` WHERE `product_name` = 'suse_linux_enterprise_server' limit 1) where `product_name` = 'suse_linux_enterprise_server';
 
 update asset_cpe_filter set business_id = (SELECT business_id FROM `csom`.`asset_hard_soft_lib` WHERE `product_name` = 'ubuntu_linux' limit 1) where `product_name` = 'ubuntu_linux';
-
-
----
----初始化创建时间
----
-update asset_cpe_filter set gmt_create =unix_timestamp(now())*1000;
