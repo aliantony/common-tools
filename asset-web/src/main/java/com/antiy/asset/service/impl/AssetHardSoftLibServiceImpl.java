@@ -49,26 +49,6 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     private IAssetInstallTemplateService iAssetInstallTemplateService;
 
     @Override
-    public String saveAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception {
-        AssetHardSoftLib assetHardSoftLib = requestConverter.convert(request, AssetHardSoftLib.class);
-        assetHardSoftLibDao.insert(assetHardSoftLib);
-        return assetHardSoftLib.getStringId();
-    }
-
-    @Override
-    public String updateAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception {
-        AssetHardSoftLib assetHardSoftLib = requestConverter.convert(request, AssetHardSoftLib.class);
-        return assetHardSoftLibDao.update(assetHardSoftLib).toString();
-    }
-
-    @Override
-    public List<AssetHardSoftLibResponse> queryListAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception {
-        List<AssetHardSoftLib> assetHardSoftLibList = assetHardSoftLibDao.findQuery(query);
-        // TODO
-        return responseConverter.convert(assetHardSoftLibList, AssetHardSoftLibResponse.class);
-    }
-
-    @Override
     public List<AssetHardSoftLibResponse> queryHardSoftLibList(AssetHardSoftLibQuery query) throws Exception {
         List<AssetHardSoftLib> hardSoftLibList = assetHardSoftLibDao.queryHardSoftLibList(query);
         return responseConverter.convert(hardSoftLibList, AssetHardSoftLibResponse.class);
@@ -96,19 +76,6 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.queryHardSoftLibList(query));
     }
 
-    @Override
-    public AssetHardSoftLibResponse queryAssetHardSoftLibById(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
-        AssetHardSoftLibResponse assetHardSoftLibResponse = responseConverter
-                .convert(assetHardSoftLibDao.getById(queryCondition.getPrimaryKey()), AssetHardSoftLibResponse.class);
-        return assetHardSoftLibResponse;
-    }
-
-    @Override
-    public String deleteAssetHardSoftLibById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetHardSoftLibDao.deleteById(baseRequest.getStringId()).toString();
-    }
 
     @Override
     public PageResult<SoftwareResponse> getPageSoftWareList(AssetSoftwareQuery query) {

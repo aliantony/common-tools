@@ -6,16 +6,12 @@ import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
 import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
@@ -106,6 +102,21 @@ public class AssetHardSoftLibServiceImplTest {
         list.add("antiy");
         Mockito.when(assetHardSoftLibDao.pulldownSupplier(Mockito.any())).thenReturn(list);
         Assert.assertEquals("antiy", assetHardSoftLibService.pulldownSupplier(query).get(0));
+    }
+
+    @Test
+    public void queryHardSoftLibList() throws Exception {
+        AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
+        Mockito.when(assetHardSoftLibDao.queryAssetList(Mockito.any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals(ActionResponse.success(new PageResult<>()), assetHardSoftLibService.queryAssetList(query));
+    }
+
+    @Test
+    public void queryHardSoftLibCount() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        Mockito.when(assetHardSoftLibDao.queryAssetList(Mockito.any())).thenReturn(new ArrayList<>());
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(1);
+        Assert.assertEquals(1 + "", assetHardSoftLibService.queryHardSoftLibCount(query) + "");
     }
 
     @Test
