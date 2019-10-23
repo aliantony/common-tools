@@ -13,11 +13,14 @@ import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.powermock.api.mockito.PowerMockito;
@@ -53,6 +56,9 @@ public class AssetDepartmentServiceImplTest {
     @Mock
     private AssetUserDao                                                     assetUserDao;
 
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -86,6 +92,12 @@ public class AssetDepartmentServiceImplTest {
         Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(null);
+        ActionResponse response2 = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response2.getHead().getCode());
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(0);
+        ActionResponse response3 = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response3.getHead().getCode());
     }
 
     @Test
@@ -118,7 +130,15 @@ public class AssetDepartmentServiceImplTest {
         ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
 
+        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(0);
+        Assert.assertEquals("200", response.getHead().getCode());
+        request.setParentId("1");
+        expectedEx.expect(BusinessException.class);
+        expectedEx.expectMessage("上级部门不能为自身");
+        assetDepartmentService.updateAssetDepartment(request);
+
     }
+
 
     @Test
     public void findListAssetDepartmentTest() throws Exception {
@@ -215,6 +235,9 @@ public class AssetDepartmentServiceImplTest {
 
         AssetDepartmentNodeResponse actual = assetDepartmentService.findDepartmentNode();
         Assert.assertEquals(assetDepartmentNodeResponse.getStatus(), actual.getStatus());
+        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(null);
+        AssetDepartmentNodeResponse actual2 = assetDepartmentService.findDepartmentNode();
+        Assert.assertNull(actual2);
     }
 
     @Test
@@ -246,11 +269,18 @@ public class AssetDepartmentServiceImplTest {
         AssetUser assetUser = new AssetUser();
         assetUser.setId(1);
         List<AssetUser> resultUser = new ArrayList<>();
+
         Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
         Mockito.when(assetUserDao.findListAssetUser(Mockito.any())).thenReturn(resultUser);
         Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
         Assert.assertEquals("200", assetDepartmentService.deleteAllById(1).getHead().getCode());
+        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(0);
+        Assert.assertEquals(0, assetDepartmentService.deleteAllById(1).getBody());
+        resultUser.add(assetUser);
+        expectedEx.expectMessage("部门下存在关联用户，不能删除");
+        expectedEx.expect(BusinessException.class);
+        assetDepartmentService.deleteAllById(1);
     }
 
     public AssetDepartment getDepartment() {
@@ -272,5 +302,7 @@ public class AssetDepartmentServiceImplTest {
         Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
         Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
         Assert.assertEquals("200", assetDepartmentService.delete(1).getHead().getCode());
+        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(0);
+        Assert.assertEquals(0, assetDepartmentService.delete(1).getBody());
     }
 }
