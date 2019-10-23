@@ -17,29 +17,7 @@ import java.util.List;
  */
 public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib> {
 
-    /**
-     * 保存
-     *
-     * @param request
-     * @return
-     */
-    String saveAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception;
 
-    /**
-     * 修改
-     *
-     * @param request
-     * @return
-     */
-    String updateAssetHardSoftLib(AssetHardSoftLibRequest request) throws Exception;
-
-    /**
-     * 查询对象集合
-     *
-     * @param query
-     * @return
-     */
-    List<AssetHardSoftLibResponse> queryListAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception;
 
     /**
      * 分页查询
@@ -49,21 +27,7 @@ public interface IAssetHardSoftLibService extends IBaseService<AssetHardSoftLib>
      */
     PageResult<AssetHardSoftLibResponse> queryPageAssetHardSoftLib(AssetHardSoftLibQuery query) throws Exception;
 
-    /**
-     * 通过ID查询
-     *
-     * @param queryCondition
-     * @return
-     */
-    AssetHardSoftLibResponse queryAssetHardSoftLibById(QueryCondition queryCondition) throws Exception;
 
-    /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return
-     */
-    String deleteAssetHardSoftLibById(BaseRequest baseRequest) throws Exception;
 
     /**
      * 分页查询资产关联的软件信息列表
