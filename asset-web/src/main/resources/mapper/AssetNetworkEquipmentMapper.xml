@@ -353,7 +353,7 @@
         cpu_version = #{cpuVersion },
         cpu_size = #{cpuSize },
         ios = #{ios },
-
+        outer_ip = #{outerIp},
         subnet_mask = #{subnetMask },
         expect_bandwidth = #{expectBandwidth },
         register = #{register },
@@ -363,7 +363,7 @@
         gmt_modified = #{gmtModified },
         modify_user = #{modifyUser},
         memo = #{memo }
-        where id = #{id}
+        where asset_id = #{assetId}
     </update>
 
     <!-- 根据主键查询 -->
