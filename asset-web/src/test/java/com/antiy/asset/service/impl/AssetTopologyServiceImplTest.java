@@ -93,7 +93,7 @@ public class AssetTopologyServiceImplTest {
         Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
         SecurityContextHolder.setContext(securityContext);
         PowerMockito.mockStatic(LoginUserUtil.class);
-        loginUser =new LoginUser();
+        loginUser = new LoginUser();
         loginUser.setUsername("a");
         loginUser.setAreas(Arrays.asList(new SysArea()));
         PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
@@ -110,7 +110,6 @@ public class AssetTopologyServiceImplTest {
         ReflectionTestUtils.setField(assetTopologyService, "thirdLevelHeight", 1d);
 
     }
-
 
     @Test
     public void queryAssetNodeInfoTest() throws Exception {
@@ -197,7 +196,10 @@ public class AssetTopologyServiceImplTest {
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(generateAsset(), generateAsset()));
-        // when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        SysArea s=new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(),Mockito.any())).thenReturn(s);
+         when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
         AssetQuery query = new AssetQuery();
         query.setAreaIds(new String[] { "1", "2" });
         Assert.assertEquals(2, assetTopologyService.getTopologyList(query).getData().size());
@@ -237,7 +239,6 @@ public class AssetTopologyServiceImplTest {
         Assert.assertEquals("success", assetTopologyService.countTopologyCategory().getStatus());
     }
 
-
     public BaselineCategoryModelNodeResponse generateBaselineCategoryModalNode(String name, String id,
                                                                                String parentId) {
         BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse = new BaselineCategoryModelNodeResponse();
@@ -249,7 +250,7 @@ public class AssetTopologyServiceImplTest {
 
     @Test
     public void getAlarmTopologyTest() throws Exception {
-        // when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);
@@ -260,6 +261,9 @@ public class AssetTopologyServiceImplTest {
         asset2.setId(2);
         asset2.setAreaId("1");
         asset1.setAreaId("1");
+        SysArea s=new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(),Mockito.any())).thenReturn(s);
 
         // 情况1
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
