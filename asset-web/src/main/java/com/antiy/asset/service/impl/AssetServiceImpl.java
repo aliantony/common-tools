@@ -1166,7 +1166,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         final String[] admittanceResult = new String[1];
         String msg = "";
-        String reason = getChangeContent(assetOuterRequest);
+        final String[] reason = new String[1];
         final String[] uuid = new String[1];
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
@@ -1175,7 +1175,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
                     if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())
                         && AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-
+                        reason[0] = getChangeContent(assetOuterRequest);
                     }
                     List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
                     // 处理资产组关系
@@ -1376,7 +1376,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineWaitingConfigRequest.setConfigStatus(1);
                     baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
-                    baselineWaitingConfigRequest.setReason(reason);
+                    baselineWaitingConfigRequest.setReason(reason[0]);
                     baselineWaitingConfigRequest.setSource(2);
                     baselineWaitingConfigRequest.setFormData(formData);
                     baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
@@ -1412,18 +1412,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setContent(AssetFlowEnum.CHANGE_COMPLETE.getMsg());
                 }
             }
-            /* new Thread(new Runnable() {
-             * @Override public void run() { // 下发智甲 AssetExternalRequest assetExternalRequest =
-             * BeanConvert.convertBean(assetOuterRequest, AssetExternalRequest.class); try {
-             * assetExternalRequest.setAsset(BeanConvert
-             * .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class)); } catch
-             * (Exception e) { LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e); } //
-             * 获取资产上安装的软件信息 List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-             * .findInstalledSoft(assetOuterRequest.getAsset().getId()); assetExternalRequest
-             * .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-             * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-             * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
-             * }).start(); */
         }
         assetOperationRecordDao.insert(assetOperationRecord);
         return ActionResponse.success(msg);
