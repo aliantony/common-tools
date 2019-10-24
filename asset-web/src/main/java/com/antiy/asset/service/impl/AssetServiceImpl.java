@@ -38,7 +38,6 @@ import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
@@ -136,8 +135,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private OperatingSystemClient                                               operatingSystemClient;
     @Resource
     private IRedisService                                                       redisService;
-    @Resource
-    private AssetClient                                                         assetClient;
     @Resource
     private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource

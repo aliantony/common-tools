@@ -1,11 +1,10 @@
 package com.antiy.asset.intergration;
 
-import com.antiy.asset.vo.query.ConfigRegisterRequest;
+import java.util.List;
+
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.common.base.ActionResponse;
-
-import java.util.List;
 
 /**
  * @author: zhangbing
@@ -13,13 +12,6 @@ import java.util.List;
  * @description:
  */
 public interface BaseLineClient {
-
-    /**
-     * 硬件登记调用配置注册接口
-     * @param request
-     * @return
-     */
-    ActionResponse configRegister(List<ConfigRegisterRequest> request);
 
     /**
      * 硬件登记调用配置安全检查接口
@@ -36,27 +28,11 @@ public interface BaseLineClient {
     ActionResponse baselineCheckNoUUID(BaselineAssetRegisterRequest request);
 
     /**
-     * 硬件带入网到待验证，调用验证接口
-     * @param assetId
-     * @return
-     */
-    ActionResponse updateAssetVerify(String assetId);
-
-    /**
-     * 入网下发基准
-     * @param assetId
-     * @return
-     */
-    ActionResponse distributeBaseline(String assetId);
-
-    /**
      * 入网下发基准
      * @param assetId
      * @return
      */
     ActionResponse scan(String assetId);
-
-
 
     /**
      * 配置启动流程
