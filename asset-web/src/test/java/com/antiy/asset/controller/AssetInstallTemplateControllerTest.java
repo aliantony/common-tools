@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.convert.TemplateConvert;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
@@ -14,6 +15,7 @@ import com.antiy.common.utils.JsonUtil;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -54,6 +56,8 @@ public class AssetInstallTemplateControllerTest {
     private IAssetHardSoftLibService iAssetHardSoftLibService;
     @Mock
     private IAssetInstallTemplateCheckService iAssetInstallTemplateCheckService;
+    @Mock
+    private TemplateConvert templateConvert;
     @Mock
     private AssetInstallTemplateDao assetInstallTemplateDao;
 
@@ -212,7 +216,9 @@ public class AssetInstallTemplateControllerTest {
 
     @Test
     public void queryOsListByAssetIdTest() throws Exception {
-        Mockito.doAnswer(invocation -> new ArrayList<>()).when(assetInstallTemplateDao).findByAssetIds(Mockito.anyList());
+        List list=new ArrayList();
+        Mockito.doAnswer(invocation ->list).when(assetInstallTemplateDao).findByAssetIds(Mockito.anyList());
+        Mockito.doAnswer(invocation -> list).when(templateConvert).convert(Mockito.anyList(),Mockito.any());
         postResultActions("/query/assetList", "{}").andExpect(jsonPath("$.body").value(Matchers.hasSize(0)));
     }
 
