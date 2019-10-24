@@ -306,7 +306,7 @@
         <trim prefix="SET" suffixOverrides=",">
                 new_version = #{newVersion }
         </trim>
-        where id = #{id}
+        where asset_id = #{assetId}
     </update>
 
     <!-- 根据主键查询 -->

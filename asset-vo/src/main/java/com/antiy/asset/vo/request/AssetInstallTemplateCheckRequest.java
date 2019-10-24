@@ -39,6 +39,7 @@ public class AssetInstallTemplateCheckRequest extends BaseRequest implements Obj
      * 审核意见
      */
     @ApiModelProperty("审核意见")
+    @Size(max = 300, message = "字符长度不能超过300")
     private String advice;
     /**
      * 是否通过：0-拒绝，1-通过

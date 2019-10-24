@@ -717,69 +717,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
-    //
-    // @Override
-    // public void implementationFile(ProcessTemplateRequest baseRequest) throws Exception {
-    //
-    // // 根据时间戳创建文件夹，防止产生冲突
-    // Long currentTime = System.currentTimeMillis();
-    // // 创建临时文件夹
-    // String dictionary = "/temp" + currentTime + "/模板" + currentTime;
-    // File dictionaryFile = new File(dictionary);
-    // if (!dictionaryFile.exists()) {
-    // logger.info(dictionaryFile.getName() + "目录创建" + isSuccess(dictionaryFile.mkdirs()));
-    // }
-    // File comFile = null;
-    //
-    // // 需要下载装机模板
-    // if (CollectionUtils.isNotEmpty(baseRequest.getComIds())) {
-    // comFile = new File(dictionaryFile, "装机模板列表.xls");
-    // List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao.findByAssetIds(baseRequest.getComIds());
-    // // 下载装机模板列表
-    // HSSFWorkbook hssfWorkbook = excelDownloadUtil.getHSSFWorkbook("装机模板列表", byAssetIds);
-    // FileOutputStream fileOutputStream = new FileOutputStream(comFile);
-    // hssfWorkbook.write(fileOutputStream);
-    // CloseUtils.close(fileOutputStream);
-    // }
-    //
-    // // List<AssetResponse> list = this
-    // // .queryAssetByIds(DataTypeUtils.stringArrayToIntegerArray(baseRequest.getIds().toArray(new String[] {})));
-    // List<AssetEntity> assetEntities1 = getAssetEntities(baseRequest);
-    //
-    // File assetFile = new File(dictionaryFile, "资产列表.xls");
-    // // 下载资产列表
-    // HSSFWorkbook hssfWorkbook1 = excelDownloadUtil.getHSSFWorkbook("资产列表", assetEntities1);
-    //
-    // FileOutputStream fileOutputStream1 = new FileOutputStream(assetFile);
-    // hssfWorkbook1.write(fileOutputStream1);
-    // fileOutputStream1.close();
-    // CloseUtils.close(fileOutputStream1);
-    // // 入网流程不需要基准模板
-    // // if (!baseRequest.isFlag()) {
-    // // File template = baseLineClient.getTemplate (baseRequest.getIds ());
-    // // }
-    //
-    // // 创造模板文件
-    //
-    // List<File> fileList = new ArrayList<>();
-    // fileList.add(assetFile);
-    // if (!Objects.isNull(comFile)) {
-    // fileList.add(comFile);
-    // }
-    //
-    // // 创造压缩文件
-    // File zip = new File("/temp" + currentTime + "/模板.zip");
-    //
-    // logger.info(zip.getName() + "文件创建" + isSuccess(zip.createNewFile()));
-    // // 压缩文件为zip压缩包
-    // File[] files = fileList.toArray(new File[] {});
-    // ZipUtil.compress(zip, files);
-    // // 将文件流发送到客户端
-    // sendStreamToClient(zip);
-    // // 记录临时文件删除是否成功
-    // loggerIsDelete(zip);
-    // deleteTemp(dictionaryFile, files);
-    // }
+
+
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
@@ -859,28 +798,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    // 处理品类型号使其均为二级品类型号
-    private void processCategoryToSecondCategory(List<AssetResponse> assetResponseList,
-                                                 Map<String, String> categoryMap) {
-        // 作为缓存使用，提高效率
-        Map<String, String> cache = new HashMap<>();
-        // List<AssetCategoryModel> all = iAssetCategoryModelService.getAll();
-        // Map<String, String> secondCategoryMap = iAssetCategoryModelService.getSecondCategoryMap();
-        // for (AssetResponse assetResponse : assetResponseList) {
-        // String categoryModel = assetResponse.getCategoryModel();
-        // String cacheId = cache.get(categoryModel);
-        // if (Objects.nonNull(cacheId)) {
-        // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(cacheId)));
-        // } else {
-        // String second = iAssetCategoryModelService.recursionSearchParentCategory(categoryModel, all,
-        // categoryMap.keySet());
-        // if (Objects.nonNull(second)) {
-        // assetResponse.setCategoryType(new CategoryType(secondCategoryMap.get(second)));
-        // cache.put(categoryModel, second);
-        // }
-        // }
-        // }
-    }
 
     @Override
     @Transactional
@@ -1166,7 +1083,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         final String[] admittanceResult = new String[1];
         String msg = "";
-        String reason = getChangeContent(assetOuterRequest);
+        final String[] reason = new String[1];
         final String[] uuid = new String[1];
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
@@ -1175,7 +1092,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
                     if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())
                         && AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-
+                        reason[0] = getChangeContent(assetOuterRequest);
                     }
                     List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
                     // 处理资产组关系
@@ -1376,7 +1293,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineWaitingConfigRequest.setConfigStatus(1);
                     baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
-                    baselineWaitingConfigRequest.setReason(reason);
+                    baselineWaitingConfigRequest.setReason(reason[0]);
                     baselineWaitingConfigRequest.setSource(2);
                     baselineWaitingConfigRequest.setFormData(formData);
                     baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
@@ -1412,18 +1329,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setContent(AssetFlowEnum.CHANGE_COMPLETE.getMsg());
                 }
             }
-            /* new Thread(new Runnable() {
-             * @Override public void run() { // 下发智甲 AssetExternalRequest assetExternalRequest =
-             * BeanConvert.convertBean(assetOuterRequest, AssetExternalRequest.class); try {
-             * assetExternalRequest.setAsset(BeanConvert
-             * .convertBean(assetDao.getById(assetOuterRequest.getAsset().getId()), AssetRequest.class)); } catch
-             * (Exception e) { LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}", e); } //
-             * 获取资产上安装的软件信息 List<AssetSoftware> assetSoftwareRelationList = assetSoftwareRelationDao
-             * .findInstalledSoft(assetOuterRequest.getAsset().getId()); assetExternalRequest
-             * .setSoftware(BeanConvert.convert(assetSoftwareRelationList, AssetSoftwareRequest.class));
-             * List<AssetExternalRequest> assetExternalRequests = new ArrayList<>();
-             * assetExternalRequests.add(assetExternalRequest); assetClient.issueAssetData(assetExternalRequests); }
-             * }).start(); */
         }
         assetOperationRecordDao.insert(assetOperationRecord);
         return ActionResponse.success(msg);
@@ -3036,24 +2941,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<String> getAllSupplierofSafetyEquipment(String supplier) {
-        List<String> supplierList = assetDao.getAllSupplierofSafetyEquipment(supplier);
-        return supplierList;
-    }
-
-    @Override
-    public List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name) {
-        List<String> nameList = assetDao.getAllNameofSafetyEquipmentBySupplier(supplier, name);
-        return nameList;
-    }
-
-    @Override
-    public List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version) {
-        List<String> versionList = assetDao.getAllVersionofSafetyEquipment(supplier, safetyEquipmentName, version);
-        return versionList;
-    }
-
-    @Override
     public List<AssetEntity> assetsTemplate(ProcessTemplateRequest request) throws Exception {
         return getAssetEntities(request);
 
@@ -3193,49 +3080,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
 
-    /**
-     * 判断操作系统是否存在
-     *
-     * @return
-     */
-    private Boolean checkOperatingSystem(String checkStr) {
-        List<BaselineCategoryModelResponse> linkedHashMapList = operatingSystemClient.getInvokeOperatingSystem();
-        for (BaselineCategoryModelResponse baselineCategoryModelResponse : linkedHashMapList) {
-            if (Objects.equals(baselineCategoryModelResponse.getName(), checkStr)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    /**
-     * 通过ID判断操作系统是否存在且是叶子节点
-     *
-     * @return
-     */
-    private boolean checkOperatingSystemById(String id) {
-        List<BaselineCategoryModelNodeResponse> baselineCategoryModelNodeResponse = operatingSystemClient
-            .getInvokeOperatingSystemTree();
-        Set<String> result = new HashSet<>();
-        if (CollectionUtils.isNotEmpty(baselineCategoryModelNodeResponse)) {
-            for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse1 : baselineCategoryModelNodeResponse) {
-                operatingSystemRecursion(result, baselineCategoryModelNodeResponse1);
-            }
-        }
-        return result.contains(id);
-    }
 
-    private void operatingSystemRecursion(Set<String> result, BaselineCategoryModelNodeResponse response) {
-        if (response != null) {
-            if (CollectionUtils.isEmpty(response.getChildrenNode())) {
-                result.add(aesEncoder.decode(response.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
-            } else {
-                for (BaselineCategoryModelNodeResponse baselineCategoryModelNodeResponse : response.getChildrenNode()) {
-                    operatingSystemRecursion(result, baselineCategoryModelNodeResponse);
-                }
-            }
-        }
-    }
 
     @Override
     public AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) {

@@ -348,7 +348,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+        where asset_id = #{assetId}
     </update>
 
     <!-- 根据主键查询 -->

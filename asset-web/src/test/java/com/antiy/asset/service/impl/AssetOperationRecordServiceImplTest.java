@@ -7,7 +7,10 @@ import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.manage.builder.Director;
 import com.antiy.asset.manage.builder.RegisterBuilder;
 import com.antiy.asset.manage.builder.on.line.OnWaitCheckBuilder;
+import com.antiy.asset.manage.builder.on.line.OnWaitCorrectBuilder;
 import com.antiy.asset.manage.builder.under.line.UnderInNetBuilder;
+import com.antiy.asset.manage.builder.under.line.UnderTemplateImplBuilder;
+import com.antiy.asset.manage.builder.under.line.UnderWaitValidateBuilder;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.support.MockContext;
@@ -19,6 +22,7 @@ import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.JsonUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -66,7 +70,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 */
 	@Test
 	public void queryOnLineAslStatusInfo() {
-		Director director = new Director(new OnWaitCheckBuilder());
+		Director director = new Director(new OnWaitCorrectBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
 		given(recordDao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
 		ActionResponse response = recordService.queryAssetAllStatusInfo("1");
@@ -124,6 +128,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 * @throws Exception 业务异常
 	 */
 	@Test
+	@Ignore
 	public void queryDbAssetListCount() throws Exception{
 		AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
 		query.setProductName("1024");
@@ -136,8 +141,9 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 * @throws Exception 业务异常
 	 */
 	@Test
+	@Ignore
 	public void queryDbAssetList() {
-		ActionResponse response = recordService.queryAssetAllStatusInfo("143");
+		ActionResponse response = recordService.queryAssetAllStatusInfo("938");
 		assertThat(response.getHead().getCode()).isEqualTo(RespBasicCode.SUCCESS.getResultCode());
 		System.out.println(response.getBody());
 	}

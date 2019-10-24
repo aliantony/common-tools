@@ -12,7 +12,7 @@ import java.util.List;
 public class UnderWaitValidateBuilder extends Builder {
 	@Override
 	public void builder() {
-		List<AssetStatusDetail> res = next(new UnderTemplateImplBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_VALIDATE, true, true);
+		List<AssetStatusDetail> res = next(new UnderTemplateImplBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_VALIDATE, true, true,"结果验证。验证情况：");
 		products.setProducts(res);
 	}
 }
