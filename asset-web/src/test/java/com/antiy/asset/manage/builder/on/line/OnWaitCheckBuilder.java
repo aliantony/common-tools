@@ -14,7 +14,7 @@ public class OnWaitCheckBuilder extends Builder {
 
 	@Override
 	public void builder() {
-		List<AssetStatusDetail> res = next(new RegisterBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_CHECK,true,true);
+		List<AssetStatusDetail> res = next(new RegisterBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_CHECK,true,true,"安全检查。验证情况：");
 		products.setProducts(res);
 
 	}

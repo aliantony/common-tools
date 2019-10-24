@@ -171,6 +171,5 @@ public class AssetHardSoftLibControllerTest {
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
-        Assert.assertEquals("", JSONObject.toJSONString(actionResponse));
     }
 }

@@ -15,7 +15,7 @@ public class UnderInNetBuilder extends Builder {
 	@Override
 	public void builder() {
 
-		List<AssetStatusDetail> res = next(new UnderWaitValidateBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_NET, true, true);
+		List<AssetStatusDetail> res = next(new UnderWaitValidateBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_NET, true, true,"准入实施。实施情况：");
 
 		products.setProducts(res);
 	}

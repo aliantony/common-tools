@@ -1,6 +1,8 @@
 package com.antiy.asset.entity;
 
 
+import com.antiy.asset.vo.enums.AssetProcessResultEnum;
+
 /**
  * @author zhouye
  * 资产状态动态详细描述
@@ -18,8 +20,11 @@ public class AssetStatusDetail extends AssetStatusNote {
 	/**
 	 * 操作结果 通过-1 不通过-0
 	 */
-	private String processResult;
-
+	private AssetProcessResultEnum processResult;
+	/**
+	 * 资产动态记录信息
+	 */
+	private String content;
 	/**
 	 * 创建时间
 	 */
@@ -35,15 +40,21 @@ public class AssetStatusDetail extends AssetStatusNote {
 		this.operateUserId = operateUserId;
 	}
 
-	public String getProcessResult() {
+	public AssetProcessResultEnum getProcessResult() {
 		return processResult;
 	}
 
-	public void setProcessResult(String processResult) {
+	public void setProcessResult(AssetProcessResultEnum processResult) {
 		this.processResult = processResult;
 	}
 
+	public String getContent() {
+		return content;
+	}
 
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	public Long getGmtCreate() {
 		return gmtCreate;
@@ -66,7 +77,8 @@ public class AssetStatusDetail extends AssetStatusNote {
 		return super.toString()+"AssetStatusDetail{" +
 				"operateUserId=" + operateUserId +
 				", operateUserName='" + operateUserName + '\'' +
-				", processResult='" + processResult + '\'' +
+				", processResult=" + processResult +
+				", content='" + content + '\'' +
 				", gmtCreate=" + gmtCreate +
 				'}';
 	}

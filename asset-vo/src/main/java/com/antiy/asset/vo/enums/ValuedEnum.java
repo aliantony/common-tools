@@ -8,5 +8,5 @@ public interface ValuedEnum {
      * 获取枚举值
      * @return 枚举值
      */
-    int getValue();
+    Integer getValue();
 }

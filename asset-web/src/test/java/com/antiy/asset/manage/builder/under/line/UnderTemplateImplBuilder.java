@@ -14,7 +14,7 @@ import java.util.List;
 public class UnderTemplateImplBuilder extends Builder {
 	@Override
 	public void builder() {
-		List<AssetStatusDetail> res = next(new RegisterBuilder(), AssetChangeDetailEnum.WAIT_TEMPLATE_IMPL, true, true);
+		List<AssetStatusDetail> res = next(new RegisterBuilder(), AssetChangeDetailEnum.WAIT_TEMPLATE_IMPL, true, true,"模板实施。实施情况：");
 		products.setProducts(res);
 	}
 }
