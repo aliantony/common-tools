@@ -1,11 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.util.ExcelUtils;
@@ -28,10 +31,15 @@ import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.util.ZipUtil;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
+import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -58,6 +66,10 @@ public class AssetSoftwareRelationServiceImplTest {
     private AssetDao                         assetDao;
     @Mock
     private CommandClientImpl                commandClient;
+    @Mock
+    private AesEncoder                       aesEncoder;
+    @Mock
+    private BaseLineClient                   baseLineClient;
     @InjectMocks
     private AssetSoftwareRelationServiceImpl softwareRelationService;
 
@@ -85,7 +97,7 @@ public class AssetSoftwareRelationServiceImplTest {
     }
 
     @Test
-    public void queryInstalledList() throws Exception {
+    public void queryInstalledList() {
         QueryCondition query = new QueryCondition();
         query.setPrimaryKey("1");
         softwareRelationService.queryInstalledList(query);
@@ -105,20 +117,28 @@ public class AssetSoftwareRelationServiceImplTest {
 
         when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(3);
         softwareRelationService.queryInstallableList(installQuery);
-
+        String os = "1";
+        when(assetSoftwareRelationDao.queryOs(installQuery)).thenReturn(os);
         List<Long> softwareIds = new ArrayList<>();
         softwareIds.add(1L);
         List<String> s = new ArrayList<>();
         s.add("1");
         when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(2);
-        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, anyString()))
-            .thenReturn(1);
+        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, os)).thenReturn(1);
+        softwareRelationService.queryInstallableList(installQuery);
+
+        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, os)).thenReturn(0);
         softwareRelationService.queryInstallableList(installQuery);
     }
 
     @Test
     public void batchRelation() {
         AssetSoftwareReportRequest softwareReportRequest = new AssetSoftwareReportRequest();
+        ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
+        Map formData = new HashMap();
+        formData.put("baselineConfigUserId", "1");
+        manualStartActivityRequest.setFormData(formData);
+        softwareReportRequest.setManualStartActivityRequest(manualStartActivityRequest);
         List<Long> softIds = new ArrayList<>();
         softIds.add(1L);
         List<String> assetIds = new ArrayList<>();
@@ -129,9 +149,27 @@ public class AssetSoftwareRelationServiceImplTest {
         LoginUser loginUser = mock(LoginUser.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         when(loginUser.getId()).thenReturn(1);
-        softwareRelationService.batchRelation(softwareReportRequest);
+        when(aesEncoder.decode(
+            (String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
+            LoginUserUtil.getLoginUser().getUsername())).thenReturn("1");
+        when(assetDao.queryInstallType("1")).thenReturn(null);
+        try {
+            softwareRelationService.batchRelation(softwareReportRequest);
+        } catch (BusinessException e) {
+        }
 
+        when(assetDao.queryInstallType("1")).thenReturn(1);
         softwareReportRequest.setSoftId(null);
-        softwareRelationService.batchRelation(softwareReportRequest);
+        when(baseLineClient.baselineConfig(any())).thenReturn(new ActionResponse());
+        try {
+            softwareRelationService.batchRelation(softwareReportRequest);
+        } catch (BusinessException e) {
+        }
+
+        when(baseLineClient.baselineConfig(any())).thenReturn(new ActionResponse(RespBasicCode.SUCCESS));
+        try {
+            softwareRelationService.batchRelation(softwareReportRequest);
+        } catch (BusinessException e) {
+        }
     }
 }

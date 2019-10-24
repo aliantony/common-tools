@@ -33,32 +33,6 @@ public class AssetAssemblyController {
     public IAssetAssemblyService iAssetAssemblyService;
 
     /**
-     * 保存
-     *
-     * @param assetAssemblyRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetAssembly") @RequestBody AssetAssemblyRequest assetAssemblyRequest) throws Exception {
-        return ActionResponse.success(iAssetAssemblyService.saveAssetAssembly(assetAssemblyRequest));
-    }
-
-    /**
-     * 修改
-     *
-     * @param assetAssemblyRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetAssembly") AssetAssemblyRequest assetAssemblyRequest) throws Exception {
-        return ActionResponse.success(iAssetAssemblyService.updateAssetAssembly(assetAssemblyRequest));
-    }
-
-    /**
      * 批量查询
      *
      * @param assetAssemblyQuery
@@ -71,29 +45,5 @@ public class AssetAssemblyController {
         return ActionResponse.success(iAssetAssemblyService.queryPageAssetAssembly(assetAssemblyQuery));
     }
 
-    /**
-     * 通过ID查询
-     *
-     * @param queryCondition
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAssemblyResponse.class), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
-        return ActionResponse.success(iAssetAssemblyService.queryAssetAssemblyById(queryCondition));
-    }
 
-    /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetAssemblyService.deleteAssetAssemblyById(baseRequest));
-    }
 }

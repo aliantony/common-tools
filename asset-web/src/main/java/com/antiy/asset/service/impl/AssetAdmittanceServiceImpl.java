@@ -1,14 +1,11 @@
 package com.antiy.asset.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +18,6 @@ import com.antiy.asset.service.AssetAdmittanceService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.BaselineCategoryModelResponse;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
@@ -83,7 +79,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
         // 是否资产组关联资产查询
-        if (null != query.getAssociateGroup()) {
+        if (query.getAssociateGroup()!=null &&query.getAssetGroupQuery()) {
             ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
             List<String> associateAssetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(query.getGroupId());
             if (CollectionUtils.isNotEmpty(associateAssetIdList)) {

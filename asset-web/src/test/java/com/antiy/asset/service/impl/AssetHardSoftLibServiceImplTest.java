@@ -4,20 +4,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.vo.query.AssetPulldownQuery;
-import com.antiy.asset.vo.query.AssetSoftwareQuery;
-import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.enums.AssetTypeEnum;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
-import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
-import com.antiy.asset.vo.response.SoftwareResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,10 +36,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.antiy.common.utils.LoginUserUtil.getLoginUser;
 
@@ -59,6 +53,8 @@ public class AssetHardSoftLibServiceImplTest {
     private BaseConverter<AssetHardSoftLibRequest, AssetHardSoftLib>  requestConverter;
     @Spy
     private BaseConverter<AssetHardSoftLib, AssetHardSoftLibResponse> responseConverter;
+    @Mock
+    private IAssetInstallTemplateService                              iAssetInstallTemplateService;
     @Mock
     private AssetSoftwareRelationDao                                  assetSoftwareRelationDao;
     @InjectMocks
@@ -109,6 +105,59 @@ public class AssetHardSoftLibServiceImplTest {
     }
 
     @Test
+    public void queryHardSoftLibList() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibList(Mockito.any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals(JSONObject.toJSONString(new ArrayList<>()),
+            JSONObject.toJSONString(assetHardSoftLibService.queryHardSoftLibList(query)));
+    }
+
+    @Test
+    public void queryPageAssetHardSoftLib() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setBusinessId("1");
+        query.setSourceType("a");
+        query.setAssetType(AssetTypeEnum.HARD);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(0);
+        Assert.assertEquals(
+            JSONObject
+                .toJSONString(new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList())),
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+    }
+
+    @Test
+    public void queryPageAssetHardSoftLib1() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setBusinessId("1");
+        query.setSourceType("a");
+        query.setAssetType(AssetTypeEnum.HARD);
+
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(1);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":1,\"totalRecords\":1}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+    }
+
+    @Test
+    public void queryPageAssetHardSoftLib2() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setBusinessId("1");
+        query.setSourceType("a");
+        query.setAssetType(AssetTypeEnum.HARD);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(11);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":2,\"totalRecords\":11}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+
+    }
+
+    @Test
+    public void queryHardSoftLibCount() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        Mockito.when(assetHardSoftLibDao.queryAssetList(Mockito.any())).thenReturn(new ArrayList<>());
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(1);
+        Assert.assertEquals(1 + "", assetHardSoftLibService.queryHardSoftLibCount(query) + "");
+    }
+
+    @Test
     public void pulldownName() throws Exception {
         AssetPulldownQuery query = new AssetPulldownQuery();
         List<String> list = new ArrayList<>();
@@ -154,5 +203,69 @@ public class AssetHardSoftLibServiceImplTest {
         List<SoftwareResponse> result = new ArrayList<>();
         Mockito.when(assetSoftwareRelationDao.getSimpleSoftwareByAssetId(query)).thenReturn(result);
         assetHardSoftLibService.getPageSoftWareList(query);
+    }
+
+    @Test
+    public void queryPageSoft1() {
+        AssetTemplateSoftwareRelationQuery query = new AssetTemplateSoftwareRelationQuery();
+        query.setOperationSystem("a");
+        AssetInstallTemplateOsResponse assetInstallTemplateOsResponse = new AssetInstallTemplateOsResponse();
+        assetInstallTemplateOsResponse.setOsName("os_x_server");
+        Mockito.when(iAssetInstallTemplateService.queryOs(Mockito.anyString()))
+            .thenReturn(Arrays.asList(assetInstallTemplateOsResponse, assetInstallTemplateOsResponse));
+        Mockito.when(assetHardSoftLibDao.queryCountSoftWares(Mockito.any())).thenReturn(0);
+
+        Assert.assertEquals(
+            JSONObject
+                .toJSONString(new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList())),
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageSoft(query)));
+    }
+
+    @Test
+    public void queryPageSoft2() {
+        AssetTemplateSoftwareRelationQuery query = new AssetTemplateSoftwareRelationQuery();
+        query.setOperationSystem("a");
+        AssetInstallTemplateOsResponse assetInstallTemplateOsResponse = new AssetInstallTemplateOsResponse();
+        assetInstallTemplateOsResponse.setOsName("os_x_server");
+        Mockito.when(iAssetInstallTemplateService.queryOs(Mockito.anyString()))
+            .thenReturn(Arrays.asList(assetInstallTemplateOsResponse, assetInstallTemplateOsResponse));
+        Mockito.when(assetHardSoftLibDao.queryCountSoftWares(Mockito.any())).thenReturn(1);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":1,\"totalRecords\":1}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageSoft(query)));
+    }
+
+    @Test
+    public void queryPageSoft3() {
+        AssetTemplateSoftwareRelationQuery query = new AssetTemplateSoftwareRelationQuery();
+        query.setOperationSystem("a");
+        AssetInstallTemplateOsResponse assetInstallTemplateOsResponse = new AssetInstallTemplateOsResponse();
+        assetInstallTemplateOsResponse.setOsName("os_x_server");
+        Mockito.when(iAssetInstallTemplateService.queryOs(Mockito.anyString()))
+            .thenReturn(Arrays.asList(assetInstallTemplateOsResponse, assetInstallTemplateOsResponse));
+        Mockito.when(assetHardSoftLibDao.queryCountSoftWares(Mockito.any())).thenReturn(10);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":1,\"totalRecords\":10}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageSoft(query)));
+    }
+
+    @Test
+    public void querySoftsRelations() {
+        Mockito.when(assetHardSoftLibDao.querySoftsRelations(Mockito.anyString()))
+            .thenReturn(Arrays.asList(new AssetHardSoftLib()));
+        Assert.assertEquals("[{}]", JSONObject.toJSONString(assetHardSoftLibService.querySoftsRelations("1")));
+    }
+
+    @Test
+    public void querySoftsRelations1() {
+        Assert.assertEquals("[]", JSONObject.toJSONString(assetHardSoftLibService.querySoftsRelations("1")));
+    }
+
+    @Test
+    public void queryAssetList() {
+        AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
+        Mockito.when(assetHardSoftLibDao.queryAssetListCount(query)).thenReturn(1);
+        Mockito.when(assetHardSoftLibDao.queryAssetList(query)).thenReturn(Arrays.asList(new AssetHardSoftLib()));
+        Assert.assertEquals(
+            "{\"body\":{\"currentPage\":1,\"items\":[{}],\"pageSize\":10,\"totalPages\":1,\"totalRecords\":1},\"head\":{\"code\":\"200\",\"result\":\"成功\"}}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryAssetList(query)));
     }
 }

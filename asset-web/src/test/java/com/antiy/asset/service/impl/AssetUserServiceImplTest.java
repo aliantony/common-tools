@@ -130,8 +130,12 @@ public class AssetUserServiceImplTest {
         Mockito.when(redisUtil.getObject("system:SysArea:1", SysArea.class)).thenReturn(sysArea);
         Mockito.when(responseConverter.convert(assetUserList, AssetUserResponse.class))
                 .thenReturn(assetUserResponseList);
-        List<AssetUserResponse> actual = assetUserService.findListAssetUser(query);
-        Assert.assertTrue(assetUserResponseList.size() == actual.size());
+        assetUserService.findListAssetUser(query);
+
+        Mockito.when(redisUtil.getObject("system:SysArea:1", SysArea.class)).thenReturn(null);
+        Mockito.when(responseConverter.convert(assetUserList, AssetUserResponse.class))
+            .thenReturn(assetUserResponseList);
+        assetUserService.findListAssetUser(query);
     }
 
     /**
@@ -240,15 +244,6 @@ public class AssetUserServiceImplTest {
         Assert.assertTrue(assetUserList.size() == actual.size());
     }
 
-    @Test
-    public void importUserTest() {
-        List<AssetUser> assetUserList = new ArrayList<>();
-        AssetUser assetUser = new AssetUser();
-        assetUser.setName("test");
-        assetUserList.add(assetUser);
-        assetUserService.importUser(assetUserList);
-        Mockito.verify(assetUserDao).insertBatch(Mockito.any());
-    }
 
     @Test
     public void deleteUserByIdTest() throws Exception {

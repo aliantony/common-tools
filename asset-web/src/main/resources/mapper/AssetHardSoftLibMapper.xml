@@ -674,8 +674,25 @@
         <trim prefix="where" prefixOverrides="And">
             And type='a'
             and status=1
-            and POSITION(#{operationSystem} in soft_platform)
+            <choose>
+                <when test="operationSystem.indexOf('-')>=0 or operationSystem =='linux'">
+                    and  POSITION(#{operationSystem} in soft_platform)
+                </when>
+                <otherwise>
+                    and   match(soft_platform) against (concat('+',#{operationSystem},'*') in boolean mode)
+                </otherwise>
+            </choose>
             and is_storage=1
+            <if test="removeSoftIds != null and removeSoftIds.size>0">
+                and id not in
+                <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
+                    #{softId}
+                </foreach>
+
+            </if>
+        </trim>
+        ) t2 on t2.id=t1.id
+        <trim prefix="where" prefixOverrides="And">
             <if test=" manufacturer != null and manufacturer != ''">
                 and supplier like CONCAT('%', replace(replace(REPLACE
                 (#{manufacturer},'\\','\\\\'),'%','\%'),'_','\_'),
@@ -685,19 +702,11 @@
                 and product_name like CONCAT('%', replace(replace(REPLACE
                 (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
-            <if test="removeSoftIds != null and removeSoftIds.size>0">
-                and id not in
-                <foreach collection="removeSoftIds" item="softId" separator="," open="(" close=")">
-                    #{softId}
-                </foreach>
 
-            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
-        ) t2 on t2.id=t1.id
-
 
     </select>
     <select id="querySoftsRelations" resultMap="BaseResultMap">

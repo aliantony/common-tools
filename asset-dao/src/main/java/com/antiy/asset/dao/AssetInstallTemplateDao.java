@@ -101,10 +101,13 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     Integer queryBaselineTemplateType(ObjectQuery query);
 
     Integer CountFilterBlackItemTemplate(ObjectQuery query);
+
     Integer CountWhiteItemTemplate(ObjectQuery query);
 
     List<AssetInstallTemplateResponse> queryTemplateInfo(ObjectQuery query);
+
     List<AssetInstallTemplateResponse> FilterBlackItemTemplate(ObjectQuery query);
+
     List<AssetInstallTemplateResponse> findWhiteItemTemplate(ObjectQuery query);
 
 

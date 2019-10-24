@@ -44,31 +44,6 @@ public class AssetHardSoftLibController {
     @Resource
     public IAssetHardSoftLibService iAssetHardSoftLibService;
 
-    /**
-     * 保存
-     *
-     * @param assetHardSoftLibRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetHardSoftLib") @RequestBody AssetHardSoftLibRequest assetHardSoftLibRequest) throws Exception {
-        return ActionResponse.success(iAssetHardSoftLibService.saveAssetHardSoftLib(assetHardSoftLibRequest));
-    }
-
-    /**
-     * 修改
-     *
-     * @param assetHardSoftLibRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
-    @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetHardSoftLib") AssetHardSoftLibRequest assetHardSoftLibRequest) throws Exception {
-        return ActionResponse.success(iAssetHardSoftLibService.updateAssetHardSoftLib(assetHardSoftLibRequest));
-    }
 
     /**
      * 批量查询
@@ -83,31 +58,6 @@ public class AssetHardSoftLibController {
         return ActionResponse.success(iAssetHardSoftLibService.queryPageAssetHardSoftLib(assetHardSoftLibQuery));
     }
 
-    /**
-     * 通过ID查询
-     *
-     * @param queryCondition
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class),})
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
-        return ActionResponse.success(iAssetHardSoftLibService.queryAssetHardSoftLibById(queryCondition));
-    }
-
-    /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetHardSoftLibService.deleteAssetHardSoftLibById(baseRequest));
-    }
 
     @ApiOperation(value = "分页查询资产关联的软件信息列表", notes = "必传资产ID")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = SoftwareResponse.class, responseContainer = "actionResponse")})

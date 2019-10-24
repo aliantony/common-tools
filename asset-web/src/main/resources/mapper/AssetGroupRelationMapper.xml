@@ -387,10 +387,6 @@
         select count(1) from asset_group_relation where asset_group_id = #{primaryKey} and status =1
     </select>
 
-    <select id="listRelationByAssetId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select `id`,`asset_id`,`asset_group_id` from asset_group_relation where asset_id = #{assetId} and status =1
-    </select>
-
     <delete id="deleteBatch" parameterType="java.util.List">
         delete from
         <include refid="Table_Name"></include>

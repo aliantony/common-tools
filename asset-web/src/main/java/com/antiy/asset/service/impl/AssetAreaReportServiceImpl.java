@@ -185,9 +185,14 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         return assetReportResponse;
     }
 
+    /**
+     * 设置顶级区域的名称???
+     * @param reportRequest
+     */
     private void dealArea(ReportQueryRequest reportRequest) {
         if (!Objects.isNull(reportRequest)) {
             List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
+            // 参数的所有区域的父节点ID都不和顶级区域Id相等
             if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() >= 1
                 && assetAreaReportRequestList.stream()
                     .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId())).collect(Collectors.toList())
@@ -195,6 +200,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
                 assetAreaReportRequest.setChildrenAradIds(Lists.newArrayList());
                 assetAreaReportRequest.setParentAreaId(reportRequest.getTopAreaId());
+                // 顶级区域名称为空,设置顶级区域的名称
                 if (StringUtils.isBlank(reportRequest.getTopAreaName())) {
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                         DataTypeUtils.stringToInteger(reportRequest.getTopAreaId()));
@@ -353,6 +359,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                 return assetAreaReportRequest.getParentAreaName();
             }
         }
+        // 请求区域的Id不存在于top5的Id
         return "";
     }
 

@@ -1,12 +1,21 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.convert.TemplateConvert;
+import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.service.IAssetHardSoftLibService;
+import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
+import com.antiy.asset.vo.response.AssetInstallTemplateCheckResponse;
 import com.antiy.asset.vo.response.AssetInstallTemplateResponse;
+import com.antiy.asset.vo.response.AssetTemplateRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.JsonUtil;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,7 +30,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,6 +54,13 @@ public class AssetInstallTemplateControllerTest {
     private final String URL_PREFIX = "/api/v1/asset/assetinstalltemplate";
     @Mock
     private IAssetHardSoftLibService iAssetHardSoftLibService;
+    @Mock
+    private IAssetInstallTemplateCheckService iAssetInstallTemplateCheckService;
+    @Mock
+    private TemplateConvert templateConvert;
+    @Mock
+    private AssetInstallTemplateDao assetInstallTemplateDao;
+
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
@@ -79,7 +98,7 @@ public class AssetInstallTemplateControllerTest {
     @Test
     public void updateSingleTest() throws Exception {
         String expect = "更新状态成功";
-        Mockito.doAnswer(invocation -> ActionResponse.success(expect)).when(iAssetInstallTemplateService).updateAssetInstallTemplate(Mockito.any());
+        Mockito.doAnswer(invocation -> ActionResponse.success(expect)).when(iAssetInstallTemplateService).updateAssetInstallTemplate(any());
         postResultActions("/update/single", "{\"numberCode\":\"xx1\"}")
                 .andExpect(jsonPath("$.body").value(expect));
     }
@@ -89,7 +108,7 @@ public class AssetInstallTemplateControllerTest {
         int pageSize = 3;
         int currentPage = 2;
         int totalRecord = 5;
-        Mockito.doAnswer(invocation -> new PageResult<>(pageSize, totalRecord, currentPage, new ArrayList<>())).when(iAssetInstallTemplateService).queryPageAssetInstallTemplate(Mockito.any());
+        Mockito.doAnswer(invocation -> new PageResult<>(pageSize, totalRecord, currentPage, new ArrayList<>())).when(iAssetInstallTemplateService).queryPageAssetInstallTemplate(any());
         postResultActions("/query/list", "{\"numberCode\":\"xx1\"}")
                 .andExpect(jsonPath("$.body.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.body.currentPage").value(currentPage))
@@ -104,7 +123,7 @@ public class AssetInstallTemplateControllerTest {
             AssetInstallTemplateResponse response = new AssetInstallTemplateResponse();
             response.setName(expect);
             return response;
-        }).when(iAssetInstallTemplateService).queryAssetInstallTemplateById(Mockito.any());
+        }).when(iAssetInstallTemplateService).queryAssetInstallTemplateById(any());
         postResultActions("/query/id", "{\"primaryKey\":\"xx1\"}")
                 .andExpect(jsonPath("$.body.name").value(expect));
     }
@@ -112,7 +131,7 @@ public class AssetInstallTemplateControllerTest {
     @Test
     public void deleteByIdTest() throws Exception {
         String expect = "删除成功";
-        Mockito.doAnswer(invocation -> expect).when(iAssetInstallTemplateService).deleteAssetInstallTemplateById(Mockito.any());
+        Mockito.doAnswer(invocation -> expect).when(iAssetInstallTemplateService).deleteAssetInstallTemplateById(any());
         postResultActions("/delete/id", "{\"ids\":[\"1\",\"2\",\"3\"]}")
                 .andExpect(jsonPath("$.body").value(expect));
     }
@@ -134,15 +153,15 @@ public class AssetInstallTemplateControllerTest {
     @Test
     public void createInstallTemplateTest() throws Exception {
         String expect = "提交成功";
-        Mockito.doAnswer(invocation -> ActionResponse.success(expect)).when(iAssetInstallTemplateService).submitTemplateInfo(Mockito.any());
-        postResultActions("/submit", "{\"numberCode\":\"xx1\"}")
+        Mockito.doAnswer(invocation -> ActionResponse.success(expect)).when(iAssetInstallTemplateService).submitTemplateInfo(any());
+        postResultActions("/submit", "{\"numberCode\":\"xx1\",\"name\": \"模板3\",\"operationSystem\": \"614053224013365248\"}")
                 .andExpect(jsonPath("$.body").value(expect));
     }
 
     @Test
     public void checkInstallTemplateTest() throws Exception {
         String expect = "审核成功";
-        Mockito.doAnswer(invocation -> expect).when(iAssetInstallTemplateService).checkTemplate(Mockito.any());
+        Mockito.doAnswer(invocation -> expect).when(iAssetInstallTemplateService).checkTemplate(any());
         postResultActions("/check", "{\"stringId\":\"123\"}")
                 .andExpect(jsonPath("$.body").value(expect));
     }
@@ -161,5 +180,77 @@ public class AssetInstallTemplateControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.head.code").value(200))
                 .andExpect(jsonPath("$.head.result").value("成功"));
+    }
+
+    @Test
+    public void queryTemplateByAssetId() throws Exception {
+
+        AssetTemplateRelationResponse assetTemplateRelationResponse = new AssetTemplateRelationResponse();
+        assetTemplateRelationResponse.setPatchNum(1);
+        assetTemplateRelationResponse.setName("zai");
+        when(iAssetInstallTemplateService
+                .queryTemplateByAssetId(any())).thenReturn(assetTemplateRelationResponse);
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey("123");
+        postResultActions("/query/relationInfo", JsonUtil.object2Json(queryCondition))
+                .andExpect(jsonPath("$.body.name").value("zai"))
+                .andExpect(jsonPath("$.body.patchNum").value(1));
+    }
+
+    @Test
+    public void queryTemplateCheckByTemplateId() throws Exception {
+        List<AssetInstallTemplateCheckResponse> templateCheckResponses = new ArrayList<>();
+        AssetInstallTemplateCheckResponse assetInstallTemplateCheckResponse = new AssetInstallTemplateCheckResponse();
+        assetInstallTemplateCheckResponse.setName("c");
+        assetInstallTemplateCheckResponse.setAdvice("不符合需求");
+        assetInstallTemplateCheckResponse.setResult(1);
+        templateCheckResponses.add(assetInstallTemplateCheckResponse);
+        when(iAssetInstallTemplateCheckService
+                .queryTemplateCheckByTemplateId(any())).thenReturn(templateCheckResponses);
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey("123");
+        String contentAsString = postResultActions("/query/auditInfo", JsonUtil.object2Json(queryCondition)).andReturn().getResponse().getContentAsString();
+        String s = "{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":[{\"stringId\":null,\"userId\":null,\"advice\":\"不符合需求\",\"result\":1,\"resultStr\":null,\"gmtCreate\":null,\"name\":\"c\"}]}";
+        Assert.assertEquals(s, contentAsString);
+    }
+
+    @Test
+    public void queryOsListByAssetIdTest() throws Exception {
+        List list=new ArrayList();
+        Mockito.doAnswer(invocation ->list).when(assetInstallTemplateDao).findByAssetIds(Mockito.anyList());
+        Mockito.doAnswer(invocation -> list).when(templateConvert).convert(Mockito.anyList(),Mockito.any());
+        postResultActions("/query/assetList", "{}").andExpect(jsonPath("$.body").value(Matchers.hasSize(0)));
+    }
+
+    @Test
+    public void saveSingleTest() throws Exception {
+        String expect = "保存成功";
+        Mockito.doAnswer(invocation -> expect).when(iAssetInstallTemplateService).saveAssetInstallTemplate(Mockito.any());
+        postResultActions("/save/single", "{}").andExpect(jsonPath("$.body").value(expect));
+    }
+
+    @Test
+    public void querySoftListTest() throws Exception {
+        int pageSize = 3;
+        int currentPage = 2;
+        int totalRecord = 5;
+        Mockito.doAnswer(invocation -> new PageResult<>(pageSize, totalRecord, currentPage, new ArrayList<>())).when(iAssetInstallTemplateService).querySoftPage(any());
+        postResultActions("/query/softList", "{\"pid\":\"1\"}")
+                .andExpect(jsonPath("$.body.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.body.currentPage").value(currentPage))
+                .andExpect(jsonPath("$.body.totalRecords").value(totalRecord))
+                .andExpect(jsonPath("$.body.items", Matchers.hasSize(0)));
+    }
+    @Test
+    public void queryPatchListTest() throws Exception {
+        int pageSize = 3;
+        int currentPage = 2;
+        int totalRecord = 5;
+        Mockito.doAnswer(invocation -> new PageResult<>(pageSize, totalRecord, currentPage, new ArrayList<>())).when(iAssetInstallTemplateService).queryPatchPage(any());
+        postResultActions("/query/patchList", "{\"pid\":\"1\"}")
+                .andExpect(jsonPath("$.body.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.body.currentPage").value(currentPage))
+                .andExpect(jsonPath("$.body.totalRecords").value(totalRecord))
+                .andExpect(jsonPath("$.body.items", Matchers.hasSize(0)));
     }
 }
