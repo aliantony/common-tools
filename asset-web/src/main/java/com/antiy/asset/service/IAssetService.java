@@ -318,18 +318,8 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<SelectResponse> queryBaselineTemplate();
 
-    /**
-     * 获取安全设备全部厂商
-     */
-    List<String> getAllSupplierofSafetyEquipment(String supplier);
 
-    /**
-     * 根据厂商获取安全设备名称列表
-     * @return
-     */
-    List<String> getAllNameofSafetyEquipmentBySupplier(String supplier, String name);
 
-    List<String> getAllVersionofSafetyEquipment(String supplier, String safetyEquipmentName, String version);
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 
