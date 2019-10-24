@@ -1011,10 +1011,12 @@ public class AssetServiceImplTest {
         }
 
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-        assetOuterRequest.setManualStartActivityRequest(manualStartActivityRequest);
         Map formData = new HashMap();
         formData.put("admittanceResult", "safetyCheck");
+        formData.put("safetyCheckUser", "1");
         manualStartActivityRequest.setFormData(formData);
+        assetOuterRequest.setManualStartActivityRequest(manualStartActivityRequest);
+
         AssetRequest assetRequest = new AssetRequest();
         assetRequest.setId("1");
         assetRequest.setCategoryModel(1);
@@ -1092,6 +1094,89 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
         }
 
+        assetRequest.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetRequest.setBaselineTemplateId("1");
+
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        formData.put("admittanceResult", "safetyCheck");
+        formData.put("safetyCheckUser", "1");
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheckNoUUID(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        formData.put("admittanceResult", "templateImplement");
+        formData.put("templateImplementUser", "1");
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheckNoUUID(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheck(any())).thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(baseLineClient.baselineCheckNoUUID(any())).thenReturn(null);
+        when(baseLineClient.baselineCheck(any())).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername())))
+            .thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+        Map ac = new HashMap();
+        ac.put("admittanceResult", "safetyCheck");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
+        when(activityClient.completeTask(activityHandleRequest)).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        ac.put("admittanceResult", "templateImplement");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        formData.put("baselineConfigUserId", "1");
+        when(aesEncoder.decode(
+            (String) assetOuterRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
+            LoginUserUtil.getLoginUser().getUsername())).thenReturn("1");
+        when(baseLineClient.baselineConfig(any())).thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
     }
 
     private AssetHardDiskRequest generateHardDiskRequest() {
