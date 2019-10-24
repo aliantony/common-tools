@@ -11,11 +11,13 @@ import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.ShowCycleType;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.hamcrest.Matchers;
@@ -131,9 +133,9 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("1"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("1"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     /**
@@ -145,9 +147,9 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("2"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("2"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     /**
@@ -159,9 +161,9 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("3"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("3"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     /**
@@ -173,9 +175,9 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("4"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("4"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     /**
@@ -187,9 +189,19 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("5"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("5"));
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
+
+    @Test
+    public void getAssetConutWithGroupWithAssignTim1e() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList1();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("4"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     /**
@@ -201,9 +213,11 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        // AssetReportResponse result = iAssetReportService
-        // .getAssetConutWithGroup(assetReportServiceManager.initReportQueryRequest("66"));
-        // Assert.assertThat(result, Matchers.notNullValue());
+        expectedException.expect(RequestParamValidateException.class);
+        expectedException.expectMessage("查询时间类型不正确");
+        AssetReportResponse result = iAssetReportService
+            .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("66"));
+        Assert.assertThat(result, Matchers.notNullValue());
     }
 
     // @Test
@@ -351,6 +365,8 @@ public class AssetReportServiceImplTest {
         List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        expectedException.expect(RequestParamValidateException.class);
+        expectedException.expectMessage("查询时间类型不正确");
         AssetReportTableResponse result = iAssetReportService
             .getAssetGroupReportTable(assetReportServiceManager.initReportQueryRequest("66"));
         Assert.assertThat(result, Matchers.notNullValue());
@@ -438,6 +454,20 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("user-agent", "   ");
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+
+        iAssetReportService.exportAssetGroupTable(assetReportServiceManager.initReportQueryRequest("5"));
+        Mockito.verify(assetReportDao).getNewAssetWithGroup(Mockito.any());
+    }
+
+    @Test
+    public void exportAssetGroupTableWithAssignTi2me() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("user-agent", "msie");
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
 

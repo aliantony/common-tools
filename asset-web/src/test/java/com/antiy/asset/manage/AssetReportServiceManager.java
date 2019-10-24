@@ -101,4 +101,15 @@ public class AssetReportServiceManager {
         assetGroupEntityList.add(assetGroupEntity);
         return assetGroupEntityList;
     }
+
+    public List<AssetGroupEntity> initGroupEntityList1() {
+        AssetGroupEntity assetGroupEntity = new AssetGroupEntity();
+        assetGroupEntity.setDate("2019-01");
+        assetGroupEntity.setGroupCount(1);
+        assetGroupEntity.setGroupId(1);
+        assetGroupEntity.setName("ss");
+        List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
+        assetGroupEntityList.add(assetGroupEntity);
+        return assetGroupEntityList;
+    }
 }
