@@ -110,7 +110,7 @@ STARTUP_LOG="${STARTUP_LOG}application JAVA_OPT : ${JAVA_OPT}\n"
 
 
 # 打印启动命令
-STARTUP_LOG="${STARTUP_LOG}application startup command: nohup java ${JAVA_OPT} -jar ${BASE_PATH}/boot/${APPLICATION_JAR} --spring.config.location=${CONFIG_DIR}  --server.port=${PORT} --spring.profiles.active=${ACTIVE} > ${LOG_PATH} 2>&1 &\n"
+STARTUP_LOG="${STARTUP_LOG}application startup command: nohup java ${JAVA_OPT} -jar ${BASE_PATH}/${APPLICATION_JAR} --spring.config.location=${CONFIG_DIR}  --server.port=${PORT} --spring.profiles.active=${ACTIVE} > ${LOG_PATH} 2>&1 &\n"
 
 
 #======================================================================
