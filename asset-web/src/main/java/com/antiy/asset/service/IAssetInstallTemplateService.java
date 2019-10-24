@@ -64,13 +64,7 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
      */
     ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
 
-    /**
-     * 查询对象集合
-     *
-     * @param query
-     * @return
-     */
-    List<AssetInstallTemplateResponse> queryListAssetInstallTemplate(AssetInstallTemplateQuery query) throws Exception;
+
 
     /**
      * 分页查询

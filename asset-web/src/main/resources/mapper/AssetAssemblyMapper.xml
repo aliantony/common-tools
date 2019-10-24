@@ -130,9 +130,9 @@
         <trim prefix="WHERE" prefixOverrides="AND | OR ">
             <if test="excludeAssemblyIds != null and excludeAssemblyIds.size() > 0">
                 and lib.business_id not in
-               <foreach collection="excludeAssemblyIds" item="aid" separator="," open="(" close=")">
-                   #{aid}
-               </foreach>
+                <foreach collection="excludeAssemblyIds" item="aid" separator="," open="(" close=")">
+                    #{aid}
+                </foreach>
             </if>
             <if test="supplier != null and supplier.length() > 0">
                 and supplier like CONCAT('',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
@@ -140,7 +140,7 @@
             <if test="productName != null and productName.length() > 0">
                 and product_name like CONCAT('',replace(replace(#{productName},'%','\%'),'_','\_'),'%')
             </if>
-             and lib.status = 1
+            and lib.status = 1
         </trim>
     </sql>
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
@@ -157,7 +157,25 @@
     </select>
 
     <select id="findAssemblyIds" resultType="string">
-        select business_id from asset_assembly where asset_id = #{assetId}
+        select business_id from asset_assembly where asset_id = #{assetId} and status = 1
+    </select>
+    <select id="findAssemblyByAssetId" resultType="com.antiy.asset.vo.request.AssetAssemblyRequest">
+        SELECT
+        distinct
+        t1.business_id as businessId,
+        t2.product_name as productName,
+        t2.type,
+        t1.amount
+        FROM
+        asset_assembly t1
+        LEFT JOIN asset_assembly_lib t2 ON t1.business_id = t2.business_id
+        AND t2.`status` = 1
+        WHERE
+        t1.asset_id = #{assetId}
+        <if test="type != null and type != ''">
+            and t2.type = #{type}
+        </if>
+        AND t1.`status` = 1
     </select>
     <!--删除资产与组件关系-->
     <delete id="deleteAssemblyRelation">

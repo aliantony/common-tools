@@ -1,15 +1,12 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetReportDao;
-import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
-import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.ShowCycleType;
@@ -41,7 +38,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 资产报表实现类
@@ -62,233 +58,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     @Resource
     private AssetReportDao        assetReportDao;
 
-    @Override
-    public AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception {
 
-        ShowCycleType showCycleType = query.getShowCycleType();
-        checkParameter(query, showCycleType);
-        Map<String, Object> map;
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        AssetReportResponse reportResponse = new AssetReportResponse();
-        if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(DAY);
-            map = buildCategoryCountByTime(query, ReportDateUtils.getDayOfWeek());
-        } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(WEEK);
-            map = buildCategoryCountByTime(query, ReportDateUtils.getWeekOfMonth());
-        } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-            map = buildCategoryCountByTime(query, ReportDateUtils.getSeason());
-        } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-            map = buildCategoryCountByTime(query, ReportDateUtils.getCurrentMonthOfYear());
-        } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-            // 如果为当前月，则显示为周
-            Long mouth = ReportDateUtils.monthDiff(query.getBeginTime(), query.getEndTime());
-            if (mouth == 0) {
-                query.setFormat(WEEK);
-            }
-            map = buildCategoryCountByTime(query,
-                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
-        } else {
-            LogUtils.warn(logger, "报表查询参数不正确:{}", JsonUtil.object2Json(query));
-            throw new BusinessException("非法参数");
-        }
-
-        reportResponse.setDate(map.get("dateList") != null ? (List) map.get("dateList") : null);
-        reportResponse.setList(map.get("columnarList") != null ? (List) map.get("columnarList") : null);
-
-        return reportResponse;
-    }
-
-    /**
-     * 构建按时间分类统计资产数据
-     * @param query
-     * @param weekMap
-     * @return
-     */
-    private Map<String, Object> buildCategoryCountByTime(AssetReportCategoryCountQuery query,
-                                                         Map<String, String> weekMap) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        // 限制查询状态条件
-        List<Integer> statusList = getStatusList();
-
-        query.setAssetStatusList(statusList);
-        // 构造柱状图所需的source
-        Map<String, Object> timeValueMap = new HashMap<>();
-        Map<String, String> computerTimeValueMap = new TreeMap<>();
-        Map<String, String> networkTimeValueMap = new TreeMap<>();
-        Map<String, String> storageTimeValueMap = new TreeMap<>();
-        Map<String, String> safetyTimeValueMap = new TreeMap<>();
-        Map<String, String> otherTimeValueMap = new TreeMap<>();
-        Map<String, String> amountTimeValueMap = new TreeMap<>();
-        Map<String, String> newAddTimeValueMap = new TreeMap<>();
-        computerTimeValueMap.put(CLASSIFY_NAME, AssetCategoryEnum.COMPUTER.getName());
-        networkTimeValueMap.put(CLASSIFY_NAME, AssetCategoryEnum.NETWORK.getName());
-        storageTimeValueMap.put(CLASSIFY_NAME, AssetCategoryEnum.STORAGE.getName());
-        safetyTimeValueMap.put(CLASSIFY_NAME, AssetCategoryEnum.SAFETY.getName());
-        otherTimeValueMap.put(CLASSIFY_NAME, AssetCategoryEnum.OTHER.getName());
-        amountTimeValueMap.put(CLASSIFY_NAME, "总数");
-        newAddTimeValueMap.put(CLASSIFY_NAME, "新增数量");
-
-        List<String> dateList = new ArrayList<>();
-        List<Integer> computerDataList = new ArrayList<>();
-        List<Integer> networkDataList = new ArrayList<>();
-        List<Integer> storageDataList = new ArrayList<>();
-        List<Integer> safetyDataList = new ArrayList<>();
-        List<Integer> otherDataList = new ArrayList<>();
-
-        List<Integer> computerAddList = new ArrayList<>();
-        List<Integer> networkAddList = new ArrayList<>();
-        List<Integer> storageAddList = new ArrayList<>();
-        List<Integer> safetyAddList = new ArrayList<>();
-        List<Integer> otherAddList = new ArrayList<>();
-
-        List<ReportData> columnarList = new ArrayList<>();
-
-        List<AssetCategoryEntity> amountCategoryEntityList = assetReportDao.findCategoryCountByTime(query);
-        Map<String, Object> filterMap = new HashMap<>();
-        filterMap.put("beginTime", query.getBeginTime());
-        filterMap.put("areaIds", query.getAreaIds());
-        filterMap.put("assetStatusList", statusList);
-        // 开始时间以前的数据
-        List<AssetCategoryEntity> previousCategoryEntity = assetReportDao.findCategoryCountPrevious(query);
-        int computerAmountSum = 0;
-        int networkAmountSum = 0;
-        int storageAmountSum = 0;
-        int safetyAmountSum = 0;
-        int otherAmountSum = 0;
-
-        for (AssetCategoryEntity assetCategoryEntity : previousCategoryEntity) {
-            if (AssetCategoryEnum.COMPUTER.getCode().equals(assetCategoryEntity.getCategoryModel())) {
-                computerAmountSum = assetCategoryEntity.getCategoryCount();
-            } else if (AssetCategoryEnum.OTHER.getCode().equals(assetCategoryEntity.getCategoryModel())) {
-                otherAmountSum = assetCategoryEntity.getCategoryCount();
-            } else if (AssetCategoryEnum.SAFETY.getCode().equals(assetCategoryEntity.getCategoryModel())) {
-                safetyAmountSum = assetCategoryEntity.getCategoryCount();
-            } else if (AssetCategoryEnum.STORAGE.getCode().equals(assetCategoryEntity.getCategoryModel())) {
-                storageAmountSum = assetCategoryEntity.getCategoryCount();
-            } else if (AssetCategoryEnum.NETWORK.getCode().equals(assetCategoryEntity.getCategoryModel())) {
-                networkAmountSum = assetCategoryEntity.getCategoryCount();
-            }
-        }
-        // 通过时间map组装数据
-        Iterator<Map.Entry<String, String>> iterator = weekMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entry = iterator.next();
-            String key = entry.getKey();
-            String time = entry.getValue();
-            dateList.add(time);
-            // 计算新增数量
-            int computeNewAdd = 0;
-            int networkNewAdd = 0;
-            int storageNewAdd = 0;
-            int safetyNewAdd = 0;
-            int otherNewAdd = 0;
-
-            for (AssetCategoryEntity categoryEntity : amountCategoryEntityList) {
-                if (key.equals(categoryEntity.getDate())) {
-                    if (AssetCategoryEnum.COMPUTER.getCode().equals(categoryEntity.getCategoryModel())
-                            && key.equals(categoryEntity.getDate())) {
-                        filterMap.put(CLASSIFY_NAME, categoryEntity.getCategoryModel());
-                        computeNewAdd = computeNewAdd + categoryEntity.getCategoryCount();
-                    } else if (AssetCategoryEnum.NETWORK.getCode().equals(categoryEntity.getCategoryModel())
-                            && key.equals(categoryEntity.getDate())) {
-                        filterMap.put(CLASSIFY_NAME, categoryEntity.getCategoryModel());
-                        networkNewAdd = networkNewAdd + categoryEntity.getCategoryCount();
-                    } else if (AssetCategoryEnum.STORAGE.getCode().equals(categoryEntity.getCategoryModel())
-                            && key.equals(categoryEntity.getDate())) {
-                        filterMap.put(CLASSIFY_NAME, categoryEntity.getCategoryModel());
-                        storageNewAdd = storageNewAdd + categoryEntity.getCategoryCount();
-                    } else if (AssetCategoryEnum.SAFETY.getCode().equals(categoryEntity.getCategoryModel())
-                            && key.equals(categoryEntity.getDate())) {
-                        filterMap.put(CLASSIFY_NAME, categoryEntity.getCategoryModel());
-                        safetyNewAdd = safetyNewAdd + categoryEntity.getCategoryCount();
-                    } else if (AssetCategoryEnum.OTHER.getCode().equals(categoryEntity.getCategoryModel())
-                            && key.equals(categoryEntity.getDate())) {
-                        filterMap.put(CLASSIFY_NAME, categoryEntity.getCategoryModel());
-                        otherNewAdd = otherNewAdd + categoryEntity.getCategoryCount();
-                    }
-                }
-            }
-
-            computerAmountSum = computerAmountSum + computeNewAdd;
-            networkAmountSum = networkAmountSum + networkNewAdd;
-            storageAmountSum = storageAmountSum + storageNewAdd;
-            safetyAmountSum = safetyAmountSum + safetyNewAdd;
-            otherAmountSum = otherAmountSum + otherNewAdd;
-
-            computerTimeValueMap.put(key, String.valueOf(computerAmountSum));
-            networkTimeValueMap.put(key, String.valueOf(networkAmountSum));
-            storageTimeValueMap.put(key, String.valueOf(storageAmountSum));
-            safetyTimeValueMap.put(key, String.valueOf(safetyAmountSum));
-            otherTimeValueMap.put(key, String.valueOf(otherAmountSum));
-            newAddTimeValueMap.put(key,
-                String.valueOf(computeNewAdd + networkNewAdd + storageNewAdd + safetyNewAdd + otherNewAdd));
-            amountTimeValueMap.put(key, String
-                .valueOf(computerAmountSum + networkAmountSum + storageAmountSum + safetyAmountSum + otherAmountSum));
-
-            computerDataList.add(computerAmountSum);
-            networkDataList.add(networkAmountSum);
-            storageDataList.add(storageAmountSum);
-            safetyDataList.add(safetyAmountSum);
-            otherDataList.add(otherAmountSum);
-
-            computerAddList.add(computeNewAdd);
-            networkAddList.add(networkNewAdd);
-            storageAddList.add(storageNewAdd);
-            safetyAddList.add(safetyNewAdd);
-            otherAddList.add(otherNewAdd);
-        }
-
-        timeValueMap.put(AssetCategoryEnum.COMPUTER.getName(), computerTimeValueMap);
-        timeValueMap.put(AssetCategoryEnum.NETWORK.getName(), networkTimeValueMap);
-        timeValueMap.put(AssetCategoryEnum.STORAGE.getName(), storageTimeValueMap);
-        timeValueMap.put(AssetCategoryEnum.SAFETY.getName(), safetyTimeValueMap);
-        timeValueMap.put(AssetCategoryEnum.OTHER.getName(), otherTimeValueMap);
-        timeValueMap.put("总数", amountTimeValueMap);
-        timeValueMap.put("新增", newAddTimeValueMap);
-
-        map.put("timeValueMap", timeValueMap);
-
-        if (query.getReportFormType() == null) {
-            // 构建柱状数据
-            ReportData computeDeviceColumnar = new ReportData();
-            computeDeviceColumnar.setClassify(AssetCategoryEnum.COMPUTER.getName());
-            computeDeviceColumnar.setData(computerDataList);
-            computeDeviceColumnar.setAdd(computerAddList);
-            columnarList.add(computeDeviceColumnar);
-
-            ReportData networkDeviceColumnar = new ReportData();
-            networkDeviceColumnar.setClassify(AssetCategoryEnum.NETWORK.getName());
-            networkDeviceColumnar.setData(networkDataList);
-            networkDeviceColumnar.setAdd(networkAddList);
-            columnarList.add(networkDeviceColumnar);
-
-            ReportData storageDeviceColumnar = new ReportData();
-            storageDeviceColumnar.setClassify(AssetCategoryEnum.STORAGE.getName());
-            storageDeviceColumnar.setData(storageDataList);
-            storageDeviceColumnar.setAdd(storageAddList);
-            columnarList.add(storageDeviceColumnar);
-
-            ReportData safetyDeviceColumnar = new ReportData();
-            safetyDeviceColumnar.setClassify(AssetCategoryEnum.SAFETY.getName());
-            safetyDeviceColumnar.setData(safetyDataList);
-            safetyDeviceColumnar.setAdd(safetyAddList);
-            columnarList.add(safetyDeviceColumnar);
-
-            ReportData otherDeviceColumnar = new ReportData();
-            otherDeviceColumnar.setClassify(AssetCategoryEnum.OTHER.getName());
-            otherDeviceColumnar.setData(otherDataList);
-            otherDeviceColumnar.setAdd(otherAddList);
-            columnarList.add(otherDeviceColumnar);
-
-            map.put("dateList", dateList);
-            map.put("columnarList", columnarList);
-        }
-        return map;
-    }
 
     private List<Integer> getStatusList() {
         List<Integer> statusList = new ArrayList<>();
@@ -319,63 +89,57 @@ public class AssetReportServiceImpl implements IAssetReportService {
         }
     }
 
-    @Override
-    public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
-                                    HttpServletRequest request) throws Exception {
-        ReportForm reportForm = new ReportForm();
-        String titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-        if (assetReportCategoryCountQuery.getShowCycleType().equals(ShowCycleType.ASSIGN_TIME)) {
-            titleStr = getTitleStr(assetReportCategoryCountQuery);
-        }
-        String title = titleStr + "资产品类型号总数";
-        reportForm.setTitle(title);
-        AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
-        List<String> headerList = assetReportResponse.getDate();
-        List<ReportData> reportDataList = assetReportResponse.getList();
-        List<String> columnList = new ArrayList<>();
-        String[][] data = new String[reportDataList.size() + 2][headerList.size()];
-        for (int i = 0; i < reportDataList.size(); i++) {
-            ReportData reportData = reportDataList.get(i);
-            String classify = reportData.getClassify();
-            columnList.add(classify);
-            List dataList = reportData.getData();
-            data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
-        }
-        int[] total = new int[headerList.size()];
-        List<ReportData> reportList = assetReportResponse.getList();
-        int[] add = new int[headerList.size()];
-        for (int i = 0; i < headerList.size(); i++) {
-            total[i] = 0;
-            add[i] = 0;
-            for (int j = 0; j < reportDataList.size(); j++) {
-                ReportData reportData = reportList.get(j);
-                List<Integer> addList = reportData.getAdd();
-                add[i] += addList.get(i);
-                total[i] += Integer.parseInt(data[j][i]);
-            }
-        }
-        columnList.add("新增");
-        data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(add);
-        columnList.add("总数");
-        data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(total);
-        reportForm.setHeaderList(headerList);
-        reportForm.setData(data);
-        reportForm.setColumnList(columnList);
-        String fileName = title + ".xlsx";
-        ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
-        // 记录操作日志和运行日志
-        LogUtils.recordOperLog(new BusinessData("导出《" + title + "》", 0, "", assetReportCategoryCountQuery,
-            BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
-        LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
-            assetReportCategoryCountQuery.toString());
-    }
+    // @Override
+    // public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
+    // HttpServletRequest request) throws Exception {
+    // ReportForm reportForm = new ReportForm();
+    // String titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
+    // if (assetReportCategoryCountQuery.getShowCycleType().equals(ShowCycleType.ASSIGN_TIME)) {
+    // titleStr = getTitleStr(assetReportCategoryCountQuery);
+    // }
+    // String title = titleStr + "资产品类型号总数";
+    // reportForm.setTitle(title);
+    // AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
+    // List<String> headerList = assetReportResponse.getDate();
+    // List<ReportData> reportDataList = assetReportResponse.getList();
+    // List<String> columnList = new ArrayList<>();
+    // String[][] data = new String[reportDataList.size() + 2][headerList.size()];
+    // for (int i = 0; i < reportDataList.size(); i++) {
+    // ReportData reportData = reportDataList.get(i);
+    // String classify = reportData.getClassify();
+    // columnList.add(classify);
+    // List dataList = reportData.getData();
+    // data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
+    // }
+    // int[] total = new int[headerList.size()];
+    // List<ReportData> reportList = assetReportResponse.getList();
+    // int[] add = new int[headerList.size()];
+    // for (int i = 0; i < headerList.size(); i++) {
+    // total[i] = 0;
+    // add[i] = 0;
+    // for (int j = 0; j < reportDataList.size(); j++) {
+    // ReportData reportData = reportList.get(j);
+    // List<Integer> addList = reportData.getAdd();
+    // add[i] += addList.get(i);
+    // total[i] += Integer.parseInt(data[j][i]);
+    // }
+    // }
+    // columnList.add("新增");
+    // data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(add);
+    // columnList.add("总数");
+    // data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(total);
+    // reportForm.setHeaderList(headerList);
+    // reportForm.setData(data);
+    // reportForm.setColumnList(columnList);
+    // String fileName = title + ".xlsx";
+    // ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
+    // // 记录操作日志和运行日志
+    // LogUtils.recordOperLog(new BusinessData("导出《" + title + "》", 0, "", assetReportCategoryCountQuery,
+    // BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
+    // LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
+    // assetReportCategoryCountQuery.toString());
+    // }
 
-    private String getTitleStr(AssetReportCategoryCountQuery assetReportCategoryCountQuery) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
-        String beginTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getBeginTime()));
-        String endTime = simpleDateFormat.format(new Date(assetReportCategoryCountQuery.getEndTime()));
-        return new StringBuffer(beginTime).append("~").append(endTime).toString();
-    }
 
     @Override
     public AssetReportResponse getAssetCountWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
@@ -565,15 +329,15 @@ public class AssetReportServiceImpl implements IAssetReportService {
             children.add(reportTableHead);
         }
 
-        Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
-        Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
-        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.COMPUTER.getName()));
-        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.NETWORK.getName()));
-        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.STORAGE.getName()));
-        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.SAFETY.getName()));
-        rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.OTHER.getName()));
-        rows.add((Map<String, String>) ssMap.get("新增"));
-        rows.add((Map<String, String>) ssMap.get("总数"));
+        // Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
+        // Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
+        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.COMPUTER.getName()));
+        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.NETWORK.getName()));
+        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.STORAGE.getName()));
+        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.SAFETY.getName()));
+        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.OTHER.getName()));
+        // rows.add((Map<String, String>) ssMap.get("新增"));
+        // rows.add((Map<String, String>) ssMap.get("总数"));
 
         reportTableResponse.setRows(rows);
         reportTableResponse.setChildren(children);

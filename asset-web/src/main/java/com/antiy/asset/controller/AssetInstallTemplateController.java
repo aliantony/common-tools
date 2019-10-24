@@ -1,9 +1,12 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.convert.TemplateConvert;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
+import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
+import com.antiy.asset.templet.AssetInstallTemplateForBase;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
@@ -11,10 +14,16 @@ import com.antiy.asset.vo.request.AssetInstallTemplateRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
 import com.antiy.asset.vo.request.ProcessTemplateRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,6 +39,8 @@ public class AssetInstallTemplateController {
 
     @Resource
     private IAssetInstallTemplateService iAssetInstallTemplateService;
+    @Resource
+    private TemplateConvert                   templateConvert;
     @Resource
     private AssetInstallTemplateDao assetInstallTemplateDao;
     @Resource
@@ -70,7 +81,11 @@ public class AssetInstallTemplateController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class),})
     @RequestMapping(value = "/query/assetList", method = RequestMethod.POST)
     public ActionResponse queryOsList(@RequestBody ProcessTemplateRequest processTemplateRequest) {
-        return ActionResponse.success(assetInstallTemplateDao.findByAssetIds(processTemplateRequest.getComIds()));
+        List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao
+            .findByAssetIds(processTemplateRequest.getComIds());
+        List<AssetInstallTemplateForBase> templateForBases = templateConvert.convert(byAssetIds,
+            AssetInstallTemplateForBase.class);
+        return ActionResponse.success(templateForBases);
     }
 
     /**
@@ -117,8 +132,7 @@ public class AssetInstallTemplateController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
-        return ActionResponse
-                .success(iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest));
+        return iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest);
     }
 
     /**
