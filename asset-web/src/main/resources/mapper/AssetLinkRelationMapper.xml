@@ -757,7 +757,7 @@
         a.area_id as areaId,
         a.name,
         a.number,
-        a.category_model,XQ
+        a.category_model,
         count( b.id ) AS canBind,
         count( b.id ) - count( c.id ) AS noBind,
         a.gmt_create
