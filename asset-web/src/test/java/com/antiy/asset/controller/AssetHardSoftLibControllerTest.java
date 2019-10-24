@@ -27,25 +27,29 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AssetHardSoftLibControllerTest {
 
-    private static final String        PREFIX_URL = "/api/v1/asset/assethardsoftlib";
+    private static final String PREFIX_URL = "/api/v1/asset/assethardsoftlib";
 
     @InjectMocks
     private AssetHardSoftLibController assetHardSoftLibController;
 
     @Mock
-    public IAssetHardSoftLibService    iAssetHardSoftLibService;
+    public IAssetHardSoftLibService iAssetHardSoftLibService;
 
-    private MockMvc                    mockMvc;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() {
@@ -64,7 +68,7 @@ public class AssetHardSoftLibControllerTest {
         PageResult<SoftwareResponse> pageResult = new PageResult<>(10, 1, 1, resultList);
         Mockito.when(iAssetHardSoftLibService.getPageSoftWareList(Mockito.any())).thenReturn(pageResult);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/software/list")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
@@ -81,7 +85,7 @@ public class AssetHardSoftLibControllerTest {
         resultList.add(response);
         Mockito.when(iAssetHardSoftLibService.pullDownOs(Mockito.any())).thenReturn(resultList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/os")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
@@ -94,7 +98,7 @@ public class AssetHardSoftLibControllerTest {
         resultList.add("1");
         Mockito.when(iAssetHardSoftLibService.pulldownSupplier(Mockito.any())).thenReturn(resultList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/supplier")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
@@ -109,7 +113,7 @@ public class AssetHardSoftLibControllerTest {
         query.setSupplier("1");
         Mockito.when(iAssetHardSoftLibService.pulldownName(Mockito.any())).thenReturn(resultList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/name")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
@@ -122,15 +126,15 @@ public class AssetHardSoftLibControllerTest {
         List<AssetHardSoftLibResponse> libResponses = new ArrayList<>();
         libResponses.add(new AssetHardSoftLibResponse());
         Mockito.when(iAssetHardSoftLibService.queryPageAssetHardSoftLib(Mockito.any()))
-            .thenReturn(new PageResult<>(1, 1, 1, libResponses));
+                .thenReturn(new PageResult<>(1, 1, 1, libResponses));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/query/list")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
         Assert.assertEquals(
-            "{\"pageSize\":1,\"totalRecords\":1,\"currentPage\":1,\"items\":[{}],\"totalPages\":1}",
-            JSONObject.toJSONString(actionResponse.getBody()));
+                "{\"pageSize\":1,\"totalRecords\":1,\"currentPage\":1,\"items\":[{}],\"totalPages\":1}",
+                JSONObject.toJSONString(actionResponse.getBody()));
     }
 
     @Test
@@ -145,10 +149,26 @@ public class AssetHardSoftLibControllerTest {
         query.setName("1");
         Mockito.when(iAssetHardSoftLibService.pulldownVersion(Mockito.any())).thenReturn(resultList);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/pullDown/version")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
+                .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(query))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();
         ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
         Assert.assertEquals("200", actionResponse.getHead().getCode());
         Assert.assertEquals(JSONObject.toJSON(resultList), actionResponse.getBody());
     }
+
+    @Test
+    public void queryPageSoftTest() throws Exception {
+        Mockito.doAnswer(invocation -> new PageResult<>(10,20,2,new ArrayList<>())).when(iAssetHardSoftLibService).queryPageSoft(Mockito.any());
+        mockMvc.perform(MockMvcRequestBuilders.post(PREFIX_URL + "/query/softList")
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.head.code").value(200))
+                .andExpect(jsonPath("$.head.result").value("成功"))
+                .andExpect(jsonPath("$.body.pageSize").value(10))
+                .andExpect(jsonPath("$.body.totalRecords").value(20))
+                .andExpect(jsonPath("$.body.currentPage").value(2))
+                .andExpect(jsonPath("$.body.items").isEmpty());
+    }
+
 }
