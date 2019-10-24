@@ -197,6 +197,6 @@ public class AssetHardSoftLibController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAllTypeResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/all", method = RequestMethod.POST)
     public ActionResponse queryAllList(@ApiParam(value = "query") @RequestBody AssetHardSoftOperQuery query) throws Exception {
-        return ActionResponse.success(iAssetHardSoftLibService.queryAssetList(query));
+        return iAssetHardSoftLibService.queryAssetList(query);
     }
 }
