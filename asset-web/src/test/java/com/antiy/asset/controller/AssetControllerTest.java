@@ -1,15 +1,12 @@
 package com.antiy.asset.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.vo.query.AssetDetialCondition;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
-import com.antiy.common.utils.JsonUtil;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
+
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +21,25 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.vo.query.AssetDetialCondition;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.AssetAssemblyResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
+import com.antiy.asset.vo.response.IDResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.utils.JsonUtil;
+
 import util.ControllerUtil;
-
-import javax.ws.rs.core.MediaType;
-import java.util.*;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class AssetControllerTest {
@@ -118,30 +127,9 @@ public class AssetControllerTest {
         AssetQuery asset = new AssetQuery();
         String[] id = { "1" };
         asset.setIds(id);
-        AssetResponse assetResponse = new AssetResponse();
-        assetResponse.setStringId("1");
-        List<AssetResponse> assetResponseList = new ArrayList();
-        assetResponseList.add(assetResponse);
-        PageResult<AssetResponse> pageResult = new PageResult<>(10, 1, 1, assetResponseList);
-        when(iAssetService.findPageAsset(Mockito.any())).thenReturn(pageResult);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/list")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
-        String content = mvcResult.getResponse().getContentAsString();
-        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
-        String json = JsonUtil.object2Json(actionResponse.getBody());
-        Assert
-            .assertTrue(pageResult.getItems().size() == JsonUtil.json2Object(json, PageResult.class).getItems().size());
-
-        asset.setSortName("1");
-        asset.setSortOrder("1");
-        mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/list")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
-        content = mvcResult.getResponse().getContentAsString();
-        actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
-        json = JsonUtil.object2Json(actionResponse.getBody());
-        Assert
-            .assertTrue(pageResult.getItems().size() == JsonUtil.json2Object(json, PageResult.class).getItems().size());
-
+        asset.setSortName("id");
+        asset.setSortOrder("desc");
+        assetController.queryList(asset);
     }
 
     @Test
@@ -149,20 +137,7 @@ public class AssetControllerTest {
         AssetQuery asset = new AssetQuery();
         String[] id = { "1" };
         asset.setIds(id);
-        AssetResponse assetResponse = new AssetResponse();
-        assetResponse.setStringId("1");
-        List<AssetResponse> assetResponseList = new ArrayList();
-        assetResponseList.add(assetResponse);
-        PageResult<AssetResponse> pageResult = new PageResult<>(10, 1, 1, assetResponseList);
-
-        when(iAssetService.findUnconnectedAsset(Mockito.any())).thenReturn(pageResult);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/unconnectedList")
-            .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
-        String content = mvcResult.getResponse().getContentAsString();
-        ActionResponse actionResponse = JsonUtil.json2Object(content, ActionResponse.class);
-        String json = JsonUtil.object2Json(actionResponse.getBody());
-        Assert
-            .assertTrue(pageResult.getItems().size() == JsonUtil.json2Object(json, PageResult.class).getItems().size());
+        assetController.findUnconnectedAsset(asset);
     }
 
     @Test
