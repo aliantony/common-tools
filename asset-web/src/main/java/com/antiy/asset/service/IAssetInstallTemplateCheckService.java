@@ -20,47 +20,6 @@ import com.antiy.common.base.QueryCondition;
  */
 public interface IAssetInstallTemplateCheckService extends IBaseService<AssetInstallTemplateCheck> {
 
-    /**
-     * 保存
-     * @param request
-     * @return
-     */
-    String saveAssetInstallTemplateCheck(AssetInstallTemplateCheckRequest request) throws Exception;
-
-    /**
-     * 修改
-     * @param request
-     * @return
-     */
-    String updateAssetInstallTemplateCheck(AssetInstallTemplateCheckRequest request) throws Exception;
-
-    /**
-     * 查询对象集合
-     * @param query
-     * @return
-     */
-    List<AssetInstallTemplateCheckResponse> queryListAssetInstallTemplateCheck(AssetInstallTemplateCheckQuery query) throws Exception;
-
-    /**
-     * 分页查询
-     * @param query
-     * @return
-     */
-    PageResult<AssetInstallTemplateCheckResponse> queryPageAssetInstallTemplateCheck(AssetInstallTemplateCheckQuery query) throws Exception;
-
-    /**
-     * 通过ID查询
-     * @param queryCondition
-     * @return
-     */
-    AssetInstallTemplateCheckResponse queryAssetInstallTemplateCheckById(QueryCondition queryCondition) throws Exception;
-
-    /**
-     * 通过ID删除
-     * @param baseRequest
-     * @return
-     */
-    String deleteAssetInstallTemplateCheckById(BaseRequest baseRequest) throws Exception;
 
     /**
      * 通过装机模板ID查询

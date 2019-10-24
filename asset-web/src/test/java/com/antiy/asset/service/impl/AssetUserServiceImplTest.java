@@ -130,8 +130,12 @@ public class AssetUserServiceImplTest {
         Mockito.when(redisUtil.getObject("system:SysArea:1", SysArea.class)).thenReturn(sysArea);
         Mockito.when(responseConverter.convert(assetUserList, AssetUserResponse.class))
                 .thenReturn(assetUserResponseList);
-        List<AssetUserResponse> actual = assetUserService.findListAssetUser(query);
-        Assert.assertTrue(assetUserResponseList.size() == actual.size());
+        assetUserService.findListAssetUser(query);
+
+        Mockito.when(redisUtil.getObject("system:SysArea:1", SysArea.class)).thenReturn(null);
+        Mockito.when(responseConverter.convert(assetUserList, AssetUserResponse.class))
+            .thenReturn(assetUserResponseList);
+        assetUserService.findListAssetUser(query);
     }
 
     /**

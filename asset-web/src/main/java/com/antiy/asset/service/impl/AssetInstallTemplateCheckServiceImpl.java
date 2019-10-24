@@ -35,53 +35,11 @@ public class AssetInstallTemplateCheckServiceImpl extends BaseServiceImpl<AssetI
     @Resource
     private AssetInstallTemplateCheckDao                                                assetInstallTemplateCheckDao;
     @Resource
-    private BaseConverter<AssetInstallTemplateCheckRequest, AssetInstallTemplateCheck>  requestConverter;
-    @Resource
     private BaseConverter<AssetInstallTemplateCheck, AssetInstallTemplateCheckResponse> responseConverter;
     @Resource
     private RedisUtil redisUtil;
-    @Override
-    public String saveAssetInstallTemplateCheck(AssetInstallTemplateCheckRequest request) throws Exception {
-        AssetInstallTemplateCheck assetInstallTemplateCheck = requestConverter.convert(request,
-            AssetInstallTemplateCheck.class);
-        assetInstallTemplateCheckDao.insert(assetInstallTemplateCheck);
-        return assetInstallTemplateCheck.getStringId();
-    }
 
-    @Override
-    public String updateAssetInstallTemplateCheck(AssetInstallTemplateCheckRequest request) throws Exception {
-        AssetInstallTemplateCheck assetInstallTemplateCheck = requestConverter.convert(request,
-            AssetInstallTemplateCheck.class);
-        return assetInstallTemplateCheckDao.update(assetInstallTemplateCheck).toString();
-    }
 
-    @Override
-    public List<AssetInstallTemplateCheckResponse> queryListAssetInstallTemplateCheck(AssetInstallTemplateCheckQuery query) throws Exception {
-        List<AssetInstallTemplateCheck> assetInstallTemplateCheckList = assetInstallTemplateCheckDao.findQuery(query);
-        // TODO
-        return responseConverter.convert(assetInstallTemplateCheckList, AssetInstallTemplateCheckResponse.class);
-    }
-
-    @Override
-    public PageResult<AssetInstallTemplateCheckResponse> queryPageAssetInstallTemplateCheck(AssetInstallTemplateCheckQuery query) throws Exception {
-        return new PageResult<AssetInstallTemplateCheckResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetInstallTemplateCheck(query));
-    }
-
-    @Override
-    public AssetInstallTemplateCheckResponse queryAssetInstallTemplateCheckById(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
-        AssetInstallTemplateCheckResponse assetInstallTemplateCheckResponse = responseConverter.convert(
-            assetInstallTemplateCheckDao.getById(queryCondition.getPrimaryKey()),
-            AssetInstallTemplateCheckResponse.class);
-        return assetInstallTemplateCheckResponse;
-    }
-
-    @Override
-    public String deleteAssetInstallTemplateCheckById(BaseRequest baseRequest) throws Exception {
-        ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        return assetInstallTemplateCheckDao.deleteById(baseRequest.getStringId()).toString();
-    }
     @Override
     public List<AssetInstallTemplateCheckResponse> queryTemplateCheckByTemplateId(QueryCondition queryCondition) throws Exception {
 

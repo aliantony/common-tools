@@ -1,7 +1,5 @@
 package com.antiy.asset.service;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
@@ -21,16 +19,16 @@ public interface IAssetReportService {
      * @return
      * @throws Exception
      */
-    AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
+    // AssetReportResponse queryCategoryCountByTime(AssetReportCategoryCountQuery query) throws Exception;
 
-    /**
-     * 导出新增资产报表表格
-     * @param assetReportCategoryCountQuery
-     * @return
-     * @throws Exception
-     */
-    void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
-                             HttpServletRequest request) throws Exception;
+    // /**
+    // * 导出新增资产报表表格
+    // * @param assetReportCategoryCountQuery
+    // * @return
+    // * @throws Exception
+    // */
+    // void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
+    // HttpServletRequest request) throws Exception;
 
     /**
      * 获取资产组top5信息
