@@ -38,7 +38,6 @@ import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.AssetClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
 import com.antiy.asset.service.IAssetService;
@@ -136,8 +135,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private OperatingSystemClient                                               operatingSystemClient;
     @Resource
     private IRedisService                                                       redisService;
-    @Resource
-    private AssetClient                                                         assetClient;
     @Resource
     private AssetIpRelationDao                                                  assetIpRelationDao;
     @Resource
@@ -703,10 +700,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
-            if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
-                query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-            }
             count = this.findCountAsset(query);
         }
 
@@ -1411,12 +1404,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())) {
                     updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                     // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                     assetOperationRecord.setContent(AssetFlowEnum.NET_IN.getMsg());
                 } else {
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE_COMPLETE.getMsg());
                 }
             }
             /* new Thread(new Runnable() {
@@ -1443,6 +1436,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     private String getChangeContent(AssetOuterRequest assetOuterRequest) {
         StringBuilder sb = new StringBuilder();
+        StringBuilder add = new StringBuilder();
+        StringBuilder update = new StringBuilder();
+        StringBuilder delete = new StringBuilder();
+
         AssetRequest assetRequest = assetOuterRequest.getAsset();
         String assetId = assetOuterRequest.getAsset().getId();
         // 计算设备才有操作系统
@@ -1450,7 +1447,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String oldOs = assetDao.getByAssetId(assetId).getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
-                sb.append("###更改基础信息:").append("操作系统").append(newOs);
+                update.append("$更改基础信息:").append("操作系统").append(newOs);
             }
         }
 
@@ -1462,7 +1459,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .filter(a -> "DISK".equals(a.getType())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
-                    sb.append("###添加组件:").append("硬盘").append(disk.getProductName());
+                    add.append("$新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                        .append(disk.getAmount());
                 });
             } else {
                 List<String> oldDiskBusinessIds = oldDisks.stream().map(AssetAssemblyRequest::getBusinessId)
@@ -1472,23 +1470,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 newDisks.stream().forEach(disk -> {
                     if (oldDiskBusinessIds.contains(disk.getBusinessId())) {
                         if (!disk.getAmount().equals(map.get(disk.getBusinessId()))) {
-                            sb.append("###更改组件:").append("硬盘").append(disk.getProductName()).append(disk.getAmount());
+                            update.append("$更改组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                                .append(disk.getAmount());
                         }
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
-                        sb.append("###添加组件:").append("硬盘").append(disk.getProductName());
+                        add.append("$添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                            .append(disk.getAmount());
                     }
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
                     oldDiskBusinessIds.stream().forEach(os -> {
-                        sb.append("###删除组件:").append("硬盘").append(map.get(os));
+                        delete.append("$删除组件:").append("硬盘").append(map.get(os));
                     });
                 }
             }
         } else {
             if (CollectionUtils.isNotEmpty(oldDisks)) {
                 oldDisks.stream().forEach(disk -> {
-                    sb.append("###删除组件:").append("硬盘").append(disk.getProductName());
+                    sb.append("$删除组件:").append("硬盘").append(disk.getProductName());
                 });
             }
         }
@@ -1506,7 +1506,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 变更前没关联过软件
                 if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
                     newSoftIds.stream().forEach(ns -> {
-                        sb.append("###添加软件:")
+                        add.append("$新增软件:")
                             .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                     });
                 } else {
@@ -1518,7 +1518,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSoftwareInstallResponse::getSoftwareId, AssetSoftwareInstallResponse::getProductName));
                     newSoftIds.stream().forEach(ns -> {
                         if (!oldSoftIds.contains(String.valueOf(ns))) {
-                            sb.append("###添加软件:")
+                            add.append("$新增软件:")
                                 .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                         } else {
                             oldSoftIds.removeIf(a -> a.contains(String.valueOf(ns)));
@@ -1526,7 +1526,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     if (CollectionUtils.isNotEmpty(oldSoftIds)) {
                         oldSoftIds.stream().forEach(os -> {
-                            sb.append("###删除软件:").append(oldMap.get(os));
+                            delete.append("$删除软件:").append(oldMap.get(os));
                         });
                     }
                 }
@@ -1534,12 +1534,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 如果变更前存在软件，则软件全部被删除了
                 if (CollectionUtils.isNotEmpty(assetSoftwareInstallResponseList)) {
                     assetSoftwareInstallResponseList.stream().forEach(asr -> {
-                        sb.append("###删除软件:").append(asr.getProductName());
+                        delete.append("$删除软件:").append(asr.getProductName());
                     });
                 }
             }
         }
-        return sb.toString();
+        return add.toString() + "###" + update.toString() + "###" + delete.toString();
     }
 
     private void dealInstallTemplete(String newInstallId, String assetId) {
