@@ -1,12 +1,30 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.util.*;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,31 +58,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.util.*;
+
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -1957,6 +1956,8 @@ public class AssetServiceImplTest {
 
         Integer result = assetServiceImpl.queryAssetCountByAreaIds(areaIds);
         Assert.assertEquals(Integer.valueOf(0), result);
+        int result2 = assetServiceImpl.queryAssetCountByAreaIds(null);
+        Assert.assertEquals(0,result2);
     }
 
     @Test()
@@ -2028,10 +2029,10 @@ public class AssetServiceImplTest {
         when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Sets.newHashSet("String"));
 
         Set<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
-        Assert.assertEquals(Arrays.asList("String"), result);
+        Assert.assertEquals(Sets.newHashSet("String"), result);
 
         result = assetServiceImpl.pulldownUnconnectedManufacturer(0, "1");
-        Assert.assertEquals(Arrays.asList("String"), result);
+        Assert.assertEquals(Sets.newHashSet("String"), result);
 
     }
 
@@ -2154,6 +2155,10 @@ public class AssetServiceImplTest {
     public void testFindAssetIds() {
         when(assetDao.findAssetIds(any())).thenReturn(Arrays.asList("1"));
         Assert.assertNotNull(assetServiceImpl.findAssetIds());
+        LoginUser loginUser= getLoginUser();
+        loginUser.setAreas(null);
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+        Assert.assertNotNull(assetServiceImpl.findAssetIds());
     }
 
     @Test
@@ -2162,12 +2167,16 @@ public class AssetServiceImplTest {
         AreaOperationRequest areaOperationRequest = new AreaOperationRequest();
         MockAck mockAck = new MockAck();
         assetServiceImpl.listen(JSONObject.toJSONString(areaOperationRequest), mockAck);
+
     }
 
     @Test
     public void queryWaitRegistCount() {
         Mockito.when(assetDao.queryWaitRegistCount(Mockito.anyInt(), Mockito.any())).thenReturn(1);
         Assert.assertEquals("1", assetServiceImpl.queryWaitRegistCount() + "");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
+       int k= assetServiceImpl.queryWaitRegistCount();
+        Assert.assertEquals(0,  k);
     }
 
     @Test
@@ -2398,13 +2407,30 @@ public class AssetServiceImplTest {
 
     }
 
+    @Test
+    public void queryBaselineTemplate() {
+        assetServiceImpl.queryBaselineTemplate();
+        System.out.println("成功");
+    }
+
     class MockAck implements Acknowledgment {
         @Override
         public void acknowledge() {
 
         }
     }
-
+    @Test
+    public void queryUuidByAssetId() throws Exception {
+        AssetIdRequest request=new AssetIdRequest();
+        request.setAssetIds(Arrays.asList("33"));
+       when(assetDao.findUuidByAssetId(any())).thenReturn(null);
+        List<String> strings = assetServiceImpl.queryUuidByAssetId(request);
+        Assert.assertNull(strings);
+        request.setAssetIds(null);
+        expectedException.expectMessage("资产ID不能为空");
+        expectedException.expect(BusinessException.class);
+        assetServiceImpl.queryUuidByAssetId(request);
+    }
     @Test
     public void matchAssetByIpMac() {
         mockStatic(LoginUserUtil.class);
