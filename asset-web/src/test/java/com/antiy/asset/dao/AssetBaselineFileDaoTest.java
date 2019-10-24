@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,9 +11,10 @@ import javax.annotation.Resource;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Ignore
 public class AssetBaselineFileDaoTest {
 	@MockBean
-	AssetBaselineFileDao dao;
+	private AssetBaselineFileDao dao;
 
 	@Test
 	public void queryBaselineIsExist() {

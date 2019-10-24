@@ -73,18 +73,11 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 		return ","+ name;
 	}
 	public String
-	describe(String processResult){
-		String isPass ="1";
-		String pr ="";
-		if (processResult==null || "".equals(processResult)){
-			return getName();
-		}else if (isPass.equals(processResult)){
-			pr = "通过。";
-		}else if("0".equals(processResult)){
-			pr ="不通过。";
+	describe(AssetProcessResultEnum processResult){
+		if (processResult==null) {
+			return "";
 		}
-		pr = filter(pr);
-		return getName() + pr;
+		return filter(processResult.getName());
 
 	}
 
@@ -95,13 +88,24 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	 */
 	private String filter(String pr){
 		String res ="";
+		//有些前置状态，下一步操作没有通不-通过结果：
 		switch (this) {
+			//未登记
 			case OPERATION_HARDWARE_REGISTER:
 				break;
+				//不予登记
 			case OPERATION_NOT_REGISTER:
 				break;
+				//已入网
 			case OPERATION_NET_IN:
 				break;
+				//已退役
+			case OPERATION_RETIRE:
+				break;
+				//未登记
+			case OPERATION_NO:
+				break;
+				//待退役
 			case OPERATION_WAIT_RETIRE:
 				break;
 			default:
@@ -110,7 +114,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 		return res;
 	}
 	@Override
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
 

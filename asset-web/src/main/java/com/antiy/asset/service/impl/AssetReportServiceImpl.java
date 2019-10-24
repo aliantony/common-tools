@@ -25,7 +25,6 @@ import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,17 +47,15 @@ import java.util.*;
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class AssetReportServiceImpl implements IAssetReportService {
-    private Logger                logger = LogUtils.get(this.getClass());
+    private Logger              logger        = LogUtils.get(this.getClass());
 
-    private static final String DAY = "%w";
-    private static final String WEEK = "%u";
-    private static final String MONTH = "%Y-%m";
+    private static final String DAY           = "%w";
+    private static final String WEEK          = "%u";
+    private static final String MONTH         = "%Y-%m";
     private static final String CLASSIFY_NAME = "classifyName";
 
     @Resource
-    private AssetReportDao        assetReportDao;
-
-
+    private AssetReportDao      assetReportDao;
 
     private List<Integer> getStatusList() {
         List<Integer> statusList = new ArrayList<>();
@@ -88,58 +85,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
             ParamterExceptionUtils.isNull(query.getBeginTime(), "指定开始时间不能为空");
         }
     }
-
-    // @Override
-    // public void exportCategoryCount(AssetReportCategoryCountQuery assetReportCategoryCountQuery,
-    // HttpServletRequest request) throws Exception {
-    // ReportForm reportForm = new ReportForm();
-    // String titleStr = assetReportCategoryCountQuery.getShowCycleType().getMessage();
-    // if (assetReportCategoryCountQuery.getShowCycleType().equals(ShowCycleType.ASSIGN_TIME)) {
-    // titleStr = getTitleStr(assetReportCategoryCountQuery);
-    // }
-    // String title = titleStr + "资产品类型号总数";
-    // reportForm.setTitle(title);
-    // AssetReportResponse assetReportResponse = this.queryCategoryCountByTime(assetReportCategoryCountQuery);
-    // List<String> headerList = assetReportResponse.getDate();
-    // List<ReportData> reportDataList = assetReportResponse.getList();
-    // List<String> columnList = new ArrayList<>();
-    // String[][] data = new String[reportDataList.size() + 2][headerList.size()];
-    // for (int i = 0; i < reportDataList.size(); i++) {
-    // ReportData reportData = reportDataList.get(i);
-    // String classify = reportData.getClassify();
-    // columnList.add(classify);
-    // List dataList = reportData.getData();
-    // data[i] = ArrayTypeUtil.objectArrayToStringArray(dataList.toArray());
-    // }
-    // int[] total = new int[headerList.size()];
-    // List<ReportData> reportList = assetReportResponse.getList();
-    // int[] add = new int[headerList.size()];
-    // for (int i = 0; i < headerList.size(); i++) {
-    // total[i] = 0;
-    // add[i] = 0;
-    // for (int j = 0; j < reportDataList.size(); j++) {
-    // ReportData reportData = reportList.get(j);
-    // List<Integer> addList = reportData.getAdd();
-    // add[i] += addList.get(i);
-    // total[i] += Integer.parseInt(data[j][i]);
-    // }
-    // }
-    // columnList.add("新增");
-    // data[reportDataList.size()] = ArrayTypeUtil.integerArrayToStringArray(add);
-    // columnList.add("总数");
-    // data[reportDataList.size() + 1] = ArrayTypeUtil.integerArrayToStringArray(total);
-    // reportForm.setHeaderList(headerList);
-    // reportForm.setData(data);
-    // reportForm.setColumnList(columnList);
-    // String fileName = title + ".xlsx";
-    // ExcelUtils.exportFormToClient(reportForm, this.encodeChineseDownloadFileName(request, fileName));
-    // // 记录操作日志和运行日志
-    // LogUtils.recordOperLog(new BusinessData("导出《" + title + "》", 0, "", assetReportCategoryCountQuery,
-    // BusinessModuleEnum.REPORT, BusinessPhaseEnum.NONE));
-    // LogUtils.info(LogUtils.get(AssetReportServiceImpl.class), AssetEventEnum.ASSET_REPORT_EXPORT.getName() + " {}",
-    // assetReportCategoryCountQuery.toString());
-    // }
-
 
     @Override
     public AssetReportResponse getAssetCountWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
@@ -182,10 +127,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private AssetReportResponse buildGroupCountByTime(ReportQueryRequest reportQueryRequest,
                                                       Map<String, String> timeMap) {
         reportQueryRequest.setAssetStatusList(getStatusList());
-        if (MapUtils.isEmpty(timeMap)) {
-            // 如果没有时间参数，则返回即可。
-            return null;
-        }
+        // if (MapUtils.isEmpty(timeMap)) {
+        // // 如果没有时间参数，则返回即可。
+        // return null;
+        // }
         // 1.获取结束时间之前,Top5的资产组数量信息
         reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity> topGroupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
@@ -534,9 +479,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
         for (Map<String, String> addRow : addRows) {
             for (Map<String, String> stringStringMap : addRowsResult) {
                 if (addRow.get(CLASSIFY_NAME).equals(stringStringMap.get(CLASSIFY_NAME))
-                        && addRow.keySet().iterator().next().equals(stringStringMap.keySet().iterator().next())) {
+                    && addRow.keySet().iterator().next().equals(stringStringMap.keySet().iterator().next())) {
                     stringStringMap.put(addRow.keySet().iterator().next(),
-                            addRow.get(addRow.keySet().iterator().next()));
+                        addRow.get(addRow.keySet().iterator().next()));
                 }
             }
         }
@@ -565,7 +510,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
                 timeMapLastKey = entry.getKey();
             }
             return DataTypeUtils.stringToInteger(o2.get(timeMapLastKey))
-                    .compareTo(DataTypeUtils.stringToInteger(o1.get(timeMapLastKey)));
+                .compareTo(DataTypeUtils.stringToInteger(o1.get(timeMapLastKey)));
         });
 
         assetReportTableResponse.setRows(rows);

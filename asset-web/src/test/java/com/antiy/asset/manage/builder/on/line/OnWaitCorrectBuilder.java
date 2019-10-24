@@ -15,7 +15,7 @@ public class OnWaitCorrectBuilder extends Builder {
 	@Override
 	public void builder() {
 		//安全检查不通过
-		List<AssetStatusDetail> res = next(new OnWaitCheckBuilder(), AssetChangeDetailEnum.WAIT_CORRECT, false, true);
+		List<AssetStatusDetail> res = next(new OnWaitCheckBuilder(), AssetChangeDetailEnum.WAIT_CORRECT, false, true,"安全整改。整改情况：");
 		products.setProducts(res);
 	}
 }
