@@ -9,6 +9,7 @@ import java.util.*;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -68,7 +69,7 @@ import com.google.common.collect.Sets;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
-                  LogHandle.class, ZipUtil.class })
+                  LogHandle.class, ZipUtil.class, CollectionUtils.class })
 // @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
@@ -1167,12 +1168,45 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
         }
 
+        Asset asset = new Asset();
+        asset.setOperationSystemName("windows");
+        when(assetDao.getByAssetId("1")).thenReturn(asset);
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         formData.put("baselineConfigUserId", "1");
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        when(assetHardSoftLibDao.getByBusinessId(anyString())).thenReturn(assetHardSoftLib);
+        manualStartActivityRequest.setFormData(formData);
+        assetOuterRequest.setManualStartActivityRequest(manualStartActivityRequest);
         when(aesEncoder.decode(
             (String) assetOuterRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
             LoginUserUtil.getLoginUser().getUsername())).thenReturn("1");
         when(baseLineClient.baselineConfig(any())).thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        when(baseLineClient.baselineConfig(any())).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetRequest.setInstallType(1);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetOuterRequest.setManualStartActivityRequest(null);
+        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
