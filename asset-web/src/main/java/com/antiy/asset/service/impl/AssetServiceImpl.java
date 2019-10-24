@@ -703,10 +703,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
-            if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
-                query.setAreaIds(
-                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
-            }
             count = this.findCountAsset(query);
         }
 
@@ -1411,12 +1407,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())) {
                     updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                     // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                     assetOperationRecord.setContent(AssetFlowEnum.NET_IN.getMsg());
                 } else {
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE_COMPLETE.getMsg());
                 }
             }
             /* new Thread(new Runnable() {

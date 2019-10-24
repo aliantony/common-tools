@@ -1,31 +1,12 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.BaseResponse;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.File;
+import java.util.*;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.junit.Assert;
@@ -58,12 +39,31 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.File;
-import java.util.*;
-
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -501,6 +501,7 @@ public class AssetServiceImplTest {
         assetServiceImpl.saveAsset(assetOuterRequest33);
 
     }
+
     @Test
     public void assetsTemplate() throws Exception {
         ProcessTemplateRequest processTemplateRequest = new ProcessTemplateRequest();
@@ -568,85 +569,6 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testFindListAsset() throws Exception {
-
-        when(assetDao.findListAsset(any())).thenReturn(Arrays.asList(generateAsset()));
-        when(assetDao.findCount(any())).thenReturn(10);
-        when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
-        when(assetDao.queryAllAssetPatchCount(any())).thenReturn(10);
-        AlarmAssetIdResponse alarmAssetIdResponse = new AlarmAssetIdResponse();
-        List<BaseResponse> baseResponses = new ArrayList<>();
-        baseResponses.add(new BaseResponse());
-        alarmAssetIdResponse.setAssetIdList(baseResponses);
-        ActionResponse alarmAssetIdResponseActionResponse = ActionResponse.success(alarmAssetIdResponse);
-        when(emergencyClient.queryEmergecyAllCount()).thenReturn(alarmAssetIdResponseActionResponse);
-
-        List<IdCount> idCounts = new ArrayList<>();
-        IdCount idCount = new IdCount();
-        idCount.setId("1");
-        idCount.setCount("1");
-        idCounts.add(idCount);
-        when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(idCounts);
-        when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
-        when(assetDao.queryAlarmCountByAssetIds(any()))
-            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
-        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
-        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
-        categoryModelResponse.setStringId("1");
-        categoryModelResponse.setName("windows");
-        categoryModelResponseList.add(categoryModelResponse);
-        when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-
-        PageResult pageResult = new PageResult();
-        pageResult.setItems(idCounts);
-        actionResponse.setBody(Arrays.asList(generateWaitingTask()));
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
-        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
-        when(assetGroupRelationDao.findAssetIdByAssetGroupId(any())).thenReturn(Arrays.asList("1"));
-        when(emergencyClient.queryEmergencyCount(any())).thenReturn(ActionResponse.success(pageResult));
-        when(assetDao.findCount(any())).thenReturn(100);
-        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
-
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setQueryPatchCount(true);
-        assetQuery.setQueryVulCount(true);
-        assetQuery.setQueryAlarmCount(true);
-        assetQuery.setAssetGroupQuery(true);
-
-        PageResult<AssetResponse> result = assetServiceImpl.findPageAsset(assetQuery);
-        Assert.assertNotNull(result);
-
-        // enterControl
-        when(assetDao.findCount(any())).thenReturn(0);
-        assetQuery = new AssetQuery();
-        assetQuery.setAssetGroup("1");
-        assetQuery.setAssociateGroup(true);
-        assetQuery.setEnterControl(true);
-        assetQuery.setGroupId("1");
-        assetQuery.setAssetStatusList(Arrays.asList(1, 2, 3));
-        result = assetServiceImpl.findPageAsset(assetQuery);
-        Assert.assertNotNull(result);
-
-        assetQuery = new AssetQuery();
-        List list = assetServiceImpl.findListAsset(assetQuery, null);
-        Assert.assertNotNull(list);
-
-    }
-
-    @Test
-    public void testFindCountAsset() throws Exception {
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-
-        actionResponse.setBody(Arrays.asList(generateWaitingTask()));
-
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
-
-        Integer result = assetServiceImpl.findCountAsset(new AssetQuery());
-        Assert.assertEquals(Integer.valueOf(0), result);
-    }
-
-    @Test
     public void testGetAllHardWaitingTask() {
         ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
         WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
@@ -672,14 +594,104 @@ public class AssetServiceImplTest {
 
     @Test
     public void testFindPageAsset() throws Exception {
-        when(assetDao.findListAsset(any())).thenReturn(Arrays.asList(new Asset()));
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setQueryPatchCount(true);
+        assetQuery.setQueryVulCount(true);
+        assetQuery.setQueryAlarmCount(true);
+        assetQuery.setAssetGroupQuery(true);
 
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success(new ArrayList<>());
+        when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
+        when(assetDao.queryAllAssetPatchCount(any())).thenReturn(10);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(10);
+
+        List<IdCount> idCounts = new ArrayList<>();
+        IdCount idCount = new IdCount();
+        idCount.setId("1");
+        idCount.setCount("1");
+        idCounts.add(idCount);
+        when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(idCounts);
+        when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(idCounts);
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "1")));
+        List<BaselineCategoryModelResponse> categoryModelResponseList = new ArrayList<>();
+        BaselineCategoryModelResponse categoryModelResponse = new BaselineCategoryModelResponse();
+        categoryModelResponse.setStringId("1");
+        categoryModelResponse.setName("windows");
+        categoryModelResponseList.add(categoryModelResponse);
+        when(redisService.getAllSystemOs()).thenReturn(categoryModelResponseList);
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
+
+        PageResult pageResult = new PageResult();
+        pageResult.setItems(idCounts);
+        actionResponse.setBody(Arrays.asList(generateWaitingTask()));
         when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(assetGroupRelationDao.findAssetIdByAssetGroupId(any())).thenReturn(Arrays.asList("1"));
+        when(assetDao.findCount(any())).thenReturn(100);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
 
-        PageResult<AssetResponse> result = assetServiceImpl.findPageAsset(new AssetQuery());
-        Assert.assertNotNull(result);
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+        when(assetDao.findCount(any())).thenReturn(100);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
+
+        assetQuery.setUnknownAssets(true);
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        when(assetDao.queryAllAssetVulCount(any())).thenReturn(0);
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
+        when(assetDao.queryAllAssetPatchCount(any())).thenReturn(0);
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
+        when(assetDao.queryAllAssetPatchCount(any())).thenReturn(10);
+        when(assetDao.findAlarmAssetCount(any())).thenReturn(0);
+        assetQuery.setAreaIds(new String[] {});
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        // enterControl
+        when(assetDao.findCount(any())).thenReturn(0);
+        assetQuery = new AssetQuery();
+        assetQuery.setAssetGroup("1");
+        assetQuery.setAssociateGroup(true);
+        assetQuery.setEnterControl(true);
+        assetQuery.setGroupId("1");
+
+        assetQuery.setAssetStatusList(Arrays.asList(1, 2, 3));
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        assetQuery.setQueryVulCount(true);
+        when(assetDao.queryAssetVulCount(any(), any(), any())).thenReturn(null);
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        assetQuery.setQueryVulCount(false);
+        assetQuery.setQueryPatchCount(true);
+        when(assetDao.queryAssetPatchCount(any(), any(), any())).thenReturn(null);
+        assetServiceImpl.findPageAsset(assetQuery);
+
+        assetQuery.setQueryPatchCount(false);
+        assetQuery.setQueryVulCount(false);
+        assetQuery.setQueryAlarmCount(true);
+        when(assetDao.queryAlarmCountByAssetIds(any())).thenReturn(null);
+        assetServiceImpl.findPageAsset(assetQuery);
     }
+
+    @Test
+    public void findListAsset() throws Exception {
+        AssetQuery query = new AssetQuery();
+        query.setAreaIds(new String[] {});
+        Map<String, WaitingTaskReponse> processMap = new HashMap<>();
+        assetServiceImpl.findListAsset(query, processMap);
+    }
+
+    @Test
+    public void findCountAsset() throws Exception {
+        AssetQuery query = new AssetQuery();
+        query.setAreaIds(new String[] {});
+        assetServiceImpl.findCountAsset(query);
+    }
+
 
     @Test
     public void testSaveReportAsset() {
@@ -751,9 +763,6 @@ public class AssetServiceImplTest {
         PageResult<AssetResponse> result = assetServiceImpl.findPageAssetByCategoryModel(new AssetQuery());
         Assert.assertNotNull(result);
     }
-
-
-
 
     @Test
     public void testCountCategory() {
@@ -971,7 +980,6 @@ public class AssetServiceImplTest {
 
     @Test
     public void testChangeAsset() throws Exception {
-
 
         when(assetNetworkEquipmentDao.getById(any())).thenReturn(generateAssetNetworkEquipment());
         when(assetSoftwareRelationDao.deleteByAssetId(anyInt())).thenReturn(0);
@@ -1806,7 +1814,6 @@ public class AssetServiceImplTest {
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第8行资产编号重复！第9行MAC地址重复！", result);
 
-
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
         when(assetDao.findCountAssetNumber(any())).thenReturn(10);
@@ -1824,7 +1831,6 @@ public class AssetServiceImplTest {
         otherDeviceEntity.setDueDate(System.currentTimeMillis() / 2);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行到期时间需大于等于今天！", result);
-
 
         otherDeviceEntity.setDueDate(System.currentTimeMillis() * 2);
         when(assetUserDao.findListAssetUser(any())).thenReturn(null);
@@ -2263,15 +2269,15 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void countUnusual() throws Exception {
+    public void countUnusual() {
 
-        AssetQuery query =new AssetQuery();
+        AssetQuery query = new AssetQuery();
         int integer1 = assetServiceImpl.countUnusual(query);
         Assert.assertEquals(0, integer1);
         query.setQueryAlarmCount(false);
         query.setQueryPatchCount(false);
         query.setQueryVulCount(false);
-        Assert.assertEquals(0, (int)assetServiceImpl.countUnusual(query));
+        Assert.assertEquals(0, (int) assetServiceImpl.countUnusual(query));
         query.setQueryAlarmCount(true);
         query.setQueryPatchCount(true);
         query.setQueryVulCount(true);
@@ -2279,57 +2285,52 @@ public class AssetServiceImplTest {
         when(assetDao.queryAllAssetVulCount(any())).thenReturn(10);
         when(assetDao.queryAllAssetPatchCount(any())).thenReturn(11);
         when(assetDao.findAlarmAssetCount(any())).thenReturn(12);
-        Assert.assertEquals(12, (int)assetServiceImpl.countUnusual(query));
+        Assert.assertEquals(12, (int) assetServiceImpl.countUnusual(query));
     }
-
 
     @Test
     public void countManufacturer() {
         List<Map<String, Object>> list = new ArrayList<>();
-        Map<String, Object> map1=new HashMap<>();
-        map1.put("value",12L);
-        Map<String, Object> map2=new HashMap<>();
-        map2.put("value",20L);
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("value", 12L);
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("value", 20L);
         list.add(map1);
         list.add(map2);
-        when(assetDao.countManufacturer(any(),any())).thenReturn(null);
-        /*
-        CollectionUtils.isNotEmpty(list)
-         */
+        when(assetDao.countManufacturer(any(), any())).thenReturn(null);
+        /* CollectionUtils.isNotEmpty(list) */
         List<EnumCountResponse> enumCountResponses = assetServiceImpl.countManufacturer();
-        Assert.assertEquals(1,enumCountResponses.size());
-        /*
-        其他类型
-         */
-        when(assetDao.countManufacturer(any(),any())).thenReturn(list);
+        Assert.assertEquals(1, enumCountResponses.size());
+        /* 其他类型 */
+        when(assetDao.countManufacturer(any(), any())).thenReturn(list);
         List<EnumCountResponse> enumCountResponses2 = assetServiceImpl.countManufacturer();
-        Assert.assertEquals(32,enumCountResponses2.get(0).getNumber());
-        map1.put("key","antiy");
-        map2.put("key","360");
+        Assert.assertEquals(32, enumCountResponses2.get(0).getNumber());
+        map1.put("key", "antiy");
+        map2.put("key", "360");
         /**
          *
          */
-        when(assetDao.countManufacturer(any(),any())).thenReturn(list);
+        when(assetDao.countManufacturer(any(), any())).thenReturn(list);
         List<EnumCountResponse> enumCountResponses3 = assetServiceImpl.countManufacturer();
-        String s="[EnumCountResponse{msg='antiy', code='[antiy]', number=12}, EnumCountResponse{msg='360', code='[360]', number=20}]";
-        Assert.assertEquals(s,enumCountResponses3.toString());
+        String s = "[EnumCountResponse{msg='antiy', code='[antiy]', number=12}, EnumCountResponse{msg='360', code='[360]', number=20}]";
+        Assert.assertEquals(s, enumCountResponses3.toString());
     }
 
     @Test
     public void countStatus() {
         List<Map<String, Object>> searchResult = new ArrayList<>();
-        Map<String, Object> map1=new HashMap<>();
-        map1.put("key",1);
-        map1.put("value",10L);
-        Map<String, Object> map2=new HashMap<>();
-        map2.put("key",15);
-        map2.put("value",12L);
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("key", 1);
+        map1.put("value", 10L);
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("key", 15);
+        map2.put("value", 12L);
         searchResult.add(map1);
         searchResult.add(map2);
-        when( assetDao.countStatus(any())).thenReturn(searchResult);
+        when(assetDao.countStatus(any())).thenReturn(searchResult);
         List<EnumCountResponse> enumCountResponses = assetServiceImpl.countStatus();
 
-       Assert.assertEquals(10,enumCountResponses.get(0).getNumber());
+        Assert.assertEquals(10, enumCountResponses.get(0).getNumber());
 
     }
 
