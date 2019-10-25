@@ -17,6 +17,7 @@ import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
+import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
@@ -188,8 +189,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<Integer> deleteLinkRelationIdList = new ArrayList<>();
 
         Long currentTime = System.currentTimeMillis();
-        Integer loginUserId = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getId() : null;
-        String loginUserName = LoginUserUtil.getLoginUser() != null ? LoginUserUtil.getLoginUser().getName() : "";
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
 
         assetsInDb.forEach(asset -> {
             AssetStatusEnum nextStatus = AssetStatusJumpEnum.getNextStatus(statusJumpRequest.getAssetFlowEnum(), statusJumpRequest.getAgree(),
@@ -205,11 +205,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
             asset.setAssetStatus(nextStatus.getCode());
             asset.setGmtModified(currentTime);
-            asset.setModifyUser(loginUserId);
+            asset.setModifyUser(loginUser.getId());
             updateAssetList.add(asset);
 
             // 保存操作记录
-            operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUserId, loginUserName, asset.getStringId(), nextStatus.getCode()));
+            operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUser.getId(), loginUser.getName(), asset.getStringId(), nextStatus.getCode()));
         });
         transactionTemplate.execute(transactionStatus -> {
             try {
