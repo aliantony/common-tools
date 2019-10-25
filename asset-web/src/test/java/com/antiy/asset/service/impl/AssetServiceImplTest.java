@@ -2147,8 +2147,8 @@ public class AssetServiceImplTest {
     public void testQueryAssetCountByAreaIds() {
         when(assetDao.queryAssetCountByAreaIds(any())).thenReturn(0);
 
-        List<Integer> areaIds = new ArrayList<>();
-        areaIds.add(1);
+        List<String> areaIds = new ArrayList<>();
+        areaIds.add("1");
 
         Integer result = assetServiceImpl.queryAssetCountByAreaIds(areaIds);
         Assert.assertEquals(Integer.valueOf(0), result);
