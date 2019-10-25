@@ -107,7 +107,7 @@ public class AssetController {
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
     public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) {
         return ActionResponse.success(
-            iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
+            iAssetService.queryAssetCountByAreaIds(areaIds.getAreaIds()));
     }
 
     /**
