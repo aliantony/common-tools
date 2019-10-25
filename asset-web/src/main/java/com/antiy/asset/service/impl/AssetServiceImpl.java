@@ -1364,7 +1364,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .filter(a -> "DISK".equals(a.getType())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
-                    add.append("[A]新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                    add.append("$新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
                         .append(disk.getAmount());
                 });
             } else {
@@ -1375,25 +1375,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 newDisks.stream().forEach(disk -> {
                     if (oldDiskBusinessIds.contains(disk.getBusinessId())) {
                         if (!disk.getAmount().equals(map.get(disk.getBusinessId()))) {
-                            update.append("[A]更改组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                            update.append("$更改组件:").append("硬盘").append(disk.getProductName()).append("数量")
                                 .append(disk.getAmount());
                         }
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
-                        add.append("[A]添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                        add.append("$添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
                             .append(disk.getAmount());
                     }
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
                     oldDiskBusinessIds.stream().forEach(os -> {
-                        delete.append("[A]删除组件:").append("硬盘").append(map.get(os));
+                        delete.append("$删除组件:").append("硬盘").append(map.get(os));
                     });
                 }
             }
         } else {
             if (CollectionUtils.isNotEmpty(oldDisks)) {
                 oldDisks.stream().forEach(disk -> {
-                    sb.append("[A]删除组件:").append("硬盘").append(disk.getProductName());
+                    sb.append("$删除组件:").append("硬盘").append(disk.getProductName());
                 });
             }
         }
@@ -1411,7 +1411,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 变更前没关联过软件
                 if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
                     newSoftIds.stream().forEach(ns -> {
-                        add.append("[A]新增软件:")
+                        add.append("$新增软件:")
                             .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                     });
                 } else {
@@ -1423,7 +1423,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSoftwareInstallResponse::getSoftwareId, AssetSoftwareInstallResponse::getProductName));
                     newSoftIds.stream().forEach(ns -> {
                         if (!oldSoftIds.contains(String.valueOf(ns))) {
-                            add.append("[A]新增软件:")
+                            add.append("$新增软件:")
                                 .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                         } else {
                             oldSoftIds.removeIf(a -> a.contains(String.valueOf(ns)));
@@ -1431,7 +1431,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     if (CollectionUtils.isNotEmpty(oldSoftIds)) {
                         oldSoftIds.stream().forEach(os -> {
-                            delete.append("[A]删除软件:").append(oldMap.get(os));
+                            delete.append("$删除软件:").append(oldMap.get(os));
                         });
                     }
                 }
@@ -1439,7 +1439,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 如果变更前存在软件，则软件全部被删除了
                 if (CollectionUtils.isNotEmpty(assetSoftwareInstallResponseList)) {
                     assetSoftwareInstallResponseList.stream().forEach(asr -> {
-                        delete.append("[A]删除软件:").append(asr.getProductName());
+                        delete.append("$删除软件:").append(asr.getProductName());
                     });
                 }
             }
