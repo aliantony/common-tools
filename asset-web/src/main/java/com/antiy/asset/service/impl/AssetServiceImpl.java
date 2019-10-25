@@ -875,21 +875,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("targetStatus", targetStatus);
-        map.put("gmtModified", System.currentTimeMillis());
-        if (LoginUserUtil.getLoginUser() != null) {
-            map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-            return assetDao.changeStatus(map);
-        } else {
-            LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + "{}", "用户获取失败");
-            throw new BusinessException("用户获取失败");
-        }
-    }
-
-    @Override
     public List<AssetResponse> findListAssetByCategoryModel(AssetQuery query) throws Exception {
         List<Asset> asset = assetDao.findListAssetByCategoryModel(query);
         List<AssetResponse> objects = responseConverter.convert(asset, AssetResponse.class);

@@ -798,13 +798,6 @@ public class AssetServiceImplTest {
         Assert.assertEquals(Integer.valueOf(0), result);
     }
 
-    @Test
-    public void testChangeStatusById() throws Exception {
-        when(assetDao.changeStatus(any())).thenReturn(0);
-
-        Integer result = assetServiceImpl.changeStatusById("id", 0);
-        Assert.assertEquals(Integer.valueOf(0), result);
-    }
 
     @Test
     public void testFindListAssetByCategoryModel() throws Exception {
@@ -2312,8 +2305,16 @@ public class AssetServiceImplTest {
         when(assetDao.updateAssetAreaId(any(), any())).thenReturn(1);
         AreaOperationRequest areaOperationRequest = new AreaOperationRequest();
         MockAck mockAck = new MockAck();
+
         assetServiceImpl.listen(JSONObject.toJSONString(areaOperationRequest), mockAck);
 
+        when(assetDao.updateAssetAreaId(any(), any())).thenThrow(BusinessException.class);
+        try {
+            assetServiceImpl.listen(JSONObject.toJSONString(areaOperationRequest), mockAck);
+
+        } catch (Exception r) {
+
+        }
     }
 
     @Test

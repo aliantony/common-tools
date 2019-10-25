@@ -96,7 +96,23 @@ public class AssetReportServiceManager {
         assetGroupEntity.setDate("2018,5,1");
         assetGroupEntity.setGroupCount(1);
         assetGroupEntity.setGroupId(1);
-        assetGroupEntity.setName("ss");
+        assetGroupEntity.setName("sewes");
+        List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
+        assetGroupEntityList.add(assetGroupEntity);
+        return assetGroupEntityList;
+    }
+
+    public List<AssetGroupEntity> initGroupEntityList2() {
+        AssetGroupEntity assetGroupEntity = new AssetGroupEntity();
+        assetGroupEntity.setDate("2018,5,1");
+        assetGroupEntity.setGroupCount(1);
+        assetGroupEntity.setGroupId(1);
+        assetGroupEntity.setName("sewes");
+        AssetGroupEntity assetGroupEntity1 = new AssetGroupEntity();
+        assetGroupEntity1.setDate("2018,5,1");
+        assetGroupEntity1.setGroupCount(1);
+        assetGroupEntity1.setGroupId(1);
+        assetGroupEntity1.setName("sewwees");
         List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
         assetGroupEntityList.add(assetGroupEntity);
         return assetGroupEntityList;
@@ -108,8 +124,14 @@ public class AssetReportServiceManager {
         assetGroupEntity.setGroupCount(1);
         assetGroupEntity.setGroupId(1);
         assetGroupEntity.setName("ss");
+        AssetGroupEntity assetGroupEntity2 = new AssetGroupEntity();
+        assetGroupEntity2.setDate("2019-01");
+        assetGroupEntity2.setGroupCount(1);
+        assetGroupEntity2.setGroupId(1);
+        assetGroupEntity2.setName("ss1");
         List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
         assetGroupEntityList.add(assetGroupEntity);
+        assetGroupEntityList.add(assetGroupEntity2);
         return assetGroupEntityList;
     }
 }
