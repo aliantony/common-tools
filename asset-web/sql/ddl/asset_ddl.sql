@@ -297,7 +297,7 @@ CREATE TABLE `asset_network_equipment` (
   `asset_id` int(11) NOT NULL COMMENT '资产主键',
   `outer_ip` varchar(15) DEFAULT NULL COMMENT '外网IP',
   `interface_size` tinyint(3) DEFAULT NULL COMMENT '接口数目',
-  `is_wireless` bit(1) DEFAULT NULL COMMENT '是否无线：0-否,1-是',
+  `is_wireless` tinyint(3) DEFAULT NULL COMMENT '是否无线：0-否,1-是',
   `port_size` int(11) DEFAULT NULL COMMENT '端口数目',
   `cpu_version` varchar(64) DEFAULT NULL COMMENT 'CPU版本',
   `cpu_size` int(11) DEFAULT NULL COMMENT 'CPU大小',
