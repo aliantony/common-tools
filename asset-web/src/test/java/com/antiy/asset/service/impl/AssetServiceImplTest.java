@@ -54,11 +54,13 @@ import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LicenseUtil;
 import com.antiy.common.utils.LogUtils;
@@ -69,7 +71,7 @@ import com.google.common.collect.Sets;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
-                  LogHandle.class, ZipUtil.class, CollectionUtils.class })
+                  LogHandle.class, ZipUtil.class, CollectionUtils.class, RedisKeyUtil.class })
 // @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
@@ -753,11 +755,59 @@ public class AssetServiceImplTest {
     public void dealProcess() {
         AssetQuery query = new AssetQuery();
         query.setAssetStatus(1);
+        query.setAssetStatusList(Arrays.asList(1, 2, 3));
+        query.setEnterControl(true);
         Map<String, WaitingTaskReponse> processMap = new HashMap<>();
         processMap.put("1", new WaitingTaskReponse());
         List<String> sortedIds = Lists.newArrayList();
         sortedIds.add("1");
         when(assetDao.sortAssetIds(processMap.keySet(), query.getAssetStatus())).thenReturn(sortedIds);
+        assetServiceImpl.dealProcess(query, processMap);
+    }
+
+    @Test
+    public void findUnconnectedAsset() throws Exception {
+        mockStatic(RedisKeyUtil.class);
+        AssetQuery query = new AssetQuery();
+        query.setPrimaryKey("1");
+        mockStatic(LoginUserUtil.class);
+        LoginUser loginUser = getLoginUser();
+        when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+        Asset asset = new Asset();
+        asset.setCategoryModel(1);
+        when(assetDao.getByAssetId(query.getPrimaryKey())).thenReturn(asset);
+        assetServiceImpl.findUnconnectedAsset(query);
+
+        query.setCategoryModels(null);
+        asset.setCategoryModel(2);
+        when(assetDao.getByAssetId(query.getPrimaryKey())).thenReturn(asset);
+        assetServiceImpl.findUnconnectedAsset(query);
+
+        when(assetLinkRelationDao.findUnconnectedCount(query)).thenReturn(0);
+        assetServiceImpl.findUnconnectedAsset(query);
+
+        when(assetLinkRelationDao.findUnconnectedCount(query)).thenReturn(1);
+        List<Asset> assetList = Lists.newArrayList();
+        Asset asset1 = new Asset();
+        asset1.setId(1);
+        asset1.setAreaId("1");
+        assetList.add(asset1);
+        when(assetLinkRelationDao.findListUnconnectedAsset(query)).thenReturn(assetList);
+        List<AssetResponse> assetResponseList = Lists.newArrayList();
+        AssetResponse assetResponse = new AssetResponse();
+        assetResponse.setAreaId("1");
+        assetResponseList.add(assetResponse);
+        when(responseConverter.convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class))
+            .thenReturn(assetResponseList);
+        String newAreaKey = "1";
+        when(RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, assetResponse.getAreaId()))
+            .thenReturn(newAreaKey);
+        when(redisUtil.getObject(newAreaKey, SysArea.class)).thenReturn(mock(SysArea.class));
+        assetServiceImpl.findUnconnectedAsset(query);
+
+        when(redisUtil.getObject(newAreaKey, SysArea.class)).thenThrow(new Exception());
+        assetServiceImpl.findUnconnectedAsset(query);
+
     }
 
     @Test

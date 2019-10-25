@@ -717,9 +717,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
-
-
-
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setTemplateList(processTemplateRequest.getIds());
@@ -781,11 +778,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
             assetResponseList.stream().forEach(assetLinkedCount -> {
-                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
-                    com.antiy.asset.vo.request.SysArea.class, assetLinkedCount.getAreaId());
+                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    assetLinkedCount.getAreaId());
                 try {
-                    com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
-                        com.antiy.asset.vo.request.SysArea.class);
+                    SysArea sysArea = redisUtil.getObject(newAreaKey, SysArea.class);
                     if (!Objects.isNull(sysArea)) {
                         assetLinkedCount.setAreaName(sysArea.getFullName());
                     }
@@ -797,7 +793,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
     }
-
 
     @Override
     @Transactional
@@ -3079,9 +3074,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
-
-
-
 
     @Override
     public AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) {
