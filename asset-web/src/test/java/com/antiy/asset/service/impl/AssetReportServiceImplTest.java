@@ -196,9 +196,14 @@ public class AssetReportServiceImplTest {
 
     @Test
     public void getAssetConutWithGroupWithAssignTim1e() throws Exception {
-        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList1();
+        // assetReportDao.getAssetConutWithGroup
+        // 新增
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList2();
+
+        // top5
+        List<AssetGroupEntity> assetGroupEntityList1 = assetReportServiceManager.initGroupEntityList();
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList1);
         AssetReportResponse result = iAssetReportService
             .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("4"));
         Assert.assertThat(result, Matchers.notNullValue());

@@ -75,14 +75,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     Integer changeStatus(String[] ids, Integer assetStatus) throws Exception;
 
-    /**
-     * 通过资产ID修改资产状态
-     *
-     * @param id
-     * @param targetStatus
-     * @return
-     */
-    Integer changeStatusById(String id, Integer targetStatus) throws Exception;
 
     /**
      * 批量保存 <p> 批量保存 m
