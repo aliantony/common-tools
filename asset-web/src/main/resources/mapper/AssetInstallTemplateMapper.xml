@@ -383,6 +383,7 @@
     <select id="queryPatchList" resultType="com.antiy.asset.entity.PatchInfo"
             parameterType="com.antiy.asset.vo.query.PrimaryKeyQuery">
         select
+            t2.id,
             patch_number as patchNumber,
             antiy_patch_number as antiyPatchNumber,
             patch_name as patchName,
