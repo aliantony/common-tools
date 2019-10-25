@@ -10,28 +10,47 @@ package com.antiy.asset.vo.enums;
  * @Description:
  */
 public enum AssetFlowEnum {
-    // HARDWARE_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(), "登记资产"),
-    // HARDWARE_CONFIG_BASELINE(AssetStatusEnum.WAIT_SETTING.getCode(), "配置基准"),
-    // HARDWARE_BASELINE_VALIDATE(AssetStatusEnum.WAIT_VALIDATE.getCode(), "验证基准"),
-    // HARDWARE_ENTER_IMPLEMENTATION(AssetStatusEnum.WAIT_NET.getCode(), "准入实施"),
-    // HARDWARE_EFFECT_CHECK(AssetStatusEnum.WAIT_CHECK.getCode(), "效果检查"),
-    // TOPOLOGY_REGISTER(99,"拓扑登记"),
-    // WAIT_RETIRE_SCHEMA(AssetStatusEnum.NET_IN .getCode(), "待退役资产"),
-    // VALIDATE_RETIRE_RESULT(AssetStatusEnum.WAIT_RETIRE.getCode(), "实施退役"),
-    // HARDWARE_CHANGE(21, "变更资产"),
-
-    // 新增
-    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产信息"),
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "实施资产信息"),
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "验证资产信息"),
-    NET_IN(AssetStatusEnum.WAIT_NET, "入网资产信息"),
-    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查资产信息"),
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改资产信息"),
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "拟退役资产信息"),
-    RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役资产信息"),
-    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产信息"),
-    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
-            ;
+    /**
+     * 登记
+     */
+    REGISTER(AssetStatusEnum.WAIT_REGISTER, "", "登记资产。", "登记资产信息"),
+    /**
+     * 实施
+     */
+    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "模板实施。实施情况：", "实施资产信息"),
+    /**
+     * 验证
+     */
+    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "结果验证。验证情况：", "验证资产信息"),
+    /**
+     * 入网
+     */
+    NET_IN(AssetStatusEnum.WAIT_NET, "", "准入实施。实施情况：", "入网资产信息"),
+    /**
+     * 检查
+     */
+    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "安全检查。验证情况：", "检查资产信息"),
+    /**
+     * 整改
+     */
+    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser", "安全整改。整改情况：", "整改资产信息"),
+    /**
+     * 拟退役
+     */
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "待退役资产。", "拟退役资产信息"),
+    /**
+     * 实施退役
+     */
+    RETIRE(AssetStatusEnum.WAIT_RETIRE, "", "实施退役。退役情况：", "退役资产信息"),
+    /**
+     * 变更
+     */
+    CHANGE(AssetStatusEnum.IN_CHANGE, "", "变更资产信息。", "变更资产信息"),
+    /**
+     * 配置模块调用.
+     */
+    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "", "变更完成。", "变更完成"),
+    ;
 
     /**
      * 资产当前状态
@@ -44,19 +63,20 @@ public enum AssetFlowEnum {
     private String activityKey;
 
     /**
-     * 对应流程信息,用于记录操作日志
+     * 对应流程信息,用于记录资产record表
      */
     private String  msg;
 
-    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String msg) {
+    /**
+     * 对应流程信息,用于记录操作日志
+     */
+    private String operaLog;
+
+    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String msg, String operaLog) {
         this.currentAssetStatus = currentAssetStatus;
         this.activityKey = activityKey;
         this.msg = msg;
-    }
-
-    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String msg) {
-        this.currentAssetStatus = currentAssetStatus;
-        this.msg = msg;
+        this.operaLog = operaLog;
     }
 
     public String getActivityKey() {
@@ -65,6 +85,10 @@ public enum AssetFlowEnum {
 
     public String getMsg() {
         return msg;
+    }
+
+    public String getOperaLog() {
+        return operaLog;
     }
 
     public AssetStatusEnum getCurrentAssetStatus() {
