@@ -1339,7 +1339,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @param assetOuterRequest
      * @return
      */
-    private String getChangeContent(AssetOuterRequest assetOuterRequest) {
+    public String getChangeContent(AssetOuterRequest assetOuterRequest) {
         StringBuilder sb = new StringBuilder();
         StringBuilder add = new StringBuilder();
         StringBuilder update = new StringBuilder();
@@ -1352,7 +1352,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String oldOs = assetDao.getByAssetId(assetId).getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
-                update.append("$更改基础信息:").append("操作系统").append(newOs);
+                update.append("[A]更改基础信息:").append("操作系统").append(newOs);
             }
         }
 

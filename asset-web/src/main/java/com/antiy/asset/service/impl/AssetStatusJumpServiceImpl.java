@@ -95,7 +95,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         updateData(statusJumpRequest, assetsInDb);
 
         // 4.记录操作日志
-        assetsInDb.forEach(asset -> LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getMsg(),
+        assetsInDb.forEach(asset -> LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getOperaLog(),
                 asset.getId(), asset.getNumber(), statusJumpRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE)));
         return ActionResponse.success();
     }

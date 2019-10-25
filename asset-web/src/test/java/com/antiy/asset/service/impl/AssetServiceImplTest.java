@@ -607,9 +607,9 @@ public class AssetServiceImplTest {
         when(assetDao.findCount(any())).thenReturn(100);
         when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
 
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
-        when(assetDao.findCount(any())).thenReturn(100);
-        when(assetDao.findAlarmAssetCount(any())).thenReturn(100);
+        /* when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+         * when(assetDao.findCount(any())).thenReturn(100);
+         * when(assetDao.findAlarmAssetCount(any())).thenReturn(100); */
 
         assetQuery.setUnknownAssets(true);
         try {
@@ -678,8 +678,39 @@ public class AssetServiceImplTest {
     @Test
     public void findListAsset() throws Exception {
         AssetQuery query = new AssetQuery();
+        query.setPageSize(10);
         query.setAreaIds(new String[] {});
+        query.setAssetStatus(1);
         Map<String, WaitingTaskReponse> processMap = new HashMap<>();
+        processMap.put("1", new WaitingTaskReponse());
+        List<Asset> assetList = Lists.newArrayList();
+        Asset asset = new Asset();
+        asset.setAreaId("1");
+        assetList.add(asset);
+        when(assetDao.findListAsset(query)).thenReturn(assetList);
+
+        query.setQueryPatchCount(true);
+        query.setQueryVulCount(true);
+        query.setQueryAlarmCount(true);
+        List<IdCount> vulCountList = Lists.newArrayList();
+        vulCountList.add(new IdCount("1", "1"));
+        when(assetDao.queryAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
+            query.getPageOffset())).thenReturn(vulCountList);
+
+        List<IdCount> patchCountList = Lists.newArrayList();
+        patchCountList.add(new IdCount("1", "1"));
+        when(assetDao.queryAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(),
+            query.getPageOffset())).thenReturn(patchCountList);
+
+        List<IdCount> alarmCountList = Lists.newArrayList();
+        alarmCountList.add(new IdCount("1", "1"));
+        when(assetDao.queryAlarmCountByAssetIds(query)).thenReturn(alarmCountList);
+        List<String> sortedIds = Lists.newArrayList();
+        sortedIds.add("1");
+        when(assetDao.sortAssetIds(processMap.keySet(), query.getAssetStatus())).thenReturn(sortedIds);
+        assetServiceImpl.findListAsset(query, processMap);
+
+        when(assetDao.queryAlarmCountByAssetIds(query)).thenReturn(null);
         assetServiceImpl.findListAsset(query, processMap);
     }
 
@@ -1210,6 +1241,105 @@ public class AssetServiceImplTest {
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void getChangeContent() {
+        AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        assetRequest.setCategoryModel(1);
+        assetRequest.setOperationSystemName("windows2");
+        assetOuterRequest.setAsset(assetRequest);
+
+        Asset asset = new Asset();
+        asset.setOperationSystemName("linux");
+        when(assetDao.getByAssetId("1")).thenReturn(asset);
+        List<AssetAssemblyRequest> assetAssemblyRequestList = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
+        assetAssemblyRequest.setAmount(2);
+        assetAssemblyRequest.setType("DISK");
+        assetAssemblyRequest.setBusinessId("1");
+        assetAssemblyRequestList.add(assetAssemblyRequest);
+        assetOuterRequest.setAssemblyRequestList(assetAssemblyRequestList);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(Lists.newArrayList());
+
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetAssemblyRequest> assetAssemblyRequestList2 = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest2 = new AssetAssemblyRequest();
+        assetAssemblyRequest2.setAmount(1);
+        assetAssemblyRequest2.setType("DISK");
+        assetAssemblyRequest2.setBusinessId("1");
+        assetAssemblyRequestList2.add(assetAssemblyRequest2);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(assetAssemblyRequestList2);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetAssemblyRequest> assetAssemblyRequestList3 = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest3 = new AssetAssemblyRequest();
+        assetAssemblyRequest3.setAmount(1);
+        assetAssemblyRequest3.setType("DISK");
+        assetAssemblyRequest3.setBusinessId("2");
+        assetAssemblyRequestList3.add(assetAssemblyRequest3);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(assetAssemblyRequestList3);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetOuterRequest.setAssemblyRequestList(Lists.newArrayList());
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        AssetSoftwareReportRequest assetSoftwareReportRequest = new AssetSoftwareReportRequest();
+        List<Long> softIds = Lists.newArrayList();
+        softIds.add(1L);
+        softIds.add(3L);
+        assetSoftwareReportRequest.setSoftId(softIds);
+        assetOuterRequest.setSoftwareReportRequest(assetSoftwareReportRequest);
+        when(assetSoftwareRelationDao.queryInstalledList(any())).thenReturn(Lists.newArrayList());
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = Lists.newArrayList();
+        AssetSoftwareInstallResponse assetSoftwareInstallResponse = new AssetSoftwareInstallResponse();
+        assetSoftwareInstallResponse.setAssetId("1");
+        assetSoftwareInstallResponse.setSoftwareId("2");
+        assetSoftwareInstallResponse.setProductName("office");
+        assetSoftwareInstallResponseList.add(assetSoftwareInstallResponse);
+        AssetSoftwareInstallResponse assetSoftwareInstallResponse2 = new AssetSoftwareInstallResponse();
+        assetSoftwareInstallResponse2.setAssetId("1");
+        assetSoftwareInstallResponse2.setSoftwareId("1");
+        assetSoftwareInstallResponse2.setProductName("office");
+        assetSoftwareInstallResponseList.add(assetSoftwareInstallResponse2);
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setProductName("fdfd");
+        when(assetHardSoftLibDao.getByBusinessId(anyString())).thenReturn(assetHardSoftLib);
+        when(assetSoftwareRelationDao.queryInstalledList(any())).thenReturn(assetSoftwareInstallResponseList);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        softIds = Lists.newArrayList();
+        assetSoftwareReportRequest.setSoftId(softIds);
+        assetOuterRequest.setSoftwareReportRequest(assetSoftwareReportRequest);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1957,6 +2087,8 @@ public class AssetServiceImplTest {
 
         Integer result = assetServiceImpl.queryAssetCountByAreaIds(areaIds);
         Assert.assertEquals(Integer.valueOf(0), result);
+        int result2 = assetServiceImpl.queryAssetCountByAreaIds(null);
+        Assert.assertEquals(0, result2);
     }
 
     @Test()
@@ -2028,10 +2160,10 @@ public class AssetServiceImplTest {
         when(assetLinkRelationDao.pulldownUnconnectedManufacturer(any())).thenReturn(Sets.newHashSet("String"));
 
         Set<String> result = assetServiceImpl.pulldownUnconnectedManufacturer(1, "1");
-        Assert.assertEquals(Arrays.asList("String"), result);
+        Assert.assertEquals(Sets.newHashSet("String"), result);
 
         result = assetServiceImpl.pulldownUnconnectedManufacturer(0, "1");
-        Assert.assertEquals(Arrays.asList("String"), result);
+        Assert.assertEquals(Sets.newHashSet("String"), result);
 
     }
 
@@ -2154,6 +2286,10 @@ public class AssetServiceImplTest {
     public void testFindAssetIds() {
         when(assetDao.findAssetIds(any())).thenReturn(Arrays.asList("1"));
         Assert.assertNotNull(assetServiceImpl.findAssetIds());
+        LoginUser loginUser = getLoginUser();
+        loginUser.setAreas(null);
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
+        Assert.assertNotNull(assetServiceImpl.findAssetIds());
     }
 
     @Test
@@ -2162,12 +2298,16 @@ public class AssetServiceImplTest {
         AreaOperationRequest areaOperationRequest = new AreaOperationRequest();
         MockAck mockAck = new MockAck();
         assetServiceImpl.listen(JSONObject.toJSONString(areaOperationRequest), mockAck);
+
     }
 
     @Test
     public void queryWaitRegistCount() {
         Mockito.when(assetDao.queryWaitRegistCount(Mockito.anyInt(), Mockito.any())).thenReturn(1);
         Assert.assertEquals("1", assetServiceImpl.queryWaitRegistCount() + "");
+        PowerMockito.when(LoginUserUtil.getLoginUser()).thenReturn(null);
+        int k = assetServiceImpl.queryWaitRegistCount();
+        Assert.assertEquals(0, k);
     }
 
     @Test
@@ -2398,11 +2538,30 @@ public class AssetServiceImplTest {
 
     }
 
+    @Test
+    public void queryBaselineTemplate() {
+        assetServiceImpl.queryBaselineTemplate();
+        System.out.println("成功");
+    }
+
     class MockAck implements Acknowledgment {
         @Override
         public void acknowledge() {
 
         }
+    }
+
+    @Test
+    public void queryUuidByAssetId() throws Exception {
+        AssetIdRequest request = new AssetIdRequest();
+        request.setAssetIds(Arrays.asList("33"));
+        when(assetDao.findUuidByAssetId(any())).thenReturn(null);
+        List<String> strings = assetServiceImpl.queryUuidByAssetId(request);
+        Assert.assertNull(strings);
+        request.setAssetIds(null);
+        expectedException.expectMessage("资产ID不能为空");
+        expectedException.expect(BusinessException.class);
+        assetServiceImpl.queryUuidByAssetId(request);
     }
 
     @Test
