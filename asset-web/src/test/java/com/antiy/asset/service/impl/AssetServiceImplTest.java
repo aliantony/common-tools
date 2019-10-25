@@ -740,9 +740,24 @@ public class AssetServiceImplTest {
         actionResponse.setBody(Arrays.asList(waitingTaskReponse));
 
         when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
+        assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
 
-        Map<String, WaitingTaskReponse> result = assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
-        Assert.assertTrue(result.size() > 0);
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(ActionResponse.fail(RespBasicCode.PARAMETER_ERROR));
+        try {
+            assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void dealProcess() {
+        AssetQuery query = new AssetQuery();
+        query.setAssetStatus(1);
+        Map<String, WaitingTaskReponse> processMap = new HashMap<>();
+        processMap.put("1", new WaitingTaskReponse());
+        List<String> sortedIds = Lists.newArrayList();
+        sortedIds.add("1");
+        when(assetDao.sortAssetIds(processMap.keySet(), query.getAssetStatus())).thenReturn(sortedIds);
     }
 
     @Test
