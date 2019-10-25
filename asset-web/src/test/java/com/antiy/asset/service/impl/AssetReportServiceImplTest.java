@@ -194,16 +194,22 @@ public class AssetReportServiceImplTest {
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
+
+    /**
+     * TOP5的资产组名字  不存在于  新增的资产组名字中
+     * <pre>totalNum = assetGroupOptional.isPresent() ? assetGroupOptional.get().getGroupCount() + addNum:addNum;</pre>
+     * @throws Exception
+     */
+
     @Test
     public void getAssetConutWithGroupWithAssignTim1e() throws Exception {
-        // assetReportDao.getAssetConutWithGroup
-        // 新增
-        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList2();
-
-        // top5
+        // top5的数据
         List<AssetGroupEntity> assetGroupEntityList1 = assetReportServiceManager.initGroupEntityList();
-        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
-        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList1);
+        // 本时间段的数据
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList2();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList1).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+
         AssetReportResponse result = iAssetReportService
             .getAssetCountWithGroup(assetReportServiceManager.initReportQueryRequest("4"));
         Assert.assertThat(result, Matchers.notNullValue());

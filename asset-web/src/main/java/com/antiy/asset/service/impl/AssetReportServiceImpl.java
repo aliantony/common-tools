@@ -133,7 +133,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
         // }
         // 1.获取结束时间之前,Top5的资产组数量信息
         reportQueryRequest.setTopFive(true);
-        List<AssetGroupEntity> topGroupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
+        List<AssetGroupEntity>  topGroupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
         if (Objects.nonNull(reportQueryRequest.getTopFive())) {
             // 添加当前结束时间内TOP5的资产组Id列表,后续查询缩小范围
