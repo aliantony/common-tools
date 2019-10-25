@@ -21,16 +21,16 @@ public enum AssetFlowEnum {
     // HARDWARE_CHANGE(21, "变更资产"),
 
     // 新增
-    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产。"),
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "模板实施。实施情况："),
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "结果验证。验证情况："),
-    NET_IN(AssetStatusEnum.WAIT_NET, "准入实施。实施情况："),
-    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "安全检查。验证情况："),
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "安全整改。整改情况："),
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "待退役资产。"),
-    RETIRE(AssetStatusEnum.WAIT_RETIRE, "实施退役。退役情况："),
-    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产信息。"),
-    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成。"),
+    REGISTER(AssetStatusEnum.WAIT_REGISTER, "登记资产信息"),
+    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "实施资产信息"),
+    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "验证资产信息"),
+    NET_IN(AssetStatusEnum.WAIT_NET, "入网资产信息"),
+    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "检查资产信息"),
+    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser",  "整改资产信息"),
+    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "拟退役资产信息"),
+    RETIRE(AssetStatusEnum.WAIT_RETIRE, "退役资产信息"),
+    CHANGE(AssetStatusEnum.IN_CHANGE, "变更资产信息"),
+    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "变更完成"),
             ;
 
     /**
