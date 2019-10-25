@@ -219,7 +219,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param areaIds
      * @return
      */
-    Integer queryAssetCountByAreaIds(List<Integer> areaIds);
+    Integer queryAssetCountByAreaIds(List<String> areaIds);
 
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
