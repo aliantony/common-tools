@@ -1212,6 +1212,105 @@ public class AssetServiceImplTest {
         }
     }
 
+    @Test
+    public void getChangeContent() {
+        AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        assetRequest.setCategoryModel(1);
+        assetRequest.setOperationSystemName("windows2");
+        assetOuterRequest.setAsset(assetRequest);
+
+        Asset asset = new Asset();
+        asset.setOperationSystemName("linux");
+        when(assetDao.getByAssetId("1")).thenReturn(asset);
+        List<AssetAssemblyRequest> assetAssemblyRequestList = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
+        assetAssemblyRequest.setAmount(2);
+        assetAssemblyRequest.setType("DISK");
+        assetAssemblyRequest.setBusinessId("1");
+        assetAssemblyRequestList.add(assetAssemblyRequest);
+        assetOuterRequest.setAssemblyRequestList(assetAssemblyRequestList);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(Lists.newArrayList());
+
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetAssemblyRequest> assetAssemblyRequestList2 = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest2 = new AssetAssemblyRequest();
+        assetAssemblyRequest2.setAmount(1);
+        assetAssemblyRequest2.setType("DISK");
+        assetAssemblyRequest2.setBusinessId("1");
+        assetAssemblyRequestList2.add(assetAssemblyRequest2);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(assetAssemblyRequestList2);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetAssemblyRequest> assetAssemblyRequestList3 = Lists.newArrayList();
+        AssetAssemblyRequest assetAssemblyRequest3 = new AssetAssemblyRequest();
+        assetAssemblyRequest3.setAmount(1);
+        assetAssemblyRequest3.setType("DISK");
+        assetAssemblyRequest3.setBusinessId("2");
+        assetAssemblyRequestList3.add(assetAssemblyRequest3);
+        when(assetAssemblyDao.findAssemblyByAssetId("1", "DISK")).thenReturn(assetAssemblyRequestList3);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        assetOuterRequest.setAssemblyRequestList(Lists.newArrayList());
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        AssetSoftwareReportRequest assetSoftwareReportRequest = new AssetSoftwareReportRequest();
+        List<Long> softIds = Lists.newArrayList();
+        softIds.add(1L);
+        softIds.add(3L);
+        assetSoftwareReportRequest.setSoftId(softIds);
+        assetOuterRequest.setSoftwareReportRequest(assetSoftwareReportRequest);
+        when(assetSoftwareRelationDao.queryInstalledList(any())).thenReturn(Lists.newArrayList());
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = Lists.newArrayList();
+        AssetSoftwareInstallResponse assetSoftwareInstallResponse = new AssetSoftwareInstallResponse();
+        assetSoftwareInstallResponse.setAssetId("1");
+        assetSoftwareInstallResponse.setSoftwareId("2");
+        assetSoftwareInstallResponse.setProductName("office");
+        assetSoftwareInstallResponseList.add(assetSoftwareInstallResponse);
+        AssetSoftwareInstallResponse assetSoftwareInstallResponse2 = new AssetSoftwareInstallResponse();
+        assetSoftwareInstallResponse2.setAssetId("1");
+        assetSoftwareInstallResponse2.setSoftwareId("1");
+        assetSoftwareInstallResponse2.setProductName("office");
+        assetSoftwareInstallResponseList.add(assetSoftwareInstallResponse2);
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setProductName("fdfd");
+        when(assetHardSoftLibDao.getByBusinessId(anyString())).thenReturn(assetHardSoftLib);
+        when(assetSoftwareRelationDao.queryInstalledList(any())).thenReturn(assetSoftwareInstallResponseList);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        softIds = Lists.newArrayList();
+        assetSoftwareReportRequest.setSoftId(softIds);
+        assetOuterRequest.setSoftwareReportRequest(assetSoftwareReportRequest);
+        try {
+            assetServiceImpl.getChangeContent(assetOuterRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private AssetHardDiskRequest generateHardDiskRequest() {
         AssetHardDiskRequest hardDiskRequest = new AssetHardDiskRequest();
         hardDiskRequest.setMemo("");
