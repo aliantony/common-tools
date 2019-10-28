@@ -252,5 +252,12 @@ public class AssetInstallTemplateControllerTest {
                 .andExpect(jsonPath("$.body.currentPage").value(currentPage))
                 .andExpect(jsonPath("$.body.totalRecords").value(totalRecord))
                 .andExpect(jsonPath("$.body.items", Matchers.hasSize(0)));
+    }    @Test
+    public void deleteBatchPatchIdsTest() throws Exception {
+        int expect=1;
+        Mockito.doAnswer(invocation ->expect).when(iAssetInstallTemplateService).deleteBatchPatch(any());
+        postResultActions("/delete/patchIds", "{}")
+                .andExpect(jsonPath("$.body").value(expect));
+
     }
 }

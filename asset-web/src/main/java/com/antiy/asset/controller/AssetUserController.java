@@ -108,7 +108,7 @@ public class AssetUserController {
         AssetUserResponse assetUserResponse = BeanConvert.convertBean(assetUser, AssetUserResponse.class);
         if (StringUtils.isNotBlank(assetUserResponse.getAddress())) {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                    com.antiy.common.utils.DataTypeUtils.stringToInteger(assetUserResponse.getAddress()));
+                DataTypeUtils.stringToInteger(assetUserResponse.getAddress()));
             SysArea sysArea = redisUtil.getObject(key, SysArea.class);
             if (Objects.isNull(sysArea)) {
                 assetUserResponse.setAddress(null);
