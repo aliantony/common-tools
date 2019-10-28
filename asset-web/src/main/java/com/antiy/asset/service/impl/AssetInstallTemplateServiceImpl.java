@@ -190,11 +190,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             LogUtils.info(logger, "编辑装机模板:{}", request.toString());
             if (currentStatus == AssetInstallTemplateStatusEnum.REJECT.getCode()) {
                 ParamterExceptionUtils.isBlank(request.getTaskId(), "非流程任务发起人不能编辑");
-                ActionResponse actionResponse=activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
+                ActionResponse actionResponse = activityClient.completeTask(setActivityHandleRequest(request.getFormData(), request.getTaskId()));
                 if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     LogUtils.info(logger, "结束拒绝状态的模板工作流任务失败: {}", "模板编辑");
-                    BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+                    throw new BusinessException("调用流程引擎出错");
                 }
                 return actionResponse;
             }
@@ -261,10 +261,19 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     }
 
     @Override
+    @Transactional
     public synchronized String deleteAssetInstallTemplateById(BatchQueryRequest request) {
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
+        ParamterExceptionUtils.isEmpty(request.getProcessInstanceIds(), "流程实例id不能为空");
+        ParamterExceptionUtils.isTrue(request.getIds().size() == request.getProcessInstanceIds().size(), "请确保参数正确");
         int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
                 LoginUserUtil.getLoginUser().getName());
+        List<String> processInstanceIds = request.getProcessInstanceIds().stream().filter(v -> !v.isEmpty()).collect(Collectors.toList());
+        ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
+        if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+            LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
+            throw new BusinessException("调用流程引擎出错");
+        }
         if (count < request.getIds().size()) {
             return "已经删除状态为拒绝的模板";
         }
@@ -408,11 +417,11 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         AssetInstallTemplateResponse response = queryAssetInstallTemplateById(queryCondition);
 
         if (result != null && result == 1) {
-           ActionResponse actionResponse= activityClient.completeTask(handleRequest);
+            ActionResponse actionResponse = activityClient.completeTask(handleRequest);
             if (null == actionResponse
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 LogUtils.info(logger, "结束工作流任务失败: {}", "模板审核");
-                BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+                throw new BusinessException("调用流程引擎出错");
             }
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_CHECK.getName(),
                     template.getId(), response.getNumberCode(), response.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
@@ -428,12 +437,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         activityRequest.setBusinessId(template.getStringId());
         activityRequest.setFormData(request.getFormData());
         activityRequest.setProcessDefinitionKey(PROCESS_KEY_INSTALL);
-        ActionResponse actionResponse=activityClient.manualStartProcess(activityRequest);
+        ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
         // 如果流程引擎为空,直接返回错误信息
         if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             LogUtils.info(logger, "启动工作流失败: {}", PROCESS_KEY_INSTALL);
-            BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+            throw new BusinessException("调用流程引擎出错");
         }
         return actionResponse;
     }
@@ -480,7 +489,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", PROCESS_KEY_INSTALL);
-            BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+            throw new BusinessException("调用流程引擎出错");
         }
         return actionResponse.getBody();
     }

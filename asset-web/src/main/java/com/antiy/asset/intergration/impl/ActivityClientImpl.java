@@ -31,19 +31,22 @@ public class ActivityClientImpl implements ActivityClient {
     private BaseClient baseClient;
 
     @Value("${manualStartProcessUrl}")
-    private String     manualStartProcessUrl;
+    private String manualStartProcessUrl;
 
     @Value("${batchCompleteTaskUrl}")
-    private String     batchCompleteTaskUrl;
+    private String batchCompleteTaskUrl;
 
     @Value("${completeTaskUrl}")
-    private String     completeTaskUrl;
+    private String completeTaskUrl;
 
     @Value("${waitingTaskUrl}")
-    private String     waitingTaskUrl;
+    private String waitingTaskUrl;
 
     @Value("${startProcessWithoutFormBatchUrl}")
-    private String     startProcessWithoutFormBatchUrl;
+    private String startProcessWithoutFormBatchUrl;
+
+    @Value("${deleteProcessInstanceUrl}")
+    private String deleteProcessInstanceUrl;
 
     @Override
     @AssetLog(description = "人工登记启动工作流", operationType = AssetLogOperationType.CREATE)
@@ -73,15 +76,25 @@ public class ActivityClientImpl implements ActivityClient {
     @AssetLog(description = "获取当前用户的待办任务")
     public ActionResponse<List<WaitingTaskReponse>> queryAllWaitingTask(ActivityWaitingQuery activityWaitingQuery) {
         return (ActionResponse) baseClient.post(activityWaitingQuery,
-            new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
-            }, waitingTaskUrl);
+                new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
+                }, waitingTaskUrl);
     }
 
     @Override
     @AssetLog(description = "批量启动任务")
     public ActionResponse startProcessWithoutFormBatch(List<ManualStartActivityRequest> startProcessRequests) {
         return (ActionResponse) baseClient.post(startProcessRequests,
-            new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
-            }, startProcessWithoutFormBatchUrl);
+                new ParameterizedTypeReference<ActionResponse<List<WaitingTaskReponse>>>() {
+                }, startProcessWithoutFormBatchUrl);
     }
+
+    @Override
+    @AssetLog(description = "根据流程实例ids批量结束任务")
+    public ActionResponse deleteProcessInstance(List<String> processInstanceIds) {
+        return (ActionResponse) baseClient.post(processInstanceIds,
+                new ParameterizedTypeReference<ActionResponse>() {
+                }, deleteProcessInstanceUrl);
+    }
+
+
 }
