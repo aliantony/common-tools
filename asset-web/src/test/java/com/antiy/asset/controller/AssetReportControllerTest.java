@@ -76,21 +76,6 @@ public class AssetReportControllerTest {
     }
 
     /**
-     * 根据时间条件查询分类统计资产数量接口测试 断言response
-     * @throws Exception e
-     */
-    @Test
-    public void queryCategoryCountByTime() throws Exception {
-        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
-        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
-        String result = mockMvc
-            .perform(post("/api/v1/asset/report/query/categoryCountByTime").contentType(MediaType.APPLICATION_JSON)
-                .content(JSON.toJSONString(assetReportCategoryCountQuery)))
-            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
-    }
-
-    /**
      * 根据时间条件查询分类统计资产数量,返回表格数据 断言response
      * @throws Exception e
      */
@@ -159,32 +144,6 @@ public class AssetReportControllerTest {
     }
 
     /**
-     * 根据资产组查询资产新增数量信息 断言方法是否调用
-     * @throws Exception e
-     */
-    @Test
-    public void getNewAssetWithGroup() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
-        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_WEEK);
-        postAction("/api/v1/asset/report/export/category/newAsset", JSON.toJSONString(assetReportCategoryCountQuery))
-            .andReturn().getResponse().getContentAsString();
-    }
-
-    /**
-     * 导出资产品类型号报表
-     * @throws Exception e
-     */
-    @Test
-    public void getNewAssetWithGroup1() throws Exception {
-        mockLoginUser(loginUser);
-        mockMvc
-            .perform(post("/api/v1/asset/report/export/category/newAsset").param("showCycleType", "THIS_YEAR")
-                .param("beginTime", "1551422114000").param("endTime", "1551422114000"))
-            .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
-    }
-
-    /**
      * 根据时间查询资产组表格 断言response
      * @throws Exception e
      */
@@ -216,14 +175,6 @@ public class AssetReportControllerTest {
         getAction("/api/v1/asset/report/query/exportAssetGroupTable", reportQueryRequest).andReturn().getResponse()
             .getContentAsString();
         Mockito.verify(iAssetReportService).exportAssetGroupTable(Mockito.any());
-    }
-
-    @Test
-    public void exportCategoryCount() throws Exception {
-        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
-        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
-        getAction("/api/v1/asset/report/export/category/newAsset", assetReportCategoryCountQuery);
-        // Mockito.verify(iAssetReportService).exportCategoryCount(Mockito.any(), Mockito.any());
     }
 
     /**
@@ -298,24 +249,6 @@ public class AssetReportControllerTest {
         reportQueryRequest.setTimeType("1");
         reportQueryRequest.setAssetAreaIds(assetAreaReportRequests);
         return reportQueryRequest;
-    }
-
-    /**
-     * 模拟Form实体
-     * @return Form实体
-     */
-    private ReportForm reportFormInit() {
-        ReportForm reportForm = new ReportForm();
-        List<String> columnList = new ArrayList<>();
-        columnList.add("列标题");
-        List<String> headerList = new ArrayList<>();
-        headerList.add("行标题");
-        String[][] strings = { { "1" } };
-        reportForm.setTitle("ss");
-        reportForm.setColumnList(columnList);
-        reportForm.setData(strings);
-        reportForm.setHeaderList(headerList);
-        return reportForm;
     }
 
 }
