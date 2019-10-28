@@ -71,7 +71,7 @@ import com.google.common.collect.Sets;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
-                  LogHandle.class, ZipUtil.class, CollectionUtils.class, RedisKeyUtil.class })
+                  LogHandle.class, ZipUtil.class, CollectionUtils.class, RedisKeyUtil.class, LogUtils.class })
 // @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
@@ -877,7 +877,6 @@ public class AssetServiceImplTest {
         Integer result = assetServiceImpl.changeStatus(new String[] { "ids" }, 0);
         Assert.assertEquals(Integer.valueOf(0), result);
     }
-
 
     @Test
     public void testFindListAssetByCategoryModel() throws Exception {
@@ -1687,6 +1686,14 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
+
+
+           LicenseContent licenseContent = new LicenseContent();
+        licenseContent.setAssetNum(null);
+        PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
+        expectedException.expectMessage("license异常，请联系客服人员！");
+        expectedException.expect(BusinessException.class);
+        assetServiceImpl.importPc(null, assetImportRequest);
     }
 
     private ComputeDeviceEntity getComputeDeviceEntity() {
@@ -2070,6 +2077,12 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
+
+        when(assetDao.countAsset()).thenReturn(100);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("资产数量已超过授权数量，请联系客服人员！");
+        assetServiceImpl.importStory(null, assetImportRequest);
+
     }
 
     private StorageDeviceEntity getStorageDeviceEntity() {
@@ -2233,13 +2246,14 @@ public class AssetServiceImplTest {
         assetResponse.setName("");
         assetResponse.setSerial("");
         assetResponse.setCategoryModel(1);
+        assetResponse.setImportanceDegree(2);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
         // assetResponse.setOperationSystem(1L);
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
         assetResponse.setAssetSource(0);
-        assetResponse.setImportanceDegree(0);
+        assetResponse.setImportanceDegree(2);
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
         assetResponse.setWarranty("0");
@@ -2271,6 +2285,8 @@ public class AssetServiceImplTest {
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("导出数据为空");
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+
+
         AssetQuery assetQuery3 = new AssetQuery();
         assetQuery3.setStart(1);
         assetQuery3.setEnd(100);
