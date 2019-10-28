@@ -717,9 +717,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
-
-
-
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setTemplateList(processTemplateRequest.getIds());
@@ -781,11 +778,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
             assetResponseList.stream().forEach(assetLinkedCount -> {
-                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(),
-                    com.antiy.asset.vo.request.SysArea.class, assetLinkedCount.getAreaId());
+                String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    assetLinkedCount.getAreaId());
                 try {
-                    com.antiy.asset.vo.request.SysArea sysArea = redisUtil.getObject(newAreaKey,
-                        com.antiy.asset.vo.request.SysArea.class);
+                    SysArea sysArea = redisUtil.getObject(newAreaKey, SysArea.class);
                     if (!Objects.isNull(sysArea)) {
                         assetLinkedCount.setAreaName(sysArea.getFullName());
                     }
@@ -797,7 +793,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetResponseList);
         }
     }
-
 
     @Override
     @Transactional
@@ -872,21 +867,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         map.put("modifyUser", System.currentTimeMillis());
         row = assetDao.changeStatus(map);
         return row;
-    }
-
-    @Override
-    public Integer changeStatusById(String id, Integer targetStatus) throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        map.put("targetStatus", targetStatus);
-        map.put("gmtModified", System.currentTimeMillis());
-        if (LoginUserUtil.getLoginUser() != null) {
-            map.put("modifyUser", LoginUserUtil.getLoginUser().getId());
-            return assetDao.changeStatus(map);
-        } else {
-            LogUtils.info(logger, AssetEventEnum.SOFT_ASSET_STATUS_CHANGE.getName() + "{}", "用户获取失败");
-            throw new BusinessException("用户获取失败");
-        }
     }
 
     @Override
@@ -1224,9 +1204,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ActionResponse baselineCheck;
                     if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
                         baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                        // msg = InstallType.AUTOMATIC.getCode().equals(asset.getInstallType())
-                        // ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
-                        // : "";
                     } else {
                         baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
                     }
@@ -1364,7 +1341,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .filter(a -> "DISK".equals(a.getType())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
-                    add.append("[A]新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                    add.append("$新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
                         .append(disk.getAmount());
                 });
             } else {
@@ -1375,25 +1352,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 newDisks.stream().forEach(disk -> {
                     if (oldDiskBusinessIds.contains(disk.getBusinessId())) {
                         if (!disk.getAmount().equals(map.get(disk.getBusinessId()))) {
-                            update.append("[A]更改组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                            update.append("$更改组件:").append("硬盘").append(disk.getProductName()).append("数量")
                                 .append(disk.getAmount());
                         }
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
-                        add.append("[A]添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
+                        add.append("$添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
                             .append(disk.getAmount());
                     }
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
                     oldDiskBusinessIds.stream().forEach(os -> {
-                        delete.append("[A]删除组件:").append("硬盘").append(map.get(os));
+                        delete.append("$删除组件:").append("硬盘").append(map.get(os));
                     });
                 }
             }
         } else {
             if (CollectionUtils.isNotEmpty(oldDisks)) {
                 oldDisks.stream().forEach(disk -> {
-                    sb.append("[A]删除组件:").append("硬盘").append(disk.getProductName());
+                    sb.append("$删除组件:").append("硬盘").append(disk.getProductName());
                 });
             }
         }
@@ -1411,7 +1388,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 变更前没关联过软件
                 if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
                     newSoftIds.stream().forEach(ns -> {
-                        add.append("[A]新增软件:")
+                        add.append("$新增软件:")
                             .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                     });
                 } else {
@@ -1423,7 +1400,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSoftwareInstallResponse::getSoftwareId, AssetSoftwareInstallResponse::getProductName));
                     newSoftIds.stream().forEach(ns -> {
                         if (!oldSoftIds.contains(String.valueOf(ns))) {
-                            add.append("[A]新增软件:")
+                            add.append("$新增软件:")
                                 .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
                         } else {
                             oldSoftIds.removeIf(a -> a.contains(String.valueOf(ns)));
@@ -1431,7 +1408,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     });
                     if (CollectionUtils.isNotEmpty(oldSoftIds)) {
                         oldSoftIds.stream().forEach(os -> {
-                            delete.append("[A]删除软件:").append(oldMap.get(os));
+                            delete.append("$删除软件:").append(oldMap.get(os));
                         });
                     }
                 }
@@ -1439,7 +1416,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 如果变更前存在软件，则软件全部被删除了
                 if (CollectionUtils.isNotEmpty(assetSoftwareInstallResponseList)) {
                     assetSoftwareInstallResponseList.stream().forEach(asr -> {
-                        delete.append("[A]删除软件:").append(asr.getProductName());
+                        delete.append("$删除软件:").append(asr.getProductName());
                     });
                 }
             }
@@ -3015,7 +2992,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer queryAssetCountByAreaIds(List<Integer> areaIds) {
+    public Integer queryAssetCountByAreaIds(List<String> areaIds) {
 
         // 如果移除以后全部为空，则直接返回0
         if (CollectionUtils.isEmpty(areaIds)) {
@@ -3079,9 +3056,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         return assetLinkRelationDao.pulldownUnconnectedManufacturer(query);
     }
-
-
-
 
     @Override
     public AlarmAssetDataResponse queryAlarmAssetList(AlarmAssetRequest alarmAssetRequest) {

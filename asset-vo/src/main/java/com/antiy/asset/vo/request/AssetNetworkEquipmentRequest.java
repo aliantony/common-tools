@@ -8,8 +8,10 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 
-import javax.validation.constraints.*;
-import java.util.regex.Matcher;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetNetworkEquipmentRequest 请求对象 </p>
@@ -261,12 +263,6 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
             ParamterExceptionUtils.isTrue(outerIp.matches(reg), "ip地址错误");
         }
 
-        if (StringUtils.isNotBlank(subnetMask)) {
-            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-                "^(254|252|248|240|224|192|128|0)\\.0\\.0\\.0|255\\.(254|252|248|240|224|192|128|0)\\.0\\.0|255\\.255\\.(254|252|248|240|224|192|128|0)\\.0|255\\.255\\.255\\.(254|252|248|240|224|192|128|0)$");
-            Matcher matcher = pattern.matcher(subnetMask);
-            ParamterExceptionUtils.isTrue(matcher.matches(), "子网掩码错误");
-        }
 
     }
 

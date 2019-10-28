@@ -17,6 +17,7 @@ public interface ActivityClient {
 
     /**
      * 手动登记硬件资产启动流程
+     *
      * @param request
      * @return
      */
@@ -24,6 +25,7 @@ public interface ActivityClient {
 
     /**
      * 处理流程
+     *
      * @param request
      * @return
      */
@@ -31,6 +33,7 @@ public interface ActivityClient {
 
     /**
      * 处理流程
+     *
      * @param request
      * @return
      */
@@ -38,13 +41,23 @@ public interface ActivityClient {
 
     /**
      * 查询当前用户的代办任务
+     *
      * @return
      */
     ActionResponse<List<WaitingTaskReponse>> queryAllWaitingTask(ActivityWaitingQuery activityWaitingQuery);
 
     /**
      * 批量启动任务
+     *
      * @return
      */
     ActionResponse startProcessWithoutFormBatch(List<ManualStartActivityRequest> startProcessRequests);
+
+    /**
+     * 根据流程实例id批量结束任务
+     *
+     * @param processInstanceIds
+     * @return
+     */
+    ActionResponse deleteProcessInstance(List<String> processInstanceIds);
 }

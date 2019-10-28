@@ -105,9 +105,6 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 				//未登记
 			case OPERATION_NO:
 				break;
-				//待退役
-			case OPERATION_WAIT_RETIRE:
-				break;
 			default:
 				res = pr;
 		}

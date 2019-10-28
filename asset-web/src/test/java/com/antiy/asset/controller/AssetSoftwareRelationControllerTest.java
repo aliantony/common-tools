@@ -6,9 +6,11 @@ import org.apache.commons.compress.utils.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
@@ -18,7 +20,7 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
 /**
- * @Author: lvliang
+ * @Author: lvliang @Ll123456
  * @Date: 2019/10/22 15:54
  */
 @RunWith(PowerMockRunner.class)
@@ -26,6 +28,8 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetSoftwareRelationControllerTest {
     @InjectMocks
     private AssetSoftwareRelationController assetSoftwareRelationController;
+    @Mock
+    public IAssetSoftwareRelationService    iAssetSoftwareRelationService;
 
     @Test
     public void countAssetBySoftId() throws Exception {

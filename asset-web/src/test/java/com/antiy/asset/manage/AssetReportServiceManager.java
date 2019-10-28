@@ -93,21 +93,21 @@ public class AssetReportServiceManager {
      */
     public List<AssetGroupEntity> initGroupEntityList() {
         AssetGroupEntity assetGroupEntity = new AssetGroupEntity();
-        assetGroupEntity.setDate("2018,5,1");
+        assetGroupEntity.setDate("2019-01");
         assetGroupEntity.setGroupCount(1);
         assetGroupEntity.setGroupId(1);
-        assetGroupEntity.setName("ss");
+        assetGroupEntity.setName("sewes");
         List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
         assetGroupEntityList.add(assetGroupEntity);
         return assetGroupEntityList;
     }
 
-    public List<AssetGroupEntity> initGroupEntityList1() {
+    public List<AssetGroupEntity> initGroupEntityList2() {
         AssetGroupEntity assetGroupEntity = new AssetGroupEntity();
         assetGroupEntity.setDate("2019-01");
         assetGroupEntity.setGroupCount(1);
-        assetGroupEntity.setGroupId(1);
-        assetGroupEntity.setName("ss");
+        assetGroupEntity.setGroupId(2);
+        assetGroupEntity.setName("s1");
         List<AssetGroupEntity> assetGroupEntityList = new ArrayList<>();
         assetGroupEntityList.add(assetGroupEntity);
         return assetGroupEntityList;

@@ -107,7 +107,7 @@ public class AssetController {
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryAssetCountByAreaIds')")
     public ActionResponse queryAssetCountByAreaIds(@RequestBody @ApiParam(value = "areaIds") AssetCountByAreaIdsRequest areaIds) {
         return ActionResponse.success(
-            iAssetService.queryAssetCountByAreaIds(DataTypeUtils.stringListToIntegerList(areaIds.getAreaIds())));
+            iAssetService.queryAssetCountByAreaIds(areaIds.getAreaIds()));
     }
 
     /**
@@ -259,22 +259,7 @@ public class AssetController {
         return ActionResponse.success(iAssetService.CheckRepeatNumber(numberMac.getNumber()));
     }
 
-    /**
-     * 通过资产ID修改资产状态
-     *
-     * @param id
-     * @param targetStatus
-     * @return actionResponse
-     */
-    @ApiOperation(value = "(无效)通过资产ID修改资产状态", notes = "传入资产ID")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/changeStatusById", method = RequestMethod.POST)
-    @PreAuthorize(value = "hasAuthority('asset:asset:changeStatusById')")
-    public ActionResponse changeStatusById(@ApiParam(value = "资产ID") @RequestParam String id,
-                                           @ApiParam(value = "资产新状态") @RequestParam("targetStatus") Integer targetStatus) throws Exception {
-        iAssetService.changeStatusById(id, targetStatus);
-        return ActionResponse.success();
-    }
+
 
     /**
      * 查询通联设置厂商下拉接口

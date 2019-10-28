@@ -6,11 +6,9 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.manage.builder.Director;
 import com.antiy.asset.manage.builder.RegisterBuilder;
-import com.antiy.asset.manage.builder.on.line.OnWaitCheckBuilder;
-import com.antiy.asset.manage.builder.on.line.OnWaitCorrectBuilder;
-import com.antiy.asset.manage.builder.under.line.UnderInNetBuilder;
-import com.antiy.asset.manage.builder.under.line.UnderTemplateImplBuilder;
-import com.antiy.asset.manage.builder.under.line.UnderWaitValidateBuilder;
+import com.antiy.asset.manage.builder.on.line.OnCheckBuilder;
+import com.antiy.asset.manage.builder.on.line.OnRetireBuilder;
+import com.antiy.asset.manage.builder.under.line.UnderRetireBuilder;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetOperationRecordService;
 import com.antiy.asset.support.MockContext;
@@ -19,7 +17,6 @@ import com.antiy.asset.vo.response.AssetAllTypeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.utils.JsonUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,7 +53,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 */
 	@Test()
 	public void queryUnderLineAssetAllStatusInfo() throws Exception {
-		Director director = new Director(new UnderInNetBuilder());
+		Director director = new Director(new UnderRetireBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
 		statusDetails.get(0).setFileInfo("");
 		given(recordDao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
@@ -70,7 +67,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 */
 	@Test
 	public void queryOnLineAslStatusInfo() {
-		Director director = new Director(new OnWaitCorrectBuilder());
+		Director director = new Director(new OnRetireBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
 		given(recordDao.queryAssetAllStatusInfo("1")).willReturn(statusDetails);
 		ActionResponse response = recordService.queryAssetAllStatusInfo("1");
@@ -83,7 +80,7 @@ public class AssetOperationRecordServiceImplTest extends MockContext {
 	 */
 	@Test
 	public void batchQueryAssetPreStatusInfo() {
-		Director director = new Director(new OnWaitCheckBuilder());
+		Director director = new Director(new OnCheckBuilder());
 		List<AssetStatusDetail> statusDetails = director.construct().getProducts();
 		statusDetails.get(0).setFileInfo("");
 		given(recordDao.queryAssetPreStatusInfo(Arrays.asList("1", "2"))).willReturn(new ArrayList<>(statusDetails));

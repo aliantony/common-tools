@@ -1,4 +1,4 @@
-package com.antiy.asset.manage.builder.under.line;
+package com.antiy.asset.manage.builder.on.line;
 
 
 import com.antiy.asset.entity.AssetStatusDetail;
@@ -10,14 +10,13 @@ import java.util.List;
 
 /**
  * @author zhouye
- * 入网流程-结果验证通过-> 入网通过
+ * 线上-安全整改 通过
  */
-public class UnderInNetBuilder extends Builder {
+public class OnCorrectBuilder extends Builder {
 	@Override
 	public void builder() {
-
-		List<AssetStatusDetail> res = next(new UnderValidateBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_NET, true, true, AssetFlowEnum.NET_IN.getMsg());
-
+		//安全检查不通过
+		List<AssetStatusDetail> res = next(new OnCheckBuilder(), AssetChangeDetailEnum.WAIT_CORRECT, false, true, AssetFlowEnum.CORRECT.getMsg());
 		products.setProducts(res);
 	}
 }
