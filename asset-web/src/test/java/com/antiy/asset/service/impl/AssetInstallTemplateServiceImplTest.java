@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.in;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -183,6 +184,7 @@ public class AssetInstallTemplateServiceImplTest {
     @Test
     public void queryNumberCodeTest() {
         Assert.assertEquals(Integer.valueOf(0), assetInstallTemplateServiceImpl.queryNumberCode(""));
+        Assert.assertEquals(Integer.valueOf(0), assetInstallTemplateServiceImpl.queryNumberCode(null));
         Integer expect = 1;
         Mockito.doAnswer(invocation -> expect).when(assetInstallTemplateDao).queryNumberCode(Mockito.anyString());
         Assert.assertEquals(expect, assetInstallTemplateServiceImpl.queryNumberCode("xxa"));
@@ -192,6 +194,7 @@ public class AssetInstallTemplateServiceImplTest {
     @Test
     public void updateAssetInstallTemplateExceptionTest() throws Exception {
         AssetInstallTemplateRequest request = getRequest();
+        request.setIsUpdateStatus(null);
         AssetInstallTemplate installTemplate = new AssetInstallTemplate();
         //断言 非法操作
         Mockito.doAnswer(invocation -> {
@@ -204,14 +207,34 @@ public class AssetInstallTemplateServiceImplTest {
                 .hasMessage("非法操作");
 
         //断言 状态非法修改
+        request.setIsUpdateStatus(0);
         Mockito.doAnswer(invocation -> {
             installTemplate.setCurrentStatus(2);
             return installTemplate;
         }).when(assetInstallTemplateDao).getById(Mockito.anyString());
-
+        request.setUpdateStatus(null);
         assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("状态非法修改");
+
+        Mockito.doAnswer(invocation -> {
+            installTemplate.setCurrentStatus(3);
+            return installTemplate;
+        }).when(assetInstallTemplateDao).getById(Mockito.anyString());
+        request.setUpdateStatus(3);
+        assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("状态非法修改");
+
+        Mockito.doAnswer(invocation -> {
+            installTemplate.setCurrentStatus(4);
+            return installTemplate;
+        }).when(assetInstallTemplateDao).getById(Mockito.anyString());
+        request.setUpdateStatus(4);
+        assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("状态非法修改");
+
     }
 
     /**
@@ -290,7 +313,11 @@ public class AssetInstallTemplateServiceImplTest {
         Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("调用流程引擎出错");
-
+        set.add("1");
+        Mockito.doAnswer(invocation -> ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).completeTask(Mockito.any());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
     }
 
     @Test
@@ -349,7 +376,13 @@ public class AssetInstallTemplateServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("调用流程引擎出错");
 
+        Mockito.doAnswer(invocation -> ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).manualStartProcess(Mockito.any());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
+
         Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).updateStatus(Mockito.any());
+        request.setSoftBussinessIds(new HashSet<>());
         Assertions.assertThat(assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request).getHead().getCode()).isEqualTo(RespBasicCode.BUSSINESS_EXCETION.getResultCode());
         Assertions.assertThat(assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request).getHead().getResult()).isEqualTo(RespBasicCode.BUSSINESS_EXCETION.getResultDes());
         Assertions.assertThat(assetInstallTemplateServiceImpl.updateAssetInstallTemplate(request).getBody()).isEqualTo("编辑失败");
@@ -363,19 +396,16 @@ public class AssetInstallTemplateServiceImplTest {
     @Test
     public void queryPageAssetInstallTemplateTest() throws Exception {
         AssetInstallTemplateQuery query = new AssetInstallTemplateQuery();
+        Mockito.doAnswer(invocation -> null).when(baseDao).findCount(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getTotalRecords()).isEqualTo(0);
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getItems()).isEmpty();
+
         Mockito.doAnswer(invocation -> 0).when(baseDao).findCount(Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getTotalRecords()).isEqualTo(0);
         Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getItems()).isEmpty();
 
         query.setBaselineId("1");
         Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).queryBaselineTemplateType(Mockito.any());
-        Mockito.doAnswer(invocation -> {
-            List<WaitingTaskReponse> waitingTaskReponseList = new ArrayList<>();
-            WaitingTaskReponse reponse = new WaitingTaskReponse();
-            reponse.setBusinessId("1");
-            waitingTaskReponseList.add(reponse);
-            return ActionResponse.success(waitingTaskReponseList);
-        }).when(activityClient).queryAllWaitingTask(Mockito.any());
         List<AssetInstallTemplateResponse> expect = new ArrayList<>();
         Mockito.doAnswer(invocation -> {
             AssetInstallTemplateResponse response = new AssetInstallTemplateResponse();
@@ -384,6 +414,25 @@ public class AssetInstallTemplateServiceImplTest {
             return expect;
         }).when(assetInstallTemplateDao).queryTemplateInfo(Mockito.any());
         Mockito.doAnswer(invocation -> 1).when(baseDao).findCount(Mockito.any());
+        Mockito.doAnswer(invocation -> ActionResponse.success(null)).when(activityClient).queryAllWaitingTask(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getTotalRecords()).isEqualTo(1);
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getItems()).isEqualTo(expect);
+
+
+        Mockito.doAnswer(invocation -> {
+            List<WaitingTaskReponse> waitingTaskReponseList = new ArrayList<>();
+            return ActionResponse.success(waitingTaskReponseList);
+        }).when(activityClient).queryAllWaitingTask(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getTotalRecords()).isEqualTo(1);
+        Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getItems()).isEqualTo(expect);
+
+        Mockito.doAnswer(invocation -> {
+            List<WaitingTaskReponse> waitingTaskReponseList = new ArrayList<>();
+            WaitingTaskReponse reponse = new WaitingTaskReponse();
+            reponse.setBusinessId("1");
+            waitingTaskReponseList.add(reponse);
+            return ActionResponse.success(waitingTaskReponseList);
+        }).when(activityClient).queryAllWaitingTask(Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getTotalRecords()).isEqualTo(1);
         Assertions.assertThat(assetInstallTemplateServiceImpl.queryPageAssetInstallTemplate(query).getItems()).isEqualTo(expect);
 
@@ -464,25 +513,35 @@ public class AssetInstallTemplateServiceImplTest {
         ids.add("1");
         List<String> processInstanceIds = new ArrayList<>();
         processInstanceIds.add("");
+        processInstanceIds.add("");
         request.setIds(ids);
         request.setProcessInstanceIds(processInstanceIds);
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+                .isInstanceOf(RequestParamValidateException.class)
+                .hasMessage("请确保参数正确");
+
+        processInstanceIds.remove(1);
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
-        Assertions.assertThatThrownBy(()->assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
                 .isInstanceOf(RequestParamValidateException.class)
                 .hasMessage("请确保拒绝模板存在代办任务");
 
-        processInstanceIds.set(0,"1");
-        Mockito.doAnswer( invocation ->ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).deleteProcessInstance(Mockito.anyList());
-        Assertions.assertThatThrownBy(()->assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+        processInstanceIds.set(0, "1");
+        Mockito.doAnswer(invocation -> ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).deleteProcessInstance(Mockito.anyList());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
+        Mockito.doAnswer(invocation -> null).when(activityClient).deleteProcessInstance(Mockito.anyList());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("调用流程引擎出错");
 
         ids.add("2");
         processInstanceIds.add("");
-        Mockito.doAnswer( invocation ->ActionResponse.success()).when(activityClient).deleteProcessInstance(Mockito.anyList());
+        Mockito.doAnswer(invocation -> ActionResponse.success()).when(activityClient).deleteProcessInstance(Mockito.anyList());
         Assertions.assertThat(assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request)).isEqualTo("已经删除状态为拒绝的模板");
-        Mockito.doAnswer(invocation ->{
-            processInstanceIds.set(1,"2");
+        Mockito.doAnswer(invocation -> {
+            processInstanceIds.set(1, "2");
             return 2;
         }).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
         Assertions.assertThat(assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request)).isEqualTo("删除成功");
@@ -510,6 +569,7 @@ public class AssetInstallTemplateServiceImplTest {
                 .isInstanceOf(RequestParamValidateException.class)
                 .hasMessage("请至少选择一个软件或者一个补丁");
 
+        request.setSoftBussinessIds(new HashSet<>());
         set.add("1");
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).queryNumberCode(Mockito.anyString());
         Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.submitTemplateInfo(request))
@@ -544,6 +604,14 @@ public class AssetInstallTemplateServiceImplTest {
         Mockito.doAnswer(invocation -> expect).when(activityClient).manualStartProcess(Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.submitTemplateInfo(request)).isEqualTo(expect);
 
+        request.setStringId("11");
+        request.setSoftBussinessIds(new HashSet<>());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.submitTemplateInfo(request)).isEqualTo(expect);
+
+        request.setPatchIds(new HashSet<>());
+        request.setSoftBussinessIds(set);
+        Assertions.assertThat(assetInstallTemplateServiceImpl.submitTemplateInfo(request)).isEqualTo(expect);
+
     }
 
     @Test
@@ -553,6 +621,11 @@ public class AssetInstallTemplateServiceImplTest {
         request.setResult(0);
         List<WaitingTaskReponse> list = new ArrayList<>();
         Mockito.doAnswer(invocation -> null).when(activityClient).queryAllWaitingTask(Mockito.any());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.checkTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
+
+        Mockito.doAnswer(invocation -> ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).queryAllWaitingTask(Mockito.any());
         Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.checkTemplate(request))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("调用流程引擎出错");
@@ -568,9 +641,11 @@ public class AssetInstallTemplateServiceImplTest {
         Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).insertTemplateCheckInfo(Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.checkTemplate(request)).isEqualTo("审核结果提交失败");
 
+        Mockito.doAnswer(invocation -> null).when(assetInstallTemplateDao).insertTemplateCheckInfo(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.checkTemplate(request)).isEqualTo("审核结果提交失败");
 
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).insertTemplateCheckInfo(Mockito.any());
-        Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).update(Mockito.any());
+        Mockito.doAnswer(invocation -> null).when(assetInstallTemplateDao).update(Mockito.any());
         AssetInstallTemplate template = new AssetInstallTemplate();
         template.setExecutor("1");
         Mockito.doAnswer(invocation -> template).when(assetInstallTemplateDao).getById(Mockito.any());
@@ -578,9 +653,17 @@ public class AssetInstallTemplateServiceImplTest {
         Mockito.doAnswer(invocation -> assetInstallTemplateResponse).when(responseConverter).convert(Mockito.eq(template), Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.checkTemplate(request)).isEqualTo("审核结果提交失败");
 
+        Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).update(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.checkTemplate(request)).isEqualTo("审核结果提交失败");
+
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).update(Mockito.any());
         Mockito.doAnswer(invocation -> ActionResponse.success()).when(activityClient).completeTask(Mockito.any());
         Assertions.assertThat(assetInstallTemplateServiceImpl.checkTemplate(request)).isEqualTo("审核结果提交成功");
+
+        Mockito.doAnswer(invocation -> ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).completeTask(Mockito.any());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.checkTemplate(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
 
         Mockito.doAnswer(invocation -> null).when(activityClient).completeTask(Mockito.any());
         Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.checkTemplate(request))
@@ -588,12 +671,13 @@ public class AssetInstallTemplateServiceImplTest {
                 .hasMessage("调用流程引擎出错");
 
     }
+
     @Test
-    public void deleteBatchPatchTest(){
-        AssetInstallTemplateRequest request=new AssetInstallTemplateRequest();
+    public void deleteBatchPatchTest() {
+        AssetInstallTemplateRequest request = new AssetInstallTemplateRequest();
         Assertions.assertThat(assetInstallTemplateServiceImpl.deleteBatchPatch(request)).isEqualTo(0);
 
-        Set<String> patchCode=new HashSet<>();
+        Set<String> patchCode = new HashSet<>();
         patchCode.add("APL-2019-14983");
         request.setPatchIds(patchCode);
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).deleteBatchPatchByPatchCode(Mockito.any());
