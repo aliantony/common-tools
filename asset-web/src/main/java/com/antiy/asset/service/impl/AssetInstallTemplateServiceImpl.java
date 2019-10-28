@@ -30,6 +30,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -269,6 +270,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
                 LoginUserUtil.getLoginUser().getName());
         List<String> processInstanceIds = request.getProcessInstanceIds().stream().filter(v -> !v.isEmpty()).collect(Collectors.toList());
+        if (count != processInstanceIds.size()) {
+            throw new RequestParamValidateException("请确保拒绝模板存在代办任务");
+        }
         ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
         if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
             LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
@@ -429,6 +433,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             return "审核结果提交成功";
         }
         return "审核结果提交失败";
+    }
+
+    @Override
+    public Integer deleteBatchPatch(AssetInstallTemplateRequest request) {
+        request.setGmtModified(System.currentTimeMillis());
+        request.setGmtCreate(LoginUserUtil.getLoginUser().getId());
+        return CollectionUtils.isEmpty(request.getPatchIds()) ? 0 : assetInstallTemplateDao.deleteBatchPatchByPatchCode(request);
     }
 
     private synchronized ActionResponse sendTask(AssetInstallTemplateRequest request, AssetInstallTemplate template) {

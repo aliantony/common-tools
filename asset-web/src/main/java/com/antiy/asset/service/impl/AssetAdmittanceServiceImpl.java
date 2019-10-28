@@ -52,7 +52,8 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetResponse> findListAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
-            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
 
         // 查询资产信息
@@ -79,7 +80,7 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
         // 是否资产组关联资产查询
-        if (query.getAssociateGroup()!=null &&query.getAssetGroupQuery()) {
+        if (query.getAssociateGroup() != null && query.getAssociateGroup()) {
             ParamterExceptionUtils.isBlank(query.getGroupId(), "资产组ID不能为空");
             List<String> associateAssetIdList = assetGroupRelationDao.findAssetIdByAssetGroupId(query.getGroupId());
             if (CollectionUtils.isNotEmpty(associateAssetIdList)) {
@@ -87,14 +88,16 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
             }
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
-            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
 
         int count = 0;
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
             if (query.getAreaIds() != null && query.getAreaIds().length <= 0) {
-                query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                query.setAreaIds(
+                    DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
             }
             count = this.findCountAsset(query);
         }
@@ -114,7 +117,8 @@ public class AssetAdmittanceServiceImpl extends BaseServiceImpl<Asset> implement
 
     public Integer findCountAsset(AssetQuery query) throws Exception {
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
-            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         return assetDao.findCount(query);
     }

@@ -438,7 +438,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setAssetGroup(
                     stringBuffer.append(assetGroupName).append(",").substring(0, stringBuffer.length() - 1));
             } catch (Exception e) {
-
                 throw new BusinessException(e.getMessage());
             }
         });
@@ -1065,7 +1064,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String msg = "";
         final String[] reason = new String[1];
         final String[] uuid = new String[1];
-        Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1154,10 +1153,47 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
-            // 没有流程参数不走流程
+            // 启动流程
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-                // 已退役点登记，启动流程
-                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())) {
+                // 资产变更
+                if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
+                    String nextStepUserId = aesEncoder.decode((String) assetOuterRequest.getManualStartActivityRequest()
+                        .getFormData().get("baselineConfigUserId"), LoginUserUtil.getLoginUser().getUsername());
+                    Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
+                    formData.put("baselineConfigUserId", nextStepUserId);
+                    List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
+                    // ------------------对接配置模块------------------start
+                    BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
+                    baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                    if (Objects.isNull(asset.getInstallType())) {
+                        baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
+                    } else {
+                        baselineWaitingConfigRequest.setCheckType(asset.getInstallType());
+                    }
+                    baselineWaitingConfigRequest.setConfigStatus(1);
+                    baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                    baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
+                    baselineWaitingConfigRequest.setReason(reason[0]);
+                    baselineWaitingConfigRequest.setSource(2);
+                    baselineWaitingConfigRequest.setFormData(formData);
+                    baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
+                    baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+                    ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
+                    if (null == actionResponse
+                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
+                    }
+                    // ------------------对接配置模块------------------end
+                    // 记录资产操作流程
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                    assetOperationRecord.setProcessResult(null);
+                    // 更新资产状态为变更中
+                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                } else {
                     if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(asset.getBaselineTemplateId());
                         admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -1215,6 +1251,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
                     }
+                    // 记录操作日志和运行日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
+                        Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
+                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
+                        JSON.toJSONString(assetOuterRequest));
                     // 扫描
                     ActionResponse scan = baseLineClient
                         .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
@@ -1223,87 +1265,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 调用失败，直接删登记的资产
                         return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
                     }
-                    // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
-                        Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
-                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
-                        JSON.toJSONString(assetOuterRequest));
                 }
-                // 不予登记、待登记点登记是完成任务
-                else if (AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
-                         || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
-                    ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
-                    String ar = (String) activityHandleRequest.getFormData().get("admittanceResult");
-                    // 下一步到安全检查
-                    if ("safetyCheck".equals(ar)) {
-                        updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
-                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
-                        assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
-                    } else {
-                        updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
-                            assetId);
-                        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-                        assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
-                    }
-                    ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
-                    if (actionResponse == null
-                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                        BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
-                    }
-                }
-                // 资产变更
-                else {
-                    String nextStepUserId = aesEncoder.decode((String) assetOuterRequest.getManualStartActivityRequest()
-                        .getFormData().get("baselineConfigUserId"), LoginUserUtil.getLoginUser().getUsername());
-                    Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
-                    formData.put("baselineConfigUserId", nextStepUserId);
-                    List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
-                    // ------------------对接配置模块------------------start
-                    BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
-                    baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
-                    if (Objects.isNull(asset.getInstallType())) {
-                        baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
-                    } else {
-                        baselineWaitingConfigRequest.setCheckType(asset.getInstallType());
-                    }
-                    baselineWaitingConfigRequest.setConfigStatus(1);
-                    baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
-                    baselineWaitingConfigRequest.setReason(reason[0]);
-                    baselineWaitingConfigRequest.setSource(2);
-                    baselineWaitingConfigRequest.setFormData(formData);
-                    baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
-                    baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
-                    ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
-                    if (null == actionResponse
-                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                        BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
-                    }
-                    // ------------------对接配置模块------------------end
-                    // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
-                    assetOperationRecord.setProcessResult(null);
-                    // 更新资产状态为变更中
-                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
-                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
-                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
-                }
-            } else {
-                // 没有流程参数分为两种情况 普通变更 再登记（也可以不走流程）
-                if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
-                    || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
-                    || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())) {
-                    updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
-                    // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.NET_IN.getMsg());
+            }
+            // 推动流程
+            else if (!Objects.isNull(assetOuterRequest.getActivityHandleRequest())) {
+                ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
+                String ar = (String) activityHandleRequest.getFormData().get("admittanceResult");
+                // 下一步到安全检查
+                if ("safetyCheck".equals(ar)) {
+                    updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                 } else {
-                    // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE_COMPLETE.getMsg());
+                    updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
+                        assetId);
+                    assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                    assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
+                }
+                ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
+                if (actionResponse == null
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                    BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
             }
         }

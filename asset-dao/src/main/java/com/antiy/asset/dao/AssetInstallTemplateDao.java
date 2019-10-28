@@ -148,5 +148,5 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
      */
     List<Long> querySoftIds(@Param("installTemplateId") String installTemplateId);
 
-
+    Integer deleteBatchPatchByPatchCode(AssetInstallTemplateRequest request);
 }

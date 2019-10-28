@@ -1,8 +1,9 @@
 package com.antiy.asset.controller;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.compress.utils.Lists;
@@ -14,9 +15,11 @@ import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.antiy.asset.convert.AccessExportConvert;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.AssetAdmittanceService;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -36,7 +39,8 @@ public class AssetAdmittanceControllerTest {
     public ExcelDownloadUtil         excelDownloadUtil;
     @Mock
     public AccessExportConvert       accessExportConvert;
-
+    @Mock
+    private AssetDao                 assetDao;
     @InjectMocks
     public AssetAdmittanceController assetAdmittanceController;
 
@@ -65,11 +69,21 @@ public class AssetAdmittanceControllerTest {
 
     @Test
     public void export() throws Exception {
+        Integer status = 6;
+        Integer start = 1;
+        Integer end = 10;
         List<AssetResponse> assetList = Lists.newArrayList();
         AssetResponse assetResponse = new AssetResponse();
         assetList.add(assetResponse);
-        AssetQuery assetQuery = mock(AssetQuery.class);
-        when(assetService.findListAsset(assetQuery, null)).thenReturn(assetList);
-        assetAdmittanceController.export(1, 1, 10, null, null);
+        AssetQuery assetQuery = new AssetQuery();
+        assetQuery.setAdmittanceStatus(status);
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        if (start != null) {
+            assetQuery.setStart(start - 1);
+            assetQuery.setEnd(end - start + 1);
+        }
+        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
+        when(assetService.findListAsset(any(), any())).thenReturn(assetList);
+        assetAdmittanceController.export(status, start, end, null, null);
     }
 }
