@@ -9,6 +9,7 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @ApiModelProperty("资产信息")
     @NotEmpty(message = "资产数据格式不正确")
+    @Valid
     private List<StatusJumpAssetInfo> assetInfoList;
 
     @ApiModelProperty(value = "流程表单数据,JSON串")

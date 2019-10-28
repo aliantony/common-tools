@@ -66,10 +66,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
-        List<Asset> assetsInDb = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(assetIdList)) {
-            assetsInDb = assetDao.findByIds(assetIdList);
-        }
+
+        List<Asset> assetsInDb = assetDao.findByIds(assetIdList);
         BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "所选资产已被操作,请刷新后重试");
 
         // 当前所有资产的可执行操作与当前状态一致
