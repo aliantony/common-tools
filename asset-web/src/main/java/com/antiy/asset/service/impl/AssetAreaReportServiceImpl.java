@@ -354,25 +354,27 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     }
 
     private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
+        String result = "";
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
             if (id.equals(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()))) {
-                return assetAreaReportRequest.getParentAreaName();
+                result = assetAreaReportRequest.getParentAreaName();
+                break;
             }
         }
         // 请求区域的Id不存在于top5的Id
-        return "";
+        return result;
     }
 
-//    private AssetReportResponse getAreaReportData(String timeType) {
-//        AssetReportResponse assetReportResponse = new AssetReportResponse();
-//
-//        // 本周
-//        if ("1".equals(timeType)) {
-//            // assetReportResponse.setDate(ReportDateUtils.getDayOfWeek().values());
-//        }
-//        return null;
-//
-//    }
+    // private AssetReportResponse getAreaReportData(String timeType) {
+    // AssetReportResponse assetReportResponse = new AssetReportResponse();
+    //
+    // // 本周
+    // if ("1".equals(timeType)) {
+    // // assetReportResponse.setDate(ReportDateUtils.getDayOfWeek().values());
+    // }
+    // return null;
+    //
+    // }
 
     private List<Integer> getTopFive(ReportQueryRequest reportRequest) {
 

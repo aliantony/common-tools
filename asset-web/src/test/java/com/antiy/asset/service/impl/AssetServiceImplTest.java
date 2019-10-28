@@ -72,7 +72,6 @@ import com.google.common.collect.Sets;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
                   LogHandle.class, ZipUtil.class, CollectionUtils.class, RedisKeyUtil.class, LogUtils.class })
-// @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
 public class AssetServiceImplTest {
@@ -1548,6 +1547,7 @@ public class AssetServiceImplTest {
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request2, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+
         MockHttpServletRequest request3 = new MockHttpServletRequest();
         request3.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
         PowerMockito.mockStatic(ZipUtil.class);
@@ -1555,6 +1555,19 @@ public class AssetServiceImplTest {
         expectedException.expectMessage("发送客户端失败");
         PowerMockito.doNothing().when(ZipUtil.class, "compress", null, null);
         when(RequestContextHolder.getRequestAttributes()).thenReturn(new ServletRequestAttributes(request3, null));
+
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+        MockHttpServletRequest request13 = new MockHttpServletRequest();
+        request13.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("发送客户端失败");
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request13, new MockHttpServletResponse()));
 
         assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
     }

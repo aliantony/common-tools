@@ -462,10 +462,29 @@ public class AssetInstallTemplateServiceImplTest {
         BatchQueryRequest request = new BatchQueryRequest();
         List<String> ids = new ArrayList<>();
         ids.add("1");
+        List<String> processInstanceIds = new ArrayList<>();
+        processInstanceIds.add("");
         request.setIds(ids);
-        Mockito.doAnswer(invocation -> 0).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
-        Assertions.assertThat(assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request)).isEqualTo("已经删除状态为拒绝的模板");
+        request.setProcessInstanceIds(processInstanceIds);
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
+        Assertions.assertThatThrownBy(()->assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+                .isInstanceOf(RequestParamValidateException.class)
+                .hasMessage("请确保拒绝模板存在代办任务");
+
+        processInstanceIds.set(0,"1");
+        Mockito.doAnswer( invocation ->ActionResponse.fail(RespBasicCode.PARAMETER_ERROR)).when(activityClient).deleteProcessInstance(Mockito.anyList());
+        Assertions.assertThatThrownBy(()->assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("调用流程引擎出错");
+
+        ids.add("2");
+        processInstanceIds.add("");
+        Mockito.doAnswer( invocation ->ActionResponse.success()).when(activityClient).deleteProcessInstance(Mockito.anyList());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request)).isEqualTo("已经删除状态为拒绝的模板");
+        Mockito.doAnswer(invocation ->{
+            processInstanceIds.set(1,"2");
+            return 2;
+        }).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
         Assertions.assertThat(assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request)).isEqualTo("删除成功");
     }
 
@@ -568,6 +587,17 @@ public class AssetInstallTemplateServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("调用流程引擎出错");
 
+    }
+    @Test
+    public void deleteBatchPatchTest(){
+        AssetInstallTemplateRequest request=new AssetInstallTemplateRequest();
+        Assertions.assertThat(assetInstallTemplateServiceImpl.deleteBatchPatch(request)).isEqualTo(0);
+
+        Set<String> patchCode=new HashSet<>();
+        patchCode.add("APL-2019-14983");
+        request.setPatchIds(patchCode);
+        Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).deleteBatchPatchByPatchCode(Mockito.any());
+        Assertions.assertThat(assetInstallTemplateServiceImpl.deleteBatchPatch(request)).isEqualTo(1);
     }
 
     private AssetInstallTemplateRequest getRequest() {
