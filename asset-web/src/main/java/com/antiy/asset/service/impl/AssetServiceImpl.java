@@ -1251,6 +1251,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
                     }
+                    // 记录操作日志和运行日志
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
+                        Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
+                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
+                        JSON.toJSONString(assetOuterRequest));
                     // 扫描
                     ActionResponse scan = baseLineClient
                         .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
@@ -1259,12 +1265,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 调用失败，直接删登记的资产
                         return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
                     }
-                    // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
-                        Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
-                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
-                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
-                        JSON.toJSONString(assetOuterRequest));
                 }
             }
             // 推动流程

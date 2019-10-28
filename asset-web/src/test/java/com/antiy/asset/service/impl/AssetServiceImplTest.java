@@ -1156,30 +1156,35 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testChangeAsset() {
+    public void testChangeAsset() throws Exception {
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         mockStatic(LoginUserUtil.class);
-        LoginUser loginUser = mock(LoginUser.class);
+        mockStatic(LogUtils.class);
+        LoginUser loginUser = getLoginUser();
         when(LoginUserUtil.getLoginUser()).thenReturn(null);
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        assetRequest.setCategoryModel(1);
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        assetOuterRequest.setAsset(assetRequest);
 
+        Asset asset = new Asset();
+        asset.setId(1);
+        asset.setCategoryModel(1);
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        when(assetDao.getById("1")).thenReturn(asset);
+        when(requestConverter.convert(assetRequest, Asset.class)).thenReturn(asset);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
-
+        when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         Map formData = new HashMap();
         formData.put("admittanceResult", "safetyCheck");
         formData.put("safetyCheckUser", "1");
         manualStartActivityRequest.setFormData(formData);
         assetOuterRequest.setManualStartActivityRequest(manualStartActivityRequest);
-
-        AssetRequest assetRequest = new AssetRequest();
-        assetRequest.setId("1");
-        assetRequest.setCategoryModel(1);
-        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-
-        assetOuterRequest.setAsset(assetRequest);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         List<AssetIpRelationRequest> ipRelationRequests = Lists.newArrayList();
         AssetIpRelationRequest assetIpRelationRequest = new AssetIpRelationRequest();
@@ -1200,13 +1205,17 @@ public class AssetServiceImplTest {
         macRelationRequests.add(assetMacRelationRequest);
 
         assetOuterRequest.setMacRelationRequests(macRelationRequests);
+
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         assetRequest.setInstallTemplateId("1");
         assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setInstallTemplateId("1");
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         when(assetDao.changeAsset(any())).thenReturn(1);
         List<Long> sids = Lists.newArrayList();
         sids.add(1L);
@@ -1252,13 +1261,14 @@ public class AssetServiceImplTest {
         }
 
         assetRequest.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
+        asset.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
 
         assetRequest.setBaselineTemplateId("1");
-
+        asset.setBaselineTemplateId("1");
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1297,37 +1307,14 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
         }
 
-        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername())))
-            .thenReturn(ActionResponse.success());
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-        Map ac = new HashMap();
-        ac.put("admittanceResult", "safetyCheck");
-        activityHandleRequest.setFormData(ac);
-        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
-        when(activityClient.completeTask(activityHandleRequest)).thenReturn(null);
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        ac.put("admittanceResult", "templateImplement");
-        activityHandleRequest.setFormData(ac);
-        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        Asset asset = new Asset();
+
         asset.setOperationSystemName("windows");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         formData.put("baselineConfigUserId", "1");
         AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
         assetHardSoftLib.setBusinessId("1");
@@ -1350,6 +1337,7 @@ public class AssetServiceImplTest {
         }
 
         assetRequest.setInstallType(1);
+        asset.setInstallType(1);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1357,12 +1345,51 @@ public class AssetServiceImplTest {
 
         assetOuterRequest.setManualStartActivityRequest(null);
         assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername())))
+            .thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername()))).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+        Map ac = new HashMap();
+        ac.put("admittanceResult", "safetyCheck");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
+        when(activityClient.completeTask(activityHandleRequest)).thenReturn(ActionResponse.success());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
 
-        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        ActionResponse actionResponse = ActionResponse.fail(RespBasicCode.PARAMETER_ERROR);
+        when(activityClient.completeTask(activityHandleRequest)).thenReturn(actionResponse);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        ac.put("admittanceResult", "templateImplement");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1381,6 +1408,7 @@ public class AssetServiceImplTest {
         Asset asset = new Asset();
         asset.setOperationSystemName("linux");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
+
         List<AssetAssemblyRequest> assetAssemblyRequestList = Lists.newArrayList();
         AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
         assetAssemblyRequest.setAmount(2);
