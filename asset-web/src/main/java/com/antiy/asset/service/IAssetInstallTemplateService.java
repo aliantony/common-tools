@@ -65,7 +65,6 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
     ActionResponse updateAssetInstallTemplate(AssetInstallTemplateRequest request) throws Exception;
 
 
-
     /**
      * 分页查询
      *
@@ -133,4 +132,6 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
     ActionResponse submitTemplateInfo(AssetInstallTemplateRequest request) throws Exception;
 
     String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception;
+
+    Integer deleteBatchPatch(AssetInstallTemplateRequest request);
 }

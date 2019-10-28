@@ -20,10 +20,7 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,7 +37,7 @@ public class AssetInstallTemplateController {
     @Resource
     private IAssetInstallTemplateService iAssetInstallTemplateService;
     @Resource
-    private TemplateConvert                   templateConvert;
+    private TemplateConvert templateConvert;
     @Resource
     private AssetInstallTemplateDao assetInstallTemplateDao;
     @Resource
@@ -82,9 +79,9 @@ public class AssetInstallTemplateController {
     @RequestMapping(value = "/query/assetList", method = RequestMethod.POST)
     public ActionResponse queryOsList(@RequestBody ProcessTemplateRequest processTemplateRequest) {
         List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao
-            .findByAssetIds(processTemplateRequest.getComIds());
+                .findByAssetIds(processTemplateRequest.getComIds());
         List<AssetInstallTemplateForBase> templateForBases = templateConvert.convert(byAssetIds,
-            AssetInstallTemplateForBase.class);
+                AssetInstallTemplateForBase.class);
         return ActionResponse.success(templateForBases);
     }
 
@@ -241,6 +238,13 @@ public class AssetInstallTemplateController {
     @RequestMapping(value = "/check", method = RequestMethod.POST)
     public ActionResponse checkInstallTemplate(@RequestBody @ApiParam(name = "request", value = "AssetInstallTemplateCheckRequest", required = true) AssetInstallTemplateCheckRequest request) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.checkTemplate(request));
+    }
+
+    @ApiOperation(value = "模版关联补丁同步删除")
+    @ApiResponse(code = 200, response = String.class, message = "ok")
+    @PostMapping(value = "/delete/patchIds")
+    public ActionResponse deleteBatchPatchIds(@RequestBody AssetInstallTemplateRequest request) {
+        return ActionResponse.success(iAssetInstallTemplateService.deleteBatchPatch(request));
     }
 
 }
