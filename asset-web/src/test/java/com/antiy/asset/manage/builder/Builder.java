@@ -28,13 +28,13 @@ public abstract class Builder {
 	/**
 	 * 构造下一个节点
 	 */
-	public List<AssetStatusDetail> next(Builder preBuilder, AssetChangeDetailEnum nextEnum,Boolean preResult,Boolean nextResult,String content) {
+	public List<AssetStatusDetail> next(Builder preBuilder, AssetChangeDetailEnum preEnum,Boolean preResult,Boolean nextResult,String content) {
 		Director director = new Director(preBuilder);
 		List<AssetStatusDetail> res = director.construct().getProducts();
 		AssetStatusDetail template = res.get(0);
 		AssetStatusDetail nextDetail = new AssetStatusDetail();
 		BeanUtils.copyProperties(template, nextDetail);
-		nextDetail.setOriginStatus(nextEnum);
+		nextDetail.setOriginStatus(preEnum);
 		nextDetail.setGmtCreate(nextDetail.getGmtCreate()+100);
 		template.setProcessResult(preResult ? AssetProcessResultEnum.PROCESS_ADOPT : AssetProcessResultEnum.PROCESS_NOT_PASS);
 		nextDetail.setProcessResult(nextResult ? AssetProcessResultEnum.PROCESS_ADOPT : AssetProcessResultEnum.PROCESS_NOT_PASS);

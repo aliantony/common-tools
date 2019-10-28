@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 线下-结果验证通过
  */
-public class UnderWaitValidateBuilder extends Builder {
+public class UnderValidateBuilder extends Builder {
 	@Override
 	public void builder() {
 		List<AssetStatusDetail> res = next(new UnderTemplateImplBuilder(),AssetChangeDetailEnum.OPERATION_WAIT_VALIDATE, true, true,"结果验证。验证情况：");

@@ -1,12 +1,32 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.util.*;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,33 +60,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.util.*;
+
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -1619,6 +1618,14 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
+
+
+           LicenseContent licenseContent = new LicenseContent();
+        licenseContent.setAssetNum(null);
+        PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
+        expectedException.expectMessage("license异常，请联系客服人员！");
+        expectedException.expect(BusinessException.class);
+        assetServiceImpl.importPc(null, assetImportRequest);
     }
 
     private ComputeDeviceEntity getComputeDeviceEntity() {
@@ -2002,6 +2009,12 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
+
+        when(assetDao.countAsset()).thenReturn(100);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("资产数量已超过授权数量，请联系客服人员！");
+        assetServiceImpl.importStory(null, assetImportRequest);
+
     }
 
     private StorageDeviceEntity getStorageDeviceEntity() {
@@ -2165,13 +2178,14 @@ public class AssetServiceImplTest {
         assetResponse.setName("");
         assetResponse.setSerial("");
         assetResponse.setCategoryModel(1);
+        assetResponse.setImportanceDegree(2);
         assetResponse.setManufacturer("");
         assetResponse.setAssetStatus(0);
         // assetResponse.setOperationSystem(1L);
         assetResponse.setUuid("");
         assetResponse.setResponsibleUserId("");
         assetResponse.setAssetSource(0);
-        assetResponse.setImportanceDegree(0);
+        assetResponse.setImportanceDegree(2);
         assetResponse.setServiceLife(0L);
         assetResponse.setBuyDate(0L);
         assetResponse.setWarranty("0");
@@ -2203,6 +2217,8 @@ public class AssetServiceImplTest {
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("导出数据为空");
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+
+
         AssetQuery assetQuery3 = new AssetQuery();
         assetQuery3.setStart(1);
         assetQuery3.setEnd(100);
