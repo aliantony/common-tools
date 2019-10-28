@@ -493,6 +493,7 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("编号重复！", e.getMessage());
         }
+
         AssetOuterRequest assetOuterRequest33 = new AssetOuterRequest();
         assetOuterRequest33.setManualStartActivityRequest(generateAssetManualStart2());
         assetOuterRequest33.setAsset(generateAssetRequest2());
@@ -503,6 +504,42 @@ public class AssetServiceImplTest {
         expectedException.expectMessage("操作失败");
         assetServiceImpl.saveAsset(assetOuterRequest33);
 
+    }
+
+
+    @Test
+    public void assetssave() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        AssetRequest asset = generateAssetRequest3();
+
+        Asset t = generateAsset1();
+        when(requestConverter.convert(asset, Asset.class)).thenReturn(t);
+
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        AssetOuterRequest assetOuterRequest331 = new AssetOuterRequest();
+        AssetGroup assetGrou = new AssetGroup();
+        assetGrou.setStatus(0);
+        assetGrou.setName("0");
+
+        when(assetGroupDao.getById(any())).thenReturn(assetGrou);
+        assetOuterRequest331.setAsset(asset);
+        assetOuterRequest331.setManualStartActivityRequest(generateAssetManualStart());
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("0已失效，请核对后提交");
+        assetServiceImpl.saveAsset(assetOuterRequest331);
+
+    }
+
+    public AssetStorageMediumRequest generateAssetStorageMediumRequest() {
+        AssetStorageMediumRequest assetStorageMediumRequest = new AssetStorageMediumRequest();
+        assetStorageMediumRequest.setAssetId("1");
+        assetStorageMediumRequest.setId("1");
+        return assetStorageMediumRequest;
     }
 
     @Test
@@ -516,13 +553,6 @@ public class AssetServiceImplTest {
         when(activityClient.queryAllWaitingTask(any())).thenReturn(ActionResponse.success(waitingTaskReponses));
         when(assetServiceImpl.assetsTemplate(processTemplateRequest)).thenReturn(assetEntities);
 
-    }
-
-    public AssetStorageMediumRequest generateAssetStorageMediumRequest() {
-        AssetStorageMediumRequest assetStorageMediumRequest = new AssetStorageMediumRequest();
-        assetStorageMediumRequest.setAssetId("1");
-        assetStorageMediumRequest.setId("1");
-        return assetStorageMediumRequest;
     }
 
     public AssetStorageMedium generateAssetStorageMedium() {
@@ -1051,6 +1081,44 @@ public class AssetServiceImplTest {
         asset.setInstallTypeName("");
         asset.setId(0);
         return asset;
+    }
+
+    private Asset generateAsset1() {
+        Asset assetRequest = new Asset();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId(11L);
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setOperationSystem(1L);
+
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId(1);
+        assetRequest.setHouseLocation("1");
+        assetRequest.setInstallTemplateId("12222");
+        assetRequest.setBaselineTemplateId("1");
+        assetRequest.setInstallTemplateId("1");
+        AssetGroupRequest assetGroup = new AssetGroupRequest();
+        List<AssetGroupRequest> assetGroupRequests = new ArrayList<AssetGroupRequest>();
+        assetGroup.setId("0");
+        // assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+
+        return assetRequest;
     }
 
     private AssetCpuRequest generateAssetCpuRequest() {
@@ -2234,6 +2302,15 @@ public class AssetServiceImplTest {
         return assetGroup;
     }
 
+    private AssetGroup generateAssetGroup2() {
+        AssetGroup assetGroup = new AssetGroup();
+        assetGroup.setId(1);
+        assetGroup.setName("abc1");
+        assetGroup.setMemo("1");
+        assetGroup.setStatus(0);
+        return assetGroup;
+    }
+
     private List<AssetAssemblyRequest> generateAssetAssemblyRequestList() {
         AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
         List<AssetAssemblyRequest> assetAssemblyRequests = Lists.newArrayList();
@@ -2325,6 +2402,44 @@ public class AssetServiceImplTest {
         assetRequest.setBaselineTemplateId("1");
         assetRequest.setInstallTemplateId("1");
         assetRequest.setAssetGroups(Lists.newArrayList());
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+        return assetRequest;
+    }
+
+    private AssetRequest generateAssetRequest3() {
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("11111");
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setOperationSystem(1L);
+        assetRequest.setSystemBit(0);
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId("1");
+        assetRequest.setHouseLocation("1");
+        assetRequest.setInstallTemplateId("12222");
+        assetRequest.setBaselineTemplateId("1");
+        assetRequest.setInstallTemplateId("1");
+        AssetGroupRequest assetGroup = new AssetGroupRequest();
+        List<AssetGroupRequest> assetGroupRequests = new ArrayList<AssetGroupRequest>();
+        assetGroup.setId("0");
+        assetGroupRequests.add(assetGroup);
+        assetRequest.setAssetGroups(assetGroupRequests);
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
