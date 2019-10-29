@@ -57,7 +57,7 @@ public class AssetDepartmentServiceImplTest {
     private AssetUserDao                                                     assetUserDao;
 
     @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
+    public ExpectedException                                                 expectedEx = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -104,6 +104,7 @@ public class AssetDepartmentServiceImplTest {
     public void saveAssetDepartmentTest1() throws Exception {
         AssetDepartmentRequest request = new AssetDepartmentRequest();
         request.setParentId("1");
+        request.setName("1");
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("1");
 
@@ -114,6 +115,78 @@ public class AssetDepartmentServiceImplTest {
         Assert.assertEquals("200", response.getHead().getCode());
     }
 
+    @Test
+    public void saveAssetDepartmentTest2() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setParentId("1");
+        request.setName("1");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("1");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(10);
+
+        try {
+            ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
+        } catch (Exception e) {
+            Assert.assertEquals("该部门名已存在", e.getMessage());
+        }
+    }
+
+    @Test
+    public void saveAssetDepartmentTest3() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setParentId("1");
+        request.setName("1");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("1");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+
+        ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+    }
+
+    @Test
+    public void saveAssetDepartmentTest4() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setParentId("1");
+        request.setId("1");
+        request.setName("1");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("1");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+
+        ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+    }
+
+
+    @Test
+    public void saveAssetDepartmentTest5() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setParentId("1");
+        request.setId("1");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("1");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+
+        ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+    }
     @Test
     public void updateAssetDepartmentTest() throws Exception {
         AssetDepartmentRequest request = new AssetDepartmentRequest();
@@ -139,6 +212,42 @@ public class AssetDepartmentServiceImplTest {
 
     }
 
+    @Test
+    public void updateAssetDepartmentTest1() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setName("test");
+        request.setId("1");
+        request.setParentId("0");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("0");
+        assetDepartment.setName("test");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(10);
+
+        ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+
+    }
+
+
+    @Test
+    public void updateAssetDepartmentTest2() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setName("test");
+        request.setId("1");
+        request.setParentId("0");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("0");
+        assetDepartment.setName("test");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(0);
+
+        ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+
+    }
 
     @Test
     public void findListAssetDepartmentTest() throws Exception {

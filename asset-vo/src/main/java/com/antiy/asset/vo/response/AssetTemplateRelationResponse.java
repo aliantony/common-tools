@@ -15,7 +15,7 @@ public class AssetTemplateRelationResponse extends  BaseResponse {
     private String description;
 
     @ApiModelProperty("软件总数")
-    private Integer softNnm;
+    private Integer softNum;
 
     @ApiModelProperty("补丁总数")
     private Integer patchNum;
@@ -55,12 +55,13 @@ public class AssetTemplateRelationResponse extends  BaseResponse {
         this.description = description;
     }
 
-    public Integer getSoftNnm() {
-        return softNnm;
+
+    public Integer getSoftNum() {
+        return softNum;
     }
 
-    public void setSoftNnm(Integer softNnm) {
-        this.softNnm = softNnm;
+    public void setSoftNum(Integer softNum) {
+        this.softNum = softNum;
     }
 
     public Integer getPatchNum() {
@@ -77,7 +78,7 @@ public class AssetTemplateRelationResponse extends  BaseResponse {
                 "name='" + name + '\'' +
                 ", numberCode='" + numberCode + '\'' +
                 ", description='" + description + '\'' +
-                ", softwareCount=" + softNnm +
+                ", softwareCount=" + softNum +
                 ", patchCount=" + patchNum +
                 ", installTemplateCorrelationGmt=" + installTemplateCorrelationGmt +
                 '}';

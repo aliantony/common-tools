@@ -321,18 +321,36 @@
     </update>
 
     <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
+                SELECT
+            ait.id AS stringId,
+            ait.`name`,
+            ait.number_code AS numberCode,
+            ait.description,
+            (
         SELECT
-        ait.id as stringId,
-        ait.`name`,
-        ait.number_code AS numberCode,
-        ait.description,
-        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softNum,
-        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchNum
+            count( * )
         FROM
-        asset_install_template AS ait
+            asset_software_install_template AS asit
+            INNER JOIN asset_hard_soft_lib AS ahsl ON asit.software_id = ahsl.business_id
+            AND asit.STATUS = 1
         WHERE
-        ait.STATUS = 1
-        AND ait.id =#{templateId}
+            asit.install_template_id = ait.id
+            ) AS softNum,
+            (
+        SELECT
+            count( * )
+        FROM
+            asset_patch_install_template AS apit
+            INNER JOIN patch_info AS pi ON apit.patch_id = pi.id
+            AND apit.STATUS = 1
+        WHERE
+            apit.install_template_id = ait.id
+            ) AS patchNum
+        FROM
+            asset_install_template AS ait
+        WHERE
+            ait.STATUS = 1
+            AND ait.id = #{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
@@ -425,10 +443,11 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
             <if test=" name != null and name !=''">
-                and ait.`name` like  concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
             </if>
             <if test=" numberCode != null and numberCode !=''">
-                and ait.number_code like concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                and ait.number_code like
+                concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
             </if>
             <if test=" currentStatus != null">
                 and ait.current_status = #{currentStatus }
@@ -582,9 +601,9 @@
             user_interaction as userInteraction,
             exclusive_install as exclusiveInstall,
             network_status as networkStatus
-        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id
+        from asset_patch_install_template t1 inner join patch_info t2 on t1.patch_id = t2.id and t2.status = 1
         where
-        t1.install_template_id = #{installTemplateId} and t1.status=1  and t2.status = 1
+        t1.install_template_id = #{installTemplateId} and t1.status=1
     </select>
     <select id="querySoftIds" resultType="java.lang.Long">
         select software_id from asset_software_install_template where install_template_id = #{installTemplateId} and status = 1
@@ -592,19 +611,13 @@
     <select id="CountFilterBlackItemTemplate" resultType="Integer"
             parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from ( SELECT
-        DISTINCT ait.id AS stringId,
-        ait.id AS templateId,
-        ait.NAME AS NAME,
-        ait.number_code AS numberCode,
-        ait.gmt_modified AS gmtModified,
-        ait.description AS description,
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        DISTINCT ait.id AS stringId
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
-
+        left join patch_info pi on pi.id=apit.patch_id and pi.`status`=1
+        left join asset_hard_soft_lib ahsl on ahsl.business_id=asit.software_id AND ahsl.STATUS = 1
         LEFT JOIN ( SELECT DISTINCT
         ahsl.business_id AS software_business_id
         FROM
@@ -614,14 +627,14 @@
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
-        bt.sw_type = 1
-        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1
         <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+            and ait.number_code like
+            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" currentStatus != null">
             and ait.current_status = #{currentStatus }
@@ -644,13 +657,14 @@
         ait.number_code AS numberCode,
         ait.gmt_modified AS gmtModified,
         ait.description AS description,
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        count( DISTINCT ahsl.business_id ) AS softNum,
+        count( DISTINCT pi.id ) AS patchNum
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
-
+        left join patch_info pi on pi.id=apit.patch_id and pi.`status`=1
+        left join asset_hard_soft_lib ahsl on ahsl.business_id=asit.software_id AND ahsl.STATUS = 1
         LEFT JOIN ( SELECT DISTINCT
         ahsl.business_id AS software_business_id
         FROM
@@ -660,14 +674,14 @@
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
-        bt.sw_type = 1
-        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1
         <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+            and ait.number_code like
+            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" currentStatus != null">
             and ait.current_status = #{currentStatus }
@@ -686,19 +700,13 @@
     </select>
     <select id="CountWhiteItemTemplate" resultType="Integer" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from ( SELECT
-        DISTINCT ait.id AS stringId,
-        ait.id AS templateId,
-        ait.NAME AS NAME,
-        ait.number_code AS numberCode,
-        ait.gmt_modified AS gmtModified,
-        ait.description AS description,
-
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        DISTINCT ait.id AS stringId
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+        left join patch_info pi on pi.id=apit.patch_id and pi.`status`=1
+        left join asset_hard_soft_lib ahsl on ahsl.business_id=asit.software_id AND ahsl.STATUS = 1
         LEFT JOIN ( SELECT DISTINCT
         ahsl.business_id AS software_business_id
         FROM
@@ -708,14 +716,14 @@
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
-        bt.sw_type = 0
-        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1 and asit.software_id is not null
         <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+            and ait.number_code like
+            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" currentStatus != null">
             and ait.current_status = #{currentStatus }
@@ -739,12 +747,14 @@
         ait.gmt_modified AS gmtModified,
         ait.description AS description,
 
-        count( DISTINCT asit.software_id ) AS softNum,
-        count( DISTINCT apit.patch_id ) AS patchNum
+        count( DISTINCT ahsl.business_id) AS softNum,
+        count( DISTINCT pi.id) AS patchNum
         FROM
         asset_install_template ait
         LEFT JOIN asset_software_install_template asit ON ait.id = asit.install_template_id and asit.status=1
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id and apit.status=1
+        left join patch_info pi on pi.id=apit.patch_id and pi.`status`=1
+        left join asset_hard_soft_lib ahsl on ahsl.business_id=asit.software_id AND ahsl.STATUS = 1
         LEFT JOIN ( SELECT DISTINCT
         ahsl.business_id AS software_business_id
         FROM
@@ -754,14 +764,14 @@
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
-        bt.sw_type = 0
-        AND bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
+        bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1 and asit.software_id is not null
         <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like concat('%',replace(replace(#{numberCode},'%','\%'),'_','\_'),'%')
+            and ait.number_code like
+            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
         </if>
         <if test=" currentStatus != null">
             and ait.current_status = #{currentStatus }
