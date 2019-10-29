@@ -108,7 +108,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             Asset asset = new Asset();
             asset.setId(e.getId());
             asset.setAssetStatus(AssetStatusJumpEnum.getNextStatus(statusJumpRequest.getAssetFlowEnum(), statusJumpRequest.getAgree(),
-                    statusJumpRequest.getWaitCorrectToWaitRegister(), asset.getFirstEnterNett() != null).getCode());
+                    statusJumpRequest.getWaitCorrectToWaitRegister(), e.getFirstEnterNett() != null).getCode());
             updateAssetList.add(asset);
         });
 
