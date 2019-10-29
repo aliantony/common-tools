@@ -1087,7 +1087,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 1. 更新资产主表
                     asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
-                    asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
+                    if (StringUtils.isNotBlank(assetOuterRequest.getAsset().getBusinessId())) {
+                        asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
+                    }
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
