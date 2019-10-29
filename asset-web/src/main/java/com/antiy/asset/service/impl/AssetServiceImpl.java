@@ -1086,6 +1086,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     }
                     // 1. 更新资产主表
+                    asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
+                    asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
@@ -1124,7 +1126,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
-                        assetStorageMedium.setAssetId(asset.getStringId());
+                        assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
                         assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                         assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());

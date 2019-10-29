@@ -1482,8 +1482,30 @@
         update
         <include refid="Table_Name"></include>
         set
+        <if test="number != null and number != ''">
+            number = #{number},
+        </if>
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="version != null and version != ''">
+            version = #{version},
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacturer = #{manufacturer},
+        </if>
+        <if test="categoryModel != null">
+            category_model = #{categoryModel},
+        </if>
+        <if test="stepNode != null and stepNode != ''">
+            step_node = #{stepNode},
+        </if>
+        <if test="businessId != null and businessId != ''">
+            business_id = #{businessId},
+        </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
+        asset_source = #{assetSource},
         serial = #{serial },
         area_id = #{areaId },
         operation_system = #{operationSystem },
