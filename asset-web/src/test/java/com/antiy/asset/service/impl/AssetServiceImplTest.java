@@ -72,7 +72,6 @@ import com.google.common.collect.Sets;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ExcelUtils.class, RequestContextHolder.class, LoginUserUtil.class, LicenseUtil.class, LogUtils.class,
                   LogHandle.class, ZipUtil.class, CollectionUtils.class, RedisKeyUtil.class, LogUtils.class })
-// @SpringBootTest
 @PowerMockIgnore({ "javax.*.*", "com.sun.*", "org.xml.*", "org.apache.*" })
 
 public class AssetServiceImplTest {
@@ -1156,30 +1155,35 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void testChangeAsset() {
+    public void testChangeAsset() throws Exception {
         AssetOuterRequest assetOuterRequest = new AssetOuterRequest();
         mockStatic(LoginUserUtil.class);
-        LoginUser loginUser = mock(LoginUser.class);
+        mockStatic(LogUtils.class);
+        LoginUser loginUser = getLoginUser();
         when(LoginUserUtil.getLoginUser()).thenReturn(null);
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setId("1");
+        assetRequest.setCategoryModel(1);
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        assetOuterRequest.setAsset(assetRequest);
 
+        Asset asset = new Asset();
+        asset.setId(1);
+        asset.setCategoryModel(1);
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        when(assetDao.getById("1")).thenReturn(asset);
+        when(requestConverter.convert(assetRequest, Asset.class)).thenReturn(asset);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
-
+        when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
         Map formData = new HashMap();
         formData.put("admittanceResult", "safetyCheck");
         formData.put("safetyCheckUser", "1");
         manualStartActivityRequest.setFormData(formData);
         assetOuterRequest.setManualStartActivityRequest(manualStartActivityRequest);
-
-        AssetRequest assetRequest = new AssetRequest();
-        assetRequest.setId("1");
-        assetRequest.setCategoryModel(1);
-        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-
-        assetOuterRequest.setAsset(assetRequest);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
         List<AssetIpRelationRequest> ipRelationRequests = Lists.newArrayList();
         AssetIpRelationRequest assetIpRelationRequest = new AssetIpRelationRequest();
@@ -1200,13 +1204,17 @@ public class AssetServiceImplTest {
         macRelationRequests.add(assetMacRelationRequest);
 
         assetOuterRequest.setMacRelationRequests(macRelationRequests);
+
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         assetRequest.setInstallTemplateId("1");
         assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setInstallTemplateId("1");
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         when(assetDao.changeAsset(any())).thenReturn(1);
         List<Long> sids = Lists.newArrayList();
         sids.add(1L);
@@ -1252,13 +1260,14 @@ public class AssetServiceImplTest {
         }
 
         assetRequest.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
+        asset.setAssetStatus(AssetStatusEnum.RETIRE.getCode());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
 
         assetRequest.setBaselineTemplateId("1");
-
+        asset.setBaselineTemplateId("1");
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1297,37 +1306,14 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
         }
 
-        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername())))
-            .thenReturn(ActionResponse.success());
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-        Map ac = new HashMap();
-        ac.put("admittanceResult", "safetyCheck");
-        activityHandleRequest.setFormData(ac);
-        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
-        when(activityClient.completeTask(activityHandleRequest)).thenReturn(null);
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        ac.put("admittanceResult", "templateImplement");
-        activityHandleRequest.setFormData(ac);
-        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
-        try {
-            assetServiceImpl.changeAsset(assetOuterRequest);
-        } catch (Exception e) {
-        }
 
-        Asset asset = new Asset();
+
         asset.setOperationSystemName("windows");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
         formData.put("baselineConfigUserId", "1");
         AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
         assetHardSoftLib.setBusinessId("1");
@@ -1350,6 +1336,7 @@ public class AssetServiceImplTest {
         }
 
         assetRequest.setInstallType(1);
+        asset.setInstallType(1);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1357,12 +1344,51 @@ public class AssetServiceImplTest {
 
         assetOuterRequest.setManualStartActivityRequest(null);
         assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername())))
+            .thenReturn(ActionResponse.success());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        when(baseLineClient.scan(aesEncoder.encode("1", LoginUserUtil.getLoginUser().getUsername()))).thenReturn(null);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+        assetRequest.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+        Map ac = new HashMap();
+        ac.put("admittanceResult", "safetyCheck");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
+        when(activityClient.completeTask(activityHandleRequest)).thenReturn(ActionResponse.success());
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
 
-        assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        ActionResponse actionResponse = ActionResponse.fail(RespBasicCode.PARAMETER_ERROR);
+        when(activityClient.completeTask(activityHandleRequest)).thenReturn(actionResponse);
+        try {
+            assetServiceImpl.changeAsset(assetOuterRequest);
+        } catch (Exception e) {
+        }
+
+        ac.put("admittanceResult", "templateImplement");
+        activityHandleRequest.setFormData(ac);
+        assetOuterRequest.setActivityHandleRequest(activityHandleRequest);
         try {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
@@ -1381,6 +1407,7 @@ public class AssetServiceImplTest {
         Asset asset = new Asset();
         asset.setOperationSystemName("linux");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
+
         List<AssetAssemblyRequest> assetAssemblyRequestList = Lists.newArrayList();
         AssetAssemblyRequest assetAssemblyRequest = new AssetAssemblyRequest();
         assetAssemblyRequest.setAmount(2);
@@ -1520,6 +1547,7 @@ public class AssetServiceImplTest {
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request2, new MockHttpServletResponse()));
         assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+
         MockHttpServletRequest request3 = new MockHttpServletRequest();
         request3.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
         PowerMockito.mockStatic(ZipUtil.class);
@@ -1527,6 +1555,19 @@ public class AssetServiceImplTest {
         expectedException.expectMessage("发送客户端失败");
         PowerMockito.doNothing().when(ZipUtil.class, "compress", null, null);
         when(RequestContextHolder.getRequestAttributes()).thenReturn(new ServletRequestAttributes(request3, null));
+
+        assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
+        MockHttpServletRequest request13 = new MockHttpServletRequest();
+        request13.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
+        PowerMockito.mockStatic(ZipUtil.class);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("发送客户端失败");
+        PowerMockito.mockStatic(ZipUtil.class);
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request13, new MockHttpServletResponse()));
 
         assetServiceImpl.exportTemplate(new String[] { "计算设备", "安全设备", "其它设备", "网络设备", "存储设备" });
     }

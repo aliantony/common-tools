@@ -169,6 +169,21 @@ public class AssetStatusJumpServiceImplTest {
     }
 
     /**
+     * 入网-非首次入网 asset.getFirstEnterNett() != null
+     * @throws Exception
+     */
+    @Test
+    public void changeStatus2_1() throws Exception {
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.NET_IN);
+        List<Asset> assetInDb = getAssetInDb(AssetStatusEnum.WAIT_NET);
+        assetInDb.forEach(e -> e.setFirstEnterNett(3213891123L));
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assetInDb);
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+    }
+
+
+    /**
      * 待退役
      * @throws Exception
      */
@@ -196,11 +211,34 @@ public class AssetStatusJumpServiceImplTest {
         when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.success());
         Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
 
-        // 工作流请求异常
+        // case2
+        jumpRequest.setNote(null);
+        jumpRequest.setFileInfo(null);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // case3 工作流请求异常
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_RETIRE));
         when(activityClient.completeTaskBatch(Mockito.anyList())).thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
         Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+
     }
+
+    /**
+     * 变更完成
+     * @throws Exception
+     */
+    @Test
+    public void changeStatus6() throws Exception {
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.CHANGE_COMPLETE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.IN_CHANGE));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(ActionResponse.success());
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+    }
+
 
 
     /**
@@ -290,7 +328,11 @@ public class AssetStatusJumpServiceImplTest {
 
         Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
 
-        // 2异常
+        // 2返回null
+        when(activityClient.completeTaskBatch(Mockito.anyList())).thenReturn(null);
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 3异常
         when(activityClient.completeTaskBatch(Mockito.anyList())).thenThrow(new BusinessException("HHH"));
         Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
@@ -316,16 +358,23 @@ public class AssetStatusJumpServiceImplTest {
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
         when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenThrow(new BusinessException("HHH"));
         Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 3返回null
+        jumpRequest = getJumpRequest(AssetFlowEnum.TO_WAIT_RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(null);
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
 
 
     /**
-     * 流程操作与资产状态不匹配
+     * 异常-流程操作与资产状态不匹配
      * @throws Exception
      */
     @Test
-    public void changeStatus6() throws Exception {
+    public void changeStatusException6() throws Exception {
         AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.RETIRE);
         jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
@@ -333,6 +382,22 @@ public class AssetStatusJumpServiceImplTest {
 
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("当前选中的资产已被其他人员操作,请刷新页面后重试");
+        statusChangeFlowProcess.changeStatus(jumpRequest);
+    }
+
+    /**
+     * 异常-流程操作与资产状态不匹配
+     * <pre>BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "msg")</pre>
+     * @throws Exception
+     */
+    @Test
+    public void changeStatusException7() throws Exception {
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(new ArrayList<>());
+
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("所选资产已被操作,请刷新后重试");
         statusChangeFlowProcess.changeStatus(jumpRequest);
     }
 
@@ -347,6 +412,8 @@ public class AssetStatusJumpServiceImplTest {
         jumpRequest.setFormData(new HashMap());
         jumpRequest.setAssetInfoList(assetInfoList);
         jumpRequest.setAssetFlowEnum(assetFlowEnum);
+        jumpRequest.setNote("note");
+        jumpRequest.setFileInfo("fileInfo");
         return jumpRequest;
     }
 
