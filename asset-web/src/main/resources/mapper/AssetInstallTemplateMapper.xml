@@ -321,18 +321,36 @@
     </update>
 
     <select id="queryTemplateById" resultType="com.antiy.asset.vo.response.AssetTemplateRelationResponse">
+                SELECT
+            ait.id AS stringId,
+            ait.`name`,
+            ait.number_code AS numberCode,
+            ait.description,
+            (
         SELECT
-        ait.id as stringId,
-        ait.`name`,
-        ait.number_code AS numberCode,
-        ait.description,
-        ( SELECT count(*) FROM asset_software_install_template WHERE install_template_id = ait.id AND STATUS = 1 ) AS softNum,
-        ( SELECT count(*) FROM asset_patch_install_template WHERE install_template_id = ait.id  AND STATUS = 1 ) AS patchNum
+            count( * )
         FROM
-        asset_install_template AS ait
+            asset_software_install_template AS asit
+            INNER JOIN asset_hard_soft_lib AS ahsl ON asit.software_id = ahsl.business_id
+            AND asit.STATUS = 1
         WHERE
-        ait.STATUS = 1
-        AND ait.id =#{templateId}
+            asit.install_template_id = ait.id
+            ) AS softNum,
+            (
+        SELECT
+            count( * )
+        FROM
+            asset_patch_install_template AS apit
+            INNER JOIN patch_info AS pi ON apit.patch_id = pi.id
+            AND apit.STATUS = 1
+        WHERE
+            apit.install_template_id = ait.id
+            ) AS patchNum
+        FROM
+            asset_install_template AS ait
+        WHERE
+            ait.STATUS = 1
+            AND ait.id = #{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
