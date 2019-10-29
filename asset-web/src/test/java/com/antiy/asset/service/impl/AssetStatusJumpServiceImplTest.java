@@ -358,6 +358,13 @@ public class AssetStatusJumpServiceImplTest {
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
         when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenThrow(new BusinessException("HHH"));
         Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 3返回null
+        jumpRequest = getJumpRequest(AssetFlowEnum.TO_WAIT_RETIRE);
+        jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.NET_IN));
+        when(activityClient.manualStartProcess(Mockito.any(ManualStartActivityRequest.class))).thenReturn(null);
+        Assert.assertEquals(RespBasicCode.BUSSINESS_EXCETION.getResultCode(), statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
 
@@ -405,6 +412,8 @@ public class AssetStatusJumpServiceImplTest {
         jumpRequest.setFormData(new HashMap());
         jumpRequest.setAssetInfoList(assetInfoList);
         jumpRequest.setAssetFlowEnum(assetFlowEnum);
+        jumpRequest.setNote("note");
+        jumpRequest.setFileInfo("fileInfo");
         return jumpRequest;
     }
 
