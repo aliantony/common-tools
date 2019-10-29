@@ -150,6 +150,34 @@ public class AssetHardSoftLibServiceImplTest {
     }
 
     @Test
+    public void queryPageAssetHardSoftLib3() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setAssetType(AssetTypeEnum.HARD);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(11);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":2,\"totalRecords\":11}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+    }
+
+    @Test
+    public void queryPageAssetHardSoftLib4() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setBusinessId("1");
+        query.setAssetType(AssetTypeEnum.HARD);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(11);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":2,\"totalRecords\":11}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+    }
+
+    @Test
+    public void queryPageAssetHardSoftLib5() throws Exception {
+        AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
+        query.setAssetType(AssetTypeEnum.HARD);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibCount(Mockito.any())).thenReturn(11);
+        Assert.assertEquals("{\"currentPage\":1,\"items\":[],\"pageSize\":10,\"totalPages\":2,\"totalRecords\":11}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryPageAssetHardSoftLib(query)));
+    }
+
+    @Test
     public void queryHardSoftLibCount() throws Exception {
         AssetHardSoftLibQuery query = new AssetHardSoftLibQuery();
         Mockito.when(assetHardSoftLibDao.queryAssetList(Mockito.any())).thenReturn(new ArrayList<>());
@@ -171,6 +199,22 @@ public class AssetHardSoftLibServiceImplTest {
         AssetPulldownQuery query = new AssetPulldownQuery();
         query.setName("n");
         query.setVersion("v");
+        query.setSupplier("s");
+        List<AssetHardSoftLib> assetHardSoftLibs = new ArrayList<>();
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        assetHardSoftLibs.add(assetHardSoftLib);
+        Mockito.when(assetHardSoftLibDao.queryHardSoftLibByVersion(Mockito.any())).thenReturn(assetHardSoftLibs);
+        Assert.assertEquals("1.001.02.073", assetHardSoftLibService.pulldownVersion(query).get(0).getValue());
+    }
+
+    @Test
+    public void pulldownVersion1() throws Exception {
+        AssetPulldownQuery query = new AssetPulldownQuery();
+        query.setName("n");
         query.setSupplier("s");
         List<AssetHardSoftLib> assetHardSoftLibs = new ArrayList<>();
         AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
@@ -266,6 +310,16 @@ public class AssetHardSoftLibServiceImplTest {
         Mockito.when(assetHardSoftLibDao.queryAssetList(query)).thenReturn(Arrays.asList(new AssetHardSoftLib()));
         Assert.assertEquals(
             "{\"body\":{\"currentPage\":1,\"items\":[{}],\"pageSize\":10,\"totalPages\":1,\"totalRecords\":1},\"head\":{\"code\":\"200\",\"result\":\"成功\"}}",
+            JSONObject.toJSONString(assetHardSoftLibService.queryAssetList(query)));
+    }
+
+    @Test
+    public void queryAssetList1() {
+        AssetHardSoftOperQuery query = new AssetHardSoftOperQuery();
+        Mockito.when(assetHardSoftLibDao.queryAssetListCount(query)).thenReturn(-1);
+        Mockito.when(assetHardSoftLibDao.queryAssetList(query)).thenReturn(Arrays.asList(new AssetHardSoftLib()));
+        Assert.assertEquals(
+            "{\"body\":{\"currentPage\":0,\"items\":[],\"pageSize\":10,\"totalPages\":0,\"totalRecords\":-1},\"head\":{\"code\":\"200\",\"result\":\"成功\"}}",
             JSONObject.toJSONString(assetHardSoftLibService.queryAssetList(query)));
     }
 }
