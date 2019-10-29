@@ -190,36 +190,33 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
      * @param reportRequest
      */
     private void dealArea(ReportQueryRequest reportRequest) {
-        if (!Objects.isNull(reportRequest)) {
-            List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
-            // 参数的所有区域的父节点ID都不和顶级区域Id相等
-            if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() >= 1
-                && assetAreaReportRequestList.stream()
-                    .filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId())).collect(Collectors.toList())
-                    .size() == 0) {
-                AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
-                assetAreaReportRequest.setChildrenAradIds(Lists.newArrayList());
-                assetAreaReportRequest.setParentAreaId(reportRequest.getTopAreaId());
-                // 顶级区域名称为空,设置顶级区域的名称
-                if (StringUtils.isBlank(reportRequest.getTopAreaName())) {
-                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        DataTypeUtils.stringToInteger(reportRequest.getTopAreaId()));
-                    try {
-                        SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                        if (sysArea != null) {
-                            assetAreaReportRequest.setParentAreaName(sysArea.getFullName());
-                        } else {
-                            ParamterExceptionUtils.isTrue(false, "获取顶级区域名称失败");
-                        }
-                    } catch (Exception e) {
-                        logger.error("获取顶级区域名称失败", e);
-                        ParamterExceptionUtils.isTrue(!StringUtils.equals("获取顶级区域名称失败", e.getMessage()), "获取顶级区域名称失败");
+        List<AssetAreaReportRequest> assetAreaReportRequestList = reportRequest.getAssetAreaIds();
+        // 参数的所有区域的父节点ID都不和顶级区域Id相等
+        if (CollectionUtils.isNotEmpty(assetAreaReportRequestList) && assetAreaReportRequestList.size() >= 1
+            && assetAreaReportRequestList.stream().filter(a -> reportRequest.getTopAreaId().equals(a.getParentAreaId()))
+                .collect(Collectors.toList()).size() == 0) {
+            AssetAreaReportRequest assetAreaReportRequest = new AssetAreaReportRequest();
+            assetAreaReportRequest.setChildrenAradIds(Lists.newArrayList());
+            assetAreaReportRequest.setParentAreaId(reportRequest.getTopAreaId());
+            // 顶级区域名称为空,设置顶级区域的名称
+            if (StringUtils.isBlank(reportRequest.getTopAreaName())) {
+                String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    DataTypeUtils.stringToInteger(reportRequest.getTopAreaId()));
+                try {
+                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                    if (sysArea != null) {
+                        assetAreaReportRequest.setParentAreaName(sysArea.getFullName());
+                    } else {
+                        ParamterExceptionUtils.isTrue(false, "获取顶级区域名称失败");
                     }
-                } else {
-                    assetAreaReportRequest.setParentAreaName(reportRequest.getTopAreaName());
+                } catch (Exception e) {
+                    logger.error("获取顶级区域名称失败", e);
+                    ParamterExceptionUtils.isTrue(!StringUtils.equals("获取顶级区域名称失败", e.getMessage()), "获取顶级区域名称失败");
                 }
-                assetAreaReportRequestList.add(assetAreaReportRequestList.size(), assetAreaReportRequest);
+            } else {
+                assetAreaReportRequest.setParentAreaName(reportRequest.getTopAreaName());
             }
+            assetAreaReportRequestList.add(assetAreaReportRequestList.size(), assetAreaReportRequest);
         }
     }
 
@@ -250,19 +247,17 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             }
             rows.add(map);
         }
-        if (CollectionUtils.isNotEmpty(children)) {
-            String key = children.get(children.size() - 1).getKey();
-            if (CollectionUtils.isNotEmpty(rows)) {
-                rows.sort(new Comparator<Map<String, String>>() {
-                    @Override
-                    public int compare(Map<String, String> o1, Map<String, String> o2) {
-                        return DataTypeUtils.stringToInteger(o1.get(key)) <= DataTypeUtils.stringToInteger(o2.get(key))
-                            ? 1
-                            : -1;
-                    }
-                });
-            }
+        String key = children.get(children.size() - 1).getKey();
+        if (CollectionUtils.isNotEmpty(rows)) {
+            rows.sort(new Comparator<Map<String, String>>() {
+                @Override
+                public int compare(Map<String, String> o1, Map<String, String> o2) {
+                    return DataTypeUtils.stringToInteger(o1.get(key)) <= DataTypeUtils.stringToInteger(o2.get(key)) ? 1
+                        : -1;
+                }
+            });
         }
+
         // 数据
         Map add = new HashMap();
         add.put("classifyName", "新增数量");
