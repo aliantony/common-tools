@@ -685,6 +685,13 @@ public class AssetAreaReportServiceImplTest {
         return httpServletRequest;
     }
 
+
+    private MockHttpServletRequest getRequest2() {
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        httpServletRequest.addHeader("user-agent", "like gecko");
+        return httpServletRequest;
+    }
+
     @Test
     public void exportAreaTableTest() throws Exception {
 
@@ -772,14 +779,14 @@ public class AssetAreaReportServiceImplTest {
         Mockito.verify(assetReportDao, times(2)).queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any());
 
         when(RequestContextHolder.getRequestAttributes())
-            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest2(), new MockHttpServletResponse()));
 
         reportRequest.setTimeType("3");
         assetAreaReportService.exportAreaTable(reportRequest);
         Mockito.verify(assetReportDao, times(3)).queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any());
 
         when(RequestContextHolder.getRequestAttributes())
-            .thenReturn(new ServletRequestAttributes(getRequest(), new MockHttpServletResponse()));
+            .thenReturn(new ServletRequestAttributes(getRequest2(), new MockHttpServletResponse()));
 
         reportRequest.setTimeType("4");
         assetAreaReportService.exportAreaTable(reportRequest);
