@@ -23,6 +23,9 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 
@@ -47,6 +50,7 @@ public class AssetAdmittanceServiceImplTest {
     @Test
     public void findPageAsset() throws Exception {
         mockStatic(LoginUserUtil.class);
+        mockStatic(RedisKeyUtil.class);
         AssetQuery query = new AssetQuery();
         query.setAssociateGroup(true);
         query.setGroupId("1");
@@ -70,6 +74,19 @@ public class AssetAdmittanceServiceImplTest {
 
         when(assetDao.findCount(query)).thenReturn(1);
         when(assetDao.findListAsset(query)).thenReturn(assetList);
+        String key = "1";
+        SysArea sysArea = new SysArea();
+        sysArea.setFullName("aaa");
+        when(RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+            DataTypeUtils.stringToInteger(asset.getAreaId()))).thenReturn(key);
+        when(redisUtil.getObject(key, SysArea.class)).thenReturn(sysArea);
+        try {
+            admittanceService.findPageAsset(query);
+        } catch (Exception e) {
+
+        }
+
+        when(redisUtil.getObject(key, SysArea.class)).thenThrow(new Exception());
         try {
             admittanceService.findPageAsset(query);
         } catch (Exception e) {
