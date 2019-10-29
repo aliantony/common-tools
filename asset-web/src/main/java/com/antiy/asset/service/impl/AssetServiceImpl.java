@@ -1291,6 +1291,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
+            } else {
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
+                assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                    asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
