@@ -36,6 +36,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ RedisKeyUtil.class, LoginUserUtil.class, LogUtils.class, LogHandle.class })
@@ -72,9 +75,9 @@ public class AssetDepartmentServiceImplTest {
 
         PowerMockito.mockStatic(LogUtils.class);
         PowerMockito.mockStatic(LogHandle.class);
-        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", Mockito.any(BusinessData.class));
-        PowerMockito.doNothing().when(LogHandle.class, "log", Mockito.any(), Mockito.any(), Mockito.any(),
-            Mockito.any());
+        PowerMockito.doNothing().when(LogUtils.class, "recordOperLog", any(BusinessData.class));
+        PowerMockito.doNothing().when(LogHandle.class, "log", any(), any(), any(),
+            any());
 
     }
 
@@ -87,15 +90,15 @@ public class AssetDepartmentServiceImplTest {
         assetDepartment.setParentId("0");
         assetDepartment.setName("test");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.insert(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(assetDepartment);
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(null);
+        when(assetDepartmentDao.insert(any())).thenReturn(null);
         ActionResponse response2 = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response2.getHead().getCode());
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(0);
+        when(assetDepartmentDao.insert(any())).thenReturn(0);
         ActionResponse response3 = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response3.getHead().getCode());
     }
@@ -108,9 +111,9 @@ public class AssetDepartmentServiceImplTest {
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("1");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.insert(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(assetDepartment);
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
     }
@@ -123,10 +126,10 @@ public class AssetDepartmentServiceImplTest {
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("1");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(10);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.insert(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(assetDepartment);
+        when(assetDepartmentDao.findRepeatName(any(), any())).thenReturn(10);
 
         try {
             ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
@@ -143,10 +146,10 @@ public class AssetDepartmentServiceImplTest {
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("1");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.insert(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(assetDepartment);
+        when(assetDepartmentDao.findRepeatName(any(), any())).thenReturn(0);
 
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
@@ -161,10 +164,10 @@ public class AssetDepartmentServiceImplTest {
         AssetDepartment assetDepartment = new AssetDepartment();
         assetDepartment.setParentId("1");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.insert(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(assetDepartment);
+        when(assetDepartmentDao.findRepeatName(any(), any())).thenReturn(0);
 
         ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
@@ -197,13 +200,13 @@ public class AssetDepartmentServiceImplTest {
         assetDepartment.setParentId("0");
         assetDepartment.setName("test");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(1);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.update(any())).thenReturn(1);
 
         ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
 
-        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(0);
+        when(assetDepartmentDao.update(any())).thenReturn(0);
         Assert.assertEquals("200", response.getHead().getCode());
         request.setParentId("1");
         expectedEx.expect(BusinessException.class);
@@ -222,12 +225,18 @@ public class AssetDepartmentServiceImplTest {
         assetDepartment.setParentId("0");
         assetDepartment.setName("test");
 
-        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
-        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(10);
+        when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        when(assetDepartmentDao.update(any())).thenReturn(10);
 
-        ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
-        Assert.assertEquals("200", response.getHead().getCode());
-
+       // ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
+      //  Assert.assertEquals("200", response.getHead().getCode());
+        when(assetDepartmentDao.update(any())).thenReturn(0);
+        ActionResponse response2 = assetDepartmentService.updateAssetDepartment(request);
+        Assert.assertEquals("200", response2.getHead().getCode());
+        when(assetDepartmentDao.findRepeatName(any(),any())).thenReturn(10);
+        expectedEx.expectMessage("该部门名已存在");
+        expectedEx.expect(BusinessException.class);
+        assetDepartmentService.updateAssetDepartment(request);
     }
 
 
@@ -269,8 +278,8 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentResponse.setName("test");
         assetDepartmentResponseList.add(assetDepartmentResponse);
 
-        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentList);
-        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
+        when(assetDepartmentDao.findListAssetDepartment(any())).thenReturn(assetDepartmentList);
+        when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
             .thenReturn(assetDepartmentResponseList);
         List<AssetDepartmentResponse> actual = assetDepartmentService.findListAssetDepartment(query);
         Assert.assertTrue(assetDepartmentResponseList.size() == actual.size());
@@ -286,8 +295,8 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentResponse.setStatus(1);
         assetDepartmentResponse.setName("test");
         assetDepartmentResponseList.add(assetDepartmentResponse);
-        Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
-        Mockito.when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
+        when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
+        when(responseConverter.convert(assetDepartmentList, AssetDepartmentResponse.class))
             .thenReturn(assetDepartmentResponseList);
         List<AssetDepartmentResponse> actual = assetDepartmentService.findAssetDepartmentById(1);
         Assert.assertTrue(assetDepartmentResponseList.size() == actual.size());
@@ -317,8 +326,8 @@ public class AssetDepartmentServiceImplTest {
         query.setStatus(1);
         query.setName("test");
 
-        Mockito.when(assetDepartmentDao.findCount(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentService.findListAssetDepartment(Mockito.any()))
+        when(assetDepartmentDao.findCount(any())).thenReturn(1);
+        when(assetDepartmentService.findListAssetDepartment(any()))
             .thenReturn(assetDepartmentResponseList);
 
         PageResult<AssetDepartmentResponse> actual = assetDepartmentService.findPageAssetDepartment(query);
@@ -340,11 +349,11 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentNodeResponse.setStatus(1);
         assetDepartmentNodeResponses.add(assetDepartmentNodeResponse);
 
-        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentList);
+        when(assetDepartmentDao.findListAssetDepartment(any())).thenReturn(assetDepartmentList);
 
         AssetDepartmentNodeResponse actual = assetDepartmentService.findDepartmentNode();
         Assert.assertEquals(assetDepartmentNodeResponse.getStatus(), actual.getStatus());
-        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(null);
+        when(assetDepartmentDao.findListAssetDepartment(any())).thenReturn(null);
         AssetDepartmentNodeResponse actual2 = assetDepartmentService.findDepartmentNode();
         Assert.assertNull(actual2);
     }
@@ -365,7 +374,7 @@ public class AssetDepartmentServiceImplTest {
         assetDepartmentNodeResponses.add(assetDepartmentNodeResponse);
         ReflectionTestUtils.setField(assetDepartmentService, "parentMap", new HashMap<>());
 
-        Mockito.when(assetDepartmentDao.findListAssetDepartment(Mockito.any())).thenReturn(assetDepartmentList);
+        when(assetDepartmentDao.findListAssetDepartment(any())).thenReturn(assetDepartmentList);
         AssetDepartmentNodeResponse actual = assetDepartmentService.findDepartmentNode();
         Assert.assertEquals(assetDepartmentNodeResponse.getStatus(), actual.getStatus());
     }
@@ -379,12 +388,12 @@ public class AssetDepartmentServiceImplTest {
         assetUser.setId(1);
         List<AssetUser> resultUser = new ArrayList<>();
 
-        Mockito.when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
-        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
-        Mockito.when(assetUserDao.findListAssetUser(Mockito.any())).thenReturn(resultUser);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
+        when(assetDepartmentDao.getAll()).thenReturn(assetDepartmentList);
+        when(assetDepartmentDao.delete(any())).thenReturn(1);
+        when(assetUserDao.findListAssetUser(any())).thenReturn(resultUser);
+        when(assetDepartmentDao.getById(any())).thenReturn(getDepartment());
         Assert.assertEquals("200", assetDepartmentService.deleteAllById(1).getHead().getCode());
-        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(0);
+        when(assetDepartmentDao.delete(any())).thenReturn(0);
         Assert.assertEquals(0, assetDepartmentService.deleteAllById(1).getBody());
         resultUser.add(assetUser);
         expectedEx.expectMessage("部门下存在关联用户，不能删除");
@@ -402,16 +411,16 @@ public class AssetDepartmentServiceImplTest {
 
     @Test
     public void getIdByNameTest() {
-        Mockito.when(assetDepartmentDao.getIdByName(Mockito.any())).thenReturn("1");
+        when(assetDepartmentDao.getIdByName(any())).thenReturn("1");
         Assert.assertEquals("1", assetDepartmentService.getIdByName("test"));
     }
 
     @Test
     public void deleteTest() throws Exception {
-        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(1);
-        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(getDepartment());
+        when(assetDepartmentDao.delete(any())).thenReturn(1);
+        when(assetDepartmentDao.getById(any())).thenReturn(getDepartment());
         Assert.assertEquals("200", assetDepartmentService.delete(1).getHead().getCode());
-        Mockito.when(assetDepartmentDao.delete(Mockito.any())).thenReturn(0);
+        when(assetDepartmentDao.delete(any())).thenReturn(0);
         Assert.assertEquals(0, assetDepartmentService.delete(1).getBody());
     }
 }
