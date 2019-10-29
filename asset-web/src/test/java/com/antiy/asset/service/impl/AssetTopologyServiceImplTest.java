@@ -178,6 +178,8 @@ public class AssetTopologyServiceImplTest {
         List<AssetLink> assetLinks = new ArrayList<>();
         assetLinks.add(generateAssetLink("1", "2"));
         assetLinks.add(generateAssetLink("2", "3"));
+        assetLinks.add(generateAssetLink("3", "2"));
+        assetLinks.add(generateAssetLink("2", "1"));
         when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(assetLinks);
         List<IdCount> idCounts = new ArrayList<>();
         idCounts.add(new IdCount("1", "2"));
@@ -189,7 +191,6 @@ public class AssetTopologyServiceImplTest {
         when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
         Assert.assertEquals("success", assetTopologyService.countAssetTopology().getStatus());
     }
-
 
     @Test
     public void countAssetTopology1() throws Exception {
@@ -207,6 +208,7 @@ public class AssetTopologyServiceImplTest {
         when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
         Assert.assertEquals("success", assetTopologyService.countAssetTopology().getStatus());
     }
+
     @Test
     public void queryGroupListTest() throws Exception {
         when(assetLinkRelationDao.queryGroupList(any())).thenReturn(Arrays.asList(generateGroup(), generateGroup()));
@@ -274,7 +276,7 @@ public class AssetTopologyServiceImplTest {
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
-        Assert.assertEquals("success", assetTopologyService.getTopologyList(new AssetQuery()).getStatus());
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(query).getStatus());
 
     }
 
@@ -285,7 +287,7 @@ public class AssetTopologyServiceImplTest {
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
-        Assert.assertEquals("success", assetTopologyService.getTopologyList(new AssetQuery()).getStatus());
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(query).getStatus());
 
     }
 
@@ -320,18 +322,23 @@ public class AssetTopologyServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("key", "1");
         map.put("value", "2");
+        list.add(map);
         map = new HashMap<>();
         map.put("key", "2");
         map.put("value", "12");
+        list.add(map);
         map = new HashMap<>();
         map.put("key", "3");
         map.put("value", "21");
+        list.add(map);
         map = new HashMap<>();
         map.put("key", "4");
         map.put("value", "21");
+        list.add(map);
         map = new HashMap<>();
         map.put("key", "5");
         map.put("value", "22");
+        list.add(map);
         map = new HashMap<>();
         map.put("key", "6");
         map.put("value", "23");
@@ -385,6 +392,54 @@ public class AssetTopologyServiceImplTest {
     }
 
     @Test
+    public void getAlarmTopologyTest1() throws Exception {
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
+        Asset asset1 = generateAsset();
+        asset1.setId(1);
+        asset1.setAreaId("1");
+        Asset asset2 = generateAsset();
+        asset2.setId(2);
+        asset2.setAreaId("1");
+        asset1.setAreaId("1");
+        SysArea s = new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
+
+        // 情况1
+        when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "2")));
+        Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
+    }
+
+    @Test
+    public void getAlarmTopologyTest2() throws Exception {
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(0);
+        Asset asset1 = generateAsset();
+        asset1.setId(1);
+        asset1.setAreaId("1");
+        Asset asset2 = generateAsset();
+        asset2.setId(2);
+        asset2.setAreaId("1");
+        asset1.setAreaId("1");
+        SysArea s = new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
+
+        // 情况1
+        when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "2")));
+        Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
+    }
+
+    @Test
     public void queryListByIpTest() throws Exception {
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
@@ -414,13 +469,25 @@ public class AssetTopologyServiceImplTest {
         AssetLink assetLink7 = generateAssetLink3("10", "113");
         AssetLink assetLink8 = generateAssetLink2("50", "111");
         AssetLink assetLink9 = generateAssetLink2("50", "112");
-        AssetLink assetLink10 = generateAssetLink2("510", "1234");
-        AssetLink assetLink11 = generateAssetLink2("4321", "510");
 
         when(assetLinkRelationDao.findLinkRelation(any()))
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), assetLink, assetLink1, assetLink2, assetLink3,
-                assetLink4, assetLink5, assetLink6, assetLink7, assetLink8, assetLink9, assetLink10, assetLink11));
+                assetLink4, assetLink5, assetLink6, assetLink7, assetLink8, assetLink9));
         Assert.assertEquals("success", assetTopologyService.getTopologyGraph().getStatus());
+
+    }
+
+    @Test
+    public void getTopologyGraph1() throws Exception {
+        AssetLink assetLink1 = generateAssetLink4("2", "4");
+        AssetLink assetLink2 = generateAssetLink4("3", "1");
+
+        try {
+            when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(Arrays.asList(assetLink1, assetLink2));
+            assetTopologyService.getTopologyGraph();
+        } catch (Exception e) {
+            Assert.assertEquals(null, e.getMessage());
+        }
 
     }
     // @Test

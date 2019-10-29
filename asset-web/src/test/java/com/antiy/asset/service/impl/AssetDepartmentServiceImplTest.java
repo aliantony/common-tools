@@ -170,6 +170,23 @@ public class AssetDepartmentServiceImplTest {
         Assert.assertEquals("200", response.getHead().getCode());
     }
 
+
+    @Test
+    public void saveAssetDepartmentTest5() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setParentId("1");
+        request.setId("1");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("1");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.insert(Mockito.any())).thenReturn(1);
+        Mockito.when(assetDepartmentDao.getById(Mockito.any())).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.findRepeatName(Mockito.any(), Mockito.any())).thenReturn(0);
+
+        ActionResponse response = assetDepartmentService.saveAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+    }
     @Test
     public void updateAssetDepartmentTest() throws Exception {
         AssetDepartmentRequest request = new AssetDepartmentRequest();
@@ -207,6 +224,25 @@ public class AssetDepartmentServiceImplTest {
 
         Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
         Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(10);
+
+        ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
+        Assert.assertEquals("200", response.getHead().getCode());
+
+    }
+
+
+    @Test
+    public void updateAssetDepartmentTest2() throws Exception {
+        AssetDepartmentRequest request = new AssetDepartmentRequest();
+        request.setName("test");
+        request.setId("1");
+        request.setParentId("0");
+        AssetDepartment assetDepartment = new AssetDepartment();
+        assetDepartment.setParentId("0");
+        assetDepartment.setName("test");
+
+        Mockito.when(requestConverter.convert(request, AssetDepartment.class)).thenReturn(assetDepartment);
+        Mockito.when(assetDepartmentDao.update(Mockito.any())).thenReturn(0);
 
         ActionResponse response = assetDepartmentService.updateAssetDepartment(request);
         Assert.assertEquals("200", response.getHead().getCode());
