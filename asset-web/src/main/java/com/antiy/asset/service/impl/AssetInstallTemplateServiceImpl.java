@@ -222,7 +222,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         } else {
             count = this.findCount(query);
         }
-        if (count == 0 || count == null) {
+        if (count == null || count == 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), new ArrayList<AssetInstallTemplateResponse>());
         }
         List<AssetInstallTemplateResponse> responses = null;
@@ -356,10 +356,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         setTemplateInfo(request, template);
         assetInstallTemplateDao.insert(template);
         request.setStringId(template.getStringId());
-        if (request.getPatchIds() != null && !request.getPatchIds().isEmpty()) {
+        if (!request.getPatchIds().isEmpty()) {
             assetInstallTemplateDao.insertBatchPatch(request);
         }
-        if (request.getSoftBussinessIds() != null && !request.getSoftBussinessIds().isEmpty()) {
+        if (!request.getSoftBussinessIds().isEmpty()) {
             assetInstallTemplateDao.insertBatchSoft(request);
         }
         this.insertCheckTemplateInfo(request);

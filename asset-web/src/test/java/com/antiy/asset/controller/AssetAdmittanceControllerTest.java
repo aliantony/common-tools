@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.antiy.asset.convert.AccessExportConvert;
@@ -20,16 +21,22 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.AssetAdmittanceService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.Constants;
+import com.antiy.asset.util.LogHandle;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AdmittanceRequest;
 import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.utils.DateUtils;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * @Author: lvliang
  * @Date: 2019/10/22 13:26
  */
 @RunWith(PowerMockRunner.class)
+@PrepareForTest({ LoginUserUtil.class, LogUtils.class, LogHandle.class, RedisKeyUtil.class, DateUtils.class })
 public class AssetAdmittanceControllerTest {
     @Mock
     public IAssetService             assetService;
@@ -84,6 +91,8 @@ public class AssetAdmittanceControllerTest {
         }
         assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
         when(assetService.findListAsset(any(), any())).thenReturn(assetList);
+        assetAdmittanceController.export(status, start, end, null, null);
+        when(assetService.findListAsset(any(), any())).thenReturn(Lists.newArrayList());
         assetAdmittanceController.export(status, start, end, null, null);
     }
 }
