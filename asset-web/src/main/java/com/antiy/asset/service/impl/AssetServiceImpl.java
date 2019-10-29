@@ -1141,7 +1141,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         });
         // 记录资产操作流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(asset.getStringId());
+        assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
         assetOperationRecord.setOriginStatus(0);
         assetOperationRecord.setTargetStatus(asset.getAssetStatus());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
