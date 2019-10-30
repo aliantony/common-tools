@@ -1874,4 +1874,14 @@ AND a.`status` = 1
             </choose>
         </foreach>
     </update>
+
+    <select id="findUnknownAssetCount" resultType="java.lang.Integer"
+            parameterType="java.util.List">
+        select count(1) from asset
+        WHERE area_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and asset_source = 3
+    </select>
 </mapper>
