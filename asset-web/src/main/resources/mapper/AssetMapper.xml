@@ -800,20 +800,20 @@
             <choose>
                 <when test="unknownAssets">
                     and (air.ip like binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     or amr.mac like binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     )
                 </when>
                 <otherwise>
                     and (asset.name LIKE binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'\\','\\\\'),'_','\_'),'%')
                     or asset.number LIKE binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'\\','\\\\'),'_','\_'),'%')
                     or air.ip like binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     or amr.mac like binary
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     )
                 </otherwise>
             </choose>

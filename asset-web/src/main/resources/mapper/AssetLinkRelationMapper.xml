@@ -969,13 +969,13 @@
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or a.number LIKE binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or b.ip like binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or c.mac like binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test=" assetGroup != null and assetGroup != ''">
@@ -1047,13 +1047,13 @@
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or a.number LIKE binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or b.ip like binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or c.mac like binary
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test=" assetGroup != null and assetGroup != ''">
