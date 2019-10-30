@@ -1876,10 +1876,10 @@ AND a.`status` = 1
     </update>
 
     <select id="findUnknownAssetCount" resultType="java.lang.Integer"
-            parameterType="java.util.List">
+            parameterType="com.antiy.asset.vo.request.AssetUnknownRequest">
         select count(1) from asset
         WHERE area_id IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="areaIds" open="(" separator="," close=")">
             #{item}
         </foreach>
         and status = 1 and asset_source = 3
