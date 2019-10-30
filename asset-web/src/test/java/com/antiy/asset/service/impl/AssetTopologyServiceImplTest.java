@@ -116,6 +116,16 @@ public class AssetTopologyServiceImplTest {
         AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
         AssetResponse assetResponse = new AssetResponse();
         assetResponse.setName("abc");
+        assetOuterResponse.setAsset(assetResponse);
+        when(iAssetService.getByAssetId(any())).thenReturn(assetOuterResponse);
+        Assert.assertEquals("abc", assetTopologyService.queryAssetNodeInfo("1").getData().get(0).getAsset_name());
+    }
+
+    @Test
+    public void queryAssetNodeInfoTest2() throws Exception {
+        AssetOuterResponse assetOuterResponse = new AssetOuterResponse();
+        AssetResponse assetResponse = new AssetResponse();
+        assetResponse.setName("abc");
         List<AssetIpRelationResponse> list = new ArrayList<>();
         AssetIpRelationResponse ipRelationResponse = new AssetIpRelationResponse();
         ipRelationResponse.setIp("1");
@@ -153,8 +163,37 @@ public class AssetTopologyServiceImplTest {
         return assetLink;
     }
 
+    public AssetLink generateAssetLink4(String parentId, String assetId) {
+        AssetLink assetLink = new AssetLink();
+        assetLink.setParentAssetId(parentId);
+        assetLink.setAssetId(assetId);
+        assetLink.setCategoryModal(100);
+        assetLink.setParentCategoryModal(100);
+        return assetLink;
+    }
+
     @Test
     public void countAssetTopology() throws Exception {
+        when(assetDao.findCountByCategoryModel(any())).thenReturn(100);
+        List<AssetLink> assetLinks = new ArrayList<>();
+        assetLinks.add(generateAssetLink("1", "2"));
+        assetLinks.add(generateAssetLink("2", "3"));
+        assetLinks.add(generateAssetLink("3", "2"));
+        assetLinks.add(generateAssetLink("2", "1"));
+        when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(assetLinks);
+        List<IdCount> idCounts = new ArrayList<>();
+        idCounts.add(new IdCount("1", "2"));
+        idCounts.add(new IdCount("2", "2"));
+        idCounts.add(new IdCount("3", "2"));
+        idCounts.add(new IdCount("2", "3"));
+        when(assetDao.queryAlarmCountByAssetIds(any())).thenReturn(idCounts);
+        Assert.assertEquals("4", assetTopologyService.countAssetTopology().getList().get(0).get("warning"));
+        when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(new ArrayList<>());
+        Assert.assertEquals("success", assetTopologyService.countAssetTopology().getStatus());
+    }
+
+    @Test
+    public void countAssetTopology1() throws Exception {
         when(assetDao.findCountByCategoryModel(any())).thenReturn(100);
         List<AssetLink> assetLinks = new ArrayList<>();
         assetLinks.add(generateAssetLink("1", "2"));
@@ -196,10 +235,10 @@ public class AssetTopologyServiceImplTest {
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(100);
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(generateAsset(), generateAsset()));
-        SysArea s=new SysArea();
+        SysArea s = new SysArea();
         s.setFullName("区域");
-        when(redisUtil.getObject(Mockito.any(),Mockito.any())).thenReturn(s);
-         when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
         AssetQuery query = new AssetQuery();
         query.setAreaIds(new String[] { "1", "2" });
         Assert.assertEquals(2, assetTopologyService.getTopologyList(query).getData().size());
@@ -222,6 +261,37 @@ public class AssetTopologyServiceImplTest {
     }
 
     @Test
+    public void getTopologyListTest3() throws Exception {
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(new AssetQuery()).getStatus());
+
+    }
+
+    @Test
+    public void getTopologyListTest4() throws Exception {
+        AssetQuery query = new AssetQuery();
+        query.setAreaIds(new String[] {});
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(query).getStatus());
+
+    }
+
+    @Test
+    public void getTopologyListTest5() throws Exception {
+        AssetQuery query = new AssetQuery();
+        query.setAreaIds(new String[] { "1" });
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
+        Assert.assertEquals("success", assetTopologyService.getTopologyList(query).getStatus());
+
+    }
+
+    @Test
     public void countTopologyCategoryTest() throws Exception {
         List<EnumCountResponse> enumCountResponses = new ArrayList<>();
         EnumCountResponse enumCountResponse = new EnumCountResponse();
@@ -234,6 +304,44 @@ public class AssetTopologyServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("key", "1");
         map.put("value", "2");
+        list.add(map);
+        Mockito.when(assetDao.countCategoryModel(Mockito.anyList(), Mockito.anyList())).thenReturn(list);
+        Assert.assertEquals("success", assetTopologyService.countTopologyCategory().getStatus());
+    }
+
+    @Test
+    public void countTopologyCategoryTest1() throws Exception {
+        List<EnumCountResponse> enumCountResponses = new ArrayList<>();
+        EnumCountResponse enumCountResponse = new EnumCountResponse();
+        enumCountResponse.setStatus(new ArrayList<>());
+        enumCountResponse.setMsg("a");
+        enumCountResponse.setNumber(1);
+        enumCountResponse.setCode(new ArrayList<>());
+        enumCountResponses.add(enumCountResponse);
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("key", "1");
+        map.put("value", "2");
+        list.add(map);
+        map = new HashMap<>();
+        map.put("key", "2");
+        map.put("value", "12");
+        list.add(map);
+        map = new HashMap<>();
+        map.put("key", "3");
+        map.put("value", "21");
+        list.add(map);
+        map = new HashMap<>();
+        map.put("key", "4");
+        map.put("value", "21");
+        list.add(map);
+        map = new HashMap<>();
+        map.put("key", "5");
+        map.put("value", "22");
+        list.add(map);
+        map = new HashMap<>();
+        map.put("key", "6");
+        map.put("value", "23");
         list.add(map);
         Mockito.when(assetDao.countCategoryModel(Mockito.anyList(), Mockito.anyList())).thenReturn(list);
         Assert.assertEquals("success", assetTopologyService.countTopologyCategory().getStatus());
@@ -261,9 +369,9 @@ public class AssetTopologyServiceImplTest {
         asset2.setId(2);
         asset2.setAreaId("1");
         asset1.setAreaId("1");
-        SysArea s=new SysArea();
+        SysArea s = new SysArea();
         s.setFullName("区域");
-        when(redisUtil.getObject(Mockito.any(),Mockito.any())).thenReturn(s);
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
 
         // 情况1
         when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
@@ -281,6 +389,54 @@ public class AssetTopologyServiceImplTest {
         when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(0);
         Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
 
+    }
+
+    @Test
+    public void getAlarmTopologyTest1() throws Exception {
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(null);
+        Asset asset1 = generateAsset();
+        asset1.setId(1);
+        asset1.setAreaId("1");
+        Asset asset2 = generateAsset();
+        asset2.setId(2);
+        asset2.setAreaId("1");
+        asset1.setAreaId("1");
+        SysArea s = new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
+
+        // 情况1
+        when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "2")));
+        Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
+    }
+
+    @Test
+    public void getAlarmTopologyTest2() throws Exception {
+        when(RedisKeyUtil.getKeyWhenGetObject(any(), any(), anyString())).thenReturn("区域");
+        when(assetLinkRelationDao.findLinkRelation(any()))
+            .thenReturn(Arrays.asList(generateAssetLink("1", "2"), generateAssetLink("2", "3")));
+        when(assetTopologyDao.findTopologyListAssetCount(any())).thenReturn(0);
+        Asset asset1 = generateAsset();
+        asset1.setId(1);
+        asset1.setAreaId("1");
+        Asset asset2 = generateAsset();
+        asset2.setId(2);
+        asset2.setAreaId("1");
+        asset1.setAreaId("1");
+        SysArea s = new SysArea();
+        s.setFullName("区域");
+        when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(s);
+
+        // 情况1
+        when(assetTopologyDao.findTopologyListAsset(any())).thenReturn(Arrays.asList(asset1, asset2));
+        when(assetDao.queryAlarmCountByAssetIds(any()))
+            .thenReturn(Arrays.asList(new IdCount("1", "1"), new IdCount("2", "2")));
+        Assert.assertEquals("success", assetTopologyService.getAlarmTopology().getStatus());
     }
 
     @Test
@@ -318,6 +474,20 @@ public class AssetTopologyServiceImplTest {
             .thenReturn(Arrays.asList(generateAssetLink("1", "2"), assetLink, assetLink1, assetLink2, assetLink3,
                 assetLink4, assetLink5, assetLink6, assetLink7, assetLink8, assetLink9));
         Assert.assertEquals("success", assetTopologyService.getTopologyGraph().getStatus());
+
+    }
+
+    @Test
+    public void getTopologyGraph1() throws Exception {
+        AssetLink assetLink1 = generateAssetLink4("2", "4");
+        AssetLink assetLink2 = generateAssetLink4("3", "1");
+
+        try {
+            when(assetLinkRelationDao.findLinkRelation(any())).thenReturn(Arrays.asList(assetLink1, assetLink2));
+            assetTopologyService.getTopologyGraph();
+        } catch (Exception e) {
+            Assert.assertEquals(null, e.getMessage());
+        }
 
     }
     // @Test

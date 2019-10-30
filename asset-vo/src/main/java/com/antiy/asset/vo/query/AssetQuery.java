@@ -1,16 +1,18 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> Asset 查询条件 </p>
@@ -279,7 +281,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("首次发现时间结束时间")
     private Long          firstEnterEndTime;
     @ApiModelProperty("基准模板id")
-
+    @Encode
     private String        baselineTemplateId;
 
     public String getStringId() {

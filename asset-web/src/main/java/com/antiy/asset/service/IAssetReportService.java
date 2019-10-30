@@ -1,6 +1,5 @@
 package com.antiy.asset.service;
 
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -38,13 +37,6 @@ public interface IAssetReportService {
      */
     AssetReportResponse getAssetCountWithGroup(ReportQueryRequest reportQueryRequest) throws Exception;
 
-    /**
-     * 根据时间条件分类统计查询数据，返回表格信息
-     * @param query
-     * @return
-     * @throws Exception
-     */
-    AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception;
 
     /**
      * 资产组表格

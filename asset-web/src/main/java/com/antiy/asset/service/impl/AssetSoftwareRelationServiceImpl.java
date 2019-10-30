@@ -114,7 +114,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
-        if (Objects.equals(nameListType, NameListTypeEnum.BLACK.getCode()) && !query.getIsBatch()) {
+        if (Objects.equals(nameListType, NameListTypeEnum.BLACK.getCode())) {
             installedSoftIds.stream().forEach(a -> {
                 softwareIds.add(Long.parseLong(a));
             });

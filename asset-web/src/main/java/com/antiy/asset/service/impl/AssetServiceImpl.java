@@ -444,7 +444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void insertBatchAssetGroupRelation(Asset asset1, List<AssetGroupRequest> assetGroup) {
-        if (assetGroup != null && !assetGroup.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetGroup)) {
             List<AssetGroupRelation> groupRelations = new ArrayList<>();
             assetGroup.forEach(assetGroupRequest -> {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -1086,6 +1086,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                     }
                     // 1. 更新资产主表
+                    asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
+                    if (StringUtils.isNotBlank(assetOuterRequest.getAsset().getBusinessId())) {
+                        asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
+                    }
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
@@ -1124,7 +1128,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
-                        assetStorageMedium.setAssetId(asset.getStringId());
+                        assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
                         assetStorageMedium.setGmtCreate(System.currentTimeMillis());
                         assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
@@ -1141,7 +1145,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         });
         // 记录资产操作流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(asset.getStringId());
+        assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
         assetOperationRecord.setOriginStatus(0);
         assetOperationRecord.setTargetStatus(asset.getAssetStatus());
         assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
@@ -1157,10 +1161,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
                 if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    String nextStepUserId = aesEncoder.decode((String) assetOuterRequest.getManualStartActivityRequest()
-                        .getFormData().get("baselineConfigUserId"), LoginUserUtil.getLoginUser().getUsername());
+                    String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
+                        .get("baselineConfigUserId").toString().split(",");
+                    StringBuilder sb = new StringBuilder();
+                    Arrays.stream(bids).forEach(bid -> {
+                        sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
+                    });
                     Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
-                    formData.put("baselineConfigUserId", nextStepUserId);
+                    formData.put("baselineConfigUserId", sb.toString());
                     List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -1172,7 +1180,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     baselineWaitingConfigRequest.setConfigStatus(1);
                     baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
                     baselineWaitingConfigRequest.setReason(reason[0]);
                     baselineWaitingConfigRequest.setSource(2);
                     baselineWaitingConfigRequest.setFormData(formData);
@@ -1287,6 +1294,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
+            } else {
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
+                assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                    asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
