@@ -33,4 +33,13 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      * @return 资产状态列表
      **/
     List<AssetStatusDetail> queryAssetAllStatusInfo(String id);
+
+
+    /**
+     * 查询最近一次执行[检查]的操作者
+     * @param assetId
+     * @return
+     */
+    Integer getCreateUserByAssetId(Integer assetId);
+
 }
