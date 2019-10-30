@@ -1885,6 +1885,6 @@ AND a.`status` = 1
         <foreach item="item" index="index" collection="areaIds" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and status = 1 and asset_source = 3
+        and status = 1 and asset_source = 3 and asset_status = 1 and gmt_modified = 0
     </select>
 </mapper>
