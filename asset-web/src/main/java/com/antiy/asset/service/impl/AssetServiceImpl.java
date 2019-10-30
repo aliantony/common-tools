@@ -444,7 +444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void insertBatchAssetGroupRelation(Asset asset1, List<AssetGroupRequest> assetGroup) {
-        if (assetGroup != null && !assetGroup.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetGroup)) {
             List<AssetGroupRelation> groupRelations = new ArrayList<>();
             assetGroup.forEach(assetGroupRequest -> {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();

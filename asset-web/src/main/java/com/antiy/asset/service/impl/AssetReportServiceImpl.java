@@ -23,7 +23,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -212,45 +211,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     }
 
-    /**
-     * 按时间分类统计返回表格数据
-     * @param query
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public AssetReportTableResponse queryCategoryCountByTimeToTable(AssetReportCategoryCountQuery query) throws Exception {
-        ShowCycleType showCycleType = query.getShowCycleType();
-        query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        checkParameter(query, showCycleType);
-        if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(DAY);
-            return getAssetReportTableResponse(query, ReportDateUtils.getDayOfWeek());
-        } else if (ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(WEEK);
-            return getAssetReportTableResponse(query, ReportDateUtils.getWeekOfMonth());
-        } else if (ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-            return getAssetReportTableResponse(query, ReportDateUtils.getSeason());
-        } else if (ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-            return getAssetReportTableResponse(query, ReportDateUtils.getCurrentMonthOfYear());
-        } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            query.setFormat(MONTH);
-
-            // 如果为当前月，则显示为周
-            Long mouth = ReportDateUtils.monthDiff(query.getBeginTime(), query.getEndTime());
-            if (mouth == 0) {
-                query.setFormat(WEEK);
-            }
-
-            return getAssetReportTableResponse(query,
-                ReportDateUtils.getMonthWithDate(query.getBeginTime(), query.getEndTime()));
-        } else {
-            LogUtils.warn(logger, "报表查询参数不正确:{}", JsonUtil.object2Json(query));
-            throw new BusinessException("非法参数");
-        }
-    }
 
     /**
      * 获取表格数据
