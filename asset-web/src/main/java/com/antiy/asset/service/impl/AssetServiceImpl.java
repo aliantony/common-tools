@@ -444,7 +444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void insertBatchAssetGroupRelation(Asset asset1, List<AssetGroupRequest> assetGroup) {
-        if (assetGroup != null && !assetGroup.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(assetGroup)) {
             List<AssetGroupRelation> groupRelations = new ArrayList<>();
             assetGroup.forEach(assetGroupRequest -> {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -1125,7 +1125,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     // 4. 更新存储介质信息
                     AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
-                    if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
+                    if (!Objects.isNull(storageMedium != null)) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
                         assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
@@ -1324,7 +1324,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String oldOs = assetDao.getByAssetId(assetId).getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
-                update.append("[A]更改基础信息:").append("操作系统").append(newOs);
+                update.append("$更改基础信息:").append("操作系统").append(newOs);
             }
         }
 
