@@ -81,8 +81,8 @@ public class AssetReportServiceManager {
     public ReportQueryRequest initReportQueryRequest(String timeType) {
         ReportQueryRequest reportQueryRequest = new ReportQueryRequest();
         reportQueryRequest.setAssetStatus(1);
-        reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setEndTime(1551423114000L);
+        reportQueryRequest.setStartTime(1551422114000L);
         reportQueryRequest.setTimeType(timeType);
         return reportQueryRequest;
     }

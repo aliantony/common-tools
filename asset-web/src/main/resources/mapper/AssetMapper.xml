@@ -797,18 +797,20 @@
             <choose>
                 <when test="unknownAssets">
                     and (air.ip like binary
-                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
                     or amr.mac like binary
-                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
                     )
                 </when>
                 <otherwise>
-                    and (asset.name LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                    or asset.number LIKE binary CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    and (asset.name LIKE binary
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+                    or asset.number LIKE binary
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
                     or air.ip like binary
-                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
                     or amr.mac like binary
-                    CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
                     )
                 </otherwise>
             </choose>
@@ -1872,4 +1874,14 @@ AND a.`status` = 1
             </choose>
         </foreach>
     </update>
+
+    <select id="findUnknownAssetCount" resultType="java.lang.Integer"
+            parameterType="java.util.List">
+        select count(1) from asset
+        WHERE area_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = 1 and asset_source = 3
+    </select>
 </mapper>

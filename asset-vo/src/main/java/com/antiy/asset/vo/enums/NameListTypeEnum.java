@@ -6,7 +6,7 @@ package com.antiy.asset.vo.enums;
  * @Date: 2019/10/16 10:30
  */
 public enum NameListTypeEnum {
-                              NO(1, "无"), BLACK(2, "黑名单"), WHITE(3, "白名单");
+                              NO(0, "无"), BLACK(1, "黑名单"), WHITE(2, "白名单");
 
     private Integer code;
     private String  name;

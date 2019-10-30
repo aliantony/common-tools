@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -130,6 +131,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
+        // 为对接工作流需要: 整改不通过退回至待检查,重置formData:将执行意见改为1,不传下一步执行人
+        if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
+                && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())
+                && assetStatusRequest.getFormData() != null) {
+            Map<String,Object> formData = new HashMap<>(1);
+            formData.put("safetyChangeResult", "1");
+            assetStatusRequest.setFormData(formData);
+        }
+
         // 1.拟退役需要启动流程,其他步骤完成流程
         if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())) {
             // 启动流程
