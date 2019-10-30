@@ -1161,10 +1161,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
                 if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    String nextStepUserId = aesEncoder.decode((String) assetOuterRequest.getManualStartActivityRequest()
-                        .getFormData().get("baselineConfigUserId"), LoginUserUtil.getLoginUser().getUsername());
+                    String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
+                        .get("baselineConfigUserId").toString().split(",");
+                    StringBuilder sb = new StringBuilder();
+                    Arrays.stream(bids).forEach(bid -> {
+                        sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
+                    });
                     Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
-                    formData.put("baselineConfigUserId", nextStepUserId);
+                    formData.put("baselineConfigUserId", sb.toString());
                     List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                     // ------------------对接配置模块------------------start
                     BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -1176,7 +1180,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     baselineWaitingConfigRequest.setConfigStatus(1);
                     baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
                     baselineWaitingConfigRequest.setReason(reason[0]);
                     baselineWaitingConfigRequest.setSource(2);
                     baselineWaitingConfigRequest.setFormData(formData);
