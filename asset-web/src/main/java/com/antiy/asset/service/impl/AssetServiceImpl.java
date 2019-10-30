@@ -1324,7 +1324,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String oldOs = assetDao.getByAssetId(assetId).getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
-                update.append("[A]更改基础信息:").append("操作系统").append(newOs);
+                update.append("$更改基础信息:").append("操作系统").append(newOs);
             }
         }
 
