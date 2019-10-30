@@ -967,6 +967,27 @@
                 #{item}
             </foreach>
         </if>
+        <if test=" multipleQuery != null and multipleQuery != ''">
+            and (a.name LIKE binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or a.number LIKE binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or b.ip like binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or c.mac like binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            )
+        </if>
+        <if test=" assetGroup != null and assetGroup != ''">
+            and exists (select 1 from asset_group_relation agr where a.id = agr.asset_id and agr.asset_group_id =
+            #{assetGroup} and agr.status = 1)
+        </if>
+        <if test=" beginTime != null">
+            and a.first_enter_nett &gt;= #{beginTime }
+        </if>
+        <if test="endTime != null">
+            and a.first_enter_nett &lt;= #{endTime }
+        </if>
         group by a.id having count(b.id) > count(d.id)
         ORDER BY first_enter_nett desc,
         <if test=" ids != null and ids.length > 0">
@@ -1023,6 +1044,27 @@
             <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
+        </if>
+        <if test=" multipleQuery != null and multipleQuery != ''">
+            and (a.name LIKE binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or a.number LIKE binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or b.ip like binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            or c.mac like binary
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'\\','\\\\'),'%')
+            )
+        </if>
+        <if test=" assetGroup != null and assetGroup != ''">
+            and exists (select 1 from asset_group_relation agr where a.id = agr.asset_id and agr.asset_group_id =
+            #{assetGroup} and agr.status = 1)
+        </if>
+        <if test=" beginTime != null">
+            and a.first_enter_nett &gt;= #{beginTime }
+        </if>
+        <if test="endTime != null">
+            and a.first_enter_nett &lt;= #{endTime }
         </if>
         group by a.id having count(b.id) > count(d.id)
         ) t
