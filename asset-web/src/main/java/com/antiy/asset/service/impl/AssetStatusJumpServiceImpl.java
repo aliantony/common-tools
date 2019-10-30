@@ -131,12 +131,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
-        // 为对接工作流需要: 整改不通过退回至待检查,重置formData:将执行意见改为1,不传下一步执行人
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
                 && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())
                 && assetStatusRequest.getFormData() != null) {
+            // 整改是单个资产
+            Integer lastCheckUser = assetOperationRecordDao.getCreateUserByAssetId(DataTypeUtils.stringToInteger(assetStatusRequest.getAssetInfoList().get(0).getAssetId()));
             Map<String,Object> formData = new HashMap<>(1);
             formData.put("safetyChangeResult", "1");
+            formData.put("safetyCheckUser", aesEncoder.encode(lastCheckUser.toString(), loginUser.getUsername()));
             assetStatusRequest.setFormData(formData);
         }
 
@@ -144,7 +148,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())) {
             // 启动流程
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
-            manualStartActivityRequest.setAssignee(LoginUserUtil.getLoginUser().getId().toString());
+            manualStartActivityRequest.setAssignee(loginUser.getId().toString());
             manualStartActivityRequest.setBusinessId(assetStatusRequest.getAssetInfoList().get(0).getAssetId());
             manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode());
             manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
