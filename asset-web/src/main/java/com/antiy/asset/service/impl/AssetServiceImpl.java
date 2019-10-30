@@ -1125,7 +1125,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     // 4. 更新存储介质信息
                     AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
-                    if (storageMedium != null && StringUtils.isNotBlank(storageMedium.getId())) {
+                    if (!Objects.isNull(storageMedium != null)) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
                         assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
