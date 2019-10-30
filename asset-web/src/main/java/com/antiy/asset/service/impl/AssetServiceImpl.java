@@ -2971,6 +2971,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return count;
     }
 
+    @Override
+    public Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception {
+        request.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        return assetDao.findUnknownAssetCount(request);
+    }
+
     private void operationRecord(String id) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();

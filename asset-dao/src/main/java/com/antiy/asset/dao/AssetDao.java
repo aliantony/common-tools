@@ -1,5 +1,11 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetHardSoftLib;
@@ -7,13 +13,9 @@ import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -348,4 +350,9 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     String getInstallTemplateId(@Param("assetId") String assetId);
+
+    /**
+     * 根据用户区域统计未知资产数量
+     */
+    Integer findUnknownAssetCount(AssetUnknownRequest request) throws Exception;
 }

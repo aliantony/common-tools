@@ -335,4 +335,11 @@
         ) b
         on  a.target_object_id = b.target_object_id and a.gmt_create = b.gmt_create
     </select>
+
+    <!-- 查询最近的资产检查操作者-->
+    <select id="getCreateUserByAssetId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select create_user from
+        <include refid="Table_Name"/>
+        where target_object_id = #{assetId} and origin_status = 7 order by id desc limit 1
+    </select>
 </mapper>
