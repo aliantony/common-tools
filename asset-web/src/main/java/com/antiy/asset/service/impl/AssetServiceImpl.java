@@ -2972,7 +2972,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer queryUnknownAssetCount(AreaIdRequest request) throws Exception {
+    public Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception {
         request.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return assetDao.findUnknownAssetCount(request);
     }

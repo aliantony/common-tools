@@ -12,8 +12,8 @@ import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
-import com.antiy.asset.vo.request.AreaIdRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 
@@ -354,5 +354,5 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 根据用户区域统计未知资产数量
      */
-    Integer findUnknownAssetCount(AreaIdRequest request) throws Exception;
+    Integer findUnknownAssetCount(AssetUnknownRequest request) throws Exception;
 }
