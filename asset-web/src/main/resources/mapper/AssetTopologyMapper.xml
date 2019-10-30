@@ -253,12 +253,12 @@
         AND asset. STATUS = 1
         <if test="queryVulCount == true">
             LEFT JOIN vuln_asset_rel avr ON avr.asset_id = asset.id
-            AND avr. STATUS = 1
+            AND avr. STATUS in (1,2,5)
             AND avr.vul_status != 5
         </if>
         <if test="queryPatchCount == true">
             LEFT JOIN patch_asset_rel apr ON apr.asset_id = asset.id
-            AND apr.patch_status = 3
+            AND apr.patch_status in (1,2,5)
             AND apr. STATUS = 1
         </if>
         <if test="queryAlarmCount == true">
