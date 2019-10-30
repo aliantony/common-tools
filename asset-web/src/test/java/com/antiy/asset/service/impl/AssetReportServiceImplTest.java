@@ -194,6 +194,21 @@ public class AssetReportServiceImplTest {
         Assert.assertThat(result, Matchers.notNullValue());
     }
 
+    /**
+     * 场景五：展示周期为指定指定时间
+     * @throws Exception
+     */
+    @Test
+    public void getAssetConutWithGroupWithAssignTime1() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        ReportQueryRequest reportQueryRequest = assetReportServiceManager.initReportQueryRequest("5");
+        reportQueryRequest.setStartTime(1551422114001L);
+        AssetReportResponse result = iAssetReportService.getAssetCountWithGroup(reportQueryRequest);
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
+
 
     /**
      * TOP5的资产组名字  不存在于  新增的资产组名字中
@@ -241,54 +256,12 @@ public class AssetReportServiceImplTest {
     // Assert.assertThat(result, Matchers.notNullValue());
     // }
 
-    @Test
-    public void queryCategoryCountByTimeToTableYear() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_YEAR, 1551422114000L, 1551423114000L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
 
-    @Test
-    public void queryCategoryCountByTimeToTableSeason() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(assetReportServiceManager
-            .initCategoryCountQuery(ShowCycleType.THIS_QUARTER, 1551422114000L, 1551423114000L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
 
-    @Test
-    public void queryCategoryCountByTimeToTableMonth() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_MONTH, 1551422114000L, 1551423114000L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
 
-    @Test
-    public void queryCategoryCountByTimeToTableWeek() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.THIS_WEEK, 1551422114000L, 1551423114000L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
 
-    @Test
-    public void queryCategoryCountByTimeToTableAssTime() throws Exception {
-        mockLoginUser(loginUser);
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(assetReportServiceManager
-            .initCategoryCountQuery(ShowCycleType.ASSIGN_TIME, 1551422114000L, 1551423114000L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
-    @Test
-    public void queryCategoryCountByTimeToTableAssTime1() throws Exception {
-        mockLoginUser(loginUser);
-        expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("");
-        AssetReportTableResponse result = iAssetReportService.queryCategoryCountByTimeToTable(
-            assetReportServiceManager.initCategoryCountQuery(ShowCycleType.ASSIGN_TIME1, 1L, 10L));
-        Assert.assertThat(result, Matchers.notNullValue());
-    }
+
+
 
 
     /**
@@ -365,6 +338,18 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         AssetReportTableResponse result = iAssetReportService
             .getAssetGroupReportTable(assetReportServiceManager.initReportQueryRequest("5"));
+        Assert.assertThat(result, Matchers.notNullValue());
+    }
+
+    @Test
+    public void getAssetGroupReportTableWithAssignTime1() throws Exception {
+        List<AssetGroupEntity> assetGroupEntityList = assetReportServiceManager.initGroupEntityList();
+        List<AssetGroupEntity> assetGroupEntityList2 = assetReportServiceManager.initGroupEntityList2();
+        Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
+        Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList2);
+        ReportQueryRequest reportQueryRequest = assetReportServiceManager.initReportQueryRequest("5");
+        reportQueryRequest.setStartTime(1551422114001L);
+        AssetReportTableResponse result = iAssetReportService.getAssetGroupReportTable(reportQueryRequest);
         Assert.assertThat(result, Matchers.notNullValue());
     }
     /**
@@ -464,7 +449,7 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("user-agent", "   ");
+        request.addHeader("user-agent", "like gecko");
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
 
