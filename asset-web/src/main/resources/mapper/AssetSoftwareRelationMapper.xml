@@ -781,7 +781,7 @@
         <choose>
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
-                <foreach collection="softwareIds" item="item" open="(" close=")">
+                <foreach collection="softwareIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
                 <if test="os != null and os != ''">
@@ -790,14 +790,14 @@
             </when>
             <when test="nameListType == 2">
                 and business_id in
-                <foreach collection="softwareIds" item="item" open="(" close=")">
+                <foreach collection="softwareIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </when>
             <otherwise>
                 <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
-                    <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                    <foreach collection="installedSoftIds" item="item" open="(" close=")" separator=",">
                         #{item}
                     </foreach>
                 </if>
@@ -808,7 +808,7 @@
         </choose>
         <if test="query.exceptIds != null and query.exceptIds.size() > 0">
             and business_id not in
-            <foreach collection="query.exceptIds" item="item" open="(" close=")">
+            <foreach collection="query.exceptIds" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
@@ -834,7 +834,7 @@
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
-                <foreach collection="softwareIds" item="item" open="(" close=")">
+                <foreach collection="softwareIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
                 <if test="os != null and os != ''">
@@ -843,14 +843,14 @@
             </when>
             <when test="nameListType == 2">
                 and business_id in
-                <foreach collection="softwareIds" item="item" open="(" close=")">
+                <foreach collection="softwareIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
             </when>
             <otherwise>
                 <if test="!query.isBatch and installedSoftIds != null and installedSoftIds.size() > 0">
                     and business_id not in
-                    <foreach collection="installedSoftIds" item="item" open="(" close=")">
+                    <foreach collection="installedSoftIds" item="item" open="(" close=")" separator=",">
                         #{item}
                     </foreach>
                 </if>
@@ -861,7 +861,7 @@
         </choose>
         <if test="query.exceptIds != null and query.exceptIds.size() > 0">
             and business_id not in
-            <foreach collection="query.exceptIds" item="item" open="(" close=")">
+            <foreach collection="query.exceptIds" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
