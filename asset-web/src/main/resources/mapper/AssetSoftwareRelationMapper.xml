@@ -779,7 +779,7 @@
         status = 1
         and type = 'a'
         <choose>
-            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
+            <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
@@ -788,7 +788,7 @@
                     and soft_platform like concat('%',#{os},'%')
                 </if>
             </when>
-            <when test="nameListType == 3">
+            <when test="nameListType == 2">
                 and business_id in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
@@ -832,7 +832,7 @@
         and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
-            <when test="nameListType == 2 and softwareIds != null and softwareIds.size() > 0">
+            <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
@@ -841,7 +841,7 @@
                     and soft_platform like concat('%',#{os},'%')
                 </if>
             </when>
-            <when test="nameListType == 3">
+            <when test="nameListType == 2">
                 and business_id in
                 <foreach collection="softwareIds" item="item" open="(" close=")">
                     #{item}
