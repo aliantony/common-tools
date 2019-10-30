@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,6 +43,7 @@ import com.antiy.common.utils.JsonUtil;
 import util.ControllerUtil;
 
 @RunWith(PowerMockRunner.class)
+@Ignore
 public class AssetControllerTest {
 
     @InjectMocks

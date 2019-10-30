@@ -1,14 +1,13 @@
 package com.antiy.asset.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import java.util.*;
-
+import com.alibaba.fastjson.JSON;
+import com.antiy.asset.service.IAssetAreaReportService;
+import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.vo.request.AssetAreaReportRequest;
+import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.SysArea;
+import com.google.gson.Gson;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,17 +29,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.alibaba.fastjson.JSON;
-import com.antiy.asset.service.IAssetAreaReportService;
-import com.antiy.asset.service.IAssetReportService;
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.asset.vo.enums.ShowCycleType;
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
-import com.antiy.asset.vo.request.AssetAreaReportRequest;
-import com.antiy.asset.vo.request.ReportQueryRequest;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.SysArea;
-import com.google.gson.Gson;
+import java.util.*;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -75,20 +70,6 @@ public class AssetReportControllerTest {
         // mock 当前登陆用户信息
     }
 
-    /**
-     * 根据时间条件查询分类统计资产数量,返回表格数据 断言response
-     * @throws Exception e
-     */
-    @Test
-    public void queryCategoryCountByTimeToTable() throws Exception {
-        AssetReportCategoryCountQuery assetReportCategoryCountQuery = new AssetReportCategoryCountQuery();
-        assetReportCategoryCountQuery.setShowCycleType(ShowCycleType.THIS_MONTH);
-        String result = mockMvc
-            .perform(post("/api/v1/asset/report//query/categoryCountByTimeToTable")
-                .contentType(MediaType.APPLICATION_JSON).content(JSON.toJSONString(assetReportCategoryCountQuery)))
-            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        Assert.assertThat(result, containsString("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":null}"));
-    }
 
     /**
      * 根据时间条件、区域资产查询数量 断言response
