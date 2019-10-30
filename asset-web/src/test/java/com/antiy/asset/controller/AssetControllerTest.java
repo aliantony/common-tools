@@ -43,7 +43,6 @@ import com.antiy.common.utils.JsonUtil;
 import util.ControllerUtil;
 
 @RunWith(PowerMockRunner.class)
-@Ignore
 public class AssetControllerTest {
 
     @InjectMocks
