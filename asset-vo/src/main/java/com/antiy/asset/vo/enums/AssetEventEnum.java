@@ -8,7 +8,7 @@ package com.antiy.asset.vo.enums;
 public enum AssetEventEnum {
     ASSET_INSERT(1, "硬件资产登记"),
     ASSET_MODIFY(2,
-            "资产变更"),
+                                         "变更资产信息"),
     ASSET_STATUS_CHANGE(3, "硬件资产状态修改"),
     ASSET_CATEGORY_DELETE(4, "删除品类型号"),
     ASSET_CATEGORY_INSERT(5, "登记品类型号"),

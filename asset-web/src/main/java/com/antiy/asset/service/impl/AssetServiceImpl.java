@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
@@ -357,14 +358,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-            // 扫描
-            ActionResponse scan = baseLineClient
+        // 扫描
+        ActionResponse scan = baseLineClient
             .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
-            // 如果漏洞为空,直接返回错误信息
-            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                // 调用失败，直接删登记的资产
-                assetDao.deleteAssetById(id);
-                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+        // 如果漏洞为空,直接返回错误信息
+        if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+            // 调用失败，直接删登记的资产
+            assetDao.deleteAssetById(id);
+            return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
 
         }
         return ActionResponse.success(msg);
@@ -1171,6 +1172,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 流程数据不为空,需启动流程
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
+            uuid[0] = assetObj.getUuid();
             // 启动流程
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
@@ -1198,6 +1200,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineWaitingConfigRequest.setSource(2);
                     baselineWaitingConfigRequest.setFormData(formData);
                     baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
+                    baselineWaitingConfigRequest.setAdvice(
+                        (String) assetOuterRequest.getManualStartActivityRequest().getFormData().get("memo"));
                     baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
                     ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                     if (null == actionResponse
@@ -1309,11 +1313,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
             } else {
+                updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+            }
+            // 漏洞扫描；
+            if (BooleanUtils.isTrue(assetOuterRequest.getNeedScan())) {
+                // 扫描
+                ActionResponse scan = baseLineClient
+                    .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                // 如果漏洞为空,直接返回错误信息
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+                }
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
