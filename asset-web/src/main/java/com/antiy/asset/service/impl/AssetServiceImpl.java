@@ -1040,6 +1040,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             for (WaitingTaskReponse waitingTaskReponse : waitingTaskReponses) {
                 if (Objects.equals(assetResponse.getStringId(), waitingTaskReponse.getBusinessId())) {
                     assetResponse.setWaitingTaskReponse(waitingTaskReponse);
+                    break;
                 }
             }
         }
