@@ -358,14 +358,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
 
-            // 扫描
-            ActionResponse scan = baseLineClient
+        // 扫描
+        ActionResponse scan = baseLineClient
             .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
-            // 如果漏洞为空,直接返回错误信息
-            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                // 调用失败，直接删登记的资产
-                assetDao.deleteAssetById(id);
-                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+        // 如果漏洞为空,直接返回错误信息
+        if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+            // 调用失败，直接删登记的资产
+            assetDao.deleteAssetById(id);
+            return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
 
         }
         return ActionResponse.success(msg);
@@ -1313,22 +1313,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
             } else {
-                // 非计算设备变更了操作系统、组件信息提交后需要通知漏洞做漏洞扫描；
-                if (BooleanUtils.isTrue(assetOuterRequest.getNeedScan())) {
-                    // 扫描
-                    ActionResponse scan = baseLineClient
-                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
-                    // 如果漏洞为空,直接返回错误信息
-                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                        // 调用失败，直接删登记的资产
-                        return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
-                    }
-                }
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+            }
+            // 漏洞扫描；
+            if (BooleanUtils.isTrue(assetOuterRequest.getNeedScan())) {
+                // 扫描
+                ActionResponse scan = baseLineClient
+                    .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                // 如果漏洞为空,直接返回错误信息
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+                }
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
