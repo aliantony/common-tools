@@ -204,7 +204,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         ReportQueryRequest reportQueryRequest = assetReportServiceManager.initReportQueryRequest("5");
-        reportQueryRequest.setStartTime(1551422114001L);
+        reportQueryRequest.setStartTime(1551422114000L);
+        reportQueryRequest.setEndTime(1551423114000L);
         AssetReportResponse result = iAssetReportService.getAssetCountWithGroup(reportQueryRequest);
         Assert.assertThat(result, Matchers.notNullValue());
     }
@@ -348,7 +349,8 @@ public class AssetReportServiceImplTest {
         Mockito.when(assetReportDao.getAssetConutWithGroup(Mockito.any())).thenReturn(assetGroupEntityList);
         Mockito.when(assetReportDao.getNewAssetWithGroup(Mockito.any())).thenReturn(assetGroupEntityList2);
         ReportQueryRequest reportQueryRequest = assetReportServiceManager.initReportQueryRequest("5");
-        reportQueryRequest.setStartTime(1551422114001L);
+        reportQueryRequest.setStartTime(1567149908000L);
+        reportQueryRequest.setEndTime(1572420309000L);
         AssetReportTableResponse result = iAssetReportService.getAssetGroupReportTable(reportQueryRequest);
         Assert.assertThat(result, Matchers.notNullValue());
     }

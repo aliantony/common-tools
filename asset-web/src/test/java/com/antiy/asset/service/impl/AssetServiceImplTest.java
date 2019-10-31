@@ -505,7 +505,6 @@ public class AssetServiceImplTest {
 
     }
 
-
     @Test
     public void assetssave() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
@@ -530,6 +529,26 @@ public class AssetServiceImplTest {
         assetOuterRequest331.setManualStartActivityRequest(generateAssetManualStart());
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("0已失效，请核对后提交");
+        assetServiceImpl.saveAsset(assetOuterRequest331);
+
+    }
+
+    @Test
+    public void assetssave1() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        AssetRequest asset = generateAssetRequest4();
+        Asset t = generateAsset2();
+        when(requestConverter.convert(asset, Asset.class)).thenReturn(t);
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        AssetOuterRequest assetOuterRequest331 = new AssetOuterRequest();
+
+        assetOuterRequest331.setAsset(asset);
+
         assetServiceImpl.saveAsset(assetOuterRequest331);
 
     }
@@ -993,7 +1012,109 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
-        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
+        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
+        waitingTaskReponse.setAssignee("");
+        waitingTaskReponse.setName("");
+        waitingTaskReponse.setPriority(0);
+        waitingTaskReponse.setCreateTime(new Date());
+        waitingTaskReponse.setExecutionId("");
+        waitingTaskReponse.setProcessInstanceId("");
+        waitingTaskReponse.setProcessDefinitionId("");
+        waitingTaskReponse.setTaskDefinitionKey("");
+        waitingTaskReponse.setFormKey("");
+        waitingTaskReponse.setTaskId("");
+        waitingTaskReponse.setBusinessId("1");
+
+        actionResponse.setBody(Arrays.asList(waitingTaskReponse));
+
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
+        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+    }
+
+    /**
+     * 查询存储设备
+     * @throws Exception
+     */
+    @Test
+    public void testGetByAssetId4() throws Exception {
+        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
+        QueryCondition condition = new QueryCondition();
+        condition.setPrimaryKey("1");
+        mockRedisUtil();
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
+        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
+        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
+        waitingTaskReponse.setAssignee("");
+        waitingTaskReponse.setName("");
+        waitingTaskReponse.setPriority(0);
+        waitingTaskReponse.setCreateTime(new Date());
+        waitingTaskReponse.setExecutionId("");
+        waitingTaskReponse.setProcessInstanceId("");
+        waitingTaskReponse.setProcessDefinitionId("");
+        waitingTaskReponse.setTaskDefinitionKey("");
+        waitingTaskReponse.setFormKey("");
+        waitingTaskReponse.setTaskId("");
+        waitingTaskReponse.setBusinessId("23");
+
+        actionResponse.setBody(Arrays.asList(waitingTaskReponse));
+
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
+        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+    }
+
+    /**
+     * 查询存储设备
+     * @throws Exception
+     */
+    @Test
+    public void testGetByAssetId5() throws Exception {
+        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
+        QueryCondition condition = new QueryCondition();
+        condition.setPrimaryKey("1");
+        mockRedisUtil();
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
+        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+    }
+
+    /**
+     * 查询存储设备
+     * @throws Exception
+     */
+    @Test
+    public void testGetByAssetId6() throws Exception {
+        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
+        QueryCondition condition = new QueryCondition();
+        condition.setPrimaryKey("1");
+        mockRedisUtil();
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
+        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
+        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
+        assetHardSoftLib.setBusinessId("1");
+        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
+        assetHardSoftLib.setSupplier("xerox");
+        assetHardSoftLib.setProductName("copycentre_c65");
+        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        when(activityClient.queryAllWaitingTask(any()))
+            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
+        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
     private List<AssetNetworkEquipment> generateAssetNetworkEquipmentList() {
@@ -1016,6 +1137,7 @@ public class AssetServiceImplTest {
 
     private Asset generateStorageAsset() {
         Asset asset = generateAsset();
+        asset.setId(1);
         asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
         return asset;
     }
@@ -1112,6 +1234,37 @@ public class AssetServiceImplTest {
         List<AssetGroupRequest> assetGroupRequests = new ArrayList<AssetGroupRequest>();
         assetGroup.setId("0");
         // assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+
+        return assetRequest;
+    }
+
+    private Asset generateAsset2() {
+        Asset assetRequest = new Asset();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId(11L);
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId(1);
+        assetRequest.setHouseLocation("1");
+
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
@@ -1305,10 +1458,6 @@ public class AssetServiceImplTest {
             assetServiceImpl.changeAsset(assetOuterRequest);
         } catch (Exception e) {
         }
-
-
-
-
 
         asset.setOperationSystemName("windows");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
@@ -1728,8 +1877,7 @@ public class AssetServiceImplTest {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
 
-
-           LicenseContent licenseContent = new LicenseContent();
+        LicenseContent licenseContent = new LicenseContent();
         licenseContent.setAssetNum(null);
         PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
         expectedException.expectMessage("license异常，请联系客服人员！");
@@ -2327,7 +2475,6 @@ public class AssetServiceImplTest {
         expectedException.expectMessage("导出数据为空");
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
 
-
         AssetQuery assetQuery3 = new AssetQuery();
         assetQuery3.setStart(1);
         assetQuery3.setEnd(100);
@@ -2497,6 +2644,38 @@ public class AssetServiceImplTest {
         assetGroup.setId("0");
         assetGroupRequests.add(assetGroup);
         assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+        return assetRequest;
+    }
+
+    private AssetRequest generateAssetRequest4() {
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("11111");
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setAssetGroups(Lists.newArrayList());
+        assetRequest.setSystemBit(0);
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId("1");
+        assetRequest.setHouseLocation("1");
+        assetRequest.setBusinessId("1");
+
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
