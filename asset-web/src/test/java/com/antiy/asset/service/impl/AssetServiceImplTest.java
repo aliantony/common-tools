@@ -849,6 +849,15 @@ public class AssetServiceImplTest {
         when(redisUtil.getObject(newAreaKey, SysArea.class)).thenThrow(new Exception());
         assetServiceImpl.findUnconnectedAsset(query);
 
+        query.setCategoryModels(new Integer[0]);
+        assetServiceImpl.findUnconnectedAsset(query);
+        query.setCategoryModels(new Integer[]{0,1});
+        assetServiceImpl.findUnconnectedAsset(query);
+        asset.setCategoryModel(2);
+        query.setCategoryModels(null);
+        assetServiceImpl.findUnconnectedAsset(query);
+
+
     }
 
     @Test
@@ -879,6 +888,21 @@ public class AssetServiceImplTest {
 
         boolean result = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
         Assert.assertEquals(true, result);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList());
+        boolean result2 = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Assert.assertEquals(false, result2);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(null);
+        boolean result3 = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Assert.assertEquals(false, result3);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(new Asset(),new Asset()));
+        assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Asset asset=new Asset();
+        asset.setUuid("uuid");
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(asset));
+        assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        assetServiceImpl.checkRepeatAsset("123", ipMac);
+        when(assetDao.checkRepeatAsset(any())).thenThrow(new BusinessException("失败"));
+        assetServiceImpl.checkRepeatAsset("123", ipMac);
     }
 
     @Test
@@ -964,6 +988,20 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+        /*
+        if (CollectionUtils.isNotEmpty(assetGroupResponses)) { false
+         */
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(null);
+        assetServiceImpl.getByAssetId(condition);
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
+
+        Asset asset = generateNetWorkAsset();
+        asset.setOperationSystem(null);
+        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(asset);
+        assetServiceImpl.getByAssetId(condition);
+        Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
+                .thenReturn(null);
+        assetServiceImpl.getByAssetId(condition);
     }
 
     /**
@@ -984,6 +1022,8 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+        Mockito.when(assetSafetyEquipmentDao.getByWhere(Mockito.any())).thenReturn(null);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
@@ -1006,6 +1046,10 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+
+        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(null);
+        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+
     }
 
     private List<AssetNetworkEquipment> generateAssetNetworkEquipmentList() {
