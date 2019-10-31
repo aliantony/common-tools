@@ -790,6 +790,11 @@ public class AssetServiceImplTest {
             assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
         } catch (Exception e) {
         }
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("获取工作流异常");
+        assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
+
     }
 
     @Test
