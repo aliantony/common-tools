@@ -1313,6 +1313,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
             } else {
+                updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
