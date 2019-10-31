@@ -335,5 +335,5 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 根据用户区域统计未知资产数量
      */
-    Integer queryUnknownAssetCount(AreaIdRequest request) throws Exception;
+    Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception;
 }

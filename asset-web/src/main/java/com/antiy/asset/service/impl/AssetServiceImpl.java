@@ -178,7 +178,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
-                    String ssk = requestAsset.getBaselineTemplateId();
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
@@ -310,7 +309,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
 
-        if (id != null && id > 0 && request.getManualStartActivityRequest() != null) {
+        if (request.getManualStartActivityRequest() != null) {
 
             ManualStartActivityRequest activityRequest = request.getManualStartActivityRequest();
             activityRequest.setBusinessId(String.valueOf(id));
@@ -355,20 +354,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
 
             }
-            // 扫描
 
+        }
+
+            // 扫描
             ActionResponse scan = baseLineClient
-                .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+            .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
             // 如果漏洞为空,直接返回错误信息
             if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                 // 调用失败，直接删登记的资产
                 assetDao.deleteAssetById(id);
                 return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
 
-            }
-
         }
-
         return ActionResponse.success(msg);
     }
 
@@ -1027,7 +1025,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
+        // 查询代办
+        ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
+        activityWaitingQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
+        activityWaitingQuery.setProcessDefinitionKey("asset");
 
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
+            .queryAllWaitingTask(activityWaitingQuery);
+        if (actionResponse != null
+            && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+            for (WaitingTaskReponse waitingTaskReponse : waitingTaskReponses) {
+                if (Objects.equals(assetResponse.getStringId(), waitingTaskReponse.getBusinessId())) {
+                    assetResponse.setWaitingTaskReponse(waitingTaskReponse);
+                    break;
+                }
+            }
+        }
         return assetOuterResponse;
 
     }
@@ -1125,7 +1139,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                     // 4. 更新存储介质信息
                     AssetStorageMediumRequest storageMedium = assetOuterRequest.getAssetStorageMedium();
-                    if (!Objects.isNull(storageMedium != null)) {
+                    if (!Objects.isNull(storageMedium)) {
                         AssetStorageMedium assetStorageMedium = BeanConvert.convertBean(storageMedium,
                             AssetStorageMedium.class);
                         assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
@@ -2972,7 +2986,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public Integer queryUnknownAssetCount(AreaIdRequest request) throws Exception {
+    public Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception {
         request.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return assetDao.findUnknownAssetCount(request);
     }

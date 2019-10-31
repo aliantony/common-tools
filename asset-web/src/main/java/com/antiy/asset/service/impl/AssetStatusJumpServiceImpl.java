@@ -248,7 +248,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())
+                || AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             assetOperationRecord.setProcessResult(null);
         } else {
             assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
