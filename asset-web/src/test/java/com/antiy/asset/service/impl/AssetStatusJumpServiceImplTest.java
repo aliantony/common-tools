@@ -5,7 +5,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.antiy.common.exception.RequestParamValidateException;
+import org.assertj.core.api.Assertions;
 import org.junit.*;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -239,29 +242,31 @@ public class AssetStatusJumpServiceImplTest {
         Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
     }
 
-
-
     /**
-     * 数据库操作更新失败
-     * @throws Exception
+     * 整改
      */
-    // @Test
-    // public void changeStatusException() throws Exception {
-    //     jumpRequest.setAssetFlowEnum(AssetFlowEnum.TEMPLATE_IMPL);
-    //     List<Asset> assets = new ArrayList<>();
-    //     Asset asset = new Asset();
-    //     asset.setId(1);
-    //     asset.setAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-    //     assets.add(asset);
-    //     when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
-    //     when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
-    //
-    //     Mockito.when(assetLinkRelationDao.deleteByAssetIdList(Mockito.anyList())).thenThrow(new RuntimeException("one"));
-    //
-    //     expectedException.expect(BusinessException.class);
-    //     expectedException.expectMessage("操作失败,请稍后重试");
-    //     statusChangeFlowProcess.changeStatus(jumpRequest);
-    // }
+    @Test
+    public void changeStatus7() throws Exception {
+        // 通过
+        AssetStatusJumpRequest jumpRequest= getJumpRequest(AssetFlowEnum.CORRECT);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_CORRECT));
+        when(assetDao.updateAssetStatusWithLock(Mockito.any(Asset.class), Mockito.anyInt())).thenReturn(1);
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 拒绝
+        jumpRequest= getJumpRequest(AssetFlowEnum.CORRECT);
+        jumpRequest.setAgree(Boolean.FALSE);
+        jumpRequest.setWaitCorrectToWaitRegister(Boolean.TRUE);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_CORRECT));
+        Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),statusChangeFlowProcess.changeStatus(jumpRequest).getHead().getCode());
+
+        // 拒绝
+        AssetStatusJumpRequest jumpRequest2 = getJumpRequest(AssetFlowEnum.CORRECT);
+        jumpRequest2.setAgree(Boolean.FALSE);
+        jumpRequest2.setFormData(null);
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(getAssetInDb(AssetStatusEnum.WAIT_CORRECT));
+        Assertions.assertThatThrownBy(() -> statusChangeFlowProcess.changeStatus(jumpRequest2)).isInstanceOf(RequestParamValidateException.class).hasMessage("formData参数错误");
+    }
 
     /**
      * 数据库操作更新异常 updateAssetStatusWithLock
@@ -284,6 +289,7 @@ public class AssetStatusJumpServiceImplTest {
         expectedException.expectMessage("操作失败,请联系运维人员进行解决");
         statusChangeFlowProcess.changeStatus(getJumpRequest(AssetFlowEnum.RETIRE));
     }
+
     /**
      * 入网数据库操作更新异常 updateAssetBatch
      * @throws Exception
@@ -396,25 +402,41 @@ public class AssetStatusJumpServiceImplTest {
         jumpRequest.setManualStartActivityRequest(new ManualStartActivityRequest());
         when(assetDao.findByIds(Mockito.anyList())).thenReturn(new ArrayList<>());
 
-        expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("所选资产已被操作,请刷新后重试");
-        statusChangeFlowProcess.changeStatus(jumpRequest);
+        Assertions.assertThatThrownBy(() -> statusChangeFlowProcess.changeStatus(jumpRequest)).isInstanceOf(BusinessException.class).hasMessage("所选资产已被操作,请刷新后重试");
+
+        // 资产数量不匹配
+        List<Asset> assets = new ArrayList<>();
+        assets.add(getAsset(2,AssetStatusEnum.WAIT_CORRECT));
+        assets.add(getAsset(3,AssetStatusEnum.WAIT_CORRECT));
+        assets.add(getAsset(4,AssetStatusEnum.WAIT_CORRECT));
+        when(assetDao.findByIds(Mockito.anyList())).thenReturn(assets);
+        Assertions.assertThatThrownBy(() -> statusChangeFlowProcess.changeStatus(jumpRequest)).isInstanceOf(BusinessException.class).hasMessage("所选资产已被操作,请刷新后重试");
     }
 
-    public static AssetStatusJumpRequest getJumpRequest(AssetFlowEnum assetFlowEnum) {
+
+
+    private AssetStatusJumpRequest getJumpRequest(AssetFlowEnum assetFlowEnum) {
         AssetStatusJumpRequest jumpRequest = new AssetStatusJumpRequest();
         jumpRequest.setAgree(Boolean.TRUE);
         List<StatusJumpAssetInfo> assetInfoList = new ArrayList<>();
-        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
-        assetInfo.setAssetId("1");
-        assetInfo.setTaskId("12");
-        assetInfoList.add(assetInfo);
-        jumpRequest.setFormData(new HashMap());
+        assetInfoList.add(getStatusJumpAssetInfo("1", "12"));
+
+        Map<String,Object> formData = new HashMap();
+        formData.put("safetyChangeResult", "1");
+        formData.put("safetyChangeResultUser", "1");
+        jumpRequest.setFormData(formData);
         jumpRequest.setAssetInfoList(assetInfoList);
         jumpRequest.setAssetFlowEnum(assetFlowEnum);
         jumpRequest.setNote("note");
         jumpRequest.setFileInfo("fileInfo");
         return jumpRequest;
+    }
+
+    private StatusJumpAssetInfo getStatusJumpAssetInfo(String assetId, String taskId) {
+        StatusJumpAssetInfo assetInfo = new StatusJumpAssetInfo();
+        assetInfo.setAssetId(assetId);
+        assetInfo.setTaskId(taskId);
+        return assetInfo;
     }
 
     /**
@@ -423,10 +445,14 @@ public class AssetStatusJumpServiceImplTest {
      */
     private List<Asset> getAssetInDb(AssetStatusEnum assetStatusEnum) {
         List<Asset> assets = new ArrayList<>();
-        Asset asset = new Asset();
-        asset.setId(1);
-        asset.setAssetStatus(assetStatusEnum.getCode());
-        assets.add(asset);
+        assets.add(getAsset(1, assetStatusEnum));
         return assets;
+    }
+
+    private Asset getAsset(Integer assetId, AssetStatusEnum assetStatusEnum) {
+        Asset asset = new Asset();
+        asset.setId(assetId);
+        asset.setAssetStatus(assetStatusEnum.getCode());
+        return asset;
     }
 }
