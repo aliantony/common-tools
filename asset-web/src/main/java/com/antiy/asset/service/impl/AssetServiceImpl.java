@@ -591,6 +591,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
         for (AssetResponse object : objects) {
+            object.setOriginStatus(assetDao.queryOriginStatus(object.getStringId()));
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
@@ -1311,6 +1312,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (actionResponse == null
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+                }
+                // 如果没得uuid 安全检查
+                BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+                baselineAssetRegisterRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                baselineAssetRegisterRequest
+                    .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
+                baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(ar) ? 2 : 1);
+                baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setCheckUser(
+                    "safetyCheck".equals(ar) ? activityHandleRequest.getFormData().get("safetyCheckUser").toString()
+                        : activityHandleRequest.getFormData().get("templateImplementUser").toString());
+                ActionResponse baselineCheck;
+                if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
+                    baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
+                } else {
+                    baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+                }
+
+                // 如果基准为空,直接返回错误信息
+                if (null == baselineCheck
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                        : baselineCheck;
                 }
             } else {
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
