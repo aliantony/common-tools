@@ -1027,7 +1027,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
+        // 查询代办
+        ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
+        activityWaitingQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
+        activityWaitingQuery.setProcessDefinitionKey("asset");
 
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
+            .queryAllWaitingTask(activityWaitingQuery);
+        if (actionResponse != null
+            && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+            for (WaitingTaskReponse waitingTaskReponse : waitingTaskReponses) {
+                if (Objects.equals(assetResponse.getStringId(), waitingTaskReponse.getBusinessId())) {
+                    assetResponse.setWaitingTaskReponse(waitingTaskReponse);
+                }
+            }
+        }
         return assetOuterResponse;
 
     }
