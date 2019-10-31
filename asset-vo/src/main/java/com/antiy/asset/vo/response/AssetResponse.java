@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -255,6 +256,17 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "解密id")
     private String                         decryptId;
+
+    @ApiModelProperty(value = "上一步状态")
+    private Integer                        originStatus;
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
 
     public String getBaselineTemplateName() {
         return baselineTemplateName;

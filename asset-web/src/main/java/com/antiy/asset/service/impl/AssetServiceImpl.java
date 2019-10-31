@@ -366,7 +366,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 调用失败，直接删登记的资产
             assetDao.deleteAssetById(id);
             return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
-
         }
         return ActionResponse.success(msg);
     }
@@ -591,6 +590,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
         for (AssetResponse object : objects) {
+            object.setOriginStatus(assetDao.queryOriginStatus(object.getStringId()));
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
@@ -1312,7 +1312,33 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
+                // 如果没得uuid 安全检查
+                BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+                baselineAssetRegisterRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                baselineAssetRegisterRequest
+                    .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
+                baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(ar) ? 2 : 1);
+                baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setCheckUser(
+                    "safetyCheck".equals(ar) ? activityHandleRequest.getFormData().get("safetyCheckUser").toString()
+                        : activityHandleRequest.getFormData().get("templateImplementUser").toString());
+                ActionResponse baselineCheck;
+                if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
+                    baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
+                } else {
+                    baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+                }
+
+                // 如果基准为空,直接返回错误信息
+                if (null == baselineCheck
+                    || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+                    // 调用失败，直接删登记的资产
+                    return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
+                        : baselineCheck;
+                }
             } else {
+                updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
@@ -2014,7 +2040,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (repeat + error == 0) {
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
                 ComputerVo computerVo = new ComputerVo();
@@ -2049,8 +2074,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 computerVo.setAssetIpRelation(assetIpRelation);
                 computerVo.setAssetMacRelation(assetMacRelation);
                 computerVos.add(computerVo);
-            }
-
             a++;
         }
 
@@ -2223,7 +2246,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (repeat + error == 0) {
+
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
                 Asset asset = new Asset();
@@ -2268,7 +2291,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetNetworkEquipment.setIsWireless(entity.getIsWireless());
                 assetNetworkEquipment.setStatus(1);
                 networkEquipments.add(assetNetworkEquipment);
-            }
+
             a++;
 
         }
@@ -2428,7 +2451,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (repeat + error == 0) {
+
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
                 AssetMacRelation assetMacRelation = new AssetMacRelation();
@@ -2471,7 +2494,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetSafetyEquipment.setMac(entity.getMac());
                 assetSafetyEquipment.setStatus(1);
                 assetSafetyEquipments.add(assetSafetyEquipment);
-            }
+
             a++;
         }
 
@@ -2613,7 +2636,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (repeat + error == 0) {
+
                 assetNumbers.add(entity.getNumber());
                 Asset asset = new Asset();
                 asset.setResponsibleUserId(checkUser(entity.getUser()));
@@ -2654,7 +2677,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetStorageMedium.setOsVersion(entity.getSlotType());
                 assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
                 assetStorageMedia.add(assetStorageMedium);
-            }
+
 
             a++;
         }
@@ -2807,7 +2830,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (repeat + error == 0) {
+
                 assetNumbers.add(entity.getNumber());
                 assetMac.add(entity.getMac());
                 Asset asset = new Asset();
@@ -2835,7 +2858,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMacRelation.setMac(entity.getMac());
                 assetMacRelations.add(assetMacRelation);
                 assetIpRelations.add(assetIpRelation);
-            }
+
 
             a++;
         }

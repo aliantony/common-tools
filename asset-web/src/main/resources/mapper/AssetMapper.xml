@@ -1887,4 +1887,7 @@ AND a.`status` = 1
         </foreach>
         and status = 1 and asset_source = 3 and asset_status = 1 and gmt_modified = 0
     </select>
+    <select id="queryOriginStatus" resultType="java.lang.Integer">
+        select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
+    </select>
 </mapper>
