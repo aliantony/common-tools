@@ -193,7 +193,7 @@ DROP TABLE IF EXISTS `asset_install_template`;
 CREATE TABLE `asset_install_template` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(64) NOT NULL COMMENT '模板名称',
-  `number_code` varchar(64) NOT NULL COMMENT '模板编号',
+  `number_code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '模板编号',
   `category_model` int(11) NOT NULL COMMENT '品类型号',
   `current_status` tinyint(3) DEFAULT NULL COMMENT '状态：1-待审核，2-拒绝，3-启用，4-禁用',
   `operation_system` bigint(20) NOT NULL COMMENT '适用操作系统',
@@ -637,7 +637,9 @@ CREATE TABLE `asset_hard_soft_lib` (
   KEY `index_gmt_create` (`gmt_create`) USING BTREE,
   KEY `id_type_status` (`id`,`type`,`status`,`product_name`,`supplier`) USING BTREE,
   KEY `index_relation` (`id`,`business_id`,`type`,`is_storage`,`supplier`,`product_name`,`status`) USING BTREE,
-  KEY `idx_type_name_supplier` (`type`,`supplier`,`product_name`)USING BTREE
+  KEY `idx_type_name_supplier` (`type`,`supplier`,`product_name`)USING BTREE,
+  KEY `idx_type_status_platform` (`type`,`status`,`soft_platform`,`is_storage`) USING BTREE,
+  FULLTEXT KEY `idx_soft_platform` (`soft_platform`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
