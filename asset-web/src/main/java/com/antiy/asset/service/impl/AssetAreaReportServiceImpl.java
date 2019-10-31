@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.antiy.common.exception.RequestParamValidateException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -207,7 +208,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
                     if (sysArea != null) {
                         assetAreaReportRequest.setParentAreaName(sysArea.getFullName());
                     } else {
-                        ParamterExceptionUtils.isTrue(false, "获取顶级区域名称失败");
+                        throw new RequestParamValidateException("获取顶级区域名称失败");
                     }
                 } catch (Exception e) {
                     logger.error("获取顶级区域名称失败", e);

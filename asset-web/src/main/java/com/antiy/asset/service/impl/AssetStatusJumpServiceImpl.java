@@ -69,7 +69,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
 
         List<Asset> assetsInDb = assetDao.findByIds(assetIdList);
-        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "所选资产已被操作,请刷新后重试");
+        BusinessExceptionUtils.isTrue(CollectionUtils.isNotEmpty(assetsInDb) && assetIdList.size() == assetsInDb.size(), "所选资产已被操作,请刷新后重试");
 
         // 当前所有资产的可执行操作与当前状态一致
         assetsInDb.forEach(asset -> {
@@ -248,7 +248,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())
+                || AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             assetOperationRecord.setProcessResult(null);
         } else {
             assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
