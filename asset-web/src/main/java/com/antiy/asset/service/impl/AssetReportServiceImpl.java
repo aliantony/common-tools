@@ -9,8 +9,6 @@ import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.ShowCycleType;
-import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -23,7 +21,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,23 +64,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return statusList;
     }
 
-    /**
-     * 时间参数校验
-     *
-     * @param query
-     * @param showCycleType
-     */
-    private void checkParameter(AssetReportCategoryCountQuery query, ShowCycleType showCycleType) {
-        if (ShowCycleType.THIS_WEEK.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_MONTH.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_QUARTER.getCode().equals(showCycleType.getCode())
-            || ShowCycleType.THIS_YEAR.getCode().equals(showCycleType.getCode())) {
-            ParamterExceptionUtils.isNull(query.getBeginTime(), "开始时间不能为空");
-            ParamterExceptionUtils.isNull(query.getEndTime(), "开始时间不能为空");
-        } else if (ShowCycleType.ASSIGN_TIME.getCode().equals(showCycleType.getCode())) {
-            ParamterExceptionUtils.isNull(query.getBeginTime(), "指定开始时间不能为空");
-        }
-    }
 
     @Override
     public AssetReportResponse getAssetCountWithGroup(ReportQueryRequest reportQueryRequest) throws Exception {
@@ -134,12 +114,12 @@ public class AssetReportServiceImpl implements IAssetReportService {
         reportQueryRequest.setTopFive(true);
         List<AssetGroupEntity>  topGroupReportEntityList = assetReportDao.getAssetConutWithGroup(reportQueryRequest);
 
-        if (Objects.nonNull(reportQueryRequest.getTopFive())) {
+
             // 添加当前结束时间内TOP5的资产组Id列表,后续查询缩小范围
             List<Integer> groupIds = new ArrayList<>();
             topGroupReportEntityList.stream().forEach(assetGroupEntity -> groupIds.add(assetGroupEntity.getGroupId()));
             reportQueryRequest.setGroupIds(groupIds);
-        }
+
 
         // 2.获取所选本时间段,TOP5各资产组新增数量信息
         List<AssetGroupEntity> addAssetGroupEntityList = assetReportDao.getNewAssetWithGroup(reportQueryRequest);
@@ -211,43 +191,6 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     }
 
-
-    /**
-     * 获取表格数据
-     * @param query
-     * @param dateMap
-     * @return
-     */
-    private AssetReportTableResponse getAssetReportTableResponse(AssetReportCategoryCountQuery query,
-                                                                 Map<String, String> dateMap) throws Exception {
-        AssetReportTableResponse reportTableResponse = new AssetReportTableResponse();
-        List<Map<String, String>> rows = new ArrayList<>();
-        List<ReportTableHead> children = new ArrayList<>();
-        ReportTableHead initTableHead = new ReportTableHead();
-        initTableHead.setName("");
-        initTableHead.setKey(CLASSIFY_NAME);
-        children.add(initTableHead);
-        for (Map.Entry<String, String> entry : dateMap.entrySet()) {
-            ReportTableHead reportTableHead = new ReportTableHead();
-            reportTableHead.setKey(entry.getKey());
-            reportTableHead.setName(entry.getValue());
-            children.add(reportTableHead);
-        }
-
-        // Map<String, Object> map = buildCategoryCountByTime(query, dateMap);
-        // Map<String, Object> ssMap = (Map<String, Object>) map.get("timeValueMap");
-        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.COMPUTER.getName()));
-        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.NETWORK.getName()));
-        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.STORAGE.getName()));
-        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.SAFETY.getName()));
-        // rows.add((Map<String, String>) ssMap.get(AssetCategoryEnum.OTHER.getName()));
-        // rows.add((Map<String, String>) ssMap.get("新增"));
-        // rows.add((Map<String, String>) ssMap.get("总数"));
-
-        reportTableResponse.setRows(rows);
-        reportTableResponse.setChildren(children);
-        return reportTableResponse;
-    }
 
     @Override
     public AssetReportTableResponse getAssetGroupReportTable(ReportQueryRequest reportQueryRequest) throws Exception {
@@ -428,11 +371,11 @@ public class AssetReportServiceImpl implements IAssetReportService {
         List<Map<String, String>> addRows = new ArrayList<>();
         for (AssetGroupEntity assetGroupEntity : assetGroupEntities) {
             Map<String, String> addMap = new HashMap<>();
-            if (initNameList.contains(assetGroupEntity.getName())) {
+
                 addMap.put(CLASSIFY_NAME, assetGroupEntity.getName());
                 addMap.put(assetGroupEntity.getDate(), DataTypeUtils.integerToString(assetGroupEntity.getGroupCount()));
                 addRows.add(addMap);
-            }
+
         }
 
         // 将新增数据与初始化的新增数据进行比较配对。将有变化的数据进行修改
