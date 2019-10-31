@@ -1,13 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import java.io.*;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import java.io.*;
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -76,6 +78,17 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "处理流程数据")
     @Valid
     private ActivityHandleRequest         activityHandleRequest;
+
+    @ApiModelProperty(value = "是否需要漏扫,true/false")
+    private boolean                       needScan;
+
+    public boolean getNeedScan() {
+        return needScan;
+    }
+
+    public void setNeedScan(boolean needScan) {
+        this.needScan = needScan;
+    }
 
     public ActivityHandleRequest getActivityHandleRequest() {
         return activityHandleRequest;
