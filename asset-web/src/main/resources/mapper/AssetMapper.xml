@@ -1885,7 +1885,7 @@ AND a.`status` = 1
         <foreach item="item" index="index" collection="areaIds" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and status = 1 and asset_source in (1,3) and asset_status = 1 and gmt_modified = 0
+        and status = 1 and asset_source in = 1 and asset_status = 1 and gmt_modified = 0
     </select>
     <select id="queryOriginStatus" resultType="java.lang.Integer">
         select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
