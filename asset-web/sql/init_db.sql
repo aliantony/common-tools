@@ -1,8 +1,8 @@
 CREATE DATABASE
-IF NOT EXISTS asset_stg DEFAULT CHARACTER
+IF NOT EXISTS csos_stg DEFAULT CHARACTER
 SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE asset_stg;
+USE csos_stg;
 
 -- asset
 DROP USER
@@ -28,11 +28,11 @@ GRANT SELECT
 	,
 	INSERT,
 	UPDATE,
-	DELETE ON asset_stg.* TO asset_code_stg@'%';
+	DELETE ON csos_stg.* TO asset_code_stg@'%';
 
 GRANT SELECT
 	,
-	CREATE TEMPORARY TABLES ON asset_stg.* TO asset_rep_stg@'%';
+	CREATE TEMPORARY TABLES ON csos_stg.* TO asset_rep_stg@'%';
 
 GRANT SELECT
 	,
@@ -46,7 +46,7 @@ GRANT SELECT
 	CREATE routine,
 	ALTER routine,
 	EXECUTE,
-	CREATE TEMPORARY TABLES ON asset_stg.* TO asset_data_stg@'%';
+	CREATE TEMPORARY TABLES ON csos_stg.* TO asset_data_stg@'%';
 
 FLUSH PRIVILEGES;
 
