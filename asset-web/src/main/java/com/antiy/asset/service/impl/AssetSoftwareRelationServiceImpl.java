@@ -186,7 +186,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
             baselineWaitingConfigRequest.setReason(map.get(assetId));
             baselineWaitingConfigRequest.setSource(2);
-            baselineWaitingConfigRequest.setFormData(formData);
+            baselineWaitingConfigRequest.setFormData(new HashMap(formData));
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
             baselineWaitingConfigRequest
                 .setAdvice((String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("memo"));
