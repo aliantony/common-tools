@@ -230,4 +230,12 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @param installId
      */
     void deleteByInstallTemplateId(@Param("id") String id, @Param("installId") String installId);
+
+    /**
+     *
+     * @param assetId
+     * @param softIds
+     * @return
+     */
+    String getContent(@Param("assetId") String assetId, @Param("softIds") List<Long> softIds);
 }

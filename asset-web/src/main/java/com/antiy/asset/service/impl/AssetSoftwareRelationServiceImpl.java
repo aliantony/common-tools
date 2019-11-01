@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -16,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.entity.AssetSoftware;
@@ -73,6 +71,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private BaseLineClient                                                      baseLineClient;
     @Resource
     private AesEncoder                                                          aesEncoder;
+    @Resource
+    private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
@@ -143,9 +143,11 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> assetIds = softwareReportRequest.getAssetId();
         List<Long> softIds = softwareReportRequest.getSoftId();
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
+        Map<String, String> map = new HashMap<>();
         if (CollectionUtils.isNotEmpty(softIds)) {
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
             assetIds.stream().forEach(assetId -> {
+                map.put(assetId, assetSoftwareRelationDao.getContent(assetId, softIds));
                 // 1.先删除旧的关系表
                 assetSoftwareRelationDao.deleteSoftRealtion(assetId, softIds);
                 // 2.插入新的关系
@@ -161,12 +163,15 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             result = assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
         }
 
-        String nextStepUserId = aesEncoder.decode(
-            (String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId"),
-            LoginUserUtil.getLoginUser().getUsername());
-        Map formData = softwareReportRequest.getManualStartActivityRequest().getFormData();
-        formData.put("baselineConfigUserId", nextStepUserId);
         // ------------------对接配置模块------------------start
+        String[] bids = softwareReportRequest.getManualStartActivityRequest().getFormData().get("baselineConfigUserId")
+            .toString().split(",");
+        StringBuilder sb = new StringBuilder();
+        Arrays.stream(bids).forEach(bid -> {
+            sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
+        });
+        Map formData = softwareReportRequest.getManualStartActivityRequest().getFormData();
+        formData.put("baselineConfigUserId", sb.toString());
         List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
         assetIds.stream().forEach(assetId -> {
             BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -179,11 +184,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             }
             baselineWaitingConfigRequest.setConfigStatus(1);
             baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            baselineWaitingConfigRequest.setOperator(DataTypeUtils.stringToInteger(nextStepUserId));
-            baselineWaitingConfigRequest.setReason("资产变更");
+            baselineWaitingConfigRequest.setReason(map.get(assetId));
             baselineWaitingConfigRequest.setSource(2);
             baselineWaitingConfigRequest.setFormData(formData);
             baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
+            baselineWaitingConfigRequest
+                .setAdvice((String) softwareReportRequest.getManualStartActivityRequest().getFormData().get("memo"));
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
@@ -195,4 +201,5 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
 
         return result;
     }
+
 }
