@@ -16,7 +16,7 @@
 APPLICATION="@project.name@"
 
 # 项目端口
-PORT=8090
+PORT=8089
 
 # 项目名称
 ACTIVE=stg
