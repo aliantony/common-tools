@@ -1,32 +1,15 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.File;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.collections.CollectionUtils;
@@ -57,15 +40,37 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.SimpleTransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.File;
-import java.util.*;
-
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -505,19 +510,55 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void dealIp(){
-            assetServiceImpl.dealIp("1",null,3);
-        assetServiceImpl.dealIp("1",null,1);
-        assetServiceImpl.dealIp("1",null,2);
+    public void testSaveAsset2() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(null);
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        when(aesEncoder.decode(any(), any())).thenReturn("1");
+        Asset asset = new Asset();
+        asset.setId(1);
+        when(requestConverter.convert(any(AssetRequest.class), any())).thenReturn(asset);
+        when(assetMacRelationDao.insert(any())).thenReturn(0);
+        when(assetIpRelationDao.insert(any())).thenReturn(0);
+        assetAssemblyDao.insertBatch(anyList());
+        AssetRequest assetRequest = generateAssetRequest();
+        // 普通资产
+        AssetOuterRequest assetOuterRequest22 = new AssetOuterRequest();
+        assetOuterRequest22.setManualStartActivityRequest(generateAssetManualStart1());
+        assetOuterRequest22.setAsset(assetRequest);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("使用者不存在，或已经注销");
+        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
+        when(baseLineClient.scan(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+        when(baseLineClient.scan(any())).thenReturn(null);
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
     }
+
     @Test
-    public void dealSoft(){
-        assetServiceImpl.dealSoft("1",new AssetSoftwareReportRequest());
+    public void dealIp() {
+        assetServiceImpl.dealIp("1", null, 3);
+        assetServiceImpl.dealIp("1", null, 1);
+        assetServiceImpl.dealIp("1", null, 2);
     }
+
     @Test
-    public void dealAssembly(){
-            assetServiceImpl.dealAssembly("1",null);
+    public void dealSoft() {
+        assetServiceImpl.dealSoft("1", new AssetSoftwareReportRequest());
     }
+
+    @Test
+    public void dealAssembly() {
+        assetServiceImpl.dealAssembly("1", null);
+    }
+
     @Test
     public void assetssave() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
@@ -877,12 +918,11 @@ public class AssetServiceImplTest {
 
         query.setCategoryModels(new Integer[0]);
         assetServiceImpl.findUnconnectedAsset(query);
-        query.setCategoryModels(new Integer[]{0,1});
+        query.setCategoryModels(new Integer[] { 0, 1 });
         assetServiceImpl.findUnconnectedAsset(query);
         asset.setCategoryModel(2);
         query.setCategoryModels(null);
         assetServiceImpl.findUnconnectedAsset(query);
-
 
     }
 
@@ -920,9 +960,9 @@ public class AssetServiceImplTest {
         when(assetDao.checkRepeatAsset(any())).thenReturn(null);
         boolean result3 = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
         Assert.assertEquals(false, result3);
-        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(new Asset(),new Asset()));
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(new Asset(), new Asset()));
         assetServiceImpl.checkRepeatAsset("uuid", ipMac);
-        Asset asset=new Asset();
+        Asset asset = new Asset();
         asset.setUuid("uuid");
         when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(asset));
         assetServiceImpl.checkRepeatAsset("uuid", ipMac);
@@ -1014,9 +1054,7 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
-        /*
-        if (CollectionUtils.isNotEmpty(assetGroupResponses)) { false
-         */
+        /* if (CollectionUtils.isNotEmpty(assetGroupResponses)) { false */
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(null);
         assetServiceImpl.getByAssetId(condition);
         Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
@@ -1025,8 +1063,7 @@ public class AssetServiceImplTest {
         asset.setOperationSystem(null);
         Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(asset);
         assetServiceImpl.getByAssetId(condition);
-        Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any()))
-                .thenReturn(null);
+        Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any())).thenReturn(null);
         assetServiceImpl.getByAssetId(condition);
     }
 
@@ -1419,10 +1456,6 @@ public class AssetServiceImplTest {
         } catch (Exception e) {
         }
 
-
-
-
-
         asset.setOperationSystemName("windows");
         when(assetDao.getByAssetId("1")).thenReturn(asset);
         assetRequest.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
@@ -1675,8 +1708,10 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(ZipUtil.class);
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("发送客户端失败");
+        String property = System.getProperty("user.dir");
+        File file = new File(property + "/src/main/resources/logback-spring.xml");
         PowerMockito.mockStatic(ZipUtil.class);
-        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", file, file);
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         when(RequestContextHolder.getRequestAttributes())
@@ -1686,9 +1721,26 @@ public class AssetServiceImplTest {
     }
 
     @Test
+    public void sendStreamToClient1() throws Exception {
+        String pp = this.getClass().getClassLoader().getResource("").getPath();
+        String property = System.getProperty("user.dir");
+        String path = this.getClass().getResource("").getPath();
+        String path1 = this.getClass().getResource("/").getPath();
+        File file = new File(path1 + "/util/ControllerUtil.class");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("user-agent", "sdf msie");
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+
+        assetServiceImpl.sendStreamToClient(file);
+
+    }
+
+    @Test
     public void testImportPc() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
+
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
         List<BaselineCategoryModelResponse> baselineCategoryModelResponses = new ArrayList<>();
@@ -1845,8 +1897,7 @@ public class AssetServiceImplTest {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
 
-
-           LicenseContent licenseContent = new LicenseContent();
+        LicenseContent licenseContent = new LicenseContent();
         licenseContent.setAssetNum(null);
         PowerMockito.when(LicenseUtil.getLicense()).thenReturn(licenseContent);
         expectedException.expectMessage("license异常，请联系客服人员！");
@@ -2408,9 +2459,10 @@ public class AssetServiceImplTest {
 
     @Test
     public void queryUnknownAssetCount() throws Exception {
-        AssetUnknownRequest request=new AssetUnknownRequest();
+        AssetUnknownRequest request = new AssetUnknownRequest();
         assetServiceImpl.queryUnknownAssetCount(request);
     }
+
     @Test()
     public void testExportData() throws Exception {
         AssetResponse assetResponse = new AssetResponse();
@@ -2466,9 +2518,18 @@ public class AssetServiceImplTest {
         assetQuery2.setEnd(100);
         assetQuery2.setUnknownAssets(true);
         assetServiceImpl.exportData(assetQuery2, new Response(), new Request());
+
         PageResult<AssetResponse> result2 = new PageResult<>();
+        assetResponse.setFirstEnterNett(1L);
+        assetResponse.setImportanceDegree(5);
+        assetResponse.setAssetSource(null);
+        assetResponse.setAssetStatus(null);
         doReturn(result2).when(assetServiceImpl).findPageAsset(any());
-        result2.setItems(new ArrayList<AssetResponse>());
+        result2.setItems(Arrays.asList(assetResponse));
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        PageResult<AssetResponse> result22 = new PageResult<>();
+        doReturn(result22).when(assetServiceImpl).findPageAsset(any());
+        result22.setItems(new ArrayList<AssetResponse>());
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("导出数据为空");
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
@@ -2757,8 +2818,6 @@ public class AssetServiceImplTest {
         assetStatusChangeRequest1.setAssetId(new String[] { "1", "2" });
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
         Assert.assertEquals(2, 2);
-
-
 
         assetStatusChangeRequest1.setAssetId(null);
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);

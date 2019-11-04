@@ -1854,7 +1854,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         logger.info(file.getName() + "文件删除" + isSuccess(file.delete()));
     }
 
-    private void sendStreamToClient(File file) {
+    public void sendStreamToClient(File file) {
         FileInputStream fileInputStream = null;
         OutputStream ous = null;
         try {
@@ -1895,7 +1895,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
     }
-
     private String isSuccess(Boolean isDelete) {
         return isDelete ? "成功" : "失败";
     }
