@@ -1,28 +1,5 @@
 package com.antiy.asset.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
-import javax.ws.rs.core.MediaType;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
@@ -39,8 +16,27 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.utils.JsonUtil;
-
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import util.ControllerUtil;
+
+import javax.ws.rs.core.MediaType;
+import java.util.*;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class AssetControllerTest {
@@ -130,6 +126,10 @@ public class AssetControllerTest {
         asset.setIds(id);
         asset.setSortName("id");
         asset.setSortOrder("desc");
+        assetController.queryList(asset);
+        asset.setSortOrder(null);
+        assetController.queryList(asset);
+        asset.setSortName(null);
         assetController.queryList(asset);
     }
 
@@ -551,5 +551,14 @@ public class AssetControllerTest {
                 .andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         Assert.assertEquals("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":0}",contentAsString);
+    }
+
+    @Test
+    public void queryBaselineTemplate() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/query/baselineTemplate")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        Assert.assertEquals("{\"head\":{\"code\":\"200\",\"result\":\"成功\"},\"body\":[]}",contentAsString);
     }
 }
