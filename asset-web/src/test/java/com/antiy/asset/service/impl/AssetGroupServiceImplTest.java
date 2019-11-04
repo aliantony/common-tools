@@ -23,6 +23,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.poi.ss.formula.functions.T;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,11 +91,6 @@ public class AssetGroupServiceImplTest {
         Mockito.when(authentication.getUserAuthentication()).thenReturn(token);
         SecurityContextHolder.setContext(securityContext);
 
-        LoginUser loginUser1 = new LoginUser();
-        loginUser1.setId(11);
-        loginUser1.setName("日常安全管理员");
-        loginUser1.setUsername("routine_admin");
-        loginUser1.setPassword("123456");
         PowerMockito.mockStatic(LoginUserUtil.class);
         when(LoginUserUtil.getLoginUser()).thenReturn(loginUser);
 
@@ -129,13 +125,18 @@ public class AssetGroupServiceImplTest {
         actual = assetGroupService.saveAssetGroup(request);
         Assert.assertEquals("200", actual);
 
+        request.setAssetIds(null);
+        Assert.assertEquals("200", actual);
+        Mockito.when(assetGroupDao.insert(Mockito.any())).thenReturn(0);
+        assetGroupService.saveAssetGroup(request);
+
+        // case
+        Mockito.when(assetGroupDao.insert(Mockito.any())).thenReturn(0);
+        assetGroupService.saveAssetGroup(request);
+
         // 名称重复情况
         Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(true);
-        try {
-            assetGroupService.saveAssetGroup(request);
-        } catch (Exception e) {
-            Assert.assertEquals("资产组名称重复", e.getMessage());
-        }
+        Assertions.assertThatThrownBy(() -> assetGroupService.saveAssetGroup(request)).isInstanceOf(BusinessException.class).hasMessage("资产组名称重复");
 
     }
 
@@ -148,6 +149,7 @@ public class AssetGroupServiceImplTest {
         PowerMockito.mockStatic(BeanConvert.class);
         PowerMockito.when(BeanConvert.convert(request, AssetGroup.class)).thenReturn(assetGroup);
         Mockito.when(assetGroupDao.getById(Mockito.any())).thenReturn(assetGroup);
+
         Mockito.when(assetGroupDao.removeDuplicate(Mockito.any())).thenReturn(false);
         Mockito.when(assetGroupRelationDao.deleteByAssetGroupId(Mockito.any())).thenReturn(1);
         Mockito.when(assetGroupDao.update(Mockito.any())).thenReturn(1);
@@ -173,10 +175,44 @@ public class AssetGroupServiceImplTest {
         } catch (Exception e) {
             Assert.assertEquals("资产组名称重复", e.getMessage());
         }
+
+        // if (!request.getName().equals(groupName))    false
+        request = getAssetGroupRequest();
+        request.setName(assetGroup.getName());
+        String[] ids = { "1" };
+        request.setAssetIds(ids);
+        PowerMockito.when(BeanConvert.convert(request, AssetGroup.class)).thenReturn(assetGroup);
+        result = assetGroupService.updateAssetGroup(request);
+        Assert.assertEquals(1, result);
+
+        //  assetGroupDao.update == 0
+        Mockito.when(assetGroupDao.update(Mockito.any())).thenReturn(0);
+        result = assetGroupService.updateAssetGroup(request);
+        Assert.assertEquals(0, result);
+
+        // case: 资产关联的资产组超过10个
+
+        Mockito.when(assetGroupDao.removeDuplicate(Mockito.anyString())).thenReturn(false);
+        assetGroupNameList.add("test1");
+        assetGroupNameList.add("test2");
+        assetGroupNameList.add("test3");
+        assetGroupNameList.add("test4");
+        assetGroupNameList.add("test5");
+        assetGroupNameList.add("test6");
+        assetGroupNameList.add("test7");
+        assetGroupNameList.add("test8");
+        assetGroupNameList.add("test9");
+        assetGroupNameList.add("test10");
+        assetGroupNameList.add("test11");
+        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any())).thenReturn(assetGroupNameList);
+        AssetGroupRequest finalRequest = request;
+        PowerMockito.when(BeanConvert.convert(finalRequest, AssetGroup.class)).thenReturn(assetGroup);
+
+        Assertions.assertThatThrownBy(() -> assetGroupService.updateAssetGroup(finalRequest)).hasMessage("资产关联的资产组不能超过10个");
     }
 
     /**
-     * 库中不存在,需要新增
+     * 关联关系库中不存在,需要新增
      * @throws Exception
      */
     @Test
@@ -211,13 +247,47 @@ public class AssetGroupServiceImplTest {
         existedRelationList.add(relation2);
         Mockito.when(assetGroupRelationDao.listRelationByGroupId(Mockito.eq(DataTypeUtils.stringToInteger(request.getId()))))
                 .thenReturn(existedRelationList);
-        Mockito.when( assetGroupRelationDao.deleteBatch(Mockito.anyList())).thenReturn(1);
+        Mockito.when(assetGroupRelationDao.deleteBatch(Mockito.anyList())).thenReturn(1);
 
         Assert.assertEquals(Integer.valueOf(1), assetGroupService.updateAssetGroup(request));
+
+        // case 删除返回  0
+        Mockito.when(assetGroupRelationDao.deleteBatch(Mockito.anyList())).thenReturn(0);
+        Assert.assertEquals(Integer.valueOf(1), assetGroupService.updateAssetGroup(request));
+
+        // case： 没有资产Id
+        request.setAssetIds(null);
+        Assert.assertEquals(Integer.valueOf(1), assetGroupService.updateAssetGroup(request));
+
+
+
+        // 大于10个
+        List<String> assetIdList = new ArrayList<>();
+        assetIdList.add("1");
+        assetIdList.add("2");
+        when(assetGroupRelationDao.findAssetIdByAssetGroupId(request.getId())).thenReturn(assetIdList);
+
+        assetGroupNameList.add("test1");
+        assetGroupNameList.add("test2");
+        assetGroupNameList.add("test3");
+        assetGroupNameList.add("test4");
+        assetGroupNameList.add("test5");
+        assetGroupNameList.add("test6");
+        assetGroupNameList.add("test7");
+        assetGroupNameList.add("test8");
+        assetGroupNameList.add("test9");
+        assetGroupNameList.add("test10");
+        assetGroupNameList.add("test11");
+        Mockito.when(assetGroupRelationDao.findAssetGroupNameByAssetId(Mockito.any())).thenReturn(assetGroupNameList);
+        PowerMockito.when(BeanConvert.convert(request, AssetGroup.class)).thenReturn(assetGroup);
+
+        Assertions.assertThatThrownBy(() -> assetGroupService.updateAssetGroup(request)).hasMessage("资产关联的资产组不能超过10个");
+
     }
 
     /**
-     *case: 参数中没有资产ids;findAssetGroupNameByAssetId异常
+     * case: 参数中没有资产ids;
+     * findAssetGroupNameByAssetId异常
      */
     @Test
     public void updateAssetGroupTest3() throws Exception {
@@ -300,6 +370,12 @@ public class AssetGroupServiceImplTest {
         Mockito.when(assetGroupRelationDao.findAssetNameByAssetGroupId(Mockito.any())).thenReturn(assetList);
         actual = assetGroupService.findListAssetGroup(query);
         Assert.assertEquals(assetResponseList.size(), actual.size());
+
+        // redis user为null
+        Mockito.when(redisUtil.getObject(key, SysUser.class)).thenReturn(null);
+        actual = assetGroupService.findListAssetGroup(query);
+
+        Assert.assertEquals(assetResponseList.size(), actual.size());
     }
 
     @Test
@@ -354,6 +430,9 @@ public class AssetGroupServiceImplTest {
 
         actual = assetGroupService.queryUnconnectedGroupInfo(null, "1");
         Assert.assertEquals("test", actual.get(0).getValue());
+
+        actual = assetGroupService.queryUnconnectedGroupInfo(2, "1");
+        Assert.assertEquals("test", actual.get(0).getValue());
     }
 
     @Test
@@ -390,6 +469,12 @@ public class AssetGroupServiceImplTest {
 
         List<SelectResponse> actual = assetGroupService.queryCreateUser();
         Assert.assertEquals(selectResponseList.size(), actual.size());
+
+        // case:redis获取用户失败
+        Mockito.when(redisUtil.getObject(key, SysUser.class)).thenReturn(null);
+        Mockito.when(assetGroupDao.findCreateUser()).thenReturn(assetGroupList);
+        Assert.assertEquals(0,  assetGroupService.queryCreateUser().size());
+
     }
 
     @Test
