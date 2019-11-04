@@ -881,6 +881,21 @@
     <select id="queryOs" resultType="java.lang.String">
         select serial_name from asset_cpe_filter where business_id = (select system from baseline_template where id = #{query.baselineTemplateId})
     </select>
+    <select id="getContent" resultType="java.lang.String">
+        SELECT
+        group_concat('添加软件:',product_name,'$')
+        FROM
+        asset_hard_soft_lib
+        WHERE
+        business_id NOT IN ( SELECT software_id FROM asset_software_relation WHERE asset_id = #{assetId} AND STATUS = 1
+        )
+        <if test="softIds != null and softIds.size() > 0">
+            and business_id IN
+            <foreach collection="softIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
     <!--删除资产与软件的关联关系-->
     <delete id="deleteSoftRealtion">
         update asset_software_relation set status = 0

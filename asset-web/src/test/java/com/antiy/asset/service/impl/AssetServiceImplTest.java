@@ -546,6 +546,27 @@ public class AssetServiceImplTest {
 
     }
 
+    @Test
+    public void assetssave1() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        AssetRequest asset = generateAssetRequest4();
+        Asset t = generateAsset2();
+        when(requestConverter.convert(asset, Asset.class)).thenReturn(t);
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        AssetOuterRequest assetOuterRequest331 = new AssetOuterRequest();
+
+        assetOuterRequest331.setAsset(asset);
+        when(baseLineClient.scan(any())).thenReturn(ActionResponse.success());
+
+        assetServiceImpl.saveAsset(assetOuterRequest331);
+
+    }
+
     public AssetStorageMediumRequest generateAssetStorageMediumRequest() {
         AssetStorageMediumRequest assetStorageMediumRequest = new AssetStorageMediumRequest();
         assetStorageMediumRequest.setAssetId("1");
@@ -790,6 +811,11 @@ public class AssetServiceImplTest {
             assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
         } catch (Exception e) {
         }
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("获取工作流异常");
+        assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
+
     }
 
     @Test
@@ -1168,6 +1194,37 @@ public class AssetServiceImplTest {
         List<AssetGroupRequest> assetGroupRequests = new ArrayList<AssetGroupRequest>();
         assetGroup.setId("0");
         // assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+
+        return assetRequest;
+    }
+
+    private Asset generateAsset2() {
+        Asset assetRequest = new Asset();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId(11L);
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId(1);
+        assetRequest.setHouseLocation("1");
+
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
@@ -1777,6 +1834,10 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败", assetServiceImpl.importPc(null, assetImportRequest));
 
         importResult.setMsg("");
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importPc(null, assetImportRequest));
+
+        importResult.setMsg("");
         Mockito.when(assetDao.insert(Mockito.any())).thenThrow(new DuplicateKeyException(""));
         try {
             assetServiceImpl.importPc(null, assetImportRequest);
@@ -1865,6 +1926,9 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setPortSize(-1);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行网口数目范围为1-100！", result);
+        networkDeviceEntity.setPortSize(881);
+        result = assetServiceImpl.importNet(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行网口数目范围为1-100！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         networkDeviceEntity.setPortSize(10);
@@ -1875,6 +1939,9 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setButDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
+        networkDeviceEntity.setButDate(null);
+        result = assetServiceImpl.importNet(null, assetImportRequest);
+        Assert.assertEquals("导入成功1条", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         networkDeviceEntity.setPortSize(10);
@@ -1911,6 +1978,12 @@ public class AssetServiceImplTest {
 
         importResult.setDataList(new ArrayList());
         Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importNet(null, assetImportRequest));
+        importResult.setDataList(new ArrayList());
+        importResult.setMsg("");
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importNet(null, assetImportRequest));
+        importResult.setDataList(new ArrayList());
+        importResult.setMsg("ewe");
+        Assert.assertEquals("导入成功0条ewe", assetServiceImpl.importNet(null, assetImportRequest));
 
         importResult.setMsg("导入失败");
         importResult.setDataList(networkDeviceEntities);
@@ -2086,6 +2159,7 @@ public class AssetServiceImplTest {
         ImportResult importResult = new ImportResult();
         List<StorageDeviceEntity> storageDeviceEntityArrayList = new ArrayList<>();
         StorageDeviceEntity storageDeviceEntity = getStorageDeviceEntity();
+        storageDeviceEntity.setRaidSupport(1);
         storageDeviceEntityArrayList.add(storageDeviceEntity);
         importResult.setMsg("");
         importResult.setDataList(storageDeviceEntityArrayList);
@@ -2188,6 +2262,7 @@ public class AssetServiceImplTest {
         storageDeviceEntity.setDueDate(System.currentTimeMillis() + 1);
         storageDeviceEntity.setUser("1");
         storageDeviceEntity.setImportanceDegree("1");
+        storageDeviceEntity.setRaidSupport(0);
         return storageDeviceEntity;
     }
 
@@ -2255,6 +2330,10 @@ public class AssetServiceImplTest {
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
         when(assetDao.findCountAssetNumber(any())).thenReturn(0);
         String ohters = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
+        otherDeviceEntity.setBuyDate(null);
+
+        result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
 
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() / 2);
@@ -2564,6 +2643,38 @@ public class AssetServiceImplTest {
         assetGroup.setId("0");
         assetGroupRequests.add(assetGroup);
         assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+        return assetRequest;
+    }
+
+    private AssetRequest generateAssetRequest4() {
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("11111");
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setAssetGroups(Lists.newArrayList());
+        assetRequest.setSystemBit(0);
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId("1");
+        assetRequest.setHouseLocation("1");
+        assetRequest.setBusinessId("1");
+
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
