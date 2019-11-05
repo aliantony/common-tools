@@ -16,7 +16,6 @@ public class AssetSynchCpeQuery extends ObjectQuery {
     /**
      * 开始时间
      */
-    @NotNull(message = "开始时间不以为空")
     @ApiModelProperty(value = "开始时间")
     private Long startStamp;
     /**

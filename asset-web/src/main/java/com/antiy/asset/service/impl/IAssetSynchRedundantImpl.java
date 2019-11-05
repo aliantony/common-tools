@@ -28,13 +28,9 @@ public class IAssetSynchRedundantImpl implements IAssetSynchRedundant {
 
     @Override
     public Integer synchRedundantAsset(AssetSynchCpeQuery query) throws Exception {
-        Long start = query.getStartStamp();
         Long end = query.getEndStamp();
-        if (start == null || end == null) {
-            throw new BusinessException("参数不能为空, 请检查参数");
-        }
-        if (start > end) {
-            throw new BusinessException("开始时间应小于结束时间");
+        if (end == null) {
+            throw new BusinessException("结束时间不能为空, 请检查参数");
         }
 
         // 更新名称、厂商、操作系统字段
