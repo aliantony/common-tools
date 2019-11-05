@@ -898,6 +898,8 @@ CREATE TABLE `asset_cpe_update_record` (
   `reason` varchar(255) DEFAULT NULL COMMENT '失败理由',
   `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   `update_duration` bigint(20) DEFAULT NULL COMMENT '更新时长',
+    `gmt_modified` bigint(20) NULL DEFAULT NULL COMMENT '数据修改时间',
+  `gmt_create` bigint(20) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='CPE更新记录表' ;
 /*!40101 SET character_set_client = @saved_cs_client */;
