@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -71,8 +72,15 @@ public class FileControllerTest {
 
     @Test
     public void upload() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("fileList", "123.rar", "application/x-rar-compressed",
-            "132".getBytes());
+        // MockMultipartFile tes = new MockMultipartFile("fileList", "123.rar", "application/x-rar-compressed",
+        // "132".getBytes());
+
+        MockMultipartFile file = mock(MockMultipartFile.class);
+        when(file.getName()).thenReturn("fileList");
+        when(file.getOriginalFilename()).thenReturn("123.rar");
+        when(file.getContentType()).thenReturn("application/x-rar-compressed");
+        when(file.getBytes()).thenReturn("132".getBytes());
+        when(file.getSize()).thenReturn(5368709120L);
 
         FileResponse<FileRespVO> fileResponse = FileResponse.of();
         FileRespVO fileRespVO = new FileRespVO();
@@ -83,29 +91,98 @@ public class FileControllerTest {
         when(fileUtils.uploadFileFromLocal(Mockito.any(MultipartFile.class), Mockito.any())).thenReturn(fileResponse);
 
         // 安装包-成功
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
             .param("fileUse", FileUseEnum.INSTALL_PACKAGE.getCode()).param("md5", "35CFF75491697930993E99EADD63A75F"))
             .andReturn();
+
         Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),
             ControllerUtil.getResponse(mvcResult).getHead().getCode());
 
-        MockMultipartFile inCorrectTypeFile = new MockMultipartFile("fileList", "123.ra2r",
-            "application/x-rar-compressed", "132".getBytes());
+        try {
+            when(file.getSize()).thenReturn(0L);
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.INSTALL_PACKAGE.getCode())
+                .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            when(file.getSize()).thenReturn(6368709120L);
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.INSTALL_PACKAGE.getCode())
+                .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            when(file.getSize()).thenReturn(5368709120L);
+            when(file.getOriginalFilename()).thenReturn("123.error");
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.INSTALL_PACKAGE.getCode())
+                .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         // 说明书-成功
+        when(file.getSize()).thenReturn(209715200L);
+        when(file.getOriginalFilename()).thenReturn("123.rar");
         MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
             .param("fileUse", FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode())
             .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+
         Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),
             ControllerUtil.getResponse(mvcResult2).getHead().getCode());
+        try {
+            when(file.getSize()).thenReturn(309715200L);
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode())
+                .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            when(file.getSize()).thenReturn(209715200L);
+            when(file.getOriginalFilename()).thenReturn("123.error");
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.INSTALL_INTRODUCE_MANUAL.getCode())
+                .param("md5", "35CFF75491697930993E99EADD63A75F")).andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         // SCHEME_FILE-成功
+        when(file.getSize()).thenReturn(10485760L);
+        when(file.getOriginalFilename()).thenReturn("123.rar");
         MvcResult mvcResult3 = mockMvc
             .perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
                 .param("fileUse", FileUseEnum.SCHEME_FILE.getCode()).param("md5", "35CFF75491697930993E99EADD63A75F"))
             .andReturn();
         Assert.assertEquals(RespBasicCode.SUCCESS.getResultCode(),
             ControllerUtil.getResponse(mvcResult3).getHead().getCode());
+
+        try {
+            when(file.getSize()).thenReturn(20485760L);
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.SCHEME_FILE.getCode()).param("md5", "35CFF75491697930993E99EADD63A75F"))
+                .andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            when(file.getSize()).thenReturn(10485760L);
+            when(file.getOriginalFilename()).thenReturn("123.error");
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/asset/file/upload").file(file)
+                .param("fileUse", FileUseEnum.SCHEME_FILE.getCode()).param("md5", "35CFF75491697930993E99EADD63A75F"))
+                .andReturn();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 

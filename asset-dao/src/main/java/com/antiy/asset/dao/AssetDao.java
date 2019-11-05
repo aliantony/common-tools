@@ -310,7 +310,8 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
 
-    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<String> areaIdsOfCurrentUser, @Param("status") List<Integer> status);
+    List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<String> areaIdsOfCurrentUser,
+                                                 @Param("status") List<Integer> status);
 
     Integer findCountAssetNumber(@Param("number") String number);
 
@@ -355,4 +356,11 @@ public interface AssetDao extends IBaseDao<Asset> {
      * 根据用户区域统计未知资产数量
      */
     Integer findUnknownAssetCount(AssetUnknownRequest request) throws Exception;
+
+    /**
+     * 查询资产上一步状态
+     * @param stringId
+     * @return
+     */
+    Integer queryOriginStatus(@Param("assetId") String stringId);
 }

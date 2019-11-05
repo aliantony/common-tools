@@ -1,12 +1,32 @@
 package com.antiy.asset.service.impl;
 
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.util.*;
-
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.util.ZipUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LicenseUtil;
+import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,33 +60,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSONObject;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.*;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.util.*;
+
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -506,6 +505,56 @@ public class AssetServiceImplTest {
     }
 
     @Test
+    public void testSaveAsset2() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(null);
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        when(assetGroupDao.getById(any())).thenReturn(generateAssetGroup());
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        when(aesEncoder.decode(any(), any())).thenReturn("1");
+        Asset asset = new Asset();
+        asset.setId(1);
+        when(requestConverter.convert(any(AssetRequest.class), any())).thenReturn(asset);
+        when(assetMacRelationDao.insert(any())).thenReturn(0);
+        when(assetIpRelationDao.insert(any())).thenReturn(0);
+        assetAssemblyDao.insertBatch(anyList());
+        AssetRequest assetRequest = generateAssetRequest();
+        // 普通资产
+        AssetOuterRequest assetOuterRequest22 = new AssetOuterRequest();
+        assetOuterRequest22.setManualStartActivityRequest(generateAssetManualStart1());
+        assetOuterRequest22.setAsset(assetRequest);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("使用者不存在，或已经注销");
+        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
+        when(baseLineClient.scan(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+        when(baseLineClient.scan(any())).thenReturn(null);
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+    }
+
+    @Test
+    public void dealIp() {
+        assetServiceImpl.dealIp("1", null, 3);
+        assetServiceImpl.dealIp("1", null, 1);
+        assetServiceImpl.dealIp("1", null, 2);
+    }
+
+    @Test
+    public void dealSoft() {
+        assetServiceImpl.dealSoft("1", new AssetSoftwareReportRequest());
+    }
+
+    @Test
+    public void dealAssembly() {
+        assetServiceImpl.dealAssembly("1", null);
+    }
+
+    @Test
     public void assetssave() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetDao.deleteAssetById(any())).thenReturn(0);
@@ -529,6 +578,27 @@ public class AssetServiceImplTest {
         assetOuterRequest331.setManualStartActivityRequest(generateAssetManualStart());
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("0已失效，请核对后提交");
+        assetServiceImpl.saveAsset(assetOuterRequest331);
+
+    }
+
+    @Test
+    public void assetssave1() throws Exception {
+        when(assetDao.findCountMac(any(), any())).thenReturn(0);
+        when(assetDao.deleteAssetById(any())).thenReturn(0);
+        when(assetUserDao.getById(any())).thenReturn(new AssetUser());
+        when(assetGroupRelationDao.insertBatch(any())).thenReturn(0);
+        AssetRequest asset = generateAssetRequest4();
+        Asset t = generateAsset2();
+        when(requestConverter.convert(asset, Asset.class)).thenReturn(t);
+        when(activityClient.manualStartProcess(any())).thenReturn(null);
+
+        when(redisUtil.getObject(any(), any(Class.class))).thenReturn(new SysArea());
+        AssetOuterRequest assetOuterRequest331 = new AssetOuterRequest();
+
+        assetOuterRequest331.setAsset(asset);
+        when(baseLineClient.scan(any())).thenReturn(ActionResponse.success());
+
         assetServiceImpl.saveAsset(assetOuterRequest331);
 
     }
@@ -777,6 +847,11 @@ public class AssetServiceImplTest {
             assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
         } catch (Exception e) {
         }
+        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
+        expectedException.expect(BusinessException.class);
+        expectedException.expectMessage("获取工作流异常");
+        assetServiceImpl.getAllHardWaitingTask("definitionKeyType");
+
     }
 
     @Test
@@ -836,6 +911,14 @@ public class AssetServiceImplTest {
         when(redisUtil.getObject(newAreaKey, SysArea.class)).thenThrow(new Exception());
         assetServiceImpl.findUnconnectedAsset(query);
 
+        query.setCategoryModels(new Integer[0]);
+        assetServiceImpl.findUnconnectedAsset(query);
+        query.setCategoryModels(new Integer[] { 0, 1 });
+        assetServiceImpl.findUnconnectedAsset(query);
+        asset.setCategoryModel(2);
+        query.setCategoryModels(null);
+        assetServiceImpl.findUnconnectedAsset(query);
+
     }
 
     @Test
@@ -866,6 +949,21 @@ public class AssetServiceImplTest {
 
         boolean result = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
         Assert.assertEquals(true, result);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList());
+        boolean result2 = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Assert.assertEquals(false, result2);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(null);
+        boolean result3 = assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Assert.assertEquals(false, result3);
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(new Asset(), new Asset()));
+        assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        Asset asset = new Asset();
+        asset.setUuid("uuid");
+        when(assetDao.checkRepeatAsset(any())).thenReturn(Arrays.asList(asset));
+        assetServiceImpl.checkRepeatAsset("uuid", ipMac);
+        assetServiceImpl.checkRepeatAsset("123", ipMac);
+        when(assetDao.checkRepeatAsset(any())).thenThrow(new BusinessException("失败"));
+        assetServiceImpl.checkRepeatAsset("123", ipMac);
     }
 
     @Test
@@ -951,6 +1049,17 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+        /* if (CollectionUtils.isNotEmpty(assetGroupResponses)) { false */
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(null);
+        assetServiceImpl.getByAssetId(condition);
+        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
+
+        Asset asset = generateNetWorkAsset();
+        asset.setOperationSystem(null);
+        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(asset);
+        assetServiceImpl.getByAssetId(condition);
+        Mockito.when(assetNetworkEquipmentDao.getByWhere(Mockito.any())).thenReturn(null);
+        assetServiceImpl.getByAssetId(condition);
     }
 
     /**
@@ -972,6 +1081,8 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
         Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
+        Mockito.when(assetSafetyEquipmentDao.getByWhere(Mockito.any())).thenReturn(null);
+        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
     /**
@@ -992,109 +1103,11 @@ public class AssetServiceImplTest {
         assetHardSoftLib.setSupplier("xerox");
         assetHardSoftLib.setProductName("copycentre_c65");
         Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
+        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
 
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
-        waitingTaskReponse.setAssignee("");
-        waitingTaskReponse.setName("");
-        waitingTaskReponse.setPriority(0);
-        waitingTaskReponse.setCreateTime(new Date());
-        waitingTaskReponse.setExecutionId("");
-        waitingTaskReponse.setProcessInstanceId("");
-        waitingTaskReponse.setProcessDefinitionId("");
-        waitingTaskReponse.setTaskDefinitionKey("");
-        waitingTaskReponse.setFormKey("");
-        waitingTaskReponse.setTaskId("");
-        waitingTaskReponse.setBusinessId("1");
+        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(null);
+        Assert.assertEquals("0", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
 
-        actionResponse.setBody(Arrays.asList(waitingTaskReponse));
-
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
-        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
-    }
-
-    /**
-     * 查询存储设备
-     * @throws Exception
-     */
-    @Test
-    public void testGetByAssetId4() throws Exception {
-        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
-        QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey("1");
-        mockRedisUtil();
-        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
-        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
-        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
-        assetHardSoftLib.setBusinessId("1");
-        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
-        assetHardSoftLib.setSupplier("xerox");
-        assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
-
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = ActionResponse.success();
-        WaitingTaskReponse waitingTaskReponse = new WaitingTaskReponse();
-        waitingTaskReponse.setAssignee("");
-        waitingTaskReponse.setName("");
-        waitingTaskReponse.setPriority(0);
-        waitingTaskReponse.setCreateTime(new Date());
-        waitingTaskReponse.setExecutionId("");
-        waitingTaskReponse.setProcessInstanceId("");
-        waitingTaskReponse.setProcessDefinitionId("");
-        waitingTaskReponse.setTaskDefinitionKey("");
-        waitingTaskReponse.setFormKey("");
-        waitingTaskReponse.setTaskId("");
-        waitingTaskReponse.setBusinessId("23");
-
-        actionResponse.setBody(Arrays.asList(waitingTaskReponse));
-
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(actionResponse);
-        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
-    }
-
-    /**
-     * 查询存储设备
-     * @throws Exception
-     */
-    @Test
-    public void testGetByAssetId5() throws Exception {
-        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
-        QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey("1");
-        mockRedisUtil();
-        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
-        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
-        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
-        assetHardSoftLib.setBusinessId("1");
-        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
-        assetHardSoftLib.setSupplier("xerox");
-        assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
-        when(activityClient.queryAllWaitingTask(any())).thenReturn(null);
-        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
-    }
-
-    /**
-     * 查询存储设备
-     * @throws Exception
-     */
-    @Test
-    public void testGetByAssetId6() throws Exception {
-        Mockito.when(assetDao.getByAssetId(Mockito.anyString())).thenReturn(generateStorageAsset());
-        QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey("1");
-        mockRedisUtil();
-        Mockito.when(assetGroupRelationDao.queryByAssetId(Mockito.any())).thenReturn(generateAssetGroupList());
-        Mockito.when(assetStorageMediumDao.getByWhere(Mockito.any())).thenReturn(generateAssetStorageMediumList());
-        AssetHardSoftLib assetHardSoftLib = new AssetHardSoftLib();
-        assetHardSoftLib.setBusinessId("1");
-        assetHardSoftLib.setCpeUri("cpe:/h:xerox:copycentre_c65:1.001.02.073");
-        assetHardSoftLib.setSupplier("xerox");
-        assetHardSoftLib.setProductName("copycentre_c65");
-        Mockito.when(assetHardSoftLibDao.getByBusinessId(Mockito.anyString())).thenReturn(assetHardSoftLib);
-        when(activityClient.queryAllWaitingTask(any()))
-            .thenReturn(ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION));
-        Assert.assertEquals("1", assetServiceImpl.getByAssetId(condition).getAsset().getStringId());
     }
 
     private List<AssetNetworkEquipment> generateAssetNetworkEquipmentList() {
@@ -1117,7 +1130,6 @@ public class AssetServiceImplTest {
 
     private Asset generateStorageAsset() {
         Asset asset = generateAsset();
-        asset.setId(1);
         asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
         return asset;
     }
@@ -1214,6 +1226,37 @@ public class AssetServiceImplTest {
         List<AssetGroupRequest> assetGroupRequests = new ArrayList<AssetGroupRequest>();
         assetGroup.setId("0");
         // assetRequest.setAssetGroups(assetGroupRequests);
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+
+        return assetRequest;
+    }
+
+    private Asset generateAsset2() {
+        Asset assetRequest = new Asset();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId(11L);
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId(1);
+        assetRequest.setHouseLocation("1");
+
         assetRequest.setInstallType(0);
         assetRequest.setDescrible("1");
         assetRequest.setSoftwareVersion("1");
@@ -1660,8 +1703,10 @@ public class AssetServiceImplTest {
         PowerMockito.mockStatic(ZipUtil.class);
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("发送客户端失败");
+        String property = System.getProperty("user.dir");
+        File file = new File(property + "/src/main/resources/logback-spring.xml");
         PowerMockito.mockStatic(ZipUtil.class);
-        PowerMockito.doNothing().when(ZipUtil.class, "compress", Mockito.any(File.class), Mockito.any(File[].class));
+        PowerMockito.doNothing().when(ZipUtil.class, "compress", file, file);
         when(RequestContextHolder.getRequestAttributes())
             .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
         when(RequestContextHolder.getRequestAttributes())
@@ -1671,9 +1716,26 @@ public class AssetServiceImplTest {
     }
 
     @Test
+    public void sendStreamToClient1() throws Exception {
+        String pp = this.getClass().getClassLoader().getResource("").getPath();
+        String property = System.getProperty("user.dir");
+        String path = this.getClass().getResource("").getPath();
+        String path1 = this.getClass().getResource("/").getPath();
+        File file = new File(path1 + "/util/ControllerUtil.class");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("user-agent", "sdf msie");
+        when(RequestContextHolder.getRequestAttributes())
+            .thenReturn(new ServletRequestAttributes(request, new MockHttpServletResponse()));
+
+        assetServiceImpl.sendStreamToClient(file);
+
+    }
+
+    @Test
     public void testImportPc() throws Exception {
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
         when(assetUserDao.findListAssetUser(any())).thenReturn(Arrays.asList(new AssetUser()));
+
         when(activityClient.startProcessWithoutFormBatch(any())).thenReturn(null);
         when(areaClient.queryCdeAndAreaId(anyString())).thenReturn(null);
         List<BaselineCategoryModelResponse> baselineCategoryModelResponses = new ArrayList<>();
@@ -1686,10 +1748,12 @@ public class AssetServiceImplTest {
         ImportResult importResult = new ImportResult();
         List<ComputeDeviceEntity> computeDeviceEntities = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = getComputeDeviceEntity();
-        computeDeviceEntities.add(computeDeviceEntity);
+
         importResult.setMsg("");
         importResult.setDataList(computeDeviceEntities);
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
+
+
 
         AssetImportRequest assetImportRequest = new AssetImportRequest();
         assetImportRequest.setCategory("4");
@@ -1697,6 +1761,13 @@ public class AssetServiceImplTest {
         AssetCpeFilter assetCpeFilter = new AssetCpeFilter();
         assetCpeFilter.setBusinessId(1L);
         assetCpeFilters.add(assetCpeFilter);
+
+        assetServiceImpl.importPc(null, assetImportRequest);
+        importResult.setMsg("12");
+        assetServiceImpl.importPc(null, assetImportRequest);
+        importResult.setMsg("");
+        computeDeviceEntities.add(computeDeviceEntity);
+        assetServiceImpl.importPc(null, assetImportRequest);
         when(assetCpeFilterDao.getByWhere(any())).thenReturn(assetCpeFilters);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
@@ -1819,12 +1890,20 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败", assetServiceImpl.importPc(null, assetImportRequest));
 
         importResult.setMsg("");
+        importResult.setDataList(new ArrayList());
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importPc(null, assetImportRequest));
+
+        importResult.setMsg("");
         Mockito.when(assetDao.insert(Mockito.any())).thenThrow(new DuplicateKeyException(""));
         try {
             assetServiceImpl.importPc(null, assetImportRequest);
         } catch (Exception e) {
             Assert.assertEquals("请勿重复提交！", e.getMessage());
         }
+
+
+
+
 
         LicenseContent licenseContent = new LicenseContent();
         licenseContent.setAssetNum(null);
@@ -1833,6 +1912,7 @@ public class AssetServiceImplTest {
         expectedException.expect(BusinessException.class);
         assetServiceImpl.importPc(null, assetImportRequest);
     }
+
 
     private ComputeDeviceEntity getComputeDeviceEntity() {
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
@@ -1906,6 +1986,9 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setPortSize(-1);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行网口数目范围为1-100！", result);
+        networkDeviceEntity.setPortSize(881);
+        result = assetServiceImpl.importNet(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行网口数目范围为1-100！", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         networkDeviceEntity.setPortSize(10);
@@ -1916,6 +1999,9 @@ public class AssetServiceImplTest {
         networkDeviceEntity.setButDate(System.currentTimeMillis() * 2);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", result);
+        networkDeviceEntity.setButDate(null);
+        result = assetServiceImpl.importNet(null, assetImportRequest);
+        Assert.assertEquals("导入成功1条", result);
 
         when(assetDao.findCount(any())).thenReturn(0);
         networkDeviceEntity.setPortSize(10);
@@ -1952,6 +2038,12 @@ public class AssetServiceImplTest {
 
         importResult.setDataList(new ArrayList());
         Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importNet(null, assetImportRequest));
+        importResult.setDataList(new ArrayList());
+        importResult.setMsg("");
+        Assert.assertEquals("导入失败，模板中无数据！", assetServiceImpl.importNet(null, assetImportRequest));
+        importResult.setDataList(new ArrayList());
+        importResult.setMsg("ewe");
+        Assert.assertEquals("导入成功0条ewe", assetServiceImpl.importNet(null, assetImportRequest));
 
         importResult.setMsg("导入失败");
         importResult.setDataList(networkDeviceEntities);
@@ -2127,16 +2219,28 @@ public class AssetServiceImplTest {
         ImportResult importResult = new ImportResult();
         List<StorageDeviceEntity> storageDeviceEntityArrayList = new ArrayList<>();
         StorageDeviceEntity storageDeviceEntity = getStorageDeviceEntity();
-        storageDeviceEntityArrayList.add(storageDeviceEntity);
+        storageDeviceEntity.setRaidSupport(1);
+
         importResult.setMsg("");
         importResult.setDataList(storageDeviceEntityArrayList);
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult);
         AssetImportRequest assetImportRequest = new AssetImportRequest();
         assetImportRequest.setCategory("1");
+        assetServiceImpl.importStory(null, assetImportRequest);
+        importResult.setMsg("123");
+        assetServiceImpl.importStory(null, assetImportRequest);
+        storageDeviceEntityArrayList.add(storageDeviceEntity);
+        importResult.setMsg("");
+        assetServiceImpl.importStory(null, assetImportRequest);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
         String result = assetServiceImpl.importStory(null, assetImportRequest);
         Assert.assertEquals("导入成功1条", result);
+        storageDeviceEntity.setRaidSupport(2);
+        assetServiceImpl.importStory(null, assetImportRequest);
+        storageDeviceEntity.setRaidSupport(null);
+        assetServiceImpl.importStory(null, assetImportRequest);
+        storageDeviceEntity.setRaidSupport(1);
 
         StorageDeviceEntity storageDeviceEntity1 = getStorageDeviceEntity();
         storageDeviceEntityArrayList.add(storageDeviceEntity1);
@@ -2220,7 +2324,6 @@ public class AssetServiceImplTest {
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("资产数量已超过授权数量，请联系客服人员！");
         assetServiceImpl.importStory(null, assetImportRequest);
-
     }
 
     private StorageDeviceEntity getStorageDeviceEntity() {
@@ -2229,6 +2332,7 @@ public class AssetServiceImplTest {
         storageDeviceEntity.setDueDate(System.currentTimeMillis() + 1);
         storageDeviceEntity.setUser("1");
         storageDeviceEntity.setImportanceDegree("1");
+        storageDeviceEntity.setRaidSupport(0);
         return storageDeviceEntity;
     }
 
@@ -2260,6 +2364,7 @@ public class AssetServiceImplTest {
         importResult2.setMsg("");
         importResult3.setMsg("导入失败");
 
+
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult1);
         String result11 = assetServiceImpl.importOhters(null, null);
         Assert.assertEquals(null, result11);
@@ -2267,7 +2372,12 @@ public class AssetServiceImplTest {
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult2);
         String result12 = assetServiceImpl.importOhters(null, null);
         Assert.assertEquals("导入失败，模板中无数据！", result12);
+        importResult2.setMsg("导入失败");
+        String result16 = assetServiceImpl.importOhters(null, null);
+        Assert.assertEquals("导入失败", result16);
+
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult3);
+
         String result13 = assetServiceImpl.importOhters(null, null);
         Assert.assertEquals("导入失败", result13);
         otherDeviceEntities.add(otherDeviceEntity);
@@ -2296,6 +2406,10 @@ public class AssetServiceImplTest {
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
         when(assetDao.findCountAssetNumber(any())).thenReturn(0);
         String ohters = assetServiceImpl.importOhters(null, assetImportRequest);
+        Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
+        otherDeviceEntity.setBuyDate(null);
+
+        result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
 
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() / 2);
@@ -2368,6 +2482,12 @@ public class AssetServiceImplTest {
         Assert.assertEquals(0, result2);
     }
 
+    @Test
+    public void queryUnknownAssetCount() throws Exception {
+        AssetUnknownRequest request = new AssetUnknownRequest();
+        assetServiceImpl.queryUnknownAssetCount(request);
+    }
+
     @Test()
     public void testExportData() throws Exception {
         AssetResponse assetResponse = new AssetResponse();
@@ -2412,14 +2532,29 @@ public class AssetServiceImplTest {
         assetQuery.setEnd(100);
 
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        assetQuery.setEnd(null);
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        assetQuery.setEnd(100);
+        assetQuery.setStart(null);
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        assetQuery.setStart(1);
         AssetQuery assetQuery2 = new AssetQuery();
         assetQuery2.setStart(1);
         assetQuery2.setEnd(100);
         assetQuery2.setUnknownAssets(true);
         assetServiceImpl.exportData(assetQuery2, new Response(), new Request());
+
         PageResult<AssetResponse> result2 = new PageResult<>();
+        assetResponse.setFirstEnterNett(1L);
+        assetResponse.setImportanceDegree(5);
+        assetResponse.setAssetSource(null);
+        assetResponse.setAssetStatus(null);
         doReturn(result2).when(assetServiceImpl).findPageAsset(any());
-        result2.setItems(new ArrayList<AssetResponse>());
+        result2.setItems(Arrays.asList(assetResponse));
+        assetServiceImpl.exportData(assetQuery, new Response(), new Request());
+        PageResult<AssetResponse> result22 = new PageResult<>();
+        doReturn(result22).when(assetServiceImpl).findPageAsset(any());
+        result22.setItems(new ArrayList<AssetResponse>());
         expectedException.expect(BusinessException.class);
         expectedException.expectMessage("导出数据为空");
         assetServiceImpl.exportData(assetQuery, new Response(), new Request());
@@ -2443,7 +2578,8 @@ public class AssetServiceImplTest {
 
         result = assetServiceImpl.pulldownUnconnectedManufacturer(0, "1");
         Assert.assertEquals(Sets.newHashSet("String"), result);
-
+        result = assetServiceImpl.pulldownUnconnectedManufacturer(null, "1");
+        Assert.assertEquals(Sets.newHashSet("String"), result);
     }
 
     private AssetGroup generateAssetGroup() {
@@ -2599,6 +2735,38 @@ public class AssetServiceImplTest {
         return assetRequest;
     }
 
+    private AssetRequest generateAssetRequest4() {
+        AssetRequest assetRequest = new AssetRequest();
+        assetRequest.setFirstEnterNett(0L);
+        assetRequest.setAdmittanceStatus(0);
+        assetRequest.setBusinessId("11111");
+        assetRequest.setNumber("112121");
+        assetRequest.setName("1");
+        assetRequest.setSerial("1");
+        assetRequest.setAreaId("1");
+        assetRequest.setManufacturer("1");
+        assetRequest.setAssetStatus(0);
+        assetRequest.setAssetGroups(Lists.newArrayList());
+        assetRequest.setSystemBit(0);
+        assetRequest.setFirmwareVersion("1");
+        assetRequest.setUuid("1");
+        assetRequest.setResponsibleUserId("1");
+        assetRequest.setAssetSource(0);
+        assetRequest.setImportanceDegree(0);
+        assetRequest.setCategoryModel(2);
+        assetRequest.setServiceLife(0L);
+        assetRequest.setBuyDate(0L);
+        assetRequest.setWarranty("0");
+        assetRequest.setId("1");
+        assetRequest.setHouseLocation("1");
+        assetRequest.setBusinessId("1");
+
+        assetRequest.setInstallType(0);
+        assetRequest.setDescrible("1");
+        assetRequest.setSoftwareVersion("1");
+        return assetRequest;
+    }
+
     @Test
     public void testQueryAlarmAssetList() {
         AlarmAssetRequest alarmAssetRequest = new AlarmAssetRequest();
@@ -2633,6 +2801,7 @@ public class AssetServiceImplTest {
         } catch (Exception r) {
 
         }
+        assetServiceImpl.listen(JSONObject.toJSONString(null), mockAck);
     }
 
     @Test
@@ -2672,6 +2841,13 @@ public class AssetServiceImplTest {
         when(assetDao.getAssetStatusListByIds(any())).thenReturn(assetList);
         AssetStatusChangeRequest assetStatusChangeRequest1 = new AssetStatusChangeRequest();
         assetStatusChangeRequest1.setAssetId(new String[] { "1", "2" });
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
+        Assert.assertEquals(2, 2);
+
+        assetStatusChangeRequest1.setAssetId(null);
+        assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
+        Assert.assertEquals(2, 2);
+        assetStatusChangeRequest1.setAssetId(new String[0]);
         assetServiceImpl.assetNoRegister(assetStatusChangeRequest1);
         Assert.assertEquals(2, 2);
     }
@@ -2824,6 +3000,9 @@ public class AssetServiceImplTest {
         when(assetDao.queryAllAssetPatchCount(any())).thenReturn(11);
         when(assetDao.findAlarmAssetCount(any())).thenReturn(12);
         Assert.assertEquals(12, (int) assetServiceImpl.countUnusual(query));
+        query.setAreaIds(null);
+        Assert.assertEquals(12, (int) assetServiceImpl.countUnusual(query));
+
     }
 
     @Test
@@ -2909,8 +3088,11 @@ public class AssetServiceImplTest {
             when(assetDao.matchAssetByIpMac(matchRequest)).thenReturn(false);
             when(matchRequest.getIpMacPorts()).thenReturn(ipMacPortList);
             assetServiceImpl.matchAssetByIpMac(matchRequest);
+            when(assetDao.matchAssetByIpMac(matchRequest)).thenReturn(true);
+            assetServiceImpl.matchAssetByIpMac(matchRequest);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

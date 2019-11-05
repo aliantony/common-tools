@@ -23,10 +23,7 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.JsonUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -69,7 +66,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
 
         List<Asset> assetsInDb = assetDao.findByIds(assetIdList);
-        BusinessExceptionUtils.isTrue(assetIdList.size() == assetsInDb.size() && CollectionUtils.isNotEmpty(assetsInDb), "所选资产已被操作,请刷新后重试");
+        BusinessExceptionUtils.isTrue(CollectionUtils.isNotEmpty(assetsInDb) && assetIdList.size() == assetsInDb.size(), "所选资产已被操作,请刷新后重试");
 
         // 当前所有资产的可执行操作与当前状态一致
         assetsInDb.forEach(asset -> {
@@ -131,11 +128,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
+        ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
-                && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())
-                && assetStatusRequest.getFormData() != null) {
+                && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())) {
             // 整改是单个资产
             Integer lastCheckUser = assetOperationRecordDao.getCreateUserByAssetId(DataTypeUtils.stringToInteger(assetStatusRequest.getAssetInfoList().get(0).getAssetId()));
             Map<String,Object> formData = new HashMap<>(1);
@@ -248,7 +245,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())) {
+        if (AssetFlowEnum.TO_WAIT_RETIRE.equals(statusJumpRequest.getAssetFlowEnum())
+                || AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             assetOperationRecord.setProcessResult(null);
         } else {
             assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);

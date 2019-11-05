@@ -45,7 +45,7 @@ public enum AssetFlowEnum {
     /**
      * 变更
      */
-    CHANGE(AssetStatusEnum.IN_CHANGE, "", "变更资产信息。", "变更资产信息"),
+    CHANGE(AssetStatusEnum.NET_IN, "", "变更资产信息。", "变更资产信息"),
     /**
      * 配置模块调用.
      */

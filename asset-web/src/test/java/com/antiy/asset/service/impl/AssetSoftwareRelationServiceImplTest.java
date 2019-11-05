@@ -107,7 +107,7 @@ public class AssetSoftwareRelationServiceImplTest {
     public void queryInstallableList() {
         InstallQuery installQuery = mock(InstallQuery.class);
         when(installQuery.getIsBatch()).thenReturn(false);
-        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(2);
+        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(1);
         List<AssetSoftwareInstallResponse> installedSoftIds = new ArrayList<>();
         AssetSoftwareInstallResponse assetSoftwareInstallResponse = new AssetSoftwareInstallResponse();
         assetSoftwareInstallResponse.setSoftwareId("1");
@@ -115,7 +115,7 @@ public class AssetSoftwareRelationServiceImplTest {
         when(assetSoftwareRelationDao.queryInstalledList(installQuery)).thenReturn(installedSoftIds);
         softwareRelationService.queryInstallableList(installQuery);
 
-        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(3);
+        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(2);
         softwareRelationService.queryInstallableList(installQuery);
         String os = "1";
         when(assetSoftwareRelationDao.queryOs(installQuery)).thenReturn(os);
@@ -123,11 +123,11 @@ public class AssetSoftwareRelationServiceImplTest {
         softwareIds.add(1L);
         List<String> s = new ArrayList<>();
         s.add("1");
-        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(2);
-        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, os)).thenReturn(1);
+        when(assetSoftwareRelationDao.queryNameListType(installQuery)).thenReturn(1);
+        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 1, softwareIds, s, os)).thenReturn(1);
         softwareRelationService.queryInstallableList(installQuery);
 
-        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 2, softwareIds, s, os)).thenReturn(0);
+        when(assetSoftwareRelationDao.queryInstallableCount(installQuery, 1, softwareIds, s, os)).thenReturn(0);
         softwareRelationService.queryInstallableList(installQuery);
     }
 
