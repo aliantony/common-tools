@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `asset`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `asset` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `business_id` bigint(20) NOT NULL COMMENT '业务主键(四库)',
+  `business_id` bigint(20) NULL COMMENT '业务主键(四库)',
   `asset_group` varchar(255) DEFAULT NULL COMMENT '资产组（逗号分隔）',
   `number` varchar(32) DEFAULT NULL COMMENT '资产编号',
   `name` varchar(32) DEFAULT NULL COMMENT '资产名称',
@@ -52,7 +52,7 @@ CREATE TABLE `asset` (
   `is_innet` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否入网：0-未入网,1-表示入网',
   `service_life` bigint(20) DEFAULT '0' COMMENT '使用到期时间',
   `buy_date` bigint(20) DEFAULT '0' COMMENT '购买日期',
-  `version` varchar(64) NOT NULL COMMENT '版本',
+  `version` varchar(64) NULL COMMENT '版本',
   `warranty` varchar(30) DEFAULT NULL COMMENT '保修期',
   `install_template_id` int(11) DEFAULT NULL COMMENT '装机模板主键',
   `baseline_template_id` int(11) DEFAULT NULL COMMENT '基准模板主键',
