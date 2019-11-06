@@ -1,3 +1,4 @@
+ SET NAMES utf8mb4 ;
 -- 默认组织机构
 INSERT INTO asset_department ( `id`, `name`, `responsible_user`, `telephone`, `parent_id`, `memo`, `gmt_create`, `gmt_modified`, `create_user`, `modify_user`, `status` ) VALUES ( '1', '部门', NULL, NULL, '0', '0', unix_timestamp( ) * 1000, NULL, '0', '0', '1' );
 
