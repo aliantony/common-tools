@@ -107,7 +107,7 @@ CREATE TABLE `asset_department` (
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态,1未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='资产部门信息';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='资产部门信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,7 +181,7 @@ CREATE TABLE `asset_install_history` (
   `status` tinyint(3) DEFAULT '1' COMMENT '状态,1 未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `UK_ASSET_PACKAGE` (`asset_id`,`package_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=710 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='安装记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='安装记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +225,7 @@ CREATE TABLE `asset_install_template_check` (
   `gmt_create` bigint(20) DEFAULT '0' COMMENT '创建时间',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板审核表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板审核表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,7 +343,7 @@ CREATE TABLE `asset_operation_record` (
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `status` tinyint(3) unsigned DEFAULT '1' COMMENT '状态：1未删除,0已删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COMMENT='资产动态表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='资产动态表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -363,7 +363,7 @@ CREATE TABLE `asset_patch_install_template` (
   `modified_user` varchar(32) DEFAULT NULL COMMENT '修改人',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与补丁关系表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与补丁关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -410,7 +410,7 @@ CREATE TABLE `asset_software_install_template` (
   `software_id` int(11) NOT NULL COMMENT '软件主键',
   `status` tinyint(11) DEFAULT '1' COMMENT '状态：1-正常，0-删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与软件关系表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='装机模板与软件关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
