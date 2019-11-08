@@ -1,6 +1,10 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.exception.BusinessException;
@@ -9,9 +13,6 @@ import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.collections.CollectionUtils;
-
-import java.util.List;
 
 /**
  * @auther: zhangyajun
@@ -26,16 +27,16 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
 
     @ApiModelProperty(value = "当前用户区域集合")
     @NotNull(message = "当前用户区域集合不能为空")
-    private List<Integer> areaIds;
+    private List<String>    areaIds;
 
     @ApiModelProperty(value = "IpMacPort对象", hidden = true)
     private IpMacPort       ipMacPort;
 
-    public List<Integer> getAreaIds() {
+    public List<String> getAreaIds() {
         return areaIds;
     }
 
-    public void setAreaIds(List<Integer> areaIds) {
+    public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
     }
 
