@@ -629,7 +629,7 @@
         <trim prefix="where" prefixOverrides="And">
             And t1.type='a'
             and t1.status=1
-            and POSITION(#{operationSystem} in soft_platform)
+            and (POSITION(#{operationSystem} in soft_platform) or soft_platform='any')
             and t1.is_storage=1
             <if test=" manufacturer != null and manufacturer != ''">
                 and t1.supplier like CONCAT('%', replace(replace(REPLACE
@@ -675,11 +675,13 @@
             And type='a'
             and status=1
             <choose>
+
                 <when test="operationSystem.indexOf('-')>=0 or operationSystem =='linux'">
-                    and  POSITION(#{operationSystem} in soft_platform)
+                    and (POSITION(#{operationSystem} in soft_platform) or soft_platform='any')
                 </when>
                 <otherwise>
-                    and   match(soft_platform) against (concat('+',#{operationSystem},'*') in boolean mode)
+                    and (soft_platform='any' or match(soft_platform) against (concat('+',#{operationSystem},'*') in
+                    boolean mode))
                 </otherwise>
             </choose>
             and is_storage=1
