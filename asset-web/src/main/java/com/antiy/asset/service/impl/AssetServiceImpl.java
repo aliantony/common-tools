@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.query.AssetIpRelationQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -1520,8 +1521,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             : groupName.toString().substring(0, groupName.toString().length() - 1);
     }
 
-    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests, Integer categoryModel) {
+    public void dealIp(String id, List<AssetIpRelationRequest> ipRelationRequests,
+                       Integer categoryModel) throws Exception {
         // 1. 删除旧的资产ip关系
+        AssetIpRelationQuery query = new AssetIpRelationQuery();
+        query.setAssetId(id);
+        query.setStatus("1");
+        List<AssetIpRelation> list = assetIpRelationDao.findQuery(query);
         assetIpRelationDao.deleteByAssetId(id);
         // 2. 批量保存资产ip关系
         if (CollectionUtils.isNotEmpty(ipRelationRequests)) {
@@ -1539,7 +1545,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 3. 处理通联
         // 删除被删/改的IP端口通联关系
         if (categoryModel == 1 || categoryModel == 2) {
-            assetLinkRelationDao.deleteRelationByIp(id, ipRelationRequests, categoryModel);
+            List<String> ips = ipRelationRequests.stream().map(AssetIpRelationRequest::getIp)
+                .collect(Collectors.toList());
+            List<AssetIpRelation> ipRelations = list.stream().filter(x -> !ips.contains(x.getIp()))
+                .collect(Collectors.toList());
+            assetLinkRelationDao.deleteRelationByIp(id, ipRelations, categoryModel);
         }
     }
 
@@ -1895,6 +1905,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
     }
+
     private String isSuccess(Boolean isDelete) {
         return isDelete ? "成功" : "失败";
     }
@@ -2039,40 +2050,40 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-                assetNumbers.add(entity.getNumber());
-                assetMac.add(entity.getMac());
-                ComputerVo computerVo = new ComputerVo();
-                Asset asset = new Asset();
-                HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-                stringObjectHashMap.put("productName", entity.getOperationSystem());
-                AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                asset.setOperationSystem(assetCpeFilter.getBusinessId());
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
-                asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(areaId);
-                asset.setIsInnet(0);
-                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(entity.getNumber());
-                asset.setName(entity.getName());
-                asset.setManufacturer(entity.getManufacturer());
-                asset.setSerial(entity.getSerial());
-                asset.setHouseLocation(entity.getHouseLocation());
-                asset.setBuyDate(entity.getBuyDate());
-                asset.setServiceLife(entity.getDueTime());
-                asset.setWarranty(entity.getWarranty());
-                asset.setDescrible(entity.getDescription());
-                asset.setCategoryModel(AssetCategoryEnum.COMPUTER.getCode());
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-                AssetIpRelation assetIpRelation = new AssetIpRelation();
-                assetIpRelation.setIp(entity.getIp());
-                AssetMacRelation assetMacRelation = new AssetMacRelation();
-                assetMacRelation.setMac(entity.getMac());
-                computerVo.setAsset(asset);
-                computerVo.setAssetIpRelation(assetIpRelation);
-                computerVo.setAssetMacRelation(assetMacRelation);
-                computerVos.add(computerVo);
+            assetNumbers.add(entity.getNumber());
+            assetMac.add(entity.getMac());
+            ComputerVo computerVo = new ComputerVo();
+            Asset asset = new Asset();
+            HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+            stringObjectHashMap.put("productName", entity.getOperationSystem());
+            AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+            asset.setOperationSystem(assetCpeFilter.getBusinessId());
+            asset.setResponsibleUserId(checkUser(entity.getUser()));
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setAreaId(areaId);
+            asset.setIsInnet(0);
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+            asset.setAssetSource(ReportType.MANUAL.getCode());
+            asset.setNumber(entity.getNumber());
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setSerial(entity.getSerial());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueTime());
+            asset.setWarranty(entity.getWarranty());
+            asset.setDescrible(entity.getDescription());
+            asset.setCategoryModel(AssetCategoryEnum.COMPUTER.getCode());
+            asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+            AssetIpRelation assetIpRelation = new AssetIpRelation();
+            assetIpRelation.setIp(entity.getIp());
+            AssetMacRelation assetMacRelation = new AssetMacRelation();
+            assetMacRelation.setMac(entity.getMac());
+            computerVo.setAsset(asset);
+            computerVo.setAssetIpRelation(assetIpRelation);
+            computerVo.setAssetMacRelation(assetMacRelation);
+            computerVos.add(computerVo);
             a++;
         }
 
@@ -2245,51 +2256,50 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
-                assetNumbers.add(entity.getNumber());
-                assetMac.add(entity.getMac());
-                Asset asset = new Asset();
-                AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
-                asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(areaId);
-                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(entity.getNumber());
-                asset.setName(entity.getName());
-                asset.setManufacturer(entity.getManufacturer());
-                asset.setSerial(entity.getSerial());
-                asset.setHouseLocation(entity.getHouseLocation());
-                asset.setBuyDate(entity.getButDate());
-                asset.setServiceLife(entity.getDueDate());
-                asset.setWarranty(entity.getWarranty());
-                asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
-                asset.setDescrible(entity.getMemo());
-                asset.setIsInnet(0);
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-                assets.add(asset);
-                AssetMacRelation assetMacRelation = new AssetMacRelation();
-                assetMacRelation.setMac(entity.getMac());
-                assetMacRelations.add(assetMacRelation);
-                assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
-                assetNetworkEquipment.setFirmwareVersion(entity.getFirmwareVersion());
-                assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetNetworkEquipment.setInterfaceSize(entity.getInterfaceSize());
-                assetNetworkEquipment.setPortSize(entity.getPortSize());
-                assetNetworkEquipment.setIos(entity.getIos());
-                assetNetworkEquipment.setOuterIp(entity.getOuterIp());
-                assetNetworkEquipment.setCpuVersion(entity.getCpuVersion());
-                assetNetworkEquipment.setSubnetMask(entity.getSubnetMask());
-                assetNetworkEquipment.setExpectBandwidth(entity.getExpectBandwidth());
-                assetNetworkEquipment.setNcrmSize(entity.getNcrmSize());
-                assetNetworkEquipment.setCpuSize(entity.getCpuSize());
-                assetNetworkEquipment.setDramSize(entity.getDramSize());
-                assetNetworkEquipment.setFlashSize(entity.getFlashSize());
-                assetNetworkEquipment.setRegister(entity.getRegister());
-                assetNetworkEquipment.setIsWireless(entity.getIsWireless());
-                assetNetworkEquipment.setStatus(1);
-                networkEquipments.add(assetNetworkEquipment);
+            assetNumbers.add(entity.getNumber());
+            assetMac.add(entity.getMac());
+            Asset asset = new Asset();
+            AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
+            asset.setResponsibleUserId(checkUser(entity.getUser()));
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setAreaId(areaId);
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+            asset.setAssetSource(ReportType.MANUAL.getCode());
+            asset.setNumber(entity.getNumber());
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setSerial(entity.getSerial());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setBuyDate(entity.getButDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
+            asset.setDescrible(entity.getMemo());
+            asset.setIsInnet(0);
+            asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+            assets.add(asset);
+            AssetMacRelation assetMacRelation = new AssetMacRelation();
+            assetMacRelation.setMac(entity.getMac());
+            assetMacRelations.add(assetMacRelation);
+            assetNetworkEquipment.setGmtCreate(System.currentTimeMillis());
+            assetNetworkEquipment.setFirmwareVersion(entity.getFirmwareVersion());
+            assetNetworkEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetNetworkEquipment.setInterfaceSize(entity.getInterfaceSize());
+            assetNetworkEquipment.setPortSize(entity.getPortSize());
+            assetNetworkEquipment.setIos(entity.getIos());
+            assetNetworkEquipment.setOuterIp(entity.getOuterIp());
+            assetNetworkEquipment.setCpuVersion(entity.getCpuVersion());
+            assetNetworkEquipment.setSubnetMask(entity.getSubnetMask());
+            assetNetworkEquipment.setExpectBandwidth(entity.getExpectBandwidth());
+            assetNetworkEquipment.setNcrmSize(entity.getNcrmSize());
+            assetNetworkEquipment.setCpuSize(entity.getCpuSize());
+            assetNetworkEquipment.setDramSize(entity.getDramSize());
+            assetNetworkEquipment.setFlashSize(entity.getFlashSize());
+            assetNetworkEquipment.setRegister(entity.getRegister());
+            assetNetworkEquipment.setIsWireless(entity.getIsWireless());
+            assetNetworkEquipment.setStatus(1);
+            networkEquipments.add(assetNetworkEquipment);
 
             a++;
 
@@ -2450,49 +2460,48 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            assetNumbers.add(entity.getNumber());
+            assetMac.add(entity.getMac());
+            AssetMacRelation assetMacRelation = new AssetMacRelation();
+            assetMacRelation.setMac(entity.getMac());
+            assetMacRelations.add(assetMacRelation);
+            AssetIpRelation assetIpRelation = new AssetIpRelation();
+            assetIpRelation.setIp(entity.getIp());
+            assetIpRelations.add(assetIpRelation);
+            AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
+            Asset asset = new Asset();
+            if (StringUtils.isNotBlank(entity.getOperationSystem())) {
+                HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+                stringObjectHashMap.put("productName", entity.getOperationSystem());
+                AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
+                asset.setOperationSystem(assetCpeFilter.getBusinessId());
+            }
 
-                assetNumbers.add(entity.getNumber());
-                assetMac.add(entity.getMac());
-                AssetMacRelation assetMacRelation = new AssetMacRelation();
-                assetMacRelation.setMac(entity.getMac());
-                assetMacRelations.add(assetMacRelation);
-                AssetIpRelation assetIpRelation = new AssetIpRelation();
-                assetIpRelation.setIp(entity.getIp());
-                assetIpRelations.add(assetIpRelation);
-                AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
-                Asset asset = new Asset();
-                if (StringUtils.isNotBlank(entity.getOperationSystem())) {
-                    HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-                    stringObjectHashMap.put("productName", entity.getOperationSystem());
-                    AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                    asset.setOperationSystem(assetCpeFilter.getBusinessId());
-                }
-
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
-                asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(areaId);
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(entity.getNumber());
-                asset.setName(entity.getName());
-                asset.setManufacturer(entity.getManufacturer());
-                asset.setSerial(entity.getSerial());
-                asset.setHouseLocation(entity.getHouseLocation());
-                asset.setBuyDate(entity.getBuyDate());
-                asset.setServiceLife(entity.getDueDate());
-                asset.setWarranty(entity.getWarranty());
-                asset.setDescrible(entity.getMemo());
-                asset.setIsInnet(0);
-                asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
-                assets.add(asset);
-                assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
-                assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetSafetyEquipment.setIp(entity.getIp());
-                assetSafetyEquipment.setMac(entity.getMac());
-                assetSafetyEquipment.setStatus(1);
-                assetSafetyEquipments.add(assetSafetyEquipment);
+            asset.setResponsibleUserId(checkUser(entity.getUser()));
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setAreaId(areaId);
+            asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+            asset.setAssetSource(ReportType.MANUAL.getCode());
+            asset.setNumber(entity.getNumber());
+            asset.setName(entity.getName());
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setSerial(entity.getSerial());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setDescrible(entity.getMemo());
+            asset.setIsInnet(0);
+            asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
+            assets.add(asset);
+            assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
+            assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetSafetyEquipment.setIp(entity.getIp());
+            assetSafetyEquipment.setMac(entity.getMac());
+            assetSafetyEquipment.setStatus(1);
+            assetSafetyEquipments.add(assetSafetyEquipment);
 
             a++;
         }
@@ -2635,48 +2644,46 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            assetNumbers.add(entity.getNumber());
+            Asset asset = new Asset();
+            asset.setResponsibleUserId(checkUser(entity.getUser()));
+            AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setAreaId(areaId);
+            asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
+            asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+            asset.setAssetSource(ReportType.MANUAL.getCode());
+            asset.setNumber(entity.getNumber());
+            asset.setName(entity.getName());
+            asset.setIsInnet(0);
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setFirmwareVersion(entity.getFirmwareVersion());
+            asset.setSerial(entity.getSerial());
+            asset.setHouseLocation(entity.getHouseLocation());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setDescrible(entity.getMemo());
+            assets.add(asset);
+            assetStorageMedium.setGmtCreate(System.currentTimeMillis());
+            assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetStorageMedium.setFirmwareVersion(entity.getFirmwareVersion());
+            assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
+            assetStorageMedium.setDriverNumber(entity.getDriveNum());
+            assetStorageMedium.setMaximumStorage(entity.getCapacity());
+            assetStorageMedium.setHighCache(entity.getHighCache());
+            assetStorageMedium.setStatus(1);
 
-                assetNumbers.add(entity.getNumber());
-                Asset asset = new Asset();
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
-                AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
-                asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(areaId);
-                asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(entity.getNumber());
-                asset.setName(entity.getName());
-                asset.setIsInnet(0);
-                asset.setManufacturer(entity.getManufacturer());
-                asset.setFirmwareVersion(entity.getFirmwareVersion());
-                asset.setSerial(entity.getSerial());
-                asset.setHouseLocation(entity.getHouseLocation());
-                asset.setBuyDate(entity.getBuyDate());
-                asset.setServiceLife(entity.getDueDate());
-                asset.setWarranty(entity.getWarranty());
-                asset.setDescrible(entity.getMemo());
-                assets.add(asset);
-                assetStorageMedium.setGmtCreate(System.currentTimeMillis());
-                assetStorageMedium.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetStorageMedium.setFirmwareVersion(entity.getFirmwareVersion());
-                assetStorageMedium.setDiskNumber(entity.getHardDiskNum());
-                assetStorageMedium.setDriverNumber(entity.getDriveNum());
-                assetStorageMedium.setMaximumStorage(entity.getCapacity());
-                assetStorageMedium.setHighCache(entity.getHighCache());
-                assetStorageMedium.setStatus(1);
+            if (entity.getRaidSupport() != null) {
 
-                if (entity.getRaidSupport() != null) {
-
-                    assetStorageMedium.setRaidSupport(entity.getRaidSupport() == 1 ? "是" : "否");
-                }
-                assetStorageMedium.setInnerInterface(entity.getInnerInterface());
-                assetStorageMedium.setOsVersion(entity.getSlotType());
-                assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
-                assetStorageMedia.add(assetStorageMedium);
-
+                assetStorageMedium.setRaidSupport(entity.getRaidSupport() == 1 ? "是" : "否");
+            }
+            assetStorageMedium.setInnerInterface(entity.getInnerInterface());
+            assetStorageMedium.setOsVersion(entity.getSlotType());
+            assetStorageMedium.setAverageTransferRate(entity.getAverageTransmissionRate());
+            assetStorageMedia.add(assetStorageMedium);
 
             a++;
         }
@@ -2829,35 +2836,33 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-
-                assetNumbers.add(entity.getNumber());
-                assetMac.add(entity.getMac());
-                Asset asset = new Asset();
-                asset.setResponsibleUserId(checkUser(entity.getUser()));
-                asset.setGmtCreate(System.currentTimeMillis());
-                asset.setAreaId(areaId);
-                asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
-                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
-                asset.setAssetSource(ReportType.MANUAL.getCode());
-                asset.setNumber(entity.getNumber());
-                asset.setName(entity.getName());
-                asset.setIsInnet(0);
-                asset.setManufacturer(entity.getManufacturer());
-                asset.setSerial(entity.getSerial());
-                asset.setBuyDate(entity.getBuyDate());
-                asset.setServiceLife(entity.getDueDate());
-                asset.setWarranty(entity.getWarranty());
-                asset.setDescrible(entity.getMemo());
-                asset.setCategoryModel(AssetCategoryEnum.OTHER.getCode());
-                assets.add(asset);
-                AssetIpRelation assetIpRelation = new AssetIpRelation();
-                assetIpRelation.setIp(entity.getIp());
-                AssetMacRelation assetMacRelation = new AssetMacRelation();
-                assetMacRelation.setMac(entity.getMac());
-                assetMacRelations.add(assetMacRelation);
-                assetIpRelations.add(assetIpRelation);
-
+            assetNumbers.add(entity.getNumber());
+            assetMac.add(entity.getMac());
+            Asset asset = new Asset();
+            asset.setResponsibleUserId(checkUser(entity.getUser()));
+            asset.setGmtCreate(System.currentTimeMillis());
+            asset.setAreaId(areaId);
+            asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
+            asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+            asset.setAssetSource(ReportType.MANUAL.getCode());
+            asset.setNumber(entity.getNumber());
+            asset.setName(entity.getName());
+            asset.setIsInnet(0);
+            asset.setManufacturer(entity.getManufacturer());
+            asset.setSerial(entity.getSerial());
+            asset.setBuyDate(entity.getBuyDate());
+            asset.setServiceLife(entity.getDueDate());
+            asset.setWarranty(entity.getWarranty());
+            asset.setDescrible(entity.getMemo());
+            asset.setCategoryModel(AssetCategoryEnum.OTHER.getCode());
+            assets.add(asset);
+            AssetIpRelation assetIpRelation = new AssetIpRelation();
+            assetIpRelation.setIp(entity.getIp());
+            AssetMacRelation assetMacRelation = new AssetMacRelation();
+            assetMacRelation.setMac(entity.getMac());
+            assetMacRelations.add(assetMacRelation);
+            assetIpRelations.add(assetIpRelation);
 
             a++;
         }

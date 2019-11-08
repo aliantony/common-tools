@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetIpRelation;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface AssetIpRelationDao extends IBaseDao<AssetIpRelation> {
      * @param assetIpRelationList
      */
     void insertBatch(@Param("assetIpRelationList") List<AssetIpRelation> assetIpRelationList);
+
+    List<String> findIps(ObjectQuery query);
 }

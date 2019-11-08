@@ -202,6 +202,6 @@ public interface AssetLinkRelationDao extends IBaseDao<AssetLinkRelation> {
      * @param categoryModel
      */
     void deleteRelationByIp(@Param("assetId") String assetId,
-                            @Param("ips") List<AssetIpRelationRequest> ipRelationRequests,
+                            @Param("ips") List<AssetIpRelation> ipRelationRequests,
                             @Param("categoryModel") Integer categoryModel);
 }

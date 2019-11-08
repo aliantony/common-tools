@@ -140,10 +140,19 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+
+    <select id="findIps" resultType="java.lang.String" parameterType="com.antiy.common.base.ObjectQuery">
+        select ip from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="Where_Column_List"></include>
+        </trim>
     </select>
     <!-- 删除资产ip关系-->
     <delete id="deleteByAssetId">
