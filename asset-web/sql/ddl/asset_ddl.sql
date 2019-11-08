@@ -149,8 +149,7 @@ CREATE TABLE `asset_group_relation` (
   `create_user` int(11) DEFAULT '0' COMMENT '创建人',
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态：1-未删除,0-已删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_asset_group_id_asset_id` (`asset_group_id`,`asset_id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产与资产组关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -438,8 +437,7 @@ CREATE TABLE `asset_software_relation` (
   `create_user` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `modify_user` int(11) DEFAULT '0' COMMENT '修改人',
   `status` tinyint(3) DEFAULT '1' COMMENT '状态：1未删除,0已删除',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_asset_id_software_id` (`asset_id`,`software_id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资产软件关系信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
