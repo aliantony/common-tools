@@ -1608,7 +1608,7 @@
 
     <select id="findIdByAreaIds" resultType="java.lang.String"
             parameterType="java.util.List">
-        select business_id from asset
+        select id from asset
         WHERE area_id IN
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
