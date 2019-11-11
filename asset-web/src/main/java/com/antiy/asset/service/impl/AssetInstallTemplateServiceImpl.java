@@ -267,9 +267,13 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         ParamterExceptionUtils.isEmpty(request.getIds(), "主键Id不能为空");
         ParamterExceptionUtils.isEmpty(request.getProcessInstanceIds(), "流程实例id不能为空");
         ParamterExceptionUtils.isTrue(request.getIds().size() == request.getProcessInstanceIds().size(), "请确保参数正确");
-        int count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
+        Integer count = assetInstallTemplateDao.batchDeleteTemplate(request.getIds(), System.currentTimeMillis(),
                 LoginUserUtil.getLoginUser().getName());
+        if (count == null) {
+            throw new RequestParamValidateException("请确保拒绝模板才能被删除");
+        }
         List<String> processInstanceIds = request.getProcessInstanceIds().stream().filter(v -> !v.isEmpty()).collect(Collectors.toList());
+
         if (count != processInstanceIds.size()) {
             throw new RequestParamValidateException("请确保拒绝模板存在代办任务");
         }

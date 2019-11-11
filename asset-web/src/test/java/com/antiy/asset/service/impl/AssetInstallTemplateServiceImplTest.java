@@ -521,6 +521,12 @@ public class AssetInstallTemplateServiceImplTest {
                 .hasMessage("请确保参数正确");
 
         processInstanceIds.remove(1);
+        Mockito.doAnswer(invocation -> null).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
+        Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
+                .isInstanceOf(RequestParamValidateException.class)
+                .hasMessage("请确保拒绝模板才能被删除");
+
+
         Mockito.doAnswer(invocation -> 1).when(assetInstallTemplateDao).batchDeleteTemplate(Mockito.anyList(), Mockito.anyLong(), Mockito.anyString());
         Assertions.assertThatThrownBy(() -> assetInstallTemplateServiceImpl.deleteAssetInstallTemplateById(request))
                 .isInstanceOf(RequestParamValidateException.class)
