@@ -538,7 +538,7 @@ public class AssetServiceImplTest {
     }
 
     @Test
-    public void dealIp() {
+    public void dealIp() throws Exception {
         assetServiceImpl.dealIp("1", null, 3);
         assetServiceImpl.dealIp("1", null, 1);
         assetServiceImpl.dealIp("1", null, 2);
