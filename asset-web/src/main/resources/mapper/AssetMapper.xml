@@ -1514,6 +1514,7 @@
         serial = #{serial },
         area_id = #{areaId },
         operation_system = #{operationSystem },
+        operation_system_name = #{operationSystemName },
         responsible_user_id = #{responsibleUserId },
         baseline_template_id = #{baselineTemplateId},
         install_template_id = #{installTemplateId},

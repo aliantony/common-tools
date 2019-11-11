@@ -1094,6 +1094,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtModified(System.currentTimeMillis());
+                    if (asset.getOperationSystem() != null) {
+                        HashMap<String, Object> param = new HashMap<>();
+                        param.put("status", "1");
+                        param.put("businessId", asset.getOperationSystem());
+                        List<AssetCpeFilter> cpeFilters = assetCpeFilterDao.getByWhere(param);
+                        asset.setOperationSystemName(cpeFilters.size() > 0 ? cpeFilters.get(0).getProductName() : null);
+                    }
                     if (AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
                         || AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
                         || AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
