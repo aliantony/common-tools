@@ -2065,6 +2065,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             stringObjectHashMap.put("productName", entity.getOperationSystem());
             AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
             asset.setOperationSystem(assetCpeFilter.getBusinessId());
+            asset.setOperationSystemName(entity.getOperationSystem());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
@@ -2482,6 +2483,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 stringObjectHashMap.put("productName", entity.getOperationSystem());
                 AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
                 asset.setOperationSystem(assetCpeFilter.getBusinessId());
+                asset.setOperationSystemName(entity.getOperationSystem());
             }
 
             asset.setResponsibleUserId(checkUser(entity.getUser()));

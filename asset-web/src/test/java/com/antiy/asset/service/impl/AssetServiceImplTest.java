@@ -1,5 +1,12 @@
 package com.antiy.asset.service.impl;
 
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.File;
+import java.util.*;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -30,6 +37,7 @@ import com.google.common.collect.Sets;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.collections.CollectionUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -525,15 +533,22 @@ public class AssetServiceImplTest {
         AssetOuterRequest assetOuterRequest22 = new AssetOuterRequest();
         assetOuterRequest22.setManualStartActivityRequest(generateAssetManualStart1());
         assetOuterRequest22.setAsset(assetRequest);
-        expectedException.expect(BusinessException.class);
-        expectedException.expectMessage("使用者不存在，或已经注销");
-        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+
+        Assertions.assertThatThrownBy(() -> assetServiceImpl.saveAsset(assetOuterRequest22))
+            .isInstanceOf(BusinessException.class).hasMessage("使用者不存在，或已经注销");
+        // result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
         when(assetUserDao.getById(any())).thenReturn(new AssetUser());
         when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
-        when(baseLineClient.scan(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
-        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        ActionResponse result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
         when(activityClient.manualStartProcess(any())).thenReturn(null);
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+
         when(baseLineClient.scan(any())).thenReturn(null);
+        when(activityClient.manualStartProcess(any())).thenReturn(ActionResponse.success());
+        result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
+        when(baseLineClient.scan(any())).thenReturn(ActionResponse.fail(RespBasicCode.NOT_FOUND));
+        ManualStartActivityRequest manualStartActivityRequest = generateAssetManualStart();
+        assetOuterRequest22.setManualStartActivityRequest(manualStartActivityRequest);
         result2 = assetServiceImpl.saveAsset(assetOuterRequest22);
     }
 
