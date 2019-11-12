@@ -84,7 +84,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
             setInProcess(statusJumpRequest, assetsInDb);
-            boolean activitySuccess = startActivity(statusJumpRequest);
+            boolean activitySuccess = startActivity(statusJumpRequest, loginUser);
             if (!activitySuccess) {
                 assetDao.updateAssetBatch(assetsInDb);
                 LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
@@ -93,12 +93,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         } else {
             // 配置走完,触发漏洞扫描
             statusJumpRequest.getAssetInfoList().forEach(e -> {
-                ActionResponse scan = baseLineClient
-                        .scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
-                // 如果漏洞为空,直接返回错误信息
-                LogUtils.info(logger, "调用配置模块结果:{}", e);
-                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                    LogUtils.error(logger, "调用配置模块异常:{}", e);
+                try {
+                    ActionResponse actionResponse = baseLineClient
+                            .scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
+                    LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), actionResponse);
+                    if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                        LogUtils.error(logger, "调用漏洞模块失败");
+                    }
+                } catch (Exception ex) {
+                    LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
                 }
             });
         }
@@ -142,15 +145,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
     }
 
-    private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
+    private boolean startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
                 && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())) {
             // 整改是单个资产
             Integer lastCheckUser = assetOperationRecordDao.getCreateUserByAssetId(DataTypeUtils.stringToInteger(assetStatusRequest.getAssetInfoList().get(0).getAssetId()));
-            Map<String,Object> formData = new HashMap<>(1);
+            Map<String, Object> formData = new HashMap<>(1);
             formData.put("safetyChangeResult", "1");
             formData.put("safetyCheckUser", aesEncoder.encode(lastCheckUser.toString(), loginUser.getUsername()));
             assetStatusRequest.setFormData(formData);
