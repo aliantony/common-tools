@@ -336,6 +336,7 @@ CREATE TABLE `asset_operation_record` (
   `target_object_id` int(11) NOT NULL COMMENT '被操作的对象ID',
   `origin_status` tinyint(3) NOT NULL COMMENT '原始状态',
   `target_status` int(11) DEFAULT NULL COMMENT '目标状态',
+  `need_vul_scan` tinyint(3) DEFAULT '0' COMMENT '是否触发漏扫1是;0否',
   `content` varchar(300) DEFAULT '' COMMENT '本次操作(类型)内容',
   `operate_user_id` int(11) NOT NULL DEFAULT '0' COMMENT '操作人ID',
   `process_result` varchar(255) DEFAULT NULL COMMENT '处理结果：0拒绝1同意',
