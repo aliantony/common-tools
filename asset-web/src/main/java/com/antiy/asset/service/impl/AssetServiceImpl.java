@@ -499,6 +499,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String checkUser(String user) throws Exception {
+        if (user.endsWith(".0")) {
+            user = user.replaceAll(".0", "");
+        }
         AssetUserQuery assetUserQuery = new AssetUserQuery();
         assetUserQuery.setExportName(user);
         List<AssetUser> assetUsers = assetUserDao.findListAssetUser(assetUserQuery);
