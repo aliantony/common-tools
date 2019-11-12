@@ -96,7 +96,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 try {
                     ActionResponse actionResponse = baseLineClient
                             .scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
-                    LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), actionResponse);
+                    LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
                     if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         LogUtils.error(logger, "调用漏洞模块失败");
                     }
