@@ -1245,7 +1245,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-                            assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
+                            assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                         }
                     } else {
                         updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
@@ -3055,7 +3055,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        operationRecord.setContent(AssetEventEnum.NO_REGISTER.getName());
+        operationRecord.setContent(AssetFlowEnum.NO_REGISTER.getMsg());
         operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecordDao.insert(operationRecord);
