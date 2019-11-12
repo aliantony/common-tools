@@ -6,6 +6,7 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
@@ -57,11 +58,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private ActivityClient activityClient;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private BaseLineClient baseLineClient;
 
 
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
 
@@ -86,6 +90,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
             }
+        } else {
+            // 配置走完,触发漏洞扫描
+            statusJumpRequest.getAssetInfoList().forEach(e -> {
+                ActionResponse scan = baseLineClient
+                        .scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
+                // 如果漏洞为空,直接返回错误信息
+                LogUtils.info(logger, "调用配置模块结果:{}", e);
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    LogUtils.error(logger, "调用配置模块异常:{}", e);
+                }
+            });
         }
 
         // 3.数据库操作
