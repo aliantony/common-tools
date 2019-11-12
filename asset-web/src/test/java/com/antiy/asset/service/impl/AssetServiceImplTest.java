@@ -560,6 +560,13 @@ public class AssetServiceImplTest {
     }
 
     @Test
+    public void checkUser1() throws Exception {
+        String user = assetServiceImpl.checkUser("1.0");
+        System.out.println("-----------why--------值=" + user + "," + "当前类=.()");
+
+    }
+
+    @Test
     public void dealSoft() {
         assetServiceImpl.dealSoft("1", new AssetSoftwareReportRequest());
     }
