@@ -44,6 +44,9 @@
         <if test=" targetStatus != null">
             target_status,
         </if>
+        <if test=" needVulScan != null">
+            need_vul_scan,
+        </if>
         <if test=" content != null">
             content,
         </if>
@@ -82,6 +85,9 @@
         </if>
         <if test=" targetStatus != null">
             #{targetStatus },
+        </if>
+        <if test=" needVulScan != null">
+            #{needVulScan },
         </if>
         <if test=" content != null">
             #{content },
@@ -341,5 +347,12 @@
         select create_user from
         <include refid="Table_Name"/>
         where target_object_id = #{assetId} and origin_status = 7 order by id desc limit 1
+    </select>
+
+    <!-- 是否漏扫 -->
+    <select id="getNeedVulScan" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select need_vul_scan from
+        <include refid="Table_Name"/>
+        where target_object_id = #{assetId} order by id desc limit 1
     </select>
 </mapper>

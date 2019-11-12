@@ -1221,6 +1221,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
                     assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                     assetOperationRecord.setProcessResult(null);
+                    assetOperationRecord.setNeedVulScan(assetOuterRequest.getNeedScan() ? 1 : 0);
                     // 更新资产状态为变更中
                     updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),

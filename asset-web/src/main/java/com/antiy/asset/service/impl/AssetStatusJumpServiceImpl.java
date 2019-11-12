@@ -6,6 +6,7 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
@@ -57,11 +58,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private ActivityClient activityClient;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private BaseLineClient baseLineClient;
 
 
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
 
@@ -80,12 +84,28 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
             setInProcess(statusJumpRequest, assetsInDb);
-            boolean activitySuccess = startActivity(statusJumpRequest);
+            boolean activitySuccess = startActivity(statusJumpRequest, loginUser);
             if (!activitySuccess) {
                 assetDao.updateAssetBatch(assetsInDb);
                 LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
             }
+        } else {
+            // 配置走完,触发漏洞扫描
+            statusJumpRequest.getAssetInfoList().forEach(e -> {
+                Integer needVulScan = assetOperationRecordDao.getNeedVulScan(DataTypeUtils.stringToInteger(e.getAssetId()));
+                if (needVulScan != null && needVulScan == 1) {
+                    try {
+                        ActionResponse actionResponse = baseLineClient.scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
+                        LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
+                        if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                            LogUtils.error(logger, "调用漏洞模块失败");
+                        }
+                    } catch (Exception ex) {
+                        LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
+                    }
+                }
+            });
         }
 
         // 3.数据库操作
@@ -127,15 +147,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
     }
 
-    private boolean startActivity(AssetStatusJumpRequest assetStatusRequest) {
+    private boolean startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
                 && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())) {
             // 整改是单个资产
             Integer lastCheckUser = assetOperationRecordDao.getCreateUserByAssetId(DataTypeUtils.stringToInteger(assetStatusRequest.getAssetInfoList().get(0).getAssetId()));
-            Map<String,Object> formData = new HashMap<>(1);
+            Map<String, Object> formData = new HashMap<>(1);
             formData.put("safetyChangeResult", "1");
             formData.put("safetyCheckUser", aesEncoder.encode(lastCheckUser.toString(), loginUser.getUsername()));
             assetStatusRequest.setFormData(formData);
