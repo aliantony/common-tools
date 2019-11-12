@@ -50,6 +50,7 @@ public enum AssetFlowEnum {
      * 配置模块调用.
      */
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "", "变更完成。", "变更完成"),
+    NO_REGISTER(AssetStatusEnum.NOT_REGISTER,"","不予登记资产。","不予登记资产")
     ;
 
     /**
