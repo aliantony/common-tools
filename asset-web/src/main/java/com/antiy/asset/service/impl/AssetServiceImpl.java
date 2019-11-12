@@ -1236,7 +1236,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(),
                                 assetId);
                             assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
-                            assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
+                            assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                         } else {
                             updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                                 assetId);
