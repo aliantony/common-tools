@@ -374,7 +374,7 @@
             asset_status,
             admittance_status,
             operation_system,
-            operationSystemName,
+            operation_system_name,
             responsible_user_id,
             house_location,
             firmware_version,
