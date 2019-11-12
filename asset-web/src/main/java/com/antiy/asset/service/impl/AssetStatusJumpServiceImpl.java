@@ -93,15 +93,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         } else {
             // 配置走完,触发漏洞扫描
             statusJumpRequest.getAssetInfoList().forEach(e -> {
-                try {
-                    ActionResponse actionResponse = baseLineClient
-                            .scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
-                    LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
-                    if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                        LogUtils.error(logger, "调用漏洞模块失败");
+                Integer needVulScan = assetOperationRecordDao.getNeedVulScan(DataTypeUtils.stringToInteger(e.getAssetId()));
+                if (needVulScan != null && needVulScan == 1) {
+                    try {
+                        ActionResponse actionResponse = baseLineClient.scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
+                        LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
+                        if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                            LogUtils.error(logger, "调用漏洞模块失败");
+                        }
+                    } catch (Exception ex) {
+                        LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
                     }
-                } catch (Exception ex) {
-                    LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
                 }
             });
         }

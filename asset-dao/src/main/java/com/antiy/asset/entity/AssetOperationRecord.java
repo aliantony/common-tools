@@ -65,6 +65,14 @@ public class AssetOperationRecord extends BaseEntity {
      */
     private String fileInfo;
 
+    /**
+     * 是否需要在配置完成后触发漏扫;
+     * IAssetStatusJumpService处理
+     * <code>1触发</code>
+     * <code>0不触发</code>
+     */
+    private Integer needVulScan;
+
 
     public Integer getOriginStatus() {
         return originStatus;
@@ -162,6 +170,14 @@ public class AssetOperationRecord extends BaseEntity {
         this.fileInfo = fileInfo;
     }
 
+    public Integer getNeedVulScan() {
+        return needVulScan;
+    }
+
+    public void setNeedVulScan(Integer needVulScan) {
+        this.needVulScan = needVulScan;
+    }
+
     @Override
     public String toString() {
         return "AssetOperationRecord{" +
@@ -172,10 +188,12 @@ public class AssetOperationRecord extends BaseEntity {
                 ", operateUserName='" + operateUserName + '\'' +
                 ", gmtCreate=" + gmtCreate +
                 ", createUser=" + createUser +
+                ", status=" + status +
                 ", processResult=" + processResult +
                 ", originStatus=" + originStatus +
                 ", note='" + note + '\'' +
                 ", fileInfo='" + fileInfo + '\'' +
+                ", needVulScan=" + needVulScan +
                 '}';
     }
 }
