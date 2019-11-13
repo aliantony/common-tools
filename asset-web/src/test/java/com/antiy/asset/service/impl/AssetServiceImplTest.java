@@ -561,7 +561,8 @@ public class AssetServiceImplTest {
 
     @Test
     public void checkUser1() throws Exception {
-        String user = assetServiceImpl.checkUser("1.0");
+        String user = assetServiceImpl.checkUser("1sss.0");
+        String user1 = assetServiceImpl.checkUser("123.0");
         System.out.println("-----------why--------值=" + user + "," + "当前类=.()");
 
     }
