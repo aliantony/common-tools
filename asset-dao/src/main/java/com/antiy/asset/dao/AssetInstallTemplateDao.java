@@ -95,7 +95,7 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
     /**
      * 批量删除
      */
-    int batchDeleteTemplate(@Param("ids") List<String> ids, @Param("gmtModified") Long gmtModified,
+    Integer batchDeleteTemplate(@Param("ids") List<String> ids, @Param("gmtModified") Long gmtModified,
                             @Param("modifiedUser") String modifiedUser);
 
     Integer queryBaselineTemplateType(ObjectQuery query);

@@ -374,7 +374,7 @@
             asset_status,
             admittance_status,
             operation_system,
-            operationSystemName,
+            operation_system_name,
             responsible_user_id,
             house_location,
             firmware_version,
@@ -799,20 +799,20 @@
         <if test=" multipleQuery != null and multipleQuery != ''">
             <choose>
                 <when test="unknownAssets">
-                    and (air.ip like binary
+                    and (air.ip like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or amr.mac like binary
+                    or amr.mac like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     )
                 </when>
                 <otherwise>
-                    and (asset.name LIKE binary
+                    and (asset.name LIKE
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or asset.number LIKE binary
+                    or asset.number LIKE
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or air.ip like binary
+                    or air.ip like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or amr.mac like binary
+                    or amr.mac like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     )
                 </otherwise>

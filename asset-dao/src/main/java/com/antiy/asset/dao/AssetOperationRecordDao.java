@@ -42,4 +42,10 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      */
     Integer getCreateUserByAssetId(Integer assetId);
 
+    /**
+     * 根据资产id查询是否需要漏扫
+     * @param assetId
+     * @return
+     */
+    Integer getNeedVulScan(Integer assetId);
 }
