@@ -1194,7 +1194,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             uuid[0] = assetObj.getUuid();
-            // 启动流程
+            // 已入网后变更//未知资产/退役资产重新登记-启动流程;
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
                 if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
@@ -1241,6 +1241,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 } else {
+                    // 未知资产登记
                     if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(asset.getBaselineTemplateId());
                         admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -1314,7 +1315,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                 }
             }
-            // 推动流程
+            // 其他步骤打回的待登记-推动流程
             else if (!Objects.isNull(assetOuterRequest.getActivityHandleRequest())) {
                 ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
                 String ar = (String) activityHandleRequest.getFormData().get("admittanceResult");
@@ -1360,23 +1361,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         : baselineCheck;
                 }
             } else {
+                // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
-            }
-            // 漏洞扫描；
-            if (BooleanUtils.isTrue(assetOuterRequest.getNeedScan())) {
-                // 扫描
-                ActionResponse scan = baseLineClient
-                    .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
-                // 如果漏洞为空,直接返回错误信息
-                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                    // 调用失败，直接删登记的资产
-                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
-                }
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
