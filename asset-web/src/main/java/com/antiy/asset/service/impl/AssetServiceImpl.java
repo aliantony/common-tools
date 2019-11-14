@@ -477,8 +477,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public boolean CheckRepeatNumber(String number) {
-        return assetDao.findCountAssetNumber(number) >= 1;
+    public boolean CheckRepeatNumber(String number, Integer id) {
+        return assetDao.findCountAssetNumber(number, id) >= 1;
     }
 
     @Override
@@ -1996,7 +1996,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2195,7 +2195,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2410,7 +2410,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2606,7 +2606,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2792,7 +2792,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
