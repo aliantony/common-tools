@@ -111,7 +111,7 @@ public class AssetControllerTest {
         assetRequest.setId("1");
         asset.setAsset(assetRequest);
         List<AssetEntity> assetEntities = new ArrayList<>();
-        when(iAssetService.CheckRepeatNumber(Mockito.any())).thenReturn(true);
+        when(iAssetService.CheckRepeatNumber(Mockito.any(), null)).thenReturn(true);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/asset/CheckRepeatNumber")
             .contentType(MediaType.APPLICATION_JSON).content(JSONObject.toJSONString(asset))).andReturn();
         String content = mvcResult.getResponse().getContentAsString();

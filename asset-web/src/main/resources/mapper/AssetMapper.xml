@@ -1790,6 +1790,9 @@ FROM
 	asset a
 WHERE
 	number = #{number}
+        <if test="id !=null ">
+            and id !=#{id}
+        </if>
 AND a.`status` = 1
     </select>
 
