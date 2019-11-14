@@ -232,6 +232,17 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
                                  @Param(value = "areaIds") List<String> areaIds);
 
+    /**
+     * 查看待登记资产Id
+     *
+     * @param assetStatus
+     * @param areaIds
+     * @return
+     */
+    List<Integer> queryWaitRegisterId(@Param(value = "assetStatus") Integer assetStatus,
+                                 @Param(value = "areaIds") List<String> areaIds);
+
+
     Integer changeAsset(Asset asset);
 
     Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);

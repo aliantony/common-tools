@@ -355,4 +355,20 @@
         <include refid="Table_Name"/>
         where target_object_id = #{assetId} order by id desc limit 1
     </select>
+
+    <select id="listByAssetIds" resultMap="BaseResultMap">
+        select
+        a.target_object_id,a.origin_status
+        from
+        <include refid="Table_Name"/> a
+        inner join
+        ( SELECT max(id) id, target_object_id FROM asset_operation_record WHERE target_object_id IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY target_object_id
+        ) b
+        USING(id)
+    </select>
+
 </mapper>

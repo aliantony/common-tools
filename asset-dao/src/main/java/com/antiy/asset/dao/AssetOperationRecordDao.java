@@ -34,7 +34,6 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      **/
     List<AssetStatusDetail> queryAssetAllStatusInfo(String id);
 
-
     /**
      * 查询最近一次执行[检查]的操作者
      * @param assetId
@@ -48,4 +47,11 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      * @return
      */
     Integer getNeedVulScan(Integer assetId);
+
+    /**
+     * 根据资产id查询上一步状态
+     * @param assetIds
+     * @return
+     */
+    List<AssetOperationRecord> listByAssetIds(List<Integer> assetIds);
 }
