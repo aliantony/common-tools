@@ -1914,4 +1914,16 @@ AND a.`status` = 1
     <select id="queryOriginStatus" resultType="java.lang.Integer">
         select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
     </select>
+    <select id="getByAssetIds" resultType="com.antiy.asset.entity.Asset">
+        SELECT id,number from asset where
+        <if test="assetIdList == null or assetIdList.size() == 0">
+            1!=1
+        </if>
+        <if test="assetIdList !=null and assetIdList.size()>0">
+            id in
+            <foreach collection="assetIdList" item="assetId" close=")" open="(" separator=",">
+                #{assetId}
+            </foreach>
+        </if>
+    </select>
 </mapper>

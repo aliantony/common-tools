@@ -1,21 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
@@ -23,6 +12,7 @@ import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
@@ -32,8 +22,20 @@ import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -193,12 +195,22 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
         });
         ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
+
+
+
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+
             BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
         }
         // ------------------对接配置模块------------------end
-
+        //记录操作日志
+        List<String> assetIdList = softwareReportRequest.getAssetId();
+        List<Asset> assetList=assetDao.getByAssetIds(assetIdList);
+        for(Asset asset:assetList){
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(),asset.getId(),
+                    asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+        }
         return result;
     }
 

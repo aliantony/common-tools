@@ -373,4 +373,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer queryOriginStatus(@Param("assetId") String stringId);
+
+    List<Asset> getByAssetIds(@Param("assetIdList")List<String> assetIdList);
 }
