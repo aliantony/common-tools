@@ -747,19 +747,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 待办资产id
             // 查询所有待登记资产
             List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                    LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
 
             List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
-            //实施到待登记
+            // 实施到待登记
             // 当前为资产登记的 有待办任务的资产Id
-            List<Integer> waitTaskIds = processMap.entrySet().stream().filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey())).collect(Collectors.toList());
+            List<Integer> waitTaskIds = processMap.entrySet().stream()
+                .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
+                .collect(Collectors.toList());
             // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
             operationRecordList.stream().forEach(operationRecord -> {
-                waitRegisterIds.removeIf(e -> !waitTaskIds.contains(e) &&
-                        (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode()) && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+                waitRegisterIds.removeIf(
+                    e -> !waitTaskIds.contains(e)
+                         && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                             && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
             });
 
-            List<String> collect = waitRegisterIds.stream().map(DataTypeUtils::integerToString).collect(Collectors.toList());
+            List<String> collect = waitRegisterIds.stream().map(DataTypeUtils::integerToString)
+                .collect(Collectors.toList());
             String[] assetIds = new String[collect.size()];
             for (int i = 0; i < collect.size(); i++) {
                 assetIds[i] = collect.get(i);
@@ -1579,7 +1584,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .collect(Collectors.toList());
             List<AssetIpRelation> ipRelations = list.stream().filter(x -> !ips.contains(x.getIp()))
                 .collect(Collectors.toList());
-            assetLinkRelationDao.deleteRelationByIp(id, ipRelations, categoryModel);
+            if (ipRelations.size() > 0) {
+                assetLinkRelationDao.deleteRelationByIp(id, ipRelations, categoryModel);
+            }
         }
     }
 
@@ -3177,23 +3184,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return 0;
         }
         // 排除上一步实施拒绝退回到待登记的资产数量,
-        // A登记 【资产1 】  B实施 【不通过】退到待登记。
+        // A登记 【资产1 】 B实施 【不通过】退到待登记。
         // A工作台【资产登记】待办+1
         // 其他用户工作台数量不变。
 
         // 查询所有待登记资产
         List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
 
         List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
-        //实施到待登记
+        // 实施到待登记
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         // 当前为资产登记的 有待办任务的资产Id
-        List<Integer> waitTaskIds = processMap.entrySet().stream().filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey())).collect(Collectors.toList());
+        List<Integer> waitTaskIds = processMap.entrySet().stream().filter(e -> "资产登记".equals(e.getValue().getName()))
+            .map(e -> Integer.valueOf(e.getKey())).collect(Collectors.toList());
         // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
         operationRecordList.stream().forEach(operationRecord -> {
-            waitRegisterIds.removeIf(e -> !waitTaskIds.contains(e) &&
-                    (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode()) && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+            waitRegisterIds.removeIf(
+                e -> !waitTaskIds.contains(e)
+                     && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                         && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
         });
 
         logger.debug("processMap:", processMap);
