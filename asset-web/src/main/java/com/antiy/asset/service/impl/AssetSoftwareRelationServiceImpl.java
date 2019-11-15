@@ -13,6 +13,7 @@ import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.NameListTypeEnum;
 import com.antiy.asset.vo.query.InstallQuery;
@@ -211,6 +212,17 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(),asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
         }
+
+        //更改资产状态
+        assetDao.updateAssetBatch(assetIds.stream().map(v->{
+            Asset asset=new Asset();
+            asset.setAssetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+            asset.setId(Integer.valueOf(v));
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+            asset.setGmtModified(System.currentTimeMillis());
+            return asset;
+        }).collect(Collectors.toList()));
+
         return result;
     }
 
