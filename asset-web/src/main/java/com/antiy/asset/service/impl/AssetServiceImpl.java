@@ -12,10 +12,7 @@ import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetIpRelationQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -3070,6 +3067,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception {
         request.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         return assetDao.findUnknownAssetCount(request);
+    }
+
+    @Override
+    public Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query) {
+        query.setGmtModify(System.currentTimeMillis());
+        query.setModifyUser(LoginUserUtil.getLoginUser().getStringId());
+        return assetDao.updateAssetBaselineTemplate(query);
     }
 
     private void operationRecord(String id) throws Exception {
