@@ -1,28 +1,33 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
+
+import java.util.List;
+
 /**
  * @author liulusheng
  * @since 2019/11/15
  */
-public class AssetBaselinTemplateQuery {
-    String assetId;
-    String baselineTemplateId;
+public class AssetBaselinTemplateQuery implements ObjectValidator {
+    List<String> assetId;
+    List<String> baselineTemplateId;
     Long gmtModify;
     String modifyUser;
 
-    public String getAssetId() {
+    public List<String> getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(String assetId) {
+    public void setAssetId(List<String> assetId) {
         this.assetId = assetId;
     }
 
-    public String getBaselineTemplateId() {
+    public List<String> getBaselineTemplateId() {
         return baselineTemplateId;
     }
 
-    public void setBaselineTemplateId(String baselineTemplateId) {
+    public void setBaselineTemplateId(List<String> baselineTemplateId) {
         this.baselineTemplateId = baselineTemplateId;
     }
 
@@ -40,5 +45,22 @@ public class AssetBaselinTemplateQuery {
 
     public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser;
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+        boolean compliance = true;
+        if (assetId == null || assetId.isEmpty()) {
+            compliance = false;
+        }
+        if (baselineTemplateId == null || baselineTemplateId.isEmpty()) {
+            compliance = false;
+        }
+        if (assetId.size() != baselineTemplateId.size()) {
+            compliance = false;
+        }
+        if (!compliance) {
+            throw new RequestParamValidateException("请确保资产和基准模板参数正确");
+        }
     }
 }

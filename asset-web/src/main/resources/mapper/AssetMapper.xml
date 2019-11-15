@@ -1927,6 +1927,17 @@ WHERE
         </if>
     </select>
     <update id="updateAssetBaselineTemplate" parameterType="com.antiy.asset.vo.query.AssetBaselinTemplateQuery">
-update asset set baseline_template_id=#{baselineTemplateId},gmt_modified=#{gmtModify},modify_user=#{modifyUser} where id=#{assetId} and status=1
+        update asset set
+        baseline_template_id=
+        <foreach collection="assetId" item="item" index="index"  open="case id" close="end,">
+            when #{item} then #{baselineTemplateId[${index}]}
+        </foreach>
+        gmt_modified=#{gmtModify},modify_user=#{modifyUser}
+        where
+        id in
+        <foreach collection="assetId" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and status=1
     </update>
 </mapper>
