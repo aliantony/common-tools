@@ -759,7 +759,7 @@
             </foreach>
             <choose>
                 <!--enterControl 为true表示从工作台进入-->
-                <when test="enterControl and assetStatusList[0] != 6 and assetStatusList[0] != 1">
+                <when test="enterControl and assetStatusList[0] != 6">
                     and
                 </when>
                 <otherwise>
@@ -1470,8 +1470,28 @@
             </foreach>
         </if>
     </select>
+
     <select id="queryWaitRegistCount" resultType="java.lang.Integer">
         select count(1) from asset
+        where asset_status = #{assetStatus}
+        and asset_source not in (1,3)
+        and status = 1
+        <if test="areaIds != null and areaIds.size() > 0">
+            and area_id in
+            <foreach collection="areaIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ids != null and ids.size() > 0">
+            and id not in
+            <foreach collection="ids" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="queryWaitRegisterId" resultType="java.lang.Integer">
+        select id from asset
         where asset_status = #{assetStatus}
         and asset_source not in (1,3)
         and status = 1
@@ -1770,6 +1790,9 @@ FROM
 	asset a
 WHERE
 	number = #{number}
+        <if test="id !=null ">
+            and id !=#{id}
+        </if>
 AND a.`status` = 1
     </select>
 

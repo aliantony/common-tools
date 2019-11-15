@@ -53,6 +53,7 @@ public class BaseLineClientImpl implements BaseLineClient {
     }
 
     @Override
+    @AssetLog(description = "漏洞扫描", operationType = AssetLogOperationType.ADD)
     public ActionResponse scan(String assetId) {
         JSONObject param = new JSONObject();
         param.put("assetId", assetId);

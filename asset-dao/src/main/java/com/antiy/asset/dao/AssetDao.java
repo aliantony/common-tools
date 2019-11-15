@@ -1,11 +1,5 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetHardSoftLib;
@@ -16,6 +10,11 @@ import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -232,6 +231,17 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
                                  @Param(value = "areaIds") List<String> areaIds);
 
+    /**
+     * 查看待登记资产Id
+     *
+     * @param assetStatus
+     * @param areaIds
+     * @return
+     */
+    List<Integer> queryWaitRegisterId(@Param(value = "assetStatus") Integer assetStatus,
+                                 @Param(value = "areaIds") List<String> areaIds);
+
+
     Integer changeAsset(Asset asset);
 
     Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);
@@ -313,7 +323,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Map<String, Object>> countCategoryModel(@Param("areaIds") List<String> areaIdsOfCurrentUser,
                                                  @Param("status") List<Integer> status);
 
-    Integer findCountAssetNumber(@Param("number") String number);
+    Integer findCountAssetNumber(@Param("number") String number, @Param("id") Integer id);
 
     List<Asset> getAssetStatusListByIds(@Param("ids") String[] ids);
 

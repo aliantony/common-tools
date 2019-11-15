@@ -3,6 +3,7 @@ package com.antiy.asset.util;
 import com.antiy.asset.annotation.ExcelField;
 import com.antiy.asset.vo.enums.DataTypeEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -398,6 +399,21 @@ public class ImportExcel {
                     // 转换数据
                     if (valType == String.class) {
                         val = val.toString();
+                        boolean falg = true;
+                        if (((String) val).endsWith(".0")) {
+                            String substring = ((String) val).substring(0, ((String) val).lastIndexOf(".0"));
+                            try {
+                                DataTypeUtils.stringToInteger(substring);
+                            } catch (Exception e) {
+                                falg = false;
+                            }
+                            if (falg) {
+
+                                val = ((String) val).replaceAll(".0", "");
+                            }
+
+                        }
+
                     } else if (valType == int.class) {
                         val = Integer.parseInt(val.toString().substring(0, val.toString().lastIndexOf(".")));
                     } else if (valType == Integer.class) {

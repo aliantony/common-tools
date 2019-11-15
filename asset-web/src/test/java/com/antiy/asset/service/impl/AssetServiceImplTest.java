@@ -1794,7 +1794,7 @@ public class AssetServiceImplTest {
         when(assetCpeFilterDao.getByWhere(any())).thenReturn(assetCpeFilters);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         String result = assetServiceImpl.importPc(null, assetImportRequest);
         Assert.assertEquals("导入成功1条", result);
 
@@ -1840,10 +1840,10 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行MAC地址重复！", result);
 
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(10);
         result = assetServiceImpl.importPc(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产编号重复！", result);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
         result = assetServiceImpl.importPc(null, assetImportRequest);
@@ -1991,10 +1991,10 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第8行资产MAC地址重复！", result);
 
         importResult.getDataList().remove(1);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(10);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产编号重复！", result);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
         result = assetServiceImpl.importNet(null, assetImportRequest);
@@ -2005,7 +2005,7 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行该厂商下,不存在当前名称！", result);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
 
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         networkDeviceEntity.setPortSize(-1);
         result = assetServiceImpl.importNet(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行网口数目范围为1-100！", result);
@@ -2152,10 +2152,11 @@ public class AssetServiceImplTest {
         Assert.assertEquals("导入失败，第7行资产MAC地址重复！", result);
         when(assetDao.findCountMac(any(), any())).thenReturn(0);
 
-        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(10);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产编号重复！", result);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
         result = assetServiceImpl.importSecurity(null, assetImportRequest);
@@ -2279,10 +2280,10 @@ public class AssetServiceImplTest {
         when(assetDao.findCount(any())).thenReturn(10);
         result = assetServiceImpl.importStory(null, assetImportRequest);
         Assert.assertEquals("导入成功1条", result);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(10);
         result = assetServiceImpl.importStory(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产编号重复！", result);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(0);
         when(assetHardSoftLibDao.countByWhere1(any())).thenReturn(10);
         result = assetServiceImpl.importStory(null, assetImportRequest);
@@ -2420,14 +2421,14 @@ public class AssetServiceImplTest {
 
         importResult.getDataList().remove(1);
         when(assetDao.findCount(any())).thenReturn(10);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(10);
-
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(10);
         when(assetHardSoftLibDao.countByWhere(any())).thenReturn(10);
         result = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行资产编号重复！第8行资产编号重复！", result);
         when(ExcelUtils.importExcelFromClient(any(), any(), anyInt(), anyInt())).thenReturn(importResult4);
         otherDeviceEntity.setBuyDate(System.currentTimeMillis() * 2);
-        when(assetDao.findCountAssetNumber(any())).thenReturn(0);
+
+        when(assetDao.findCountAssetNumber(any(), null)).thenReturn(0);
         String ohters = assetServiceImpl.importOhters(null, assetImportRequest);
         Assert.assertEquals("导入失败，第7行购买时间需小于等于今天！", ohters);
         otherDeviceEntity.setBuyDate(null);

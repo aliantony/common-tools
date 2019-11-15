@@ -1,41 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.antiy.asset.vo.query.AssetIpRelationQuery;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -49,6 +13,7 @@ import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
+import com.antiy.asset.vo.query.AssetIpRelationQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.*;
@@ -67,6 +32,38 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -479,8 +476,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public boolean CheckRepeatNumber(String number) {
-        return assetDao.findCountAssetNumber(number) >= 1;
+    public boolean CheckRepeatNumber(String number, Integer id) {
+        return assetDao.findCountAssetNumber(number, id) >= 1;
     }
 
     @Override
@@ -748,11 +745,35 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 只要是工作台进来的才去查询他的待办事项
         if (MapUtils.isNotEmpty(processMap)) {
             // 待办资产id
+            // 查询所有待登记资产
+            List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+
+            List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
+            // 实施到待登记
+            // 当前为资产登记的 有待办任务的资产Id
+            List<Integer> waitTaskIds = processMap.entrySet().stream()
+                .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
+                .collect(Collectors.toList());
+            // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
+            operationRecordList.stream().forEach(operationRecord -> {
+                waitRegisterIds.removeIf(
+                    e -> !waitTaskIds.contains(e)
+                         && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                             && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+            });
+
+            List<String> collect = waitRegisterIds.stream().map(DataTypeUtils::integerToString)
+                .collect(Collectors.toList());
+            String[] assetIds = new String[collect.size()];
+            for (int i = 0; i < collect.size(); i++) {
+                assetIds[i] = collect.get(i);
+            }
             Set<String> activitiIds = processMap.keySet();
             if (CollectionUtils.isNotEmpty(query.getAssetStatusList()) && query.getEnterControl()) {
                 List<String> sortedIds = assetDao.sortAssetIds(activitiIds, query.getAssetStatus());
                 if (CollectionUtils.isNotEmpty(sortedIds)) {
-                    query.setIds(DataTypeUtils.integerArrayToStringArray(sortedIds));
+                    query.setIds(assetIds);
                 }
             }
         }
@@ -903,7 +924,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countManufacturer() {
-        int maxNum = 5;
+        int maxNum = 4;
         List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         // 不统计已退役资产
         List<Integer> status = Arrays.asList(6, 10);
@@ -1196,7 +1217,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             uuid[0] = assetObj.getUuid();
-            // 启动流程
+            // 已入网后变更//未知资产/退役资产重新登记-启动流程;
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
                 if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
@@ -1243,6 +1264,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                 } else {
+                    // 未知资产登记
                     if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(asset.getBaselineTemplateId());
                         admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -1301,7 +1323,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             : baselineCheck;
                     }
                     // 记录操作日志和运行日志
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(),
+                    LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
                         Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
                         BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
                     LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
@@ -1316,7 +1338,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                 }
             }
-            // 推动流程
+            // 其他步骤打回的待登记-推动流程
             else if (!Objects.isNull(assetOuterRequest.getActivityHandleRequest())) {
                 ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
                 String ar = (String) activityHandleRequest.getFormData().get("admittanceResult");
@@ -1362,23 +1384,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         : baselineCheck;
                 }
             } else {
+                // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
-            }
-            // 漏洞扫描；
-            if (BooleanUtils.isTrue(assetOuterRequest.getNeedScan())) {
-                // 扫描
-                ActionResponse scan = baseLineClient
-                    .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
-                // 如果漏洞为空,直接返回错误信息
-                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                    // 调用失败，直接删登记的资产
-                    return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
-                }
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
@@ -1572,7 +1584,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .collect(Collectors.toList());
             List<AssetIpRelation> ipRelations = list.stream().filter(x -> !ips.contains(x.getIp()))
                 .collect(Collectors.toList());
-            assetLinkRelationDao.deleteRelationByIp(id, ipRelations, categoryModel);
+            if (ipRelations.size() > 0) {
+                assetLinkRelationDao.deleteRelationByIp(id, ipRelations, categoryModel);
+            }
         }
     }
 
@@ -1998,7 +2012,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2197,7 +2211,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
                 continue;
             }
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2412,7 +2426,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2608,7 +2622,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -2794,7 +2808,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (CheckRepeatNumber(entity.getNumber())) {
+            if (CheckRepeatNumber(entity.getNumber(), null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产编号重复！");
@@ -3169,8 +3183,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (Objects.isNull(LoginUserUtil.getLoginUser())) {
             return 0;
         }
-        return assetDao.queryWaitRegistCount(AssetStatusEnum.WAIT_REGISTER.getCode(),
+        // 排除上一步实施拒绝退回到待登记的资产数量,
+        // A登记 【资产1 】 B实施 【不通过】退到待登记。
+        // A工作台【资产登记】待办+1
+        // 其他用户工作台数量不变。
+
+        // 查询所有待登记资产
+        List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
             LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+
+        List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
+        // 实施到待登记
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
+        // 当前为资产登记的 有待办任务的资产Id
+        List<Integer> waitTaskIds = processMap.entrySet().stream().filter(e -> "资产登记".equals(e.getValue().getName()))
+            .map(e -> Integer.valueOf(e.getKey())).collect(Collectors.toList());
+        // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
+        operationRecordList.stream().forEach(operationRecord -> {
+            waitRegisterIds.removeIf(
+                e -> !waitTaskIds.contains(e)
+                     && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                         && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+        });
+
+        logger.debug("processMap:", processMap);
+        logger.debug("waitRegisterIds:{}", waitRegisterIds);
+        return waitRegisterIds.size();
     }
 
     @Override
