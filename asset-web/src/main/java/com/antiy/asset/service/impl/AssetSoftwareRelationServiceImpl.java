@@ -209,7 +209,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         List<String> assetIdList = softwareReportRequest.getAssetId();
         List<Asset> assetList=assetDao.getByAssetIds(assetIdList);
         for(Asset asset:assetList){
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(),asset.getId(),
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SOFTWARE_RELATION.getName(),asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
         }
 

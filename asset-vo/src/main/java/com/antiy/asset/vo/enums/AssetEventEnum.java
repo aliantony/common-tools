@@ -126,8 +126,8 @@ public enum AssetEventEnum {
     TEMPLATE_MODIFY(116, "编辑装机模板"),
     TEMPLATE_CHECK(117, "审核装机模板"),
     TEMPLATE_FORBIDDEN(118, "禁用装机模板"),
-    TEMPLATE_ENABLE(119, "启用装机模板");
-
+    TEMPLATE_ENABLE(119, "启用装机模板"),
+    ASSET_SOFTWARE_RELATION(120,"关联资产软件信息");
 
     private Integer status;
     private String name;
