@@ -1867,8 +1867,8 @@ AND a.`status` = 1
         </if>
         ) ip_temp
         INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
-        AND macrel.`status` = 1
         WHERE
+        macrel.`status` = 1 and
         ip = #{ipMacPort.ip}
         <if test="ipMacPort.mac != null">
             AND mac = #{ipMacPort.mac}
