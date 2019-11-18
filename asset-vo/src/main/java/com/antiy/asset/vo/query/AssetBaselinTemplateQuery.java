@@ -3,7 +3,9 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author liulusheng
@@ -11,7 +13,7 @@ import java.util.List;
  */
 public class AssetBaselinTemplateQuery implements ObjectValidator {
     List<String> assetId;
-    List<String> baselineTemplateId;
+    String baselineTemplateId;
     Long gmtModify;
     String modifyUser;
 
@@ -24,10 +26,10 @@ public class AssetBaselinTemplateQuery implements ObjectValidator {
     }
 
     public List<String> getBaselineTemplateId() {
-        return baselineTemplateId;
+        return assetId.stream().map(v -> baselineTemplateId).collect(Collectors.toList());
     }
 
-    public void setBaselineTemplateId(List<String> baselineTemplateId) {
+    public void setBaselineTemplateId(String baselineTemplateId) {
         this.baselineTemplateId = baselineTemplateId;
     }
 
@@ -54,9 +56,6 @@ public class AssetBaselinTemplateQuery implements ObjectValidator {
             compliance = false;
         }
         if (baselineTemplateId == null || baselineTemplateId.isEmpty()) {
-            compliance = false;
-        }
-        if (assetId.size() != baselineTemplateId.size()) {
             compliance = false;
         }
         if (!compliance) {
