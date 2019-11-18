@@ -1426,8 +1426,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .filter(a -> "DISK".equals(a.getType())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
-                    add.append("$新增组件:").append("硬盘").append(disk.getProductName()).append("数量")
-                        .append(disk.getAmount());
+                    add.append("$新增组件:").append("硬盘").append(disk.getProductName());
                 });
             } else {
                 List<String> oldDiskBusinessIds = oldDisks.stream().map(AssetAssemblyRequest::getBusinessId)
@@ -1442,13 +1441,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         }
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
-                        add.append("$添加组件:").append("硬盘").append(disk.getProductName()).append("数量")
-                            .append(disk.getAmount());
+                        add.append("$新增组件:").append("硬盘").append(disk.getProductName());
                     }
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
                     oldDiskBusinessIds.stream().forEach(os -> {
-                        delete.append("$删除组件:").append("硬盘").append(map.get(os));
+                        delete.append("$删除组件:").append("硬盘").append(oldDisks.stream().filter(v->os.equals(v.getBusinessId())).map(AssetAssemblyRequest::getProductName).findFirst().get());
                     });
                 }
             }
@@ -1506,7 +1504,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-        return add.toString() + "###" + update.toString() + "###" + delete.toString();
+        return add.toString() + "###" + update.toString() + "###" + delete.toString()+sb.toString();
     }
 
     private void dealInstallTemplete(String newInstallId, String assetId) {
