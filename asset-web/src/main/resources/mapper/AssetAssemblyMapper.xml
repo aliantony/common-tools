@@ -135,10 +135,10 @@
                 </foreach>
             </if>
             <if test="supplier != null and supplier.length() > 0">
-                and supplier like CONCAT('',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
+                and supplier like CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')
             </if>
             <if test="productName != null and productName.length() > 0">
-                and product_name like CONCAT('',replace(replace(#{productName},'%','\%'),'_','\_'),'%')
+                and product_name like CONCAT('%',replace(replace(#{productName},'%','\%'),'_','\_'),'%')
             </if>
             and lib.status = 1
         </trim>

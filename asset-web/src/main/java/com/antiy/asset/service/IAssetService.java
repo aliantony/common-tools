@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
@@ -306,11 +307,10 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 基准模板下拉
+     *
      * @return
      */
     List<SelectResponse> queryBaselineTemplate();
-
-
 
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
@@ -328,10 +328,18 @@ public interface IAssetService extends IBaseService<Asset> {
     /**
      * 异常统计
      */
-    Integer countUnusual(AssetQuery assetQuery)throws  Exception;
+    Integer countUnusual(AssetQuery assetQuery) throws Exception;
 
     /**
      * 根据用户区域统计未知资产数量
      */
     Integer queryUnknownAssetCount(AssetUnknownRequest request) throws Exception;
+
+    /**
+     * 更新资产的基准模板
+     *
+     * @param query
+     * @return
+     */
+    Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query);
 }

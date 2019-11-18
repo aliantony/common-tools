@@ -1784,16 +1784,16 @@ WHERE
         GROUP BY category_model
     </select>
     <select id="findCountAssetNumber" resultType="int">
-SELECT
-	count(1) count
-FROM
-	asset a
-WHERE
-	number = #{number}
+        SELECT
+        count(1) count
+        FROM
+        asset a
+        WHERE
+        number = #{number}
         <if test="id !=null ">
             and id !=#{id}
         </if>
-AND a.`status` = 1
+        AND a.`status` = 1
     </select>
 
 
@@ -1867,8 +1867,8 @@ AND a.`status` = 1
         </if>
         ) ip_temp
         INNER JOIN asset_mac_relation macrel ON macrel.asset_id = ip_temp.asset_id
-        AND macrel.`status` = 1
         WHERE
+        macrel.`status` = 1 and
         ip = #{ipMacPort.ip}
         <if test="ipMacPort.mac != null">
             AND mac = #{ipMacPort.mac}
@@ -1914,4 +1914,30 @@ AND a.`status` = 1
     <select id="queryOriginStatus" resultType="java.lang.Integer">
         select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
     </select>
+    <select id="getByAssetIds" resultType="com.antiy.asset.entity.Asset">
+        SELECT id,number from asset where
+        <if test="assetIdList == null or assetIdList.size() == 0">
+            1!=1
+        </if>
+        <if test="assetIdList !=null and assetIdList.size()>0">
+            id in
+            <foreach collection="assetIdList" item="assetId" close=")" open="(" separator=",">
+                #{assetId}
+            </foreach>
+        </if>
+    </select>
+    <update id="updateAssetBaselineTemplate" parameterType="com.antiy.asset.vo.query.AssetBaselinTemplateQuery">
+        update asset set
+        baseline_template_id=
+        <foreach collection="assetId" item="item" index="index"  open="case id" close="end,">
+            when #{item} then #{baselineTemplateId[${index}]}
+        </foreach>
+        gmt_modified=#{gmtModify},modify_user=#{modifyUser}
+        where
+        id in
+        <foreach collection="assetId" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and status=1
+    </update>
 </mapper>
