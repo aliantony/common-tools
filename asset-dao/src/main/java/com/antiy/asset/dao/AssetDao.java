@@ -4,6 +4,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
@@ -373,4 +374,13 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer queryOriginStatus(@Param("assetId") String stringId);
+
+    List<Asset> getByAssetIds(@Param("assetIdList")List<String> assetIdList);
+
+    /**
+     * 更新资产基准模板
+     * @param query
+     * @return
+     */
+    Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query);
 }
