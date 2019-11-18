@@ -469,7 +469,6 @@ public class AssetController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/waitRegistCount", method = RequestMethod.POST)
     public ActionResponse queryWaitRegistCount() {
-        System.out.println(LoginUserUtil.getLoginUser());
         return ActionResponse.success(iAssetService.queryWaitRegistCount());
     }
 
