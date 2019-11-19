@@ -1180,6 +1180,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
+                        if(assetOuterRequest.getNeedScan()){
+                            // 漏洞扫描
+                            ActionResponse scan = baseLineClient
+                                    .scan(aesEncoder.encode(assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
+                            if (null == scan
+                                    || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                                BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                            }
+                        }
                     }
 
                     // 4. 更新存储介质信息
@@ -1252,6 +1261,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
                     }
+
+
                     // ------------------对接配置模块------------------end
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
@@ -1406,6 +1417,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
+
         return ActionResponse.success(msg);
     }
 
