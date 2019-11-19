@@ -45,7 +45,13 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         for (AssetStatusDetail inner:assetStatusDetails) {
             StatusLogResponse outer = new StatusLogResponse();
             BeanUtils.copyProperties(inner,outer);
-            outer.setDescribe(inner.getOperateUserName()+","+inner.getContent()+inner.getOriginStatus().describe(inner.getProcessResult()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(inner.getOperateUserName());
+            if (!sb.toString().isEmpty()) {
+                sb.append(",");
+            }
+            sb.append(inner.getContent()).append(inner.getOriginStatus().describe(inner.getProcessResult()));
+            outer.setDescribe(sb.toString());
             if (StringUtils.isEmpty(inner.getFileInfo())) {
                 outer.setFileInfo(JsonUtil.ListToJson(Collections.EMPTY_LIST));
             } else {
