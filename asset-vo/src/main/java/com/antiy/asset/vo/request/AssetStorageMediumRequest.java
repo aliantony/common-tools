@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * <p> AssetStorageMediumRequest 请求对象 </p>
@@ -175,9 +173,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (raidSupport != null) {
-            ParamterExceptionUtils.isTrue(raidSupport.equals("是") || raidSupport.equals("否"), "raid支持只能为是否");
-        }
+
     }
 
     @Override

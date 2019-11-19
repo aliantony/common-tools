@@ -1116,6 +1116,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         final String[] reason = new String[1];
         final String[] uuid = new String[1];
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
+        final boolean[] isNewAddAssembly = {false};
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1160,7 +1161,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequest());
                     }
                     // 处理组件
-                    dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
+                    isNewAddAssembly[0] =dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
 
                     // 2. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1179,6 +1180,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
+                        if(assetOuterRequest.getNeedScan()){
+                            // 漏洞扫描
+                            ActionResponse scan = baseLineClient
+                                    .scan(aesEncoder.encode(assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
+                            if (null == scan
+                                    || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                                BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                            }
+                        }
                     }
 
                     // 4. 更新存储介质信息
@@ -1251,6 +1261,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
                     }
+
+
                     // ------------------对接配置模块------------------end
                     // 记录资产操作流程
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
@@ -1390,9 +1402,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+
+                //如果组件新增则启动漏扫
+                if (isNewAddAssembly[0]){
+                    ActionResponse scan = baseLineClient
+                            .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                    // 如果漏洞为空,直接返回错误信息
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        // 调用失败，直接删登记的资产
+                        return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+                    }
+                }
+
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
+
         return ActionResponse.success(msg);
     }
 
@@ -1623,9 +1648,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    public void dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
+    public boolean dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
         // 1.先删除旧的关系表
+        List<String> preAssemblyIds = assetAssemblyDao.findAssemblyIds(id);
         assetAssemblyDao.deleteAssemblyRelation(id);
+        boolean isNewAdd = false;
         // 2.插入新的关系
         if (CollectionUtils.isNotEmpty(assemblyRequestList)) {
             List<AssetAssembly> assetAssemblyList = Lists.newArrayList();
@@ -1637,7 +1664,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetAssemblyList.add(assetAssembly);
             });
             assetAssemblyDao.insertBatch(assetAssemblyList);
+            for (AssetAssembly assetAssembly : assetAssemblyList) {
+                if (!preAssemblyIds.contains(assetAssembly.getBusinessId())){
+                    isNewAdd=true;
+                    break;
+                }
+            }
         }
+        return  isNewAdd;
     }
 
     private boolean checkNumber(String id, String number) {
