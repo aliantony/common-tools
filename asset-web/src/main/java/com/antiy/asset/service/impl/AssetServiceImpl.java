@@ -1394,6 +1394,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                         : baselineCheck;
                 }
+
             } else {
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
