@@ -1635,7 +1635,7 @@
             #{item}
         </foreach>
         and status = 1 and business_id is not null
-        group by id
+        and (asset_status=6 or asset_status=10)
     </select>
 
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -1929,7 +1929,7 @@ WHERE
     <update id="updateAssetBaselineTemplate" parameterType="com.antiy.asset.vo.query.AssetBaselinTemplateQuery">
         update asset set
         baseline_template_id=
-        <foreach collection="assetId" item="item" index="index"  open="case id" close="end,">
+        <foreach collection="assetId" item="item" index="index" open="case id" close="end,">
             when #{item} then #{baselineTemplateId[${index}]}
         </foreach>
         gmt_modified=#{gmtModify},modify_user=#{modifyUser}
