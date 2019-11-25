@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
  * @since 2019/11/15
  */
 public class AssetBaselinTemplateQuery implements ObjectValidator {
-    @Encode
     List<String> assetId;
     String baselineTemplateId;
     Long gmtModify;
