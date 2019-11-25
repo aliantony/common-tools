@@ -744,6 +744,7 @@
         WHERE
         asset.id = #{primaryKey}
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
+        ORDER BY assetPort
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
