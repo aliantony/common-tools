@@ -1,5 +1,39 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -29,38 +63,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -744,24 +746,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 待办资产id
             // 查询所有待登记资产
             List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                    LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
             if (CollectionUtils.isNotEmpty(waitRegisterIds)) {
                 List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
                 // 实施到待登记
                 // 当前为资产登记的 有待办任务的资产Id
                 List<Integer> waitTaskIds = processMap.entrySet().stream()
-                        .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
-                        .collect(Collectors.toList());
+                    .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
+                    .collect(Collectors.toList());
                 // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
                 operationRecordList.stream().forEach(operationRecord -> {
                     waitRegisterIds.removeIf(
-                            e -> !waitTaskIds.contains(e)
-                                    && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
-                                    && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+                        e -> !waitTaskIds.contains(e)
+                             && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                                 && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
                 });
 
                 List<String> collect = waitRegisterIds.stream().map(DataTypeUtils::integerToString)
-                        .collect(Collectors.toList());
+                    .collect(Collectors.toList());
                 String[] assetIds = new String[collect.size()];
                 for (int i = 0; i < collect.size(); i++) {
                     assetIds[i] = collect.get(i);
@@ -1116,7 +1118,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         final String[] reason = new String[1];
         final String[] uuid = new String[1];
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
-        final boolean[] isNewAddAssembly = {false};
+        final boolean[] isNewAddAssembly = { false };
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1161,7 +1163,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         dealSoft(assetOuterRequest.getAsset().getId(), assetOuterRequest.getSoftwareReportRequest());
                     }
                     // 处理组件
-                    isNewAddAssembly[0] =dealAssembly(assetOuterRequest.getAsset().getId(), assetOuterRequest.getAssemblyRequestList());
+                    isNewAddAssembly[0] = dealAssembly(assetOuterRequest.getAsset().getId(),
+                        assetOuterRequest.getAssemblyRequestList());
 
                     // 2. 更新网络设备信息
                     AssetNetworkEquipmentRequest networkEquipment = assetOuterRequest.getNetworkEquipment();
@@ -1180,12 +1183,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
-                        if(assetOuterRequest.getNeedScan()){
+                        if (assetOuterRequest.getNeedScan()) {
                             // 漏洞扫描
-                            ActionResponse scan = baseLineClient
-                                    .scan(aesEncoder.encode(assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
+                            ActionResponse scan = baseLineClient.scan(aesEncoder.encode(
+                                assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
                             if (null == scan
-                                    || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                                || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                                 BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
                             }
                         }
@@ -1261,7 +1264,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
                     }
-
 
                     // ------------------对接配置模块------------------end
                     // 记录资产操作流程
@@ -1404,10 +1406,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
 
-                //如果组件新增则启动漏扫
-                if (isNewAddAssembly[0]){
+                // 如果组件新增则启动漏扫
+                if (isNewAddAssembly[0]) {
                     ActionResponse scan = baseLineClient
-                            .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
                     // 如果漏洞为空,直接返回错误信息
                     if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                         // 调用失败，直接删登记的资产
@@ -1472,7 +1474,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
                     oldDiskBusinessIds.stream().forEach(os -> {
-                        delete.append("$删除组件:").append("硬盘").append(oldDisks.stream().filter(v->os.equals(v.getBusinessId())).map(AssetAssemblyRequest::getProductName).findFirst().get());
+                        delete.append("$删除组件:").append("硬盘")
+                            .append(oldDisks.stream().filter(v -> os.equals(v.getBusinessId()))
+                                .map(AssetAssemblyRequest::getProductName).findFirst().get());
                     });
                 }
             }
@@ -1505,8 +1509,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<String> oldSoftIds = assetSoftwareInstallResponseList.stream()
                         .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
                     // 变更前的软件id，软件名称
-                    Map<String, String> oldMap = assetSoftwareInstallResponseList.stream().collect(Collectors.toMap(
-                        AssetSoftwareInstallResponse::getSoftwareId, AssetSoftwareInstallResponse::getProductName));
+                    Map<String, String> oldMap = assetSoftwareInstallResponseList.stream().collect(HashMap::new,
+                        (m, v) -> m.put(v.getSoftwareId(), v.getProductName()), HashMap::putAll);
                     newSoftIds.stream().forEach(ns -> {
                         if (!oldSoftIds.contains(String.valueOf(ns))) {
                             add.append("$新增软件:")
@@ -1530,7 +1534,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         }
-        return add.toString() + "###" + update.toString() + "###" + delete.toString()+sb.toString();
+        return add.toString() + "###" + update.toString() + "###" + delete.toString() + sb.toString();
     }
 
     private void dealInstallTemplete(String newInstallId, String assetId) {
@@ -1666,13 +1670,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             });
             assetAssemblyDao.insertBatch(assetAssemblyList);
             for (AssetAssembly assetAssembly : assetAssemblyList) {
-                if (!preAssemblyIds.contains(assetAssembly.getBusinessId())){
-                    isNewAdd=true;
+                if (!preAssemblyIds.contains(assetAssembly.getBusinessId())) {
+                    isNewAdd = true;
                     break;
                 }
             }
         }
-        return  isNewAdd;
+        return isNewAdd;
     }
 
     private boolean checkNumber(String id, String number) {
@@ -3230,20 +3234,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 查询所有待登记资产
         List<Integer> waitRegisterIds = assetDao.queryWaitRegisterId(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                loginUser.getAreaIdsOfCurrentUser());
+            loginUser.getAreaIdsOfCurrentUser());
         if (CollectionUtils.isNotEmpty(waitRegisterIds)) {
             List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
             // 实施到待登记
             Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
             // 当前为资产登记的 有待办任务的资产Id
-            List<Integer> waitTaskIds = processMap.entrySet().stream().filter(e -> "资产登记".equals(e.getValue().getName()))
-                    .map(e -> Integer.valueOf(e.getKey())).collect(Collectors.toList());
+            List<Integer> waitTaskIds = processMap.entrySet().stream()
+                .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
+                .collect(Collectors.toList());
             // 根据操作记录表.如果资产上一步是实施拒绝&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
             operationRecordList.stream().forEach(operationRecord -> {
                 waitRegisterIds.removeIf(
-                        e -> !waitTaskIds.contains(e)
-                                && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
-                                && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
+                    e -> !waitTaskIds.contains(e)
+                         && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
+                             && e.equals(Integer.valueOf(operationRecord.getTargetObjectId()))));
             });
         }
         return waitRegisterIds.size();
