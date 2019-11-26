@@ -239,8 +239,8 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param areaIds
      * @return
      */
-    List<Integer> queryWaitRegisterId(@Param(value = "assetStatus") Integer assetStatus,
-                                 @Param(value = "areaIds") List<String> areaIds);
+    List<Integer> queryIdsByAssetStatus(@Param(value = "assetStatus") Integer assetStatus,
+                                        @Param(value = "areaIds") List<String> areaIds);
 
 
     Integer changeAsset(Asset asset);

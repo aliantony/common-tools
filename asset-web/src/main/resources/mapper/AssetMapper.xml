@@ -1490,7 +1490,7 @@
         </if>
     </select>
 
-    <select id="queryWaitRegisterId" resultType="java.lang.Integer">
+    <select id="queryIdsByAssetStatus" resultType="java.lang.Integer">
         select id from asset
         where asset_status = #{assetStatus}
         and asset_source not in (1,3)
