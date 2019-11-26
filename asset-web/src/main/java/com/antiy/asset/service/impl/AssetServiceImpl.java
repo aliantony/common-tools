@@ -748,7 +748,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<String> waitRegistIds = new ArrayList<>();
             Set<String> activitiIds = null;
             // 如果是待登记,设置查询的ids-in为过滤后的信息
-            if (AssetStatusEnum.WAIT_REGISTER.getCode().equals(query.getAssetStatusList().get(0))) {
+            if (CollectionUtils.isNotEmpty(query.getAssetStatusList()) && AssetStatusEnum.WAIT_REGISTER.getCode().equals(query.getAssetStatusList().get(0))) {
                 // 查询所有待登记资产
                 List<Integer> currentStatusAssetIds = assetDao.queryIdsByAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode(),
                         LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
