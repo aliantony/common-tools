@@ -14,7 +14,6 @@ public class StatusJumpAssetInfo {
     @ApiModelProperty("资产Id")
     @NotNull(message = "资产数据id不能为空")
     @NotBlank(message = "资产数据id不正确")
-    @Encode(message = "资产数据id格式不正确")
     private String assetId;
 
     @ApiModelProperty(value = "任务Id")
