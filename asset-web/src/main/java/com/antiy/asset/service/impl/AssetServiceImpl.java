@@ -1189,8 +1189,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipmentDao.update(asp);
                         if (assetOuterRequest.getNeedScan()) {
                             // 漏洞扫描
-                            ActionResponse scan = baseLineClient.scan(aesEncoder.encode(
-                                assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
+                            ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
                             if (null == scan
                                 || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                                 BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
