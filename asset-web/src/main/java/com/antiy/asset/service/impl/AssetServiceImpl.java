@@ -602,6 +602,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
         for (AssetResponse object : objects) {
+            object.setDecryptId(object.getStringId());
             object.setOriginStatus(assetDao.queryOriginStatus(object.getStringId()));
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
