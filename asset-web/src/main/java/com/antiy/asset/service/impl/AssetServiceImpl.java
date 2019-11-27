@@ -356,8 +356,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         // 扫描
-        ActionResponse scan = baseLineClient
-            .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+        ActionResponse scan = baseLineClient.scan(id.toString());
         // 如果漏洞为空,直接返回错误信息
         if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
             // 调用失败，直接删登记的资产
