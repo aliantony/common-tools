@@ -355,8 +355,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         // 扫描
-        ActionResponse scan = baseLineClient
-            .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
+        ActionResponse scan = baseLineClient.scan(id.toString());
         // 如果漏洞为空,直接返回错误信息
         if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
             // 调用失败，逻辑删登记的资产
@@ -601,6 +600,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> objects = responseConverter.convert(assetList, AssetResponse.class);
 
         for (AssetResponse object : objects) {
+            object.setDecryptId(object.getStringId());
             object.setOriginStatus(assetDao.queryOriginStatus(object.getStringId()));
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
@@ -1187,8 +1187,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         assetSafetyEquipmentDao.update(asp);
                         if (assetOuterRequest.getNeedScan()) {
                             // 漏洞扫描
-                            ActionResponse scan = baseLineClient.scan(aesEncoder.encode(
-                                assetOuterRequest.getAsset().getId(), LoginUserUtil.getLoginUser().getUsername()));
+                            ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
                             if (null == scan
                                 || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                                 BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
@@ -1361,13 +1360,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if ("safetyCheck".equals(ar)) {
                     updateAssetStatus(AssetStatusEnum.WAIT_CHECK.getCode(), System.currentTimeMillis(), assetId);
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_CHECK.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHECK.getMsg());
                 } else {
                     updateAssetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode(), System.currentTimeMillis(),
                         assetId);
                     assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.TEMPLATE_IMPL.getMsg());
                 }
+                //记录资产动态:“登记资产”操作文案
+                assetOperationRecord.setContent(AssetFlowEnum.REGISTER.getMsg());
                 ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                 if (actionResponse == null
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {

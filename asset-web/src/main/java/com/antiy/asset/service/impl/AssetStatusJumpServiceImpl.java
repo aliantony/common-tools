@@ -26,15 +26,13 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,6 +64,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
+
+        // 配置调接口时是加密类型的id,(不用@Encode)使用手动解密
+        if (loginUser != null) {
+            statusJumpRequest.getAssetInfoList().forEach(e -> {
+                // 不是数字类型,进行解密
+                if (!StringUtils.isNumeric(e.getAssetId())) {
+                    e.setAssetId(aesEncoder.decode(e.getAssetId(), loginUser.getUsername()));
+                }
+            });
+        }
+
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
 
@@ -96,7 +105,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 Integer needVulScan = assetOperationRecordDao.getNeedVulScan(DataTypeUtils.stringToInteger(e.getAssetId()));
                 if (needVulScan != null && needVulScan == 1) {
                     try {
-                        ActionResponse actionResponse = baseLineClient.scan(aesEncoder.encode(e.getAssetId(), loginUser.getUsername()));
+                        ActionResponse actionResponse = baseLineClient.scan(e.getAssetId());
                         LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
                         if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                             LogUtils.error(logger, "调用漏洞模块失败");
@@ -192,7 +201,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             try {
                 ActionResponse actionResponse = activityClient.completeTaskBatch(requestList);
                 LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
-                // 如果流程引擎为空,直接返回错误信息
                 if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     return false;
@@ -218,9 +226,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<Integer> deleteLinkRelationIdList = new ArrayList<>();
 
         Long currentTime = System.currentTimeMillis();
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        LoginUser loginUser;
+        // 变更->配置完成可能没有token',没有用户信息;保存record表需要使用该字段,默认为0存储
+        if (Objects.isNull(loginUser = LoginUserUtil.getLoginUser())) {
+            loginUser = new LoginUser();
+            loginUser.setId(0);
+            loginUser.setName("");
+        }
 
-        assetsInDb.forEach(asset -> {
+        for (Asset asset : assetsInDb) {
             AssetStatusEnum nextStatus = AssetStatusJumpEnum.getNextStatus(statusJumpRequest.getAssetFlowEnum(), statusJumpRequest.getAgree(),
                     statusJumpRequest.getWaitCorrectToWaitRegister(), asset.getFirstEnterNett() != null);
 
@@ -239,7 +253,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
             // 保存操作记录
             operationRecordList.add(convertAssetOperationRecord(statusJumpRequest, currentTime, loginUser.getId(), loginUser.getName(), asset.getStringId(), nextStatus.getCode()));
-        });
+        }
         transactionTemplate.execute(transactionStatus -> {
             try {
                 assetOperationRecordDao.insertBatch(operationRecordList);
