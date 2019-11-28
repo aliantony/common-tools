@@ -883,7 +883,7 @@
     </select>
     <select id="getContent" resultType="java.lang.String">
         SELECT
-        group_concat('添加软件:',product_name,'$')
+        group_concat('$新增软件:',product_name)
         FROM
         asset_hard_soft_lib
         WHERE
