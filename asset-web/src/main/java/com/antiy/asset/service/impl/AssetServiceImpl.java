@@ -317,12 +317,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 如果流程引擎为空,直接返回错误信息
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                // 调用失败，直接删登记的资产
-                assetDao.deleteAssetById(id);
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
             // 安全检查
-
             BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
             baselineAssetRegisterRequest.setAssetId(id);
             baselineAssetRegisterRequest
@@ -347,8 +346,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 如果基准为空,直接返回错误信息
             if (null == baselineCheck
                 || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                // 调用失败，直接删登记的资产
-                assetDao.deleteAssetById(id);
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
                 return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
 
             }
@@ -360,8 +359,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .scan(aesEncoder.encode(id.toString(), LoginUserUtil.getLoginUser().getUsername()));
         // 如果漏洞为空,直接返回错误信息
         if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-            // 调用失败，直接删登记的资产
-            assetDao.deleteAssetById(id);
+            // 调用失败，逻辑删登记的资产
+            assetDao.deleteById(id);
             return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
         }
         return ActionResponse.success(msg);
