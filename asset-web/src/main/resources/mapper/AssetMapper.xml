@@ -1896,6 +1896,7 @@ WHERE
                     where operation_system = #{item.businessId}
                 </when>
                 <otherwise>
+                    select count(1) from asset where business_id = #{item.businessId}
                 </otherwise>
             </choose>
         </foreach>
