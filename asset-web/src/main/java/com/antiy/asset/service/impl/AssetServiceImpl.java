@@ -1779,9 +1779,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setDueDate(System.currentTimeMillis());
         otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
-        otherDeviceEntity.setName("触摸查询一体机");
+        otherDeviceEntity.setName("ar500");
         otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
-        otherDeviceEntity.setManufacturer("捷显");
+        otherDeviceEntity.setManufacturer("huawei");
         otherDeviceEntity.setWarranty("2年");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setImportanceDegree("1");
@@ -1807,15 +1807,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
         safetyEquipmentEntiy.setIp("192.168.1.120");
         safetyEquipmentEntiy.setWarranty("2年");
-        safetyEquipmentEntiy.setManufacturer("安天");
-        safetyEquipmentEntiy.setName("安天镇关威胁阻断系统   ");
+        safetyEquipmentEntiy.setName("ar500");
         safetyEquipmentEntiy
             .setMemo("镇关采用高性能软硬件架构，以智能用户识别与智能应用识别为基础，实现了完全" + "以用户和应用为中心的控制策略，先进的APT防护技术能够有效防范0day攻击和社工渗透等新型威胁。");
         safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
         safetyEquipmentEntiy.setNumber("00001");
         safetyEquipmentEntiy.setIp("192.168.1.9");
         safetyEquipmentEntiy.setUser("留小查");
-        safetyEquipmentEntiy.setManufacturer("安天");
+        safetyEquipmentEntiy.setManufacturer("huawei");
         safetyEquipmentEntiy.setSerial("ANFRWGDFETYRYF");
         safetyEquipmentEntiy.setHouseLocation("501机房004号");
         safetyEquipmentEntiy.setImportanceDegree("1");
@@ -1844,9 +1843,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         storageDeviceEntity.setFirmwareVersion("spi1");
         storageDeviceEntity.setHighCache("6GB/S");
         storageDeviceEntity.setHouseLocation("501机房004号");
-        storageDeviceEntity.setManufacturer("联想");
+        storageDeviceEntity.setManufacturer("huawei");
         storageDeviceEntity.setMemo("私有云网络存储器nas文件共享数字备份 AS6202T 0TB 标机");
-        storageDeviceEntity.setName("华芸AS6202T");
+        storageDeviceEntity.setName("ar500");
         storageDeviceEntity.setInnerInterface("SSD");
         storageDeviceEntity.setNumber("000001");
         storageDeviceEntity.setSlotType("1");
@@ -1875,7 +1874,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setCpuSize(4);
         networkDeviceEntity.setArea("成都市");
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
-        networkDeviceEntity.setName("YTW-600-5A五端口迷你型网络延长器");
+        networkDeviceEntity.setName("ar500");
         networkDeviceEntity.setDramSize(3.42f);
         networkDeviceEntity.setExpectBandwidth(4);
         networkDeviceEntity.setFirmwareVersion("1.1.1");
@@ -1890,7 +1889,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setPortSize(4);
         networkDeviceEntity.setNcrmSize(4.22f);
         networkDeviceEntity.setOuterIp("192.168.1.9");
-        networkDeviceEntity.setManufacturer("邮通");
+        networkDeviceEntity.setManufacturer("huawei");
         networkDeviceEntity.setIsWireless(1);
         networkDeviceEntity.setSerial("ANFRWGDFETYRYF");
         networkDeviceEntity.setHouseLocation("501机房004号");
@@ -1907,7 +1906,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 初始化计算设备示例数据
         List<ComputeDeviceEntity> dataList = initComputeData();
         ExcelUtils.exportTemplateToFile(ComputeDeviceEntity.class, "计算设备信息模板.xlsx", "计算设备",
-            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败,部件信息选填,但若填写了某一部件，则必须填写该部件的必填项，请不要删除示例，保持模版原样从第七行开始填写。",
+            "备注：时间填写规范统一为XXXX/XX/XX(不用补0)，必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。",
             dictionary + "/", dataList);
     }
 
@@ -1915,7 +1914,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<ComputeDeviceEntity> dataList = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
         computeDeviceEntity.setArea("成都市");
-        computeDeviceEntity.setName("ThinkPad X1 隐士");
+        computeDeviceEntity.setName("ar500");
         computeDeviceEntity.setIp("192.168.1.1");
         computeDeviceEntity.setMac("00-01-6C-06-A6-29");
         computeDeviceEntity.setWarranty("2年");
@@ -1928,7 +1927,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setUser("留小查");
         computeDeviceEntity.setBuyDate(System.currentTimeMillis());
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
-        computeDeviceEntity.setManufacturer("联想");
+        computeDeviceEntity.setManufacturer("huawei");
         computeDeviceEntity.setOperationSystem("Window 10");
         dataList.add(computeDeviceEntity);
         return dataList;

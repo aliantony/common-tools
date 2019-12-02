@@ -17,7 +17,7 @@ public class NetworkDeviceEntity {
     /**
      * 厂商
      */
-    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填)", length = 80, required = true)
+    @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填) 格式由:小写英文,数字,符号等组成", length = 80, required = true)
     private String  manufacturer;
     /**
      * 资产名称
