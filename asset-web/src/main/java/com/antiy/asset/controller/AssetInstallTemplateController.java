@@ -1,12 +1,14 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.convert.TemplateConvert;
+import com.antiy.asset.convert.TemplatePatchConvert;
+import com.antiy.asset.convert.TemplateSoftConvert;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateCheckService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
-import com.antiy.asset.templet.AssetInstallTemplateForBase;
+import com.antiy.asset.templet.AssetHardSoftLibTemplate;
+import com.antiy.asset.templet.PatchInfoTemplate;
 import com.antiy.asset.vo.query.AssetInstallTemplateQuery;
 import com.antiy.asset.vo.query.PrimaryKeyQuery;
 import com.antiy.asset.vo.request.AssetInstallTemplateCheckRequest;
@@ -23,7 +25,10 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhangyajun
@@ -35,15 +40,17 @@ import java.util.List;
 public class AssetInstallTemplateController {
 
     @Resource
-    private IAssetInstallTemplateService iAssetInstallTemplateService;
+    private IAssetInstallTemplateService      iAssetInstallTemplateService;
     @Resource
-    private TemplateConvert templateConvert;
+    private TemplatePatchConvert              templatePatchConvert;
     @Resource
-    private AssetInstallTemplateDao assetInstallTemplateDao;
+    private TemplateSoftConvert               templateSoftConvert;
+    @Resource
+    private AssetInstallTemplateDao           assetInstallTemplateDao;
     @Resource
     private IAssetInstallTemplateCheckService iAssetInstallTemplateCheckService;
     @Resource
-    public IAssetHardSoftLibService iAssetHardSoftLibService;
+    public IAssetHardSoftLibService           iAssetHardSoftLibService;
 
     /**
      * 装机模板综合查询
@@ -51,7 +58,7 @@ public class AssetInstallTemplateController {
      * @return
      */
     @ApiOperation(value = "模板列表查询-模板状态")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/query/statusList", method = RequestMethod.POST)
     public ActionResponse queryStatusList() {
         return ActionResponse.success(iAssetInstallTemplateService.queryTemplateStatus());
@@ -63,7 +70,7 @@ public class AssetInstallTemplateController {
      * @return
      */
     @ApiOperation(value = "模板列表查询-适用操作系统")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class), })
     @RequestMapping(value = "/query/osList", method = RequestMethod.POST)
     public ActionResponse queryOsList() {
         return ActionResponse.success(iAssetInstallTemplateService.queryTemplateOs());
@@ -75,14 +82,49 @@ public class AssetInstallTemplateController {
      * @return
      */
     @ApiOperation(value = "装机模板根据资产id查询")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateOsResponse.class), })
     @RequestMapping(value = "/query/assetList", method = RequestMethod.POST)
     public ActionResponse queryOsList(@RequestBody ProcessTemplateRequest processTemplateRequest) {
         List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao
-                .findByAssetIds(processTemplateRequest.getComIds());
-        List<AssetInstallTemplateForBase> templateForBases = templateConvert.convert(byAssetIds,
-                AssetInstallTemplateForBase.class);
-        return ActionResponse.success(templateForBases);
+            .findByAssetIds(processTemplateRequest.getComIds());
+        // // 获取软件 .
+        // // 补丁
+        // HashMap<String, List> stringListHashMap = new HashMap<> ();
+        // List<List<PatchInfoResponse>>PLists=new ArrayList<> ();
+        // List<List<AssetHardSoftLibResponse>>listArrayList=new ArrayList<> ();
+        //
+        //
+        // for (AssetInstallTemplate byAssetId : byAssetIds) {
+        // List<PatchInfoResponse> patchInfoResponses = iAssetInstallTemplateService.queryPatchs (byAssetId.getStringId
+        // ());
+        // PLists.add (patchInfoResponses);
+        // List<AssetHardSoftLibResponse> assetHardSoftLibResponses = iAssetHardSoftLibService.querySoftsRelations
+        // (byAssetId.getStringId ());
+        // listArrayList.add (assetHardSoftLibResponses);
+        //
+        // }
+        // stringListHashMap.put ("patch", PLists);
+        // stringListHashMap.put ("soft", listArrayList);
+
+        // 模板的集合
+        List<Map> list = new ArrayList<>();
+        for (AssetInstallTemplate byAssetId : byAssetIds) {
+            // 模板
+            Map<String, List> map2 = new HashMap<>();
+            List<PatchInfoResponse> patchInfoResponses = iAssetInstallTemplateService
+                .queryPatchs(byAssetId.getStringId());
+            List<PatchInfoTemplate> patchInfoTemplates = templatePatchConvert.convert(patchInfoResponses,
+                PatchInfoTemplate.class);
+            map2.put("patch", patchInfoTemplates);
+            List<AssetHardSoftLibResponse> assetHardSoftLibResponses = iAssetHardSoftLibService
+                .querySoftsRelations(byAssetId.getStringId());
+            List<AssetHardSoftLibTemplate> assetHardSoftLibTemplates = templateSoftConvert
+                .convert(assetHardSoftLibResponses, AssetHardSoftLibTemplate.class);
+            map2.put("soft", assetHardSoftLibTemplates);
+            list.add(map2);
+        }
+
+        return ActionResponse.success(list);
     }
 
     /**
@@ -93,7 +135,7 @@ public class AssetInstallTemplateController {
      */
     @ApiOperation("模板创建/编辑-模板编号去重查询")
     @ApiResponse(code = 200, message = "ok", response = Integer.class)
-    @RequestMapping(path = {"/query/numberCode"}, method = {RequestMethod.POST})
+    @RequestMapping(path = { "/query/numberCode" }, method = { RequestMethod.POST })
     public ActionResponse queryNumberCode(@RequestBody @ApiParam(value = "AssetInstallTemplateQuery", required = true) AssetInstallTemplateQuery query) {
         return ActionResponse.success(iAssetInstallTemplateService.queryNumberCode(query.getNumberCode().trim()));
     }
@@ -112,11 +154,11 @@ public class AssetInstallTemplateController {
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
         return ActionResponse
-                .success(iAssetInstallTemplateService.saveAssetInstallTemplate(assetInstallTemplateRequest));
+            .success(iAssetInstallTemplateService.saveAssetInstallTemplate(assetInstallTemplateRequest));
     }
 
     /**
@@ -126,7 +168,7 @@ public class AssetInstallTemplateController {
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
         return iAssetInstallTemplateService.updateAssetInstallTemplate(assetInstallTemplateRequest);
@@ -139,11 +181,11 @@ public class AssetInstallTemplateController {
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class, responseContainer = "List"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateQuery assetInstallTemplateQuery) throws Exception {
         return ActionResponse
-                .success(iAssetInstallTemplateService.queryPageAssetInstallTemplate(assetInstallTemplateQuery));
+            .success(iAssetInstallTemplateService.queryPageAssetInstallTemplate(assetInstallTemplateQuery));
     }
 
     /**
@@ -153,7 +195,7 @@ public class AssetInstallTemplateController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateResponse.class), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.queryAssetInstallTemplateById(queryCondition));
@@ -166,34 +208,34 @@ public class AssetInstallTemplateController {
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Integer.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") @RequestBody BatchQueryRequest batchQueryRequest) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.deleteAssetInstallTemplateById(batchQueryRequest));
     }
 
     @ApiOperation(value = "资产关联的装机模板信息", notes = "传入模板ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetTemplateRelationResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetTemplateRelationResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/relationInfo", method = RequestMethod.POST)
     public ActionResponse<AssetTemplateRelationResponse> queryTemplateByAssetId(@RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "模板Id不能为空");
         AssetTemplateRelationResponse assetTemplateRelationResponse = iAssetInstallTemplateService
-                .queryTemplateByAssetId(queryCondition);
+            .queryTemplateByAssetId(queryCondition);
         return ActionResponse.success(assetTemplateRelationResponse);
     }
 
     @ApiOperation(value = "模板审核信息", notes = "传入模板ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/auditInfo", method = RequestMethod.POST)
     public ActionResponse<List<AssetInstallTemplateCheckResponse>> queryTemplateCheckByTemplateId(@RequestBody QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "装机模板Id不能为空");
         List<AssetInstallTemplateCheckResponse> templateCheckResponses = iAssetInstallTemplateCheckService
-                .queryTemplateCheckByTemplateId(queryCondition);
+            .queryTemplateCheckByTemplateId(queryCondition);
         return ActionResponse.success(templateCheckResponses);
     }
 
     @ApiOperation(value = "模板包含的软件列表", notes = "传入模板ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/softList", method = RequestMethod.POST)
     public ActionResponse<PageResult<AssetHardSoftLibResponse>> querySoftList(@RequestBody PrimaryKeyQuery query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPid(), "装机模板Id不能为空");
@@ -201,23 +243,22 @@ public class AssetInstallTemplateController {
     }
 
     @ApiOperation(value = "模板包含的补丁列表", notes = "传入模板ID")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetInstallTemplateCheckResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/patchList", method = RequestMethod.POST)
     public ActionResponse<PageResult<PatchInfoResponse>> queryPatchList(@RequestBody PrimaryKeyQuery query) throws Exception {
         ParamterExceptionUtils.isBlank(query.getPid(), "装机模板Id不能为空");
         return ActionResponse.success(iAssetInstallTemplateService.queryPatchPage(query));
     }
 
-
     @ApiOperation(value = "装机模板编辑-关联软件查询", notes = "软件列表")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class), })
     @RequestMapping(value = "/query/softs", method = RequestMethod.POST)
     public ActionResponse querySoftsRelations(@RequestBody @ApiParam(required = true, value = "模板id") BaseRequest request) {
         return ActionResponse.success(iAssetHardSoftLibService.querySoftsRelations(request.getStringId()));
     }
 
     @ApiOperation(value = "装机模板编辑-关联补丁查询", notes = "补丁列表")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = PatchInfoResponse.class),})
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = PatchInfoResponse.class), })
     @RequestMapping(value = "/query/patchs", method = RequestMethod.POST)
     public ActionResponse queryPatchsRelations(@RequestBody @ApiParam(required = true, value = "模板id") BaseRequest request) {
         return ActionResponse.success(iAssetInstallTemplateService.queryPatchs(request.getStringId()));
