@@ -80,7 +80,7 @@ public class PatchInfoResponse {
     }
 
     public void setHotfix(String hotfix) {
-        this.hotfix = "0".equals(hotfix) ? "支持热补" : "0".equals(hotfix) ? "不支持热补" : "";
+        this.hotfix = "1".equals(hotfix) ? "支持热补" : "0".equals(hotfix) ? "不支持热补" : "";
     }
 
     public String getUserInteraction() {
