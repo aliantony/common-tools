@@ -64,7 +64,7 @@ public class PatchInfoResponse {
 
     public void setPatchLevel(String patchLevel) {
         this.patchLevel = "1".equals(patchLevel) ? "重要"
-                : "2".equals(patchLevel) ? "中等" : "2".equals(patchLevel) ? "严重" : "";
+                : "2".equals(patchLevel) ? "中等" : "3".equals(patchLevel) ? "严重" : "";
     }
 
     public String getPathSource() {
