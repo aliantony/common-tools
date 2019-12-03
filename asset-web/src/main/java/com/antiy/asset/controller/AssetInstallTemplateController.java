@@ -25,7 +25,6 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,27 +86,10 @@ public class AssetInstallTemplateController {
     public ActionResponse queryOsList(@RequestBody ProcessTemplateRequest processTemplateRequest) {
         List<AssetInstallTemplate> byAssetIds = assetInstallTemplateDao
             .findByAssetIds(processTemplateRequest.getComIds());
-        // // 获取软件 .
-        // // 补丁
-        // HashMap<String, List> stringListHashMap = new HashMap<> ();
-        // List<List<PatchInfoResponse>>PLists=new ArrayList<> ();
-        // List<List<AssetHardSoftLibResponse>>listArrayList=new ArrayList<> ();
-        //
-        //
-        // for (AssetInstallTemplate byAssetId : byAssetIds) {
-        // List<PatchInfoResponse> patchInfoResponses = iAssetInstallTemplateService.queryPatchs (byAssetId.getStringId
-        // ());
-        // PLists.add (patchInfoResponses);
-        // List<AssetHardSoftLibResponse> assetHardSoftLibResponses = iAssetHardSoftLibService.querySoftsRelations
-        // (byAssetId.getStringId ());
-        // listArrayList.add (assetHardSoftLibResponses);
-        //
-        // }
-        // stringListHashMap.put ("patch", PLists);
-        // stringListHashMap.put ("soft", listArrayList);
 
         // 模板的集合
-        List<Map> list = new ArrayList<>();
+
+        HashMap hashMap = new HashMap();
         for (AssetInstallTemplate byAssetId : byAssetIds) {
             // 模板
             Map<String, List> map2 = new HashMap<>();
@@ -121,10 +103,10 @@ public class AssetInstallTemplateController {
             List<AssetHardSoftLibTemplate> assetHardSoftLibTemplates = templateSoftConvert
                 .convert(assetHardSoftLibResponses, AssetHardSoftLibTemplate.class);
             map2.put("soft", assetHardSoftLibTemplates);
-            list.add(map2);
+            hashMap.put(byAssetId.getName(), map2);
         }
 
-        return ActionResponse.success(list);
+        return ActionResponse.success(hashMap);
     }
 
     /**
