@@ -1234,52 +1234,52 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 已入网后变更//未知资产/退役资产重新登记-启动流程;
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 // 资产变更
-                if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
-                        .get("baselineConfigUserId").toString().split(",");
-                    StringBuilder sb = new StringBuilder();
-                    Arrays.stream(bids).forEach(bid -> {
-                        sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
-                    });
-                    Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
-                    formData.put("baselineConfigUserId", sb.toString());
-                    List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
-                    // ------------------对接配置模块------------------start
-                    BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
-                    baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
-                    if (Objects.isNull(asset.getInstallType())) {
-                        baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
-                    } else {
-                        baselineWaitingConfigRequest.setCheckType(asset.getInstallType());
-                    }
-                    baselineWaitingConfigRequest.setConfigStatus(1);
-                    baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                    baselineWaitingConfigRequest.setReason(reason[0]);
-                    baselineWaitingConfigRequest.setSource(2);
-                    baselineWaitingConfigRequest.setFormData(formData);
-                    baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
-                    baselineWaitingConfigRequest.setAdvice(
-                        (String) assetOuterRequest.getManualStartActivityRequest().getFormData().get("memo"));
-                    baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
-                    ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
-                    if (null == actionResponse
-                        || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                        BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
-                    }
+                    if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
+                        String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
+                            .get("baselineConfigUserId").toString().split(",");
+                        StringBuilder sb = new StringBuilder();
+                        Arrays.stream(bids).forEach(bid -> {
+                            sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
+                        });
+                        Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
+                        formData.put("baselineConfigUserId", sb.toString());
+                        List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
+                        // ------------------对接配置模块------------------start
+                        BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
+                        baselineWaitingConfigRequest.setAssetId(DataTypeUtils.stringToInteger(assetId));
+                        if (Objects.isNull(asset.getInstallType())) {
+                            baselineWaitingConfigRequest.setCheckType(InstallType.AUTOMATIC.getCode());
+                        } else {
+                            baselineWaitingConfigRequest.setCheckType(asset.getInstallType());
+                        }
+                        baselineWaitingConfigRequest.setConfigStatus(1);
+                        baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        baselineWaitingConfigRequest.setReason(reason[0]);
+                        baselineWaitingConfigRequest.setSource(2);
+                        baselineWaitingConfigRequest.setFormData(formData);
+                        baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
+                        baselineWaitingConfigRequest.setAdvice(
+                            (String) assetOuterRequest.getManualStartActivityRequest().getFormData().get("memo"));
+                        baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+                        ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
+                        if (null == actionResponse
+                            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                            BusinessExceptionUtils.isTrue(false, "调用配置模块出错");
+                        }
 
-                    // ------------------对接配置模块------------------end
-                    // 记录资产操作流程
-                    assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
-                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
-                    assetOperationRecord.setProcessResult(null);
-                    assetOperationRecord.setNeedVulScan(assetOuterRequest.getNeedScan() ? 1 : 0);
-                    // 更新资产状态为变更中
-                    updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
-                        asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
-                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
-                } else {
-                    // 未知资产登记
+                        // ------------------对接配置模块------------------end
+                        // 记录资产操作流程
+                        assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+                        assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+                        assetOperationRecord.setProcessResult(null);
+                        assetOperationRecord.setNeedVulScan(assetOuterRequest.getNeedScan() ? 1 : 0);
+                        // 更新资产状态为变更中
+                        updateAssetStatus(AssetStatusEnum.IN_CHANGE.getCode(), System.currentTimeMillis(), assetId);
+                        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
+                        LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    } else {
+                    // 为入网资产
                     if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(asset.getBaselineTemplateId());
                         admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -1404,7 +1404,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
-                LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                 LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
 
