@@ -1233,7 +1233,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             uuid[0] = assetObj.getUuid();
             // 已入网后变更//未知资产/退役资产重新登记-启动流程;
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
-                // 资产变更
+                //计算机设备资产变更
                     if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
                         String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
                             .get("baselineConfigUserId").toString().split(",");
@@ -1279,7 +1279,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
                         LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
                     } else {
-                    // 为入网资产
+                    //计算机设备再登记
                     if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(asset.getBaselineTemplateId());
                         admittanceResult[0] = (String) assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -1390,7 +1390,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } else {
                     baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
                 }
-
                 // 如果基准为空,直接返回错误信息
                 if (null == baselineCheck
                     || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
@@ -1399,14 +1398,28 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         : baselineCheck;
                 }
 
+                // 记录操作日志和运行日志
+                LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(),
+                        Integer.valueOf(assetId), assetObj.getNumber(), assetOuterRequest,
+                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_SETTING));
+                LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + " {}",
+                        JSON.toJSONString(assetOuterRequest));
+
             } else {
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                 assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
-                LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
-                    asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
-                LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                }else{
+                    LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
+                            asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
+                    LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                }
 
                 // 如果组件新增则启动漏扫
                 if (isNewAddAssembly[0]) {
