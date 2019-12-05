@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
  * @author liulusheng
  * @since 2019/11/15
  */
-public class AssetBaselinTemplateQuery implements ObjectValidator {
+public class AssetBaselinTemplateQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     List<String> assetId;
     String baselineTemplateId;
