@@ -1922,7 +1922,7 @@ WHERE
         select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
     </select>
     <select id="getByAssetIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,number from asset where
+        SELECT id,number,asset_status as assetStatus  from asset where
         <if test="assetIdList == null or assetIdList.size() == 0">
             1!=1
         </if>

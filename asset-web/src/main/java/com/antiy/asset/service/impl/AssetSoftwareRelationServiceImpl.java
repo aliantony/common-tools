@@ -210,10 +210,10 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         assetList.forEach(asset -> {
             AssetOperationRecord record=new AssetOperationRecord();
             record.setTargetObjectId(asset.getId().toString());
-            record.setOriginStatus(asset.getStatus());
+            record.setOriginStatus(asset.getAssetStatus());
             record.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
             record.setNeedVulScan(0);
-            record.setContent(AssetFlowEnum.CHANGE.getActivityKey());
+            record.setContent(AssetFlowEnum.CHANGE.getMsg());
             record.setOperateUserId(LoginUserUtil.getLoginUser().getId());
             record.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             record.setGmtCreate(System.currentTimeMillis());
