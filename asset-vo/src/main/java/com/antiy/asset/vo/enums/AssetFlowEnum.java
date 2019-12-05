@@ -37,7 +37,7 @@ public enum AssetFlowEnum {
     /**
      * 拟退役
      */
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "待退役资产。", "拟退役资产信息"),
+                           TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "拟退役资产。", "拟退役资产信息"),
     /**
      * 实施退役
      */
