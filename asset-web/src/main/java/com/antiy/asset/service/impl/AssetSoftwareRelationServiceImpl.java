@@ -1,21 +1,12 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetHardSoftLibDao;
-import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetSoftware;
-import com.antiy.asset.entity.AssetSoftwareInstall;
-import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.impl.CommandClientImpl;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.InstallType;
-import com.antiy.asset.vo.enums.NameListTypeEnum;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
@@ -76,6 +67,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     private AesEncoder                                                          aesEncoder;
     @Resource
     private AssetHardSoftLibDao                                                 assetHardSoftLibDao;
+    @Resource
+    private AssetOperationRecordDao assetOperationRecordDao;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
@@ -212,6 +205,23 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_SOFTWARE_RELATION.getName(),asset.getId(),
                     asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
         }
+        //操作记录
+        List<AssetOperationRecord> recordList=new ArrayList<>();
+        assetList.forEach(asset -> {
+            AssetOperationRecord record=new AssetOperationRecord();
+            record.setTargetObjectId(asset.getId().toString());
+            record.setOriginStatus(asset.getStatus());
+            record.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+            record.setNeedVulScan(0);
+            record.setContent(AssetFlowEnum.CHANGE.getActivityKey());
+            record.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+            record.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+            record.setGmtCreate(System.currentTimeMillis());
+            record.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            record.setStatus(1);
+            recordList.add(record);
+        });
+        assetOperationRecordDao.insertBatch(recordList);
 
         //更改资产状态
         assetDao.updateAssetBatch(assetIds.stream().map(v->{
