@@ -84,7 +84,9 @@ public class AssetController {
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
-            asset.setSortName("asset.id");
+            if (asset.getSortName().equals("gmtCreate")){
+                asset.setSortName("gmt_create");
+            }
         }
         return ActionResponse.success(iAssetService.findPageAsset(asset));
     }

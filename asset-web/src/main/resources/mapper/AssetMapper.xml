@@ -1200,8 +1200,15 @@
         group by asset.id
         ORDER BY
         <choose>
-            <when test="sortName != null and sortName != '' and sortOrder != null and sortOrder != ''">
-                ${sortName} ${sortOrder}
+            <when test="sortOrder != null and sortOrder != ''">
+            <choose>
+                <when test="sortName != null and sortName != ''">
+                    ${sortName} ${sortOrder}
+                </when>
+                <otherwise>
+                    gmt_create ${sortOrder}
+                </otherwise>
+            </choose>
             </when>
             <otherwise>
                 asset.id desc
