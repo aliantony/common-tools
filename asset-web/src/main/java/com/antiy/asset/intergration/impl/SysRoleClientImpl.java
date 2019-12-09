@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.antiy.asset.intergration.SysUserClient;
 import com.antiy.asset.util.BaseClient;
+import com.antiy.asset.vo.user.UserStatus;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
 
@@ -23,6 +24,9 @@ public class SysRoleClientImpl implements SysUserClient {
     @Value("${userRoleUrl}")
     private String     userRoleUrl;
 
+    @Value("${loginUserInfoUrl}")
+    private String     loginUserInfoUrl;
+
     @Override
     public ActionResponse queryUserRoleById(String id) {
         return (ActionResponse) baseClient.post(null, new ParameterizedTypeReference<ActionResponse>() {
@@ -37,5 +41,11 @@ public class SysRoleClientImpl implements SysUserClient {
             return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
         }
         return actionResponse.getBody();
+    }
+
+    @Override
+    public UserStatus getLoginUserInfo(String userName) {
+        return (UserStatus) baseClient.get(userName, new ParameterizedTypeReference<UserStatus>() {
+        }, loginUserInfoUrl + userName);
     }
 }
