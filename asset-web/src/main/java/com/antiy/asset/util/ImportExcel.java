@@ -409,7 +409,7 @@ public class ImportExcel {
                             }
                             if (falg) {
 
-                                val = ((String) val).replaceAll(".0", "");
+                                val = substring;
                             }
 
                         }

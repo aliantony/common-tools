@@ -493,21 +493,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String checkUser(String user) throws Exception {
-        boolean falg = true;
-        if (user.endsWith(".0")) {
-            int i = user.lastIndexOf(".0");
-            String substring = user.substring(0, i);
-            try {
-                Integer integer = DataTypeUtils.stringToInteger(substring);
-            } catch (Exception e) {
-                falg = false;
-            }
-            if (falg) {
-
-                user = user.replaceAll(".0", "");
-            }
-
-        }
         AssetUserQuery assetUserQuery = new AssetUserQuery();
         assetUserQuery.setExportName(user);
         List<AssetUser> assetUsers = assetUserDao.findListAssetUser(assetUserQuery);
@@ -1176,6 +1161,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetNetworkEquipment.class);
                         anp.setModifyUser(LoginUserUtil.getLoginUser().getId());
                         anp.setGmtModified(System.currentTimeMillis());
+                        anp.setAssetId(asset.getStringId());
                         assetNetworkEquipmentDao.update(anp);
                     }
                     // 3.更新安全设备信息
@@ -1184,6 +1170,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetSafetyEquipment asp = BeanConvert.convertBean(safetyEquipmentRequest,
                             AssetSafetyEquipment.class);
                         asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        asp.setAssetId(asset.getStringId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
                         if (assetOuterRequest.getNeedScan()) {
