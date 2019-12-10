@@ -3250,15 +3250,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         UserStatus userStatus = sysUserClient.getLoginUserInfo(loginUser.getUsername());
         if (CollectionUtils.isNotEmpty(userStatus.getMenus())) {
             List<OauthMenuResponse> menuResponseList = userStatus.getMenus();
-            String result = null;
+            boolean isTag = false;
             for (OauthMenuResponse oauthMenuResponse : menuResponseList) {
                 String tag = oauthMenuResponse.getTag();
                 if ("asset:info:list:checkin".equals(tag)) {
-                    result = tag;
+                    isTag = true;
                 }
             }
 
-            if (Objects.isNull(result)) {
+            if (!isTag) {
                 return 0;
             }
 
