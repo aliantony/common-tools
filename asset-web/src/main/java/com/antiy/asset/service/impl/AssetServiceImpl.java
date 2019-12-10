@@ -3250,12 +3250,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         UserStatus userStatus = sysUserClient.getLoginUserInfo(loginUser.getUsername());
         if (CollectionUtils.isNotEmpty(userStatus.getMenus())) {
             List<OauthMenuResponse> menuResponseList = userStatus.getMenus();
+            String result = null;
             for (OauthMenuResponse oauthMenuResponse : menuResponseList) {
                 String tag = oauthMenuResponse.getTag();
-                if (!"asset:info:list:checkin".equals(tag)) {
-                    return 0;
+                if ("asset:info:list:checkin".equals(tag)) {
+                    result = tag;
                 }
             }
+
+            if (Objects.isNull(result)) {
+                return 0;
+            }
+
         }
         // 1.排除上一步实施拒绝退回到待登记的资产数量,
         // A登记 【资产1 】 B实施 【不通过】退到待登记。
