@@ -1865,7 +1865,10 @@ WHERE
         iprel.ip = #{ipMacPort.ip}
         AND asset.STATUS = 1
         AND iprel.`status` = 1
-        <if test=" areaIds != null and areaIds.size() > 0">
+        <if test=" areaIds != null and areaIds.size() == 1">
+            and asset.area_id like concat('',#{areaIds[0]})
+        </if>
+        <if test=" areaIds != null and areaIds.size() > 1">
             and asset.area_id in
             <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
                 #{item}
