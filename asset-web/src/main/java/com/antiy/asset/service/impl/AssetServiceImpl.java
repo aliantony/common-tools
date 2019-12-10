@@ -40,6 +40,7 @@ import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.intergration.SysUserClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
@@ -49,6 +50,8 @@ import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.user.OauthMenuResponse;
+import com.antiy.asset.vo.user.UserStatus;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
@@ -123,6 +126,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetGroupDao                                                       assetGroupDao;
     @Resource
     private ActivityClient                                                      activityClient;
+    @Resource
+    private SysUserClient                                                       sysUserClient;
     @Resource
     private AesEncoder                                                          aesEncoder;
     @Resource
@@ -3226,6 +3231,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LoginUser loginUser;
         if (Objects.isNull(loginUser = LoginUserUtil.getLoginUser())) {
             return 0;
+        }
+
+        // 如果用户不具备登记权限，返回0个待登记资产
+        UserStatus userStatus = sysUserClient.getLoginUserInfo(loginUser.getUsername());
+        if (CollectionUtils.isNotEmpty(userStatus.getMenus())) {
+            List<OauthMenuResponse> menuResponseList = userStatus.getMenus();
+            boolean isTag = false;
+            for (OauthMenuResponse oauthMenuResponse : menuResponseList) {
+                String tag = oauthMenuResponse.getTag();
+                if ("asset:info:list:checkin".equals(tag)) {
+                    isTag = true;
+                }
+            }
+
+            if (!isTag) {
+                return 0;
+            }
+
         }
         // 1.排除上一步实施拒绝退回到待登记的资产数量,
         // A登记 【资产1 】 B实施 【不通过】退到待登记。

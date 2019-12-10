@@ -49,7 +49,7 @@ public enum AssetStatusEnum {
     /**
      * 待退役
      */
-    WAIT_RETIRE(10, "拟退役"),
+    WAIT_RETIRE(10, "待退役"),
 
     /**
      * 已退役
