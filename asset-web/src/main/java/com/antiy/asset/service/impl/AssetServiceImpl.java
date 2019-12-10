@@ -3246,13 +3246,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return 0;
         }
 
-        // 如果用户不具备操作权限，返回0个待登记资产
+        // 如果用户不具备登记权限，返回0个待登记资产
         UserStatus userStatus = sysUserClient.getLoginUserInfo(loginUser.getUsername());
         if (CollectionUtils.isNotEmpty(userStatus.getMenus())) {
             List<OauthMenuResponse> menuResponseList = userStatus.getMenus();
             for (OauthMenuResponse oauthMenuResponse : menuResponseList) {
                 String tag = oauthMenuResponse.getTag();
-                if ("asset:info:list:checkin".equals(tag)) {
+                if (!"asset:info:list:checkin".equals(tag)) {
                     return 0;
                 }
             }
