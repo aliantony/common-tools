@@ -1,12 +1,12 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,7 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      */
     @ApiModelProperty("模板名称")
     @Size(max = 80, min = 1, message = "模板名称不能为空且不能超过80个字符")
+    @Pattern(regexp = "[^\\/:*?<>|\"]" , message = "模板名称不能包含特殊字符:\\/:*?<>|\"")
     private String name;
     /**
      * 模板编号
