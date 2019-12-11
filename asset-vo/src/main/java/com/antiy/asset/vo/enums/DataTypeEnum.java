@@ -1,11 +1,14 @@
 package com.antiy.asset.vo.enums;
 
 public enum DataTypeEnum {
-                          NONE("NONE", "无类型"), EMAIL("EMAIL",
-                                                     "邮箱"), TEL("TEL",
-                                                                "电话"), IDCARD("IDCARD",
-                                                                              "身份证号"), IP("IP",
-                                                                                          "IP地址"), MAC("MAC", "MAC地址"),;
+                          NONE("NONE",
+                               "无类型"), EMAIL("EMAIL",
+                                             "邮箱"), TEL("TEL",
+                                                        "电话"), VERSION("VERSION",
+                                                                       "软件版本"), IDCARD("IDCARD",
+                                                                                       "身份证号"), IP("IP",
+                                                                                                   "IP地址"), MAC("MAC",
+                                                                                                                "MAC地址"),;
 
     private String type;
     private String name;

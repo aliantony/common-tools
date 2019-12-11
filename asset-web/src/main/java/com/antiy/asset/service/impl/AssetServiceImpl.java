@@ -1813,6 +1813,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setIp("192.168.1.120");
         safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setName("ar500");
+        safetyEquipmentEntiy.setNewVersion("1.1.1");
         safetyEquipmentEntiy
             .setMemo("镇关采用高性能软硬件架构，以智能用户识别与智能应用识别为基础，实现了完全" + "以用户和应用为中心的控制策略，先进的APT防护技术能够有效防范0day攻击和社工渗透等新型威胁。");
         safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
@@ -2581,6 +2582,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setIp(entity.getIp());
             assetSafetyEquipment.setMac(entity.getMac());
             assetSafetyEquipment.setStatus(1);
+            assetSafetyEquipment.setNewVersion(entity.getNewVersion());
             assetSafetyEquipments.add(assetSafetyEquipment);
 
             a++;

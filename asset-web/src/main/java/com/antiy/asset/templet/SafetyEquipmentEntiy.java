@@ -20,6 +20,11 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "name", align = 1, title = "名称(必填)", length = 128, required = true)
     private String name;
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "newVersion", align = 1, title = "软件版本(必填) 格式为x|xx.x|xx.x|xx，x为数字", required = true, dataType = DataTypeEnum.VERSION)
+    private String newVersion;
 
     /**
      * 使用者
@@ -209,5 +214,13 @@ public class SafetyEquipmentEntiy {
 
     public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
+    }
+
+    public String getNewVersion() {
+        return newVersion;
+    }
+
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
     }
 }
