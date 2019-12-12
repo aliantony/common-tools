@@ -48,6 +48,9 @@ public enum DataTypeEnum {
             case EMAIL:
                 reg = "^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}$";
                 return val.matches(reg);
+            case VERSION:
+                reg = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$";
+                return val.matches(reg);
             case TEL:
                 // reg =
                 // "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
