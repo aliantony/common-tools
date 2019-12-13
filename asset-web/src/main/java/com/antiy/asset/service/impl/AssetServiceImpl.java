@@ -1146,7 +1146,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
                     }
                     // 更新 装机 ,基准 关联 时间
-                    Asset byId = assetDao.getById(asset.getId());
+                    Asset byId = assetDao.getById(asset.getStringId());
                     if (StringUtils.isNotBlank(byId.getInstallTemplateId())
                         && !asset.getInstallTemplateId().equals(byId.getInstallTemplateId())) {
                         asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
