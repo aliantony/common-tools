@@ -442,12 +442,11 @@
         count(1) count
         from
         asset_software_relation asoftrel
-        left join asset_hard_soft_lib asoft on asoftrel.software_id = asoft.business_id
+        left join asset_hard_soft_lib asoft on asoftrel.software_id = asoft.business_id  and asoft.status = 1
         where
         asset_id = #{assetId}
         and asoft.business_id is not null
         and asoftrel.status = 1
-        and asoft.status = 1
     </select>
 
     <select id="countAssetBySoftId" resultType="int" parameterType="int">
@@ -758,6 +757,30 @@
         WHERE
             t1.asset_id = #{primaryKey}
             and t1.status = 1
+            order by t1.gmt_create desc
+    </select>
+
+    <select id="queryInstalledPageList" parameterType="com.antiy.common.base.QueryCondition"
+            resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
+        SELECT
+          t1.id,
+          t1.software_id as softwareId,
+          t2.supplier,
+          t2.product_name as productName,
+          t2.version,
+          t2.soft_platform as softPlatform,
+          t1.gmt_create as gmtCreate
+        FROM
+            asset_software_relation t1
+             JOIN asset_hard_soft_lib t2
+            ON t1.software_id = t2.business_id and t2.status = 1
+        WHERE
+            t1.asset_id = #{query.primaryKey}
+            and t1.status = 1
+            order by t1.gmt_create desc
+        <if test="query.pageSize !=-1">
+            LIMIT #{query.pageSize} offset #{query.pageOffset}
+        </if>
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
         select sw_type from baseline_template where id = #{baselineTemplateId}

@@ -183,6 +183,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
+                        asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
                         admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
                             .get("admittanceResult");
                         asset.setAssetStatus(
@@ -192,10 +193,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                         asset.setFirstEnterNett(currentTimeMillis);
                     }
-                    // 装机模板 .存入软件
+                    // 装机模板
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
                         asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
-
+                        asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
                     }
 
                     if (CollectionUtils.isNotEmpty(assetGroup)) {
@@ -1144,6 +1145,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (StringUtils.isNotBlank(assetOuterRequest.getAsset().getBusinessId())) {
                         asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
                     }
+                    // 更新 装机 ,基准 关联 时间
+                    Asset byId = assetDao.getById(asset.getStringId());
+                    if (StringUtils.isNotBlank(byId.getInstallTemplateId())
+                        && !asset.getInstallTemplateId().equals(byId.getInstallTemplateId())) {
+                        asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
+                    }
+                    if (StringUtils.isNotBlank(byId.getBaselineTemplateId())
+                        && !asset.getBaselineTemplateId().equals(byId.getBaselineTemplateId())) {
+                        asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
+                    }
+
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
@@ -1292,6 +1304,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                     }
+
                     ManualStartActivityRequest activityRequest = assetOuterRequest.getManualStartActivityRequest();
                     activityRequest.setBusinessId(assetId);
                     activityRequest.setProcessDefinitionKey("assetAdmittance");
@@ -1813,6 +1826,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setIp("192.168.1.120");
         safetyEquipmentEntiy.setWarranty("2年");
         safetyEquipmentEntiy.setName("ar500");
+        safetyEquipmentEntiy.setNewVersion("1.1.1");
         safetyEquipmentEntiy
             .setMemo("镇关采用高性能软硬件架构，以智能用户识别与智能应用识别为基础，实现了完全" + "以用户和应用为中心的控制策略，先进的APT防护技术能够有效防范0day攻击和社工渗透等新型威胁。");
         safetyEquipmentEntiy.setMac("00-01-6C-06-A6-29");
@@ -2581,6 +2595,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetSafetyEquipment.setIp(entity.getIp());
             assetSafetyEquipment.setMac(entity.getMac());
             assetSafetyEquipment.setStatus(1);
+            assetSafetyEquipment.setNewVersion(entity.getNewVersion());
             assetSafetyEquipments.add(assetSafetyEquipment);
 
             a++;

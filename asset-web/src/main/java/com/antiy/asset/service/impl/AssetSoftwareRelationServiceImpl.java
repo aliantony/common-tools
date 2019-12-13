@@ -97,7 +97,16 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 查询资产已关联的软件列表
         return assetSoftwareRelationDao.queryInstalledList(query);
     }
-
+    @Override
+    public PageResult<AssetSoftwareInstallResponse> queryInstalledPageList(ObjectQuery query) {
+        // 查询资产已关联的软件列表
+        Integer count = assetSoftwareRelationDao.countSoftwareByAssetId(Integer.valueOf(query.getPrimaryKey()));
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponses = assetSoftwareRelationDao.queryInstalledPageList(query);
+        if(count==0){
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
+        }
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetSoftwareInstallResponses);
+    }
     @Override
     public PageResult<AssetSoftwareInstallResponse> queryInstallableList(InstallQuery query) {
         // 模板黑白名单类型
