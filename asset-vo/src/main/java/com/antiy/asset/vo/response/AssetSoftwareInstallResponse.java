@@ -45,6 +45,21 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
     @ApiModelProperty("软件平台")
     private String softPlatform;
 
+    /**
+     * 创建时间
+     * @
+     */
+    @ApiModelProperty("软件平台")
+    private String gmtCreate;
+
+    public String getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(String gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
     public String getProductName() {
         return productName;
     }

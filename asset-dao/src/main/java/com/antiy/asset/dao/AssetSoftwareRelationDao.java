@@ -1,10 +1,5 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetSoftware;
 import com.antiy.asset.entity.AssetSoftwareInstall;
 import com.antiy.asset.entity.AssetSoftwareRelation;
@@ -13,7 +8,12 @@ import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SoftwareResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.base.QueryCondition;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 资产软件关系信息 Mapper 接口 </p>
@@ -166,7 +166,7 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
      * @return
      */
     List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query);
-
+    List<AssetSoftwareInstallResponse> queryInstalledPageList(@Param("query") ObjectQuery query);
     /**
      * 查询基准模板名单类型
      *

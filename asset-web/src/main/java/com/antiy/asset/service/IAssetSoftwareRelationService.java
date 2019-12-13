@@ -1,15 +1,16 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-
 import com.antiy.asset.entity.AssetSoftwareRelation;
 import com.antiy.asset.vo.query.InstallQuery;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+
+import java.util.List;
 
 /**
  * <p> 资产软件关系信息 服务类 </p>
@@ -41,6 +42,8 @@ public interface IAssetSoftwareRelationService extends IBaseService<AssetSoftwar
      * @throws Exception
      */
     List<AssetSoftwareInstallResponse> queryInstalledList(QueryCondition query) throws Exception;
+
+    PageResult<AssetSoftwareInstallResponse> queryInstalledPageList(ObjectQuery query) throws Exception;
 
     /**
      * 可安装软件列表

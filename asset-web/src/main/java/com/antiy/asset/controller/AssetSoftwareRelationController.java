@@ -2,27 +2,17 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.query.AssetSoftwareRelationQuery;
 import com.antiy.asset.vo.query.InstallQuery;
-import com.antiy.asset.vo.request.AssetSoftwareRelationList;
-import com.antiy.asset.vo.request.AssetSoftwareRelationRequest;
 import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
-import com.antiy.asset.vo.response.AssetSoftwareDetailResponse;
 import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetSoftwareRelationResponse;
-import com.antiy.asset.vo.response.AssetSoftwareResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -95,6 +85,19 @@ public class AssetSoftwareRelationController {
     public ActionResponse<List<AssetSoftwareInstallResponse>> queryInstalledList(@ApiParam("查询条件") @RequestBody QueryCondition query) throws Exception {
         return ActionResponse.success(iAssetSoftwareRelationService.queryInstalledList(query));
     }
+    /**
+     * 资产已关联的软件列表(分页)
+     *
+     * @return
+     */
+    @ApiOperation(value = "资产已关联软件列表(分页)", notes = "")
+    @PreAuthorize("hasAuthority('asset:softwarerelation:queryInstallList')")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/installedPageList", method = RequestMethod.POST)
+    public ActionResponse<PageResult<AssetSoftwareInstallResponse>> queryInstalledPageList(@ApiParam("查询条件") @RequestBody ObjectQuery query) throws Exception {
+        return ActionResponse.success(iAssetSoftwareRelationService.queryInstalledPageList(query));
+    }
+
     /**
      * 资产可安装的软件列表
      *
