@@ -758,6 +758,7 @@
         WHERE
             t1.asset_id = #{primaryKey}
             and t1.status = 1
+            order by t1.gmt_create desc
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
         select sw_type from baseline_template where id = #{baselineTemplateId}
