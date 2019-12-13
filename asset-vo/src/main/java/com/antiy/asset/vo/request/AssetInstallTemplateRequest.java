@@ -25,7 +25,7 @@ public class AssetInstallTemplateRequest extends BaseRequest implements ObjectVa
      */
     @ApiModelProperty("模板名称")
     @Size(max = 80, min = 1, message = "模板名称不能为空且不能超过80个字符")
-    @Pattern(regexp = "[^\\/:*?<>|\"]" , message = "模板名称不能包含特殊字符:\\/:*?<>|\"")
+    @Pattern(regexp = "^*[^\\\\/:*?<>|\"]*$" , message = "模板名称不能包含特殊字符:\\/:*?<>|\"")
     private String name;
     /**
      * 模板编号

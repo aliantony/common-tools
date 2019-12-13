@@ -1,11 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetInstallTemplateDao;
 import com.antiy.asset.entity.AssetInstallTemplate;
 import com.antiy.asset.entity.PatchInfo;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
+import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -28,6 +30,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -64,10 +67,17 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     private RedisUtil redisUtil;
     @Resource
     private AesEncoder aesEncoder;
+    @Resource
+    private AssetHardSoftLibDao assetHardSoftLibDao;
+    @Resource
+    private BaseClient baseClient;
 
     private static final String PROCESS_KEY_INSTALL = "installTemplate";
     private static final String AUTHORITY_EXCEPTION_PROMPT = "该项操作暂无权限，请联系管理员";
-
+    private static  String PREFIX_URL="http://10.240.50.105:8093";
+    private static final String USER_INFO_URL=PREFIX_URL+"/api/v1/user/getById";
+    private static final String ROLE_INFO_URL=PREFIX_URL+"/api/v1/user/role/getRoleListByQxTag";
+    private static  String TEMPLATE_CHECK_ID="asset:install:template:check";
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
         return assetInstallTemplateDao.queryTemplateOs();
@@ -353,6 +363,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
             String unknowId = "0";
             request.setStringId(unknowId);
         }
+        checkCompliance(request);
         request.setCreateUser(LoginUserUtil.getLoginUser().getId().toString());
         request.setGmtCreate(System.currentTimeMillis());
         AssetInstallTemplate template = requestConverter.convert(request, AssetInstallTemplate.class);
@@ -371,6 +382,88 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                 template.getId(), request.getNumberCode(), template.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, "创建装机模板:{}", template.toString());
         return sendTask(request, template);
+    }
+
+    private void checkCompliance(AssetInstallTemplateRequest request) {
+
+
+        //验证操作系统
+        if (this.queryOs(request.getOperationSystem().toString()).isEmpty()) {
+            throw new RequestParamValidateException("该操作系统不存在，请刷新页面重新选择");
+        }
+        //验证软件
+        checkSoftCompliance(request.getSoftBussinessIds());
+        //验证补丁
+        checkPatchCompliance(request.getPatchIds());
+        //验证执行人
+        checkExecutorCompliance(request.getNextExecutor());
+    }
+
+    private void checkSoftCompliance(Set<String> softIds) {
+        if (softIds != null && !softIds.isEmpty()) {
+            HashMap<String, String> map = new HashMap<>(2);
+            for (String softId : softIds) {
+                map.put("businessId", softId);
+                if (assetHardSoftLibDao.countByWhere(map) < 1) {
+                    throw new RequestParamValidateException("所选软件部分不存在,请刷新页面重新选择");
+                }
+            }
+        }
+
+    }
+
+    private void checkPatchCompliance(Set<String> patchIds) {
+        if (patchIds!=null && !patchIds.isEmpty()){
+            for (String patchId : patchIds) {
+                if (assetInstallTemplateDao.findCountPatch(patchId)<1){
+                    throw new RequestParamValidateException("所选补丁部分不存在,请刷新页面重新选择");
+                }
+            }
+        }
+    }
+
+    private void checkExecutorCompliance(Set<String> nextExecutor){
+        if (nextExecutor!=null && !nextExecutor.isEmpty()){
+             List<String> permissionId=Arrays.asList(TEMPLATE_CHECK_ID);
+             Map<String,Object> role=new HashMap<>();
+              role.put("qxTags",permissionId);
+            ActionResponse roleResponse = (ActionResponse) baseClient.post(role,new ParameterizedTypeReference<ActionResponse>(){},ROLE_INFO_URL);
+
+            Map<String,Object> map=new HashMap<>();
+            for (String executor : nextExecutor) {
+                map.put("id",executor);
+                ActionResponse userResponse = null;
+                try {
+                     userResponse = (ActionResponse) baseClient.post(map,new ParameterizedTypeReference<ActionResponse>(){},USER_INFO_URL);
+                }catch (Exception e){
+                    //调用失败默认为成功
+                }
+                Map<String,Object> userResult=null;
+                if (userResponse!=null && userResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
+                    userResult= (Map<String, Object>) userResponse.getBody();
+                    if (userResult.get("status").equals(0)){
+                        throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
+                    }
+                }
+                if (roleResponse!=null && roleResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
+                 List<Map<String,Object>>  roleResult= (List<Map<String, Object>>) roleResponse.getBody();
+                        int i=roleResult.size();
+                    for (Map<String, Object> stringObjectMap : roleResult) {
+                        if (((String) userResult.get("roles")).contains((CharSequence) stringObjectMap.get("name"))) {
+                            i--;
+                            break;
+                        }
+
+                    }
+                    if (i==roleResult.size()){
+                        throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
+                    }
+
+                }
+
+            }
+        }
+
     }
 
     private synchronized void setTemplateInfo(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
