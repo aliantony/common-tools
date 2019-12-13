@@ -16,9 +16,9 @@ public class AssetEntity {
     @ApiModelProperty("编号")
     private String number;
     /**
-     * 品类型号
+     * 资产类型
      */
-    @ApiModelProperty("品类型号")
+    @ApiModelProperty("资产类型")
     private String categoryModelName;
     /**
      * 厂商

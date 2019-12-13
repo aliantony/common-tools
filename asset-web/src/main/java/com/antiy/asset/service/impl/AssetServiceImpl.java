@@ -183,6 +183,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
+                        asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
                         admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
                             .get("admittanceResult");
                         asset.setAssetStatus(
@@ -192,10 +193,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                         asset.setFirstEnterNett(currentTimeMillis);
                     }
-                    // 装机模板 .存入软件
+                    // 装机模板
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
                         asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
-
+                        asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
                     }
 
                     if (CollectionUtils.isNotEmpty(assetGroup)) {
@@ -1144,6 +1145,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (StringUtils.isNotBlank(assetOuterRequest.getAsset().getBusinessId())) {
                         asset.setBusinessId(Long.parseLong(assetOuterRequest.getAsset().getBusinessId()));
                     }
+                    // 更新 装机 ,基准 关联 时间
+                    Asset byId = assetDao.getById(asset.getId());
+                    if (StringUtils.isNotBlank(byId.getInstallTemplateId())
+                        && !asset.getInstallTemplateId().equals(byId.getInstallTemplateId())) {
+                        asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
+                    }
+                    if (StringUtils.isNotBlank(byId.getBaselineTemplateId())
+                        && !asset.getBaselineTemplateId().equals(byId.getBaselineTemplateId())) {
+                        asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
+                    }
+
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
@@ -1292,6 +1304,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                         assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
                     }
+
                     ManualStartActivityRequest activityRequest = assetOuterRequest.getManualStartActivityRequest();
                     activityRequest.setBusinessId(assetId);
                     activityRequest.setProcessDefinitionKey("assetAdmittance");

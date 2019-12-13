@@ -1535,6 +1535,14 @@
         <if test="businessId != null and businessId != ''">
             business_id = #{businessId},
         </if>
+
+        <if test=" baselineTemplateCorrelationGmt != null">
+            baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt},
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            install_template_correlation_gmt = #{installTemplateCorrelationGmt},
+        </if>
+
         asset_group = #{assetGroup },
         install_type = #{installType },
         asset_source = #{assetSource},
