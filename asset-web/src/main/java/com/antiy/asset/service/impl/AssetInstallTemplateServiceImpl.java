@@ -422,52 +422,46 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         }
     }
 
-    private void checkExecutorCompliance(Set<String> nextExecutor){
-        if (nextExecutor!=null && !nextExecutor.isEmpty()){
-             List<String> permissionId=Arrays.asList(TEMPLATE_CHECK_ID);
-             Map<String,Object> role=new HashMap<>();
-              role.put("qxTags",permissionId);
-            ActionResponse roleResponse = null;
+    private void checkExecutorCompliance(Set<String> nextExecutor) {
+        if (nextExecutor != null && !nextExecutor.isEmpty()) {
+            List<String> permissionId = Arrays.asList(TEMPLATE_CHECK_ID);
+            Map<String, Object> role = new HashMap<>();
+            role.put("qxTags", permissionId);
 
-            try{
-                 roleResponse = (ActionResponse) baseClient.post(role,new ParameterizedTypeReference<ActionResponse>(){},ROLE_INFO_URL);
-            }catch (Exception e){
-                logger.info(ROLE_INFO_URL+"请求参数:{}",role);
+            ActionResponse roleResponse = (ActionResponse) baseClient.post(role, new ParameterizedTypeReference<ActionResponse>() {
+            }, ROLE_INFO_URL);
+            if (roleResponse == null && !roleResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                logger.info(ROLE_INFO_URL + "请求参数:{}", role);
                 throw new BusinessException("调用用户模块失败");
             }
-
-            Map<String,Object> map=new HashMap<>();
+            List<Map<String, Object>> roleResult = (List<Map<String, Object>>) roleResponse.getBody();
+            Map<String, Object> map = new HashMap<>();
             for (String executor : nextExecutor) {
-                map.put("id",executor);
-                ActionResponse userResponse = null;
-                try {
-                     userResponse = (ActionResponse) baseClient.post(map,new ParameterizedTypeReference<ActionResponse>(){},USER_INFO_URL);
-                }catch (Exception e){
-                    logger.info(USER_INFO_URL+"请求参数:{}",map);
+                map.put("id", executor);
+                ActionResponse userResponse = (ActionResponse) baseClient.post(map, new ParameterizedTypeReference<ActionResponse>() {
+                }, USER_INFO_URL);
+                if (userResponse == null && !userResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    logger.info(USER_INFO_URL + "请求参数:{}", map);
                     throw new BusinessException("调用用户模块失败");
                 }
-                Map<String,Object> userResult=null;
-                if (userResponse!=null && userResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
-                    userResult= (Map<String, Object>) userResponse.getBody();
-                    if (userResult.get("status").equals(0)){
-                        throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
-                    }
-                }
-                if (roleResponse!=null && roleResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
-                 List<Map<String,Object>>  roleResult= (List<Map<String, Object>>) roleResponse.getBody();
-                        int i=roleResult.size();
-                    for (Map<String, Object> stringObjectMap : roleResult) {
-                        if (((String) userResult.get("roles")).contains((CharSequence) stringObjectMap.get("name"))) {
-                            i--;
-                            break;
-                        }
 
-                    }
-                    if (i==roleResult.size()){
-                        throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
+                Map<String, Object> userResult = (Map<String, Object>) userResponse.getBody();
+                if (userResult.get("status").equals(0)) {
+                    throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
+                }
+
+                int i = roleResult.size();
+                for (Map<String, Object> stringObjectMap : roleResult) {
+                    if (((String) userResult.get("roles")).contains((CharSequence) stringObjectMap.get("name"))) {
+                        i--;
+                        break;
                     }
 
                 }
+                if (i == roleResult.size()) {
+                    throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
+                }
+
 
             }
         }
