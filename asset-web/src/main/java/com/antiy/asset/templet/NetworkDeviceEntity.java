@@ -22,8 +22,9 @@ public class NetworkDeviceEntity {
     /**
      * 资产名称
      */
-    @ExcelField(value = "name", align = 1, title = "名称(必填)", length = 128, required = true)
+    @ExcelField(value = "name", align = 1, title = "名称(必填)  备注:填写该厂商下的名称 ", length = 128, required = true)
     private String  name;
+
 
 
     /**
