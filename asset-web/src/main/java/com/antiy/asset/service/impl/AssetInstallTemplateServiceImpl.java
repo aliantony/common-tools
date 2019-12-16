@@ -427,7 +427,14 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
              List<String> permissionId=Arrays.asList(TEMPLATE_CHECK_ID);
              Map<String,Object> role=new HashMap<>();
               role.put("qxTags",permissionId);
-            ActionResponse roleResponse = (ActionResponse) baseClient.post(role,new ParameterizedTypeReference<ActionResponse>(){},ROLE_INFO_URL);
+            ActionResponse roleResponse = null;
+
+            try{
+                 roleResponse = (ActionResponse) baseClient.post(role,new ParameterizedTypeReference<ActionResponse>(){},ROLE_INFO_URL);
+            }catch (Exception e){
+                logger.info(ROLE_INFO_URL+"请求参数:{}",role);
+                throw new BusinessException("调用用户模块失败");
+            }
 
             Map<String,Object> map=new HashMap<>();
             for (String executor : nextExecutor) {
@@ -436,7 +443,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                 try {
                      userResponse = (ActionResponse) baseClient.post(map,new ParameterizedTypeReference<ActionResponse>(){},USER_INFO_URL);
                 }catch (Exception e){
-                    //调用失败默认为成功
+                    logger.info(USER_INFO_URL+"请求参数:{}",map);
+                    throw new BusinessException("调用用户模块失败");
                 }
                 Map<String,Object> userResult=null;
                 if (userResponse!=null && userResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
