@@ -799,6 +799,6 @@
         and status=1
     </update>
     <select id="findCountPatch" parameterType="String" resultType="java.lang.Integer">
-        select count(1) from patch_info where id=#{patchId}
+        select count(1) from patch_info where id=#{patchId} and status=1
     </select>
 </mapper>

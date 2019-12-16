@@ -373,6 +373,7 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            and status=1
             <include refid="Where_Column_List"></include>
         </trim>
     </select>
