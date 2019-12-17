@@ -1,9 +1,10 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.templet.AssetInstallTemplateForBase;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
@@ -14,9 +15,9 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -162,7 +163,38 @@ public class AssetController {
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
-
+    @ApiOperation(value = "查询资产状态", notes = "传入资产id")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "query/assetStatus",method = RequestMethod.POST)
+    public ActionResponse getAssetStatus(@RequestBody OperationRequest operationRequest) throws Exception {
+        String message="该任务已被他人完成";
+        Asset asset = iAssetService.getById(operationRequest.getPrimaryKey());
+        switch (operationRequest.getOperation()){
+            case 1:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return  ActionResponse.success();
+                }
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
+            case 2:
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())){
+                        return ActionResponse.success();
+                }
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
+            case 3:
+                if(AssetStatusEnum.WAIT_REGISTER.equals(asset.getAssetStatus())){
+                      return ActionResponse.success();
+                }
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
+            case 4:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
+            default:return ActionResponse.success();
+        }
+    }
     /**
      * 通过ID删除
      *

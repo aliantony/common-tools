@@ -3045,7 +3045,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-                throw new BusinessException("资产状态已改变");
+                throw new BusinessException("任务已被领取");
             }
         }
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
