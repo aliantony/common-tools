@@ -842,10 +842,10 @@
             </foreach>
         </if>
         <if test="query.supplier != null and query.supplier != ''">
-            and supplier LIKE binary CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
+            and supplier LIKE  CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
         <if test="query.productName != null and query.productName != ''">
-            and product_name LIKE binary CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
+            and product_name LIKE  CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
         <if test="query.pageSize !=-1">
             LIMIT #{query.pageSize} offset #{query.pageOffset}
