@@ -2197,8 +2197,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMacRelation.setAssetId(asset.getId());
                 assetIpRelationDao.insert(assetIpRelation);
                 assetMacRelationDao.insert(assetMacRelation);
-                // 漏扫
-                ActionResponse scan = baseLineClient.scan(asset.getStringId());
+                // // 漏扫
+                // ActionResponse scan = baseLineClient.scan(asset.getStringId());
                 // 记录资产操作流程
                 AssetOperationRecord assetOperationRecord = assetRecord(asset.getStringId(), asset.getAreaId());
                 assetOperationRecordDao.insert(assetOperationRecord);
