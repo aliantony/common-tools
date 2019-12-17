@@ -2197,8 +2197,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMacRelation.setAssetId(asset.getId());
                 assetIpRelationDao.insert(assetIpRelation);
                 assetMacRelationDao.insert(assetMacRelation);
-                // // 漏扫
-                // ActionResponse scan = baseLineClient.scan(asset.getStringId());
                 // 记录资产操作流程
                 AssetOperationRecord assetOperationRecord = assetRecord(asset.getStringId(), asset.getAreaId());
                 assetOperationRecordDao.insert(assetOperationRecord);
@@ -2415,8 +2413,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 networkEquipments.get(i).setAssetId(stringId);
                 assetMacRelations.get(i).setAssetId(assets.get(i).getId());
                 recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
-                // 漏扫
-                ActionResponse scan = baseLineClient.scan(assets.get(i).getStringId());
                 success++;
             }
             assetNetworkEquipmentDao.insertBatch(networkEquipments);
@@ -2622,8 +2618,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetIpRelations.get(i).setAssetId(assets.get(i).getId());
                 assetMacRelations.get(i).setAssetId(assets.get(i).getId());
                 recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
-                // 漏扫
-                ActionResponse scan = baseLineClient.scan(assets.get(i).getStringId());
                 success++;
             }
             assetSafetyEquipmentDao.insertBatch(assetSafetyEquipments);
@@ -2805,8 +2799,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 String stringId = assets.get(i).getStringId();
                 assetStorageMedia.get(i).setAssetId(stringId);
                 recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
-                // 漏扫
-                ActionResponse scan = baseLineClient.scan(assets.get(i).getStringId());
                 success++;
             }
             assetStorageMediumDao.insertBatch(assetStorageMedia);
@@ -2988,8 +2980,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetIpRelations.get(i).setAssetId(assets.get(i).getId());
                 assetMacRelations.get(i).setAssetId(assets.get(i).getId());
                 recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
-                // 漏扫
-                ActionResponse scan = baseLineClient.scan(assets.get(i).getStringId());
                 success++;
             }
             assetIpRelationDao.insertBatch(assetIpRelations);
