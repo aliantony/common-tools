@@ -115,10 +115,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         String os = assetSoftwareRelationDao.queryOs(query);
         // 模板的软件
         List<Long> softwareIds = assetSoftwareRelationDao.querySoftwareIds(query);
-        QueryCondition condition = new QueryCondition();
-        condition.setPrimaryKey(query.getAssetId());
         // 已安装的软件
-        List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(condition).stream()
+        List<String> installedSoftIds = assetSoftwareRelationDao.queryInstalledList(query).stream()
             .map(AssetSoftwareInstallResponse::getSoftwareId).collect(Collectors.toList());
         // 模板是黑名单需排除黑名单中的软件,以及已经安装过的软件
         if (Objects.equals(nameListType, NameListTypeEnum.BLACK.getCode())) {
