@@ -1350,7 +1350,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         JSON.toJSONString(assetOuterRequest));
                     // 扫描
                     ActionResponse scan = baseLineClient
-                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                        .scan(assetId);
                     // 如果漏洞为空,直接返回错误信息
                     if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                         // 调用失败，直接删登记的资产
@@ -1429,7 +1429,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 如果组件新增则启动漏扫
                 if (isNewAddAssembly[0]) {
                     ActionResponse scan = baseLineClient
-                        .scan(aesEncoder.encode(assetId, LoginUserUtil.getLoginUser().getUsername()));
+                        .scan(assetId);
                     // 如果漏洞为空,直接返回错误信息
                     if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
                         throw new BusinessException("调用配置模块出错");
