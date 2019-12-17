@@ -2155,6 +2155,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
+            asset.setAdmittanceStatus(1);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
             asset.setAssetSource(ReportType.MANUAL.getCode());
@@ -2370,6 +2371,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
             asset.setDescrible(entity.getMemo());
             asset.setIsInnet(0);
+            asset.setAdmittanceStatus(1);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             assets.add(asset);
             AssetMacRelation assetMacRelation = new AssetMacRelation();
@@ -2588,6 +2590,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getMemo());
             asset.setIsInnet(0);
+            asset.setAdmittanceStatus(1);
             asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
             assets.add(asset);
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
@@ -2753,6 +2756,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setNumber(entity.getNumber());
             asset.setName(entity.getName());
             asset.setIsInnet(0);
+            asset.setAdmittanceStatus(1);
             asset.setManufacturer(entity.getManufacturer());
             asset.setFirmwareVersion(entity.getFirmwareVersion());
             asset.setSerial(entity.getSerial());
@@ -2944,6 +2948,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setNumber(entity.getNumber());
             asset.setName(entity.getName());
             asset.setIsInnet(0);
+            asset.setAdmittanceStatus(1);
             asset.setManufacturer(entity.getManufacturer());
             asset.setSerial(entity.getSerial());
             asset.setBuyDate(entity.getBuyDate());
