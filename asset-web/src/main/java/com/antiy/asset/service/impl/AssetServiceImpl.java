@@ -1417,6 +1417,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         JSON.toJSONString(assetOuterRequest));
 
             } else {
+                // 待登记多人 操作
+                if (asset.getAssetStatus() == AssetStatusEnum.WAIT_REGISTER.getCode()) {
+                    // 查询数据库
+                    Asset daoById = assetDao.getById(asset.getStringId());
+                    if (daoById.getAssetStatus() == AssetStatusEnum.NET_IN.getCode()) {
+                        throw new BusinessException("该任务已经被人领取!");
+                    }
+                }
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
