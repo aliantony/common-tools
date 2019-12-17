@@ -1316,7 +1316,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         String message="已有正在运行中的流程，请勿重复启动";
                         if(message.equals(actionResponse.getBody())){
-                            BusinessExceptionUtils.isTrue(false, "任务已被认领");
+                            BusinessExceptionUtils.isTrue(false, "该任务已经被人领取,即将跳转列表页面!");
                         }
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                     }
@@ -1422,7 +1422,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 查询数据库
                     Asset daoById = assetDao.getById(asset.getStringId());
                     if (daoById.getAssetStatus() == AssetStatusEnum.NET_IN.getCode()) {
-                        throw new BusinessException("该任务已经被人领取!");
+                        throw new BusinessException("该任务已经被人领取,即将跳转列表页面!");
                     }
                 }
                 // 直接更改状态
@@ -1446,7 +1446,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         .scan(assetId);
                     // 如果漏洞为空,直接返回错误信息
                     if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                        throw new BusinessException("调用配置模块出错");
+                        throw new BusinessException("调用漏洞扫描出错");
                     }
                 }
 
