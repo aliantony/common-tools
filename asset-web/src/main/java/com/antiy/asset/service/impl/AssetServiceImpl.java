@@ -95,6 +95,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
+    private AssetLockDao                                                        assetLockDao;
+    @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse>                                 responseConverter;
@@ -150,8 +152,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetOperationRecordDao                                             operationRecordDao;
     @Resource
     private BaseLineClient                                                      baseLineClient;
-    @Resource
-    private AssetLockDao  assetLockDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -1367,7 +1367,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                         String message="已有正在运行中的流程，请勿重复启动";
                         if(message.equals(actionResponse.getBody())){
-                            BusinessExceptionUtils.isTrue(false, "该任务已经被人领取,即将跳转列表页面!");
+                            BusinessExceptionUtils.isTrue(false, "资产已登记，无法重复提交！");
                         }
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                     }
@@ -1473,7 +1473,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 查询数据库
                     Asset daoById = assetDao.getById(asset.getStringId());
                     if (daoById.getAssetStatus() == AssetStatusEnum.NET_IN.getCode()) {
-                        throw new BusinessException("该任务已经被人领取,即将跳转列表页面!");
+                        throw new BusinessException("资产已登记，无法重复提交！");
                     }
                 }
                 // 直接更改状态
@@ -1504,6 +1504,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
+        assetLockDao.deleteByAssetId(asset.getId());
 
         return ActionResponse.success(msg);
     }
