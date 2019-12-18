@@ -163,7 +163,7 @@ public class AssetController {
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
-    @ApiOperation(value = "查询资产状态", notes = "传入资产id")
+    @ApiOperation(value = "查询资产状态", notes = "")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "query/assetStatus",method = RequestMethod.POST)
     public ActionResponse getAssetStatus(@RequestBody OperationRequest operationRequest) throws Exception {
@@ -183,7 +183,7 @@ public class AssetController {
                 }
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
             case 3:
-                if(AssetStatusEnum.WAIT_REGISTER.equals(asset.getAssetStatus())){
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())){
                       return ActionResponse.success();
                 }
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,message);
