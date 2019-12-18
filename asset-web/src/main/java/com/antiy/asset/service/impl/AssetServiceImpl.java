@@ -735,15 +735,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
     private ActionResponse jugeAssetStatus(Integer assetId,Integer operation) throws Exception {
-        String message="资产已处于%s，无法重复提交！";
-        Asset asset = assetDao.getById(assetId);
+
+        Asset asset = assetDao.getById(String.valueOf(assetId));
         switch (operation){
             case 1:
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     return  ActionResponse.success();
                 }
                 assetLockDao.deleteByAssetId(assetId);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 2:
                 if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
                         ||AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
@@ -751,23 +751,27 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return ActionResponse.success();
                 }
                 assetLockDao.deleteByAssetId(assetId);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 3:
                 if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())){
                     return ActionResponse.success();
                 }
                 assetLockDao.deleteByAssetId(assetId);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 4:
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     return ActionResponse.success();
                 }
                 assetLockDao.deleteByAssetId(assetId);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             default:return ActionResponse.success();
         }
     }
-
+    private String getAssetStatusMsg(Integer code){
+        String message="资产已处于%s，无法重复提交！";
+        AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(code);
+        return String.format(message,assetByCode.getMsg());
+    }
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setTemplateList(processTemplateRequest.getIds());

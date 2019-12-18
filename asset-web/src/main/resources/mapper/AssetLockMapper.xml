@@ -6,7 +6,10 @@
         select id,asset_id as assetId,user_id as userId
         from asset_lock where   asset_id=#{assetId}
     </select>
-
+    <insert id="insert">
+        insert into asset_lock(asset_id,user_id)
+        values(#{assetId},#{userId})
+    </insert>
     <delete id="deleteByAssetId">
         DELETE FROM asset_lock WHERE asset_id=#{assetId};
     </delete>
