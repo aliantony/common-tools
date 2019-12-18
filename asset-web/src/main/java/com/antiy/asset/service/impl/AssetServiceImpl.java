@@ -721,13 +721,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception {
-        AssetLock assetLockConvert = assetLockConverter.convert(assetLockRequest, AssetLock.class);
-        AssetLock assetLock=assetLockDao.getByAssetId(assetLockRequest.getAssetId());
+        AssetLock assetLockConvert=new AssetLock();
+        assetLockConvert.setAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
+        assetLockConvert.setUserId(LoginUserUtil.getLoginUser().getId());
+        AssetLock assetLock=assetLockDao.getByAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
         if(assetLock==null){
             assetLockDao.insert(assetLockConvert);
-            return jugeAssetStatus(assetLockRequest.getAssetId(),assetLockRequest.getOperation());
+            return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
         }else if(LoginUserUtil.getLoginUser().getId().equals(assetLock.getUserId())){
-            return jugeAssetStatus(assetLockRequest.getAssetId(),assetLockRequest.getOperation());
+            return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
         }else{
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该任务已被他人认领");
         }

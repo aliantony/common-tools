@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.encoder.Encode;
 
 public class AssetLockRequest extends QueryCondition {
     /**
@@ -11,14 +12,15 @@ public class AssetLockRequest extends QueryCondition {
      * 4 拟退役
      */
     Integer operation;
-    private Integer assetId;
+    @Encode
+    private String assetId;
     private Integer userId;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 
