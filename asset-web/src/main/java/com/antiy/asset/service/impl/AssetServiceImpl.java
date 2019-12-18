@@ -113,6 +113,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse>                       assetGroupResponseBaseConverter;
     @Resource
+    private BaseConverter<AssetLockRequest, AssetLock>                                  assetLockConverter;
+    @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
     private AssetGroupRelationDao                                               assetGroupRelationDao;
@@ -148,6 +150,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetOperationRecordDao                                             operationRecordDao;
     @Resource
     private BaseLineClient                                                      baseLineClient;
+    @Resource
+    private AssetLockDao  assetLockDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -713,6 +717,53 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAsset(query, processMap));
+    }
+
+    @Override
+    public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception {
+        AssetLock assetLockConvert = assetLockConverter.convert(assetLockRequest, AssetLock.class);
+        AssetLock assetLock=assetLockDao.getByAssetId(assetLockRequest.getAssetId());
+        if(assetLock==null){
+            assetLockDao.insert(assetLockConvert);
+            return jugeAssetStatus(assetLockRequest.getAssetId(),assetLockRequest.getOperation());
+        }else if(LoginUserUtil.getLoginUser().getId().equals(assetLock.getUserId())){
+            return jugeAssetStatus(assetLockRequest.getAssetId(),assetLockRequest.getOperation());
+        }else{
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该任务已被他人认领");
+        }
+    }
+    private ActionResponse jugeAssetStatus(Integer assetId,Integer operation) throws Exception {
+        String message="资产已处于%s，无法重复提交！";
+        Asset asset = assetDao.getById(assetId);
+        switch (operation){
+            case 1:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return  ActionResponse.success();
+                }
+                assetLockDao.deleteByAssetId(assetId);
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+            case 2:
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+                assetLockDao.deleteByAssetId(assetId);
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+            case 3:
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+                assetLockDao.deleteByAssetId(assetId);
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+            case 4:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+                assetLockDao.deleteByAssetId(assetId);
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,String.format(message,asset.getAssetStatus()));
+            default:return ActionResponse.success();
+        }
     }
 
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
