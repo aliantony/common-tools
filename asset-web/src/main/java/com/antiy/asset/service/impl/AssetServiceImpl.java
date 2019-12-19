@@ -30,6 +30,7 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -197,6 +198,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 装机模板
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
+                        checkInstallTemplateCompliance(requestAsset.getInstallTemplateId());
                         asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
                         asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
                     }
@@ -373,6 +375,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return ActionResponse.success(msg);
     }
 
+    private void checkInstallTemplateCompliance(String templateId) throws Exception {
+        if (StringUtils.isNotBlank(templateId)) {
+            AssetInstallTemplate response = assetInstallTemplateDao.getById(templateId);
+            //装机模板必须为启用
+            if (Objects.isNull(response) || !response.getStatus().equals(1) || !response.getCurrentStatus().equals(AssetInstallTemplateStatusEnum.ENABLE.getCode())) {
+                throw new RequestParamValidateException("装机模板不存在或未启用,请重新选择");
+            }
+
+        }
+    }
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
