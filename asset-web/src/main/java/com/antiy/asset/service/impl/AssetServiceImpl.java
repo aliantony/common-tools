@@ -733,7 +733,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception {
-        AssetLock assetLockConvert=new AssetLock();
+        return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
+        /*AssetLock assetLockConvert=new AssetLock();
         assetLockConvert.setAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
         assetLockConvert.setUserId(LoginUserUtil.getLoginUser().getId());
         AssetLock assetLock=assetLockDao.getByAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
@@ -744,7 +745,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
         }else{
             return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该任务已被他人认领");
-        }
+        }*/
     }
     private ActionResponse jugeAssetStatus(Integer assetId,Integer operation) throws Exception {
 
@@ -754,7 +755,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     return  ActionResponse.success();
                 }
-                assetLockDao.deleteByAssetId(assetId);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 2:
                 if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
@@ -762,19 +762,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         ||AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())){
                     return ActionResponse.success();
                 }
-                assetLockDao.deleteByAssetId(assetId);
+
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 3:
                 if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())){
                     return ActionResponse.success();
                 }
-                assetLockDao.deleteByAssetId(assetId);
+
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             case 4:
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     return ActionResponse.success();
                 }
-                assetLockDao.deleteByAssetId(assetId);
+
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
             default:return ActionResponse.success();
         }
@@ -3119,7 +3119,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-                throw new BusinessException("任务已被领取");
+                AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus());
+                String assetStatus=assetByCode.getMsg();
+                throw new BusinessException(String.format("资产已处于%s，无法重复提交！",assetStatus));
             }
         }
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
