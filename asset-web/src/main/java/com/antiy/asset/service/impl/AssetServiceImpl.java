@@ -1,39 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -64,8 +30,41 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -97,6 +96,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
+    private AssetLockDao                                                        assetLockDao;
+    @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse>                                 responseConverter;
@@ -114,6 +115,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseConverter<AssetAssembly, AssetAssemblyResponse>                 assemblyResponseBaseConverter;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse>                       assetGroupResponseBaseConverter;
+    @Resource
+    private BaseConverter<AssetLockRequest, AssetLock>                                  assetLockConverter;
     @Resource
     private AssetUserDao                                                        assetUserDao;
     @Resource
@@ -195,6 +198,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 装机模板
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
+                        checkInstallTemplateCompliance(requestAsset.getInstallTemplateId());
                         asset.setInstallTemplateId(requestAsset.getInstallTemplateId());
                         asset.setInstallTemplateCorrelationGmt(System.currentTimeMillis());
                     }
@@ -371,6 +375,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return ActionResponse.success(msg);
     }
 
+    private void checkInstallTemplateCompliance(String templateId) throws Exception {
+        if (StringUtils.isNotBlank(templateId)) {
+            AssetInstallTemplate response = assetInstallTemplateDao.getById(templateId);
+            //装机模板必须为启用
+            if (Objects.isNull(response) || !response.getStatus().equals(1) || !response.getCurrentStatus().equals(AssetInstallTemplateStatusEnum.ENABLE.getCode())) {
+                throw new RequestParamValidateException("装机模板不存在或未启用,请重新选择");
+            }
+
+        }
+    }
     private Integer SaveStorage(Asset asset, AssetStorageMediumRequest assetStorageMedium,
                                 AssetStorageMedium medium) throws Exception {
         medium.setAssetId(asset.getStringId());
@@ -717,6 +731,59 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             this.findListAsset(query, processMap));
     }
 
+    @Override
+    public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception {
+        return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
+        /*AssetLock assetLockConvert=new AssetLock();
+        assetLockConvert.setAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
+        assetLockConvert.setUserId(LoginUserUtil.getLoginUser().getId());
+        AssetLock assetLock=assetLockDao.getByAssetId(Integer.valueOf(assetLockRequest.getAssetId()));
+        if(assetLock==null){
+            assetLockDao.insert(assetLockConvert);
+            return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
+        }else if(LoginUserUtil.getLoginUser().getId().equals(assetLock.getUserId())){
+            return jugeAssetStatus(Integer.valueOf(assetLockRequest.getAssetId()),assetLockRequest.getOperation());
+        }else{
+            return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,"该任务已被他人认领");
+        }*/
+    }
+    private ActionResponse jugeAssetStatus(Integer assetId,Integer operation) throws Exception {
+
+        Asset asset = assetDao.getById(String.valueOf(assetId));
+        switch (operation){
+            case 1:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return  ActionResponse.success();
+                }
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
+            case 2:
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
+            case 3:
+                if(AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
+            case 4:
+                if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
+                    return ActionResponse.success();
+                }
+
+                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION,getAssetStatusMsg(asset.getAssetStatus()));
+            default:return ActionResponse.success();
+        }
+    }
+    private String getAssetStatusMsg(Integer code){
+        String message="资产已处于%s，无法重复提交！";
+        AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(code);
+        return String.format(message,assetByCode.getMsg());
+    }
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setTemplateList(processTemplateRequest.getIds());
@@ -1080,7 +1147,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+    public  ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
@@ -1113,6 +1180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         final String[] uuid = new String[1];
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
         final boolean[] isNewAddAssembly = { false };
+
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
@@ -1220,6 +1288,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
         });
+
         // 记录资产操作流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
@@ -1309,12 +1378,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     activityRequest.setBusinessId(assetId);
                     activityRequest.setProcessDefinitionKey("assetAdmittance");
                     activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+
                     ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
                     // 如果流程引擎为空,直接返回错误信息
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                        String message="已有正在运行中的流程，请勿重复启动";
+                        if(message.equals(actionResponse.getBody())){
+                            // 查询数据库
+                            Asset daoById = assetDao.getById(asset.getStringId());
+                            BusinessExceptionUtils.isTrue(false,
+                                "资产已处于" + AssetStatusEnum.getAssetByCode(daoById.getAssetStatus()).getMsg()
+                                                                 + "无法重复提交！");
+                        }
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                     }
+
                     // 安全检查 2 模板1
 
                     BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
@@ -1411,6 +1490,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         JSON.toJSONString(assetOuterRequest));
 
             } else {
+                // 待登记多人 操作
+                if (asset.getAssetStatus() == AssetStatusEnum.WAIT_REGISTER.getCode()) {
+                    // 查询数据库
+                    Asset daoById = assetDao.getById(asset.getStringId());
+                    if (daoById.getAssetStatus() == AssetStatusEnum.NET_IN.getCode()) {
+                        throw new BusinessException("资产已处于入网状态，无法重复提交！");
+                    }
+                }
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
@@ -1432,13 +1519,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         .scan(assetId);
                     // 如果漏洞为空,直接返回错误信息
                     if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                        throw new BusinessException("调用配置模块出错");
+                        throw new BusinessException("调用漏洞扫描出错");
                     }
                 }
 
             }
         }
         assetOperationRecordDao.insert(assetOperationRecord);
+
 
         return ActionResponse.success(msg);
     }
@@ -3031,7 +3119,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
-                throw new BusinessException("资产状态已改变");
+                AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus());
+                String assetStatus=assetByCode.getMsg();
+                throw new BusinessException(String.format("资产已处于%s，无法重复提交！",assetStatus));
             }
         }
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());

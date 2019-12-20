@@ -30,6 +30,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,9 +75,10 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     private static final String PROCESS_KEY_INSTALL = "installTemplate";
     private static final String AUTHORITY_EXCEPTION_PROMPT = "该项操作暂无权限，请联系管理员";
-    private static  String PREFIX_URL="http://10.240.50.105:8093";
-    private static final String USER_INFO_URL=PREFIX_URL+"/api/v1/user/getById";
-    private static final String ROLE_INFO_URL=PREFIX_URL+"/api/v1/user/role/getRoleListByQxTag";
+    @Value("${getUserInfoUrl}")
+    private   String USER_INFO_URL;
+    @Value("${getRoleInfoUrl}")
+    private   String ROLE_INFO_URL;
     private static  String TEMPLATE_CHECK_ID="asset:install:template:check";
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
@@ -434,7 +436,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                 logger.info(ROLE_INFO_URL + "请求参数:{}", role);
                 throw new BusinessException("调用用户模块失败");
             }
-            List<Map<String, Object>> roleResult = (List<Map<String, Object>>) roleResponse.getBody();
+            List<Map<String, Object>> roleResult=null;
+            try {
+                 roleResult = (List<Map<String, Object>>) roleResponse.getBody();
+            }catch (Exception e){
+                throw new BusinessException(String.format("调用用户模块返回信息:%s", roleResponse.getBody()));
+            }
             Map<String, Object> map = new HashMap<>();
             for (String executor : nextExecutor) {
                 map.put("id", executor);
@@ -444,8 +451,12 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                     logger.info(USER_INFO_URL + "请求参数:{}", map);
                     throw new BusinessException("调用用户模块失败");
                 }
-
-                Map<String, Object> userResult = (Map<String, Object>) userResponse.getBody();
+                Map<String, Object> userResult=null;
+                try {
+                     userResult = (Map<String, Object>) userResponse.getBody();
+                }catch (Exception e){
+                    throw new BusinessException(String.format("调用用户模块返回信息:%s", userResponse.getBody()));
+                }
                 if (userResult.get("status").equals(0)) {
                     throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
                 }

@@ -59,6 +59,12 @@ public interface IAssetService extends IBaseService<Asset> {
     PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception;
 
     /**
+     * 资产认领/操作
+     */
+
+    public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception;
+
+    /**
      * 判断资产是否重复
      *
      * @param uuid

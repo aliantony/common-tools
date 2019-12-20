@@ -16,6 +16,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -150,6 +151,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         ParamterExceptionUtils.isEmpty(assetIds, "请选择资产");
         Map<String, String> map = new HashMap<>();
         if (CollectionUtils.isNotEmpty(softIds)) {
+            checkSoftwareCompliance(softIds.toArray(new Long[softIds.size()]));
             List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
             assetIds.stream().forEach(assetId -> {
                 map.put(assetId, assetSoftwareRelationDao.getContent(assetId, softIds));
@@ -243,6 +245,18 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         }).collect(Collectors.toList()));
 
         return result;
+    }
+
+    private void checkSoftwareCompliance(Long... softBusinessId) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("isStorage", "1");
+        for (long id : softBusinessId) {
+            map.put("businessId", String.valueOf(id));
+            int count = assetHardSoftLibDao.countByWhere(map);
+            if (count == 0) {
+                throw new RequestParamValidateException("关联的软件部分不存在或未入库,请刷新并重新选择");
+            }
+        }
     }
 
 }

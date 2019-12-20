@@ -1,25 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import com.antiy.common.exception.RequestParamValidateException;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.templet.ReportForm;
@@ -41,9 +21,27 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -69,7 +67,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         List<Integer> allDataList = Lists.newArrayList();
         // 总增量
         List<Integer> allAddList = Lists.newArrayList();
-        List<Integer> topAreaIds;
+        List<String> topAreaIds;
         // 是否需要top5
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
@@ -349,10 +347,10 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
 
     }
 
-    private String getAreaNameById(Integer id, List<AssetAreaReportRequest> assetAreaIds) {
+    private String getAreaNameById(String id, List<AssetAreaReportRequest> assetAreaIds) {
         String result = "";
         for (AssetAreaReportRequest assetAreaReportRequest : assetAreaIds) {
-            if (id.equals(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()))) {
+            if (id.equals(assetAreaReportRequest.getParentAreaId())) {
                 result = assetAreaReportRequest.getParentAreaName();
                 break;
             }
@@ -372,7 +370,7 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
     //
     // }
 
-    private List<Integer> getTopFive(ReportQueryRequest reportRequest) {
+    private List<String> getTopFive(ReportQueryRequest reportRequest) {
 
         // 1.查询当前条件所有的区域信息
         List<Map<String, Integer>> allAssetCount = assetReportDao.getAllAssetWithArea(reportRequest);
@@ -387,11 +385,11 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (areaTop.size() > 5) {
             areaTop = areaTop.subList(0, 5);
         }
-        List<Integer> areaId = new ArrayList<>();
+        List<String> areaId = new ArrayList<>();
         areaTop.stream().forEach(areaName -> {
             reportRequest.getAssetAreaIds().forEach(assetAreaReportRequest -> {
                 if (assetAreaReportRequest.getParentAreaName().equals(areaName)) {
-                    areaId.add(DataTypeUtils.stringToInteger(assetAreaReportRequest.getParentAreaId()));
+                    areaId.add(assetAreaReportRequest.getParentAreaId());
                 }
             });
         });
