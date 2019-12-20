@@ -1,12 +1,10 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
-
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
-import com.antiy.common.utils.DataTypeUtils;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * @author: zhangbing
@@ -38,8 +36,8 @@ public class AssetAreaReportRequest extends BaseRequest {
         return parentAreaId;
     }
 
-    public Integer getParentAreaIdInteger() {
-        return DataTypeUtils.stringToInteger(parentAreaId);
+    public String getParentAreaIdInteger() {
+        return parentAreaId;
     }
 
     public void setParentAreaId(String parentAreaId) {
