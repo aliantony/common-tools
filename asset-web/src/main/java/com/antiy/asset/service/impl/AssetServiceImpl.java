@@ -2256,6 +2256,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueTime());
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getDescription());
+            asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setCategoryModel(AssetCategoryEnum.COMPUTER.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             AssetIpRelation assetIpRelation = new AssetIpRelation();
@@ -2445,6 +2446,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
+            asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
             asset.setAssetSource(ReportType.MANUAL.getCode());
@@ -2660,7 +2662,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 asset.setOperationSystem(assetCpeFilter.getBusinessId());
                 asset.setOperationSystemName(entity.getOperationSystem());
             }
-
+            asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
@@ -2843,6 +2845,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setAssetSource(ReportType.MANUAL.getCode());
             asset.setNumber(entity.getNumber());
             asset.setName(entity.getName());
+            asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setIsInnet(0);
             asset.setAdmittanceStatus(1);
             asset.setManufacturer(entity.getManufacturer());
@@ -3029,6 +3032,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
+            asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
