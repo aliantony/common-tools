@@ -75,10 +75,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     private static final String PROCESS_KEY_INSTALL = "installTemplate";
     private static final String AUTHORITY_EXCEPTION_PROMPT = "该项操作暂无权限，请联系管理员";
-    @Value("${getUserInfoUrl}")
-    private   String USER_INFO_URL;
-    @Value("${getRoleInfoUrl}")
-    private   String ROLE_INFO_URL;
+    @Value("${checkUserComplianceUrl}")
+    private   String checkUserComplianceUrl;
     private static  String TEMPLATE_CHECK_ID="asset:install:template:check";
     @Override
     public List<AssetInstallTemplateOsResponse> queryTemplateOs() {
@@ -427,53 +425,23 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
     private void checkExecutorCompliance(Set<String> nextExecutor) {
         if (nextExecutor != null && !nextExecutor.isEmpty()) {
             List<String> permissionId = Arrays.asList(TEMPLATE_CHECK_ID);
-            Map<String, Object> role = new HashMap<>();
-            role.put("qxTags", permissionId);
-
-            ActionResponse roleResponse = (ActionResponse) baseClient.post(role, new ParameterizedTypeReference<ActionResponse>() {
-            }, ROLE_INFO_URL);
-            if (roleResponse == null && !roleResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                logger.info(ROLE_INFO_URL + "请求参数:{}", role);
+            Map<String, Object> query = new HashMap<>();
+            query.put("ids",nextExecutor);
+            query.put("qxTags", permissionId);
+            ActionResponse<Boolean> response=null;
+            try {
+                 response = (ActionResponse<Boolean>) baseClient.post(query, new ParameterizedTypeReference<ActionResponse>() {
+                }, checkUserComplianceUrl);
+            }catch (Exception e){
+                logger.warn(e.getCause().getMessage());
                 throw new BusinessException("调用用户模块失败");
             }
-            List<Map<String, Object>> roleResult=null;
-            try {
-                 roleResult = (List<Map<String, Object>>) roleResponse.getBody();
-            }catch (Exception e){
-                throw new BusinessException(String.format("调用用户模块返回信息:%s", roleResponse.getBody()));
+            if (response == null && !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                logger.info(checkUserComplianceUrl + "请求参数:{}", query);
+                throw new BusinessException("调用用户模块失败");
             }
-            Map<String, Object> map = new HashMap<>();
-            for (String executor : nextExecutor) {
-                map.put("id", executor);
-                ActionResponse userResponse = (ActionResponse) baseClient.post(map, new ParameterizedTypeReference<ActionResponse>() {
-                }, USER_INFO_URL);
-                if (userResponse == null && !userResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                    logger.info(USER_INFO_URL + "请求参数:{}", map);
-                    throw new BusinessException("调用用户模块失败");
-                }
-                Map<String, Object> userResult=null;
-                try {
-                     userResult = (Map<String, Object>) userResponse.getBody();
-                }catch (Exception e){
-                    throw new BusinessException(String.format("调用用户模块返回信息:%s", userResponse.getBody()));
-                }
-                if (userResult.get("status").equals(0)) {
+            if (!response.getBody()){
                     throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
-                }
-
-                int i = roleResult.size();
-                for (Map<String, Object> stringObjectMap : roleResult) {
-                    if (((String) userResult.get("roles")).contains((CharSequence) stringObjectMap.get("name"))) {
-                        i--;
-                        break;
-                    }
-
-                }
-                if (i == roleResult.size()) {
-                    throw new RequestParamValidateException("所选的审核执行人权限已被更改，请刷新页面重新选择");
-                }
-
-
             }
         }
 
