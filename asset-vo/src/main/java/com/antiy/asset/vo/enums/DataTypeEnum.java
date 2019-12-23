@@ -5,10 +5,11 @@ public enum DataTypeEnum {
                                "无类型"), EMAIL("EMAIL",
                                              "邮箱"), TEL("TEL",
                                                         "电话"), VERSION("VERSION",
-                                                                       "软件版本"), IDCARD("IDCARD",
-                                                                                       "身份证号"), IP("IP",
-                                                                                                   "IP地址"), MAC("MAC",
-                                                                                                                "MAC地址"),;
+                                                                       "软件版本"), NUMBER("NUMBER",
+                                                                                       "保留2位小数"), IDCARD("IDCARD",
+                                                                                                         "身份证号"), IP("IP",
+                                                                                                                     "IP地址"), MAC("MAC",
+                                                                                                                                  "MAC地址"),;
 
     private String type;
     private String name;
@@ -50,6 +51,9 @@ public enum DataTypeEnum {
                 return val.matches(reg);
             case VERSION:
                 reg = "^[+]?\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$";
+                return val.matches(reg);
+            case NUMBER:
+                reg = "^(0(\\.\\d{1,2})?|[1-9]\\d{0,5}(\\.\\d{1,2})?|[1-9]\\d{0,6}|[1-9]\\d{0,5}[0-8](\\.\\d{1,2})?)$";
                 return val.matches(reg);
             case TEL:
                 // reg =

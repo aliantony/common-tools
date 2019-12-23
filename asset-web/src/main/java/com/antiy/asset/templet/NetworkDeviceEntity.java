@@ -137,19 +137,19 @@ public class NetworkDeviceEntity {
     /**
      * dram大小
      */
-    @ExcelField(value = "dramSize", align = 1, title = "dram大小", length = 7)
+    @ExcelField(value = "dramSize", align = 1, title = "dram大小", length = 7, dataType = DataTypeEnum.NUMBER)
     private Float   dramSize;
 
     /**
      * flash大小
      */
-    @ExcelField(value = "flashSize", align = 1, title = "flash大小", length = 7)
+    @ExcelField(value = "flashSize", align = 1, title = "flash大小", length = 7, dataType = DataTypeEnum.NUMBER)
     private Float   flashSize;
 
     /**
      * NCRM大小
      */
-    @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小", length = 7)
+    @ExcelField(value = "ncrmSize", align = 1, title = "NCRM大小", length = 7, dataType = DataTypeEnum.NUMBER)
     private Float   ncrmSize;
 
     /**
