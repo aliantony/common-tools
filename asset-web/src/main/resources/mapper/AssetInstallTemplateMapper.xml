@@ -326,7 +326,7 @@
             ait.`name`,
             ait.number_code AS numberCode,
             ait.description,
-            status
+            status,
             (
         SELECT
             count( * )
@@ -350,8 +350,7 @@
         FROM
             asset_install_template AS ait
         WHERE
-
-           ait.id = #{templateId}
+             ait.id = #{templateId}
     </select>
     <select id="queryTemplateOs" resultType="com.antiy.asset.vo.response.AssetInstallTemplateOsResponse">
         SELECT DISTINCT operation_system as osCode,operation_system_name as osName FROM asset_install_template where status=1
