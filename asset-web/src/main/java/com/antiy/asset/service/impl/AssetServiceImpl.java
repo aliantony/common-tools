@@ -182,6 +182,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
+                    AssetHardSoftLib byBusinessId = assetHardSoftLibDao.getByBusinessId(requestAsset.getBusinessId());
+                    // BusinessExceptionUtils.isTrue(!Objects.isNull(byBusinessId), "当前厂商不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
                     // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
@@ -305,12 +308,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
-                    // "操作系统不存在，或已经注销");
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()),
-                    // "使用者不存在，或已经注销");
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("当前区域不存在，或已经注销", e.getMessage()),
-                    // "当前区域不存在，或已经注销");
                     throw new BusinessException("操作失败");
                 }
                 // return 0;
@@ -1501,16 +1498,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
-                assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+
 
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 }else{
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    assetOperationRecord.setContent(AssetOperateLogEnum.REGISTER_ASSET.getName());
                 }
 
                 // 如果组件新增则启动漏扫

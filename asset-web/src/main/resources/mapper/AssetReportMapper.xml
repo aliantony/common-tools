@@ -46,7 +46,7 @@
         AND STATUS = 1
     </select>
     <!--统计初始数据-->
-    <select id="queryAssetWithAreaByDate" resultType="java.util.Map">
+    <select id="queryAssetWithAreaByDate" resultType="com.antiy.asset.dto.AssetReportDTO">
         SELECT
         CASE
         <foreach collection="list" item="item">

@@ -22,6 +22,16 @@ public class AssetTemplateRelationResponse extends  BaseResponse {
 
     @ApiModelProperty("装机模板关联时间")
     private Long installTemplateCorrelationGmt;
+    @ApiModelProperty("模板状态")
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Long getInstallTemplateCorrelationGmt() {
         return installTemplateCorrelationGmt;

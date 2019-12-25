@@ -233,10 +233,10 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
-            <if test=" service != null">
+            <if test=" service != null and service.trim() !=''">
                 and service like CONCAT('%',replace(replace(replace (#{service},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             </if>
-            <if test=" displayName != null">
+            <if test=" displayName != null and displayName.trim() !=''">
                 and display_name like CONCAT('%',replace(replace(replace
                 (#{displayName},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             </if>
@@ -264,10 +264,10 @@
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
-            <if test=" service != null">
+            <if test=" service != null and service.trim() !='' ">
                 and service like CONCAT('%',replace(replace(replace (#{service},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             </if>
-            <if test=" displayName != null">
+            <if test=" displayName != null and displayName.trim() !=''">
                 and display_name like CONCAT('%',replace(replace(replace
                 (#{displayName},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             </if>

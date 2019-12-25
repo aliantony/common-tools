@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.dao.AssetReportDao;
+import com.antiy.asset.dto.AssetReportDTO;
 import com.antiy.asset.util.ExcelUtils;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
@@ -13,10 +14,7 @@ import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -100,13 +98,18 @@ public class AssetAreaReportServiceImplTest {
         assetAreaId.add(report2);
         reportRequest.setAssetAreaIds(assetAreaId);
 
-        List<Map<String, Integer>> initData = new ArrayList<>();
-        Map<String, Integer> map = new HashMap<>();
-        map.put("areaId", 1);
-        Map<String, Integer> map2 = new HashMap<>();
-        map.put("assetCount", 1);
-        initData.add(map);
-        initData.add(map2);
+
+        List<AssetReportDTO> initData = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData.add(assetReportDTO2);
+        initData.add(assetReportDTO1);
         List<Map<String, String>> addData = new ArrayList<>();
         Map<String, String> dataMap = new HashMap<>();
         dataMap.put("areaId", "1");
@@ -245,7 +248,19 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -333,7 +348,18 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -412,7 +438,18 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -492,7 +529,18 @@ public class AssetAreaReportServiceImplTest {
         SysArea sysArea = new SysArea();
         sysArea.setFullName("123");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(sysArea);
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -570,7 +618,18 @@ public class AssetAreaReportServiceImplTest {
         SysArea sysArea = new SysArea();
         sysArea.setFullName("123");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(null);
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -651,7 +710,18 @@ public class AssetAreaReportServiceImplTest {
         SysArea sysArea = new SysArea();
         sysArea.setFullName("123");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenThrow(new BusinessException("获取失败"));
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -732,7 +802,18 @@ public class AssetAreaReportServiceImplTest {
         SysArea sysArea = new SysArea();
         sysArea.setFullName("123");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(sysArea);
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(null);
@@ -800,7 +881,18 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -893,7 +985,18 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);
@@ -1005,7 +1108,18 @@ public class AssetAreaReportServiceImplTest {
         reportRequest.setTopAreaId("5");
         reportRequest.setTopAreaName("1");
         when(redisUtil.getObject(Mockito.any(), Mockito.any())).thenReturn(new SysArea());
-        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData);
+        List<AssetReportDTO> initData2 = new ArrayList<>();
+
+        AssetReportDTO assetReportDTO1=new AssetReportDTO();
+        assetReportDTO1.setAreaId("1");
+        assetReportDTO1.setAssetCount(1);
+        AssetReportDTO assetReportDTO2=new AssetReportDTO();
+        assetReportDTO2.setAreaId("2");
+        assetReportDTO2.setAssetCount(2);
+
+        initData2.add(assetReportDTO2);
+        initData2.add(assetReportDTO1);
+        when(assetReportDao.queryAssetWithAreaByDate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(initData2);
         when(assetReportDao.queryAddAssetWithArea(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
             Mockito.any())).thenReturn(addData);
         when(assetReportDao.getAllAssetWithArea(Mockito.any(ReportQueryRequest.class))).thenReturn(allAssetCount);

@@ -1,25 +1,7 @@
 package com.antiy.asset.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.antiy.asset.dao.AssetReportDao;
+import com.antiy.asset.dto.AssetReportDTO;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.ExcelUtils;
@@ -44,6 +26,23 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -74,10 +73,9 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
-            if (CollectionUtils.isNotEmpty(topAreaIds)) {
-                reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
-                    .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
-            }
+            reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
+                .filter(report -> topAreaIds.contains(report.getParentAreaId()))
+                .collect(Collectors.toList()));
         } else {
             topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaIdInteger)
                 .collect(Collectors.toList());
@@ -94,22 +92,24 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         assetReportResponse.setDate(abscissa);
 
         // 3.获取起始时间初始值
-        List<Map<String, Integer>> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
-            reportRequest.getStartTime(), reportRequest.getAssetStatusList());
+        /*List<Map<String, Integer>> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
+            reportRequest.getStartTime(), reportRequest.getAssetStatusList());*/
+        List<AssetReportDTO> initData = assetReportDao.queryAssetWithAreaByDate(reportRequest.getAssetAreaIds(),
+                reportRequest.getStartTime(), reportRequest.getAssetStatusList());
         // 计算初始值
         if (CollectionUtils.isNotEmpty(topAreaIds)) {
             topAreaIds.stream().forEach(top -> {
                 boolean flag = false;
-                for (Map iData : initData) {
-                    if (top.equals(iData.get("areaId"))) {
+                for (AssetReportDTO iData : initData) {
+                    if (top.equals(iData.getAreaId())) {
                         flag = true;
                     }
                 }
                 if (!flag) {
-                    Map m = new HashMap(2);
-                    m.put("areaId", top);
-                    m.put("assetCount", Integer.valueOf(0));
-                    initData.add(m);
+                    AssetReportDTO assetReportDTO=new AssetReportDTO();
+                    assetReportDTO.setAreaId(top);
+                    assetReportDTO.setAssetCount(0);
+                    initData.add(assetReportDTO);
                 }
             });
         }
@@ -149,9 +149,9 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
             for (int i = 0; i < addList.size(); i++) {
                 // 第一列，初始值加上本区间增量
                 if (i == 0) {
-                    for (Map<String, Integer> init : initData) {
-                        if (top.equals(init.get("areaId"))) {
-                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.get("assetCount")))
+                    for (AssetReportDTO init : initData) {
+                        if (top.equals(init.getAreaId())) {
+                            totalList.add(DataTypeUtils.stringToInteger(String.valueOf(init.getAssetCount()))
                                           + Integer.valueOf(addList.get(i) + ""));
                             break;
                         }
