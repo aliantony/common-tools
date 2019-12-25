@@ -184,7 +184,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     AssetHardSoftLib byBusinessId = assetHardSoftLibDao.getByBusinessId(requestAsset.getBusinessId());
                     // BusinessExceptionUtils.isTrue(!Objects.isNull(byBusinessId), "当前厂商不存在，或已经注销");
-                    BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前厂商不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
                     // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
