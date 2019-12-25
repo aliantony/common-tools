@@ -1504,16 +1504,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 直接更改状态
                 updateAssetStatus(AssetStatusEnum.NET_IN.getCode(), System.currentTimeMillis(), assetId);
                 assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
-                assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
+
 
                 if(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())){
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_MODIFY.getName(), asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getMsg());
                 }else{
                     LogUtils.recordOperLog(new BusinessData(AssetOperateLogEnum.REGISTER_ASSET.getName(), asset.getId(),
                             asset.getNumber(), asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NET_IN));
                     LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
+                    assetOperationRecord.setContent(AssetOperateLogEnum.REGISTER_ASSET.getName());
                 }
 
                 // 如果组件新增则启动漏扫
