@@ -1,5 +1,24 @@
 package com.antiy.asset.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.templet.ReportForm;
@@ -25,23 +44,6 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author: zhangbing
@@ -72,9 +74,10 @@ public class AssetAreaReportServiceImpl implements IAssetAreaReportService {
         if (BooleanUtils.isTrue(reportRequest.getTopFive())) {
             // 1.查询TOP5的区域信息
             topAreaIds = getTopFive(reportRequest);
-            reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
-                .filter(report -> topAreaIds.contains(DataTypeUtils.stringToInteger(report.getParentAreaId())))
-                .collect(Collectors.toList()));
+            if (CollectionUtils.isNotEmpty(topAreaIds)) {
+                reportRequest.setAssetAreaIds(reportRequest.getAssetAreaIds().stream()
+                    .filter(report -> topAreaIds.contains(report.getParentAreaId())).collect(Collectors.toList()));
+            }
         } else {
             topAreaIds = reportRequest.getAssetAreaIds().stream().map(AssetAreaReportRequest::getParentAreaIdInteger)
                 .collect(Collectors.toList());
