@@ -1,15 +1,15 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
+import com.antiy.asset.dto.AssetReportDTO;
 import com.antiy.asset.entity.AssetCategoryEntity;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.vo.query.AssetReportCategoryCountQuery;
 import com.antiy.asset.vo.request.AssetAreaReportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhangbing
@@ -30,9 +30,12 @@ public interface AssetReportDao {
      * @param startTime
      * @return
      */
-    List<Map<String, Integer>> queryAssetWithAreaByDate(@Param("list") List<AssetAreaReportRequest> list,
+   /* List<Map<String, Integer>> queryAssetWithAreaByDate(@Param("list") List<AssetAreaReportRequest> list,
                                                         @Param("startTime") Long startTime,
-                                                        @Param("assetStatusList") List<Integer> assetStatusList);
+                                                        @Param("assetStatusList") List<Integer> assetStatusList);*/
+    List<AssetReportDTO> queryAssetWithAreaByDate(@Param("list") List<AssetAreaReportRequest> list,
+                                                  @Param("startTime") Long startTime,
+                                                  @Param("assetStatusList") List<Integer> assetStatusList);
 
     /**
      * 统计时间区间内每个区域资产增量
