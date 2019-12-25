@@ -308,12 +308,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } catch (Exception e) {
                     transactionStatus.setRollbackOnly();
                     logger.error("录入失败", e);
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("操作系统不存在，或已经注销", e.getMessage()),
-                    // "操作系统不存在，或已经注销");
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("使用者不存在，或已经注销", e.getMessage()),
-                    // "使用者不存在，或已经注销");
-                    // BusinessExceptionUtils.isTrue(!StringUtils.equals("当前区域不存在，或已经注销", e.getMessage()),
-                    // "当前区域不存在，或已经注销");
                     throw new BusinessException("操作失败");
                 }
                 // return 0;
