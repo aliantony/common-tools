@@ -188,6 +188,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 存入业务id,基准为空进入网,不为空 实施 ./检查
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
+                        ActionResponse baselineTemplate = baseLineClient
+                            .getBaselineTemplate(requestAsset.getBaselineTemplateId());
+                        HashMap body = (HashMap) baselineTemplate.getBody();
+                        Integer isEnable = (Integer) body.get("isEnable");
+                        BusinessExceptionUtils.isTrue(isEnable == 1, "当前基准模板已经禁用!");
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
                         admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()

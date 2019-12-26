@@ -1,13 +1,5 @@
 package com.antiy.asset.intergration.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -16,6 +8,12 @@ import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.common.base.ActionResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author: zhangbing
@@ -34,6 +32,8 @@ public class BaseLineClientImpl implements BaseLineClient {
     private String     baselineWaitingConfigUrl;
     @Value("${scanUrl}")
     private String     scanUrl;
+    @Value("${baselineTemplateUrl}")
+    private String     baselineTemplateUrl;
 
     @Resource
     private BaseClient baseClient;
@@ -59,6 +59,15 @@ public class BaseLineClientImpl implements BaseLineClient {
         param.put("assetId", assetId);
         return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
         }, scanUrl);
+    }
+
+    @Override
+    @AssetLog(description = "获取基准模板", operationType = AssetLogOperationType.ADD)
+    public ActionResponse getBaselineTemplate(String assetId) {
+        JSONObject param = new JSONObject();
+        param.put("primaryKey", assetId);
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        }, baselineTemplateUrl);
     }
 
     @Override
