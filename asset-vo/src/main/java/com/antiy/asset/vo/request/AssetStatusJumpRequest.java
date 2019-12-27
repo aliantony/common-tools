@@ -27,18 +27,17 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty("资产信息")
     @NotEmpty(message = "资产数据格式不正确")
     @Valid
-    private List<StatusJumpAssetInfo> assetInfoList;
+    private List<StatusJumpAssetInfo>  assetInfoList;
 
     @ApiModelProperty(value = "流程表单数据,JSON串")
-    private Map formData;
-
+    private Map                        formData;
 
     @ApiModelProperty(value = "是否发起退役流程")
-    private Boolean                    isAssetPlanRetire         = true;
+    private Boolean                    isAssetPlanRetire;
 
     @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
-    private AssetFlowEnum assetFlowEnum;
+    private AssetFlowEnum              assetFlowEnum;
 
     @ApiModelProperty(value = "资产变更流程信息")
     private ManualStartActivityRequest manualStartActivityRequest;
@@ -47,22 +46,22 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      * 本次处理结果:同意true,不同意false
      */
     @ApiModelProperty(value = "执行意见")
-    private Boolean agree;
+    private Boolean                    agree;
 
     /**
      * 方案内容:输入的备注信息
      */
     @ApiModelProperty(value = "备注内容")
-    private String note;
+    private String                     note;
 
     @ApiModelProperty(value = "上传的文件JSON串")
-    private String fileInfo;
+    private String                     fileInfo;
 
     /**
      * 从待登记到待检查
      */
     @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
-    private Boolean waitCorrectToWaitRegister = Boolean.FALSE;
+    private Boolean                    waitCorrectToWaitRegister = Boolean.FALSE;
 
     public Boolean getAssetPlanRetire() {
         return isAssetPlanRetire;
@@ -138,7 +137,8 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (!(assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) && formData == null && manualStartActivityRequest == null) {
+        if (!(assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) && formData == null
+            && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
         }
 
@@ -149,27 +149,24 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         }
 
         // 通过:入网/退役/检查/变更完成不校验,其他校验下一步执行人;不通过:备注信息不能为空
-        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE) || assetFlowEnum.equals(AssetFlowEnum.NET_IN)
-                || assetFlowEnum.equals(AssetFlowEnum.CHECK) || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE));
+        boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE)
+                                    || assetFlowEnum.equals(AssetFlowEnum.NET_IN)
+                                    || assetFlowEnum.equals(AssetFlowEnum.CHECK)
+                                    || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE));
         if (Boolean.TRUE.equals(agree) && checkConfigUser) {
             ParamterExceptionUtils.isNull(getFormData(), "formData参数错误");
             ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
         } else if (Boolean.FALSE.equals(agree)) {
-            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()), assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
+            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()),
+                assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
         }
     }
 
     @Override
     public String toString() {
-        return "AssetStatusJumpRequest{" +
-                "assetInfos=" + assetInfoList +
-                ", assetFlowEnum=" + assetFlowEnum +
-                ", formData=" + formData +
-                ", manualStartActivityRequest=" + manualStartActivityRequest +
-                ", agree=" + agree +
-                ", note='" + note + '\'' +
-                ", fileInfo='" + fileInfo + '\'' +
-                ", waitCorrectToWaitRegister=" + waitCorrectToWaitRegister +
-                '}';
+        return "AssetStatusJumpRequest{" + "assetInfos=" + assetInfoList + ", assetFlowEnum=" + assetFlowEnum
+               + ", formData=" + formData + ", manualStartActivityRequest=" + manualStartActivityRequest + ", agree="
+               + agree + ", note='" + note + '\'' + ", fileInfo='" + fileInfo + '\'' + ", waitCorrectToWaitRegister="
+               + waitCorrectToWaitRegister + '}';
     }
 }
