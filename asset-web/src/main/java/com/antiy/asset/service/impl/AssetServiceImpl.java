@@ -1984,7 +1984,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         NetworkDeviceEntity networkDeviceEntity = new NetworkDeviceEntity();
         networkDeviceEntity.setWarranty("2年");
         networkDeviceEntity.setButDate(System.currentTimeMillis());
-        networkDeviceEntity.setCpuSize(4);
+        networkDeviceEntity.setCpuSize(2.3f);
         networkDeviceEntity.setArea("成都市");
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
         networkDeviceEntity.setName("ar500");
@@ -2006,7 +2006,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setIsWireless(1);
         networkDeviceEntity.setSerial("ANFRWGDFETYRYF");
         networkDeviceEntity.setHouseLocation("501机房004号");
-        networkDeviceEntity.setCpuSize(3);
         networkDeviceEntity.setInterfaceSize(4);
         networkDeviceEntity.setSubnetMask("255.255.252.0");
         networkDeviceEntity.setImportanceDegree("1");
