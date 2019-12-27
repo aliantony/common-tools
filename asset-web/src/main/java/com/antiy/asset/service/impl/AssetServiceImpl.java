@@ -1520,14 +1520,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
 
                 // 如果组件新增则启动漏扫
-                if (isNewAddAssembly[0]) {
-                    ActionResponse scan = baseLineClient
-                        .scan(assetId);
-                    // 如果漏洞为空,直接返回错误信息
-                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                        throw new BusinessException("调用漏洞扫描出错");
-                    }
-                }
+//                if (isNewAddAssembly[0]) {
+//                    ActionResponse scan = baseLineClient
+//                        .scan(assetId);
+//                    // 如果漏洞为空,直接返回错误信息
+//                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+//                        throw new BusinessException("调用漏洞扫描出错");
+//                    }
+//                }
 
             }
         }
