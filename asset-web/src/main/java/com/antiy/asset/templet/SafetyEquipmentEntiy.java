@@ -24,7 +24,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 软件版本
      */
-    @ExcelField(value = "newVersion", align = 1, title = "软件版本(必填) 格式为x|xx.x|xx.x|xx，x为数字", required = false, dataType = DataTypeEnum.VERSION)
+    @ExcelField(value = "newVersion", align = 1, title = "软件版本 格式为x|xx.x|xx.x|xx，x为数字", required = false, dataType = DataTypeEnum.VERSION)
     private String newVersion;
 
     /**

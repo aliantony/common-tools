@@ -40,7 +40,7 @@ public class AssetNetworkEquipment extends BaseEntity {
      * cpu大小
      */
     @ApiModelProperty("CPU")
-    private Integer cpuSize;
+    private Float   cpuSize;
     /**
      * ios
      */
@@ -161,11 +161,11 @@ public class AssetNetworkEquipment extends BaseEntity {
         this.cpuVersion = cpuVersion;
     }
 
-    public Integer getCpuSize() {
+    public Float getCpuSize() {
         return cpuSize;
     }
 
-    public void setCpuSize(Integer cpuSize) {
+    public void setCpuSize(Float cpuSize) {
         this.cpuSize = cpuSize;
     }
 

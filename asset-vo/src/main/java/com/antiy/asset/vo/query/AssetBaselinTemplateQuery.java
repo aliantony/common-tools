@@ -52,6 +52,14 @@ public class AssetBaselinTemplateQuery extends ObjectQuery implements ObjectVali
         this.modifyUser = modifyUser;
     }
 
+    public List<String> getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(List<String> assetIds) {
+        this.assetIds = assetIds;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
         boolean compliance = true;
