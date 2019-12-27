@@ -1,12 +1,11 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.request.AssetAssemblyRequest;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p> 资产组件关系表 Mapper 接口 </p>
@@ -33,6 +32,13 @@ public interface AssetAssemblyDao extends IBaseDao<AssetAssembly> {
      * @return
      */
     List<String> findAssemblyIds(String assetId);
+
+    /**
+     * 通过Bussessid查询的组件
+     * @param businessId 资产id
+     * @return
+     */
+    Integer findAssemblyByBusiness(String businessId);
 
     /**
      * 通过资产id查询组件

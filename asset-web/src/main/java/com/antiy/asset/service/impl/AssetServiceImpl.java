@@ -257,7 +257,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
                         convert.forEach(assetAssembly -> {
                             BusinessExceptionUtils.isTrue(
-                                assetHardSoftLibDao.getByBusinessId(assetAssembly.getBusinessId()).getStatus() == 1,
+                                assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
                                 "当前(组件)不存在，或已经移除!");
                             assetAssembly.setAssetId(aid);
                         });
