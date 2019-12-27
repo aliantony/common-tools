@@ -34,7 +34,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
 
     @ApiModelProperty(value = "是否发起退役流程")
-    private Boolean                    isAssetPlanRetire;
+    private Boolean                    isAssetPlanRetire         = true;
 
     @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
