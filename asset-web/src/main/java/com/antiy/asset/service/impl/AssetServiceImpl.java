@@ -255,7 +255,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
                         List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
-                        convert.forEach(assetAssembly -> assetAssembly.setAssetId(aid));
+                        convert.forEach(assetAssembly -> {
+                            BusinessExceptionUtils.isTrue(
+                                assetHardSoftLibDao.getByBusinessId(assetAssembly.getBusinessId()).getStatus() == 1,
+                                "当前(组件)不存在，或已经移除!");
+                            assetAssembly.setAssetId(aid);
+                        });
                         assetAssemblyDao.insertBatch(convert);
                     }
                     // 插入ip/net mac
