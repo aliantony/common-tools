@@ -126,7 +126,7 @@ public class NetworkDeviceEntity {
      * cpu大小
      */
     @ExcelField(value = "cpuSize", align = 1, title = "cpu大小", length = 7)
-    private Integer cpuSize;
+    private Float   cpuSize;
 
     /**
      * cpu版本
@@ -284,11 +284,11 @@ public class NetworkDeviceEntity {
         this.register = register;
     }
 
-    public Integer getCpuSize() {
+    public Float getCpuSize() {
         return cpuSize;
     }
 
-    public void setCpuSize(Integer cpuSize) {
+    public void setCpuSize(Float cpuSize) {
         this.cpuSize = cpuSize;
     }
 

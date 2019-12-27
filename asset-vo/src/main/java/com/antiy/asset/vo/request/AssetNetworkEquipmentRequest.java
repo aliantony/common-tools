@@ -120,7 +120,7 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
      */
     @ApiModelProperty("cpu大小")
     @Max(value = 9999999, message = "cpu大小不超过9999999")
-    private Integer cpuSize;
+    private Float   cpuSize;
 
     public String getCpuVersion() {
         return cpuVersion;
@@ -130,11 +130,11 @@ public class AssetNetworkEquipmentRequest extends BasicRequest implements Object
         this.cpuVersion = cpuVersion;
     }
 
-    public Integer getCpuSize() {
+    public Float getCpuSize() {
         return cpuSize;
     }
 
-    public void setCpuSize(Integer cpuSize) {
+    public void setCpuSize(Float cpuSize) {
         this.cpuSize = cpuSize;
     }
 

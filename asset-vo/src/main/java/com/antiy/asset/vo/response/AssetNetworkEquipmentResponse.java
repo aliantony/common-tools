@@ -84,7 +84,7 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
      * cpu大小
      */
     @ApiModelProperty("cpu大小")
-    private Integer cpuSize;
+    private Float   cpuSize;
     /**
      * ios
      */
@@ -104,11 +104,11 @@ public class AssetNetworkEquipmentResponse extends BaseResponse {
         this.cpuVersion = cpuVersion;
     }
 
-    public Integer getCpuSize() {
+    public Float getCpuSize() {
         return cpuSize;
     }
 
-    public void setCpuSize(Integer cpuSize) {
+    public void setCpuSize(Float cpuSize) {
         this.cpuSize = cpuSize;
     }
 
