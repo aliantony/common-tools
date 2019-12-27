@@ -53,7 +53,9 @@ public class BaseClient<T> {
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
         headers.setContentType(type);
-        headers.set(TOKEN_KEY, LoginUserUtil.getCommonInfo().getToken());
+        if (LoginUserUtil.getCommonInfo().getToken()!=null){
+            headers.set(TOKEN_KEY, LoginUserUtil.getCommonInfo().getToken());
+        }
         HttpEntity<String> entity = new HttpEntity(JSONObject.toJSONString(params), headers);
         ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity,
             parameterizedTypeReference);
