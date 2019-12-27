@@ -1,19 +1,22 @@
 package com.antiy.asset.vo.request;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang.StringUtils;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author zhangxin
@@ -29,6 +32,9 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty(value = "流程表单数据,JSON串")
     private Map formData;
 
+
+    @ApiModelProperty(value = "是否发起退役流程")
+    private Boolean                    isAssetPlanRetire;
 
     @ApiModelProperty("资产当前操作流程:REGISTER登记资产;TEMPLATE_IMPL实施;VALIDATE验证;NET_IN入网;CHECK检查;CORRECT整改;TO_WAIT_RETIRE拟退役;RETIRE退役;CHANGE变更资产;CHANGE_COMPLETE变更完成")
     @NotNull(message = "当前操作类型不正确")
@@ -57,6 +63,14 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      */
     @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
     private Boolean waitCorrectToWaitRegister = Boolean.FALSE;
+
+    public Boolean getAssetPlanRetire() {
+        return isAssetPlanRetire;
+    }
+
+    public void setAssetPlanRetire(Boolean assetPlanRetire) {
+        isAssetPlanRetire = assetPlanRetire;
+    }
 
     public List<StatusJumpAssetInfo> getAssetInfoList() {
         return assetInfoList;
