@@ -3236,7 +3236,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query) {
         query.setGmtModify(System.currentTimeMillis());
-        query.setModifyUser(LoginUserUtil.getLoginUser().getStringId());
+        LoginUser loginUser=LoginUserUtil.getLoginUser();
+        query.setModifyUser(loginUser==null?"0":loginUser.getStringId());
         return assetDao.updateAssetBaselineTemplate(query);
     }
 
