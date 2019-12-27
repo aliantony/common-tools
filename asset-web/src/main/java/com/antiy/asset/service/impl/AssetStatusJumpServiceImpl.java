@@ -175,7 +175,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         // 1.拟退役需要启动流程,其他步骤完成流程
         if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())
-            && assetStatusRequest.getAssetPlanRetire()) {
+            && assetStatusRequest.getIsAssetPlanRetire()) {
             // 启动流程
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setAssignee(loginUser.getId().toString());

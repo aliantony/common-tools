@@ -63,11 +63,11 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
     private Boolean                    waitCorrectToWaitRegister = Boolean.FALSE;
 
-    public Boolean getAssetPlanRetire() {
+    public Boolean getIsAssetPlanRetire() {
         return isAssetPlanRetire;
     }
 
-    public void setAssetPlanRetire(Boolean assetPlanRetire) {
+    public void setIsAssetPlanRetire(Boolean assetPlanRetire) {
         isAssetPlanRetire = assetPlanRetire;
     }
 
