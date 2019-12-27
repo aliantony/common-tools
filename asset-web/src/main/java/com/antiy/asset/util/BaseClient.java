@@ -53,7 +53,8 @@ public class BaseClient<T> {
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
         headers.setContentType(type);
-        if (LoginUserUtil.getCommonInfo().getToken()!=null){
+
+        if (LoginUserUtil.getCommonInfo()!=null){
             headers.set(TOKEN_KEY, LoginUserUtil.getCommonInfo().getToken());
         }
         HttpEntity<String> entity = new HttpEntity(JSONObject.toJSONString(params), headers);
