@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -61,6 +60,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private TransactionTemplate transactionTemplate;
     @Resource
     private BaseLineClient baseLineClient;
+    @Resource
+    private AssetServiceImpl        assetService;
 
 
     @Override
@@ -173,9 +174,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
 
         // 1.拟退役需要启动流程,其他步骤完成流程
-        Map formData = assetStatusRequest.getFormData();
         if (AssetFlowEnum.TO_WAIT_RETIRE.equals(assetStatusRequest.getAssetFlowEnum())
-            && !MapUtils.isNotEmpty(formData)) {
+            && assetStatusRequest.getAssetPlanRetire()) {
             // 启动流程
             ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
             manualStartActivityRequest.setAssignee(loginUser.getId().toString());
