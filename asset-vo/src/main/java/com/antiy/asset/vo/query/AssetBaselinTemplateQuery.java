@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class AssetBaselinTemplateQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     List<String> assetId;
+    List<String> assetIds;
     String baselineTemplateId;
     Long gmtModify;
     String modifyUser;
@@ -51,11 +52,23 @@ public class AssetBaselinTemplateQuery extends ObjectQuery implements ObjectVali
         this.modifyUser = modifyUser;
     }
 
+    public List<String> getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(List<String> assetIds) {
+        this.assetIds = assetIds;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
         boolean compliance = true;
         if (assetId == null || assetId.isEmpty()) {
-            compliance = false;
+            if (assetIds ==null || assetIds.isEmpty()){
+                compliance = false;
+            }else {
+                assetId=assetIds;
+            }
         }
         if (baselineTemplateId == null || baselineTemplateId.isEmpty()) {
             compliance = false;

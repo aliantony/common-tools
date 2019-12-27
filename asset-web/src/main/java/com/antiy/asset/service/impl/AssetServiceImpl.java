@@ -1,5 +1,39 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -33,38 +67,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1493,10 +1495,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             } else {
                 // 待登记多人 操作
-                if (asset.getAssetStatus() == AssetStatusEnum.WAIT_REGISTER.getCode()) {
+                if (AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
                     // 查询数据库
                     Asset daoById = assetDao.getById(asset.getStringId());
-                    if (daoById.getAssetStatus() == AssetStatusEnum.NET_IN.getCode()) {
+                    if (AssetStatusEnum.NET_IN.getCode().equals(daoById.getAssetStatus())) {
                         throw new BusinessException("资产已处于入网状态，无法重复提交！");
                     }
                 }
@@ -3234,7 +3236,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query) {
         query.setGmtModify(System.currentTimeMillis());
-        query.setModifyUser(LoginUserUtil.getLoginUser().getStringId());
+        LoginUser loginUser=LoginUserUtil.getLoginUser();
+        query.setModifyUser(loginUser==null?"0":loginUser.getStringId());
         return assetDao.updateAssetBaselineTemplate(query);
     }
 
