@@ -21,8 +21,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -56,7 +54,6 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.config.kafka.KafkaConfig;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -3434,21 +3431,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("区域ID不能为空");
         }
 
-    }
-
-    @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
-    public void listen(String data, Acknowledgment ack) {
-        AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);
-        if (areaOperationRequest != null) {
-            try {
-                LogUtils.info(logger, "消息消费成功 " + data);
-                assetDao.updateAssetAreaId(areaOperationRequest.getTargetAreaId(),
-                    areaOperationRequest.getSourceAreaIds());
-                ack.acknowledge();
-            } catch (Exception e) {
-                LogUtils.error(logger, e, "消息消费失败");
-            }
-        }
     }
 
     /**
