@@ -21,8 +21,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -56,7 +54,6 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.base.SysArea;
-import com.antiy.common.config.kafka.KafkaConfig;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
@@ -67,6 +64,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -258,7 +256,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         convert.forEach(assetAssembly -> {
                             BusinessExceptionUtils.isTrue(
                                 assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                                "当前组件已经被移除!");
+                                "厂商:" + assetAssembly.getSupplier() + "  名称:" + assetAssembly
+                                    .getProductName() + "的组件已经被移除!");
                             assetAssembly.setAssetId(aid);
                         });
                         assetAssemblyDao.insertBatch(convert);
@@ -313,7 +312,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
                     transactionStatus.setRollbackOnly();
-                    throw new BusinessException("编号重复！");
+                    throw new BusinessException("重复提交！");
                 } catch (BusinessException e) {
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException(e.getMessage());
@@ -1389,6 +1388,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
 
                     ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+                    String assetActivityInstanceId = (String) actionResponse.getBody();
                     // 如果流程引擎为空,直接返回错误信息
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -1400,7 +1400,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 "资产已处于" + AssetStatusEnum.getAssetByCode(daoById.getAssetStatus()).getMsg()
                                                                  + "无法重复提交！");
                         }
+                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                            JSON.toJSONString(actionResponse));
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+
                     }
 
                     // 安全检查 2 模板1
@@ -1426,7 +1429,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 如果基准为空,直接返回错误信息
                     if (null == baselineCheck
                         || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                        // 调用失败，直接删登记的资产
+                        // 基准调用失败，删除启动的资产主流程
+                        if (!Objects.isNull(assetActivityInstanceId)) {
+                            activityClient.deleteProcessInstance(ImmutableList.of(assetActivityInstanceId));
+                        }
+                        // 调用失败，直接删登记的资
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
                     }
@@ -1464,6 +1471,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                 if (actionResponse == null
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                        JSON.toJSONString(actionResponse));
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
                 // 如果没得uuid 安全检查
@@ -3434,21 +3444,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("区域ID不能为空");
         }
 
-    }
-
-    @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
-    public void listen(String data, Acknowledgment ack) {
-        AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);
-        if (areaOperationRequest != null) {
-            try {
-                LogUtils.info(logger, "消息消费成功 " + data);
-                assetDao.updateAssetAreaId(areaOperationRequest.getTargetAreaId(),
-                    areaOperationRequest.getSourceAreaIds());
-                ack.acknowledge();
-            } catch (Exception e) {
-                LogUtils.error(logger, e, "消息消费失败");
-            }
-        }
     }
 
     /**

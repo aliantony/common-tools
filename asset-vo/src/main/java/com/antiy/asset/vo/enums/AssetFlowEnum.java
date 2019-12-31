@@ -29,7 +29,7 @@ public enum AssetFlowEnum {
     /**
      * 检查
      */
-    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "安全检查。验证情况：", "检查资产信息"),
+    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "安全检查。检查情况：", "检查资产信息"),
     /**
      * 整改
      */
