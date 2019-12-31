@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.request;
 
-import java.io.Serializable;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -28,6 +27,8 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     private String  productName;
     @ApiModelProperty("组件类型")
     private String  type;
+    @ApiModelProperty("厂商")
+    private String  supplier;
     /**
      * 资产主键
      */
@@ -103,5 +104,13 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
         return "AssetAssemblyRequest{" + "id='" + id + '\'' + ", productName='" + productName + '\'' + ", type='" + type
                + '\'' + ", assetId='" + assetId + '\'' + ", businessId='" + businessId + '\'' + ", amount=" + amount
                + '}';
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
     }
 }
