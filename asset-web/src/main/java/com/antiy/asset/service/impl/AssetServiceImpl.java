@@ -311,7 +311,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
                     transactionStatus.setRollbackOnly();
-                    throw new BusinessException("编号重复！");
+                    throw new BusinessException("重复提交！");
                 } catch (BusinessException e) {
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException(e.getMessage());
