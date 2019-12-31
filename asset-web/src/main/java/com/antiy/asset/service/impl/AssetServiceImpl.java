@@ -64,6 +64,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1386,6 +1387,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
 
                     ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+                    String assetActivityInstanceId = (String) actionResponse.getBody();
                     // 如果流程引擎为空,直接返回错误信息
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -1423,7 +1425,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 如果基准为空,直接返回错误信息
                     if (null == baselineCheck
                         || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                        // 调用失败，直接删登记的资产
+                        // 基准调用失败，删除启动的资产主流程
+                        if (!Objects.isNull(assetActivityInstanceId)) {
+                            activityClient.deleteProcessInstance(ImmutableList.of(assetActivityInstanceId));
+                        }
+                        // 调用失败，直接删登记的资
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
                     }
