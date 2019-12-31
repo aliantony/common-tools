@@ -1400,7 +1400,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 "资产已处于" + AssetStatusEnum.getAssetByCode(daoById.getAssetStatus()).getMsg()
                                                                  + "无法重复提交！");
                         }
+                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                            JSON.toJSONString(actionResponse));
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+
                     }
 
                     // 安全检查 2 模板1
