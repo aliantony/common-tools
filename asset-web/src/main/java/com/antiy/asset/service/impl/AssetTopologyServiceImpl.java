@@ -678,6 +678,17 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             AssetQuery alarmQuery = new AssetQuery();
             alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
             setListAreaName(assetResponseList);
+            AssetIdRequest assetIdRequest = new AssetIdRequest();
+            List<String> ids = new ArrayList<>();
+            for (AssetResponse assetResponse : assetResponseList) {
+                ids.add(assetResponse.getStringId());
+            }
+            assetIdRequest.setAssetIds(ids);
+            List<Integer> list = assetTopologyDao.findAlarmCountByAssetId(assetIdRequest);
+            for (int i = 0; i < assetIdList.size(); i++) {
+                AssetResponse assetResponse = assetResponseList.get(i);
+                assetResponse.setAlarmCount(Objects.toString(list.get(i)));
+            }
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
             AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
             assetTopologyAlarmResponse.setStatus("success");
