@@ -24,12 +24,22 @@ public class AssetIdRequest extends BaseRequest implements ObjectValidator {
     @Encode
     private List<String> assetIds;
 
+    private String userId;
+
     public List<String> getAssetIds() {
         return assetIds;
     }
 
     public void setAssetIds(List<String> assetIds) {
         this.assetIds = assetIds;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

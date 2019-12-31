@@ -222,6 +222,30 @@
         </if>
     </select>
 
+
+    <select id="findAlarmCountByAssetId" resultType="int"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
+        select
+        count(DISTINCT acr.id)   FROM
+        asset asset
+        LEFT JOIN alarm_current_records acr ON acr.asset_id = asset.id
+        where asset.status=1
+        <if test=" assetIds != null and assetIds.size() >0">
+            and asset.id in
+            <foreach index="index" item="id" collection="assetIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        group by asset.id
+        ORDER BY
+        <if test=" assetIds != null and assetIds.size() >0">
+            FIELD(asset.`id`,
+            <foreach index="index" item="item" collection="assetIds" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+    </select>
     <select id="findTopologyListAsset" resultMap="assetResultMap"
             parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
@@ -232,15 +256,6 @@
         asset.category_model,
         asset_user. NAME AS responsible_user_name,
         asset.responsible_user_id,
-        <if test="queryVulCount == true">
-            count(DISTINCT avr.id) as vul_count,
-        </if>
-        <if test="queryPatchCount == true">
-            count(DISTINCT apr.id) as patch_count,
-        </if>
-        <if test="queryAlarmCount == true">
-            count(DISTINCT acr.id) as alarm_count,
-        </if>
         <if test="queryDepartmentName == true">
             department.name as department_name,
         </if>
@@ -250,20 +265,7 @@
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
         AND air. STATUS = 1
         LEFT JOIN asset_user asset_user ON asset.responsible_user_id = asset_user.id
-        AND asset. STATUS = 1
-        <if test="queryVulCount == true">
-            LEFT JOIN vuln_asset_rel avr ON avr.asset_id = asset.id
-            AND avr.process_status in (1,2,5)
-            AND avr. STATUS = 1
-        </if>
-        <if test="queryPatchCount == true">
-            LEFT JOIN patch_asset_rel apr ON apr.asset_id = asset.id
-            AND apr.process_status in (1,2,5)
-            AND apr. STATUS = 1
-        </if>
-        <if test="queryAlarmCount == true">
-            LEFT JOIN alarm_current_records acr ON acr.asset_id = asset.id
-        </if>
+        AND asset_user. STATUS = 1
         <if test="queryDepartmentName == true">
             LEFT JOIN asset_department department ON asset_user.department_id = department.id and department.status=1
         </if>
