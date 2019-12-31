@@ -1471,6 +1471,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                 if (actionResponse == null
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                        JSON.toJSONString(actionResponse));
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
                 // 如果没得uuid 安全检查
