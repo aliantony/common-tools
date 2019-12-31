@@ -258,7 +258,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         convert.forEach(assetAssembly -> {
                             BusinessExceptionUtils.isTrue(
                                 assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                                "当前组件已经被移除!");
+                                assetAssembly.getProductName() + "组件已经被移除!");
                             assetAssembly.setAssetId(aid);
                         });
                         assetAssemblyDao.insertBatch(convert);
