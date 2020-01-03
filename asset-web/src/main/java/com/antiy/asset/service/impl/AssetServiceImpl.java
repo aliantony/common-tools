@@ -253,11 +253,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
                         List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
+                        StringBuilder builder = new StringBuilder();
                         convert.forEach(assetAssembly -> {
                             BusinessExceptionUtils.isTrue(
                                 assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                                "厂商:" + assetAssembly.getSupplier() + "  名称:" + assetAssembly
-                                    .getProductName() + "的组件已经被移除!");
+                                "所选组件已更新，请刷新页面后重新添加!");
+                            // BusinessExceptionUtils.isTrue(
+                            // assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
+                            // "厂商:" + assetAssembly.getSupplier() + " 名称:" + assetAssembly
+                            // .getProductName() + "的组件已经被移除!");
                             assetAssembly.setAssetId(aid);
                         });
                         assetAssemblyDao.insertBatch(convert);
