@@ -1184,15 +1184,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
         // 计算设备变成其他设备了, 删除代办
-        if (assetOuterRequest.getCancelWaitingTask() != null) {
-            List<String> processInstanceIds = new ArrayList<>(1);
-            processInstanceIds.add(assetOuterRequest.getCancelWaitingTask().getProcessInstanceId());
-            ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
-            if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
-                throw new BusinessException("调用流程引擎出错");
-            }
-        }
+        // if (assetOuterRequest.getCancelWaitingTask() != null) {
+        // List<String> processInstanceIds = new ArrayList<>(1);
+        // processInstanceIds.add(assetOuterRequest.getCancelWaitingTask().getProcessInstanceId());
+        // ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
+        // if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+        // LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
+        // throw new BusinessException("调用流程引擎出错");
+        // }
+        // }
 
         final String[] admittanceResult = new String[1];
         String msg = "";
