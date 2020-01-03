@@ -419,7 +419,7 @@
     <select id="pulldownName" resultType="string" parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
         select distinct product_name from
         <include refid="Table_Name"></include>
-        where status = 1 and type='h'
+        where status = 1 and type in ('h' ,'a' )
         and is_storage=1
         <if test="supplier != null">
             and supplier =#{supplier}
@@ -434,7 +434,7 @@
             parameterType="com.antiy.asset.vo.query.AssetPulldownQuery">
         select * from
         <include refid="Table_Name"></include>
-        where status = 1 and type='h'
+        where status = 1 and type in ('h' ,'a' )
         and is_storage =1
         <if test="supplier != null">
             and supplier =#{supplier}
