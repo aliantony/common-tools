@@ -1159,6 +1159,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
+
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         ParamterExceptionUtils.isTrue(
@@ -1182,6 +1183,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
+        // 计算设备变成其他设备了, 删除代办
+        if (assetOuterRequest.getCancelWaitingTask() != null) {
+            List<String> processInstanceIds = new ArrayList<>(1);
+            processInstanceIds.add(assetOuterRequest.getCancelWaitingTask().getProcessInstanceId());
+            ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
+            if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
+                throw new BusinessException("调用流程引擎出错");
+            }
+        }
+
         final String[] admittanceResult = new String[1];
         String msg = "";
         final String[] reason = new String[1];
@@ -1312,7 +1324,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             uuid[0] = assetObj.getUuid();
-            // 已入网后变更//未知资产/退役资产重新登记-启动流程;
+            // 已入网后变更//未知资产/退役资产重新登记-f
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 //计算机设备资产变更
                     if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {

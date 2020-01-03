@@ -1,15 +1,13 @@
 package com.antiy.asset.vo.request;
 
-import java.io.*;
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.Valid;
+import java.io.*;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -81,6 +79,8 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     @ApiModelProperty(value = "是否需要漏扫,true/false")
     private boolean                       needScan;
+    @ApiModelProperty(value = "删除切换成其他设备代办")
+    private CancelWaitingTask             cancelWaitingTask;
 
     public boolean getNeedScan() {
         return needScan;
@@ -193,5 +193,13 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setIpRelationRequests(List<AssetIpRelationRequest> ipRelationRequests) {
         this.ipRelationRequests = ipRelationRequests;
+    }
+
+    public CancelWaitingTask getCancelWaitingTask() {
+        return cancelWaitingTask;
+    }
+
+    public void setCancelWaitingTask(CancelWaitingTask cancelWaitingTask) {
+        this.cancelWaitingTask = cancelWaitingTask;
     }
 }
