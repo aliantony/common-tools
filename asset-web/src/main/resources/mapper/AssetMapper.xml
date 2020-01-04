@@ -904,6 +904,9 @@
         <if test="serviceLifeEndTime != null">
             and asset.service_life &lt;= #{serviceLifeEndTime }
         </if>
+        <if test="assetId != null and assetId != ''">
+            and asset.id = #{assetId}
+        </if>
         <if test="associateGroup and existAssociateIds != null ">
             and asset.id not in (
             <foreach index="index" item="item" collection="existAssociateIds" separator=",">

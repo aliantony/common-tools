@@ -785,13 +785,16 @@
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
         select sw_type from baseline_template where id = #{baselineTemplateId}
     </select>
+    <select id="queryOsType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
+        select system_type from baseline_template where id = #{baselineTemplateId}
+    </select>
     <!--模板的软件-->
     <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
         SELECT
             b.business_id
         FROM
             baseline_template_software a
-            INNER JOIN asset_hard_soft_lib b ON a.software_id = b.id
+            INNER JOIN asset_hard_soft_lib b ON a.software_id = b.id and a.status=1 and b.status=1
         WHERE
 	      template_id =  #{baselineTemplateId}
     </select>
@@ -814,7 +817,7 @@
                     #{item}
                 </foreach>
                 <if test="os != null and os != ''">
-                    and soft_platform like concat('%',#{os},'%')
+                    and (soft_platform like concat('%',#{os},'%') or soft_platform='ANY')
                 </if>
             </when>
             <when test="nameListType == 2">
@@ -831,7 +834,7 @@
                     </foreach>
                 </if>
                 <if test="os != null and os != ''">
-                    and soft_platform like concat('%',#{os},'%')
+                    and (soft_platform like concat('%',#{os},'%') or soft_platform='ANY')
                 </if>
             </otherwise>
         </choose>
@@ -867,7 +870,7 @@
                     #{item}
                 </foreach>
                 <if test="os != null and os != ''">
-                    and soft_platform like concat('%',#{os},'%')
+                    and (soft_platform like concat('%',#{os},'%') or soft_platform='ANY')
                 </if>
             </when>
             <when test="nameListType == 2">
@@ -884,7 +887,7 @@
                     </foreach>
                 </if>
                 <if test="os != null and os != ''">
-                    and soft_platform like concat('%',#{os},'%')
+                    and (soft_platform like concat('%',#{os},'%') or soft_platform='ANY')
                 </if>
             </otherwise>
         </choose>

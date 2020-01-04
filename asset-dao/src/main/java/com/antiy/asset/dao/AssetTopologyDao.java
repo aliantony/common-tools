@@ -4,6 +4,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetCountResult;
 import com.antiy.asset.entity.AssetTopology;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.AssetIdRequest;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface AssetTopologyDao extends IBaseDao<AssetTopology> {
     Integer findTopologyListAssetCount(AssetQuery query);
 
     List<Asset> findTopologyListAsset(AssetQuery query);
+
+    List<Integer> findAlarmCountByAssetId(AssetIdRequest query);
+
 }

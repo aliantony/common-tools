@@ -176,6 +176,13 @@ public interface AssetSoftwareRelationDao extends IBaseDao<AssetSoftwareRelation
     Integer queryNameListType(InstallQuery query);
 
     /**
+     * 根据基准模板查询操作系统类型，windows 或者linux
+     * @param query
+     * @return
+     */
+    Integer queryOsType(InstallQuery query);
+
+    /**
      * 查询基准模板中的软件
      *
      * @param query

@@ -112,8 +112,8 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     public PageResult<AssetSoftwareInstallResponse> queryInstallableList(InstallQuery query) {
         // 模板黑白名单类型
         Integer nameListType = assetSoftwareRelationDao.queryNameListType(query);
-        // 模板黑白名单类型
-        String os = assetSoftwareRelationDao.queryOs(query);
+        // 模板所属操作系统 ,只区分windows和linux 1代表windows ,2是linux
+        String os = assetSoftwareRelationDao.queryOsType(query)==1?"windows":"linux";
         // 模板的软件
         List<Long> softwareIds = assetSoftwareRelationDao.querySoftwareIds(query);
         // 已安装的软件

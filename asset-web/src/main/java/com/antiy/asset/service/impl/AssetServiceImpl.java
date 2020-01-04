@@ -1,150 +1,19 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.antiy.asset.dao.AssetAssemblyDao;
-import com.antiy.asset.dao.AssetCpeFilterDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetGroupDao;
-import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.dao.AssetHardSoftLibDao;
-import com.antiy.asset.dao.AssetInstallTemplateDao;
-import com.antiy.asset.dao.AssetIpRelationDao;
-import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetLockDao;
-import com.antiy.asset.dao.AssetMacRelationDao;
-import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.dao.AssetSafetyEquipmentDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.dao.AssetStorageMediumDao;
-import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.entity.AssetCpeFilter;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.entity.AssetInstallTemplate;
-import com.antiy.asset.entity.AssetIpRelation;
-import com.antiy.asset.entity.AssetLock;
-import com.antiy.asset.entity.AssetMacRelation;
-import com.antiy.asset.entity.AssetNetworkEquipment;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSafetyEquipment;
-import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.AssetStorageMedium;
-import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.intergration.SysUserClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.AssetUnkonwEntity;
-import com.antiy.asset.templet.ComputeDeviceEntity;
-import com.antiy.asset.templet.ComputerVo;
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.templet.NetworkDeviceEntity;
-import com.antiy.asset.templet.OtherDeviceEntity;
-import com.antiy.asset.templet.SafetyEquipmentEntiy;
-import com.antiy.asset.templet.StorageDeviceEntity;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.CloseUtils;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.CountTypeUtil;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.StatusEnumUtil;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.AssetImportanceDegreeEnum;
-import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
-import com.antiy.asset.vo.enums.AssetOperateLogEnum;
-import com.antiy.asset.vo.enums.AssetSourceEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.InstallType;
-import com.antiy.asset.vo.enums.ReportType;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
-import com.antiy.asset.vo.query.AssetIpRelationQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AlarmAssetRequest;
-import com.antiy.asset.vo.request.AreaIdRequest;
-import com.antiy.asset.vo.request.AreaOperationRequest;
-import com.antiy.asset.vo.request.AssetAssemblyRequest;
-import com.antiy.asset.vo.request.AssetGroupRequest;
-import com.antiy.asset.vo.request.AssetIdRequest;
-import com.antiy.asset.vo.request.AssetImportRequest;
-import com.antiy.asset.vo.request.AssetIpRelationRequest;
-import com.antiy.asset.vo.request.AssetLockRequest;
-import com.antiy.asset.vo.request.AssetMacRelationRequest;
-import com.antiy.asset.vo.request.AssetMatchRequest;
-import com.antiy.asset.vo.request.AssetNetworkEquipmentRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.AssetRequest;
-import com.antiy.asset.vo.request.AssetSafetyEquipmentRequest;
-import com.antiy.asset.vo.request.AssetSoftwareReportRequest;
-import com.antiy.asset.vo.request.AssetStatusChangeRequest;
-import com.antiy.asset.vo.request.AssetStorageMediumRequest;
-import com.antiy.asset.vo.request.AssetUnknownRequest;
-import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
-import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
-import com.antiy.asset.vo.request.IpMacPort;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
-import com.antiy.asset.vo.request.ProcessTemplateRequest;
-import com.antiy.asset.vo.response.AlarmAssetDataResponse;
-import com.antiy.asset.vo.response.AlarmAssetResponse;
-import com.antiy.asset.vo.response.AssetAssemblyResponse;
-import com.antiy.asset.vo.response.AssetGroupResponse;
-import com.antiy.asset.vo.response.AssetIpRelationResponse;
-import com.antiy.asset.vo.response.AssetMacRelationResponse;
-import com.antiy.asset.vo.response.AssetNetworkEquipmentResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.AssetSafetyEquipmentResponse;
-import com.antiy.asset.vo.response.AssetSoftwareInstallResponse;
-import com.antiy.asset.vo.response.AssetStorageMediumResponse;
-import com.antiy.asset.vo.response.EnumCountResponse;
-import com.antiy.asset.vo.response.IDResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.WaitingTaskReponse;
-import com.antiy.asset.vo.user.OauthMenuResponse;
-import com.antiy.asset.vo.user.UserStatus;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.config.kafka.KafkaConfig;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.DateUtils;
-import com.antiy.common.utils.JsonUtil;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -152,8 +21,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -165,28 +32,39 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSON;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.BaseLineClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.intergration.SysUserClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.user.OauthMenuResponse;
+import com.antiy.asset.vo.user.UserStatus;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -375,10 +253,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
                         List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
+                        StringBuilder builder = new StringBuilder();
                         convert.forEach(assetAssembly -> {
                             BusinessExceptionUtils.isTrue(
                                 assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                                "当前组件已经被移除!");
+                                "所选组件已更新，请刷新页面后重新添加!");
+                            // BusinessExceptionUtils.isTrue(
+                            // assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
+                            // "厂商:" + assetAssembly.getSupplier() + " 名称:" + assetAssembly
+                            // .getProductName() + "的组件已经被移除!");
                             assetAssembly.setAssetId(aid);
                         });
                         assetAssemblyDao.insertBatch(convert);
@@ -433,7 +316,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     return Integer.parseInt(aid);
                 } catch (DuplicateKeyException exception) {
                     transactionStatus.setRollbackOnly();
-                    throw new BusinessException("编号重复！");
+                    throw new BusinessException("重复提交！");
                 } catch (BusinessException e) {
                     transactionStatus.setRollbackOnly();
                     throw new BusinessException(e.getMessage());
@@ -810,14 +693,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 query.setExistAssociateIds(associateAssetIdList);
             }
         }
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
-        if (loginUser == null) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(),
-                    Lists.newArrayList());
-        }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         dealProcess(query, processMap);
@@ -825,7 +703,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         int count = 0;
         // 如果会查询漏洞数量
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            count = assetDao.queryAllAssetVulCount(loginUser.getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -833,7 +711,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 如果会查询补丁数据
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            count = assetDao.queryAllAssetPatchCount(loginUser.getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
             if (count <= 0) {
                 return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
             }
@@ -1285,6 +1163,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (LoginUserUtil.getLoginUser() == null) {
             throw new BusinessException("获取用户失败");
         }
+
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset(), "资产信息不能为空");
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         ParamterExceptionUtils.isTrue(
@@ -1308,6 +1187,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterRequest.getAsset().getId());
             ParamterExceptionUtils.isTrue(mcount <= 0, "mac不能重复");
         }
+        // 计算设备变成其他设备了, 删除代办
+        // if (assetOuterRequest.getCancelWaitingTask() != null) {
+        // List<String> processInstanceIds = new ArrayList<>(1);
+        // processInstanceIds.add(assetOuterRequest.getCancelWaitingTask().getProcessInstanceId());
+        // ActionResponse response = activityClient.deleteProcessInstance(processInstanceIds);
+        // if (null == response || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+        // LogUtils.info(logger, "根据流程实例id集结束工作流出错: {}", processInstanceIds);
+        // throw new BusinessException("调用流程引擎出错");
+        // }
+        // }
+
         final String[] admittanceResult = new String[1];
         String msg = "";
         final String[] reason = new String[1];
@@ -1438,7 +1328,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String assetId = assetOuterRequest.getAsset().getId();
             Asset assetObj = assetDao.getById(assetId);
             uuid[0] = assetObj.getUuid();
-            // 已入网后变更//未知资产/退役资产重新登记-启动流程;
+            // 已入网后变更//未知资产/退役资产重新登记-f
             if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
                 //计算机设备资产变更
                     if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
@@ -1514,6 +1404,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
 
                     ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+                    String assetActivityInstanceId = (String) actionResponse.getBody();
                     // 如果流程引擎为空,直接返回错误信息
                     if (null == actionResponse
                         || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -1525,7 +1416,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 "资产已处于" + AssetStatusEnum.getAssetByCode(daoById.getAssetStatus()).getMsg()
                                                                  + "无法重复提交！");
                         }
+                        LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                            JSON.toJSONString(actionResponse));
                         BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
+
                     }
 
                     // 安全检查 2 模板1
@@ -1551,7 +1445,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 如果基准为空,直接返回错误信息
                     if (null == baselineCheck
                         || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                        // 调用失败，直接删登记的资产
+                        // 基准调用失败，删除启动的资产主流程
+                        if (!Objects.isNull(assetActivityInstanceId)) {
+                            activityClient.deleteProcessInstance(ImmutableList.of(assetActivityInstanceId));
+                        }
+                        // 调用失败，直接删登记的资
                         return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION)
                             : baselineCheck;
                     }
@@ -1589,6 +1487,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
                 if (actionResponse == null
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+
+                    LogUtils.info(logger, AssetEventEnum.ASSET_INSERT.getName() + "流程引擎返回结果：{}",
+                        JSON.toJSONString(actionResponse));
                     BusinessExceptionUtils.isTrue(false, "调用流程引擎出错");
                 }
                 // 如果没得uuid 安全检查
@@ -3559,21 +3460,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             throw new BusinessException("区域ID不能为空");
         }
 
-    }
-
-    @KafkaListener(topics = KafkaConfig.USER_AREA_TOPIC, containerFactory = "sampleListenerContainerFactory")
-    public void listen(String data, Acknowledgment ack) {
-        AreaOperationRequest areaOperationRequest = JsonUtil.json2Object(data, AreaOperationRequest.class);
-        if (areaOperationRequest != null) {
-            try {
-                LogUtils.info(logger, "消息消费成功 " + data);
-                assetDao.updateAssetAreaId(areaOperationRequest.getTargetAreaId(),
-                    areaOperationRequest.getSourceAreaIds());
-                ack.acknowledge();
-            } catch (Exception e) {
-                LogUtils.error(logger, e, "消息消费失败");
-            }
-        }
     }
 
     /**

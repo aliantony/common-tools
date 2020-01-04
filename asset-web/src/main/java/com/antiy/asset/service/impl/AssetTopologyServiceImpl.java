@@ -7,25 +7,15 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.entity.AssetLink;
 import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.intergration.VulClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetTopologyQuery;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.AssetTopologyAlarmResponse;
-import com.antiy.asset.vo.response.AssetTopologyIpSearchResposne;
-import com.antiy.asset.vo.response.AssetTopologyJsonData;
-import com.antiy.asset.vo.response.AssetTopologyNodeResponse;
-import com.antiy.asset.vo.response.AssetTopologyRelation;
-import com.antiy.asset.vo.response.AssetTopologyViewAngle;
-import com.antiy.asset.vo.response.CountTopologyResponse;
-import com.antiy.asset.vo.response.SelectResponse;
-import com.antiy.asset.vo.response.TopologyAssetResponse;
-import com.antiy.asset.vo.response.TopologyCategoryCountResponse;
-import com.antiy.asset.vo.response.TopologyListResponse;
+import com.antiy.asset.vo.request.AssetIdRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.BaseConverter;
@@ -35,6 +25,7 @@ import com.antiy.common.base.SysArea;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,6 +42,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 import static com.antiy.asset.util.StatusEnumUtil.getAssetUseableStatus;
@@ -96,6 +88,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private Double                              thirdLevelSpacing;
     @Value("${topology.third.level.height}")
     private Double                              thirdLevelHeight;
+    @Resource
+    private VulClient                           vulClient;
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
@@ -196,9 +190,6 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     public TopologyListResponse getTopologyList(AssetQuery query) throws Exception {
         initQuery(query);
         query.setQueryDepartmentName(false);
-        query.setQueryPatchCount(true);
-        query.setQueryVulCount(true);
-        query.setQueryAlarmCount(true);
         List<String> assetIdList = getLinkRelationIdList();
         if (CollectionUtils.isEmpty(assetIdList)) {
             TopologyListResponse topologyListResponse = new TopologyListResponse();
@@ -214,12 +205,26 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             AssetQuery alarmQuery = new AssetQuery();
             alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
             setListAreaName(assetResponseList);
-            assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
-            PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-                assetResponseList);
+            ExecutorService exeservices = Executors.newFixedThreadPool(2);
+            List<String> ids = new ArrayList<>();
+            for (AssetResponse assetResponse : assetResponseList) {
+                ids.add(assetResponse.getStringId());
+            }
+            AssetIdRequest assetIdRequest = new AssetIdRequest();
+            assetIdRequest.setAssetIds(ids);
+            assetIdRequest.setUserId(LoginUserUtil.getLoginUser().getStringId());
+            Callable<List<Integer>> alarmTask = () -> assetTopologyDao.findAlarmCountByAssetId(assetIdRequest);
+            Callable<AssetVulPatchResponse> vulPatchTask = () -> vulClient.getVulPatchCount(assetIdRequest);
+            Future<List<Integer>> alarmFuture = exeservices.submit(alarmTask);
+            Future<AssetVulPatchResponse> assetVulPatchResponseFuture = exeservices.submit(vulPatchTask);
+            AssetVulPatchResponse assetVulPatchResponse = assetVulPatchResponseFuture.get();
+            List<Integer> vulList = assetVulPatchResponse.getVulList();
+            List<Integer> patchList = assetVulPatchResponse.getPatchList();
+            List<Integer> alarmList = alarmFuture.get();
             TopologyListResponse topologyListResponse = new TopologyListResponse();
             List<TopologyListResponse.TopologyNode> topologyNodes = new ArrayList<>();
-            for (AssetResponse assetResponse : assetResponseList) {
+            for (int i = 0; i < assetResponseList.size(); i++) {
+                AssetResponse assetResponse = assetResponseList.get(i);
                 TopologyListResponse.TopologyNode topologyNode = topologyListResponse.new TopologyNode();
                 topologyNode.setAsset_area(assetResponse.getAreaName());
                 topologyNode.setAsset_ip(assetResponse.getIps());
@@ -228,12 +233,15 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
                 topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
-                topologyNode.setAsset_unrepair(assetResponse.getVulCount());
-                topologyNode.setAsset_untreated_warning(assetResponse.getAlarmCount());
-                topologyNode.setSystem_uninstall(assetResponse.getPatchCount());
+                topologyNode.setAsset_unrepair(Objects.toString(vulList.get(i)));
+                topologyNode.setAsset_untreated_warning(Objects.toString(alarmList.get(i)));
+                topologyNode.setSystem_uninstall(Objects.toString(patchList.get(i)));
                 topologyNode.setAsset_name(assetResponse.getName());
                 topologyNodes.add(topologyNode);
             }
+            topologyNodes.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAsset_untreated_warning())));
+            PageResult pageResult = new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                assetResponseList);
             topologyListResponse.setData(topologyNodes);
             topologyListResponse.setPageSize(pageResult.getPageSize());
             topologyListResponse.setCurrentPage(pageResult.getCurrentPage());
@@ -670,6 +678,17 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             AssetQuery alarmQuery = new AssetQuery();
             alarmQuery.setIds(DataTypeUtils.integerArrayToStringArray(assetIdList));
             setListAreaName(assetResponseList);
+            AssetIdRequest assetIdRequest = new AssetIdRequest();
+            List<String> ids = new ArrayList<>();
+            for (AssetResponse assetResponse : assetResponseList) {
+                ids.add(assetResponse.getStringId());
+            }
+            assetIdRequest.setAssetIds(ids);
+            List<Integer> list = assetTopologyDao.findAlarmCountByAssetId(assetIdRequest);
+            for (int i = 0; i < assetIdList.size(); i++) {
+                AssetResponse assetResponse = assetResponseList.get(i);
+                assetResponse.setAlarmCount(Objects.toString(list.get(i)));
+            }
             assetResponseList.sort(Comparator.comparingInt(o -> -Integer.valueOf(o.getAlarmCount())));
             AssetTopologyAlarmResponse assetTopologyAlarmResponse = new AssetTopologyAlarmResponse();
             assetTopologyAlarmResponse.setStatus("success");
