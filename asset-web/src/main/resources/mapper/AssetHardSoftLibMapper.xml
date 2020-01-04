@@ -253,7 +253,7 @@
             and number = #{number }
         </if>
         <if test=" type != null">
-            and type = #{type }
+            and type in (#{type },'a')
         </if>
         <if test=" supplier != null">
             and supplier = #{supplier }
