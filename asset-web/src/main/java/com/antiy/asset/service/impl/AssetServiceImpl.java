@@ -664,15 +664,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AssetResponse> findListAsset(AssetQuery query,
                                              Map<String, WaitingTaskReponse> processMap) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
         }
         // 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(
-                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+                    loginUser.getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(vulCountList)) {
                 return new ArrayList<AssetResponse>();
             }
@@ -689,7 +693,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Map<String, String> patchCountMaps = null;
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(
-                LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
+                    loginUser.getAreaIdsOfCurrentUser(), query.getPageSize(), query.getPageOffset());
             if (CollectionUtils.isEmpty(patchCountList)) {
                 return new ArrayList<>();
             }
@@ -760,9 +764,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     public Integer findCountAsset(AssetQuery query) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return 0;
+        }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
         }
         return assetDao.findCount(query);
     }
