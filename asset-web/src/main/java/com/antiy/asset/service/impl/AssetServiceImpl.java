@@ -781,9 +781,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @return
      */
     public Map<String, WaitingTaskReponse> getAllHardWaitingTask(String definitionKeyType) {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return new HashMap<>();
+        }
         // 1.获取当前用户的所有代办任务
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
-        activityWaitingQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
+        activityWaitingQuery.setUser(loginUser.getStringId());
         activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
         ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
             .queryAllWaitingTask(activityWaitingQuery);
@@ -1151,7 +1155,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countStatus() {
-        List<String> ids = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
+        List<String> ids = loginUser.getAreaIdsOfCurrentUser();
         List<Map<String, Object>> searchResult = assetDao.countStatus(ids);
         Map<AssetStatusEnum, EnumCountResponse> resultMap = new HashMap<>();
         List<EnumCountResponse> resultList = new ArrayList<>();
@@ -1178,7 +1186,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countCategory() {
-        List<String> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
+        List<String> areaIdsOfCurrentUser = loginUser.getAreaIdsOfCurrentUser();
 
         // 不统计已退役资产
         List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
@@ -1281,7 +1293,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 查询代办
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
-        activityWaitingQuery.setUser(LoginUserUtil.getLoginUser().getStringId());
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return assetOuterResponse;
+        }
+        activityWaitingQuery.setUser(loginUser.getStringId());
         activityWaitingQuery.setProcessDefinitionKey("asset");
 
         ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
@@ -1303,7 +1319,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public  ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
-        if (LoginUserUtil.getLoginUser() == null) {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
             throw new BusinessException("获取用户失败");
         }
 
@@ -1359,7 +1376,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     List<AssetGroupRequest> assetGroup = assetOuterRequest.getAsset().getAssetGroups();
                     // 处理资产组关系
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
-                    asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                    asset.setModifyUser(loginUser.getId());
                     asset.setGmtModified(System.currentTimeMillis());
                     if (asset.getOperationSystem() != null) {
                         HashMap<String, Object> param = new HashMap<>();
@@ -1411,7 +1428,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!Objects.isNull(networkEquipment)) {
                         AssetNetworkEquipment anp = BeanConvert.convertBean(networkEquipment,
                             AssetNetworkEquipment.class);
-                        anp.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        anp.setModifyUser(loginUser.getId());
                         anp.setGmtModified(System.currentTimeMillis());
                         anp.setAssetId(asset.getStringId());
                         assetNetworkEquipmentDao.update(anp);
@@ -1421,7 +1438,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (!Objects.isNull(safetyEquipmentRequest)) {
                         AssetSafetyEquipment asp = BeanConvert.convertBean(safetyEquipmentRequest,
                             AssetSafetyEquipment.class);
-                        asp.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        asp.setModifyUser(loginUser.getId());
                         asp.setAssetId(asset.getStringId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
@@ -1442,7 +1459,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetStorageMedium.class);
                         assetStorageMedium.setAssetId(assetOuterRequest.getAsset().getId());
                         assetStorageMedium.setGmtCreate(System.currentTimeMillis());
-                        assetStorageMedium.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                        assetStorageMedium.setModifyUser(loginUser.getId());
                         assetStorageMedium.setGmtModified(System.currentTimeMillis());
                         assetStorageMediumDao.update(assetStorageMedium);
                     }
@@ -1461,9 +1478,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
         assetOperationRecord.setOriginStatus(0);
         assetOperationRecord.setTargetStatus(asset.getAssetStatus());
-        assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-        assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+        assetOperationRecord.setOperateUserId(loginUser.getId());
+        assetOperationRecord.setCreateUser(loginUser.getId());
+        assetOperationRecord.setOperateUserName(loginUser.getName());
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setStatus(1);
         if (assetCount != null && assetCount > 0) {
@@ -1479,7 +1496,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .get("baselineConfigUserId").toString().split(",");
                         StringBuilder sb = new StringBuilder();
                         Arrays.stream(bids).forEach(bid -> {
-                            sb.append(aesEncoder.decode(bid, LoginUserUtil.getLoginUser().getUsername())).append(",");
+                            sb.append(aesEncoder.decode(bid, loginUser.getUsername())).append(",");
                         });
                         Map formData = assetOuterRequest.getManualStartActivityRequest().getFormData();
                         formData.put("baselineConfigUserId", sb.toString());
@@ -1493,7 +1510,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             baselineWaitingConfigRequest.setCheckType(asset.getInstallType());
                         }
                         baselineWaitingConfigRequest.setConfigStatus(1);
-                        baselineWaitingConfigRequest.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        baselineWaitingConfigRequest.setCreateUser(loginUser.getId());
                         baselineWaitingConfigRequest.setReason(reason[0]);
                         baselineWaitingConfigRequest.setSource(2);
                         baselineWaitingConfigRequest.setFormData(formData);
@@ -1544,7 +1561,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     ManualStartActivityRequest activityRequest = assetOuterRequest.getManualStartActivityRequest();
                     activityRequest.setBusinessId(assetId);
                     activityRequest.setProcessDefinitionKey("assetAdmittance");
-                    activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+                    activityRequest.setAssignee(loginUser.getId() + "");
 
                     ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
                     String assetActivityInstanceId = (String) actionResponse.getBody();
@@ -1572,8 +1589,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     baselineAssetRegisterRequest
                         .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
                     baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
-                    baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
-                    baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                    baselineAssetRegisterRequest.setModifiedUser(loginUser.getId());
+                    baselineAssetRegisterRequest.setOperator(loginUser.getId());
                     baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
                         ? activityRequest.getFormData().get("safetyCheckUser").toString()
                         : activityRequest.getFormData().get("templateImplementUser").toString());
@@ -1641,8 +1658,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineAssetRegisterRequest
                     .setTemplateId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
                 baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(ar) ? 2 : 1);
-                baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
-                baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+                baselineAssetRegisterRequest.setModifiedUser(loginUser.getId());
+                baselineAssetRegisterRequest.setOperator(loginUser.getId());
                 baselineAssetRegisterRequest.setCheckUser(
                     "safetyCheck".equals(ar) ? activityHandleRequest.getFormData().get("safetyCheckUser").toString()
                         : activityHandleRequest.getFormData().get("templateImplementUser").toString());
