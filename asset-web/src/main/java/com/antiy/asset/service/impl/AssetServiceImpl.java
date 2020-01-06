@@ -928,11 +928,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return String.format(message,assetByCode.getMsg());
     }
     private List<AssetEntity> getAssetEntities(ProcessTemplateRequest processTemplateRequest) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
         AssetQuery assetQuery = new AssetQuery();
         assetQuery.setTemplateList(processTemplateRequest.getIds());
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
+            ArrayTypeUtil.objectArrayToStringArray(loginUser.getAreaIdsOfCurrentUser().toArray()));
         List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         return assetEntityConvert.convert(list, AssetEntity.class);
     }
@@ -988,9 +992,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      */
     @Override
     public PageResult<AssetResponse> findUnconnectedAsset(AssetQuery query) {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return new PageResult<>();
+        }
         if (query.getAreaIds() == null || query.getAreaIds().length == 0) {
             query.setAreaIds(
-                DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
+                DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
         }
         // 只查已入网资产
         List<Integer> statusList = new ArrayList<>();
@@ -1128,8 +1136,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<EnumCountResponse> countManufacturer() {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
         int maxNum = 4;
-        List<String> areaIds = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> areaIds = loginUser.getAreaIdsOfCurrentUser();
         // 不统计已退役资产
         List<Integer> status = Arrays.asList(6, 10);
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
