@@ -52,12 +52,12 @@ public class OtherDeviceEntity {
     /**
      * ip地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", required = false, dataType = DataTypeEnum.IP)
+    @ExcelField(value = "ip", align = 1, title = "ip地址", required = false, dataType = DataTypeEnum.IP)
     private String ip;
     /**
      * ip地址
      */
-    @ExcelField(value = "mac", align = 1, title = "mac地址(必填)", required = false, dataType = DataTypeEnum.MAC)
+    @ExcelField(value = "mac", align = 1, title = "mac地址", required = false, dataType = DataTypeEnum.MAC)
     private String mac;
     /**
      * 序列号
