@@ -3,23 +3,16 @@ package com.antiy.asset.controller;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dao.AssetSoftwareDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusJumpService;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.request.AssetConfigValidateRefuseReqeust;
-import com.antiy.asset.vo.request.AssetStatusChangeRequest;
+import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 资产状态跃迁统一接口
@@ -82,9 +76,8 @@ public class AssetStatusJumpController {
     @PreAuthorize("hasAuthority('asset:noRegister')")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/noRegister", method = RequestMethod.POST)
-    public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
-
-        Integer count = assetService.assetNoRegister(assetStatusChangeRequest);
+    public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) List<NoRegisterRequest> registerRequestList) throws Exception {
+        Integer count = assetService.assetNoRegister(registerRequestList);
         return ActionResponse.success(count);
     }
 }

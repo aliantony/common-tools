@@ -4,6 +4,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
@@ -310,7 +311,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception;
-
+    Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception;
     /**
      * 基准模板下拉
      *

@@ -69,11 +69,7 @@ import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.asset.vo.enums.ReportType;
-import com.antiy.asset.vo.query.ActivityWaitingQuery;
-import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
-import com.antiy.asset.vo.query.AssetIpRelationQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetUserQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AreaIdRequest;
@@ -1489,7 +1485,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset assetObj = assetDao.getById(assetId);
             uuid[0] = assetObj.getUuid();
             // 已入网后变更//未知资产/退役资产重新登记-f
-            if (!Objects.isNull(assetOuterRequest.getManualStartActivityRequest())) {
+            if (Objects.nonNull(assetOuterRequest.getManualStartActivityRequest())) {
                 //计算机设备资产变更
                     if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
                         String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
@@ -3305,15 +3301,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // assetOperationRecordDao.insert(assetOperationRecord);
     }
 
-    @Override
-    @Transactional
-    public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
-        String[] assetId = assetStatusChangeRequest.getAssetId();
-        if (assetId == null || assetId.length == 0) {
-            return 0;
-        }
+    public Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception {
+       if(list.isEmpty())
+           return 0;
+        List<String> collect = list.stream().map(t -> t.getAssetId()).collect(Collectors.toList());
+        String[] assetIds=new String[collect.size()];
+        collect.toArray(assetIds);
         // 查询资产当前状态
-        List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetId);
+        List<Asset> currentAssetList = assetDao.getAssetStatusListByIds(assetIds);
         if (CollectionUtils.isEmpty(currentAssetList)) {
             throw new BusinessException("资产不存在");
         }
@@ -3331,12 +3326,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 记录日志
             if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
                 LogUtils.recordOperLog(
-                    new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(), currentAsset.getName(),
-                        assetStatusChangeRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                        new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(), currentAsset.getName(),
+                                list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             } else {
                 LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                    assetDao.getNumberById(currentAsset.getId().toString()), assetStatusChangeRequest,
-                    BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list,
+                        BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
             }
 
             // 更新状态
@@ -3349,8 +3344,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 更新状态
         assetDao.updateAssetBatch(assetList);
 
-        LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", assetStatusChangeRequest);
-        return assetId.length;
+        List<ActivityHandleRequest> activityHandleRequests=new ArrayList<>();
+        List<String> taskIds = list.stream().filter(t -> t.getTaskId() != null).map(t -> t.getTaskId()).collect(Collectors.toList());
+        for(String taskId: taskIds){
+            ActivityHandleRequest activityHandleRequest=new ActivityHandleRequest();
+            activityHandleRequest.setTaskId(taskId);
+            Map map=new HashMap();
+            Map map2=new HashMap();
+            map2.put("admittanceResult","noAdmittance");
+            map.put("formData",map2);
+            activityHandleRequest.setFormData(map);
+            activityHandleRequests.add(activityHandleRequest);
+        }
+        activityClient.completeTaskBatch(activityHandleRequests);
+        LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
+        return currentAssetList.size();
+    }
+    @Override
+    @Transactional
+    public Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception {
+       return 0;
     }
 
     @Override
