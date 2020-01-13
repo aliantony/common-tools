@@ -1,7 +1,9 @@
 package com.antiy.asset.vo.query;
 
-public class NoRegisterRequest {
+import com.antiy.common.encoder.Encode;
 
+public class NoRegisterRequest {
+    @Encode
     private String assetId;
     private String taskId;
 
