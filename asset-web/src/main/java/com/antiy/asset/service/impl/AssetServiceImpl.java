@@ -3356,7 +3356,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             activityHandleRequest.setFormData(map);
             activityHandleRequests.add(activityHandleRequest);
         }
-        activityClient.completeTaskBatch(activityHandleRequests);
+        if(activityHandleRequests.size()>0)
+            activityClient.completeTaskBatch(activityHandleRequests);
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
         return currentAssetList.size();
     }
