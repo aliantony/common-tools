@@ -223,16 +223,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer insertBatch(List<Asset> assets);
 
     /**
-     * 工作台待登记数量
-     *
-     * @param assetStatus
-     * @param areaIds
-     * @return
-     */
-    Integer queryWaitRegistCount(@Param(value = "assetStatus") Integer assetStatus,
-                                 @Param(value = "areaIds") List<String> areaIds);
-
-    /**
      * 查看待登记资产Id
      *
      * @param assetStatus
