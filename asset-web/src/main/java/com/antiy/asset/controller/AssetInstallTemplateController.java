@@ -270,4 +270,11 @@ public class AssetInstallTemplateController {
         return ActionResponse.success(iAssetInstallTemplateService.deleteBatchPatch(request));
     }
 
+    @ApiOperation(value = "查询模板是否存在")
+    @ApiResponse(code = 200, response = Boolean.class, message = "ok")
+    @PostMapping(value = "/query/isExist")
+    public ActionResponse isExist(@RequestBody  AssetInstallTemplateRequest query) throws Exception {
+        return ActionResponse.success(iAssetInstallTemplateService.isExist(query));
+    }
+
 }

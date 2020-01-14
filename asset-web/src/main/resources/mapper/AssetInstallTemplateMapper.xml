@@ -235,7 +235,7 @@
 
         from
         <include refid="Table_Name"></include>
-        where id = #{id}
+        where id = #{id} and status=1
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">

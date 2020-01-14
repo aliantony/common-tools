@@ -134,4 +134,10 @@ public interface IAssetInstallTemplateService extends IBaseService<AssetInstallT
     String checkTemplate(AssetInstallTemplateCheckRequest request) throws Exception;
 
     Integer deleteBatchPatch(AssetInstallTemplateRequest request);
+
+    /**
+     * 判断装机模板是否存在
+     * @return
+     */
+    boolean isExist(AssetInstallTemplateRequest query) throws Exception;
 }

@@ -599,4 +599,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         return handleRequest;
     }
 
+    @Override
+    public boolean isExist(AssetInstallTemplateRequest query) throws Exception {
+        return assetInstallTemplateDao.getById(query.getId()).getStatus()!=null?true:false;
+    }
 }
