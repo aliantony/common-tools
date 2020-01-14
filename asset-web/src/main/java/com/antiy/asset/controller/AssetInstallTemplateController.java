@@ -265,14 +265,14 @@ public class AssetInstallTemplateController {
 
     @ApiOperation(value = "模版关联补丁同步删除")
     @ApiResponse(code = 200, response = String.class, message = "ok")
-    @PostMapping(value = "/delete/patchIds")
+    @RequestMapping(value = "/delete/patchIds",method = RequestMethod.POST)
     public ActionResponse deleteBatchPatchIds(@RequestBody AssetInstallTemplateRequest request) {
         return ActionResponse.success(iAssetInstallTemplateService.deleteBatchPatch(request));
     }
 
     @ApiOperation(value = "查询模板是否存在")
     @ApiResponse(code = 200, response = Boolean.class, message = "ok")
-    @PostMapping(value = "/query/isExist")
+    @RequestMapping(value = "/query/isExist",method = RequestMethod.POST)
     public ActionResponse isExist(@RequestBody  AssetInstallTemplateRequest query) throws Exception {
         return ActionResponse.success(iAssetInstallTemplateService.isExist(query));
     }
