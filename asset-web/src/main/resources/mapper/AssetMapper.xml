@@ -831,7 +831,7 @@
                         </foreach>
                     </when>
                     <otherwise>
-                        and asset_status in (3,4,5,6,7,8)
+                        and asset_status in (3,4,5,6,7,8,9)
                     </otherwise>
                 </choose>
             </when>
