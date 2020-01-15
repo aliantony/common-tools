@@ -1709,6 +1709,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //                }
                 //根据前端判断启动漏扫
                 if (assetOuterRequest.getNeedScan()) {
+                    logger.info("启动漏扫");
                     // 漏洞扫描
                     ActionResponse scan = baseLineClient.scan(assetId);
                     if (null == scan
