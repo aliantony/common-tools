@@ -1438,14 +1438,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asp.setAssetId(asset.getStringId());
                         asp.setGmtModified(System.currentTimeMillis());
                         assetSafetyEquipmentDao.update(asp);
-                        if (assetOuterRequest.getNeedScan()) {
-                            // 漏洞扫描
-                            ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
-                            if (null == scan
-                                || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                                BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
-                            }
-                        }
                     }
 
                     // 4. 更新存储介质信息
@@ -1715,6 +1707,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 //                        throw new BusinessException("调用漏洞扫描出错");
 //                    }
 //                }
+                //根据前端判断启动漏扫
+                if (assetOuterRequest.getNeedScan()) {
+                    logger.info("启动漏扫");
+                    // 漏洞扫描
+                    ActionResponse scan = baseLineClient.scan(assetId);
+                    if (null == scan
+                            || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                    }
+                }
+
+
 
             }
         }
