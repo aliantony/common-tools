@@ -373,13 +373,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             if (assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0) {
 
                                 builder.append("厂商:" + assetAssembly.getSupplier() + " 名称:"
-                                               + assetAssembly.getProductName() + "的组件已经被移除!");
+                                               + assetAssembly.getProductName() + "的组件已经被移除!   ");
                             }
 
                             assetAssembly.setAssetId(aid);
                         });
                         if (0 == builder.length()) {
-                            BusinessExceptionUtils.isTrue(false, builder.append("所选组件已更新，请刷新页面后重新添加!").toString());
+                            BusinessExceptionUtils.isTrue(false, builder.append(",所选组件已更新，请刷新页面后重新添加!").toString());
                         }
                         assetAssemblyDao.insertBatch(convert);
                     }
