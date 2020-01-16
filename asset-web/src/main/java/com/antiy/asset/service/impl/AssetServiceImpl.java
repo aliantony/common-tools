@@ -1682,7 +1682,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             } else {
                 // 待登记多人 操作
-                if (AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
+                if (Objects.isNull(asset.getAssetStatus())) {
                     // 查询数据库
                     Asset daoById = assetDao.getById(asset.getStringId());
                     if (AssetStatusEnum.NET_IN.getCode().equals(daoById.getAssetStatus())) {
