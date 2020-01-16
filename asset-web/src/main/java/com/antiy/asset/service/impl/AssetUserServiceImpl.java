@@ -97,7 +97,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                 try {
                     if (StringUtils.isNotBlank(a.getAddress())) {
                         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                                DataTypeUtils.stringToInteger(a.getAddress()));
+                              a.getAddress());
                         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                         if (Objects.isNull(sysArea)) {
                             a.setAddress(null);
