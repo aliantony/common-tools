@@ -370,7 +370,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         StringBuilder builder = new StringBuilder();
                         convert.forEach(assetAssembly -> {
 
-                            if (assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0) {
+                            if (assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) <= 0) {
 
                                 builder.append("厂商:" + assetAssembly.getSupplier() + " 名称:"
                                                + assetAssembly.getProductName() + "的组件已经被移除!   ");
@@ -378,7 +378,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
                             assetAssembly.setAssetId(aid);
                         });
-                        if (0 == builder.length()) {
+                        if (builder.length() > 0) {
                             BusinessExceptionUtils.isTrue(false, builder.append(",所选组件已更新，请刷新页面后重新添加!").toString());
                         }
                         assetAssemblyDao.insertBatch(convert);
