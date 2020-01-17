@@ -778,7 +778,7 @@
         WHERE
             t1.asset_id = #{query.primaryKey}
             and t1.status = 1
-            order by t1.gmt_create desc
+            order by t1.gmt_create desc,id asc
         <if test="query.pageSize !=-1">
             LIMIT #{query.pageSize} offset #{query.pageOffset}
         </if>
