@@ -1957,8 +1957,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     newSoftIds.append(",");
                 });
                 logger.info("新增软件：{}", newSoftIds.deleteCharAt(newSoftIds.length() - 1).toString());
-                //逆序排列以使得符合页面排序效果
-                Collections.reverse(assetNewSoftware);
                 assetSoftwareRelationDao.insertBatch(assetNewSoftware);
             }
             if (!deletedSoftIds.isEmpty()) {
@@ -1975,6 +1973,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private List<AssetSoftwareRelation> getSoftRelation(String assetId, List<Long> softIds) {
         List<AssetSoftwareRelation> assetSoftwareRelationList = new ArrayList<>();
+        Collections.reverse(softIds);
         softIds.stream().forEach(softId -> {
             AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
             assetSoftwareRelation.setAssetId(assetId);
