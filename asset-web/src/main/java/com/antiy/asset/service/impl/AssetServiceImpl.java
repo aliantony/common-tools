@@ -166,17 +166,7 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -1967,6 +1957,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     newSoftIds.append(",");
                 });
                 logger.info("新增软件：{}", newSoftIds.deleteCharAt(newSoftIds.length() - 1).toString());
+                //逆序排列以使得符合页面排序效果
+                Collections.reverse(assetNewSoftware);
                 assetSoftwareRelationDao.insertBatch(assetNewSoftware);
             }
             if (!deletedSoftIds.isEmpty()) {
