@@ -1,9 +1,9 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetBusinessService;
-import com.antiy.asset.vo.query.AssetBusinessQuery;
-import com.antiy.asset.vo.request.AssetBusinessRequest;
-import com.antiy.asset.vo.response.AssetBusinessResponse;
+import com.antiy.asset.service.IAssetBusinessRelationService;
+import com.antiy.asset.vo.query.AssetBusinessRelationQuery;
+import com.antiy.asset.vo.request.AssetBusinessRelationRequest;
+import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 
 /**
@@ -22,18 +21,18 @@ import javax.validation.Valid;
  * @author zhangyajun
  * @since 2020-02-17
  */
-@Api(value = "AssetBusiness", description = "")
+@Api(value = "AssetBusinessRelation", description = "")
 @RestController
-@RequestMapping("/v1/asset/assetbusiness")
-public class AssetBusinessController {
+@RequestMapping("/v1/asset/assetbusinessrelation")
+public class AssetBusinessRelationController {
 
     @Resource
-    public IAssetBusinessService iAssetBusinessService;
+    public IAssetBusinessRelationService iAssetBusinessRelationService;
 
     /**
      * 保存
      *
-     * @param assetBusinessRequest
+     * @param assetBusinessRelationRequest
      * @return actionResponse
      */
     @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
@@ -41,14 +40,14 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetBusiness") @RequestBody @Valid AssetBusinessRequest assetBusinessRequest)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.saveAssetBusiness(assetBusinessRequest));
+    public ActionResponse saveSingle(@ApiParam(value = "assetBusinessRelation") @RequestBody AssetBusinessRelationRequest assetBusinessRelationRequest)throws Exception{
+        return ActionResponse.success(iAssetBusinessRelationService.saveAssetBusinessRelation(assetBusinessRelationRequest));
     }
 
     /**
      * 修改
      *
-     * @param assetBusinessRequest
+     * @param assetBusinessRelationRequest
      * @return actionResponse
      */
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
@@ -56,23 +55,23 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") AssetBusinessRequest assetBusinessRequest)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.updateAssetBusiness(assetBusinessRequest));
+    public ActionResponse updateSingle(@ApiParam(value = "assetBusinessRelation") AssetBusinessRelationRequest assetBusinessRelationRequest)throws Exception{
+        return ActionResponse.success(iAssetBusinessRelationService.updateAssetBusinessRelation(assetBusinessRelationRequest));
     }
 
     /**
      * 批量查询
      *
-     * @param assetBusinessQuery
+     * @param assetBusinessRelationQuery
      * @return actionResponse
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "OK", response = AssetBusinessRelationResponse.class, responseContainer = "List"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetBusiness") AssetBusinessQuery assetBusinessQuery)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.queryPageAssetBusiness(assetBusinessQuery));
+    public ActionResponse queryList(@ApiParam(value = "assetBusinessRelation") AssetBusinessRelationQuery assetBusinessRelationQuery)throws Exception{
+        return ActionResponse.success(iAssetBusinessRelationService.queryPageAssetBusinessRelation(assetBusinessRelationQuery));
     }
 
     /**
@@ -83,11 +82,11 @@ public class AssetBusinessController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class),
+            @ApiResponse(code = 200, message = "OK", response = AssetBusinessRelationResponse.class),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.queryAssetBusinessById(queryCondition));
+        return ActionResponse.success(iAssetBusinessRelationService.queryAssetBusinessRelationById(queryCondition));
     }
 
     /**
@@ -102,7 +101,7 @@ public class AssetBusinessController {
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.deleteAssetBusinessById(baseRequest));
+        return ActionResponse.success(iAssetBusinessRelationService.deleteAssetBusinessRelationById(baseRequest));
     }
 }
 
