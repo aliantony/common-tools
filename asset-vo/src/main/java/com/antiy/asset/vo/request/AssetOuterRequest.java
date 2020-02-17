@@ -37,6 +37,12 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "ip/net")
     @Valid
     private List<AssetIpRelationRequest>  ipRelationRequests;
+    /**
+     * 自定义字段
+     */
+    @ApiModelProperty(value = "自定义字段")
+    @Valid
+    private List<AssetCustomizeRequest>   assetCustomizeRequests;
 
     /**
      * 组件
@@ -201,5 +207,13 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setCancelWaitingTask(CancelWaitingTask cancelWaitingTask) {
         this.cancelWaitingTask = cancelWaitingTask;
+    }
+
+    public List<AssetCustomizeRequest> getAssetCustomizeRequests() {
+        return assetCustomizeRequests;
+    }
+
+    public void setAssetCustomizeRequests(List<AssetCustomizeRequest> assetCustomizeRequests) {
+        this.assetCustomizeRequests = assetCustomizeRequests;
     }
 }
