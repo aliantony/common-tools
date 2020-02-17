@@ -38,7 +38,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, software_id, software_status, port, configure_status, install_type, install_status, install_time, protocol, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, software_id, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -320,7 +320,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetSoftwareRelation" parameterType="java.util.Map">
+    <select id="getByWhere" resultMap="BaseResultMap"  parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
         from
@@ -328,6 +328,7 @@
         <where>
             <trim prefixOverrides="and">
                 <include refid="Where_Column_List"></include>
+                and status=1
             </trim>
         </where>
     </select>
@@ -777,7 +778,7 @@
         WHERE
             t1.asset_id = #{query.primaryKey}
             and t1.status = 1
-            order by t1.gmt_create desc
+            order by t1.gmt_create desc,id asc
         <if test="query.pageSize !=-1">
             LIMIT #{query.pageSize} offset #{query.pageOffset}
         </if>

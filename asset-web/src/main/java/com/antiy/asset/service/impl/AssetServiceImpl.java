@@ -166,17 +166,7 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -369,15 +359,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
                         StringBuilder builder = new StringBuilder();
                         convert.forEach(assetAssembly -> {
-                            BusinessExceptionUtils.isTrue(
-                                assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                                "所选组件已更新，请刷新页面后重新添加!");
-                            // BusinessExceptionUtils.isTrue(
-                            // assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) > 0,
-                            // "厂商:" + assetAssembly.getSupplier() + " 名称:" + assetAssembly
-                            // .getProductName() + "的组件已经被移除!");
+
+                            if (assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) <= 0) {
+
+                                builder.append("厂商:" + assetAssembly.getSupplier() + " 名称:"
+                                               + assetAssembly.getProductName() + " ");
+                            }
+
                             assetAssembly.setAssetId(aid);
                         });
+                        if (builder.length() > 0) {
+                            BusinessExceptionUtils.isTrue(false, builder.append(",所选组件已更新，请刷新页面后重新添加!").toString());
+                        }
                         assetAssemblyDao.insertBatch(convert);
                     }
                     // 插入ip/net mac
@@ -1674,7 +1667,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             } else {
                 // 待登记多人 操作
-                if (AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())) {
+                if (Objects.isNull(asset.getAssetStatus())) {
                     // 查询数据库
                     Asset daoById = assetDao.getById(asset.getStringId());
                     if (AssetStatusEnum.NET_IN.getCode().equals(daoById.getAssetStatus())) {
@@ -1938,23 +1931,58 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) {
-        // 1.先删除旧的关系表
-        assetSoftwareRelationDao.deleteSoftRealtion(id, Lists.newArrayList());
-        // 2.插入新的关系
-        List<Long> softIds = softwareReportRequest.getSoftId();
-        if (CollectionUtils.isNotEmpty(softIds)) {
-            List<AssetSoftwareRelation> assetSoftwareRelationList = Lists.newArrayList();
-            softIds.stream().forEach(softId -> {
-                AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
-                assetSoftwareRelation.setAssetId(id);
-                assetSoftwareRelation.setSoftwareId(softId);
-                assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
-                assetSoftwareRelationList.add(assetSoftwareRelation);
-            });
-            assetSoftwareRelationDao.insertBatch(assetSoftwareRelationList);
+    public void dealSoft(String id, AssetSoftwareReportRequest softwareReportRequest) throws Exception {
+        HashMap<String, Object> query = new HashMap<String, Object>();
+        query.put("assetId", id);
+        List<AssetSoftwareRelation> preSoft = assetSoftwareRelationDao.getByWhere(query);
+        List<Long> preSoftIds = new ArrayList<>();
+        if (!preSoft.isEmpty()) {
+            preSoftIds = preSoft.stream().map(AssetSoftwareRelation::getSoftwareId).collect(Collectors.toList());
         }
+        List<Long> softIds = softwareReportRequest.getSoftId() == null ? new ArrayList<>() : softwareReportRequest.getSoftId();
+        if (CollectionUtils.isNotEmpty(softIds)) {
+            List<Long> SoftIds = new ArrayList<>(softIds);
+            List<Long> deletedSoftIds = new ArrayList<>(softIds);
+            List<AssetSoftwareRelation> assetNewSoftware = Lists.newArrayList();
+            softIds.removeAll(preSoftIds);
+            if (!softIds.isEmpty()) {
+                assetNewSoftware = getSoftRelation(id, softIds);
+            }
+            preSoftIds.removeAll(deletedSoftIds);
+            deletedSoftIds = preSoftIds;
+            if (!assetNewSoftware.isEmpty()) {
+                StringBuilder newSoftIds = new StringBuilder();
+                assetNewSoftware.forEach(v -> {
+                    newSoftIds.append(v.getSoftwareId());
+                    newSoftIds.append(",");
+                });
+                logger.info("新增软件：{}", newSoftIds.deleteCharAt(newSoftIds.length() - 1).toString());
+                assetSoftwareRelationDao.insertBatch(assetNewSoftware);
+            }
+            if (!deletedSoftIds.isEmpty()) {
+                StringBuilder delSoftIds = new StringBuilder();
+                deletedSoftIds.forEach(v -> {
+                    delSoftIds.append(v);
+                    delSoftIds.append(",");
+                });
+                logger.info("删除软件：{}", delSoftIds.deleteCharAt(delSoftIds.length() - 1).toString());
+                assetSoftwareRelationDao.deleteSoftRealtion(id, deletedSoftIds);
+            }
+        }
+    }
+
+    private List<AssetSoftwareRelation> getSoftRelation(String assetId, List<Long> softIds) {
+        List<AssetSoftwareRelation> assetSoftwareRelationList = new ArrayList<>();
+        Collections.reverse(softIds);
+        softIds.stream().forEach(softId -> {
+            AssetSoftwareRelation assetSoftwareRelation = new AssetSoftwareRelation();
+            assetSoftwareRelation.setAssetId(assetId);
+            assetSoftwareRelation.setSoftwareId(softId);
+            assetSoftwareRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetSoftwareRelation.setGmtCreate(System.currentTimeMillis());
+            assetSoftwareRelationList.add(assetSoftwareRelation);
+        });
+        return assetSoftwareRelationList;
     }
 
     public boolean dealAssembly(String id, List<AssetAssemblyRequest> assemblyRequestList) {
