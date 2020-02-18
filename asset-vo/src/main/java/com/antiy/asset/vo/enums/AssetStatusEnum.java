@@ -17,44 +17,62 @@ public enum AssetStatusEnum {
     NOT_REGISTER(2, "不予登记"),
 
     /**
-     * 模板待实施
+     * 整改中
      */
-    WAIT_TEMPLATE_IMPL(3, "待实施"),
+    CORRECTING(3,"整改中"),
     /**
-     * 待验证
+     * 入网待审批
      */
-    WAIT_VALIDATE(4, "待验证"),
+    NET_IN_LEADER_CHECK(4,"入网待审批"),
     /**
-     * 待入网
+     * 入网审批未通过
      */
-    WAIT_NET(5, "待入网"),
+    NET_IN_LEADER_DISAGREE(5,"入网审批未通过"),
+    /**
+     * 待准入
+     */
+    NET_IN_CHECK(6,"待准入"),
     /**
      * 已入网
      */
-    NET_IN(6, "已入网"),
+    NET_IN(7, "已入网"),
     /**
-     * 待检查
+     * 变更中
      */
-    WAIT_CHECK(7, "待检查"),
-    /**
-     * 待整改
-     */
-    WAIT_CORRECT(8, "待整改"),
+    IN_CHANGE(8, "变更中"),
 
     /**
-     * 变更中,基准验证通过后变更为已入网
+     * 退役待审批
      */
-    IN_CHANGE(9, "变更中"),
-
+    WAIT_RETIRE_CHECK(9, "退役待审批"),
+    /**
+     * 退役审批未通过
+    */
+    RETIRE_DISAGREE(10, "退役审批未通过"),
     /**
      * 待退役
      */
-    WAIT_RETIRE(10, "待退役"),
-
+    WAIT_RETIRE(11, "待退役"),
     /**
      * 已退役
      */
-    RETIRE(11, "已退役");
+    RETIRE(12, "已退役"),
+    /**
+     * 报废待审批
+     */
+    WAIT_SCRAP_CHECK(13,"报废待审批"),
+    /**
+     * 报废审批未通过
+     */
+    SCRAP_DISAGREE(14,"报废审批未通过"),
+    /**
+     * 待报废
+     */
+    WAIT_SCRAP(15,"待报废"),
+    /**
+     * 已报废
+     */
+    SCRAP(16,"已报废");
 
     AssetStatusEnum(Integer code, String msg) {
         this.code = code;
