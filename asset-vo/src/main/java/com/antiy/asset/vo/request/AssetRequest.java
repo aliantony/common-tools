@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.validation.constraints.*;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -43,7 +41,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("装机模板id")
     @Encode
     private String                  installTemplateId;
-
+    /**
+     * 是否孤岛设备：1、是 2、否
+     */
+    @ApiModelProperty("是否孤岛设备：1、是 2、否")
+    private Integer                 isOrphan;
     /**
      * 资产zu
      */
@@ -479,5 +481,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     public void setOperationSystemName(String operationSystemName) {
         this.operationSystemName = operationSystemName;
+    }
+
+    public Integer getIsOrphan() {
+        return isOrphan;
+    }
+
+    public void setIsOrphan(Integer isOrphan) {
+        this.isOrphan = isOrphan;
     }
 }

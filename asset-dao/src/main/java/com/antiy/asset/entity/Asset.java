@@ -14,11 +14,24 @@ import io.swagger.annotations.ApiModelProperty;
 public class Asset extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
+
     private Long              businessId;
     /**
      * 配置模板idbaselineTemplateId
      */
     private String            baselineTemplateId;
+    /**
+     * 网络状态：1、在线 2、离线 3、未知
+     */
+    private Integer           netStatus;
+    /**
+     * 是否孤岛设备：1、是 2、否
+     */
+    private Integer           isOrphan;
+    /**
+     * 自定义字段
+     */
+    private String            customField;
     /**
      * 配置模板名称
      */
@@ -491,6 +504,22 @@ public class Asset extends BaseEntity {
         return macs;
     }
 
+    public String getCustomField() {
+        return customField;
+    }
+
+    public void setCustomField(String customField) {
+        this.customField = customField;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     public void setMacs(String macs) {
         this.macs = macs;
     }
@@ -583,13 +612,8 @@ public class Asset extends BaseEntity {
         this.gmtModified = gmtModified;
     }
 
-    public String getMemo() {
-        return memo;
-    }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
+
 
     public Integer getCreateUser() {
         return createUser;
@@ -669,5 +693,21 @@ public class Asset extends BaseEntity {
 
     public void setStepNode(String stepNode) {
         this.stepNode = stepNode;
+    }
+
+    public Integer getNetStatus() {
+        return netStatus;
+    }
+
+    public void setNetStatus(Integer netStatus) {
+        this.netStatus = netStatus;
+    }
+
+    public Integer getIsOrphan() {
+        return isOrphan;
+    }
+
+    public void setIsOrphan(Integer isOrphan) {
+        this.isOrphan = isOrphan;
     }
 }

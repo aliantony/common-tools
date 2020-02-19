@@ -43,6 +43,12 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "自定义字段")
     @Valid
     private List<AssetCustomizeRequest>   assetCustomizeRequests;
+    /**
+     * 自定义字段
+     */
+    @ApiModelProperty(value = "自定义字段")
+    @Valid
+    private List<AssetBusinessRelationRequest> asetBusinessRelationRequests;
 
     /**
      * 组件
@@ -215,5 +221,13 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setAssetCustomizeRequests(List<AssetCustomizeRequest> assetCustomizeRequests) {
         this.assetCustomizeRequests = assetCustomizeRequests;
+    }
+
+    public List<AssetBusinessRelationRequest> getAsetBusinessRelationRequests() {
+        return asetBusinessRelationRequests;
+    }
+
+    public void setAsetBusinessRelationRequests(List<AssetBusinessRelationRequest> asetBusinessRelationRequests) {
+        this.asetBusinessRelationRequests = asetBusinessRelationRequests;
     }
 }

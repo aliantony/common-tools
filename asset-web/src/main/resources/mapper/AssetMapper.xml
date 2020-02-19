@@ -18,6 +18,7 @@
         <result property="key" column="id"/>
         <result property="value" column="install_type"/>
     </resultMap>
+
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -35,9 +36,10 @@
         <result column="operation_system" property="operationSystem"/>
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
-        <result column="responsible_user_name" property="responsibleUserName"/>
+        <result column="location" property="location"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
-        <result column="version" property="version"/>
         <result column="firmware_version" property="firmwareVersion"/>
         <result column="uuid" property="uuid"/>
         <result column="asset_source" property="assetSource"/>
@@ -48,14 +50,12 @@
         <result column="is_innet" property="isInnet"/>
         <result column="service_life" property="serviceLife"/>
         <result column="buy_date" property="buyDate"/>
+        <result column="version" property="version"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
-        <result column="baseline_template_name" property="baselineTemplateName"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
-        <result column="ips" property="ips"/>
-        <result column="macs" property="macs"/>
         <result column="step_node" property="stepNode"/>
         <result column="memo" property="memo"/>
         <result column="gmt_create" property="gmtCreate"/>
@@ -63,303 +63,19 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="net_status" property="netStatus"/>
+        <result column="is_orphan" property="isOrphan"/>
+        <result column="custom_field" property="customField"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, step_node,number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, responsible_user_id, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, memo, gmt_create, gmt_modified, create_user, modify_user, status
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
     </sql>
 
     <sql id="Table_Name">
         asset
     </sql>
 
-
-    <sql id="IF_Base_Column_List">
-        <if test=" businessId != null">
-            business_id,
-        </if>
-        <if test=" stepNode != null">
-            step_node,
-        </if>
-        <if test=" assetGroup != null">
-            asset_group,
-        </if>
-        <if test=" number != null">
-            number,
-        </if>
-        <if test=" name != null">
-            name,
-        </if>
-        <if test=" installType != null">
-            install_type,
-        </if>
-        <if test=" serial != null">
-            serial,
-        </if>
-        <if test=" areaId != null">
-            area_id,
-        </if>
-        <if test=" categoryModel != null">
-            category_model,
-        </if>
-        <if test=" manufacturer != null">
-            manufacturer,
-        </if>
-        <if test=" assetStatus != null">
-            asset_status,
-        </if>
-        <if test=" admittanceStatus != null">
-            admittance_status,
-        </if>
-        <if test=" operationSystem != null">
-            operation_system,
-        </if>
-        <if test=" operationSystemName != null">
-            operation_system_name,
-        </if>
-        <if test=" responsibleUserId != null">
-            responsible_user_id,
-        </if>
-
-        <if test=" latitude != null">
-            latitude,
-        </if>
-        <if test=" longitude != null">
-            longitude,
-        </if>
-        <if test=" houseLocation != null">
-            house_location,
-        </if>
-        <if test=" firmwareVersion != null">
-            firmware_version,
-        </if>
-        <if test=" uuid != null">
-            uuid,
-        </if>
-        <if test=" assetSource != null">
-            asset_source,
-        </if>
-        <if test=" importanceDegree != null">
-            importance_degree,
-        </if>
-        <if test=" describle != null">
-            describle,
-        </if>
-        <if test=" firstEnterNett != null">
-            first_enter_nett,
-        </if>
-        <if test=" firstDiscoverTime != null">
-            first_discover_time,
-        </if>
-        <if test=" isInnet != null">
-            is_innet,
-        </if>
-        <if test=" serviceLife != null">
-            service_life,
-        </if>
-        <if test=" buyDate != null">
-            buy_date,
-        </if>
-        <if test=" version != null">
-            version,
-        </if>
-        <if test=" warranty != null">
-            warranty,
-        </if>
-        <if test=" installTemplateId != null">
-            install_template_id,
-        </if>
-        <if test=" baselineTemplateId != null">
-            baseline_template_id,
-        </if>
-        <if test=" baselineTemplateCorrelationGmt != null">
-            baseline_template_correlation_gmt,
-        </if>
-        <if test=" installTemplateCorrelationGmt != null">
-            install_template_correlation_gmt,
-        </if>
-        <if test=" memo != null">
-            memo,
-        </if>
-        <if test=" gmtCreate != null">
-            gmt_create,
-        </if>
-        <if test=" gmtModified != null">
-            gmt_modified,
-        </if>
-        <if test=" createUser != null">
-            create_user,
-        </if>
-        <if test=" modifyUser != null">
-            modify_user,
-        </if>
-        <if test=" status != null">
-            status,
-        </if>
-    </sql>
-
-    <sql id="IF_Value_Column_List">
-        <if test=" businessId != null">
-            #{businessId },
-        </if>
-        <if test=" stepNode != null">
-            #{stepNode },
-        </if>
-        <if test=" assetGroup != null">
-            #{assetGroup },
-        </if>
-        <if test=" number != null">
-            #{number },
-        </if>
-        <if test=" name != null">
-            #{name },
-        </if>
-        <if test=" installType != null">
-            #{installType },
-        </if>
-        <if test=" serial != null">
-            #{serial },
-        </if>
-        <if test=" areaId != null">
-            #{areaId },
-        </if>
-        <if test=" categoryModel != null">
-            #{categoryModel },
-        </if>
-        <if test=" manufacturer != null">
-            #{manufacturer },
-        </if>
-        <if test=" assetStatus != null">
-            #{assetStatus },
-        </if>
-        <if test=" admittanceStatus != null">
-            #{admittanceStatus },
-        </if>
-        <if test=" operationSystem != null">
-            #{operationSystem },
-        </if>
-        <if test=" operationSystemName != null">
-            #{operationSystemName },
-        </if>
-
-        <if test=" responsibleUserId != null">
-            #{responsibleUserId },
-        </if>
-
-        <if test=" latitude != null">
-            #{latitude },
-        </if>
-        <if test=" longitude != null">
-            #{longitude },
-        </if>
-        <if test=" houseLocation != null">
-            #{houseLocation },
-        </if>
-        <if test=" firmwareVersion != null">
-            #{firmwareVersion },
-        </if>
-        <if test=" uuid != null">
-            #{uuid },
-        </if>
-        <if test=" assetSource != null">
-            #{assetSource },
-        </if>
-        <if test=" importanceDegree != null">
-            #{importanceDegree },
-        </if>
-        <if test=" describle != null">
-            #{describle },
-        </if>
-        <if test=" firstEnterNett != null">
-            #{firstEnterNett },
-        </if>
-        <if test=" firstDiscoverTime != null">
-            #{firstDiscoverTime },
-        </if>
-        <if test=" isInnet != null">
-            #{isInnet },
-        </if>
-        <if test=" serviceLife != null">
-            #{serviceLife },
-        </if>
-        <if test=" buyDate != null">
-            #{buyDate },
-        </if>
-        <if test=" version != null">
-            #{version },
-        </if>
-        <if test=" warranty != null">
-            #{warranty },
-        </if>
-        <if test=" installTemplateId != null">
-            #{installTemplateId },
-        </if>
-        <if test=" baselineTemplateId != null">
-            #{baselineTemplateId },
-        </if>
-        <if test=" baselineTemplateCorrelationGmt != null">
-            #{baselineTemplateCorrelationGmt },
-        </if>
-        <if test=" installTemplateCorrelationGmt != null">
-            #{installTemplateCorrelationGmt },
-        </if>
-        <if test=" memo != null">
-            #{memo },
-        </if>
-        <if test=" gmtCreate != null">
-            #{gmtCreate },
-        </if>
-        <if test=" gmtModified != null">
-            #{gmtModified },
-        </if>
-        <if test=" createUser != null">
-            #{createUser },
-        </if>
-        <if test=" modifyUser != null">
-            #{modifyUser },
-        </if>
-        <if test=" status != null">
-            #{status },
-        </if>
-    </sql>
-    <sql id="IF_Value_Column_List_ForBatch">
-            #{entity.number },
-            #{entity.stepNode },
-            #{entity.name },
-            #{entity.installType },
-            #{entity.serial },
-            #{entity.areaId },
-            #{entity.categoryModel },
-            #{entity.manufacturer },
-            #{entity.assetStatus },
-            #{entity.admittanceStatus },
-            #{entity.operationSystem },
-            #{entity.operationSystemName },
-            #{entity.responsibleUserId },
-            #{entity.houseLocation },
-            #{entity.firmwareVersion },
-            #{entity.uuid },
-            #{entity.assetSource },
-            #{entity.importanceDegree },
-            #{entity.describle },
-            #{entity.firstEnterNett },
-            #{entity.firstDiscoverTime },
-            #{entity.isInnet },
-            #{entity.serviceLife },
-            #{entity.buyDate },
-            #{entity.version },
-            #{entity.warranty },
-            #{entity.installTemplateId },
-            #{entity.baselineTemplateId },
-            #{entity.baselineTemplateCorrelationGmt },
-            #{entity.installTemplateCorrelationGmt },
-            #{entity.memo },
-            #{entity.gmtCreate },
-            #{entity.gmtModified },
-            #{entity.createUser },
-            #{entity.modifyUser }
-
-    </sql>
 
     <sql id="IF_Base_Column_List_ForBatch">
 
@@ -397,257 +113,53 @@
             gmt_create,
             gmt_modified,
             create_user,
-            modify_user
-
-    </sql>
-    <sql id="Set_Column_List">
-        <if test=" businessId != null">
-            business_id = #{businessId },
-        </if>
-        <if test=" stepNode != null">
-            step_node = #{stepNode },
-        </if>
-        <if test=" assetGroup != null">
-            asset_group = #{assetGroup },
-        </if>
-        <if test=" number != null">
-            number = #{number },
-        </if>
-        <if test=" name != null">
-            name = #{name },
-        </if>
-        <if test=" installType != null">
-            install_type = #{installType },
-        </if>
-        <if test=" serial != null">
-            serial = #{serial },
-        </if>
-        <if test=" areaId != null">
-            area_id = #{areaId },
-        </if>
-        <if test=" categoryModel != null">
-            category_model = #{categoryModel },
-        </if>
-        <if test=" manufacturer != null">
-            manufacturer = #{manufacturer },
-        </if>
-        <if test=" assetStatus != null">
-            asset_status = #{assetStatus },
-        </if>
-        <if test=" admittanceStatus != null">
-            admittance_status = #{admittanceStatus },
-        </if>
-        <if test=" operationSystem != null">
-            operation_system = #{operationSystem },
-        </if>
-        <if test=" operationSystemName != null">
-            operation_system_name = #{operationSystemName },
-        </if>
-        <if test=" responsibleUserId != null">
-            responsible_user_id = #{responsibleUserId },
-        </if>
-
-        <if test=" latitude != null">
-            latitude = #{latitude },
-        </if>
-        <if test=" longitude != null">
-            longitude = #{longitude },
-        </if>
-        <if test=" houseLocation != null">
-            house_location = #{houseLocation },
-        </if>
-        <if test=" firmwareVersion != null">
-            firmware_version = #{firmwareVersion },
-        </if>
-        <if test=" uuid != null">
-            uuid = #{uuid },
-        </if>
-        <if test=" assetSource != null">
-            asset_source = #{assetSource },
-        </if>
-        <if test=" importanceDegree != null">
-            importance_degree = #{importanceDegree },
-        </if>
-        <if test=" describle != null">
-            describle = #{describle },
-        </if>
-        <if test=" firstEnterNett != null">
-            first_enter_nett = #{firstEnterNett },
-        </if>
-        <if test=" firstDiscoverTime != null">
-            first_discover_time = #{firstDiscoverTime },
-        </if>
-        <if test=" isInnet != null">
-            is_innet = #{isInnet },
-        </if>
-        <if test=" serviceLife != null">
-            service_life = #{serviceLife },
-        </if>
-        <if test=" buyDate != null">
-            buy_date = #{buyDate },
-        </if>
-        <if test=" version != null">
-            version = #{version },
-        </if>
-        <if test=" warranty != null">
-            warranty = #{warranty },
-        </if>
-        <if test=" installTemplateId != null">
-            install_template_id = #{installTemplateId },
-        </if>
-        <if test=" baselineTemplateId != null">
-            baseline_template_id = #{baselineTemplateId },
-        </if>
-        <if test=" baselineTemplateCorrelationGmt != null">
-            baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt },
-        </if>
-        <if test=" installTemplateCorrelationGmt != null">
-            install_template_correlation_gmt = #{installTemplateCorrelationGmt },
-        </if>
-        <if test=" memo != null">
-            memo = #{memo },
-        </if>
-        <if test=" gmtCreate != null">
-            gmt_create = #{gmtCreate },
-        </if>
-        <if test=" gmtModified != null">
-            gmt_modified = #{gmtModified },
-        </if>
-        <if test=" createUser != null">
-            create_user = #{createUser },
-        </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
-        <if test=" status != null">
-            status = #{status },
-        </if>
+            modify_user,
+            net_status,
+            is_orphan,
+        custom_field
     </sql>
 
-    <sql id="Where_Column_List">
-        <if test=" businessId != null">
-            and business_id = #{businessId }
-        </if>
-        <if test=" stepNode != null">
-            and step_node = #{stepNode },
-        </if>
-        <if test=" assetGroup != null">
-            and asset_group = #{assetGroup }
-        </if>
-        <if test=" number != null">
-            and number = #{number }
-        </if>
-        <if test=" name != null">
-            and name = #{name }
-        </if>
-        <if test=" installType != null">
-            and install_type = #{installType }
-        </if>
-        <if test=" serial != null">
-            and serial = #{serial }
-        </if>
-        <if test=" areaId != null">
-            and area_id = #{areaId }
-        </if>
-        <if test=" categoryModel != null">
-            and category_model = #{categoryModel }
-        </if>
-        <if test=" manufacturer != null">
-            and manufacturer = #{manufacturer }
-        </if>
-        <if test=" assetStatus != null">
-            and asset_status = #{assetStatus }
-        </if>
-        <if test=" admittanceStatus != null">
-            and admittance_status = #{admittanceStatus }
-        </if>
-        <if test=" operationSystem != null">
-            and operation_system = #{operationSystem }
-        </if>
-        <if test=" operationSystemName != null">
-            and operation_system_name = #{operationSystemName }
-        </if>
-        <if test=" responsibleUserId != null">
-            and responsible_user_id = #{responsibleUserId }
-        </if>
+    <sql id="IF_Value_Column_List_ForBatch">
+        #{entity.number },
+        #{entity.stepNode },
+        #{entity.name },
+        #{entity.installType },
+        #{entity.serial },
+        #{entity.areaId },
+        #{entity.categoryModel },
+        #{entity.manufacturer },
+        #{entity.assetStatus },
+        #{entity.admittanceStatus },
+        #{entity.operationSystem },
+        #{entity.operationSystemName },
+        #{entity.responsibleUserId },
+        #{entity.houseLocation },
+        #{entity.firmwareVersion },
+        #{entity.uuid },
+        #{entity.assetSource },
+        #{entity.importanceDegree },
+        #{entity.describle },
+        #{entity.firstEnterNett },
+        #{entity.firstDiscoverTime },
+        #{entity.isInnet },
+        #{entity.serviceLife },
+        #{entity.buyDate },
+        #{entity.version },
+        #{entity.warranty },
+        #{entity.installTemplateId },
+        #{entity.baselineTemplateId },
+        #{entity.baselineTemplateCorrelationGmt },
+        #{entity.installTemplateCorrelationGmt },
+        #{entity.memo },
+        #{entity.gmtCreate },
+        #{entity.gmtModified },
+        #{entity.createUser },
+        #{entity.modifyUser },
+        #{entity.netStatus },
+        #{entity.isOrphan },
+        #{entity.customField }
 
-        <if test=" latitude != null">
-            and latitude = #{latitude }
-        </if>
-        <if test=" longitude != null">
-            and longitude = #{longitude }
-        </if>
-        <if test=" houseLocation != null">
-            and house_location = #{houseLocation }
-        </if>
-        <if test=" firmwareVersion != null">
-            and firmware_version = #{firmwareVersion }
-        </if>
-        <if test=" uuid != null">
-            and uuid = #{uuid }
-        </if>
-        <if test=" assetSource != null">
-            and asset_source = #{assetSource }
-        </if>
-        <if test=" importanceDegree != null">
-            and importance_degree = #{importanceDegree }
-        </if>
-        <if test=" describle != null">
-            and describle = #{describle }
-        </if>
-        <if test=" firstEnterNett != null">
-            and first_enter_nett = #{firstEnterNett }
-        </if>
-        <if test=" firstDiscoverTime != null">
-            and first_discover_time = #{firstDiscoverTime }
-        </if>
-        <if test=" isInnet != null">
-            and is_innet = #{isInnet }
-        </if>
-        <if test=" serviceLife != null">
-            and service_life = #{serviceLife }
-        </if>
-        <if test=" buyDate != null">
-            and buy_date = #{buyDate }
-        </if>
-        <if test=" version != null">
-            and version = #{version }
-        </if>
-        <if test=" warranty != null">
-            and warranty = #{warranty }
-        </if>
-        <if test=" installTemplateId != null">
-            and install_template_id = #{installTemplateId }
-        </if>
-        <if test=" baselineTemplateId != null">
-            and baseline_template_id = #{baselineTemplateId }
-        </if>
-        <if test=" baselineTemplateCorrelationGmt != null">
-            and baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt }
-        </if>
-        <if test=" installTemplateCorrelationGmt != null">
-            and install_template_correlation_gmt = #{installTemplateCorrelationGmt }
-        </if>
-        <if test=" memo != null">
-            and memo = #{memo }
-        </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
-        <if test=" gmtModified != null">
-            and gmt_modified = #{gmtModified }
-        </if>
-        <if test=" createUser != null">
-            and create_user = #{createUser }
-        </if>
-        <if test=" modifyUser != null">
-            and modify_user = #{modifyUser }
-        </if>
-        <if test=" status != null">
-            and status = #{status }
-        </if>
     </sql>
-
 
     <sql id="Where_Column">
         <if test=" number != null">
@@ -729,6 +241,547 @@
         and status =1
 
     </sql>
+
+    <sql id="IF_Base_Column_List">
+        <if test=" businessId != null">
+            business_id,
+        </if>
+        <if test=" assetGroup != null">
+            asset_group,
+        </if>
+        <if test=" number != null">
+            number,
+        </if>
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" installType != null">
+            install_type,
+        </if>
+        <if test=" serial != null">
+            serial,
+        </if>
+        <if test=" areaId != null">
+            area_id,
+        </if>
+        <if test=" categoryModel != null">
+            category_model,
+        </if>
+        <if test=" manufacturer != null">
+            manufacturer,
+        </if>
+        <if test=" assetStatus != null">
+            asset_status,
+        </if>
+        <if test=" admittanceStatus != null">
+            admittance_status,
+        </if>
+        <if test=" operationSystem != null">
+            operation_system,
+        </if>
+        <if test=" operationSystemName != null">
+            operation_system_name,
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id,
+        </if>
+        <if test=" location != null">
+            location,
+        </if>
+        <if test=" latitude != null">
+            latitude,
+        </if>
+        <if test=" longitude != null">
+            longitude,
+        </if>
+        <if test=" houseLocation != null">
+            house_location,
+        </if>
+        <if test=" firmwareVersion != null">
+            firmware_version,
+        </if>
+        <if test=" uuid != null">
+            uuid,
+        </if>
+        <if test=" assetSource != null">
+            asset_source,
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree,
+        </if>
+        <if test=" describle != null">
+            describle,
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett,
+        </if>
+        <if test=" firstDiscoverTime != null">
+            first_discover_time,
+        </if>
+        <if test=" isInnet != null">
+            is_innet,
+        </if>
+        <if test=" serviceLife != null">
+            service_life,
+        </if>
+        <if test=" buyDate != null">
+            buy_date,
+        </if>
+        <if test=" version != null">
+            version,
+        </if>
+        <if test=" warranty != null">
+            warranty,
+        </if>
+        <if test=" installTemplateId != null">
+            install_template_id,
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id,
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            baseline_template_correlation_gmt,
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            install_template_correlation_gmt,
+        </if>
+        <if test=" stepNode != null">
+            step_node,
+        </if>
+        <if test=" memo != null">
+            memo,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+        <if test=" netStatus != null">
+            net_status,
+        </if>
+        <if test=" isOrphan != null">
+            is_orphan,
+        </if>
+        <if test=" customField != null">
+            custom_field,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" businessId != null">
+            #{businessId },
+        </if>
+        <if test=" assetGroup != null">
+            #{assetGroup },
+        </if>
+        <if test=" number != null">
+            #{number },
+        </if>
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" installType != null">
+            #{installType },
+        </if>
+        <if test=" serial != null">
+            #{serial },
+        </if>
+        <if test=" areaId != null">
+            #{areaId },
+        </if>
+        <if test=" categoryModel != null">
+            #{categoryModel },
+        </if>
+        <if test=" manufacturer != null">
+            #{manufacturer },
+        </if>
+        <if test=" assetStatus != null">
+            #{assetStatus },
+        </if>
+        <if test=" admittanceStatus != null">
+            #{admittanceStatus },
+        </if>
+        <if test=" operationSystem != null">
+            #{operationSystem },
+        </if>
+        <if test=" operationSystemName != null">
+            #{operationSystemName },
+        </if>
+        <if test=" responsibleUserId != null">
+            #{responsibleUserId },
+        </if>
+        <if test=" location != null">
+            #{location },
+        </if>
+        <if test=" latitude != null">
+            #{latitude },
+        </if>
+        <if test=" longitude != null">
+            #{longitude },
+        </if>
+        <if test=" houseLocation != null">
+            #{houseLocation },
+        </if>
+        <if test=" firmwareVersion != null">
+            #{firmwareVersion },
+        </if>
+        <if test=" uuid != null">
+            #{uuid },
+        </if>
+        <if test=" assetSource != null">
+            #{assetSource },
+        </if>
+        <if test=" importanceDegree != null">
+            #{importanceDegree },
+        </if>
+        <if test=" describle != null">
+            #{describle },
+        </if>
+        <if test=" firstEnterNett != null">
+            #{firstEnterNett },
+        </if>
+        <if test=" firstDiscoverTime != null">
+            #{firstDiscoverTime },
+        </if>
+        <if test=" isInnet != null">
+            #{isInnet },
+        </if>
+        <if test=" serviceLife != null">
+            #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            #{buyDate },
+        </if>
+        <if test=" version != null">
+            #{version },
+        </if>
+        <if test=" warranty != null">
+            #{warranty },
+        </if>
+        <if test=" installTemplateId != null">
+            #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            #{baselineTemplateId },
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            #{baselineTemplateCorrelationGmt },
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            #{installTemplateCorrelationGmt },
+        </if>
+        <if test=" stepNode != null">
+            #{stepNode },
+        </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+        <if test=" netStatus != null">
+            #{netStatus },
+        </if>
+        <if test=" isOrphan != null">
+            #{isOrphan },
+        </if>
+        <if test=" customField != null">
+            #{customField },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" businessId != null">
+            business_id = #{businessId },
+        </if>
+        <if test=" assetGroup != null">
+            asset_group = #{assetGroup },
+        </if>
+        <if test=" number != null">
+            number = #{number },
+        </if>
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" installType != null">
+            install_type = #{installType },
+        </if>
+        <if test=" serial != null">
+            serial = #{serial },
+        </if>
+        <if test=" areaId != null">
+            area_id = #{areaId },
+        </if>
+        <if test=" categoryModel != null">
+            category_model = #{categoryModel },
+        </if>
+        <if test=" manufacturer != null">
+            manufacturer = #{manufacturer },
+        </if>
+        <if test=" assetStatus != null">
+            asset_status = #{assetStatus },
+        </if>
+        <if test=" admittanceStatus != null">
+            admittance_status = #{admittanceStatus },
+        </if>
+        <if test=" operationSystem != null">
+            operation_system = #{operationSystem },
+        </if>
+        <if test=" operationSystemName != null">
+            operation_system_name = #{operationSystemName },
+        </if>
+        <if test=" responsibleUserId != null">
+            responsible_user_id = #{responsibleUserId },
+        </if>
+        <if test=" location != null">
+            location = #{location },
+        </if>
+        <if test=" latitude != null">
+            latitude = #{latitude },
+        </if>
+        <if test=" longitude != null">
+            longitude = #{longitude },
+        </if>
+        <if test=" houseLocation != null">
+            house_location = #{houseLocation },
+        </if>
+        <if test=" firmwareVersion != null">
+            firmware_version = #{firmwareVersion },
+        </if>
+        <if test=" uuid != null">
+            uuid = #{uuid },
+        </if>
+        <if test=" assetSource != null">
+            asset_source = #{assetSource },
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree = #{importanceDegree },
+        </if>
+        <if test=" describle != null">
+            describle = #{describle },
+        </if>
+        <if test=" firstEnterNett != null">
+            first_enter_nett = #{firstEnterNett },
+        </if>
+        <if test=" firstDiscoverTime != null">
+            first_discover_time = #{firstDiscoverTime },
+        </if>
+        <if test=" isInnet != null">
+            is_innet = #{isInnet },
+        </if>
+        <if test=" serviceLife != null">
+            service_life = #{serviceLife },
+        </if>
+        <if test=" buyDate != null">
+            buy_date = #{buyDate },
+        </if>
+        <if test=" version != null">
+            version = #{version },
+        </if>
+        <if test=" warranty != null">
+            warranty = #{warranty },
+        </if>
+        <if test=" installTemplateId != null">
+            install_template_id = #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id = #{baselineTemplateId },
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt },
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            install_template_correlation_gmt = #{installTemplateCorrelationGmt },
+        </if>
+        <if test=" stepNode != null">
+            step_node = #{stepNode },
+        </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+        <if test=" netStatus != null">
+            net_status = #{netStatus },
+        </if>
+        <if test=" isOrphan != null">
+            is_orphan = #{isOrphan },
+        </if>
+        <if test=" customField != null">
+            custom_field = #{customField },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" businessId != null">
+            and business_id = #{businessId }
+        </if>
+        <if test=" assetGroup != null">
+            and asset_group = #{assetGroup }
+        </if>
+        <if test=" number != null">
+            and number = #{number }
+        </if>
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" installType != null">
+            and install_type = #{installType }
+        </if>
+        <if test=" serial != null">
+            and serial = #{serial }
+        </if>
+        <if test=" areaId != null">
+            and area_id = #{areaId }
+        </if>
+        <if test=" categoryModel != null">
+            and category_model = #{categoryModel }
+        </if>
+        <if test=" manufacturer != null">
+            and manufacturer = #{manufacturer }
+        </if>
+        <if test=" assetStatus != null">
+            and asset_status = #{assetStatus }
+        </if>
+        <if test=" admittanceStatus != null">
+            and admittance_status = #{admittanceStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and operation_system_name = #{operationSystemName }
+        </if>
+        <if test=" responsibleUserId != null">
+            and responsible_user_id = #{responsibleUserId }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+        <if test=" latitude != null">
+            and latitude = #{latitude }
+        </if>
+        <if test=" longitude != null">
+            and longitude = #{longitude }
+        </if>
+        <if test=" houseLocation != null">
+            and house_location = #{houseLocation }
+        </if>
+        <if test=" firmwareVersion != null">
+            and firmware_version = #{firmwareVersion }
+        </if>
+        <if test=" uuid != null">
+            and uuid = #{uuid }
+        </if>
+        <if test=" assetSource != null">
+            and asset_source = #{assetSource }
+        </if>
+        <if test=" importanceDegree != null">
+            and importance_degree = #{importanceDegree }
+        </if>
+        <if test=" describle != null">
+            and describle = #{describle }
+        </if>
+        <if test=" firstEnterNett != null">
+            and first_enter_nett = #{firstEnterNett }
+        </if>
+        <if test=" firstDiscoverTime != null">
+            and first_discover_time = #{firstDiscoverTime }
+        </if>
+        <if test=" isInnet != null">
+            and is_innet = #{isInnet }
+        </if>
+        <if test=" serviceLife != null">
+            and service_life = #{serviceLife }
+        </if>
+        <if test=" buyDate != null">
+            and buy_date = #{buyDate }
+        </if>
+        <if test=" version != null">
+            and version = #{version }
+        </if>
+        <if test=" warranty != null">
+            and warranty = #{warranty }
+        </if>
+        <if test=" installTemplateId != null">
+            and install_template_id = #{installTemplateId }
+        </if>
+        <if test=" baselineTemplateId != null">
+            and baseline_template_id = #{baselineTemplateId }
+        </if>
+        <if test=" baselineTemplateCorrelationGmt != null">
+            and baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt }
+        </if>
+        <if test=" installTemplateCorrelationGmt != null">
+            and install_template_correlation_gmt = #{installTemplateCorrelationGmt }
+        </if>
+        <if test=" stepNode != null">
+            and step_node = #{stepNode }
+        </if>
+        <if test=" memo != null">
+            and memo = #{memo }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+        <if test=" netStatus != null">
+            and net_status = #{netStatus }
+        </if>
+        <if test=" isOrphan != null">
+            and is_orphan = #{isOrphan }
+        </if>
+        <if test=" customField != null">
+            and custom_field = #{customField }
+        </if>
+    </sql>
+
 
     <!--资产条件查询-->
     <sql id="Multiple_Query">
