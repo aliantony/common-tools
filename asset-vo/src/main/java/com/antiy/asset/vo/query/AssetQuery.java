@@ -123,10 +123,10 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     }
 
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
+     * 资产状态：1-待登记，2-不予登记，3-整改中，4-入网待审批，5-入网审批未通过，6-待准入,7-已入网，8-变更中, 9-待退役，10-退役待审批 11-退役审批未通过 12-已退役 13-待报废 14-报废待审批 15-报废审批未通过 16-已报废
      */
     @ApiModelProperty("资产状态")
-    @Max(value = 11, message = "资产状态最大为11")
+    @Max(value = 16, message = "资产状态最大为16")
     @Min(value = 1, message = "资产状态最小为1")
     private Integer       assetStatus;
 
@@ -158,9 +158,9 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     private List<Integer> assetSourceList;
     /**
-     * 0-不重要(not_major),1- 一般(general),3-重要(major),
+     * 1-核心，2-重要，3-一般
      */
-    @ApiModelProperty("0-不重要(not_major),1- 一般(general),3-重要(major),")
+    @ApiModelProperty("1-核心，2-重要，3-一般")
     @Max(message = "重要程度最大为3", value = 3)
     @Min(message = "重要程度最小为1", value = 1)
     private Integer       importanceDegree;
@@ -198,8 +198,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("准入状态，1待设置，2已允许，3已禁止")
-    @Max(message = "准入状态最大为3", value = 3)
+    @ApiModelProperty("准入状态：1-已允许，2-已禁止")
+    @Max(message = "准入状态最大为2", value = 2)
     @Min(message = "准入状态最小为1", value = 1)
     private Integer       admittanceStatus;
 
@@ -283,6 +283,26 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("基准模板id")
     @Encode
     private String        baselineTemplateId;
+    @ApiModelProperty("网络连接状态：1-在线，2-离线，3-未知")
+    private Integer netStatus;
+    @ApiModelProperty("从属业务id")
+    private String dependentBusiness;
+
+    public Integer getNetStatus() {
+        return netStatus;
+    }
+
+    public void setNetStatus(Integer netStatus) {
+        this.netStatus = netStatus;
+    }
+
+    public String getDependentBusiness() {
+        return dependentBusiness;
+    }
+
+    public void setDependentBusiness(String dependentBusiness) {
+        this.dependentBusiness = dependentBusiness;
+    }
 
     public String getStringId() {
         return stringId;

@@ -18,4 +18,18 @@ public class EnumUtil {
         }
         return null;
     }
+
+    /**
+     * 通过状态码比较枚举是否一致
+     *
+     * @param code     状态码
+     * @param codeEnum 枚举实例
+     * @return
+     */
+    public static boolean equals(int code, CodeEnum codeEnum) {
+        if (codeEnum.getCode().equals(code)) {
+            return true;
+        }
+        return false;
+    }
 }

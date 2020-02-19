@@ -849,7 +849,7 @@
             b.software_id=#{softwareId} and b.software_status !=8 and b.status=1)
         </if>
 
-        <if test=" multipleQuery != null and multipleQuery != ''">
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
             <choose>
                 <when test="unknownAssets">
                     and (air.ip like

@@ -709,6 +709,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(),
+                    Lists.newArrayList());
+        }
         // 是否未知资产列表查询
         if (query.getUnknownAssets()) {
             if (Objects.isNull(query.getAssetSource())) {
@@ -727,39 +732,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 query.setExistAssociateIds(associateAssetIdList);
             }
         }
-        LoginUser loginUser = LoginUserUtil.getLoginUser();
-        if (loginUser == null) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
-        }
+
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
-            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
+            query.setAreaIds(
+                DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
         }
+
+       //todo 工作台跳转到资产列表，查询对应资产 判断哪些状态的资产要走工作流
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         dealProcess(query, processMap);
 
         int count = 0;
-        // 如果会查询漏洞数量
-        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            count = assetDao.queryAllAssetVulCount(loginUser.getAreaIdsOfCurrentUser());
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
+        // todo 了解这个功能来自哪里，要改sql   【如果会查询漏洞数量】
+//        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
+//            count = assetDao.queryAllAssetVulCount(loginUser.getAreaIdsOfCurrentUser());
+//            if (count <= 0) {
+//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+//            }
+//        }
 
-        // 如果会查询补丁数据
-        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            count = assetDao.queryAllAssetPatchCount(loginUser.getAreaIdsOfCurrentUser());
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
-        // 如果会查询告警数量
-        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            count = assetDao.findAlarmAssetCount(query);
-            if (count <= 0) {
-                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-            }
-        }
+         // todo 了解这个功能来自哪里，要改sql 【如果会查询补丁数据】
+//        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
+//            count = assetDao.queryAllAssetPatchCount(loginUser.getAreaIdsOfCurrentUser());
+//            if (count <= 0) {
+//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+//            }
+//        }
+        // todo 了解这个功能来自哪里，要改sql 【如果会查询告警数量】
+//        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+//            count = assetDao.findAlarmAssetCount(query);
+//            if (count <= 0) {
+//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+//            }
+//        }
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
@@ -3516,31 +3521,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        // 1.排除上一步实施拒绝退回到待登记的资产数量,
-        // A登记 【资产1 】 B实施 【不通过】退到待登记。
-        // A工作台【资产登记】待办+1
-        // 其他用户工作台数量不变。
-        // 2.排除整改退回到待登记的
-        // 查询所有待登记资产
+        //查询待登记的资产数量
         List<Integer> waitRegisterIds = assetDao.queryIdsByAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode(),
-            loginUser.getAreaIdsOfCurrentUser());
-        if (CollectionUtils.isNotEmpty(waitRegisterIds)) {
-            List<AssetOperationRecord> operationRecordList = operationRecordDao.listByAssetIds(waitRegisterIds);
-            // 实施到待登记
-            Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
-            // 当前为资产登记的 有待办任务的资产Id
-            List<Integer> waitTaskIds = processMap.entrySet().stream()
-                .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
-                .collect(Collectors.toList());
-            // 根据操作记录表.如果资产上一步是[实施拒绝或待整改]&&该条资产不在[资产登记]assetRegister待办,就把这条资产id排除掉
-            // operationRecordList.stream().forEach(operationRecord -> {
-            // waitRegisterIds.removeIf(
-            // e -> !waitTaskIds.contains(e)
-            // && (operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode())
-            // || operationRecord.getOriginStatus().equals(AssetStatusEnum.WAIT_CORRECT.getCode()))
-            // && e.equals(Integer.valueOf(operationRecord.getTargetObjectId())));
-            // });
-        }
+                loginUser.getAreaIdsOfCurrentUser());
         return waitRegisterIds.size();
     }
 
