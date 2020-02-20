@@ -577,7 +577,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
         }
-        // 1.查询漏洞个数
+        //todo 改sql 1.查询漏洞个数
         Map<String, String> vulCountMaps = new HashMap<>();
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
             List<IdCount> vulCountList = assetDao.queryAssetVulCount(loginUser.getAreaIdsOfCurrentUser(),
@@ -594,7 +594,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setCurrentPage(1);
         }
 
-        // 2.查询补丁个数
+        //todo 改sql 2.查询补丁个数
         Map<String, String> patchCountMaps = null;
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
             List<IdCount> patchCountList = assetDao.queryAssetPatchCount(loginUser.getAreaIdsOfCurrentUser(),

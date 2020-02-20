@@ -58,7 +58,17 @@ public class AssetHardSoftLibQuery extends ObjectQuery {
     private String        sourceType;
 
     @ApiModelProperty("去重id")
-    private List<String>  removeBusinessIds;
+    private List<String> removeBusinessIds;
+    @ApiModelProperty("版本")
+    private String version;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public List<String> getRemoveBusinessIds() {
         return removeBusinessIds;

@@ -286,7 +286,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("网络连接状态：1-在线，2-离线，3-未知")
     private Integer netStatus;
     @ApiModelProperty("从属业务id")
-    private String dependentBusiness;
+    private String[] dependentBusiness;
 
     public Integer getNetStatus() {
         return netStatus;
@@ -296,11 +296,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.netStatus = netStatus;
     }
 
-    public String getDependentBusiness() {
+    public String[] getDependentBusiness() {
         return dependentBusiness;
     }
 
-    public void setDependentBusiness(String dependentBusiness) {
+    public void setDependentBusiness(String[] dependentBusiness) {
         this.dependentBusiness = dependentBusiness;
     }
 

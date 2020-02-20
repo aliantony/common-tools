@@ -786,6 +786,15 @@
     <!--资产条件查询-->
     <sql id="Multiple_Query">
         asset.status = 1
+        <if test="netStatus != null">
+            and asset.net_status=netStatus
+        </if>
+        <if test="dependentBusiness != null and dependentBusiness.length >0">
+            and abr.asset_business_id in
+            <foreach collection="dependentBusiness" item="businessId" open="(" close=")" separator=",">
+                #{businessId}
+            </foreach>
+        </if>
         <if test="unknownAssets == false">
             AND asset.id not in (select id from asset where asset_status = 1 and asset_source in (1,3) and gmt_modified
             = 0)
@@ -1064,9 +1073,10 @@
         (
         select DISTINCT asset.id
         from asset asset
-        left join asset_ip_relation air on asset.id = air.asset_id
-        left join asset_mac_relation amr on asset.id = amr.asset_id
-        left join asset_user asset_user on asset.responsible_user_id = asset_user.id
+        left join asset_ip_relation air on asset.id = air.asset_id and air.status=1
+        left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status=1
+        left join asset_user asset_user on asset.responsible_user_id = asset_user.id and asset_user.status=1
+        left join asset_business_relation abr on asset.id=abr.asset_id and abr.status=1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1248,6 +1258,7 @@
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
         left join baseline_template bt on asset.baseline_template_id = bt.id
+        left join asset_business_relation abr on asset.id=abr.asset_id and abr.status=1
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
