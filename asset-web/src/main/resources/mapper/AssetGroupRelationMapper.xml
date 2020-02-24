@@ -370,7 +370,7 @@
         from
         <include refid="Table_Name"></include>
         agrelation
-        where agrelation.asset_group_id = #{assetGroupId}
+        where agrelation.asset_group_id = #{assetGroupId} and status=1
     </select>
 
     <select id="existRelateAssetInGroup" resultType="java.lang.Integer" parameterType="java.lang.String">

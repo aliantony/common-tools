@@ -66,7 +66,11 @@
         <result column="net_status" property="netStatus"/>
         <result column="is_orphan" property="isOrphan"/>
         <result column="custom_field" property="customField"/>
+        <result column="ips" property="ips"/>
+        <result column="macs" property="macs"/>
+        <collection property="dependentBusiness" ofType="com.antiy.asset.entity.AssetBusiness" javaType="java.util.List" column="id" select="queryBusinessByAssetId" />
     </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
@@ -841,13 +845,6 @@
                 #{item}
             </foreach>
         </if>
-        <if test="areaIds==null and ids != null and ids.length > 0">
-            and asset.id in
-            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-
         <if test=" assetGroup != null and assetGroup != ''">
             and exists (select 1 from asset_group_relation b where asset.id = b.asset_id and b.asset_group_id =
             #{assetGroup} and b.status = 1)
@@ -893,7 +890,7 @@
                         </foreach>
                     </when>
                     <otherwise>
-                        and asset_status in (3,4,5,6,7,8,9)
+                        and asset_status in (3,4,5,6,7,8,9)   /*cd01要改*/
                     </otherwise>
                 </choose>
             </when>
@@ -1252,7 +1249,9 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.step_node,
-        bt.tp_name as baseline_template_name
+        bt.tp_name as baseline_template_name,
+        net_status
+
         from asset asset
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
@@ -1388,7 +1387,10 @@
             and t1.vul_status!=5
             and t2.status = 1
             AND v.STATUS = 1
-            and t2.asset_status in(6,10)
+            and t2.asset_status in
+            <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
+                #{assetStatus}
+            </foreach>
             <if test="areaIds != null and areaIds.size() > 0">
                 and t2.area_id IN
                 <foreach collection="areaIds" open="(" close=")" separator="," item="item">
@@ -1423,7 +1425,10 @@
         and t1.patch_status != 5
         and t1.status = 1
         and t2.status =1
-        and t2.asset_status in(6,10)
+        and t2.asset_status in
+        <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
+            #{assetStatus}
+        </foreach>
         AND p.STATUS = 1
         GROUP BY
         t1.asset_id
@@ -1432,7 +1437,7 @@
         </if>
     </select>
 
-    <select id="queryAllAssetPatchCount" resultType="java.lang.Integer">
+    <select id="queryAllAssetPatchCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(distinct (t1.asset_id)) from patch_asset_rel t1
         inner join patch_info p ON t1.patch_id = p.id
         inner join asset t2
@@ -1447,10 +1452,13 @@
         and t1.status = 1
         and t2.status = 1
         AND p.STATUS = 1
-        and t2.asset_status in(6,10)
+        and t2.asset_status in
+        <foreach collection="assetStatusList" separator="," open="(" close=")" item="assetStatus">
+            #{assetStatus}
+        </foreach>
     </select>
 
-    <select id="queryAllAssetVulCount" resultType="java.lang.Integer">
+    <select id="queryAllAssetVulCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(distinct (t1.asset_id)) from vuln_asset_rel t1
         inner JOIN vuln_info v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id
@@ -1464,7 +1472,10 @@
         and t1.status = 1
         and t2.status = 1
         AND v.STATUS = 1
-        and t2.asset_status in(6,10)
+        and t2.asset_status in
+        <foreach collection="assetStatusList" separator="," open="(" close=")" item="assetStatus">
+            #{assetStatus}
+        </foreach>
     </select>
     <select id="sortAssetIds" resultType="java.lang.String">
         SELECT
@@ -1743,7 +1754,10 @@
                 #{item}
             </foreach>
         </if>
-        and asset.asset_status in (6,10)
+        and asset.asset_status in
+        <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+            #{assetStatus}
+        </foreach>
         GROUP BY
         asset_id
         ) alarm_asset
@@ -2006,4 +2020,8 @@ WHERE
         </foreach>
         and status=1
     </update>
+    <select id="queryBusinessByAssetId" resultType="com.antiy.asset.entity.AssetBusiness">
+    select ab.id,ab.name,ab.importance from asset_business ab INNER JOIN asset_business_relation abr on ab.id =abr.asset_business_id
+where abr.asset_id=#{id} and abr.`status`=1
+    </select>
 </mapper>

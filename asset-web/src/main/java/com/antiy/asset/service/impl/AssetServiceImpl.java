@@ -717,10 +717,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 是否未知资产列表查询
         if (query.getUnknownAssets()) {
             if (Objects.isNull(query.getAssetSource())) {
-                List<Integer> sourceList = Lists.newArrayList();
-                sourceList.add(AssetSourceEnum.ASSET_DETECTION.getCode());
-                sourceList.add(AssetSourceEnum.AGENCY_REPORT.getCode());
-                query.setAssetSourceList(sourceList);
+                query.setAssetSource(AssetSourceEnum.AGENCY_REPORT.getCode());
             }
             query.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
         }
@@ -743,28 +740,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         dealProcess(query, processMap);
 
         int count = 0;
-        // todo 了解这个功能来自哪里，要改sql   【如果会查询漏洞数量】
-//        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-//            count = assetDao.queryAllAssetVulCount(loginUser.getAreaIdsOfCurrentUser());
-//            if (count <= 0) {
-//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-//            }
-//        }
 
-         // todo 了解这个功能来自哪里，要改sql 【如果会查询补丁数据】
-//        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-//            count = assetDao.queryAllAssetPatchCount(loginUser.getAreaIdsOfCurrentUser());
-//            if (count <= 0) {
-//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-//            }
-//        }
-        // todo 了解这个功能来自哪里，要改sql 【如果会查询告警数量】
-//        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-//            count = assetDao.findAlarmAssetCount(query);
-//            if (count <= 0) {
-//                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-//            }
-//        }
+        //来源为资产概览-异常资产统计
+        //count1 异常资产数量
+        Integer count1= setCountForStatisticsOfAbnormalAsset(query);
+        if (Objects.isNull(count1)){
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
+        }else {
+            count=count1;
+        }
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
@@ -772,6 +756,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         if (count <= 0) {
+
             if (query.getEnterControl()) {
                 // 如果是工作台进来的但是有没有存在当前状态的待办任务，则把当前状态的资产全部查询出来
                 query.setEnterControl(false);
@@ -783,6 +768,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
             this.findListAsset(query, processMap));
+    }
+    //统计异常资产数量
+    private Integer setCountForStatisticsOfAbnormalAsset(AssetQuery query){
+        Integer count = null;
+        List<Integer> status = Arrays.asList(AssetStatusEnum.NET_IN.getCode(),
+                AssetStatusEnum.IN_CHANGE.getCode(),
+                AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(),
+                AssetStatusEnum.RETIRE_DISAGREE.getCode()
+        );
+        // 查询漏洞资产数量
+        if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
+            count = assetDao.queryAllAssetVulCount(query);
+        }
+
+        // 查询补丁资产数量
+        if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
+            count = assetDao.queryAllAssetPatchCount(query);
+        }
+        // 查询告警资产数量
+        if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
+            count = assetDao.findAlarmAssetCount(query);
+        }
+        return  count;
     }
 
     @Override
@@ -3354,23 +3362,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer countUnusual(AssetQuery query) {
         Integer count = 0;
+        if (CollectionUtils.isEmpty(query.getAssetStatusList())) {
+            List<Integer> status = Arrays.asList(AssetStatusEnum.NET_IN.getCode(),
+                    AssetStatusEnum.IN_CHANGE.getCode(),
+                    AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(),
+                    AssetStatusEnum.RETIRE_DISAGREE.getCode()
+            );
+            query.setAssetStatusList(status);
+        }
+        if (ArrayUtils.isEmpty(query.getAreaIds())){
+
+            query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().stream().toArray(String[]::new));
+        }
         // 如果会查询漏洞数量
         if (query.getQueryVulCount() != null && query.getQueryVulCount()) {
-            count = assetDao.queryAllAssetVulCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetVulCount(query);
 
         }
 
         // 如果会查询补丁数据
         if (query.getQueryPatchCount() != null && query.getQueryPatchCount()) {
-            count = assetDao.queryAllAssetPatchCount(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            count = assetDao.queryAllAssetPatchCount(query);
 
         }
         // 如果会查询告警数量
         if (query.getQueryAlarmCount() != null && query.getQueryAlarmCount()) {
-            if (ArrayUtils.isEmpty(query.getAreaIds())) {
-                query.setAreaIds(ArrayTypeUtil
-                    .objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-            }
             count = assetDao.findAlarmAssetCount(query);
 
         }

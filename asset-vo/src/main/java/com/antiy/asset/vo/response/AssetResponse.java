@@ -6,7 +6,6 @@ import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -193,7 +192,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
+    @ApiModelProperty("资产准入状态:1已允许，2已禁止")
     private Integer                        admittanceStatus;
     /**
      * 创建时间
@@ -259,6 +258,37 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "上一步状态")
     private Integer                        originStatus;
+
+    @ApiModelProperty("网络连接状态：1-在线，2-离线，3-未知")
+    private Integer netStatus;
+    @ApiModelProperty("物理位置")
+    private String location;
+    @ApiModelProperty("从属业务集合")
+    private List<AssetBusinessResponse> dependentBusiness;
+
+    public Integer getNetStatus() {
+        return netStatus;
+    }
+
+    public void setNetStatus(Integer netStatus) {
+        this.netStatus = netStatus;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public List<AssetBusinessResponse> getDependentBusiness() {
+        return dependentBusiness;
+    }
+
+    public void setDependentBusiness(List<AssetBusinessResponse> dependentBusiness) {
+        this.dependentBusiness = dependentBusiness;
+    }
 
     public Integer getOriginStatus() {
         return originStatus;

@@ -4,6 +4,8 @@ import com.antiy.common.base.BaseEntity;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> 资产主表 </p>
  *
@@ -115,7 +117,7 @@ public class Asset extends BaseEntity {
      */
     private Integer           assetStatus;
     /**
-     * 准入状态，1待设置，2已允许，3已禁止
+     * 准入状态，1已允许，2已禁止
      */
     private Integer           admittanceStatus;
     /**
@@ -146,6 +148,8 @@ public class Asset extends BaseEntity {
      */
     @ApiModelProperty("机房位置")
     private String            houseLocation;
+    @ApiModelProperty("物理位置")
+    private String location;
     /**
      * 固件版本
      */
@@ -248,9 +252,20 @@ public class Asset extends BaseEntity {
     @ApiModelProperty("告警数量")
     private String            alarmCount;
 
+
     private Long              baselineTemplateCorrelationGmt;
 
     private Long              installTemplateCorrelationGmt;
+    @ApiModelProperty("从属业务集合")
+    private List<AssetBusiness> dependentBusiness;
+
+    public List<AssetBusiness> getDependentBusiness() {
+        return dependentBusiness;
+    }
+
+    public void setDependentBusiness(List<AssetBusiness> dependentBusiness) {
+        this.dependentBusiness = dependentBusiness;
+    }
 
     public String getBaselineTemplateName() {
         return baselineTemplateName;
@@ -709,5 +724,13 @@ public class Asset extends BaseEntity {
 
     public void setIsOrphan(Integer isOrphan) {
         this.isOrphan = isOrphan;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

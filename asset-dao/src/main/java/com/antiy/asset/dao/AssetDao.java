@@ -154,14 +154,14 @@ public interface AssetDao extends IBaseDao<Asset> {
      *
      * @return
      */
-    Integer queryAllAssetPatchCount(@Param(value = "areaIds") List<String> areaIds);
+    Integer queryAllAssetPatchCount(AssetQuery query);
 
     /**
      * 查询漏洞的资产总数
      *
      * @return
      */
-    Integer queryAllAssetVulCount(@Param(value = "areaIds") List<String> areaIds);
+    Integer queryAllAssetVulCount(AssetQuery query);
 
     /**
      * 流程引擎返回的的id排序
@@ -271,7 +271,7 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     List<Integer> findAlarmAssetId(AssetQuery query);
 
-    int findAlarmAssetCount(AssetQuery query);
+    Integer findAlarmAssetCount(AssetQuery query);
 
     /**
      * 通过资产id查询对应资产信息<br> 结果包含id、当前状态assetStatus、资产编号number、首次入网时间
