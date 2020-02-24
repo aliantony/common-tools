@@ -26,6 +26,11 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
      */
     private String       stringId;
     /**
+     * 资产id,消息通知跳转使用
+     */
+    @ApiModelProperty("1 excel  3 cvs 2 xml")
+    private Integer      exportType;
+    /**
      * 资产id列表
      */
     @Encode
@@ -761,5 +766,13 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public Integer getExportType() {
+        return exportType;
+    }
+
+    public void setExportType(Integer exportType) {
+        this.exportType = exportType;
     }
 }

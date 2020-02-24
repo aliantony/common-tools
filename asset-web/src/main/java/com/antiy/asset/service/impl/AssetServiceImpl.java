@@ -187,7 +187,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetHardSoftLib byBusinessId = assetHardSoftLibDao.getByBusinessId(requestAsset.getBusinessId());
                     // BusinessExceptionUtils.isTrue(!Objects.isNull(byBusinessId), "当前厂商不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
-                    // 存入业务id,基准为空进入网,不为空 实施 ./检查
+                    // 存入业务id,基准为空进入网,不为 整改中
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         ActionResponse baselineTemplate = baseLineClient
@@ -197,11 +197,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         BusinessExceptionUtils.isTrue(isEnable == 1, "当前基准模板已经禁用!");
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
-                        admittanceResult[0] = (String) request.getManualStartActivityRequest().getFormData()
-                            .get("admittanceResult");
-                        // asset.setAssetStatus(
-                        // "safetyCheck".equals(admittanceResult[0]) ? AssetStatusEnum.WAIT_CHECK.getCode()
-                        // : AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode());
+                        asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
+                        // 获取在线状态 网络状态：1、在线 2、离线 3、未知
+                        asset.setNetStatus(1);
                     } else {
                         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                         asset.setFirstEnterNett(currentTimeMillis);
@@ -231,8 +229,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
                     AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
                     assetBusinessRelationDao.insertBatch(assetBusinessRelations);
-                    // 获取在线状态 网络状态：1、在线 2、离线 3、未知
-                    asset.setNetStatus(1);
+
                     // 是否孤岛设备：1、是 2、否
                     asset.setIsOrphan(requestAsset.getIsOrphan());
 
@@ -2181,6 +2178,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setManufacturer("huawei");
         computeDeviceEntity.setOperationSystem("Window 10");
+        computeDeviceEntity.setIsOrphan(0);
         dataList.add(computeDeviceEntity);
         return dataList;
     }
@@ -2388,6 +2386,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
+            asset.setIsOrphan(entity.getIsOrphan());
             asset.setAdmittanceStatus(1);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
@@ -3457,10 +3456,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         downloadVO.setSheetName("资产信息表");
-
+        // 3种导方式 1 excel 3 cvs 2 xml")
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
-            excelDownloadUtil.excelDownload(request, response,
-                "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+
+            if (assetQuery.getExportType() == 1) {
+                excelDownloadUtil.excelDownload(request, response,
+                    "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+            } else if (assetQuery.getExportType() == 2) {
+
+            } else {
+
+            }
+
             LogUtils.recordOperLog(
                 new BusinessData("导出《资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
                     assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));

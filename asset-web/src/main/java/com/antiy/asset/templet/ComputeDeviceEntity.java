@@ -3,12 +3,9 @@ package com.antiy.asset.templet;
 import com.antiy.asset.annotation.ExcelField;
 import com.antiy.asset.vo.enums.DataTypeEnum;
 
-import lombok.Data;
-
 /**
  * 计算设备
  */
-@Data
 public class ComputeDeviceEntity {
 
     /**
@@ -86,12 +83,24 @@ public class ComputeDeviceEntity {
      */
     @ExcelField(value = "warranty", align = 1, title = "保修期")
     private String warranty;
-
+    /**
+     * 是否孤岛
+     */
+    @ExcelField(value = "isOrphan", align = 1, title = "是否孤岛设备", dictType = "yesorno")
+    private Integer isOrphan;
     /**
      * description
      */
     @ExcelField(value = "description", align = 1, title = "描述", length = 300)
     private String description;
+
+    public Integer getIsOrphan() {
+        return isOrphan;
+    }
+
+    public void setIsOrphan(Integer isOrphan) {
+        this.isOrphan = isOrphan;
+    }
 
     public String getIp() {
         return ip;
