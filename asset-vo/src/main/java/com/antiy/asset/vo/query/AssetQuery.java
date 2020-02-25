@@ -28,7 +28,7 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产id,消息通知跳转使用
      */
-    @ApiModelProperty("1 excel  3 cvs 2 xml")
+    @ApiModelProperty(" 导出方式 1 excel  2 cvs 3 xml")
     private Integer      exportType;
     /**
      * 资产id列表

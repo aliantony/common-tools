@@ -3456,7 +3456,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         downloadVO.setSheetName("资产信息表");
-        // 3种导方式 1 excel 3 cvs 2 xml")
+        // 3种导方式 1 excel 2 cvs 3 xml
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
 
             if (assetQuery.getExportType() == 1) {

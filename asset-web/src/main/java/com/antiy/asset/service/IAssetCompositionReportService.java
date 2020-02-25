@@ -7,6 +7,8 @@ import com.antiy.asset.vo.response.AssetCompositionReportResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -45,4 +47,5 @@ public interface IAssetCompositionReportService extends IBaseService<AssetCompos
      */
     PageResult<AssetCompositionReportResponse> findPageAssetCompositionReport(AssetCompositionReportQuery query) throws Exception;
 
+    void exportData(AssetCompositionReportQuery assetQuery, HttpServletResponse response, HttpServletRequest request) throws Exception;
 }

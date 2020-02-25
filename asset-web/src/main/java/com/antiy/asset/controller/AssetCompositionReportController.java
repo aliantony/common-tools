@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -90,4 +92,20 @@ public class AssetCompositionReportController {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetCompositionReportService.deleteById(id));
     }
+
+    /**
+     * 导出资产信息
+     *
+     * @param assetQuery 封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据条件导出综合报表信息", notes = "主键封装对象")
+    @RequestMapping(value = "/export/file", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:export')")
+    public void export(@ApiParam(value = "query") AssetCompositionReportQuery assetQuery, HttpServletResponse response,
+                       HttpServletRequest request) throws Exception {
+        iAssetCompositionReportService.exportData(assetQuery, response, request);
+
+    }
+
 }
