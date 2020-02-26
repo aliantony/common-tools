@@ -8,65 +8,65 @@ public class AssetComReportEntity {
      * 资产型号
      */
     @ApiModelProperty("编号")
-    private String number;
+    private String  number;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "区域")
-    private String area;
+    private String  area;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "首次入网时间")
-    private String firstEnterNett;
+    private String  firstEnterNett;
 
     @ApiModelProperty(value = "重要程度")
-    private String importanceDegree;
+    private String  importanceDegree;
 
     /**
      * ip
      */
     @ApiModelProperty("ip")
-    private String ips;
+    private String  ips;
 
     /**
-     * 首次入网时间
+     * 使用者名称
      */
-    @ApiModelProperty(value = "使用者")
-    private String user;
+    @ApiModelProperty("使用者")
+    private String  responsibleUserName;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String manufacturer;
+    private String  manufacturer;
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "基准模板")
-    private String baseTemplate;
+    private String  baseTemplate;
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "已修复漏洞")
-    private String vulCount;
+    private Integer vulCount;
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "未修复漏洞")
-    private String noVulCount;
+    private Integer noVulCount;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "已安装补丁")
-    private String patchCount;
+    private Integer patchCount;
     /**
      * 首次入网时间
      */
     @ApiModelProperty(value = "未安装补丁")
-    private String noPatchCount;
+    private Integer noPatchCount;
 
     public String getImportanceDegree() {
         return importanceDegree;
@@ -108,14 +108,6 @@ public class AssetComReportEntity {
         this.ips = ips;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -132,35 +124,43 @@ public class AssetComReportEntity {
         this.baseTemplate = baseTemplate;
     }
 
-    public String getVulCount() {
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
+    public Integer getVulCount() {
         return vulCount;
     }
 
-    public void setVulCount(String vulCount) {
+    public void setVulCount(Integer vulCount) {
         this.vulCount = vulCount;
     }
 
-    public String getNoVulCount() {
+    public Integer getNoVulCount() {
         return noVulCount;
     }
 
-    public void setNoVulCount(String noVulCount) {
+    public void setNoVulCount(Integer noVulCount) {
         this.noVulCount = noVulCount;
     }
 
-    public String getPatchCount() {
+    public Integer getPatchCount() {
         return patchCount;
     }
 
-    public void setPatchCount(String patchCount) {
+    public void setPatchCount(Integer patchCount) {
         this.patchCount = patchCount;
     }
 
-    public String getNoPatchCount() {
+    public Integer getNoPatchCount() {
         return noPatchCount;
     }
 
-    public void setNoPatchCount(String noPatchCount) {
+    public void setNoPatchCount(Integer noPatchCount) {
         this.noPatchCount = noPatchCount;
     }
 }
