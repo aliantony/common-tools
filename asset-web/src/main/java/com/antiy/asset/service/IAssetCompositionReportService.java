@@ -48,4 +48,5 @@ public interface IAssetCompositionReportService extends IBaseService<AssetCompos
     PageResult<AssetCompositionReportResponse> findPageAssetCompositionReport(AssetCompositionReportQuery query) throws Exception;
 
     void exportData(AssetCompositionReportQuery assetQuery, HttpServletResponse response, HttpServletRequest request) throws Exception;
+
 }

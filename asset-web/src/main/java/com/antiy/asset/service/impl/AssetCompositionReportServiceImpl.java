@@ -99,7 +99,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         DownloadVO downloadVO = new DownloadVO();
         // List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
-        //
+        List<AssetCompositionReportResponse> items = findPageAssetCompositionReport(assetQuery).getItems();
         // List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
         // downloadVO.setDownloadList(assetEntities);
 
