@@ -8,8 +8,8 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetOperateLogEnum {
                                  REGISTER_ASSET(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                                                "登记资产信息"), ASSET_NET_IN(AssetStatusEnum.WAIT_NET
-                                                    .getCode(), "资产入网信息"), ASSET_NET_IN_CHECK(AssetStatusEnum.WAIT_CHECK.getCode(), "检查资产信息");
+                                                "登记资产信息"), ASSET_NET_IN(AssetStatusEnum.NULL
+                                                    .getCode(), "资产入网信息"), ASSET_NET_IN_CHECK(AssetStatusEnum.NULL.getCode(), "检查资产信息");
 
     private Integer status;
     private String  name;

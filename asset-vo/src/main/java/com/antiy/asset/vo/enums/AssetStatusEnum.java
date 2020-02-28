@@ -72,7 +72,11 @@ public enum AssetStatusEnum {
     /**
      * 已报废
      */
-    SCRAP(16,"已报废");
+                             SCRAP(16, "已报废"),
+                             /**
+                              * 已报废
+                              */
+                             NULL(0, "无状态");
 
     AssetStatusEnum(Integer code, String msg) {
         this.code = code;

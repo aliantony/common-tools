@@ -17,23 +17,23 @@ public enum AssetFlowEnum {
     /**
      * 实施
      */
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, "resultCheckUser", "模板实施。实施情况：", "实施资产信息"),
+                           TEMPLATE_IMPL(AssetStatusEnum.NULL, "resultCheckUser", "模板实施。实施情况：", "实施资产信息"),
     /**
      * 验证
      */
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, "netImplementUser", "结果验证。验证情况：", "验证资产信息"),
+                           VALIDATE(AssetStatusEnum.NULL, "netImplementUser", "结果验证。验证情况：", "验证资产信息"),
     /**
      * 入网
      */
-    NET_IN(AssetStatusEnum.WAIT_NET, "", "准入实施。实施情况：", "入网资产信息"),
+                           NET_IN(AssetStatusEnum.NULL, "", "准入实施。实施情况：", "入网资产信息"),
     /**
      * 检查
      */
-    CHECK(AssetStatusEnum.WAIT_CHECK, "safetyChangeUser", "安全检查。检查情况：", "检查资产信息"),
+                           CHECK(AssetStatusEnum.NULL, "safetyChangeUser", "安全检查。检查情况：", "检查资产信息"),
     /**
      * 整改
      */
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, "safetyChangeUser", "安全整改。整改情况：", "整改资产信息"),
+                           CORRECT(AssetStatusEnum.NET_IN_LEADER_CHECK, "safetyChangeUser", "安全整改。整改情况：", "整改资产信息"),
     /**
      * 拟退役
      */

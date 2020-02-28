@@ -18,19 +18,23 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 模板实施-3
 	 */
-	WAIT_TEMPLATE_IMPL("模板实施，实施情况：",AssetStatusEnum.WAIT_TEMPLATE_IMPL.getCode()),
+                                                         WAIT_TEMPLATE_IMPL("模板实施，实施情况：",
+                                                                            AssetStatusEnum.NULL.getCode()),
 	/**
 	 * 待验证-4
 	 */
-	OPERATION_WAIT_VALIDATE("结果验证，验证情况：",AssetStatusEnum.WAIT_VALIDATE.getCode()),
+                                                         OPERATION_WAIT_VALIDATE("结果验证，验证情况：",
+                                                                                 AssetStatusEnum.NULL.getCode()),
 	/**
 	 * 准入实施-5
 	 */
-	OPERATION_WAIT_NET("准入实施。实施情况：",AssetStatusEnum.WAIT_NET.getCode()),
+                                                         OPERATION_WAIT_NET("准入实施。实施情况：",
+                                                                            AssetStatusEnum.NULL.getCode()),
 	/**
 	 * 安全检查-7
 	 */
-	OPERATION_WAIT_CHECK("安全检查。检查情况：",AssetStatusEnum.WAIT_CHECK.getCode()),
+                                                         OPERATION_WAIT_CHECK("安全检查。检查情况：",
+                                                                              AssetStatusEnum.NULL.getCode()),
 	/**
 	 * 入网-6
 	 */
@@ -38,7 +42,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 整改-8
 	 */
-	WAIT_CORRECT("整改，整改情况：",AssetStatusEnum.WAIT_CORRECT.getCode()),
+                                                         WAIT_CORRECT("整改，整改情况：", AssetStatusEnum.CORRECTING.getCode()),
 	/**
 	 * 变更中-9
 	 */

@@ -14,27 +14,30 @@ public enum AssetStatusJumpEnum {
     /**
      * 待登记
      */
-    REGISTER(AssetStatusEnum.WAIT_REGISTER, AssetStatusEnum.WAIT_TEMPLATE_IMPL, AssetStatusEnum.WAIT_REGISTER),
+                                 REGISTER(AssetStatusEnum.WAIT_REGISTER, AssetStatusEnum.CORRECTING,
+                                          AssetStatusEnum.WAIT_REGISTER),
     /**
      * (模板)待实施
      */
-    TEMPLATE_IMPL(AssetStatusEnum.WAIT_TEMPLATE_IMPL, AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_REGISTER),
+                                 TEMPLATE_IMPL(AssetStatusEnum.NULL, AssetStatusEnum.NULL, AssetStatusEnum.NULL),
     /**
      * 待验证
      */
-    VALIDATE(AssetStatusEnum.WAIT_VALIDATE, AssetStatusEnum.WAIT_NET, AssetStatusEnum.WAIT_TEMPLATE_IMPL),
-    /**
-     * 待入网
-     */
-    NET_IN(AssetStatusEnum.WAIT_NET, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
-    /**
-     * 待整改
-     */
-    CORRECT(AssetStatusEnum.WAIT_CORRECT, AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.WAIT_REGISTER),
-    /**
-     * 待检查
-     */
-    NET_IN_CHECK(AssetStatusEnum.WAIT_CHECK, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_CORRECT),
+                                 VALIDATE(AssetStatusEnum.NULL, AssetStatusEnum.NULL, AssetStatusEnum.NULL),
+                                 /**
+                                  * 已入网
+                                  */
+                                 NET_IN(AssetStatusEnum.NULL, AssetStatusEnum.NULL, AssetStatusEnum.NULL),
+                                 /**
+                                  * 整改中
+                                  */
+                                 CORRECT(AssetStatusEnum.CORRECTING, AssetStatusEnum.NET_IN_LEADER_CHECK,
+                                         AssetStatusEnum.NET_IN_LEADER_DISAGREE),
+                                 /**
+                                  * 待准入
+                                  */
+                                 NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK, AssetStatusEnum.NET_IN,
+                                              AssetStatusEnum.NET_IN_LEADER_CHECK),
 
     // CORRECT_CHECK(AssetStatusEnum.WAIT_CORRECT, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
     /**
@@ -109,14 +112,14 @@ public enum AssetStatusJumpEnum {
         }
 
         // 不予登记到登记,未入网->待实施,已入网的->待检查
-        if (assetFlowEnum.equals(AssetFlowEnum.REGISTER)
-                && assetFlowEnum.getCurrentAssetStatus().equals(AssetStatusEnum.NOT_REGISTER)) {
-            return isNetIn ? AssetStatusEnum.WAIT_CHECK : AssetStatusEnum.WAIT_TEMPLATE_IMPL;
-        }
+        // if (assetFlowEnum.equals(AssetFlowEnum.REGISTER)
+        // && assetFlowEnum.getCurrentAssetStatus().equals(AssetStatusEnum.NOT_REGISTER)) {
+        // return isNetIn ? AssetStatusEnum.WAIT_CHECK : AssetStatusEnum.WAIT_TEMPLATE_IMPL;
+        // }
 
         // 整改不通过有两种情况;待登记,待检查
         if (assetFlowEnum.equals(AssetFlowEnum.CORRECT) && !isAgree) {
-            return isWaitCorrectToWaitRegister ? AssetStatusEnum.WAIT_REGISTER : AssetStatusEnum.WAIT_CHECK;
+            return isWaitCorrectToWaitRegister ? AssetStatusEnum.NOT_REGISTER : AssetStatusEnum.NET_IN_LEADER_CHECK;
         }
 
         // 其他没有分支操作的情况
