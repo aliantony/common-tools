@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Component
-class ComReportConvert extends BaseConverter<AssetCompositionReportResponse, AssetComReportEntity> {
+public class ComReportConvert extends BaseConverter<AssetCompositionReportResponse, AssetComReportEntity> {
     private final Logger logger = LogUtils.get();
 
     @Override

@@ -187,7 +187,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     AssetHardSoftLib byBusinessId = assetHardSoftLibDao.getByBusinessId(requestAsset.getBusinessId());
                     // BusinessExceptionUtils.isTrue(!Objects.isNull(byBusinessId), "当前厂商不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
-                    // 存入业务id,基准为空进入网,不为 整改中
+                    // 存入业务id, 选择 进入网,还是 整改中
+                    String assetRegisterResult = (String) request.getManualStartActivityRequest().getFormData()
+                        .get("assetRegisterResult");
+                    if ("continueRegister".equals(assetRegisterResult)) {
+                        asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
+                    } else {
+                        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                        asset.setFirstEnterNett(currentTimeMillis);
+                    }
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         ActionResponse baselineTemplate = baseLineClient
@@ -197,12 +205,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         BusinessExceptionUtils.isTrue(isEnable == 1, "当前基准模板已经禁用!");
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
-                        asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
-                        // 获取在线状态 网络状态：1、在线 2、离线 3、未知
-                        asset.setNetStatus(1);
-                    } else {
-                        asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-                        asset.setFirstEnterNett(currentTimeMillis);
                     }
                     // 装机模板
                     if (StringUtils.isNotBlank(requestAsset.getInstallTemplateId())) {
@@ -344,7 +346,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     logger.error("录入失败", e);
                     throw new BusinessException("操作失败");
                 }
-                // return 0;
             }
         });
 
@@ -355,43 +356,43 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             activityRequest.setProcessDefinitionKey("assetAdmittance");
             activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
             ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-            // 如果流程引擎为空,直接返回错误信息
+            // 如果流程引擎为空,直接返回错误信息 启动流程后，activiti会返回procInstId 发给漏洞
             if (null == actionResponse
                 || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 // 调用失败，逻辑删登记的资产
                 assetDao.deleteById(id);
                 return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
             }
-            // 安全检查
-            BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
-            baselineAssetRegisterRequest.setAssetId(id);
-            baselineAssetRegisterRequest
-                .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
-            baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
-            baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
-            baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
-            baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
-                ? activityRequest.getFormData().get("safetyCheckUser").toString()
-                : activityRequest.getFormData().get("templateImplementUser").toString());
-            // 如果没得uuid 安全检查
-            ActionResponse baselineCheck;
-
-            if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
-                baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
-                // msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
-                // : "";
-            } else {
-                baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
-            }
-
-            // 如果基准为空,直接返回错误信息
-            if (null == baselineCheck
-                || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
-                // 调用失败，逻辑删登记的资产
-                assetDao.deleteById(id);
-                return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
-
-            }
+            // // 安全检查
+            // BaselineAssetRegisterRequest baselineAssetRegisterRequest = new BaselineAssetRegisterRequest();
+            // baselineAssetRegisterRequest.setAssetId(id);
+            // baselineAssetRegisterRequest
+            // .setTemplateId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
+            // baselineAssetRegisterRequest.setCheckType("safetyCheck".equals(admittanceResult[0]) ? 2 : 1);
+            // baselineAssetRegisterRequest.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+            // baselineAssetRegisterRequest.setOperator(LoginUserUtil.getLoginUser().getId());
+            // baselineAssetRegisterRequest.setCheckUser("safetyCheck".equals(admittanceResult[0])
+            // ? activityRequest.getFormData().get("safetyCheckUser").toString()
+            // : activityRequest.getFormData().get("templateImplementUser").toString());
+            // // 如果没得uuid 安全检查
+            // ActionResponse baselineCheck;
+            //
+            // if (StringUtils.isBlank(uuid[0]) && baselineAssetRegisterRequest.getCheckType() == 2) {
+            // baselineCheck = baseLineClient.baselineCheckNoUUID(baselineAssetRegisterRequest);
+            // // msg = requestAsset.getInstallType() == InstallType.AUTOMATIC.getCode() ? "无法获取到资产UUID，资产维护方式将默认:人工方式"
+            // // : "";
+            // } else {
+            // baselineCheck = baseLineClient.baselineCheck(baselineAssetRegisterRequest);
+            // }
+            //
+            // // 如果基准为空,直接返回错误信息
+            // if (null == baselineCheck
+            // || !RespBasicCode.SUCCESS.getResultCode().equals(baselineCheck.getHead().getCode())) {
+            // // 调用失败，逻辑删登记的资产
+            // assetDao.deleteById(id);
+            // return baselineCheck == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : baselineCheck;
+            //
+            // }
 
         }
 

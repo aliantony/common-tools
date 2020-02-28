@@ -1,8 +1,10 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.convert.ComReportConvert;
 import com.antiy.asset.dao.AssetCompositionReportDao;
 import com.antiy.asset.entity.AssetCompositionReport;
 import com.antiy.asset.service.IAssetCompositionReportService;
+import com.antiy.asset.templet.AssetComReportEntity;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
@@ -51,6 +53,8 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     private BaseConverter<AssetCompositionReport, AssetCompositionReportResponse> responseConverter;
     @Resource
     private ExcelDownloadUtil                                                     excelDownloadUtil;
+    @Resource
+    private ComReportConvert                                                      comreportconvert;
 
     @Override
     public Integer saveAssetCompositionReport(AssetCompositionReportRequest request) throws Exception {
@@ -98,10 +102,9 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         assetQuery.setAreaIds(
             ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
         DownloadVO downloadVO = new DownloadVO();
-        // List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
         List<AssetCompositionReportResponse> items = findPageAssetCompositionReport(assetQuery).getItems();
-        // List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
-        // downloadVO.setDownloadList(assetEntities);
+        List<AssetComReportEntity> assetEntities = comreportconvert.convert(items, AssetComReportEntity.class);
+        downloadVO.setDownloadList(assetEntities);
 
         downloadVO.setSheetName("资产综合报表");
         // 3种导方式 1 excel 2 cvs 3 xml
