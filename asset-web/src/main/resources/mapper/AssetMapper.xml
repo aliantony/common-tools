@@ -1010,6 +1010,15 @@
 
         </foreach>
     </insert>
+    <insert id="insertRollbackInfo" parameterType="com.antiy.asset.vo.request.AssetRollbackRequest">
+        insert into asset_rollback(asset_id,filed_name,filed_value,rollback_table_name,gmt_create,create_user)
+        values
+        <trim suffixOverrides=",">
+            <foreach collection="rollBackInfo" item="item" separator=",">
+                (#{assetId},#{item.filedName},#{item.filedValue},#{item.rollbackTableName},#{gmtCreate},#{createUser})
+            </foreach>
+        </trim>
+    </insert>
 
 
     <update id="update" parameterType="com.antiy.asset.entity.Asset">
@@ -1621,7 +1630,10 @@
         warranty = #{warranty },
         gmt_modified = #{gmtModified },
         memo = #{memo },
-        modify_user = #{modifyUser }
+        modify_user = #{modifyUser },
+        is_orphan=#{isOrphan},
+        net_status={netStatus},
+        custom_field=#{customField}
         where id = #{id}
     </update>
 

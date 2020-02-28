@@ -8,6 +8,7 @@ import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
@@ -373,4 +374,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query);
+
+    Integer insertRollbackInfo(AssetRollbackRequest rollbackRequest);
 }

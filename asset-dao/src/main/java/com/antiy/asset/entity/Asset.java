@@ -27,7 +27,7 @@ public class Asset extends BaseEntity {
      */
     private Integer           netStatus;
     /**
-     * 是否孤岛设备：1、是 2、否
+     * 是否孤岛设备：1、是 0、否
      */
     private Integer           isOrphan;
     /**

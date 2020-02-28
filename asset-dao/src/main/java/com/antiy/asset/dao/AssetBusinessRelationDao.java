@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetBusinessRelation;
+import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,4 +20,5 @@ public interface AssetBusinessRelationDao extends IBaseDao<AssetBusinessRelation
     AssetBusinessRelation getByAssetId(Integer assetId);
 
     void insertBatch(@Param("assetRelationList") List<AssetBusinessRelation> assetRelationList);
+   List<AssetBusinessResponse> getBusinessInfoByAssetId(@Param("assetId") String assetId);
 }

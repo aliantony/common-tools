@@ -11,47 +11,65 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetFlowEnum {
     /**
-     * 登记
+     * 待登记->登记/不予登记
      */
-    REGISTER(AssetStatusEnum.WAIT_REGISTER, "", "登记资产。", "登记资产信息"),
+    REGISTER(AssetStatusEnum.WAIT_REGISTER, "", "登记资产。", "登记资产信息","不予登记资产。","不予登记资产"),
     /**
-     * 实施
+     * 不予登记->登记
      */
-                           TEMPLATE_IMPL(AssetStatusEnum.NULL, "resultCheckUser", "模板实施。实施情况：", "实施资产信息"),
+    NO_REGISTER(AssetStatusEnum.NOT_REGISTER,"","登记资产。", "登记资产信息"),
     /**
-     * 验证
+     * 整改中->继续入网/不予登记
      */
-                           VALIDATE(AssetStatusEnum.NULL, "netImplementUser", "结果验证。验证情况：", "验证资产信息"),
+    CORRECT(AssetStatusEnum.CORRECTING, "", "入网申请。", "通过安全整改","不予登记资产。", "不予登记资产"),
     /**
-     * 入网
+     * 入网待审批->审批
      */
-                           NET_IN(AssetStatusEnum.NULL, "", "准入实施。实施情况：", "入网资产信息"),
+    LEADER_CHECK(AssetStatusEnum.NET_IN_LEADER_CHECK,"","入网审批。审批情况：","领导审批"),
     /**
-     * 检查
+     * 入网审批未通过->登记/不予登记
      */
-                           CHECK(AssetStatusEnum.NULL, "safetyChangeUser", "安全检查。检查情况：", "检查资产信息"),
-    /**
-     * 整改
+    LEADER_CHECK_DISAGREE(AssetStatusEnum.NET_IN_LEADER_DISAGREE, "", "登记资产。", "登记资产信息","不予登记资产。","不予登记资产"),
+      /**
+     * 待准入->允许/禁止
      */
-                           CORRECT(AssetStatusEnum.NET_IN_LEADER_CHECK, "safetyChangeUser", "安全整改。整改情况：", "整改资产信息"),
+    ADMITTANCE(AssetStatusEnum.NET_IN_CHECK, "", "准入实施。准入情况：", "允许入网","准入实施。准入情况：","禁止入网"),
     /**
-     * 拟退役
+     * 已入网->变更/退役申请
      */
-                           TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, "retireUserId", "拟退役资产。", "拟退役资产信息"),
+    CHANGE(AssetStatusEnum.NET_IN, "", "变更资产信息。", "变更资产信息","退役申请。","提出退役申请"),
     /**
-     * 实施退役
-     */
-    RETIRE(AssetStatusEnum.WAIT_RETIRE, "", "实施退役。退役情况：", "退役资产信息"),
-    /**
-     * 变更
-     */
-    CHANGE(AssetStatusEnum.NET_IN, "", "变更资产信息。", "变更资产信息"),
-    /**
-     * 配置模块调用.
+     * 变更中->已入网    配置模块调用.
      */
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "", "变更完成。", "变更完成"),
-    NO_REGISTER(AssetStatusEnum.NOT_REGISTER,"","不予登记资产。","不予登记资产")
-    ;
+    /**
+     * 退役待审批->审批
+     */
+    RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK, "", "退役审批。审批情况：", "领导审批"),
+    /**
+     * 退役审批未通过->继续退役/关闭退役
+     */
+    RETIRE_CHECK_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE, "", "退役申请。", "重新退役","关闭退役。","关闭退役"),
+    /**
+     * 待退役->退役执行
+     */
+    RETIRE(AssetStatusEnum.WAIT_RETIRE, "", "退役执行。", "执行退役"),
+    /**
+     * 已退役->登记/报废申请
+     */
+    RETIRED(AssetStatusEnum.RETIRE, "", "登记资产。", "登记资产信息","报废申请。", "提出报废申请"),
+    /**
+     * 报废待审批->审批
+     */
+    SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK, "", "报废审批。审批情况：", "领导审批"),
+    /**
+     * 报废审批未通过->继续报废/关闭报废
+     */
+    SCRAP_CHECK_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE, "", "报废申请。", "重新报废","关闭报废。","关闭报废"),
+    /**
+     * 待报废->报废执行
+     */
+    SCRAP(AssetStatusEnum.WAIT_SCRAP, "", "报废执行。", "执行报废");
 
     /**
      * 资产当前状态
@@ -64,32 +82,50 @@ public enum AssetFlowEnum {
     private String activityKey;
 
     /**
-     * 对应流程信息,用于记录资产record表
+     * 对应流程信息的下一步,用于记录资产record表
      */
-    private String  msg;
+    private String nextMsg;
 
     /**
-     * 对应流程信息,用于记录操作日志
+     * 对应流程信息的下一步,用于记录操作日志
      */
-    private String operaLog;
+    private String nextOperaLog;
+    /**
+     * 对应流程信息的上一步,用于记录资产record表
+     */
+    private String preMsg;
+
+    /**
+     * 对应流程信息的上一步,用于记录操作日志
+     */
+    private String preOperaLog;
 
     AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String msg, String operaLog) {
         this.currentAssetStatus = currentAssetStatus;
         this.activityKey = activityKey;
-        this.msg = msg;
-        this.operaLog = operaLog;
+        this.nextMsg = msg;
+        this.nextOperaLog = operaLog;
+    }
+
+    AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String nextMsg, String nextOperaLog, String preMsg, String preOperaLog) {
+        this.currentAssetStatus = currentAssetStatus;
+        this.activityKey = activityKey;
+        this.nextMsg = nextMsg;
+        this.nextOperaLog = nextOperaLog;
+        this.preMsg = preMsg;
+        this.preOperaLog = preOperaLog;
     }
 
     public String getActivityKey() {
         return activityKey;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getNextMsg() {
+        return nextMsg;
     }
 
-    public String getOperaLog() {
-        return operaLog;
+    public String getNextOperaLog() {
+        return nextOperaLog;
     }
 
     public AssetStatusEnum getCurrentAssetStatus() {
@@ -105,7 +141,7 @@ public enum AssetFlowEnum {
     public static String  getMsgByAssetStatus(AssetStatusEnum assetStatusEnum) {
         for (AssetFlowEnum value : AssetFlowEnum.values()) {
             if (value.getCurrentAssetStatus().equals(assetStatusEnum)) {
-                return value.getMsg();
+                return value.getNextMsg();
             }
         }
         return null;

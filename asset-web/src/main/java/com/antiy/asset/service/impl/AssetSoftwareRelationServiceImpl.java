@@ -224,7 +224,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             record.setOriginStatus(asset.getAssetStatus());
             record.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
             record.setNeedVulScan(0);
-            record.setContent(AssetFlowEnum.CHANGE.getMsg());
+            record.setContent(AssetFlowEnum.CHANGE.getNextMsg());
             record.setOperateUserId(LoginUserUtil.getLoginUser().getId());
             record.setOperateUserName(LoginUserUtil.getLoginUser().getName());
             record.setGmtCreate(System.currentTimeMillis());
