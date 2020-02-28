@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetHomePageDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetCountInclude">
+        <result column="includeAmount" property="name"/>
+    </resultMap>
+
+    <select id="countIncludeManage" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(ase.is_manage) include
+        from
+        asset_safety_equipment ase left join asset on ase.asset_id = asset.id
+        where ase.is_manage = 1 and asset.asset_status in (7,8,9,10)  and asset.status = 1 and ase.status = 1
+
+    </select>
+
+    <select id="countUnincludeManage" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(ase.is_manage) include
+        from
+        asset_safety_equipment ase left join asset on ase.asset_id = asset.id
+        where ase.is_manage = 0 and asset.asset_status in (7,8,9,10)  and asset.status = 1 and ase.status = 1
+    </select>
+</mapper>
