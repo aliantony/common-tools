@@ -198,8 +198,8 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     /**
      * 资产准入状态
      */
-    @ApiModelProperty("资产准入状态:待设置，2已允许，3已禁止")
-    @Max(message = "资产准入状态不能大于3", value = 3)
+    @ApiModelProperty("资产准入状态:1已允许，2已禁止")
+    @Max(message = "资产准入状态不能大于2", value = 2)
     @Min(message = "资产准入状态不能小于1", value = 1)
     private Integer                 admittanceStatus;
     /**
@@ -214,6 +214,26 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("描述")
     @Size(message = "描述不能超过300个字符", max = 300)
     private String                  describle;
+    @ApiModelProperty("网络连接：1在线，2离线，3未知")
+    private Integer           netStatus;
+    @ApiModelProperty("物理位置")
+    private String location;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Integer getNetStatus() {
+        return netStatus;
+    }
+
+    public void setNetStatus(Integer netStatus) {
+        this.netStatus = netStatus;
+    }
 
     public Long getFirstEnterNett() {
         return firstEnterNett;

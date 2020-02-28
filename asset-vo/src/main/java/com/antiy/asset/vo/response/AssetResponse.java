@@ -1,11 +1,14 @@
 package com.antiy.asset.vo.response;
 
 import java.util.List;
+import java.util.Map;
 
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.utils.JsonUtil;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -265,6 +268,26 @@ public class AssetResponse extends BaseResponse {
     private String location;
     @ApiModelProperty("从属业务集合")
     private List<AssetBusinessResponse> dependentBusiness;
+    @ApiModelProperty("是否孤岛设备：1是,0否")
+    private Integer           isOrphan;
+    @ApiModelProperty("自定义字段")
+    private List<AssetCustomizeRequest> customField;
+
+    public List<AssetCustomizeRequest> getCustomField() {
+        return customField;
+    }
+
+    public void setCustomField(String customField) {
+        this.customField = JsonUtil.json2List(customField,AssetCustomizeRequest.class);
+    }
+
+    public Integer getIsOrphan() {
+        return isOrphan;
+    }
+
+    public void setIsOrphan(Integer isOrphan) {
+        this.isOrphan = isOrphan;
+    }
 
     public Integer getNetStatus() {
         return netStatus;

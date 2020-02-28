@@ -5,7 +5,7 @@ package com.antiy.asset.vo.enums;
  * @Date: 2019/1/3 13:27
  * @Description:
  */
-public enum AssetStatusEnum {
+public enum AssetStatusEnum implements CodeEnum {
     /**
      * 待登记
      */
@@ -105,10 +105,12 @@ public enum AssetStatusEnum {
         return null;
     }
 
+    @Override
     public Integer getCode() {
         return code;
     }
 
+    @Override
     public String getMsg() {
         return msg;
     }

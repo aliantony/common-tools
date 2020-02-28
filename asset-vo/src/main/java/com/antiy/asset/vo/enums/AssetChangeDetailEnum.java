@@ -14,47 +14,44 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 不予登记-2
 	 */
-	OPERATION_NOT_REGISTER("不予登记资产。",AssetStatusEnum.NOT_REGISTER.getCode()),
+	OPERATION_NOT_REGISTER("不予登记资产。", AssetStatusEnum.NOT_REGISTER.getCode()),
 	/**
-	 * 模板实施-3
+	 * 入网审批-4
 	 */
-                                                         WAIT_TEMPLATE_IMPL("模板实施，实施情况：",
-                                                                            AssetStatusEnum.NULL.getCode()),
+     OPERATION_WAIT_LEADER_CHECK("入网审批。审批情况：",AssetStatusEnum.NET_IN_LEADER_CHECK.getCode()),
 	/**
-	 * 待验证-4
+	 * 准入实施-6
 	 */
-                                                         OPERATION_WAIT_VALIDATE("结果验证，验证情况：",
-                                                                                 AssetStatusEnum.NULL.getCode()),
+	OPERATION_WAIT_NET("准入实施。准入情况：",AssetStatusEnum.NET_IN_CHECK.getCode()),
+
 	/**
-	 * 准入实施-5
-	 */
-                                                         OPERATION_WAIT_NET("准入实施。实施情况：",
-                                                                            AssetStatusEnum.NULL.getCode()),
-	/**
-	 * 安全检查-7
-	 */
-                                                         OPERATION_WAIT_CHECK("安全检查。检查情况：",
-                                                                              AssetStatusEnum.NULL.getCode()),
-	/**
-	 * 入网-6
+	 * 入网-7
 	 */
 	OPERATION_NET_IN("已入网资产。",AssetStatusEnum.NET_IN.getCode()),
+
 	/**
-	 * 整改-8
-	 */
-                                                         WAIT_CORRECT("整改，整改情况：", AssetStatusEnum.CORRECTING.getCode()),
-	/**
-	 * 变更中-9
+	 * 变更中-8
 	 */
 	IN_CHANGE("资产变更完成。",AssetStatusEnum.IN_CHANGE.getCode()),
 	/**
-	 * 待退役-10
+	 * 退役申请-9
+	 */
+	OPERATION_APPLY_RETIRE("退役申请。",AssetStatusEnum.WAIT_RETIRE_CHECK.getCode()),
+	/**
+	 * 待退役-11
 	 */
 	OPERATION_WAIT_RETIRE("待退役资产。",AssetStatusEnum.WAIT_RETIRE.getCode()),
 	/**
-	 * 已退役-11
+	 * 已退役-12
 	 */
-	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode()),
+	OPERATION_RETIRE("实施退役。退役情况：",AssetStatusEnum.RETIRE.getCode()),	/**
+	/**
+	 * 报废申请-13
+	 */
+	OPERATION_APPLY_SCRAP("报废申请。",AssetStatusEnum.WAIT_SCRAP_CHECK.getCode()),	/**
+	 * 报废申请-13
+	 */
+	OPERATION_EXECUTE_SCRAP("报废执行。",AssetStatusEnum.SCRAP.getCode()),
 	/**
 	 * 无状态-0
 	 */
@@ -81,8 +78,16 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 		if (processResult==null) {
 			return "";
 		}
-		return filter(processResult.getName());
-
+		switch (this) {
+			//准入实施
+			case OPERATION_WAIT_NET:
+				return processResult.getValue().equals(1) ? "允许" : "禁止";
+			//入网审批
+			case OPERATION_WAIT_LEADER_CHECK:
+				return processResult.getValue().equals(1) ? "通过" : "未通过";
+			default:
+				return "";
+		}
 	}
 
 	/**

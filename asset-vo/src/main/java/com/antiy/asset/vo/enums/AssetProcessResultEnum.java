@@ -4,7 +4,7 @@ package com.antiy.asset.vo.enums;
  * @author zhouye
  * 资产操作结果
  */
-public enum  AssetProcessResultEnum implements ValuedEnum{
+public enum  AssetProcessResultEnum  implements ValuedEnum,CodeEnum {
 	/**
 	 * 通过
 	 */
@@ -40,4 +40,15 @@ public enum  AssetProcessResultEnum implements ValuedEnum{
 	@Override
 	public Integer getValue() {
 		return value;
-	}}
+	}
+
+	@Override
+	public Integer getCode() {
+		return value;
+	}
+
+	@Override
+	public String getMsg() {
+		return name;
+	}
+}

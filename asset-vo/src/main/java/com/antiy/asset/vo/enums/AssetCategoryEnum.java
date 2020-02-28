@@ -1,6 +1,6 @@
 package com.antiy.asset.vo.enums;
 
-public enum AssetCategoryEnum {
+public enum AssetCategoryEnum implements CodeEnum{
     COMPUTER(1, "计算设备"),
     NETWORK(2, "网络设备"),
     SAFETY(3, "安全设备"),
@@ -15,8 +15,14 @@ public enum AssetCategoryEnum {
         this.name = name;
     }
 
+    @Override
     public Integer getCode() {
         return code;
+    }
+
+    @Override
+    public String getMsg() {
+        return name;
     }
 
     public String getName() {
