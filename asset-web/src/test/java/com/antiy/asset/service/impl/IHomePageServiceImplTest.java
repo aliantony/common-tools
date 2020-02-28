@@ -1,4 +1,4 @@
-package com.antiy.service.impl;
+package com.antiy.asset.service.impl;
 
 import javax.annotation.Resource;
 
@@ -26,14 +26,10 @@ public class IHomePageServiceImplTest {
     @Test
     public void countIncludeManage() throws Exception {
         AssetCountIncludeResponse countIncludeResponse = homePageService.countIncludeManage();
-
-        System.out.println(countIncludeResponse.toString());
     }
 
     @Test
     public void assetOnlineChart() throws Exception {
         AssetOnlineChartResponse onlineChartResponse = homePageService.assetOnlineChart();
-
-        System.out.println(onlineChartResponse.toString());
     }
 }
