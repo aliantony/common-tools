@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IHomePageService;
 import com.antiy.asset.vo.response.AlarmAssetResponse;
+import com.antiy.asset.vo.response.AssetCountIncludeResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.Api;
@@ -21,10 +22,10 @@ import io.swagger.annotations.ApiResponses;
  * @date: 2020/2/28 10:57
  * @description:
  */
-@Api(value = "HomePageController", description = "首页接口")
+@Api(value = "AssetHomePageController", description = "首页接口")
 @RestController
 @RequestMapping("/api/v1/asset/homepage")
-public class HomePageController {
+public class AssetHomePageController {
 
     @Resource
     private IHomePageService homePageService;
@@ -36,9 +37,22 @@ public class HomePageController {
      */
 
     @ApiOperation(value = "纳入管理资产统计", notes = "无")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCountIncludeResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/includeManage", method = RequestMethod.POST)
     public ActionResponse countIncludeManage() throws Exception {
         return ActionResponse.success(homePageService.countIncludeManage());
+    }
+
+    /**
+     * 资产在线情况
+     *
+     * @return actionResponse
+     */
+
+    @ApiOperation(value = "资产在线情况", notes = "无")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/chart/assetOnline", method = RequestMethod.POST)
+    public ActionResponse assetOnlineChart() throws Exception {
+        return ActionResponse.success(homePageService.assetOnlineChart());
     }
 }

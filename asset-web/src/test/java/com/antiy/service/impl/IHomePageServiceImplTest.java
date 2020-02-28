@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.antiy.asset.AssetApplication;
 import com.antiy.asset.service.IHomePageService;
 import com.antiy.asset.vo.response.AssetCountIncludeResponse;
+import com.antiy.asset.vo.response.AssetOnlineChartResponse;
 
 /**
  * @author zhangyajun
@@ -27,5 +28,12 @@ public class IHomePageServiceImplTest {
         AssetCountIncludeResponse countIncludeResponse = homePageService.countIncludeManage();
 
         System.out.println(countIncludeResponse.toString());
+    }
+
+    @Test
+    public void assetOnlineChart() throws Exception {
+        AssetOnlineChartResponse onlineChartResponse = homePageService.assetOnlineChart();
+
+        System.out.println(onlineChartResponse.toString());
     }
 }

@@ -21,4 +21,15 @@
         asset_safety_equipment ase left join asset on ase.asset_id = asset.id
         where ase.is_manage = 0 and asset.asset_status in (7,8,9,10)  and asset.status = 1 and ase.status = 1
     </select>
+
+
+    <select id="assetOnlineChart" resultType="java.lang.Integer">
+        select count(ase.is_manage) include
+        from
+        asset_safety_equipment ase
+        left join asset on ase.asset_id = asset.id
+        left join asset_status_monitor asm on asm.asset_id = ase.asset_id
+        where  ase.is_manage = 1 and asset.asset_status in (7,8,9,10)  and asset.net_status = 1 and asset.status = 1 and ase.status = 1
+         and  asm.gmt_modified &gt; #{startTime} and asm.gmt_modified &lt;= #{endTime}
+    </select>
 </mapper>

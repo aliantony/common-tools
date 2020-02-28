@@ -1,6 +1,7 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.vo.response.AssetCountIncludeResponse;
+import com.antiy.asset.vo.response.AssetOnlineChartResponse;
 
 /**
  * <p> 首页接口 </p>
@@ -16,5 +17,12 @@ public interface IHomePageService {
      * @return
      */
     AssetCountIncludeResponse countIncludeManage() throws Exception;
+
+    /**
+     * 资产在线情况
+     *
+     * @return
+     */
+    AssetOnlineChartResponse assetOnlineChart() throws Exception;
 
 }
