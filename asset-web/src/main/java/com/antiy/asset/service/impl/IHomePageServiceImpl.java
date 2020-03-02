@@ -60,6 +60,7 @@ public class IHomePageServiceImpl implements IHomePageService {
             }
             n++;
         }
+        nameValueVo.setName("资产在线情况");
         nameValueVo.setData(nameValueList);
 
         onlineChartResponse.setxData(abscissa);
