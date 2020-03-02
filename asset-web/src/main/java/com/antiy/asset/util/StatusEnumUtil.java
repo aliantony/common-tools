@@ -58,7 +58,7 @@ public class StatusEnumUtil {
     }
 
     /**
-     * 资产类型分布统计已入网+变更中+退役待审批+退役审批未通过的状态资产类型分布情况
+     * 已入网+变更中+退役待审批+退役审批未通过的状态资产类型分布情况
      * @return
      */
     public static List<Integer> getAssetTypeStatus() {

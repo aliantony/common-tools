@@ -7,37 +7,60 @@
         <result column="includeAmount" property="name"/>
     </resultMap>
 
-    <select id="countIncludeManage" resultType="java.lang.Integer" parameterType="java.lang.String">
+    <select id="countIncludeManage" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.entity.AssetIncludeManageCondition">
         select count(ase.is_manage) include
         from
         asset_safety_equipment ase left join asset on ase.asset_id = asset.id
-        where ase.is_manage = 1 and asset.asset_status in (7,8,9,10)  and asset.status = 1 and ase.status = 1
+        where
+        <include refid="area_asset_status"/>
+        and ase.is_manage = 1 and asset.status = 1 and ase.status = 1
 
     </select>
 
-    <select id="countUnincludeManage" resultType="java.lang.Integer" parameterType="java.lang.String">
+    <select id="countUnincludeManage" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.entity.AssetIncludeManageCondition">
         select count(ase.is_manage) include
         from
         asset_safety_equipment ase left join asset on ase.asset_id = asset.id
-        where ase.is_manage = 0 and asset.asset_status in (7,8,9,10)  and asset.status = 1 and ase.status = 1
+        where
+        <include refid="area_asset_status"/>
+        and ase.is_manage = 0 and asset.status = 1 and ase.status = 1
     </select>
 
 
-    <select id="assetOnlineChart" resultType="java.lang.Integer">
+    <select id="assetOnlineChart" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.entity.AssetOnlineChartCondition">
         select count(ase.is_manage) include
         from
         asset_safety_equipment ase
         left join asset on ase.asset_id = asset.id
         left join asset_status_monitor asm on asm.asset_id = ase.asset_id
-        where  ase.is_manage = 1 and asset.asset_status in (7,8,9,10)  and asset.net_status = 1 and asset.status = 1 and ase.status = 1
-         and  asm.gmt_modified &gt; #{startTime} and asm.gmt_modified &lt;= #{endTime}
+        where
+        <include refid="area_asset_status"/>
+        and ase.is_manage = 1 and asset.net_status = 1 and asset.status = 1 and ase.status = 1
+        and asm.gmt_modified &gt; #{startTime} and asm.gmt_modified &lt;= #{endTime}
     </select>
 
     <select id="assetImportanceDegreePie" resultType="com.antiy.asset.vo.response.AssetImportancePie"
-            parameterType="java.lang.Integer">
+            parameterType="com.antiy.asset.entity.AssetImportanceDegreeCondition">
         select count(importance_degree) as amount, asset.importance_degree as importanceDegree
         from
         asset
-        where  asset.importance_degree = #{importanceDegree} and asset.asset_status in (7,8,9,10) and asset.status = 1
+        where
+        <include refid="area_asset_status"/>
+        and asset.importance_degree = #{importanceDegree}
+        and asset.status = 1
     </select>
+
+    <sql id="area_asset_status">
+        area_id in
+        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+            #{areaId}
+        </foreach>
+        and asset.asset_status in
+        <foreach item="assetStatus" collection="statusList" open="(" separator="," close=")">
+            #{assetStatus}
+        </foreach>
+    </sql>
 </mapper>

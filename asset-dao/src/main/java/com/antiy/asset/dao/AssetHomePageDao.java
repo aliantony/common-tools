@@ -1,7 +1,8 @@
 package com.antiy.asset.dao;
 
-import org.apache.ibatis.annotations.Param;
-
+import com.antiy.asset.entity.AssetImportanceDegreeCondition;
+import com.antiy.asset.entity.AssetIncludeManageCondition;
+import com.antiy.asset.entity.AssetOnlineChartCondition;
 import com.antiy.asset.vo.response.AssetImportancePie;
 
 /**
@@ -11,11 +12,11 @@ import com.antiy.asset.vo.response.AssetImportancePie;
  * @since 2019-01-02
  */
 public interface AssetHomePageDao {
-    Integer countIncludeManage() throws Exception;
+    Integer countIncludeManage(AssetIncludeManageCondition condition) throws Exception;
 
-    Integer countUnincludeManage() throws Exception;
+    Integer countUnincludeManage(AssetIncludeManageCondition condition) throws Exception;
 
-    Integer assetOnlineChart(@Param("startTime") Long startTime, @Param("endTime") Long endTime) throws Exception;
+    Integer assetOnlineChart(AssetOnlineChartCondition condition) throws Exception;
 
-    AssetImportancePie assetImportanceDegreePie(Integer importanceDegree) throws Exception;
+    AssetImportancePie assetImportanceDegreePie(AssetImportanceDegreeCondition condition) throws Exception;
 }

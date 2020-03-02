@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -11,6 +13,7 @@ import com.antiy.asset.AssetApplication;
 import com.antiy.asset.service.IHomePageService;
 import com.antiy.asset.vo.response.AssetCountIncludeResponse;
 import com.antiy.asset.vo.response.AssetOnlineChartResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
 
 /**
  * @author zhangyajun
@@ -31,5 +34,10 @@ public class IHomePageServiceImplTest {
     @Test
     public void assetOnlineChart() throws Exception {
         AssetOnlineChartResponse onlineChartResponse = homePageService.assetOnlineChart();
+    }
+
+    @Test
+    public void assetImportanceDegreePie() throws Exception {
+        List<EnumCountResponse> enumCountResponseList = homePageService.assetImportanceDegreePie();
     }
 }
