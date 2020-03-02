@@ -2,6 +2,8 @@ package com.antiy.asset.dao;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.antiy.asset.vo.response.AssetImportancePie;
+
 /**
  * <p> 首页 Mapper 接口 </p>
  *
@@ -14,4 +16,6 @@ public interface AssetHomePageDao {
     Integer countUnincludeManage() throws Exception;
 
     Integer assetOnlineChart(@Param("startTime") Long startTime, @Param("endTime") Long endTime) throws Exception;
+
+    AssetImportancePie assetImportanceDegreePie(Integer importanceDegree) throws Exception;
 }

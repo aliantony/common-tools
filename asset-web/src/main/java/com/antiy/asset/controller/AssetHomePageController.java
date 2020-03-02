@@ -55,4 +55,17 @@ public class AssetHomePageController {
     public ActionResponse assetOnlineChart() throws Exception {
         return ActionResponse.success(homePageService.assetOnlineChart());
     }
+
+    /**
+     * 资产重要程度分布
+     *
+     * @return actionResponse
+     */
+
+    @ApiOperation(value = "资产重要程度分布", notes = "无")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/pie/assetImportanceDegree", method = RequestMethod.POST)
+    public ActionResponse assetImportanceDegreePie() throws Exception {
+        return ActionResponse.success(homePageService.assetImportanceDegreePie());
+    }
 }

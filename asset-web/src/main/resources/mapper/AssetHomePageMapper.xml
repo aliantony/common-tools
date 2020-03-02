@@ -32,4 +32,12 @@
         where  ase.is_manage = 1 and asset.asset_status in (7,8,9,10)  and asset.net_status = 1 and asset.status = 1 and ase.status = 1
          and  asm.gmt_modified &gt; #{startTime} and asm.gmt_modified &lt;= #{endTime}
     </select>
+
+    <select id="assetImportanceDegreePie" resultType="com.antiy.asset.vo.response.AssetImportancePie"
+            parameterType="java.lang.Integer">
+        select count(importance_degree) as amount, asset.importance_degree as importanceDegree
+        from
+        asset
+        where  asset.importance_degree = #{importanceDegree} and asset.asset_status in (7,8,9,10) and asset.status = 1
+    </select>
 </mapper>

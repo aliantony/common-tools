@@ -11,10 +11,9 @@ import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetHomePageDao;
 import com.antiy.asset.service.IHomePageService;
 import com.antiy.asset.util.TwelveTimeUtil;
-import com.antiy.asset.vo.response.AssetCountIncludeResponse;
-import com.antiy.asset.vo.response.AssetOnlineChartResponse;
-import com.antiy.asset.vo.response.NameValue;
-import com.antiy.asset.vo.response.NameValueVo;
+import com.antiy.asset.vo.enums.AssetImportanceDegreeEnum;
+import com.antiy.asset.vo.response.*;
+import com.google.common.collect.Lists;
 
 /**
  * @author zhangyajun
@@ -67,4 +66,27 @@ public class IHomePageServiceImpl implements IHomePageService {
         onlineChartResponse.setCoordinate(nameValueVo);
         return onlineChartResponse;
     }
+
+    @Override
+    public List<EnumCountResponse> assetImportanceDegreePie() throws Exception {
+        List<EnumCountResponse> enumCountResponseList = new ArrayList<>();
+        for (AssetImportanceDegreeEnum degreeEnum : AssetImportanceDegreeEnum.values()) {
+            AssetImportancePie assetImportancePie = homePageDao.assetImportanceDegreePie(degreeEnum.getCode());
+            EnumCountResponse enumCountResponse = new EnumCountResponse();
+            AssetImportanceDegreeEnum importanceDegreeEnum = AssetImportanceDegreeEnum
+                .getByCode(assetImportancePie.getImportanceDegree());
+            if (importanceDegreeEnum != null) {
+                String importanceDegree = AssetImportanceDegreeEnum.getByCode(assetImportancePie.getImportanceDegree())
+                    .getMsg();
+                enumCountResponse.setMsg(importanceDegree);
+                enumCountResponse.setNumber(assetImportancePie.getAmount());
+                enumCountResponse.setCode(Lists.newArrayList(degreeEnum.getMsg()));
+            }
+
+            enumCountResponseList.add(enumCountResponse);
+        }
+
+        return enumCountResponseList;
+    }
+
 }
