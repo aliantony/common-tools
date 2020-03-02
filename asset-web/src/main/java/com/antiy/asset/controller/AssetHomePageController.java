@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IHomePageService;
-import com.antiy.asset.vo.response.AlarmAssetResponse;
 import com.antiy.asset.vo.response.AssetCountIncludeResponse;
+import com.antiy.asset.vo.response.AssetOnlineChartResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
 import com.antiy.common.base.ActionResponse;
 
 import io.swagger.annotations.Api;
@@ -50,7 +51,7 @@ public class AssetHomePageController {
      */
 
     @ApiOperation(value = "资产在线情况", notes = "无")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOnlineChartResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/chart/assetOnline", method = RequestMethod.POST)
     public ActionResponse assetOnlineChart() throws Exception {
         return ActionResponse.success(homePageService.assetOnlineChart());
@@ -63,7 +64,7 @@ public class AssetHomePageController {
      */
 
     @ApiOperation(value = "资产重要程度分布", notes = "无")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AlarmAssetResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = EnumCountResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/pie/assetImportanceDegree", method = RequestMethod.POST)
     public ActionResponse assetImportanceDegreePie() throws Exception {
         return ActionResponse.success(homePageService.assetImportanceDegreePie());
