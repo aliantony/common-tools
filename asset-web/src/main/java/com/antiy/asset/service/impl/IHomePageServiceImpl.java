@@ -63,7 +63,7 @@ public class IHomePageServiceImpl implements IHomePageService {
         nameValueVo.setData(nameValueList);
 
         onlineChartResponse.setxData(abscissa);
-        onlineChartResponse.setNameValueVo(nameValueVo);
+        onlineChartResponse.setCoordinate(nameValueVo);
         return onlineChartResponse;
     }
 }
