@@ -1,10 +1,11 @@
 package com.antiy.asset.util;
 
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.SoftwareStatusEnum;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.enums.SoftwareStatusEnum;
+import com.google.common.collect.Lists;
 
 /**
  * 状态枚举的工具类，可以获取特定的状态列表
@@ -53,6 +54,15 @@ public class StatusEnumUtil {
                 status.add(assetStatusEnum.getCode());
             }
         }
+        return status;
+    }
+
+    /**
+     * 资产类型分布统计已入网+变更中+退役待审批+退役审批未通过的状态资产类型分布情况
+     * @return
+     */
+    public static List<Integer> getAssetTypeStatus() {
+        List<Integer> status = Lists.newArrayList(7, 8, 9, 10);
         return status;
     }
 

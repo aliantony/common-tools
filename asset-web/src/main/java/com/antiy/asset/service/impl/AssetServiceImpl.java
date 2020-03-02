@@ -1107,8 +1107,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         List<String> areaIdsOfCurrentUser = loginUser.getAreaIdsOfCurrentUser();
 
-        // 不统计已退役资产
-        List<Integer> status = StatusEnumUtil.getAssetNotRetireStatus();
+        // 已入网+变更中+退役待审批+退役审批未通过的状态资产类型分
+        List<Integer> status = StatusEnumUtil.getAssetTypeStatus();
         /**
          *
          * 统计品类型号 Map中的数据 key--品类型号 value--总数
