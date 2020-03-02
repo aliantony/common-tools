@@ -15,7 +15,7 @@ public class AssetOnlineChartResponse {
     @ApiModelProperty("横坐标数据")
     private List<String> xData;
     @ApiModelProperty("折线点数据 ")
-    private NameValueVo  nameValueVo;
+    private NameValueVo  coordinate;
 
     public List<String> getxData() {
         return xData;
@@ -25,11 +25,11 @@ public class AssetOnlineChartResponse {
         this.xData = xData;
     }
 
-    public NameValueVo getNameValueVo() {
-        return nameValueVo;
+    public NameValueVo getCoordinate() {
+        return coordinate;
     }
 
-    public void setNameValueVo(NameValueVo nameValueVo) {
-        this.nameValueVo = nameValueVo;
+    public void setCoordinate(NameValueVo coordinate) {
+        this.coordinate = coordinate;
     }
 }
