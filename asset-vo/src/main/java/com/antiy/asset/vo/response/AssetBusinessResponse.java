@@ -11,11 +11,11 @@ import com.antiy.common.base.BaseResponse;
  * @since 2018-12-27
  */
 
-public class AssetBusinessResponse extends BaseResponse{
+public class AssetBusinessResponse extends BaseResponse {
     /**
      * 业务id
      */
-    private String id;
+    private Integer id;
     /**
      *  业务名称（中文字符，去重）
      */
@@ -25,12 +25,50 @@ public class AssetBusinessResponse extends BaseResponse{
      */
     private Integer importance;
 
-    public String getId() {
+    private String importanceDesc;
+    /**
+     *  描述
+     */
+    private String description;
+
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getImportanceDesc() {
+        if(importance==1)
+            return "高";
+        if(importance==2)
+            return "中";
+        if(importance==3)
+            return "低";
+        return null;
+    }
+
+    /**
+     *  创建时间
+     */
+    private Long gmtCreate;
+    /**
+     *  更新时间
+     */
+    private Long gmtModified;
+
+    private Integer assetCount;
+
+    private String uniqueId;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public String getName() {
@@ -47,5 +85,37 @@ public class AssetBusinessResponse extends BaseResponse{
 
     public void setImportance(Integer importance) {
         this.importance = importance;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public Integer getAssetCount() {
+        return assetCount;
+    }
+
+    public void setAssetCount(Integer assetCount) {
+        this.assetCount = assetCount;
     }
 }

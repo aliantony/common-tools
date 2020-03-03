@@ -2,6 +2,7 @@ package com.antiy.asset.entity;
 
 
 import com.antiy.common.base.BaseEntity;
+import com.antiy.common.encoder.Encode;
 
 /**
  * <p></p>
@@ -22,7 +23,8 @@ private static final long serialVersionUID = 1L;
     /**
     *  资产主键id
     */
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
     *  业务影响：1-高，2-中，3-低
     */
@@ -48,7 +50,21 @@ private static final long serialVersionUID = 1L;
     */
     private Integer status;
 
+    /**
+     * 来源 来源： 1--业务关联  2--资产登记
+     *
+     */
+    private Integer source;
 
+    private String uniqueId;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public Integer getAssetBusinessId() {
         return assetBusinessId;
@@ -59,14 +75,13 @@ private static final long serialVersionUID = 1L;
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-
 
     public Integer getBusinessInfluence() {
         return businessInfluence;
@@ -121,18 +136,11 @@ private static final long serialVersionUID = 1L;
         this.status = status;
     }
 
+    public Integer getSource() {
+        return source;
+    }
 
-    @Override
-    public String toString() {
-            return "AssetBusinessRelation{" +
-                        ", assetBusinessId=" + assetBusinessId +
-                        ", assetId=" + assetId +
-                        ", businessInfluence=" + businessInfluence +
-                        ", gmtCreate=" + gmtCreate +
-                        ", gmtModified=" + gmtModified +
-                        ", createUser=" + createUser +
-                        ", modifyUser=" + modifyUser +
-                        ", status=" + status +
-            "}";
+    public void setSource(Integer source) {
+        this.source = source;
     }
 }

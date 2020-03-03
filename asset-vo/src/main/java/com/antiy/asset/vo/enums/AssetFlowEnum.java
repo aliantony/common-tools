@@ -38,10 +38,20 @@ public enum AssetFlowEnum {
      * 已入网->变更/退役申请
      */
     CHANGE(AssetStatusEnum.NET_IN, "", "变更资产信息。", "变更资产信息","退役申请。","提出退役申请"),
+
+    /**
+     * 退役申请
+     */
+    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","退役申请","退役申请"),
+    /**
+     * 报废申请
+     */
+    SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","报废申请","报废申请"),
     /**
      * 变更中->已入网    配置模块调用.
      */
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "", "变更完成。", "变更完成"),
+
     /**
      * 退役待审批->审批
      */
@@ -66,10 +76,13 @@ public enum AssetFlowEnum {
      * 报废审批未通过->继续报废/关闭报废
      */
     SCRAP_CHECK_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE, "", "报废申请。", "重新报废","关闭报废。","关闭报废"),
+
     /**
      * 待报废->报废执行
      */
     SCRAP(AssetStatusEnum.WAIT_SCRAP, "", "报废执行。", "执行报废");
+
+
 
     /**
      * 资产当前状态
@@ -86,6 +99,15 @@ public enum AssetFlowEnum {
      */
     private String nextMsg;
 
+    /**
+     * 同意以后的状态
+     */
+    private AssetStatusEnum agreeStatus;
+
+    /**
+     * 拒绝以后的状态
+     */
+    private AssetStatusEnum refuseStatus;
     /**
      * 对应流程信息的下一步,用于记录操作日志
      */
@@ -106,7 +128,14 @@ public enum AssetFlowEnum {
         this.nextMsg = msg;
         this.nextOperaLog = operaLog;
     }
-
+    AssetFlowEnum(AssetStatusEnum currentAssetStatus,AssetStatusEnum agreeStatus,AssetStatusEnum refuseStatus, String activityKey, String msg, String operaLog) {
+        this.currentAssetStatus = currentAssetStatus;
+        this.activityKey = activityKey;
+        this.nextMsg = msg;
+        this.nextOperaLog = operaLog;
+        this.agreeStatus=agreeStatus;
+        this.refuseStatus=refuseStatus;
+    }
     AssetFlowEnum(AssetStatusEnum currentAssetStatus, String activityKey, String nextMsg, String nextOperaLog, String preMsg, String preOperaLog) {
         this.currentAssetStatus = currentAssetStatus;
         this.activityKey = activityKey;
@@ -130,6 +159,22 @@ public enum AssetFlowEnum {
 
     public AssetStatusEnum getCurrentAssetStatus() {
         return currentAssetStatus;
+    }
+
+    public AssetStatusEnum getAgreeStatus() {
+        return agreeStatus;
+    }
+
+    public AssetStatusEnum getRefuseStatus() {
+        return refuseStatus;
+    }
+
+    public String getPreMsg() {
+        return preMsg;
+    }
+
+    public String getPreOperaLog() {
+        return preOperaLog;
     }
 
     /**

@@ -13,10 +13,12 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="source" property="source"/>
+        <result column="unique_id" property="uniqueId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_business_id, asset_id, business_influence, gmt_create, gmt_modified, create_user, modify_user, status
+        id, asset_business_id, asset_id, business_influence, gmt_create, gmt_modified, create_user, modify_user, status,source,unique_id
     </sql>
 
     <sql id="Table_Name">
@@ -27,6 +29,12 @@
     <sql id="IF_Base_Column_List">
         <if test=" assetBusinessId != null">
             asset_business_id,
+        </if>
+        <if test=" uniqueId != null">
+            unique_id,
+        </if>
+        <if test=" source != null">
+            source,
         </if>
         <if test=" assetId != null">
             asset_id,
@@ -55,6 +63,12 @@
         <if test=" assetBusinessId != null">
             #{assetBusinessId },
         </if>
+        <if test="uniqueId != null">
+            #{uniqueId },
+        </if>
+        <if test=" source != null">
+            #{source},
+        </if>
         <if test=" assetId != null">
             #{assetId },
         </if>
@@ -82,6 +96,12 @@
         <if test=" assetBusinessId != null">
             asset_business_id = #{assetBusinessId },
         </if>
+        <if test=" uniqueId != null">
+            unique_id = #{uniqueId },
+        </if>
+        <if test=" source != null">
+            source = #{source },
+        </if>
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
@@ -108,6 +128,12 @@
     <sql id="Where_Column_List">
         <if test=" assetBusinessId != null">
             and asset_business_id = #{assetBusinessId }
+        </if>
+        <if test=" uniqueId != null">
+            and unique_id = #{uniqueId }
+        </if>
+        <if test=" source != null">
+            and source = #{source }
         </if>
         <if test=" assetId != null">
             and asset_id = #{assetId }
@@ -145,11 +171,106 @@
     <insert id="insertBatch">
         insert into
         <include refid="Table_Name"></include>
-        (asset_id,business_influence,gmt_create) values
+        (asset_id,business_influence,gmt_create,asset_business_id,unique_id,gmt_modified) values
         <foreach collection="assetRelationList" separator="," item="assetRelation" close=")" open="(">
-            #{assetRelation.assetId},#{assetRelation.businessInfluence},#{assetRelation.gmtCreate}
+            #{assetRelation.assetId},#{assetRelation.businessInfluence},#{assetRelation.gmtCreate},#{assetRelation.assetBusinessId},#{assetRelation.uniqueId},#{assetRelation.gmtModified}
         </foreach>
     </insert>
+    <select id="countAssetByBusinessId" resultType="int">
+        select  count(*)
+        from asset_business_relation  as abr
+        inner  join  asset as a
+        where abr.asset_id=a.id
+        and abr.status=1
+        and a.status=1
+        and abr.source=1
+        and abr.unique_id=#{uniqueId}
+        <trim prefix="" suffix="" suffixOverrides="and">
+            <if test="multipleQuery != null ">
+                and
+                a.`name` LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+                or a.`number` LIKE CONCAT('%',replace(replace(#{number},'%','\%'),'_','\_'),'%')
+                or air.`ip` LIKE CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%')
+                or amr.`mac` LIKE CONCAT('%',replace(replace(#{mac},'%','\%'),'_','\_'),'%')
+            </if>
+        </trim>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and a.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="getByUniqueIdAndAssetId" resultMap="BaseResultMap">
+        select  *
+        from  asset_business_relation
+        where status=1 and source=1
+              and unique_id=#{uniqueId}
+              and asset_id=#{assetId}
+    </select>
+    <update id="deleteByUniqueIdAndAssetId">
+        update  asset_business_relation
+            set status=0
+            where unique_id=#{uniqueId}
+             and asset_id in
+            <foreach collection="deleteAssetList" open="(" close=")" separator="," item="e">
+                #{e}
+            </foreach>
+    </update>
+    <update id="updateBatch">
+        <foreach collection="editAsset" item="e" separator=";">
+            update  asset_business_relation
+              set business_influence=#{e.businessInfluence}
+            where status=1 and source=1
+            and unique_id=#{uniqueId}
+        </foreach>
+    </update>
+    <update id="deleteByUniqueId" >
+        update  asset_business_relation
+        set status=0
+        where unique_id=#{uniqueId}
+    </update>
+    <select id="queryAssetByBusinessId" resultType="com.antiy.asset.vo.response.AssetBusinessRelationResponse">
+        SELECT
+        a.id as stringId,
+        a.`name`,
+        a.`number`,
+        a.manufacturer,
+        a.asset_group AS assetGroup,
+        GROUP_CONCAT( DISTINCT air.ip ) AS ips,
+        GROUP_CONCAT( DISTINCT amr.mac ) AS macs,
+        ANY_VALUE(abr.business_influence) AS businessInfluence,
+        ANY_VALUE(abr.gmt_create) AS gmtCreate
+        FROM
+        asset_business_relation AS abr
+        INNER JOIN asset AS a ON abr.asset_id = a.id
+        AND abr.STATUS = 1
+        AND abr.source = 1
+        AND a.STATUS = 1
+        LEFT JOIN asset_ip_relation AS air ON air.asset_id = abr.asset_id
+        AND air.STATUS = 1
+        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = abr.asset_id
+        AND amr.STATUS = 1
+        WHERE
+          abr.unique_id=#{uniqueId}
+        <trim prefix="" suffix="" suffixOverrides="and">
+            <if test="multipleQuery != null ">
+                and
+                a.`name` LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+                or a.`number` LIKE CONCAT('%',replace(replace(#{number},'%','\%'),'_','\_'),'%')
+                or air.`ip` LIKE CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%')
+                or amr.`mac` LIKE CONCAT('%',replace(replace(#{mac},'%','\%'),'_','\_'),'%')
+            </if>
+        </trim>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and a.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by a.id
+        order by gmtCreate desc
+    </select>
     <update id="update" parameterType="com.antiy.asset.entity.AssetBusinessRelation" >
         update
         <include refid="Table_Name"></include>

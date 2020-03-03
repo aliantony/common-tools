@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,7 +26,8 @@ public class AssetBusinessRelationRequest extends BaseRequest implements ObjectV
      *  资产主键id
      */
     @ApiModelProperty("资产主键id")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      *  业务影响：1-高，2-中，3-低
      */
@@ -56,8 +58,27 @@ public class AssetBusinessRelationRequest extends BaseRequest implements ObjectV
      */
     @ApiModelProperty("状态：1-未删除,0-已删除")
     private Integer status;
+    /**
+     * 来源 1--业务关联  2--资产登记
+     */
+    private Integer source;
+    private String uniqueId;
 
+    public String getUniqueId() {
+        return uniqueId;
+    }
 
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
 
     public Integer getAssetBusinessId() {
         return assetBusinessId;
@@ -68,14 +89,13 @@ public class AssetBusinessRelationRequest extends BaseRequest implements ObjectV
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
-    this.assetId = assetId;
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
-
 
     public Integer getBusinessInfluence() {
         return businessInfluence;

@@ -19,13 +19,44 @@ import java.util.List;
  */
 
 public class AssetBusinessRequest extends BaseRequest implements ObjectValidator{
-    @ApiModelProperty("业务关联的资产id")
-
+    @ApiModelProperty("新增资产")
+    /**
+     * 新增的资产id
+     */
     List<AssetBusinessRelationRequest> assetRelaList;
     /**
      *  业务名称（中文字符，去重）
      */
+
+    /**
+     * 删除的关联资产
+     */
+    List<AssetBusinessRelationRequest> deleteAssetList;
+
+    /**
+     *
+     * 编辑资产
+     */
+    List<AssetBusinessRelationRequest> editAsset;
+
+    public List<AssetBusinessRelationRequest> getEditAsset() {
+        return editAsset;
+    }
+
+    public void setEditAsset(List<AssetBusinessRelationRequest> editAsset) {
+        this.editAsset = editAsset;
+    }
+
+    public List<AssetBusinessRelationRequest> getDeleteAssetList() {
+        return deleteAssetList;
+    }
+
+    public void setDeleteAssetList(List<AssetBusinessRelationRequest> deleteAssetList) {
+        this.deleteAssetList = deleteAssetList;
+    }
+
     @ApiModelProperty("业务名称（中文字符，去重）")
+    @Length(max=50)
     private String name;
     /**
      *  业务重要性：1-高，2-中，3-低
@@ -64,85 +95,13 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
      */
     @ApiModelProperty("状态：1-未删除,0-已删除")
     private Integer status;
+    /**
+     * 来源
+     */
+    private Integer source;
 
+    private String uniqueId;
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-    this.name = name;
-    }
-
-
-    public Integer getImportance() {
-        return importance;
-    }
-
-    public void setImportance(Integer importance) {
-    this.importance = importance;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-    this.description = description;
-    }
-
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-    this.gmtCreate = gmtCreate;
-    }
-
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-    this.gmtModified = gmtModified;
-    }
-
-
-    public Integer getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(Integer createUser) {
-    this.createUser = createUser;
-    }
-
-
-    public Integer getModifyUser() {
-        return modifyUser;
-    }
-
-    public void setModifyUser(Integer modifyUser) {
-    this.modifyUser = modifyUser;
-    }
-
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-    this.status = status;
-    }
-
-
-    @Override
-    public void validate() throws RequestParamValidateException {
-
-    }
 
     public List<AssetBusinessRelationRequest> getAssetRelaList() {
         return assetRelaList;
@@ -150,5 +109,90 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
 
     public void setAssetRelaList(List<AssetBusinessRelationRequest> assetRelaList) {
         this.assetRelaList = assetRelaList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getImportance() {
+        return importance;
+    }
+
+    public void setImportance(Integer importance) {
+        this.importance = importance;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+
     }
 }

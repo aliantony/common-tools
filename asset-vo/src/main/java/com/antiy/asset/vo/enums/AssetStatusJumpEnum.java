@@ -41,9 +41,9 @@ public enum AssetStatusJumpEnum {
 
     // CORRECT_CHECK(AssetStatusEnum.WAIT_CORRECT, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
     /**
-     * 拟退役
+     * 退役申请
      */
-    TO_WAIT_RETIRE(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE, AssetStatusEnum.WAIT_RETIRE),
+    RETIRE_APPLICATION(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK),
     /**
      * 退役
      */
@@ -57,6 +57,9 @@ public enum AssetStatusJumpEnum {
      * 变更:基准处理完成后状态为已入网
      */
     CHANGE_TO_NET_IN(AssetStatusEnum.IN_CHANGE, AssetStatusEnum.NET_IN, AssetStatusEnum.NET_IN);
+
+
+
     /**
      * 当前状态
      */
@@ -105,8 +108,7 @@ public enum AssetStatusJumpEnum {
      * @param isNetIn                     已入网 是true，否false
      * @return AssetStatusEnum
      */
-    public static AssetStatusEnum getNextStatus(AssetFlowEnum assetFlowEnum, Boolean isAgree,
-                                                boolean isWaitCorrectToWaitRegister, boolean isNetIn) {
+    public static AssetStatusEnum getNextStatus(AssetFlowEnum assetFlowEnum, Boolean isAgree) {
         if (assetFlowEnum == null || assetFlowEnum.getCurrentAssetStatus() == null) {
             return null;
         }
@@ -118,9 +120,6 @@ public enum AssetStatusJumpEnum {
         // }
 
         // 整改不通过有两种情况;待登记,待检查
-        if (assetFlowEnum.equals(AssetFlowEnum.CORRECT) && !isAgree) {
-            return isWaitCorrectToWaitRegister ? AssetStatusEnum.NOT_REGISTER : AssetStatusEnum.NET_IN_LEADER_CHECK;
-        }
 
         // 其他没有分支操作的情况
         for (AssetStatusJumpEnum statusJumpEnum : AssetStatusJumpEnum.values()) {

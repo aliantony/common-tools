@@ -2032,6 +2032,90 @@ WHERE
         </foreach>
         and status=1
     </update>
+    <select id="queryAsset" resultType="com.antiy.asset.vo.response.AssetResponse">
+               SELECT
+                    a.id as stringId,
+                    a.`name`,
+                    a.`number`,
+                    a.manufacturer,
+                    a.asset_group as assetGroup,
+                    a.importance_degree as importanceDegree,
+                    GROUP_CONCAT(distinct air.ip) AS ips,
+                    GROUP_CONCAT(distinct amr.mac) AS macs
+                FROM
+                 asset AS a
+                LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+                LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+
+                <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
+                    <include refid="assetRelationBusiness"></include>
+                    and a.asset_status in (7,8,9,10)
+                    and a.status=1
+                </trim>
+                <if test=" areaIds != null and areaIds.length > 0 ">
+                    and a.area_id in
+                    <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                group by a.id
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="countQueryAsset" resultType="int">
+        select count(id)
+        from
+        (
+            SELECT
+            a.id
+            FROM
+            asset AS a
+            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+
+            <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
+                <include refid="assetRelationBusiness"></include>
+                and a.asset_status in (7,8,9,10)
+                and a.status=1
+            </trim>
+            <if test=" areaIds != null and areaIds.length > 0 ">
+                and a.area_id in
+                <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            group by a.id
+        ) b
+    </select>
+
+    <sql id="assetRelationBusiness">
+        <if test="multipleQuery != null ">
+                ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            )
+        </if>
+        <if test="manufacturer != null and manufacturer.size()>0">
+            and a.manufacturer in
+            <foreach collection="manufacturer" item="e" separator="," open="(" close=")">
+                #{e}
+            </foreach>
+        </if>
+        <if test="assetGroup !=null and assetGroup.size()>0">
+            and a.asset_group in
+            <foreach collection="assetGroup" item="e" separator="," open="(" close=")">
+                #{e}
+            </foreach>
+        </if>
+        <if test="assetIds !=null and assetIds.size()>0">
+            and a.id not in
+            <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </sql>
     <select id="queryBusinessByAssetId" resultType="com.antiy.asset.entity.AssetBusiness">
     select ab.id,ab.name,ab.importance from asset_business ab INNER JOIN asset_business_relation abr on ab.id =abr.asset_business_id
 where abr.asset_id=#{id} and abr.`status`=1

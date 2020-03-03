@@ -1,11 +1,15 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetBusinessService;
+import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
 import com.antiy.asset.vo.request.AssetBusinessRequest;
+import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -24,11 +29,12 @@ import javax.validation.Valid;
  */
 @Api(value = "AssetBusiness", description = "")
 @RestController
-@RequestMapping("/v1/asset/assetbusiness")
+@RequestMapping("/api/v1/asset/assetbusiness")
 public class AssetBusinessController {
 
     @Resource
     public IAssetBusinessService iAssetBusinessService;
+
 
     /**
      * 保存
@@ -46,6 +52,35 @@ public class AssetBusinessController {
     }
 
     /**
+     * 查询业务可以添加的资产
+     */
+    @ApiOperation(value = "查询业务可以添加的资产", notes = "传入实体对象信息")
+    @RequestMapping(value = "/query/asset", method = RequestMethod.POST)
+    public ActionResponse queryAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
+
+        PageResult<AssetResponse> pageResult= iAssetBusinessService.queryAsset(assetAddOfBusinessQuery);
+        return  ActionResponse.success(pageResult);
+    }
+    @ApiOperation(value = "查询业务信息", notes = "传入业务主键（uniqueId）")
+    @RequestMapping(value = "/query/single", method = RequestMethod.POST)
+    public ActionResponse querySingle(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
+        AssetBusinessResponse assetBusinessResponse= iAssetBusinessService.getByUniqueId(assetAddOfBusinessQuery.getUniqueId());
+        return  ActionResponse.success(assetBusinessResponse);
+    }
+
+    /**
+     * 业务已经关联的资产
+     * @param assetAddOfBusinessQuery
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "业务已经关联的资产信息", notes = "传入实体对象信息")
+    @RequestMapping(value = "/query/business/asset", method = RequestMethod.POST)
+    public ActionResponse queryBusinessAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
+        List<AssetBusinessRelationResponse> assetList= iAssetBusinessService.queryAssetByBusinessId(assetAddOfBusinessQuery);
+        return  ActionResponse.success(assetList);
+    }
+    /**
      * 修改
      *
      * @param assetBusinessRequest
@@ -56,7 +91,7 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") AssetBusinessRequest assetBusinessRequest)throws Exception{
+    public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") @Valid AssetBusinessRequest assetBusinessRequest)throws Exception{
         return ActionResponse.success(iAssetBusinessService.updateAssetBusiness(assetBusinessRequest));
     }
 
@@ -70,8 +105,8 @@ public class AssetBusinessController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class, responseContainer = "List"),
     })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetBusiness") AssetBusinessQuery assetBusinessQuery)throws Exception{
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetBusiness") @RequestBody @Valid AssetBusinessQuery assetBusinessQuery)throws Exception{
         return ActionResponse.success(iAssetBusinessService.queryPageAssetBusiness(assetBusinessQuery));
     }
 
@@ -85,7 +120,7 @@ public class AssetBusinessController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class),
     })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition)throws Exception{
         return ActionResponse.success(iAssetBusinessService.queryAssetBusinessById(queryCondition));
     }

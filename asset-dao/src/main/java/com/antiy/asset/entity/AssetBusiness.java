@@ -49,6 +49,15 @@ private static final long serialVersionUID = 1L;
     private Integer status;
 
 
+    private String uniqueId;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public String getName() {
         return name;

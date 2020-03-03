@@ -1,9 +1,12 @@
 package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetBusiness;
+import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
 import com.antiy.asset.vo.request.AssetBusinessRequest;
+import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -64,4 +67,9 @@ public interface IAssetBusinessService extends IBaseService<AssetBusiness> {
          */
         String deleteAssetBusinessById(BaseRequest baseRequest) throws Exception;
 
+        PageResult<AssetResponse> queryAsset(AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception;
+
+        List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery);
+
+        AssetBusinessResponse getByUniqueId(String uniqueId);
 }
