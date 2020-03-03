@@ -35,6 +35,16 @@
         and asset.status=1
     </sql>
     <insert id="insert"/>
+    <insert id="insertRecord" parameterType="com.antiy.asset.vo.request.AssetEntryRecordRequest">
+
+    </insert>
+    <insert id="insertRecordBatch" parameterType="java.util.List">
+        insert into asset_entry_record(asset_id,source,result,change_status,gmt_create,create_user)
+        values
+        <foreach collection="recordList" separator="," item="item">
+            (item.assetId,item.entrySource,item.entryResult,item.changeStatus,item.gmtCreate,item.createUser)
+        </foreach>
+    </insert>
     <update id="update"/>
     <delete id="deleteById"/>
     <select id="getById"/>
@@ -45,7 +55,7 @@
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
-        <trim prefix="where 1=1" prefixOverrides="and">
+        <trim prefix="where 1=1">
             <include refid="assetEntryQuery"/>
         </trim>
     </select>
@@ -53,20 +63,27 @@
             resultType="com.antiy.asset.vo.response.AssetEntryResponse">
         select asset.id stringId,asset.name,asset.number,group_concat(distinct air.ip) ip,
         group_concat(distinct amr.mac) mac,asset.admittance_status entryStatus,
-        if(asset.asset_status =12 and asset.entryStatus = 2,false,true) isEntryOperation
+        if(asset.asset_status =12 and asset.admittance_status = 2,false,true) isEntryOperation
         from asset
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
         left join asset_entry_record aer on asset.id=aer.asset_id and aer.status=1
-        <trim prefix="where 1=1" prefixOverrides="and">
+        <trim prefix="where 1=1">
             <include refid="assetEntryQuery"/>
         </trim>
-        and group by asset.id
+        group by asset.id,aer.gmt_create
         order by aer.gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <select id="queryEntryRecord" resultType="com.antiy.asset.vo.response.AssetEntryRecordResponse">
+        select source entrySource,result entryResult,change_status changeStatus,gmt_create gmtCreate,create_user createUser
+        from asset_entry_record
+        where
+        asset_id=#{primaryKey}
+        and status=1
     </select>
 
 </mapper>
