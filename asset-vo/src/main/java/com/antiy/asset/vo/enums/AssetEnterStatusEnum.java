@@ -7,10 +7,9 @@ import org.apache.commons.lang.StringUtils;
  * @Date: 2019/1/20 23:20
  * @Description:
  */
-public enum AssetEnterStatusEnum {
-    WATI_SETTING(1, "待设置"),
-    ENTERED(2, "已允许"),
-    NO_ENTER(3, "已禁止");
+public enum AssetEnterStatusEnum implements CodeEnum{
+    ENTERED(1, "已允许"),
+    NO_ENTER(2, "已禁止");
 
     AssetEnterStatusEnum(Integer code, String msg) {
         this.code = code;
@@ -56,11 +55,13 @@ public enum AssetEnterStatusEnum {
         return null;
     }
 
+    @Override
     public Integer getCode() {
         return code;
     }
 
 
+    @Override
     public String getMsg() {
         return msg;
     }

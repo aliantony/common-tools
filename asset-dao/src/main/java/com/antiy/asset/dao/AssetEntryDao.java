@@ -6,4 +6,5 @@ import com.antiy.common.base.IBaseDao;
 
     public interface AssetEntryDao extends IBaseDao<AssetEntryResponse> {
        Integer updateEntryStatus(AssetEntryRequest request);
+//       Integer saveEntryRecord();
 }

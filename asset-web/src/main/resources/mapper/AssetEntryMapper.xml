@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetEntryDao">
+
+    <sql id="assetEntryQuery">
+        <if test="multipleQuery != null and multipleQuery.trim != ''">
+            and (asset.name LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.number LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or air.ip like
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or amr.mac like
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            )
+        </if>
+        <if test="assetGroups !=null and assetGroups.size >0">
+            and agr.asset_group_id in
+            <foreach collection="assetGroups" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="entryStatus != null and entryStatus.length >0">
+            and asset.admittance_status in
+            <foreach collection="entryStatus" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetStatus !=null and assetStatus.length >0">
+            and asset.asset_status in
+            <foreach collection="assetStatus" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        and asset.status=1
+    </sql>
+    <insert id="insert"/>
+    <update id="update"/>
+    <delete id="deleteById"/>
+    <select id="getById"/>
+    <select id="getByWhere"/>
+    <select id="getAll"/>
+    <select id="findCount" parameterType="com.antiy.common.base.ObjectQuery" resultType="java.lang.Integer">
+        select count(1) from asset
+        left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
+        left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
+        left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+        <trim prefix="where 1=1" prefixOverrides="and">
+            <include refid="assetEntryQuery"/>
+        </trim>
+    </select>
+    <select id="findQuery" parameterType="com.antiy.common.base.ObjectQuery"
+            resultType="com.antiy.asset.vo.response.AssetEntryResponse">
+        select asset.id stringId,asset.name,asset.number,group_concat(distinct air.ip) ip,
+        group_concat(distinct amr.mac) mac,asset.admittance_status entryStatus,
+        if(asset.asset_status =12 and asset.entryStatus = 2,false,true) isEntryOperation
+        from asset
+        left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
+        left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
+        left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+        left join asset_entry_record aer on asset.id=aer.asset_id and aer.status=1
+        <trim prefix="where 1=1" prefixOverrides="and">
+            <include refid="assetEntryQuery"/>
+        </trim>
+        and group by asset.id
+        order by aer.gmt_create desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+</mapper>
