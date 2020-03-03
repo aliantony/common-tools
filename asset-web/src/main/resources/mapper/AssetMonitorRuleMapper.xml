@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetMonitorRuleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetMonitorRule">
+        <id column="id" property="id"/>
+        <result column="unique_id" property="uniqueId"/>
+        <result column="name" property="name"/>
+        <result column="area_id" property="areaId"/>
+        <result column="alarm_level" property="alarmLevel"/>
+        <result column="rule_status" property="ruleStatus"/>
+        <result column="cpu_threshold" property="cpuThreshold"/>
+        <result column="memory_threshold" property="memoryThreshold"/>
+        <result column="disk_threshold" property="diskThreshold"/>
+        <result column="unit" property="unit"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, unique_id, name, area_id, alarm_level, rule_status, cpu_threshold, memory_threshold, disk_threshold, unit, gmt_create, gmt_modified, create_user, modify_user, status
+    </sql>
+
+    <sql id="Table_Name">
+        asset_monitor_rule
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" uniqueId != null">
+            unique_id,
+        </if>
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" areaId != null">
+            area_id,
+        </if>
+        <if test=" alarmLevel != null">
+            alarm_level,
+        </if>
+        <if test=" ruleStatus != null">
+            rule_status,
+        </if>
+        <if test=" cpuThreshold != null">
+            cpu_threshold,
+        </if>
+        <if test=" memoryThreshold != null">
+            memory_threshold,
+        </if>
+        <if test=" diskThreshold != null">
+            disk_threshold,
+        </if>
+        <if test=" unit != null">
+            unit,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" uniqueId != null">
+            #{uniqueId },
+        </if>
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" areaId != null">
+            #{areaId },
+        </if>
+        <if test=" alarmLevel != null">
+            #{alarmLevel },
+        </if>
+        <if test=" ruleStatus != null">
+            #{ruleStatus },
+        </if>
+        <if test=" cpuThreshold != null">
+            #{cpuThreshold },
+        </if>
+        <if test=" memoryThreshold != null">
+            #{memoryThreshold },
+        </if>
+        <if test=" diskThreshold != null">
+            #{diskThreshold },
+        </if>
+        <if test=" unit != null">
+            #{unit },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" uniqueId != null">
+            unique_id = #{uniqueId },
+        </if>
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" areaId != null">
+            area_id = #{areaId },
+        </if>
+        <if test=" alarmLevel != null">
+            alarm_level = #{alarmLevel },
+        </if>
+        <if test=" ruleStatus != null">
+            rule_status = #{ruleStatus },
+        </if>
+        <if test=" cpuThreshold != null">
+            cpu_threshold = #{cpuThreshold },
+        </if>
+        <if test=" memoryThreshold != null">
+            memory_threshold = #{memoryThreshold },
+        </if>
+        <if test=" diskThreshold != null">
+            disk_threshold = #{diskThreshold },
+        </if>
+        <if test=" unit != null">
+            unit = #{unit },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" uniqueId != null">
+            and unique_id = #{uniqueId }
+        </if>
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" areaId != null">
+            and area_id = #{areaId }
+        </if>
+        <if test=" alarmLevel != null">
+            and alarm_level = #{alarmLevel }
+        </if>
+        <if test=" ruleStatus != null">
+            and rule_status = #{ruleStatus }
+        </if>
+        <if test=" cpuThreshold != null">
+            and cpu_threshold = #{cpuThreshold }
+        </if>
+        <if test=" memoryThreshold != null">
+            and memory_threshold = #{memoryThreshold }
+        </if>
+        <if test=" diskThreshold != null">
+            and disk_threshold = #{diskThreshold }
+        </if>
+        <if test=" unit != null">
+            and unit = #{unit }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetMonitorRule" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetMonitorRule">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>
