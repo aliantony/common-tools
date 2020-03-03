@@ -741,11 +741,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         //来源为资产概览-异常资产统计
         //count1 异常资产数量
         Integer count1= setCountForStatisticsOfAbnormalAsset(query);
-        if (Objects.isNull(count1)){
-            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), null);
-        }else {
-            count=count1;
+        if (!Objects.isNull(count1)) {
+            count = count1;
         }
+
 
         // 如果count为0 直接返回结果即可
         if (count <= 0) {
