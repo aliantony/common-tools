@@ -127,7 +127,14 @@ public enum AssetEventEnum {
     TEMPLATE_CHECK(117, "审核装机模板"),
     TEMPLATE_FORBIDDEN(118, "禁用装机模板"),
     TEMPLATE_ENABLE(119, "启用装机模板"),
-    ASSET_SOFTWARE_RELATION(120,"关联资产软件信息");
+                            ASSET_SOFTWARE_RELATION(120,
+                                                    "关联资产软件信息"), ADD_ASSET_MONITOR_RULE(121,
+                                                                                        "新增资产监控规则"), UPDATE_ASSET_MONITOR_RULE(122,
+                                                                                                                               "修改资产监控规则"), DELETE_ASSET_MONITOR_RULE(123,
+                                                                                                                                                                      "删除资产监控规则"), ADD_ASSET_MONITOR_RULE_RELATION(124,
+                                                                                                                                                                                                                   "新增资产监控规则关联资产"), UPDATE_ASSET_MONITOR_RULE_RELATION(125,
+                                                                                                                                                                                                                                                                       "修改资产监控规则关联资产"), DELETE_ASSET_MONITOR_RULE_RELATION(126,
+                                                                                                                                                                                                                                                                                                                           "删除资产监控规则关联资产");
 
     private Integer status;
     private String name;
