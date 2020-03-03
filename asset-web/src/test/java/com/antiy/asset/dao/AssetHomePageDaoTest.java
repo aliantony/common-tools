@@ -35,7 +35,7 @@ public class AssetHomePageDaoTest {
         List<String> areaList = Lists.newArrayList("001001001001");
         List<Integer> statusList = StatusEnumUtil.getAssetTypeStatus();
         AssetImportanceDegreeCondition condition = ConditionFactory
-            .createCondition(AssetImportanceDegreeCondition.class, enable);
+            .createCondition(AssetImportanceDegreeCondition.class);
         condition.setAreaList(areaList);
         condition.setStatusList(statusList);
 

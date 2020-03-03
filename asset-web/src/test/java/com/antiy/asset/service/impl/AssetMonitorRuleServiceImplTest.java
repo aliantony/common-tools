@@ -1,5 +1,8 @@
 package com.antiy.asset.service.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -58,5 +61,13 @@ public class AssetMonitorRuleServiceImplTest {
 
     @Test
     public void queryAssetMonitorRuleById() {
+    }
+
+    @Test
+    public void getAppPropertis() throws FileNotFoundException {
+        String path = AssetMonitorRuleServiceImplTest.class.getClassLoader()
+            .getResource("config/application-common.properties").getPath();
+        System.out.println(path);
+        FileInputStream inputStream = new FileInputStream("path");
     }
 }
