@@ -91,16 +91,18 @@ public class IHomePageServiceImpl implements IHomePageService {
             condition.setImportanceDegree(degreeEnum.getCode());
 
             AssetImportancePie assetImportancePie = homePageDao.assetImportanceDegreePie(condition);
-            EnumCountResponse enumCountResponse = new EnumCountResponse();
-            AssetImportanceDegreeEnum importanceDegreeEnum = AssetImportanceDegreeEnum
-                .getByCode(assetImportancePie.getImportanceDegree());
-            if (importanceDegreeEnum != null) {
-                enumCountResponse.setMsg(importanceDegreeEnum.getMsg());
-                enumCountResponse.setNumber(assetImportancePie.getAmount());
-                enumCountResponse.setCode(Lists.newArrayList(degreeEnum.getMsg()));
-            }
+            if (assetImportancePie.getImportanceDegree() != null) {
+                EnumCountResponse enumCountResponse = new EnumCountResponse();
+                AssetImportanceDegreeEnum importanceDegreeEnum = AssetImportanceDegreeEnum
+                    .getByCode(assetImportancePie.getImportanceDegree());
+                if (importanceDegreeEnum != null) {
+                    enumCountResponse.setMsg(importanceDegreeEnum.getMsg());
+                    enumCountResponse.setNumber(assetImportancePie.getAmount());
+                    enumCountResponse.setCode(Lists.newArrayList(degreeEnum.getMsg()));
+                }
 
-            enumCountResponseList.add(enumCountResponse);
+                enumCountResponseList.add(enumCountResponse);
+            }
         }
 
         return enumCountResponseList;
