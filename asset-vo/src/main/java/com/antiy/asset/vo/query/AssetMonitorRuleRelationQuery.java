@@ -1,7 +1,5 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.common.base.ObjectQuery;
-
 /**
  * <p> AssetMonitorRuleRelation 查询条件 </p>
  *
@@ -9,6 +7,14 @@ import com.antiy.common.base.ObjectQuery;
  * @since 2018-12-27
  */
 
-public class AssetMonitorRuleRelationQuery extends ObjectQuery {
+public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
+    private String ruleUniqueId;
 
+    public String getRuleUniqueId() {
+        return ruleUniqueId;
+    }
+
+    public void setRuleUniqueId(String ruleUniqueId) {
+        this.ruleUniqueId = ruleUniqueId;
+    }
 }

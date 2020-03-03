@@ -151,4 +151,23 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="assetAmountRelatedRule" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(amrr.rule_unique_id)
+        from
+        <include refid="Table_Name"></include>
+        amrr left join asset_monitor_rule amr on amr.unique_id = amrr.rule_unique_id
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test=" ruleUniqueId != null and ruleUniqueId != ''">
+                and amrr.rule_unique_id = #{ruleUniqueId}
+            </if>
+            <if test="areaList.size > 0">
+                and amr.area_id in
+                <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
+            and amr.status = 1
+        </trim>
+    </select>
 </mapper>

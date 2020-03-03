@@ -28,11 +28,11 @@ public class AssetMonitorRule extends BaseEntity {
     /**
      * 告警等级
      */
-    private Integer           alarmLevel;
+    private String            alarmLevel;
     /**
      * 状态
      */
-    private Integer           ruleStatus;
+    private String            ruleStatus;
     /**
      * CPU监控
      */
@@ -94,19 +94,19 @@ public class AssetMonitorRule extends BaseEntity {
         this.areaId = areaId;
     }
 
-    public Integer getAlarmLevel() {
+    public String getAlarmLevel() {
         return alarmLevel;
     }
 
-    public void setAlarmLevel(Integer alarmLevel) {
+    public void setAlarmLevel(String alarmLevel) {
         this.alarmLevel = alarmLevel;
     }
 
-    public Integer getRuleStatus() {
+    public String getRuleStatus() {
         return ruleStatus;
     }
 
-    public void setRuleStatus(Integer ruleStatus) {
+    public void setRuleStatus(String ruleStatus) {
         this.ruleStatus = ruleStatus;
     }
 

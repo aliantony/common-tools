@@ -21,11 +21,13 @@ import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
 
 /**
  * <p> 资产监控规则表 服务实现类 </p>
@@ -103,10 +105,20 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
                     .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
                 assetMonitorRuleResponse
                     .setRuleStatusName(StatusEnum.getEnumByCode(assetMonitorRuleResponse.getRuleStatus()).getName());
+
+                // 统计关系资产数量
+                String uniqueId = assetMonitorRuleResponse.getUniqueId();
+                AssetMonitorRuleRelationQuery ruleRelationQuery = new AssetMonitorRuleRelationQuery();
+                ruleRelationQuery.setRuleUniqueId(uniqueId);
+                ConditionFactory.createAreaQuery(ruleRelationQuery);
+                assetMonitorRuleResponse
+                    .setRelatedAssetAmount(monitorRuleRelationDao.assetAmountRelatedRule(ruleRelationQuery));
             }
+            return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
+                monitorRuleResponseList);
+        } else {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
-        return new PageResult<AssetMonitorRuleResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetMonitorRule(query));
     }
 
     @Override

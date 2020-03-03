@@ -1,6 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetMonitorRuleRelation;
+import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -10,5 +11,7 @@ import com.antiy.common.base.IBaseDao;
  * @since 2020-03-02
  */
 public interface AssetMonitorRuleRelationDao extends IBaseDao<AssetMonitorRuleRelation> {
+
+    Integer assetAmountRelatedRule(AssetMonitorRuleRelationQuery query) throws Exception;
 
 }
