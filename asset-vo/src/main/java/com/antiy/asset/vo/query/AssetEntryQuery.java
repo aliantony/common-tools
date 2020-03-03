@@ -17,7 +17,7 @@ import java.util.List;
  * @author liulusheng
  * @since 2020/2/14
  */
-@ApiModel("准入资产查询")
+@ApiModel(value = "AssetEntryQuery",description = "准入资产查询")
 public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("综合查询条件")
     @Size(max = 30, message = "综合查询条件不能超过30")

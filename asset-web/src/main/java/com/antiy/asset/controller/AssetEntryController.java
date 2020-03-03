@@ -9,11 +9,11 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetEntryQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetEntryRequest;
+import com.antiy.asset.vo.response.AssetEntryRecordResponse;
 import com.antiy.asset.vo.response.AssetEntryResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.PageResult;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.BusinessModuleEnum;
@@ -24,10 +24,7 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -56,17 +53,19 @@ public class AssetEntryController {
 
     @ApiOperation(value = "综合列表", response = AssetEntryResponse.class, responseContainer = "List")
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryPage(AssetEntryQuery query) throws Exception {
+    public ActionResponse queryPage(@RequestBody AssetEntryQuery query) throws Exception {
         return ActionResponse.success(iAssetEntryService.queryPage(query));
     }
 
     @ApiOperation(value = "准入指令下发", notes = "更新准入状态", response = String.class, responseContainer = "ActionResponse")
     @RequestMapping(value = "/update/entryStatus", method = RequestMethod.POST)
-    public ActionResponse updateEntryStatus(AssetEntryRequest request) throws Exception {
+    public ActionResponse updateEntryStatus(@RequestBody AssetEntryRequest request) throws Exception {
         return ActionResponse.success(iAssetEntryService.updateEntryStatus(request));
     }
 
-    public ActionResponse queryRecord(AssetEntryQuery query) throws Exception {
+    @ApiOperation(value = "准入历史记录",notes = "查询历史记录",response = AssetEntryRecordResponse.class,responseContainer = "List")
+    @RequestMapping(value = "/query/record",method = RequestMethod.POST)
+    public ActionResponse queryRecord(@RequestBody  AssetEntryQuery query) throws Exception {
         return ActionResponse.success(iAssetEntryService.queryRecord(query));
     }
 
