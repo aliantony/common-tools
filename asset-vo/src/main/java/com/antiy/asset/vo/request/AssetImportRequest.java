@@ -32,6 +32,7 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
     @Encode
     @NotBlank(message = "品类型号不能为空")
     private String   category;
+
     /**
      * 用户
      */

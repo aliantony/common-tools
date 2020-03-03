@@ -1,5 +1,38 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -122,6 +155,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetGroupRelationDao                                               assetGroupRelationDao;
     @Resource
     private ExcelDownloadUtil                                                   excelDownloadUtil;
+    @Resource
+    private CSVUtils                                                            csvUtils;
+    @Resource
+    private Dom4jUtils                                                          dom4jUtils;
     @Resource
     private AssetEntityConvert                                                  assetEntityConvert;
     @Resource
@@ -3383,7 +3420,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetUnkonwEntity> assetEntities1 = BeanConvert.convert(assetEntities, AssetUnkonwEntity.class);
             downloadVO.setDownloadList(assetEntities1);
         } else {
-
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
             downloadVO.setDownloadList(assetEntities);
         }
@@ -3396,9 +3432,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 excelDownloadUtil.excelDownload(request, response,
                     "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
             } else if (assetQuery.getExportType() == 2) {
+                List<?> downloadList = downloadVO.getDownloadList();
+                String[] files;
+                if (assetQuery.getUnknownAssets()) {
+                    files = new String[] { "名称", "编号", "资产类型", "厂商", "ip", "mac", "资产组", "重要程度", "使用者", "上报方式", "操作系统名",
+                                           "状态", "首次发现时间", "首次入网时间", "到期时间" };
+                } else {
+                    files = new String[] { "ip", "mac", "上报方式", "首次发现时间" };
+                }
 
-            } else {
-
+                csvUtils.writeCSV(downloadList, "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
+                    files, request, response);
+            } else if (assetQuery.getExportType() == 3) {
+                String fileName = "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + ".xml";
+                if (assetQuery.getUnknownAssets()) {
+                    List<AssetUnkonwEntity> downloadList = (List<AssetUnkonwEntity>) downloadVO.getDownloadList();
+                    Dom4jUtils.createXml(downloadList, AssetUnkonwEntity.class, request, response, fileName);
+                } else {
+                    List<AssetEntity> downloadList = (List<AssetEntity>) downloadVO.getDownloadList();
+                    Dom4jUtils.createXml(downloadList, AssetEntity.class, request, response, fileName);
+                }
             }
 
             LogUtils.recordOperLog(
