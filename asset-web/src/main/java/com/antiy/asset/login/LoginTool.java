@@ -1,6 +1,5 @@
 package com.antiy.asset.login;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.antiy.common.base.LoginUser;
@@ -15,10 +14,8 @@ import com.google.common.collect.Lists;
  **/
 @Component
 public class LoginTool {
-    @Value("${login.user.debug}")
-    private static boolean enable;
 
-    public static LoginUser getLoginUser() {
+    public static LoginUser getLoginUser(Boolean enable) {
         if (!enable) {
             LoginUser loginUser = LoginUserUtil.getLoginUser();
             if (loginUser == null) {

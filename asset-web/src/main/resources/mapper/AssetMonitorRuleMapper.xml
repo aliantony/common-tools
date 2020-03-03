@@ -266,7 +266,17 @@
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
+        amr
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test=" name != null and name !=''">
+                and amr.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+            </if>
+            <if test="areaList.size > 0">
+                and area_id in
+                <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

@@ -24,7 +24,7 @@ import io.swagger.annotations.*;
  */
 @Api(value = "AssetMonitorRule", description = "资产监控规则表")
 @RestController
-@RequestMapping("/v1/asset/monitorrule")
+@RequestMapping("/api/v1/asset/monitorrule")
 public class AssetMonitorRuleController {
 
     @Resource

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetHomePageDao;
@@ -27,12 +28,16 @@ import com.google.common.collect.Lists;
 @Service
 public class IHomePageServiceImpl implements IHomePageService {
 
+    @Value("${login.user.debug}")
+    private static Boolean   enable;
+
     @Resource
     private AssetHomePageDao homePageDao;
 
     @Override
     public AssetCountIncludeResponse countIncludeManage() throws Exception {
-        AssetIncludeManageCondition condition = ConditionFactory.createCondition(AssetIncludeManageCondition.class);
+        AssetIncludeManageCondition condition = ConditionFactory.createCondition(AssetIncludeManageCondition.class,
+            enable);
         Integer include = homePageDao.countIncludeManage(condition);
         Integer uninclude = homePageDao.countUnincludeManage(condition);
         AssetCountIncludeResponse includeResponse = new AssetCountIncludeResponse();
@@ -57,7 +62,7 @@ public class IHomePageServiceImpl implements IHomePageService {
         }
         int n = 0;
 
-        AssetOnlineChartCondition condition = ConditionFactory.createCondition(AssetOnlineChartCondition.class);
+        AssetOnlineChartCondition condition = ConditionFactory.createCondition(AssetOnlineChartCondition.class, enable);
         for (List<Long> duration : timeDuration) {
             condition.setStartTime(duration.get(0));
             condition.setEndTime(duration.get(1));
@@ -83,7 +88,7 @@ public class IHomePageServiceImpl implements IHomePageService {
             return Lists.newArrayList();
         }
         AssetImportanceDegreeCondition condition = ConditionFactory
-            .createCondition(AssetImportanceDegreeCondition.class);
+            .createCondition(AssetImportanceDegreeCondition.class, enable);
 
         List<EnumCountResponse> enumCountResponseList = new ArrayList<>();
 

@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -13,6 +14,7 @@ import com.antiy.asset.dao.AssetMonitorRuleDao;
 import com.antiy.asset.dao.AssetMonitorRuleRelationDao;
 import com.antiy.asset.entity.AssetMonitorRule;
 import com.antiy.asset.entity.AssetMonitorRuleRelation;
+import com.antiy.asset.factory.ConditionFactory;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.util.SnowFlakeUtil;
@@ -35,6 +37,8 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     private Logger                                                    logger = LogUtils.get(this.getClass());
 
+    @Value("${login.user.debug}")
+    private Boolean                                                   enable;
     @Resource
     private AssetMonitorRuleDao                                       assetMonitorRuleDao;
     @Resource
@@ -46,10 +50,11 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public String saveAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
+
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
-        assetMonitorRule.setAreaId(LoginTool.getLoginUser().getAreaId());
+        assetMonitorRule.setAreaId(LoginTool.getLoginUser(enable).getAreaId());
         assetMonitorRule.setGmtCreate(System.currentTimeMillis());
-        assetMonitorRule.setCreateUser(LoginTool.getLoginUser().getId());
+        assetMonitorRule.setCreateUser(LoginTool.getLoginUser(enable).getId());
         assetMonitorRule.setUniqueId(SnowFlakeUtil.getSnowId());
         assetMonitorRule.setUnit(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
         logger.info(AssetEventEnum.ADD_ASSET_MONITOR_RULE.getName(), JSON.toJSONString(request));
@@ -80,8 +85,8 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public List<AssetMonitorRuleResponse> queryListAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
+        ConditionFactory.createAreaQuery(query, enable);
         List<AssetMonitorRule> assetMonitorRuleList = assetMonitorRuleDao.findQuery(query);
-        // TODO
         return responseConverter.convert(assetMonitorRuleList, AssetMonitorRuleResponse.class);
     }
 

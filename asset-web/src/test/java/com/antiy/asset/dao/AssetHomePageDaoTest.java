@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,6 +24,9 @@ import com.google.common.collect.Lists;
 @SpringBootTest(classes = AssetApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AssetHomePageDaoTest {
 
+    @Value("${login.user.debug}")
+    private static Boolean   enable;
+
     @Resource
     private AssetHomePageDao homePageDao;
 
@@ -31,7 +35,7 @@ public class AssetHomePageDaoTest {
         List<String> areaList = Lists.newArrayList("001001001001");
         List<Integer> statusList = StatusEnumUtil.getAssetTypeStatus();
         AssetImportanceDegreeCondition condition = ConditionFactory
-            .createCondition(AssetImportanceDegreeCondition.class);
+            .createCondition(AssetImportanceDegreeCondition.class, enable);
         condition.setAreaList(areaList);
         condition.setStatusList(statusList);
 
