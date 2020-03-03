@@ -15,6 +15,8 @@ public class AssetMonitorRuleResponse {
     private String  uniqueId;
     @ApiModelProperty("规则名称")
     private String  name;
+    @ApiModelProperty("区域ID")
+    private String  areaId;
     @ApiModelProperty("区域")
     private String  areaName;
     @ApiModelProperty("告警等级")
@@ -24,9 +26,9 @@ public class AssetMonitorRuleResponse {
     @ApiModelProperty("关联资产数")
     private Integer relatedAssetAmount;
     @ApiModelProperty("状态")
-    private String  status;
+    private String  ruleStatus;
     @ApiModelProperty("状态")
-    private String  statusName;
+    private String  ruleStatusName;
 
     public String getUniqueId() {
         return uniqueId;
@@ -68,11 +70,35 @@ public class AssetMonitorRuleResponse {
         this.relatedAssetAmount = relatedAssetAmount;
     }
 
-    public String getStatusName() {
-        return statusName;
+    public String getRuleStatusName() {
+        return ruleStatusName;
     }
 
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
+    public void setRuleStatusName(String ruleStatusName) {
+        this.ruleStatusName = ruleStatusName;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAlarmLevel() {
+        return alarmLevel;
+    }
+
+    public void setAlarmLevel(String alarmLevel) {
+        this.alarmLevel = alarmLevel;
+    }
+
+    public String getRuleStatus() {
+        return ruleStatus;
+    }
+
+    public void setRuleStatus(String ruleStatus) {
+        this.ruleStatus = ruleStatus;
     }
 }
