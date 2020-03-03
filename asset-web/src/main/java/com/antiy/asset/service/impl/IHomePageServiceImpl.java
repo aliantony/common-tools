@@ -36,8 +36,7 @@ public class IHomePageServiceImpl implements IHomePageService {
 
     @Override
     public AssetCountIncludeResponse countIncludeManage() throws Exception {
-        AssetIncludeManageCondition condition = ConditionFactory.createCondition(AssetIncludeManageCondition.class,
-            enable);
+        AssetIncludeManageCondition condition = ConditionFactory.createCondition(AssetIncludeManageCondition.class);
         Integer include = homePageDao.countIncludeManage(condition);
         Integer uninclude = homePageDao.countUnincludeManage(condition);
         AssetCountIncludeResponse includeResponse = new AssetCountIncludeResponse();
@@ -62,7 +61,7 @@ public class IHomePageServiceImpl implements IHomePageService {
         }
         int n = 0;
 
-        AssetOnlineChartCondition condition = ConditionFactory.createCondition(AssetOnlineChartCondition.class, enable);
+        AssetOnlineChartCondition condition = ConditionFactory.createCondition(AssetOnlineChartCondition.class);
         for (List<Long> duration : timeDuration) {
             condition.setStartTime(duration.get(0));
             condition.setEndTime(duration.get(1));
@@ -88,7 +87,7 @@ public class IHomePageServiceImpl implements IHomePageService {
             return Lists.newArrayList();
         }
         AssetImportanceDegreeCondition condition = ConditionFactory
-            .createCondition(AssetImportanceDegreeCondition.class, enable);
+            .createCondition(AssetImportanceDegreeCondition.class);
 
         List<EnumCountResponse> enumCountResponseList = new ArrayList<>();
 

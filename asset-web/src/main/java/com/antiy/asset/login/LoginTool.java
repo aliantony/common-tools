@@ -1,5 +1,8 @@
 package com.antiy.asset.login;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import org.springframework.stereotype.Component;
 
 import com.antiy.common.base.LoginUser;
@@ -15,7 +18,8 @@ import com.google.common.collect.Lists;
 @Component
 public class LoginTool {
 
-    public static LoginUser getLoginUser(Boolean enable) {
+    public static LoginUser getLoginUser() throws Exception {
+        Boolean enable = getPropertiesPath();
         if (!enable) {
             LoginUser loginUser = LoginUserUtil.getLoginUser();
             if (loginUser == null) {
@@ -33,5 +37,12 @@ public class LoginTool {
             loginUser.setAreas(Lists.newArrayList(sysArea));
             return loginUser;
         }
+    }
+
+    private static Boolean getPropertiesPath() throws Exception {
+        String path = LoginTool.class.getClassLoader().getResource("config/application-common.properties").getPath();
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(path));
+        return Boolean.valueOf((String) properties.get("login.user.debug"));
     }
 }

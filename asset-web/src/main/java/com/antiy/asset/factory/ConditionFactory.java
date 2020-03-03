@@ -15,18 +15,18 @@ import com.antiy.asset.vo.query.AssetBaseQuery;
  **/
 @Component
 public class ConditionFactory {
-    public static <T extends AreaBase> T createCondition(Class<T> c, Boolean enable) throws Exception {
+    public static <T extends AreaBase> T createCondition(Class<T> c) throws Exception {
         T subBase;
         subBase = (T) Class.forName(c.getName()).newInstance();
-        List<String> areaList = LoginTool.getLoginUser(enable).getAreaIdsOfCurrentUser();
+        List<String> areaList = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         List<Integer> statusList = StatusEnumUtil.getAssetTypeStatus();
         subBase.setAreaList(areaList);
         subBase.setStatusList(statusList);
         return subBase;
     }
 
-    public static AssetBaseQuery createAreaQuery(AssetBaseQuery query, Boolean enable) throws Exception {
-        List<String> areaList = LoginTool.getLoginUser(enable).getAreaIdsOfCurrentUser();
+    public static AssetBaseQuery createAreaQuery(AssetBaseQuery query) throws Exception {
+        List<String> areaList = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaList(areaList);
         return query;
     }

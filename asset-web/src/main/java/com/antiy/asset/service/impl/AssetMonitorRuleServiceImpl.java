@@ -6,10 +6,10 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.antiy.asset.component.WrappedRedisUtil;
 import com.antiy.asset.dao.AssetMonitorRuleDao;
 import com.antiy.asset.dao.AssetMonitorRuleRelationDao;
 import com.antiy.asset.entity.AssetMonitorRule;
@@ -19,6 +19,7 @@ import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AssetEventEnum;
+import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
@@ -37,8 +38,6 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     private Logger                                                    logger = LogUtils.get(this.getClass());
 
-    @Value("${login.user.debug}")
-    private Boolean                                                   enable;
     @Resource
     private AssetMonitorRuleDao                                       assetMonitorRuleDao;
     @Resource
@@ -47,14 +46,16 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     private BaseConverter<AssetMonitorRuleRequest, AssetMonitorRule>  requestConverter;
     @Resource
     private BaseConverter<AssetMonitorRule, AssetMonitorRuleResponse> responseConverter;
+    @Resource
+    private WrappedRedisUtil                                          wrappedRedisUtil;
 
     @Override
     public String saveAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
 
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
-        assetMonitorRule.setAreaId(LoginTool.getLoginUser(enable).getAreaId());
+        assetMonitorRule.setAreaId(LoginTool.getLoginUser().getAreaId());
         assetMonitorRule.setGmtCreate(System.currentTimeMillis());
-        assetMonitorRule.setCreateUser(LoginTool.getLoginUser(enable).getId());
+        assetMonitorRule.setCreateUser(LoginTool.getLoginUser().getId());
         assetMonitorRule.setUniqueId(SnowFlakeUtil.getSnowId());
         assetMonitorRule.setUnit(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
         logger.info(AssetEventEnum.ADD_ASSET_MONITOR_RULE.getName(), JSON.toJSONString(request));
@@ -85,13 +86,25 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public List<AssetMonitorRuleResponse> queryListAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
-        ConditionFactory.createAreaQuery(query, enable);
+        ConditionFactory.createAreaQuery(query);
         List<AssetMonitorRule> assetMonitorRuleList = assetMonitorRuleDao.findQuery(query);
         return responseConverter.convert(assetMonitorRuleList, AssetMonitorRuleResponse.class);
     }
 
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
+        Integer num = this.findCount(query);
+        if (num > 0) {
+            List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
+            for (AssetMonitorRuleResponse assetMonitorRuleResponse : monitorRuleResponseList) {
+                // TODO setAlarmLevelName
+                assetMonitorRuleResponse.setAlarmLevelName("");
+                assetMonitorRuleResponse
+                    .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
+                assetMonitorRuleResponse
+                    .setRuleStatusName(StatusEnum.getEnumByCode(assetMonitorRuleResponse.getRuleStatus()).getName());
+            }
+        }
         return new PageResult<AssetMonitorRuleResponse>(query.getPageSize(), this.findCount(query),
             query.getCurrentPage(), this.queryListAssetMonitorRule(query));
     }
