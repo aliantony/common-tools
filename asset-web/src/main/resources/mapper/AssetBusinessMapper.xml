@@ -13,10 +13,11 @@
         <result column="create_user" property="createUser"/>
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
+        <result column="unique_id" property="uniqueId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, importance, description, gmt_create, gmt_modified, create_user, modify_user, status
+        id, name, importance, description, gmt_create, gmt_modified, create_user, modify_user, status,unique_id
     </sql>
 
     <sql id="Table_Name">
@@ -27,6 +28,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" name != null">
             name,
+        </if>
+        <if test=" uniqueId != null">
+            unique_id,
         </if>
         <if test=" importance != null">
             importance,
@@ -55,6 +59,9 @@
         <if test=" name != null">
             #{name },
         </if>
+        <if test=" uniqueId != null">
+            #{uniqueId },
+        </if>
         <if test=" importance != null">
             #{importance },
         </if>
@@ -82,6 +89,9 @@
         <if test=" name != null">
             name = #{name },
         </if>
+        <if test=" uniqueId != null">
+            unique_id = #{uniqueId},
+        </if>
         <if test=" importance != null">
             importance = #{importance },
         </if>
@@ -108,6 +118,9 @@
     <sql id="Where_Column_List">
         <if test=" name != null">
             and name = #{name }
+        </if>
+        <if test=" uniqueId != null">
+            and unique_id = #{uniqueId }
         </if>
         <if test=" importance != null">
             and importance = #{importance }
@@ -181,22 +194,63 @@
         from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
-                </trim>
+            <include refid="base_query"></include>
+        </trim>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
+    <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetBusinessResponse" parameterType="com.antiy.common.base.ObjectQuery">
+        select
+        `name`,
+        id,
+        importance,
+        description,
+        gmt_create as gmtCreate,
+        gmt_modified as gmtModified,
+        (SELECT
+        count( * )
+        FROM
+        asset_business_relation
+        WHERE
+        asset_business_relation.asset_business_id = asset_business.id
+        AND asset_business_relation.source = 1
+        AND asset_business_relation.STATUS = 1
+        ) as assetCount,
+        asset_business.unique_id as uniqueId
+        from
         <include refid="Table_Name"></include>
+
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+           <include refid="base_query"></include>
         </trim>
+
+        order by gmt_modified desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <sql id="base_query">
+        <if test=" name != null">
+            `name` like
+            CONCAT('%',replace(replace(replace(#{name},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" gmtModifiedStart != null">
+            and gmt_modified >= #{gmtModifiedStart}
+        </if>
+        <if test="gmtModifiedEnd">
+            and  gmt_modified &lt;= #{gmtModifiedEnd}
+        </if>
+        and status=1
+    </sql>
     <select id="getByName" resultMap="BaseResultMap">
         select * from
         <include refid="Table_Name"></include>
         where  `name`=#{name}
+        and status=1
+    </select>
+    <select id="getByUniqueId" resultMap="BaseResultMap">
+        select * from
+        <include refid="Table_Name"></include>
+        where  `unique_id`=#{uniqueId}
         and status=1
     </select>
 </mapper>

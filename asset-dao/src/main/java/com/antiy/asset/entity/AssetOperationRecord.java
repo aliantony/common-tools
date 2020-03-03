@@ -72,7 +72,54 @@ public class AssetOperationRecord extends BaseEntity {
      * <code>0不触发</code>
      */
     private Integer needVulScan;
+    /**
+     * 审批人id
+     */
+    private Integer checkUserId;
+    /**
+     * 审批人姓名
+     */
+    private String  checkUserName;
+    /**
+     * 执行人id
+     */
+   private Integer executeUserId;
+    /**
+     * 执行人名称
+     */
+   private String executeUserName;
 
+    public Integer getCheckUserId() {
+        return checkUserId;
+    }
+
+    public void setCheckUserId(Integer checkUserId) {
+        this.checkUserId = checkUserId;
+    }
+
+    public String getCheckUserName() {
+        return checkUserName;
+    }
+
+    public void setCheckUserName(String checkUserName) {
+        this.checkUserName = checkUserName;
+    }
+
+    public Integer getExecuteUserId() {
+        return executeUserId;
+    }
+
+    public void setExecuteUserId(Integer executeUserId) {
+        this.executeUserId = executeUserId;
+    }
+
+    public String getExecuteUserName() {
+        return executeUserName;
+    }
+
+    public void setExecuteUserName(String executeUserName) {
+        this.executeUserName = executeUserName;
+    }
 
     public Integer getOriginStatus() {
         return originStatus;

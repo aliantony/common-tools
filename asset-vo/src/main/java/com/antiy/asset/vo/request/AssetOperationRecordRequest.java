@@ -43,6 +43,77 @@ public class AssetOperationRecordRequest extends BasicRequest implements ObjectV
     @ApiModelProperty("创建时间")
     private Long    gmtCreate;
 
+    /**
+     * 审批人id
+     */
+    @ApiModelProperty("审批人id")
+    @Encode
+    private String checkUserId;
+
+    /**
+     * 审批人姓名
+     */
+    @ApiModelProperty("审批人姓名")
+    private String  checkUserName;
+    /**
+     * 执行人id
+     */
+    @ApiModelProperty("执行人id")
+    @Encode
+    private String executeUserId;
+    /**
+     * 执行人名称
+     */
+    @ApiModelProperty("执行人姓名")
+    private String executeUserName;
+
+    /**
+     * 附件
+     *
+     */
+    @ApiModelProperty("附件，多个用逗号隔开")
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getCheckUserName() {
+        return checkUserName;
+    }
+
+    public void setCheckUserName(String checkUserName) {
+        this.checkUserName = checkUserName;
+    }
+
+    public String getCheckUserId() {
+        return checkUserId;
+    }
+
+    public void setCheckUserId(String checkUserId) {
+        this.checkUserId = checkUserId;
+    }
+
+    public String getExecuteUserId() {
+        return executeUserId;
+    }
+
+    public void setExecuteUserId(String executeUserId) {
+        this.executeUserId = executeUserId;
+    }
+
+    public String getExecuteUserName() {
+        return executeUserName;
+    }
+
+    public void setExecuteUserName(String executeUserName) {
+        this.executeUserName = executeUserName;
+    }
+
     public String getTargetTableName() {
         return targetType;
     }

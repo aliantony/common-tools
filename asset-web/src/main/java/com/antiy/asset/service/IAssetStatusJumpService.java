@@ -17,4 +17,5 @@ public interface IAssetStatusJumpService {
      * @throws Exception
      */
     ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception;
+    ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception;
 }

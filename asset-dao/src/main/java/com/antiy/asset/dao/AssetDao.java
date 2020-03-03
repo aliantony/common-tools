@@ -4,12 +4,14 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
@@ -376,4 +378,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query);
 
     Integer insertRollbackInfo(AssetRollbackRequest rollbackRequest);
+
+    List<AssetResponse> queryAsset(AssetAddOfBusinessQuery assetRelationBusinessRequest);
+
+    Integer countQueryAsset(AssetAddOfBusinessQuery assetRelationBusinessRequest);
 }

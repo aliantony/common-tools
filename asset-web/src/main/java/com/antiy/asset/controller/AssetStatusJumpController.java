@@ -8,16 +8,14 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.vo.query.NoRegisterRequest;
+import com.antiy.asset.vo.request.AssetOperationRecordRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LogUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -63,7 +61,7 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
-        return assetStatusJumpService.changeStatus(statusJumpRequest);
+        return assetStatusJumpService.statusJump(statusJumpRequest);
     }
 
     /**
@@ -80,4 +78,5 @@ public class AssetStatusJumpController {
         Integer count = assetService.assetNoRegister(registerRequestList);
         return ActionResponse.success(count);
     }
+
 }
