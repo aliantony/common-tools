@@ -1,9 +1,6 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.manage.CommonManager;
-import com.antiy.asset.manage.controller.SoftwareControllerManager;
 import com.antiy.asset.service.IAssetBaselineFileService;
-import com.antiy.asset.support.MockContext;
 import com.antiy.asset.vo.query.AssetBaselineFileQuery;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.encoder.AesEncoder;
@@ -22,16 +19,16 @@ import java.util.List;
 /**'资产-检查-结果验证流程关联资产是否已上传结果附件 单元测试
  * @author zhouye
  */
-public class AssetBaselineFileControllerTest extends MockContext {
+public class AssetBaselineFileControllerTest {
 	private final static String       URL_PREFIX = "/api/v1/asset/baselineFile";
 	@Resource
 	private AssetBaselineFileController controller;
 	@MockBean
 	private IAssetBaselineFileService service;
-	@Resource
-	private SoftwareControllerManager controllerManager;
-	@Resource
-	private CommonManager commonManager;
+	/*@Resource
+	private SoftwareControllerManager controllerManager;*/
+	/*@Resource
+	private CommonManager commonManager;*/
 	private MockMvc mvc;
 	@Resource
 	private AesEncoder encoder;
@@ -42,7 +39,7 @@ public class AssetBaselineFileControllerTest extends MockContext {
 		loginUser = new LoginUser();
 		loginUser.setUsername("test");
 		loginUser.setPassword("test");
-		mockLoginUser(loginUser);
+		//mockLoginUser(loginUser);
 	}
 
 	@Test
@@ -53,8 +50,8 @@ public class AssetBaselineFileControllerTest extends MockContext {
 			ids.add(encoder.encode(id, loginUser.getPassword()));
 		}
 		query.setIds(ids);
-	//	query.setType(AssetStatusEnum.WAIT_TEMPLATE_IMPL);
+		/*query.setType(AssetStatusEnum.WAIT_TEMPLATE_IMPL);
 		String result = commonManager.getResult(mvc, commonManager.postAction(URL_PREFIX + "/query", query));
-		System.out.println(result);
+		System.out.println(result);*/
 	}
 }
