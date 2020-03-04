@@ -101,6 +101,16 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch">
+        insert into<include refid="Table_Name"/>(unique_id,asset_id,rule_unique_id,gmt_create) values
+        <foreach item="monitorRuleRelation" collection="list" open="(" separator="," close=")">
+            #{monitorRuleRelation.uniqueId},
+            #{monitorRuleRelation.assetId},
+            #{monitorRuleRelation.ruleUniqueId},
+            #{monitorRuleRelation.gmtCreate}
+        </foreach>
+    </insert>
+
     <update id="update" parameterType="com.antiy.asset.entity.AssetMonitorRuleRelation">
         update
         <include refid="Table_Name"></include>
@@ -123,6 +133,12 @@
         delete from
         <include refid="Table_Name"></include>
         where id = #{id}
+    </delete>
+
+    <delete id="deleteAllById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where rule_unique_id = #{ruleUniqueId}
     </delete>
 
     <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">

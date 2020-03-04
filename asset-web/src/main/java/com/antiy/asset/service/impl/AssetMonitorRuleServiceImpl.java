@@ -108,6 +108,23 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
         assetMonitorRule.setModifyUser(LoginTool.getLoginUser().getId());
         assetMonitorRule.setGmtModified(System.currentTimeMillis());
         assetMonitorRule.setRuntimeExceptionThreshold(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
+        // 更新关联资产
+        List<String> relatedAssetList = request.getRelatedAsset();
+        List<AssetMonitorRuleRelation> assetList = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(relatedAssetList)) {
+            monitorRuleRelationDao.deleteAllById(request.getUniqueId());
+            // 重建规则关联的资产
+            for (String assetId : relatedAssetList) {
+                AssetMonitorRuleRelation monitorRuleRelation = new AssetMonitorRuleRelation();
+                monitorRuleRelation.setUniqueId(SnowFlakeUtil.getSnowId());
+                monitorRuleRelation.setRuleUniqueId(request.getUniqueId());
+                monitorRuleRelation.setGmtCreate(System.currentTimeMillis());
+                monitorRuleRelation.setAssetId(assetId);
+                assetList.add(monitorRuleRelation);
+            }
+            monitorRuleRelationDao.insertBatch(assetList);
+        }
+
         return assetMonitorRuleDao.update(assetMonitorRule).toString();
     }
 
