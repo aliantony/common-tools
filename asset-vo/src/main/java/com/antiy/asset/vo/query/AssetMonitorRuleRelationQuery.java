@@ -9,6 +9,15 @@ package com.antiy.asset.vo.query;
 
 public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
     private String ruleUniqueId;
+    private Boolean relatedAssetSort;
+
+    public Boolean getRelatedAssetSort() {
+        return relatedAssetSort;
+    }
+
+    public void setRelatedAssetSort(Boolean relatedAssetSort) {
+        this.relatedAssetSort = relatedAssetSort;
+    }
 
     public String getRuleUniqueId() {
         return ruleUniqueId;

@@ -264,22 +264,111 @@
     </select>
 
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        amr
-        <trim prefix="WHERE" prefixOverrides="AND |OR ">
-            <if test=" name != null and name !=''">
-                and amr.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-            </if>
-            <if test="areaList.size > 0">
-                and area_id in
-                <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                    #{areaId}
-                </foreach>
-            </if>
-        </trim>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
+        <choose>
+            <when test="relatedAssetSort">
+                SELECT
+                temp.unique_id,
+                temp.relatedAssetAmount,
+                temp.NAME,
+                temp.area_id,
+                temp.alarm_level,
+                temp.rule_status from (
+                SELECT
+                amr.unique_id,
+                count( amr.unique_id ) AS relatedAssetAmount,
+                amr.NAME,
+                amr.area_id,
+                amr.alarm_level,
+                amr.rule_status
+                from
+                asset_monitor_rule amr
+                left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
+                <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test="areaList.size > 0">
+                        and amr.area_id in
+                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                            #{areaId}
+                        </foreach>
+                    </if>
+                    and amr.status = 1
+                </trim>
+                group by amr.unique_id
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
+                ) temp left join asset_monitor_rule amr on amr.unique_id = temp.unique_id
+                order by temp.relatedAssetAmount #{sortOrder}
+            </when>
+            <otherwise>
+                select * from
+                <include refid="Table_Name"></include>
+                amr
+                <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test=" name != null and name !=''">
+                        and amr.`name` like
+                        concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                    </if>
+                    <if test="areaList.size > 0">
+                        and area_id in
+                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                            #{areaId}
+                        </foreach>
+                    </if>
+                </trim>
+                order by amr.gmt_create desc
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="assetAmountSort" resultType="com.antiy.asset.entity.AssetMonitorRuleRelation"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        <choose>
+            <when test="relatedAssetSort">
+                select * from (
+                select amr.unique_id,count(amrr.rule_unique_id) as amount
+                from
+                asset_monitor_rule amr
+                left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
+                <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test="areaList.size > 0">
+                        and amr.area_id in
+                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                            #{areaId}
+                        </foreach>
+                    </if>
+                    and amr.status = 1
+                </trim>
+                group by amrr.rule_unique_id
+
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
+                ) temp left join asset_monitor_rule amr on amr.unique_id = temp.rule_unique_id
+            </when>
+            <otherwise>
+                select * from
+                <include refid="Table_Name"></include>
+                amr
+                <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test=" name != null and name !=''">
+                        and amr.`name` like
+                        concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                    </if>
+                    <if test="areaList.size > 0">
+                        and area_id in
+                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
+                            #{areaId}
+                        </foreach>
+                    </if>
+                </trim>
+                order by amr.gmt_create desc
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
+            </otherwise>
+        </choose>
     </select>
 </mapper>

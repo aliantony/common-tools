@@ -14,4 +14,5 @@ public interface AssetMonitorRuleRelationDao extends IBaseDao<AssetMonitorRuleRe
 
     Integer assetAmountRelatedRule(AssetMonitorRuleRelationQuery query) throws Exception;
 
+
 }

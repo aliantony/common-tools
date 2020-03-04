@@ -34,6 +34,59 @@ public class AssetMonitorRuleRelation extends BaseEntity {
      */
     private Long              gmtCreate;
 
+    /**
+     * 关联资产数量
+     */
+    private Integer           amount;
+    /**
+     * 规则名称
+     */
+    private String            name;
+    /**
+     * 区域
+     */
+    private String            areaId;
+    /**
+     * 告警等级
+     */
+    private String            alarmLevel;
+    /**
+     * 状态
+     */
+    private String            ruleStatus;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAlarmLevel() {
+        return alarmLevel;
+    }
+
+    public void setAlarmLevel(String alarmLevel) {
+        this.alarmLevel = alarmLevel;
+    }
+
+    public String getRuleStatus() {
+        return ruleStatus;
+    }
+
+    public void setRuleStatus(String ruleStatus) {
+        this.ruleStatus = ruleStatus;
+    }
+
     public String getAssetId() {
         return assetId;
     }
@@ -74,10 +127,18 @@ public class AssetMonitorRuleRelation extends BaseEntity {
         this.uniqueId = uniqueId;
     }
 
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
     @Override
     public String toString() {
         return "AssetMonitorRuleRelation{" + "uniqueId='" + uniqueId + '\'' + ", assetId='" + assetId + '\''
                + ", ruleUniqueId='" + ruleUniqueId + '\'' + ", gmtModified=" + gmtModified + ", gmtCreate=" + gmtCreate
-               + '}';
+               + ", amount=" + amount + '}';
     }
 }

@@ -16,6 +16,16 @@ public class AssetMonitorRuleQuery extends AssetBaseQuery {
     private String name;
     @ApiModelProperty("告警等级")
     private String alarmLevel;
+    @ApiModelProperty("是否关联资产数排序")
+    private Boolean relatedAssetSort;
+
+    public Boolean getRelatedAssetSort() {
+        return relatedAssetSort;
+    }
+
+    public void setRelatedAssetSort(Boolean relatedAssetSort) {
+        this.relatedAssetSort = relatedAssetSort;
+    }
 
     public String getName() {
         return name;

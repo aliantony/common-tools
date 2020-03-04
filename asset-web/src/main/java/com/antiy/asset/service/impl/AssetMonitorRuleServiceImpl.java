@@ -95,25 +95,30 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
+        query.setRelatedAssetSort(true);
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
-            for (AssetMonitorRuleResponse assetMonitorRuleResponse : monitorRuleResponseList) {
-                // TODO setAlarmLevelName
-                assetMonitorRuleResponse.setAlarmLevelName("");
-                assetMonitorRuleResponse
-                    .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
-                assetMonitorRuleResponse
-                    .setRuleStatusName(StatusEnum.getEnumByCode(assetMonitorRuleResponse.getRuleStatus()).getName());
+            if (!query.getRelatedAssetSort()) {
 
-                // 统计关系资产数量
-                String uniqueId = assetMonitorRuleResponse.getUniqueId();
-                AssetMonitorRuleRelationQuery ruleRelationQuery = new AssetMonitorRuleRelationQuery();
-                ruleRelationQuery.setRuleUniqueId(uniqueId);
-                ConditionFactory.createAreaQuery(ruleRelationQuery);
-                assetMonitorRuleResponse
-                    .setRelatedAssetAmount(monitorRuleRelationDao.assetAmountRelatedRule(ruleRelationQuery));
+                for (AssetMonitorRuleResponse assetMonitorRuleResponse : monitorRuleResponseList) {
+                    // TODO setAlarmLevelName
+                    assetMonitorRuleResponse.setAlarmLevelName("");
+                    assetMonitorRuleResponse
+                        .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
+                    assetMonitorRuleResponse.setRuleStatusName(
+                        StatusEnum.getEnumByCode(assetMonitorRuleResponse.getRuleStatus()).getName());
+
+                    // 统计关系资产数量
+                    String uniqueId = assetMonitorRuleResponse.getUniqueId();
+                    AssetMonitorRuleRelationQuery ruleRelationQuery = new AssetMonitorRuleRelationQuery();
+                    ruleRelationQuery.setRuleUniqueId(uniqueId);
+                    ConditionFactory.createAreaQuery(ruleRelationQuery);
+                    assetMonitorRuleResponse
+                        .setRelatedAssetAmount(monitorRuleRelationDao.assetAmountRelatedRule(ruleRelationQuery));
+                }
             }
+
             return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
                 monitorRuleResponseList);
         } else {

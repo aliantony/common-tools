@@ -69,6 +69,18 @@ public class AssetMonitorRule extends BaseEntity {
      * 状态：1-未删除,0-已删除
      */
     private Integer           status;
+    /**
+     * 关联资产数量
+     */
+    private Integer           relatedAssetAmount;
+
+    public Integer getRelatedAssetAmount() {
+        return relatedAssetAmount;
+    }
+
+    public void setRelatedAssetAmount(Integer relatedAssetAmount) {
+        this.relatedAssetAmount = relatedAssetAmount;
+    }
 
     public String getUniqueId() {
         return uniqueId;
