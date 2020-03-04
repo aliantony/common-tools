@@ -58,7 +58,7 @@ public class AssetMonitorRuleServiceImplTest {
         request.setCpuThreshold(10);
         request.setMemoryThreshold(10);
         request.setDiskThreshold(10);
-        request.setName("资产监控规则一");
+        request.setName("资产监控规则yi一");
         request.setRuleStatus("1");
         AssetRuntimeExceptionThreshold runtimeExceptionThreshold = new AssetRuntimeExceptionThreshold();
         runtimeExceptionThreshold.setRuntimeExceptionThreshold(80);

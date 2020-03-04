@@ -99,7 +99,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     @Override
     public String updateAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
         // 去重判断
-        String originalName = assetMonitorRuleDao.getById(request.getName()).getName();
+        String originalName = assetMonitorRuleDao.getById(request.getUniqueId()).getName();
         String acceptName = request.getName();
         if (!acceptName.equals(originalName)) {
             nameNoRepeat(acceptName);
