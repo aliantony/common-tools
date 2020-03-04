@@ -3423,8 +3423,43 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
             downloadVO.setDownloadList(assetEntities);
         }
-
-        downloadVO.setSheetName("资产信息表");
+        // List<AssetEntity> listr = Lists.newArrayList ();
+        // AssetEntity AssetEntity = new AssetEntity ();
+        // AssetEntity.setServiceLife ("掌上1");
+        // AssetEntity.setResponsibleUserName ("掌上setResponsibleUserName");
+        // AssetEntity.setOperationSystemName ("掌上setOperationSystemName");
+        // AssetEntity.setNumber ("掌上2");
+        // AssetEntity.setName ("掌上3");
+        // AssetEntity.setManufacturer ("掌上5");
+        // AssetEntity.setMacs ("掌上4");
+        // AssetEntity.setIps ("掌上343");
+        // AssetEntity.setImportanceDegree ("掌上2423");
+        // AssetEntity.setGmtCreate ("掌上234");
+        // AssetEntity.setFirstEnterNett ("掌上324");
+        // AssetEntity.setCategoryModelName ("掌423上");
+        // AssetEntity.setAssetStatus ("掌234上");
+        // AssetEntity.setAssetSource ("掌234上");
+        //
+        // AssetEntity AssetEntity1 = new AssetEntity ();
+        // AssetEntity1.setServiceLife ("掌上1");
+        // AssetEntity1.setResponsibleUserName ("掌上setResponsibleUserName");
+        // AssetEntity1.setOperationSystemName ("掌上setOperationSystemName");
+        // AssetEntity1.setNumber ("掌上2");
+        // AssetEntity1.setName ("掌上3");
+        // AssetEntity1.setManufacturer ("掌上5");
+        // AssetEntity1.setMacs ("掌上4");
+        // AssetEntity1.setIps ("掌上343");
+        // AssetEntity1.setImportanceDegree ("掌上2423");
+        // AssetEntity1.setGmtCreate ("掌上234");
+        // AssetEntity1.setFirstEnterNett ("掌上324");
+        // AssetEntity1.setCategoryModelName ("掌423上");
+        // AssetEntity1.setAssetStatus ("掌234上");
+        // AssetEntity1.setAssetSource ("掌234上");
+        // listr.add (AssetEntity1);
+        // listr.add (AssetEntity);
+        //
+        // downloadVO.setDownloadList (listr);
+        // downloadVO.setSheetName("资产信息表");
         // 3种导方式 1 excel 2 cvs 3 xml
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
 
@@ -3444,11 +3479,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 csvUtils.writeCSV(downloadList, "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT),
                     files, request, response);
             } else if (assetQuery.getExportType() == 3) {
-                String fileName = "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + ".xml";
+                String fileName = "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT);
                 if (assetQuery.getUnknownAssets()) {
                     List<AssetUnkonwEntity> downloadList = (List<AssetUnkonwEntity>) downloadVO.getDownloadList();
                     Dom4jUtils.createXml(downloadList, AssetUnkonwEntity.class, request, response, fileName);
                 } else {
+
                     List<AssetEntity> downloadList = (List<AssetEntity>) downloadVO.getDownloadList();
                     Dom4jUtils.createXml(downloadList, AssetEntity.class, request, response, fileName);
                 }
