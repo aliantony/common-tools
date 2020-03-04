@@ -20,9 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.List;
@@ -49,7 +47,8 @@ public class Dom4jUtils {
         try {
             // 创建Document
             Document document = DocumentHelper.createDocument();
-
+            // 写入临时文件
+            File tempFile = File.createTempFile(fileName, ".xml");
             // 创建根节点
             Element root = document.addElement("root");
 
@@ -75,18 +74,19 @@ public class Dom4jUtils {
                 // 从map中获取数据，拼接xml
                 for (Field field : fields) {
                     // 在子节点下再添加子节点
-                    element.addElement(field.getName()).addAttribute("attr", field.getType().getName())
+                    element.addElement(field.getName())
+                        // .addAttribute("attr", field.getType().getName())
                         .addText(String.valueOf(map.get(field.getName())));
                 }
             }
             // 把xml内容输出到文件中
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setEncoding("UTF-8");
-            XMLWriter writer = new XMLWriter(format);
+            XMLWriter writer = new XMLWriter(new FileOutputStream(tempFile), format);
             writer.write(document);
-            outputResponse(request, response, fileName, writer);
-
-            System.out.println("Dom4jUtils Create Xml success!");
+            writer.flush();
+            writer.close();
+            outputResponse(request, response, fileName, tempFile);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -157,4 +157,27 @@ public class Dom4jUtils {
         String msg = e.getCause().toString();
         throw new BusinessException(msg, e);
     }
+
+    public static void outputResponse(HttpServletRequest request, HttpServletResponse response, String fileName,
+                                      File tempFile) throws IOException {
+        if (!Objects.isNull(tempFile)) {
+            ServletOutputStream out = null;
+
+            java.io.File fileLoad = new java.io.File(tempFile.getCanonicalPath());
+
+            setResponseHeader(request, response, fileName + ".xml");
+            java.io.FileInputStream in = new java.io.FileInputStream(fileLoad);
+            out = response.getOutputStream();
+            int n;
+            byte[] b = new byte[10240];
+            while ((n = in.read(b)) != -1) {
+                out.write(b, 0, n);
+            }
+            in.close();
+            out.close();
+
+        }
+
+    }
+
 }
