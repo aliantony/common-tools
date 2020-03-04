@@ -204,7 +204,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
-        where id = #{id}
+        where unique_id = #{uniqueId } and status = 1
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">

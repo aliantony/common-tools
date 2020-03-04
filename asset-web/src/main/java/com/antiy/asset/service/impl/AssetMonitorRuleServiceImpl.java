@@ -56,10 +56,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     @Override
     public String saveAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
         // 去重判断
-        Boolean existName = assetMonitorRuleDao.nameNoRepeat(request.getName());
-        if (existName) {
-            throw new BusinessException("规则名称重复");
-        }
+        nameNoRepeat(request.getName());
 
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
         assetMonitorRule.setAreaId(LoginTool.getLoginUser().getAreaId());
@@ -87,8 +84,26 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
         return assetMonitorRule.getUniqueId();
     }
 
+    /**
+     * 名称去重
+     * @param name
+     * @throws Exception
+     */
+    private void nameNoRepeat(String name) throws Exception {
+        Boolean existName = assetMonitorRuleDao.nameNoRepeat(name);
+        if (existName) {
+            throw new BusinessException("规则名称重复");
+        }
+    }
+
     @Override
     public String updateAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
+        // 去重判断
+        String originalName = assetMonitorRuleDao.getById(request.getName()).getName();
+        String acceptName = request.getName();
+        if (!acceptName.equals(originalName)) {
+            nameNoRepeat(acceptName);
+        }
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
         assetMonitorRule.setModifyUser(LoginTool.getLoginUser().getId());
         assetMonitorRule.setGmtModified(System.currentTimeMillis());
