@@ -1,10 +1,6 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-
 import com.antiy.asset.entity.AssetMonitorRule;
-import com.antiy.asset.entity.AssetMonitorRuleRelation;
-import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -14,11 +10,12 @@ import com.antiy.common.base.IBaseDao;
  * @since 2020-03-02
  */
 public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
+
     /**
-     * 资产数量排序数量统计
-     * @param query
+     * 去重
+     * @param name
      * @return
      * @throws Exception
      */
-    List<AssetMonitorRuleRelation> assetAmountSort(AssetMonitorRuleRelationQuery query) throws Exception;
+    Boolean nameNoRepeat(String name) throws Exception;
 }

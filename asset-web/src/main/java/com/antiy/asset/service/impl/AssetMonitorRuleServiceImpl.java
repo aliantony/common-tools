@@ -26,6 +26,7 @@ import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
@@ -54,13 +55,18 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public String saveAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
+        // 去重判断
+        Boolean existName = assetMonitorRuleDao.nameNoRepeat(request.getName());
+        if (existName) {
+            throw new BusinessException("规则名称重复");
+        }
 
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
         assetMonitorRule.setAreaId(LoginTool.getLoginUser().getAreaId());
         assetMonitorRule.setGmtCreate(System.currentTimeMillis());
         assetMonitorRule.setCreateUser(LoginTool.getLoginUser().getId());
         assetMonitorRule.setUniqueId(SnowFlakeUtil.getSnowId());
-        assetMonitorRule.setUnit(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
+        assetMonitorRule.setRuntimeExceptionThreshold(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
         logger.info(AssetEventEnum.ADD_ASSET_MONITOR_RULE.getName(), JSON.toJSONString(request));
         assetMonitorRuleDao.insert(assetMonitorRule);
 
@@ -84,6 +90,9 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     @Override
     public String updateAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
+        assetMonitorRule.setModifyUser(LoginTool.getLoginUser().getId());
+        assetMonitorRule.setGmtModified(System.currentTimeMillis());
+        assetMonitorRule.setRuntimeExceptionThreshold(JSON.toJSONString(request.getRuntimeExceptionThreshold()));
         return assetMonitorRuleDao.update(assetMonitorRule).toString();
     }
 

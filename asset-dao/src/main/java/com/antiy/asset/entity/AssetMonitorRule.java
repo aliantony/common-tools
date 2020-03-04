@@ -46,10 +46,6 @@ public class AssetMonitorRule extends BaseEntity {
      */
     private Integer           diskThreshold;
     /**
-     * 时间单位：HOUR/DAY
-     */
-    private String            unit;
-    /**
      * 创建时间
      */
     private Long              gmtCreate;
@@ -70,9 +66,21 @@ public class AssetMonitorRule extends BaseEntity {
      */
     private Integer           status;
     /**
+     * 运行异常监控阈值和单位
+     */
+    private String            runtimeExceptionThreshold;
+    /**
      * 关联资产数量
      */
     private Integer           relatedAssetAmount;
+
+    public String getRuntimeExceptionThreshold() {
+        return runtimeExceptionThreshold;
+    }
+
+    public void setRuntimeExceptionThreshold(String runtimeExceptionThreshold) {
+        this.runtimeExceptionThreshold = runtimeExceptionThreshold;
+    }
 
     public Integer getRelatedAssetAmount() {
         return relatedAssetAmount;
@@ -146,14 +154,6 @@ public class AssetMonitorRule extends BaseEntity {
         this.diskThreshold = diskThreshold;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -198,8 +198,8 @@ public class AssetMonitorRule extends BaseEntity {
     public String toString() {
         return "AssetMonitorRule{" + ", uniqueId=" + uniqueId + ", name=" + name + ", areaId=" + areaId
                + ", alarmLevel=" + alarmLevel + ", ruleStatus=" + ruleStatus + ", cpuThreshold=" + cpuThreshold
-               + ", memoryThreshold=" + memoryThreshold + ", diskThreshold=" + diskThreshold + ", unit=" + unit
-               + ", gmtCreate=" + gmtCreate + ", gmtModified=" + gmtModified + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + "}";
+               + ", memoryThreshold=" + memoryThreshold + ", diskThreshold=" + diskThreshold + ", gmtCreate="
+               + gmtCreate + ", gmtModified=" + gmtModified + ", createUser=" + createUser + ", modifyUser="
+               + modifyUser + ", status=" + status + "}";
     }
 }

@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.AssetApplication;
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.enums.TimeEnum;
@@ -31,24 +32,41 @@ public class AssetMonitorRuleServiceImplTest {
     @Test
     public void saveAssetMonitorRule() throws Exception {
         AssetMonitorRuleRequest request = new AssetMonitorRuleRequest();
-        request.setAlarmLevel(1);
-        request.setUniqueId(100000000111L);
+        request.setAlarmLevel("1");
+        request.setUniqueId("100000000111");
         request.setAreaId("001001001001");
         request.setCpuThreshold(20);
         request.setMemoryThreshold(30);
         request.setDiskThreshold(40);
         request.setName("资产监控规则一");
-        request.setRuleStatus(1);
+        request.setRuleStatus("1");
         AssetRuntimeExceptionThreshold runtimeExceptionThreshold = new AssetRuntimeExceptionThreshold();
         runtimeExceptionThreshold.setRuntimeExceptionThreshold(90);
         runtimeExceptionThreshold.setUnit(TimeEnum.HOUR);
         request.setRuntimeExceptionThreshold(runtimeExceptionThreshold);
         request.setRelatedAsset(Lists.newArrayList("1", "2", "3"));
-        monitorRuleService.saveAssetMonitorRule(request);
+        System.out.println(JSON.toJSONString(request));
+        // monitorRuleService.saveAssetMonitorRule(request);
     }
 
     @Test
-    public void updateAssetMonitorRule() {
+    public void updateAssetMonitorRule() throws Exception {
+        AssetMonitorRuleRequest request = new AssetMonitorRuleRequest();
+        request.setUniqueId("684768284255453184");
+        request.setAlarmLevel("1");
+        request.setAreaId("001001001001");
+        request.setCpuThreshold(10);
+        request.setMemoryThreshold(10);
+        request.setDiskThreshold(10);
+        request.setName("资产监控规则一");
+        request.setRuleStatus("1");
+        AssetRuntimeExceptionThreshold runtimeExceptionThreshold = new AssetRuntimeExceptionThreshold();
+        runtimeExceptionThreshold.setRuntimeExceptionThreshold(80);
+        runtimeExceptionThreshold.setUnit(TimeEnum.HOUR);
+        request.setRuntimeExceptionThreshold(runtimeExceptionThreshold);
+        request.setRelatedAsset(Lists.newArrayList("4", "5", "6"));
+        System.out.println(JSON.toJSONString(request));
+        monitorRuleService.updateAssetMonitorRule(request);
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.antiy.asset.vo.request;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,8 @@ public class AssetMonitorRuleRequest {
      * 唯一键
      */
     @ApiModelProperty("唯一键")
-    private Long                           uniqueId;
+    private String                         uniqueId;
+    @Size(max = 50)
     @NotBlank(message = "规则名称不能为空")
     @ApiModelProperty("规则名称")
     private String                         name;
@@ -29,10 +31,10 @@ public class AssetMonitorRuleRequest {
     private String                         areaId;
     @NotBlank(message = "告警等级不能为空")
     @ApiModelProperty("告警等级")
-    private Integer                        alarmLevel;
+    private String                         alarmLevel;
     @NotBlank(message = "状态不能为空")
     @ApiModelProperty("状态")
-    private Integer                        ruleStatus;
+    private String                         ruleStatus;
     @NotBlank(message = "CPU监控不能为空")
     @ApiModelProperty("CPU监控")
     private Integer                        cpuThreshold;
@@ -48,11 +50,11 @@ public class AssetMonitorRuleRequest {
     @ApiModelProperty("已选中资产")
     private List<String>                   relatedAsset;
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 
@@ -72,19 +74,19 @@ public class AssetMonitorRuleRequest {
         this.areaId = areaId;
     }
 
-    public Integer getAlarmLevel() {
+    public String getAlarmLevel() {
         return alarmLevel;
     }
 
-    public void setAlarmLevel(Integer alarmLevel) {
+    public void setAlarmLevel(String alarmLevel) {
         this.alarmLevel = alarmLevel;
     }
 
-    public Integer getRuleStatus() {
+    public String getRuleStatus() {
         return ruleStatus;
     }
 
-    public void setRuleStatus(Integer ruleStatus) {
+    public void setRuleStatus(String ruleStatus) {
         this.ruleStatus = ruleStatus;
     }
 

@@ -13,7 +13,6 @@
         <result column="cpu_threshold" property="cpuThreshold"/>
         <result column="memory_threshold" property="memoryThreshold"/>
         <result column="disk_threshold" property="diskThreshold"/>
-        <result column="unit" property="unit"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="create_user" property="createUser"/>
@@ -22,7 +21,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, unique_id, name, area_id, alarm_level, rule_status, cpu_threshold, memory_threshold, disk_threshold, unit, gmt_create, gmt_modified, create_user, modify_user, status
+        id, unique_id, name, area_id, alarm_level, rule_status, cpu_threshold, memory_threshold, disk_threshold, gmt_create, gmt_modified, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -54,9 +53,6 @@
         </if>
         <if test=" diskThreshold != null">
             disk_threshold,
-        </if>
-        <if test=" unit != null">
-            unit,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -100,9 +96,6 @@
         <if test=" diskThreshold != null">
             #{diskThreshold },
         </if>
-        <if test=" unit != null">
-            #{unit },
-        </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
         </if>
@@ -121,45 +114,22 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" uniqueId != null">
-            unique_id = #{uniqueId },
-        </if>
-        <if test=" name != null">
-            name = #{name },
-        </if>
-        <if test=" areaId != null">
-            area_id = #{areaId },
-        </if>
-        <if test=" alarmLevel != null">
-            alarm_level = #{alarmLevel },
-        </if>
-        <if test=" ruleStatus != null">
-            rule_status = #{ruleStatus },
-        </if>
-        <if test=" cpuThreshold != null">
-            cpu_threshold = #{cpuThreshold },
-        </if>
-        <if test=" memoryThreshold != null">
-            memory_threshold = #{memoryThreshold },
-        </if>
-        <if test=" diskThreshold != null">
-            disk_threshold = #{diskThreshold },
-        </if>
-        <if test=" unit != null">
-            unit = #{unit },
-        </if>
+        name = #{name },
+        area_id = #{areaId },
+        alarm_level = #{alarmLevel },
+        rule_status = #{ruleStatus },
+        cpu_threshold = #{cpuThreshold },
+        memory_threshold = #{memoryThreshold },
+        disk_threshold = #{diskThreshold },
+        runtime_exception_threshold = #{runtimeExceptionThreshold },
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
-        <if test=" gmtModified != null">
-            gmt_modified = #{gmtModified },
-        </if>
+        gmt_modified = #{gmtModified },
         <if test=" createUser != null">
             create_user = #{createUser },
         </if>
-        <if test=" modifyUser != null">
-            modify_user = #{modifyUser },
-        </if>
+        modify_user = #{modifyUser },
         <if test=" status != null">
             status = #{status },
         </if>
@@ -189,9 +159,6 @@
         </if>
         <if test=" diskThreshold != null">
             and disk_threshold = #{diskThreshold }
-        </if>
-        <if test=" unit != null">
-            and unit = #{unit }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -228,7 +195,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <include refid="Set_Column_List"></include>
         </trim>
-        where id = #{id}
+        where unique_id = #{uniqueId } and status = 1
     </update>
 
     <!-- 根据主键查询 -->
@@ -326,52 +293,11 @@
         </choose>
     </select>
 
-    <select id="assetAmountSort" resultType="com.antiy.asset.entity.AssetMonitorRuleRelation"
+    <select id="nameNoRepeat" resultType="java.lang.Boolean"
             parameterType="com.antiy.common.base.ObjectQuery">
-        <choose>
-            <when test="relatedAssetSort">
-                select * from (
-                select amr.unique_id,count(amrr.rule_unique_id) as amount
-                from
-                asset_monitor_rule amr
-                left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
-                <trim prefix="WHERE" prefixOverrides="AND |OR ">
-                    <if test="areaList.size > 0">
-                        and amr.area_id in
-                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
-                    </if>
-                    and amr.status = 1
-                </trim>
-                group by amrr.rule_unique_id
-
-                <if test="pageSize !=-1">
-                    LIMIT #{pageSize} offset #{pageOffset}
-                </if>
-                ) temp left join asset_monitor_rule amr on amr.unique_id = temp.rule_unique_id
-            </when>
-            <otherwise>
-                select * from
-                <include refid="Table_Name"></include>
-                amr
-                <trim prefix="WHERE" prefixOverrides="AND |OR ">
-                    <if test=" name != null and name !=''">
-                        and amr.`name` like
-                        concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-                    </if>
-                    <if test="areaList.size > 0">
-                        and area_id in
-                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
-                    </if>
-                </trim>
-                order by amr.gmt_create desc
-                <if test="pageSize !=-1">
-                    LIMIT #{pageSize} offset #{pageOffset}
-                </if>
-            </otherwise>
-        </choose>
+        select IF
+        ( count( 1 ) &gt;= 1, TRUE, FALSE ) as result from
+        <include refid="Table_Name"/>
+        where status = 1 and name = #{name}
     </select>
 </mapper>
