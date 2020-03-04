@@ -297,7 +297,7 @@
                     LIMIT #{pageSize} offset #{pageOffset}
                 </if>
                 ) temp left join asset_monitor_rule amr on amr.unique_id = temp.unique_id
-                order by temp.relatedAssetAmount #{sortOrder}
+                order by temp.relatedAssetAmount
             </when>
             <otherwise>
                 select * from
@@ -307,6 +307,9 @@
                     <if test=" name != null and name !=''">
                         and amr.`name` like
                         concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                    </if>
+                    <if test=" alarmLevel != null and alarmLevel !=''">
+                        and amr.`alarm_level` = #{alarmLevel}
                     </if>
                     <if test="areaList.size > 0">
                         and area_id in

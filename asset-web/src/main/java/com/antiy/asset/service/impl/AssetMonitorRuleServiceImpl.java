@@ -18,6 +18,7 @@ import com.antiy.asset.factory.ConditionFactory;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.util.SnowFlakeUtil;
+import com.antiy.asset.vo.enums.AlarmLevelEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
@@ -95,15 +96,15 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
-        query.setRelatedAssetSort(true);
+        query.setRelatedAssetSort(false);
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
             if (!query.getRelatedAssetSort()) {
 
                 for (AssetMonitorRuleResponse assetMonitorRuleResponse : monitorRuleResponseList) {
-                    // TODO setAlarmLevelName
-                    assetMonitorRuleResponse.setAlarmLevelName("");
+                    assetMonitorRuleResponse.setAlarmLevelName(
+                        AlarmLevelEnum.getEnumByCode(assetMonitorRuleResponse.getAlarmLevel()).getName());
                     assetMonitorRuleResponse
                         .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
                     assetMonitorRuleResponse.setRuleStatusName(
