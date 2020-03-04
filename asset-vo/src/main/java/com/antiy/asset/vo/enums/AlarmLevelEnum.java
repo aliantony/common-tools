@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public enum AlarmLevelEnum {
                             EMERGENCY("1", "紧急"),
 
-                            IMPORTANT("2", "重要"), PROMPT("3", "提示");
+                            SECONDARY("2", "次要"), MPORTANT("3", "重要"), PROMPT("4", "提示");
 
     public static AlarmLevelEnum getEnumByCode(String code) {
         return Arrays.stream(AlarmLevelEnum.values()).filter(v -> v.getCode().equals(code)).collect(Collectors.toList())
