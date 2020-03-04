@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
  * @since 2020/3/3
  */
 public enum AlarmLevelEnum {
-                            EMERGENCY("1", "启用"),
+                            EMERGENCY("1", "紧急"),
 
-                            IMPORTANT("2", "禁用"), PROMPT("3", "提示");
+                            IMPORTANT("2", "重要"), PROMPT("3", "提示");
 
     public static AlarmLevelEnum getEnumByCode(String code) {
         return Arrays.stream(AlarmLevelEnum.values()).filter(v -> v.getCode().equals(code)).collect(Collectors.toList())

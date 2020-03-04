@@ -96,7 +96,6 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
-        query.setRelatedAssetSort(false);
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);

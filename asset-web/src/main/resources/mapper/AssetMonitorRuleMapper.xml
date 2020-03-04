@@ -293,11 +293,11 @@
                     and amr.status = 1
                 </trim>
                 group by amr.unique_id
+                order by relatedAssetAmount ${sortOrder}
                 <if test="pageSize !=-1">
                     LIMIT #{pageSize} offset #{pageOffset}
                 </if>
                 ) temp left join asset_monitor_rule amr on amr.unique_id = temp.unique_id
-                order by temp.relatedAssetAmount
             </when>
             <otherwise>
                 select * from
