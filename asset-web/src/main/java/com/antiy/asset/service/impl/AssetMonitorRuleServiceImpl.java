@@ -99,16 +99,14 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
+            for (AssetMonitorRuleResponse ruleResponse : monitorRuleResponseList) {
+                ruleResponse.setAlarmLevelName(AlarmLevelEnum.getEnumByCode(ruleResponse.getAlarmLevel()).getName());
+                ruleResponse.setAreaName(wrappedRedisUtil.bindAreaName(ruleResponse.getAreaId()));
+                ruleResponse.setRuleStatusName(StatusEnum.getEnumByCode(ruleResponse.getRuleStatus()).getName());
+            }
             if (!query.getRelatedAssetSort()) {
 
                 for (AssetMonitorRuleResponse assetMonitorRuleResponse : monitorRuleResponseList) {
-                    assetMonitorRuleResponse.setAlarmLevelName(
-                        AlarmLevelEnum.getEnumByCode(assetMonitorRuleResponse.getAlarmLevel()).getName());
-                    assetMonitorRuleResponse
-                        .setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
-                    assetMonitorRuleResponse.setRuleStatusName(
-                        StatusEnum.getEnumByCode(assetMonitorRuleResponse.getRuleStatus()).getName());
-
                     // 统计关系资产数量
                     String uniqueId = assetMonitorRuleResponse.getUniqueId();
                     AssetMonitorRuleRelationQuery ruleRelationQuery = new AssetMonitorRuleRelationQuery();
