@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -65,6 +66,9 @@ public class AssetMonitorRuleServiceImplTest {
         runtimeExceptionThreshold.setUnit(TimeEnum.HOUR);
         request.setRuntimeExceptionThreshold(runtimeExceptionThreshold);
         request.setRelatedAsset(Lists.newArrayList("4", "5", "6"));
+
+        List<String> assetList = Lists.newArrayList("1");
+        request.setRelatedAsset(assetList);
         System.out.println(JSON.toJSONString(request));
         monitorRuleService.updateAssetMonitorRule(request);
     }
