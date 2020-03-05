@@ -22,9 +22,9 @@ import io.swagger.annotations.*;
  * @author zhangyajun
  * @since 2020-03-05
  */
-@Api(value = "AssetManufacture", description = "安全厂商表")
+@Api(value = "AssetManufacture", description = "厂商管理")
 @RestController
-@RequestMapping("/v1/asset/manufacture")
+@RequestMapping("/api/v1/asset/manufacture")
 public class AssetManufactureController {
 
     @Resource
