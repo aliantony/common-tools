@@ -68,7 +68,9 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      * 本次处理结果:同意true,不同意false
      */
     @ApiModelProperty(value = "执行意见")
-    private Boolean                    agree;
+    private Boolean                    agree=true;
+
+
 
     /**
      * 方案内容:输入的备注信息
@@ -195,25 +197,32 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
             && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
         }
+        if(assetFlowEnum.equals(AssetFlowEnum.RETIRE_APPLICATION)
+            || assetFlowEnum.equals(AssetFlowEnum.RETIRE_DISAGREE_APPLICATION)
+            || assetFlowEnum.equals(AssetFlowEnum.SCRAP_APPLICATION)
+            || assetFlowEnum.equals(AssetFlowEnum.SCRAP_DISAGREE_APPLICATION)){
 
-       /* if (assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) {
+            ParamterExceptionUtils.isBlank(note,"退役方案不能为空");
+
+        }
+        /*if (assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) {
             agree = Boolean.TRUE;
         } else {
             ParamterExceptionUtils.isNull(agree, "执行意见必填");
-        }*/
+        }
 
         // 通过:入网/退役/检查/变更完成不校验,其他校验下一步执行人;不通过:备注信息不能为空
         boolean checkConfigUser = !(assetFlowEnum.equals(AssetFlowEnum.RETIRE)
-                                   /* || assetFlowEnum.equals(AssetFlowEnum.NET_IN)
+                                    || assetFlowEnum.equals(AssetFlowEnum.NET_IN)
                                     || assetFlowEnum.equals(AssetFlowEnum.CHECK)
-                                    || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)*/);
+                                    || assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE));
         if (Boolean.TRUE.equals(agree) && checkConfigUser) {
             ParamterExceptionUtils.isNull(getFormData(), "formData参数错误");
             ParamterExceptionUtils.isNull(formData.get(assetFlowEnum.getActivityKey()), "下一步执行人员错误");
         } else if (Boolean.FALSE.equals(agree)) {
-          /*  ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()),
-                assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");*/
-        }
+            ParamterExceptionUtils.isTrue(StringUtils.isNotBlank(getNote()),
+                assetFlowEnum.equals(AssetFlowEnum.TO_WAIT_RETIRE) ? "退役方案信息必填" : "备注信息必填");
+        }*/
     }
 
     @Override

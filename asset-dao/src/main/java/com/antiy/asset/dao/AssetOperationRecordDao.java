@@ -1,9 +1,13 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetStatusDetail;
+import com.antiy.asset.entity.AssetStatusNote;
+import com.antiy.asset.vo.query.AssetSchemeQuery;
+import com.antiy.asset.vo.response.AssetOperationRecordResponse;
 import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 
 /**
@@ -54,4 +58,8 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      * @return
      */
     List<AssetOperationRecord> listByAssetIds(List<Integer> assetIds);
+
+    List<AssetOperationRecordResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
+
+    AssetOperationRecordResponse queryCheckSchemeByTaskId(Integer taskId);
 }

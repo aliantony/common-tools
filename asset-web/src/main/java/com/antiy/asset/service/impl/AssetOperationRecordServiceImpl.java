@@ -1,28 +1,32 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.antiy.asset.dao.AssetDao;
+import com.antiy.asset.dao.AssetOperationRecordDao;
+import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.entity.AssetStatusNote;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.service.IAssetOperationRecordService;
+import com.antiy.asset.vo.query.AssetSchemeQuery;
+import com.antiy.asset.vo.response.AssetOperationRecordResponse;
+import com.antiy.asset.vo.response.AssetPreStatusInfoResponse;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.StatusLogResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.JsonUtil;
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
-import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.service.IAssetOperationRecordService;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.utils.LogUtils;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p> 资产操作记录表 服务实现类 </p>
@@ -37,6 +41,8 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         .get(this.getClass());
     @Resource
     private AssetOperationRecordDao                                                   assetOperationRecordDao;
+    @Resource
+    private AssetDao assetDao;
 
     @Override
     public ActionResponse queryAssetAllStatusInfo(String id) {
@@ -86,4 +92,23 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
         return ActionResponse.success(responses);
     }
 
+    @Override
+    public List<AssetOperationRecordResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery) {
+
+        return assetOperationRecordDao.queryAssetSchemListByAssetIds(assetSchemeQuery);
+    }
+
+    @Override
+    public PageResult<AssetResponse> queryCheckList(AssetSchemeQuery assetSchemeQuery) {
+        List<AssetResponse> assetResponseList=assetDao.queryCheckList(assetSchemeQuery);
+        Integer count=assetDao.countCheckList(assetSchemeQuery);
+        count=count==null?0:count;
+        return new PageResult<>(assetSchemeQuery.getPageSize(),count,assetSchemeQuery.getCurrentPage(),assetResponseList);
+    }
+
+    @Override
+    public AssetOperationRecordResponse queryCheckSchemeByTaskId(Integer taskId) {
+        AssetOperationRecordResponse recordResponse=assetOperationRecordDao.queryCheckSchemeByTaskId(taskId);
+        return recordResponse;
+    }
 }

@@ -198,7 +198,7 @@
 
 
     <sql id="IF_Base_Column_List_ForBatch">
-            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user
+            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user,check_user_id,check_user_name,execute_user_id,execute_user_name
     </sql>
 
 
@@ -215,7 +215,11 @@
             #{entity.fileInfo },
             #{entity.processResult },
             #{entity.gmtCreate },
-            #{entity.createUser }
+            #{entity.createUser },
+            #{entity.checkUserId},
+             #{entity.checkUserName},
+              #{entity.executeUserId},
+               #{entity.executeUserName}
     </sql>
 
 
@@ -355,7 +359,18 @@
         <include refid="Table_Name"/>
         where target_object_id = #{assetId} order by id desc limit 1
     </select>
-
+    <select id="queryCheckSchemeByTaskId" resultType="com.antiy.asset.vo.response.AssetOperationRecordResponse">
+        SELECT
+        aor.id as stringId,
+        aor.target_object_id as targetObjectId ,
+        aor.file_info as fileInfo,
+        aor.content,
+        aor.note
+        FROM
+        asset_operation_record
+        where  task_id=#{taskId}
+        and status=1
+    </select>
     <select id="listByAssetIds" resultMap="BaseResultMap">
         select
         a.target_object_id,a.origin_status
@@ -370,5 +385,24 @@
         ) b
         USING(id)
     </select>
-
+    <select id="queryAssetSchemListByAssetIds" resultType="com.antiy.asset.vo.response.AssetOperationRecordResponse">
+        SELECT
+        aor.id as stringId,
+        aor.target_object_id as targetObjectId ,
+        aor.file_info as fileInfo,
+        aor.content,
+        aor.note
+        FROM
+        ( SELECT target_object_id, max( gmt_create ) AS gmt_create FROM `asset_operation_record`
+        where (origin_status=#{orginStatusOne} or origin_status=#{orginStatusTwo}) and target_status=#{targetStatus}
+        and status=1
+        and
+        asset_operation_record.target_object_id in
+        <foreach collection="assetIds" open="(" close=")" item="e" separator=",">
+            #{e}
+        </foreach>
+        GROUP BY target_object_id ) AS t_aor
+        JOIN asset_operation_record AS aor ON t_aor.target_object_id = aor.target_object_id
+        AND t_aor.gmt_create = aor.gmt_create
+    </select>
 </mapper>

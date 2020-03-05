@@ -1,8 +1,5 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-import java.util.Map;
-
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetSourceEnum;
 import com.antiy.asset.vo.enums.InstallType;
@@ -10,6 +7,8 @@ import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -19,6 +18,12 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetResponse extends BaseResponse {
+
+    /**
+     * 业务名称
+     */
+    @ApiModelProperty("业务名称")
+    private String businessName;
     /**
      * 资产编号
      */
@@ -93,6 +98,15 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("厂商")
     private String                         manufacturer;
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */

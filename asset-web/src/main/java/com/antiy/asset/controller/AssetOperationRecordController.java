@@ -1,26 +1,28 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
+import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.service.IAssetOperationRecordService;
+import com.antiy.asset.vo.query.AssetSchemeQuery;
+import com.antiy.asset.vo.request.AssetOperationRecordRequest;
 import com.antiy.asset.vo.request.BatchQueryRequest;
+import com.antiy.asset.vo.response.AssetOperationRecordResponse;
 import com.antiy.asset.vo.response.AssetPreStatusInfoResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.StatusLogResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LoginUserUtil;
-import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.antiy.asset.service.IAssetOperationRecordService;
-import com.antiy.asset.vo.query.AssetOperationRecordQuery;
-import com.antiy.asset.vo.response.AssetOperationRecordBarResponse;
-import com.antiy.common.base.ActionResponse;
-
-import io.swagger.annotations.*;
-
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangyajun
@@ -40,6 +42,43 @@ public class AssetOperationRecordController {
      * @param queryCondition 分装主键vo
      * @return actionResponse 响应数据
      */
+    @ApiOperation(value = "退役/报废执行方案列表", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/scheme/list", method = RequestMethod.POST)
+    public ActionResponse queryRetExecList(@ApiParam(value = "assetOperationRecordQuery") @RequestBody AssetSchemeQuery assetSchemeQuery) throws Exception {
+       /* assetSchemeQuery.setOrginStatusOne(7);
+        assetSchemeQuery.setOrginStatusTwo(10);
+        assetSchemeQuery.setTargetStatus(9);*/
+        List<AssetOperationRecordResponse> assetOperationRecordList=assetOperationRecordService.queryAssetSchemListByAssetIds(assetSchemeQuery);
+        return ActionResponse.success(assetOperationRecordList);
+    }
+
+
+    @ApiOperation(value = "资产退役/报废/入网审批资产信息列表", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/check/list", method = RequestMethod.POST)
+    public ActionResponse queryCheckList(@ApiParam(value = "assetSchemeQuery") @RequestBody AssetSchemeQuery assetSchemeQuery) throws Exception {
+        PageResult<AssetResponse> assetResponseList=assetOperationRecordService.queryCheckList(assetSchemeQuery);
+        return ActionResponse.success(assetResponseList);
+    }
+    @ApiOperation(value = "资产 退役/报废/入网审批方案和附件", notes = "传入taskId")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/check/scheme", method = RequestMethod.POST)
+    public ActionResponse queryCheckScheme(@ApiParam(value = "operationRecordRequest") @RequestBody AssetOperationRecordRequest operationRecordRequest) throws Exception {
+        AssetOperationRecordResponse recordResponse=assetOperationRecordService.queryCheckSchemeByTaskId(operationRecordRequest.getTaskId());
+        return ActionResponse.success(recordResponse);
+    }
+   /* @ApiOperation(value = "报废执行报废方案列表", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/scrapExec/list", method = RequestMethod.POST)
+    public ActionResponse queryScrapExecList(@ApiParam(value = "assetOperationRecordQuery") @RequestBody AssetSchemeQuery assetSchemeQuery) throws Exception {
+        assetSchemeQuery.setOrginStatusOne(12);
+        assetSchemeQuery.setOrginStatusTwo(14);
+        assetSchemeQuery.setTargetStatus(13);
+        List<AssetOperationRecordResponse> assetOperationRecordList=assetOperationRecordService.queryAssetSchemListByAssetIds(assetSchemeQuery);
+        return ActionResponse.success(assetOperationRecordList);
+    }*/
+
     @ApiOperation(value = "查找资产操作历史", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query", method = RequestMethod.POST)
@@ -47,6 +86,7 @@ public class AssetOperationRecordController {
         System.out.println(LoginUserUtil.getLoginUser().toString());
         return assetOperationRecordService.queryAssetAllStatusInfo(queryCondition.getPrimaryKey());
     }
+
     /**
      * 上一步备注信息批量查询
      */

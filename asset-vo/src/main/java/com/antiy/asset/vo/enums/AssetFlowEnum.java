@@ -41,21 +41,55 @@ public enum AssetFlowEnum {
 
     /**
      * 退役申请
+     * 已经入网--->退役待审批
      */
     RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","退役申请","退役申请"),
     /**
+     * 退役申请
+     * 退役审批不通过--->退役待审批
+     */
+    RETIRE_DISAGREE_APPLICATION(AssetStatusEnum.RETIRE_DISAGREE,AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","继续退役申请","继续退役申请"),
+    /**
+     * 退役执行
+     */
+    RETIRE_EXECUTEE(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退役执行","退役执行"),
+    /**
      * 报废申请
+     * 已退役---->报废待审批
      */
     SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","报废申请","报废申请"),
     /**
-     * 变更中->已入网    配置模块调用.
+     * 报废申请
+     * 报废审批未通过---->报废待审批
      */
-    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE, "", "变更完成。", "变更完成"),
+    SCRAP_DISAGREE_APPLICATION(AssetStatusEnum.SCRAP_DISAGREE,AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP_CHECK,"","继续报废申请","继续报废申请"),
+    /**
+     * 入网审批
+     */
+    NET_IN_CHECK(AssetStatusEnum.NET_IN_LEADER_CHECK,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN_LEADER_DISAGREE,"","入网审批","入网审批"),
+    /**
+     * 退役审批
+     */
+    RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE_DISAGREE,"","资产退役审批","资产退役审批"),
+    /**
+     * 报废审批
+     */
+    SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP_DISAGREE,"","报废审批","报废审批"),
 
     /**
-     * 退役待审批->审批
+     * 入网审批
      */
-    RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK, "", "退役审批。审批情况：", "领导审批"),
+
+    /**
+     * 报废执行
+     */
+    SCRAP_EXECUTEE(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP,AssetStatusEnum.SCRAP,"","报废执行","报废执行"),
+
+    /**
+     * 变更中->已入网    配置模块调用.
+     */
+    CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE,AssetStatusEnum.NET_IN, AssetStatusEnum.NET_IN, "", "变更完成。", "变更完成"),
+
     /**
      * 退役审批未通过->继续退役/关闭退役
      */
@@ -68,10 +102,7 @@ public enum AssetFlowEnum {
      * 已退役->登记/报废申请
      */
     RETIRED(AssetStatusEnum.RETIRE, "", "登记资产。", "登记资产信息","报废申请。", "提出报废申请"),
-    /**
-     * 报废待审批->审批
-     */
-    SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK, "", "报废审批。审批情况：", "领导审批"),
+
     /**
      * 报废审批未通过->继续报废/关闭报废
      */
