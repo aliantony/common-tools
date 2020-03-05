@@ -95,7 +95,9 @@ public class AssetManufactureServiceImpl extends BaseServiceImpl<AssetManufactur
             treeResponse.setNetStatus(manufacture.getNetStatus());
             treeResponse.setAssetId(manufacture.getAssetId());
             treeResponse.setNumber(manufacture.getNumber());
-            treeResponse.setNetStatusName(NetStatusEnum.getEnumByCode(manufacture.getNetStatus()).getName());
+            if (manufacture.getNetStatus() != null) {
+                treeResponse.setNetStatusName(NetStatusEnum.getEnumByCode(manufacture.getNetStatus()).getName());
+            }
             // 获取资产ip地址
             treeResponse.setIps(ipRelationDao.findIpsByAssetId(manufacture.getAssetId()));
             treeResponseList.add(treeResponse);
