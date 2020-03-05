@@ -8,16 +8,25 @@ import java.util.List;
  * @create 2020-03-05 10:06
  **/
 public class AssetManufactureTreeResponse {
-    private String productName;
-    private String version;
-    private String id;
+    private String       supplier;
+    private String       productName;
+    private String       version;
+    private String       id;
     private String       assetId;
-    private String pid;
-    private String netStatus;
+    private String       pid;
+    private String       netStatus;
     private String       netStatusName;
     private String       name;
     private String       number;
     private List<String> ips;
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
 
     public String getAssetId() {
         return assetId;

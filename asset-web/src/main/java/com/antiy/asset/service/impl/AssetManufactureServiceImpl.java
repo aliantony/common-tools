@@ -87,6 +87,7 @@ public class AssetManufactureServiceImpl extends BaseServiceImpl<AssetManufactur
         List<AssetManufacture> manufactureList = assetManufactureDao.getManufacture();
         for (AssetManufacture manufacture : manufactureList) {
             AssetManufactureTreeResponse treeResponse = new AssetManufactureTreeResponse();
+            treeResponse.setSupplier(manufacture.getSupplier());
             treeResponse.setId(manufacture.getUniqueId());
             treeResponse.setProductName(manufacture.getProductName());
             treeResponse.setVersion(manufacture.getVersion());
