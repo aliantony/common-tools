@@ -7,6 +7,7 @@ import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.AssetSchemeQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetRollbackRequest;
@@ -382,4 +383,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<AssetResponse> queryAsset(AssetAddOfBusinessQuery assetRelationBusinessRequest);
 
     Integer countQueryAsset(AssetAddOfBusinessQuery assetRelationBusinessRequest);
+
+    List<AssetResponse> queryCheckList(AssetSchemeQuery assetSchemeQuery);
+
+    Integer countCheckList(AssetSchemeQuery assetSchemeQuery);
 }

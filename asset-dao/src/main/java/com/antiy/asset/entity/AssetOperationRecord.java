@@ -89,6 +89,20 @@ public class AssetOperationRecord extends BaseEntity {
      */
    private String executeUserName;
 
+    /**
+     * 任务id
+     *
+     */
+    private Integer taskId;
+
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
+
     public Integer getCheckUserId() {
         return checkUserId;
     }

@@ -72,14 +72,30 @@ public class AssetOperationRecordRequest extends BasicRequest implements ObjectV
      *
      */
     @ApiModelProperty("附件，多个用逗号隔开")
-    private String url;
+    /**
+     * 附件
+     */
+    private String fileInfo;
+    /**
+     * 任务id
+     *
+     */
+    private Integer taskId;
 
-    public String getUrl() {
-        return url;
+    public String getFileInfo() {
+        return fileInfo;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
+    }
+
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
     }
 
     public String getCheckUserName() {

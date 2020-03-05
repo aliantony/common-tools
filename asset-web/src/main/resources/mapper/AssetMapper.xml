@@ -2032,6 +2032,47 @@ WHERE
         </foreach>
         and status=1
     </update>
+    <select id="countCheckList" resultType="int">
+        select  count(*)
+        from  asset
+        where  status=1
+        <if test="assetIds !=null and assetIds.size()>0">
+            and a.id  in
+            <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+    <select id="queryCheckList" resultType="com.antiy.asset.vo.response.AssetResponse">
+            SELECT
+            a.id as stringId,
+            a.`name`,
+            a.`number`,
+            a.manufacturer,
+            a.asset_group as assetGroup,
+            a.importance_degree as importanceDegree,
+            a.category_model as categoryModel,
+            GROUP_CONCAT(distinct air.ip) AS ips,
+            GROUP_CONCAT(distinct amr.mac) AS macs,
+            GROUP_CONCAT(distinct ab.name) AS businessName
+            FROM
+            asset AS a
+            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            LEFT JOIN asset_business_relation AS abr on a.id=abr.asset_id and abr.status=1
+            LEFT JOIN asset_business AS ab ON abr.unique_id=ab.unique_id and ab.status=1
+            where a.status=1
+            <if test="assetIds !=null and assetIds.size()>0">
+                and a.id  in
+                <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            group by a.id
+            <if test="pageSize !=-1">
+                LIMIT #{pageSize} offset #{pageOffset}
+            </if>
+    </select>
     <select id="queryAsset" resultType="com.antiy.asset.vo.response.AssetResponse">
                SELECT
                     a.id as stringId,

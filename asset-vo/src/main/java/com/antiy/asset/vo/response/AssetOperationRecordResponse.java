@@ -18,6 +18,8 @@ public class AssetOperationRecordResponse extends BaseResponse {
     @ApiModelProperty(value = "操作对象Id")
     @Encode
     private String  targetObjectId;
+    @ApiModelProperty(value = "内容")
+    private String note;
     /**
      * 被操作对象类别
      */
@@ -66,6 +68,14 @@ public class AssetOperationRecordResponse extends BaseResponse {
      * 附件信息（[{"XXX文件","10.12.5.1:5566/file/asset/dj"}]）
      */
     private String  fileInfo;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public String getOperateUserName() {
         return operateUserName;

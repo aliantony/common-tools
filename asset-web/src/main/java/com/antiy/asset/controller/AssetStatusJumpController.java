@@ -61,7 +61,7 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
-        return assetStatusJumpService.statusJump(statusJumpRequest);
+        return assetStatusJumpService.changeStatus(statusJumpRequest);
     }
 
     /**
