@@ -1,11 +1,12 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.entity.AssetIpRelation;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.ObjectQuery;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p> 资产-IP关系表 Mapper 接口 </p>
@@ -27,4 +28,6 @@ public interface AssetIpRelationDao extends IBaseDao<AssetIpRelation> {
     void insertBatch(@Param("assetIpRelationList") List<AssetIpRelation> assetIpRelationList);
 
     List<String> findIps(ObjectQuery query);
+
+    List<String> findIpsByAssetId(String assetId);
 }

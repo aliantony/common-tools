@@ -6,8 +6,12 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetManufacture">
         <id column="id" property="id"/>
         <result column="pid" property="pid"/>
+        <result column="asset_id" property="assetId"/>
         <result column="business_id" property="businessId"/>
         <result column="product_name" property="productName"/>
+        <result column="name" property="productName"/>
+        <result column="number" property="number"/>
+        <result column="net_status" property="netStatus"/>
         <result column="version" property="version"/>
         <result column="unique_id" property="uniqueId"/>
         <result column="supplier" property="supplier"/>
@@ -225,9 +229,16 @@
 
     <select id="getManufacture" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        *
+        manu.*,
+        asset.id as asset_id,
+        asset.net_status,
+        asset.`name`,
+        asset.number
         FROM
+        ( SELECT * FROM
         <include refid="Table_Name"/>
+        ) manu
+        JOIN asset ON asset.business_id = manu.business_id
     </select>
 
     <!--<select id="initManufacture" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">-->

@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 /**
  * 树形厂商数据
  * @author zhangyajun
@@ -9,8 +11,53 @@ public class AssetManufactureTreeResponse {
     private String productName;
     private String version;
     private String id;
+    private String       assetId;
     private String pid;
     private String netStatus;
+    private String       netStatusName;
+    private String       name;
+    private String       number;
+    private List<String> ips;
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getNetStatusName() {
+        return netStatusName;
+    }
+
+    public void setNetStatusName(String netStatusName) {
+        this.netStatusName = netStatusName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public List<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(List<String> ips) {
+        this.ips = ips;
+    }
 
     public String getNetStatus() {
         return netStatus;

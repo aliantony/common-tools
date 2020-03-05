@@ -154,6 +154,12 @@
             <include refid="Where_Column_List"></include>
         </trim>
     </select>
+
+    <select id="findIpsByAssetId" resultType="java.lang.String">
+        select ip from
+        <include refid="Table_Name"></include>
+        where asset_id = #{assetId} and status = 1
+    </select>
     <!-- 删除资产ip关系-->
     <delete id="deleteByAssetId">
         update asset_ip_relation set status = 0 where asset_id = #{assetId}

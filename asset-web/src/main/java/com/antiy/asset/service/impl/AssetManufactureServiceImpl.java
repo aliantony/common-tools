@@ -7,9 +7,11 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.antiy.asset.dao.AssetIpRelationDao;
 import com.antiy.asset.dao.AssetManufactureDao;
 import com.antiy.asset.entity.AssetManufacture;
 import com.antiy.asset.service.IAssetManufactureService;
+import com.antiy.asset.vo.enums.NetStatusEnum;
 import com.antiy.asset.vo.query.AssetManufactureQuery;
 import com.antiy.asset.vo.request.AssetManufactureRequest;
 import com.antiy.asset.vo.response.AssetManufactureResponse;
@@ -36,6 +38,8 @@ public class AssetManufactureServiceImpl extends BaseServiceImpl<AssetManufactur
     private BaseConverter<AssetManufactureRequest, AssetManufacture>  requestConverter;
     @Resource
     private BaseConverter<AssetManufacture, AssetManufactureResponse> responseConverter;
+    @Resource
+    private AssetIpRelationDao                                        ipRelationDao;
 
     @Override
     public String saveAssetManufacture(AssetManufactureRequest request) throws Exception {
@@ -87,6 +91,13 @@ public class AssetManufactureServiceImpl extends BaseServiceImpl<AssetManufactur
             treeResponse.setProductName(manufacture.getProductName());
             treeResponse.setVersion(manufacture.getVersion());
             treeResponse.setPid(manufacture.getPid());
+            treeResponse.setName(manufacture.getName());
+            treeResponse.setNetStatus(manufacture.getNetStatus());
+            treeResponse.setAssetId(manufacture.getAssetId());
+            treeResponse.setNumber(manufacture.getNumber());
+            treeResponse.setNetStatusName(NetStatusEnum.getEnumByCode(manufacture.getNetStatus()).getName());
+            // 获取资产ip地址
+            treeResponse.setIps(ipRelationDao.findIpsByAssetId(manufacture.getAssetId()));
             treeResponseList.add(treeResponse);
         }
         return treeResponseList;

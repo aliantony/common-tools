@@ -27,9 +27,25 @@ public class AssetManufacture extends BaseEntity {
      */
     private String            businessId;
     /**
-     * 名称
+     * CPE名称
      */
     private String            productName;
+    /**
+     * 资产名称
+     */
+    private String            name;
+    /**
+     * 资产编号
+     */
+    private String            number;
+    /**
+     * 资产状态
+     */
+    private String            netStatus;
+    /**
+     * 资产主键
+     */
+    private String            assetId;
     /**
      * 版本
      */
@@ -58,6 +74,38 @@ public class AssetManufacture extends BaseEntity {
      * 修改人
      */
     private Integer           modifyUser;
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getNetStatus() {
+        return netStatus;
+    }
+
+    public void setNetStatus(String netStatus) {
+        this.netStatus = netStatus;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public String getPid() {
         return pid;
