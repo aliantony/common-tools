@@ -238,7 +238,7 @@
         ( SELECT * FROM
         <include refid="Table_Name"/>
         ) manu
-        JOIN asset ON asset.business_id = manu.business_id
+        LEFT JOIN asset ON asset.business_id = manu.business_id
     </select>
 
     <!--<select id="initManufacture" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">-->
