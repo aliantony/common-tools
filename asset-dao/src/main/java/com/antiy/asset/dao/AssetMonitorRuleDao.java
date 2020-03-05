@@ -18,4 +18,12 @@ public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
      * @throws Exception
      */
     Boolean nameNoRepeat(String name) throws Exception;
+
+    /**
+     * 幂等
+     * @param uniqueId
+     * @return
+     * @throws Exception
+     */
+    Boolean idempotent(String uniqueId) throws Exception;
 }
