@@ -54,7 +54,7 @@ public class AssetComReportEntity {
     /**
      * 首次入网时间
      */
-    @ApiModelProperty(value = "未修复漏洞")
+    @ApiModelProperty(value = "已修复漏洞")
     private Integer noVulCount;
 
     /**

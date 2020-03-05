@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetCompositionReport;
 import com.antiy.asset.service.IAssetCompositionReportService;
 import com.antiy.asset.templet.AssetComReportEntity;
 import com.antiy.asset.util.ArrayTypeUtil;
+import com.antiy.asset.util.CSVUtils;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
@@ -112,11 +113,15 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
 
             if (assetQuery.getExportType() == 1) {
                 excelDownloadUtil.excelDownload(request, response,
-                    "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+                    "综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
             } else if (assetQuery.getExportType() == 2) {
+                List<?> downloadList = downloadVO.getDownloadList();
 
-            } else {
+                String[] files = new String[] { "编号", "区域", "首次入网时间", "重要程度", "ip", "使用者", "厂商", "基准模板", "已修复漏洞",
+                                                "已修复漏洞", "已安装补丁", "未安装补丁" };
 
+                CSVUtils.writeCSV(downloadList,
+                    "综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), files, request, response);
             }
 
             LogUtils.recordOperLog(
