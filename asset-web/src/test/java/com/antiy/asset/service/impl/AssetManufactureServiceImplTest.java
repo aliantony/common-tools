@@ -26,6 +26,9 @@ public class AssetManufactureServiceImplTest {
     @Resource
     private AssetManufactureDao manufactureDao;
 
+    @Resource
+    private AssetManufactureServiceImpl manufactureService;
+
     @Test
     public void initManufacture() throws Exception {
 
@@ -44,6 +47,6 @@ public class AssetManufactureServiceImplTest {
     @Test
     public void getManufacture() throws Exception {
 
-        System.out.println(JSON.toJSONString(manufactureDao.getManufacture()));
+        System.out.println(JSON.toJSONString(manufactureService.safetyManufacture()));
     }
 }
