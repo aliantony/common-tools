@@ -68,4 +68,10 @@ public interface IAssetManufactureService extends IBaseService<AssetManufacture>
      */
     List<AssetManufactureTreeResponse> safetyManufacture() throws Exception;
 
+    /**
+     * 树形厂商数据
+     * @return
+     */
+    // List<String> queryDeviceById() throws Exception;
+
 }

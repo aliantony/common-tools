@@ -100,10 +100,23 @@ public class AssetManufactureController {
      *
      * @return actionResponse
      */
-    @ApiOperation(value = "树形厂商数据", notes = "主键封装对象")
+    @ApiOperation(value = "树形厂商数据", notes = "主键封装对象", hidden = true)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/tree/safetyManufacture", method = RequestMethod.POST)
     public ActionResponse safetyManufacture() throws Exception {
         return ActionResponse.success(iAssetManufactureService.safetyManufacture());
+    }
+
+    /**
+     * 通过厂商ID查询下属安全设备
+     *
+     * @param queryCondition
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过厂商ID查询下属安全设备", notes = "主键封装对象", hidden = true)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetManufactureResponse.class), })
+    @RequestMapping(value = "/query/deviceById", method = RequestMethod.GET)
+    public ActionResponse queryDeviceById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+        return ActionResponse.success(iAssetManufactureService.queryAssetManufactureById(queryCondition));
     }
 }
