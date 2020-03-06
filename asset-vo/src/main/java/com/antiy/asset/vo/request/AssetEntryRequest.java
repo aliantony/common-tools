@@ -2,13 +2,11 @@ package com.antiy.asset.vo.request;
 
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -16,13 +14,14 @@ import java.util.List;
  * @since 2020/2/14
  */
 @ApiModel(description = "准入资产请求类")
-public class AssetEntryRequest extends BaseRequest implements ObjectValidator {
+public class AssetEntryRequest extends BaseRequest {
     @ApiModelProperty("资产id集合，加密id")
-    @NotEmpty
+    @NotEmpty(message = "资产id不能为空")
+    @Encode
     private List<String> assetIds;
     @ApiModelProperty("准入状态：1-允许，2-禁止")
     @Pattern(regexp = "^[12]$",message = "准入状态参数错误，只能为1或2")
-    private int updateStatus;
+    private String updateStatus;
     @ApiModelProperty("准入指令来源")
     private AssetEntrySourceEnum entrySource;
 
@@ -35,10 +34,10 @@ public class AssetEntryRequest extends BaseRequest implements ObjectValidator {
     }
 
     public int getUpdateStatus() {
-        return updateStatus;
+        return Integer.valueOf(updateStatus);
     }
 
-    public void setUpdateStatus(int updateStatus) {
+    public void setUpdateStatus(String updateStatus) {
         this.updateStatus = updateStatus;
     }
 
@@ -50,8 +49,5 @@ public class AssetEntryRequest extends BaseRequest implements ObjectValidator {
         this.entrySource = entrySource;
     }
 
-    @Override
-    public void validate() throws RequestParamValidateException {
 
-    }
 }

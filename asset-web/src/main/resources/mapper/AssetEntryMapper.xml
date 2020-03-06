@@ -46,6 +46,15 @@
         </foreach>
     </insert>
     <update id="update"/>
+    <update id="updateEntryStatus" parameterType="com.antiy.asset.vo.request.AssetEntryRequest">
+        update asset
+        set admittance_status=#{updateStatus}
+        where id in
+        <foreach collection="assetIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status=1
+    </update>
     <delete id="deleteById"/>
     <select id="getById"/>
     <select id="getByWhere"/>
@@ -84,6 +93,18 @@
         where
         asset_id=#{primaryKey}
         and status=1
+    </select>
+    <select id="queryEntryStatus" resultType="com.antiy.asset.vo.response.AssetEntryStatusResponse">
+       select id assetId, admittance_status entryStatus
+       from asset
+       <trim prefix="where 1=1">
+           <if test="assetIds !=null and !assetIds.isEmpty">
+               and id in
+               <foreach collection="assetIds" item="item" open="(" separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+       </trim>
     </select>
 
 </mapper>

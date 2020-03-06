@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan({ "com.antiy.asset.dao" })
-@ComponentScan(basePackages = { "com.antiy.biz.util", "com.antiy.asset", "com.antiy.common", "com.antiy.biz.file" })// TODO
+@ComponentScan(basePackages = { "com.antiy.biz.util", "com.antiy.asset", "com.antiy.common", "com.antiy.biz.file","com.antiy.biz.message" })// TODO
 @ServletComponentScan(basePackages = { "com.antiy.common.filter" })
 public class AssetApplication {
 
