@@ -42,7 +42,7 @@
         insert into asset_entry_record(asset_id,source,result,change_status,gmt_create,create_user)
         values
         <foreach collection="recordList" separator="," item="item">
-            (item.assetId,item.entrySource,item.entryResult,item.changeStatus,item.gmtCreate,item.createUser)
+            (#{item.assetId},#{item.entrySource},#{item.entryResult},#{item.changeStatus},#{item.gmtCreate},#{item.createUser})
         </foreach>
     </insert>
     <update id="update"/>
@@ -50,8 +50,8 @@
         update asset
         set admittance_status=#{updateStatus}
         where id in
-        <foreach collection="assetIds" item="item" open="(" separator="," close=")">
-            #{item}
+        <foreach collection="assetActivityRequests" item="item" open="(" separator="," close=")">
+            #{item.stringId}
         </foreach>
         and status=1
     </update>

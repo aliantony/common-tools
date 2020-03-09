@@ -292,6 +292,19 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private Integer netStatus;
     @ApiModelProperty("从属业务id")
     private String[] dependentBusiness;
+    @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
+    private Boolean enterControl = false;
+    @ApiModelProperty(value = "监控规则id,未加密，如果传加密id,请告诉我改代码")
+    private String monitorRule;
+
+
+    public String getMonitorRule() {
+        return monitorRule;
+    }
+
+    public void setMonitorRule(String monitorRule) {
+        this.monitorRule = monitorRule;
+    }
 
     public Integer getNetStatus() {
         return netStatus;
@@ -479,8 +492,8 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
         this.manufacturers = manufacturers;
     }
 
-    @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
-    private Boolean enterControl = false;
+
+
 
     public Boolean getEnterControl() {
         return enterControl;

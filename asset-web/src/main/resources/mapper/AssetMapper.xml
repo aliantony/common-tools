@@ -1083,6 +1083,7 @@
         left join asset_mac_relation amr on asset.id = amr.asset_id and amr.status=1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id and asset_user.status=1
         left join asset_business_relation abr on asset.id=abr.asset_id and abr.status=1
+
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -1382,7 +1383,7 @@
         </foreach>
     </update>
     <!--查询资产漏洞数量-->
-    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount">
+    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         t1.asset_id as id,
         count(1) count
@@ -1396,11 +1397,14 @@
             and t1.vul_status!=5
             and t2.status = 1
             AND v.STATUS = 1
-            and t2.asset_status in
-            <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
-                #{assetStatus}
-            </foreach>
-            <if test="areaIds != null and areaIds.size() > 0">
+            <if test="assetStatusList !=null and !assetStatusList.isEmpty">
+                and t2.asset_status in
+                <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
+                    #{assetStatus}
+                </foreach>
+            </if>
+
+            <if test="areaIds != null and areaIds.length > 0">
                 and t2.area_id IN
                 <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                     #{item}
@@ -1414,7 +1418,7 @@
         </if>
     </select>
     <!--查询资产补丁数量-->
-    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount">
+    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id as id,
         count(1) as count
@@ -1425,7 +1429,7 @@
         on t1.asset_id =t2.id
         WHERE
         1 = 1
-        <if test="areaIds != null and areaIds.size() > 0">
+        <if test="areaIds != null and areaIds.length > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1434,10 +1438,12 @@
         and t1.patch_status != 5
         and t1.status = 1
         and t2.status =1
-        and t2.asset_status in
-        <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
-            #{assetStatus}
-        </foreach>
+        <if test="assetStatusList !=null and !assetStatusList.isEmpty">
+            and t2.asset_status in
+            <foreach collection="assetStatusList" item="assetStatus" open="(" close=")" separator=",">
+                #{assetStatus}
+            </foreach>
+        </if>
         AND p.STATUS = 1
         GROUP BY
         t1.asset_id
@@ -1452,7 +1458,7 @@
         inner join asset t2
         on t1.asset_id = t2.id
         where t1.patch_status != 5
-        <if test="areaIds != null and areaIds.size() > 0">
+        <if test="areaIds != null and areaIds.length > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}
@@ -1472,7 +1478,7 @@
         inner JOIN vuln_info v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id
         where t1.vul_status != 5
-        <if test="areaIds != null and areaIds.size() > 0">
+        <if test="areaIds != null and areaIds.length > 0">
             and t2.area_id IN
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}

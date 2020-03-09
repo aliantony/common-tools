@@ -349,4 +349,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer updateAssetBaselineTemplate(AssetBaselinTemplateQuery query);
+
+    List<String> findAvailableAssetStatus(Integer assetStatus);
 }

@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.base.BaseRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * @description: 流程处理请求
  */
 @ApiModel(value = "流程处理请求")
-public class ActivityHandleRequest {
+public class ActivityHandleRequest extends BaseRequest {
     @ApiModelProperty(value = "流程表单数据,JSON串")
     private Map    formData;
 

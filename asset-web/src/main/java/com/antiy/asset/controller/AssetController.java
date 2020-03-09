@@ -160,12 +160,14 @@ public class AssetController {
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
+
     @ApiOperation(value = "查询资产状态", notes = "")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "query/assetStatus",method = RequestMethod.POST)
+    @RequestMapping(value = "query/assetStatus", method = RequestMethod.POST)
     public ActionResponse getAssetStatus(@RequestBody AssetLockRequest assetLockRequest) throws Exception {
         return iAssetService.dealAssetOperation(assetLockRequest);
     }
+
     /**
      * 通过ID删除
      *
@@ -523,4 +525,9 @@ public class AssetController {
         return ActionResponse.success(count);
     }
 
+    @ApiOperation(value = "可用的批量操作", notes = "根据资产当前状态获取可用的下一步批量操作", response = ActionResponse.class)
+    @RequestMapping(value = "/query/assetStatusBatch", method = RequestMethod.POST)
+    public ActionResponse queryAssetStatus(@RequestParam Integer assetStatus) {
+        return ActionResponse.success(iAssetService.findAvailableAssetStatus(assetStatus));
+    }
 }

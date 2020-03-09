@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,8 +67,9 @@ public class AssetMonitorRuleRelationController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleRelationResponse.class, responseContainer = "List"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
-    public ActionResponse queryList(@ApiParam(value = "assetMonitorRuleRelation") AssetMonitorRuleRelationQuery assetMonitorRuleRelationQuery) throws Exception {
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    public ActionResponse queryList(@ApiParam(value = "assetMonitorRuleRelation")@RequestBody AssetMonitorRuleRelationQuery assetMonitorRuleRelationQuery) throws Exception {
+        ParamterExceptionUtils.isBlank(assetMonitorRuleRelationQuery.getRuleUniqueId(),"监控规则唯一键不能为空");
         return ActionResponse
             .success(iAssetMonitorRuleRelationService.queryPageAssetMonitorRuleRelation(assetMonitorRuleRelationQuery));
     }

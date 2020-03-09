@@ -8,6 +8,7 @@ import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetEntryQuery;
 import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.response.AssetEntryRecordResponse;
 import com.antiy.asset.vo.response.AssetEntryResponse;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author liulusheng
@@ -70,10 +72,11 @@ public class AssetEntryController {
         return ActionResponse.success(iAssetEntryService.queryRecord(query));
     }
 
-    @ApiOperation(value = "准入状态查询", notes = "查询资产准入状态",response = AssetEntryStatusResponse.class,responseContainer = "List")
+    @ApiOperation(value = "准入状态查询", notes = "查询资产准入状态", response = AssetEntryStatusResponse.class, responseContainer = "List")
     @RequestMapping(value = "/query/entryStatus", method = RequestMethod.POST)
     public ActionResponse queryEntryStatus(@RequestBody AssetEntryRequest request) {
-        return ActionResponse.success(iAssetEntryService.queryEntryStatus(request.getAssetIds()));
+        return ActionResponse.success(iAssetEntryService.queryEntryStatus(request.getAssetActivityRequests().stream()
+        .map(ActivityHandleRequest::getStringId).collect(Collectors.toList())));
     }
 
     /**

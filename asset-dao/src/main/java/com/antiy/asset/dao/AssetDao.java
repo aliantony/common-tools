@@ -141,8 +141,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetVulCount(@Param(value = "areaIds") List<String> areaIds,
-                                     @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
+    List<IdCount> queryAssetVulCount(AssetQuery query);
 
     /**
      * 查询资产补丁数
@@ -150,8 +149,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param areaIds
      * @return
      */
-    List<IdCount> queryAssetPatchCount(@Param(value = "areaIds") List<String> areaIds,
-                                       @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
+    List<IdCount> queryAssetPatchCount(AssetQuery query);
 
     /**
      * 查询补丁的资产总数
