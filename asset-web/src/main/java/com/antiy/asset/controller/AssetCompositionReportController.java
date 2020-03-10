@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetCompositionReportService;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LogUtils;
@@ -59,12 +60,24 @@ public class AssetCompositionReportController {
      * @param assetCompositionReportQuery
      * @return actionResponse
      */
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(value = "综合报表查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.GET)
     public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") AssetCompositionReportQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse
             .success(iAssetCompositionReportService.findPageAssetCompositionReport(assetCompositionReportQuery));
+    }
+
+    /**
+     * 批量查询
+     * @param assetCompositionReportQuery
+     * @return actionResponse
+     */
+    @ApiOperation(value = "批量查询模板", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/list/templates", method = RequestMethod.GET)
+    public ActionResponse templates(@ApiParam(value = "assetCompositionReportQuery") AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
+        return ActionResponse.success(iAssetCompositionReportService.findReport(assetCompositionReportQuery));
     }
 
     /**

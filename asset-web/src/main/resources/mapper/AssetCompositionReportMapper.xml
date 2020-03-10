@@ -80,7 +80,8 @@
             and query_condition = #{queryCondition }
         </if>
         <if test=" name != null">
-            and name = #{name }
+            and name LIKE CONCAT('%',replace(replace(#{name},'%','\%'),'_','\_'),'%')
+
         </if>
         <if test=" userId != null">
             and user_id = #{userId }
@@ -151,14 +152,80 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1)
-        from
-        <include refid="Table_Name"></include>
+        SELECT
+        count(1) count
+        FROM
+        asset t
+        LEFT JOIN asset_ip_relation air ON (
+        t.id = air.asset_id
+        AND air. STATUS = 1
+        )
+        LEFT JOIN asset_user asset_user ON t.responsible_user_id = asset_user.id
+        LEFT JOIN baseline_template bt ON t.baseline_template_id = bt.id
+        LEFT JOIN (
+        SELECT
+        a.id,
+        sum(
+        CASE
+        WHEN vul_status IN (5, 7) THEN
+        1
+        ELSE
+        0
+        END
+        ) AS vulCount,
+        sum(
+        CASE
+        WHEN vul_status != 5
+        OR 7 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS noVulCount
+        FROM
+        asset a
+        INNER JOIN vuln_asset_rel v ON a.id = v.asset_id
+        WHERE
+        a. STATUS = 1
+        AND v. STATUS = 1
+        GROUP BY
+        a.id
+        ) t1 ON t.id = t1.id
+        LEFT JOIN (
+        SELECT
+        sum(
+        CASE
+        WHEN patch_status = 5 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS patchCount,
+        sum(
+        CASE
+        WHEN patch_status != 5 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS noPatchCount,
+        a.id
+        FROM
+        asset a
+        INNER JOIN patch_asset_rel p ON a.id = p.asset_id
+        WHERE
+        a. STATUS = 1
+        AND p. STATUS = 1
+        GROUP BY
+        a.id
+        ) t2 ON t.id = t2.id
+
         <where>
             <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
+                <include refid="Multiple_Query"></include>
             </trim>
         </where>
+
     </select>
 
     <select id="findQuery" resultType="com.antiy.asset.entity.AssetCompositionReport"
@@ -174,4 +241,241 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="findAll" resultType="com.antiy.asset.vo.response.AssetCompositionReportResponse"
+            parameterType="com.antiy.asset.vo.query.AssetCompositionReportQuery">
+        SELECT
+        t.id,
+        t.number,
+        t.area_id AS areaId,
+        t.first_enter_nett,
+        t.importance_degree,
+        asset_user. NAME AS responsibleUserName,
+        bt.tp_name AS baseTemplate,
+        t.manufacturer,
+        GROUP_CONCAT(DISTINCT air.ip) AS ips,
+        IFNULL(t1.vulCount, 0) AS vulCount,
+        IFNULL(t1.noVulCount, 0) AS noVulCount,
+        IFNULL(t2.patchCount, 0) AS patchCount,
+        IFNULL(t2.noPatchCount, 0) AS noPatchCount
+        FROM
+        asset t
+        LEFT JOIN asset_ip_relation air ON (
+        t.id = air.asset_id
+        AND air. STATUS = 1
+        )
+        LEFT JOIN asset_user asset_user ON t.responsible_user_id = asset_user.id
+        LEFT JOIN baseline_template bt ON t.baseline_template_id = bt.id
+        LEFT JOIN (
+        SELECT
+        a.id,
+        sum(
+        CASE
+        WHEN vul_status IN (5, 7) THEN
+        1
+        ELSE
+        0
+        END
+        ) AS vulCount,
+        sum(
+        CASE
+        WHEN vul_status != 5
+        OR 7 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS noVulCount
+        FROM
+        asset a
+        INNER JOIN vuln_asset_rel v ON a.id = v.asset_id
+        WHERE
+        a. STATUS = 1
+        AND v. STATUS = 1
+        GROUP BY
+        a.id
+        ) t1 ON t.id = t1.id
+        LEFT JOIN (
+        SELECT
+        sum(
+        CASE
+        WHEN patch_status = 5 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS patchCount,
+        sum(
+        CASE
+        WHEN patch_status != 5 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS noPatchCount,
+        a.id
+        FROM
+        asset a
+        INNER JOIN patch_asset_rel p ON a.id = p.asset_id
+        WHERE
+        a. STATUS = 1
+        AND p. STATUS = 1
+        GROUP BY
+        a.id
+        ) t2 ON t.id = t2.id
+
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Multiple_Query"></include>
+            </trim>
+        </where>
+        group by t.id
+        ORDER BY
+        <choose>
+            <when test="sortOrder != null and sortOrder != ''">
+                <choose>
+                    <when test="sortName != null and sortName != ''">
+                        ${sortName} ${sortOrder}
+                    </when>
+                    <otherwise>
+                        first_enter_nett ${sortOrder}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                t.importance_degree desc
+            </otherwise>
+        </choose>
+
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+        <if test="start!=null and end!=null and pageSize==-1">
+            limit #{start},#{end}
+        </if>
+
+
+    </select>
+    <!--资产条件查询-->
+    <sql id="Multiple_Query">
+        t.status = 1
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and t.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" baselineTemplateIds != null and baselineTemplateIds..size() > 0 ">
+            and t.baseline_template_id in
+            <foreach index="index" item="item" collection="baselineTemplateIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test=" manufacturers != null and manufacturers.size() > 0">
+            and t.manufacturer in
+            <foreach collection="manufacturers" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" vulCount != null ">
+            <choose>
+                <when test="vulCountType = 1">
+                    and vulCount >= #{vulCount}
+                </when>
+                <otherwise>
+                    and vulCount &lt; #{vulCount}
+                </otherwise>
+            </choose>
+        </if>
+        <if test=" noVulCount != null ">
+            <choose>
+                <when test="noVulCountType = 1">
+                    and noVulCount >= #{noVulCount}
+                </when>
+                <otherwise>
+                    and noVulCount &lt; #{noVulCount}
+                </otherwise>
+            </choose>
+        </if>
+
+        <if test=" patchCount != null ">
+            <choose>
+                <when test="patchCountType = 1">
+                    and patchCount >= #{patchCount}
+                </when>
+                <otherwise>
+                    and patchCount &lt; #{patchCount}
+                </otherwise>
+            </choose>
+        </if>
+        <if test=" noPatchCount != null ">
+            <choose>
+                <when test="noPatchCountType = 1">
+                    and noPatchCount >= #{noPatchCount}
+                </when>
+                <otherwise>
+                    and noPatchCount &lt; #{noPatchCount}
+                </otherwise>
+            </choose>
+        </if>
+
+
+        <if test=" importanceDegrees != null and importanceDegrees.size() > 0">
+            and t.importance_degree in
+            <foreach collection="importanceDegrees" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstEnterStartTime != null">
+            and t.first_enter_nett &gt;= #{firstEnterStartTime }
+        </if>
+        <if test=" firstEnterEndTime != null">
+            and t.first_enter_nett &lt;= #{firstEnterEndTime }
+        </if>
+        <if test=" timeType != null">
+            <if test=" timeType = 1">
+                and YEARWEEK(
+                date_format(
+                FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d'),
+                '%Y-%m-%d'
+                ),
+                1
+                ) = YEARWEEK(now(), 1)
+                AND FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') &lt;=CURDATE()
+            </if>
+            <if test=" timeType = 2">
+                and DATE_FORMAT(
+                FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d'),
+                '%Y%m'
+                ) = DATE_FORMAT(CURDATE(), '%Y%m')
+                AND FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') &lt;= CURDATE()
+
+            </if>
+            <if test=" timeType = 3">
+                and FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') &lt;= CURDATE()
+                AND FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') >= concat(
+                date_format(
+                LAST_DAY(
+                MAKEDATE(
+                EXTRACT(YEAR FROM CURDATE()),
+                1
+                ) + INTERVAL QUARTER (CURDATE()) * 3 - 3 MONTH
+                ),
+                '%Y-%m-'
+                ),
+                '01'
+                )
+            </if>
+            <if test=" timeType = 4">
+                and FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') >= DATE_SUB(
+                CURDATE(),
+                INTERVAL dayofyear(now()) - 1 DAY
+                )
+                AND FROM_UNIXTIME(first_enter_nett / 1000, '%Y-%m-%d') &lt;= CURDATE()
+            </if>
+
+        </if>
+
+    </sql>
+
 </mapper>

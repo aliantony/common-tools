@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetCompositionReport;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.asset.vo.response.AssetCompositionReportResponse;
 import com.antiy.common.base.IBaseService;
@@ -49,4 +50,5 @@ public interface IAssetCompositionReportService extends IBaseService<AssetCompos
 
     void exportData(AssetCompositionReportQuery assetQuery, HttpServletResponse response, HttpServletRequest request) throws Exception;
 
+    List<AssetCompositionReport> findReport(AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception;
 }
