@@ -230,6 +230,12 @@
         set status=0
         where unique_id=#{uniqueId}
     </update>
+    <update id="updateSourceByassetId">
+        update  asset_business_relation
+        set source=1
+        where  asset_id=#{assetId}
+        and status=1
+    </update>
     <select id="queryAssetByBusinessId" resultType="com.antiy.asset.vo.response.AssetBusinessRelationResponse">
         SELECT
         a.id as stringId,

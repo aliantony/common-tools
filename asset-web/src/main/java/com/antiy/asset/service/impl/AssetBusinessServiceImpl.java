@@ -211,4 +211,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         AssetBusinessResponse assetBusinessResponse=responseConverter.convert(assetBusiness,AssetBusinessResponse.class);
         return assetBusinessResponse;
     }
+
+    @Override
+    public Integer updateStatusByUniqueId(String uniqueId) {
+
+        return assetBusinessDao.updateStatusByUniqueId(uniqueId);
+    }
 }

@@ -2038,6 +2038,11 @@ WHERE
         </foreach>
         and status=1
     </update>
+    <update id="updateAssetStatusById">
+        update asset
+        set asset_status=#{assetStatus}
+        where id=#{assetId}
+    </update>
     <select id="countCheckList" resultType="int">
         select  count(*)
         from  asset

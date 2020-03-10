@@ -385,8 +385,8 @@
         ) b
         USING(id)
     </select>
-    <select id="queryAssetSchemListByAssetIds" resultType="com.antiy.asset.vo.response.AssetOperationRecordResponse">
-        SELECT
+    <select id="queryAssetSchemListByAssetIds" resultType="com.antiy.asset.vo.response.AssetResponse">
+<!--        SELECT
         aor.id as stringId,
         aor.target_object_id as targetObjectId ,
         aor.file_info as fileInfo,
@@ -403,6 +403,63 @@
         </foreach>
         GROUP BY target_object_id ) AS t_aor
         JOIN asset_operation_record AS aor ON t_aor.target_object_id = aor.target_object_id
+        AND t_aor.gmt_create = aor.gmt_create-->
+
+        SELECT
+        a.id AS stringId,
+        a.`name`,
+        a.`number`,
+        a.manufacturer,
+        a.asset_group AS assetGroup,
+        a.importance_degree AS importanceDegree,
+        a.category_model AS categoryModel,
+        GROUP_CONCAT( DISTINCT air.ip ) AS ips,
+        GROUP_CONCAT( DISTINCT amr.mac ) AS macs,
+        aor.file_info AS fileInfo,
+        aor.content,
+        aor.note,
+        aor.check_user_id as checkUserId,
+        aor.check_user_name as checkUserName
+        FROM
+        asset AS a
+        LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id
+        AND air.STATUS = 1
+        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id
+        AND amr.STATUS = 1
+        LEFT JOIN asset_business_relation AS abr ON a.id = abr.asset_id
+        AND abr.STATUS = 1
+        LEFT JOIN (
+        SELECT
+        target_object_id,
+        max( gmt_create ) AS gmt_create
+        FROM
+        `asset_operation_record`
+        WHERE
+        (origin_status=#{orginStatusOne} or origin_status=#{orginStatusTwo}) and target_status=#{targetStatus}
+        AND STATUS = 1
+        <if test="assetIds !=null and assetIds.size()>0">
+            and
+            asset_operation_record.target_object_id in
+            <foreach collection="assetIds" open="(" close=")" item="e" separator=",">
+                #{e}
+            </foreach>
+        </if>
+        GROUP BY
+        target_object_id
+        ) AS t_aor ON a.id = t_aor.target_object_id
+
+        LEFT JOIN asset_operation_record AS aor ON t_aor.target_object_id = aor.target_object_id
         AND t_aor.gmt_create = aor.gmt_create
+        WHERE
+        a.STATUS = 1
+        <if test="assetIds !=null and assetIds.size()>0">
+            and a.id  in
+            <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        GROUP BY
+        a.id,aor.id
+
     </select>
 </mapper>

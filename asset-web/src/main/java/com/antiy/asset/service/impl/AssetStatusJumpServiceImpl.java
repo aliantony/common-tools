@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetBusinessRelationDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetOperationRecordDao;
@@ -54,6 +55,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private AssetLinkRelationDao assetLinkRelationDao;
     @Resource
     private AssetOperationRecordDao assetOperationRecordDao;
+
+    @Resource
+    private AssetBusinessRelationDao assetBusinessRelationDao;
 
     @Resource
     private AesEncoder aesEncoder;
@@ -112,6 +116,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
                 return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
             }
+            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE) &&statusJumpRequest.getAgree().equals(true)){
+                ActionResponse actionResponse= baseLineClient.removeAsset(assetIdList);
+            }
+
         } else {
             // 配置走完,触发漏洞扫描
             statusJumpRequest.getAssetInfoList().forEach(e -> {
@@ -145,6 +153,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     public ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception {
 
         return null;
+    }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Integer continueNetIn(String primaryKey) {
+        Integer result = assetDao.updateAssetStatusById(primaryKey, AssetStatusEnum.NET_IN_LEADER_CHECK.getCode());
+        assetBusinessRelationDao.updateSourceByassetId(primaryKey);
+        return result;
     }
 
     private void setInProcess(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {

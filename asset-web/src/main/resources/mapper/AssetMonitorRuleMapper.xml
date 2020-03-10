@@ -308,4 +308,73 @@
         <include refid="Table_Name"/>
         where status = 0 and unique_id = #{uniqueId}
     </select>
+    <update id="editRuleStatusByUI" >
+        update  asset_monitor_rule
+        set rule_status=#{ruleStatus}
+        where unique_id=#{uniqueId}
+        and status=1
+    </update>
+    <update id="deleteByUniqueId">
+         update  asset_monitor_rule
+        set status=0
+        where unique_id=#{uniqueId}
+        and status=1
+    </update>
+    <select id="queryByUniqueId" resultMap="BaseResultMap">
+        select *
+        from asset_monitor_rule
+        where unique_id=#{uniqueId}
+        and status=1
+    </select>
+    <select id="countAssetByUniqueId" resultType="int">
+        SELECT
+           count(a.id)
+            from asset_monitor_rule as amr
+            left join  asset_monitor_rule_relation as amrr
+            on amr.unique_id=amrr.unique_id and amrr.status=1
+            left join asset as a
+            on amrr.asset_id=a.id on a.status=1
+            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            where amr.unique_id=#{uniqueId}
+            and status=1
+            <if test="areaList !=null and areaList.size()>0">
+                and amr.area_id in
+                <foreach collection="areaList" separator="," item="e" close=")" open="(" >
+                    #{e}
+                </foreach>
+            </if>
+            group by a.id
+    </select>
+    <select id="queryAssetByUniqueId" resultType="com.antiy.asset.vo.response.AssetResponse">
+
+      SELECT
+            a.id as stringId,
+            a.`name`,
+            a.`number`,
+            a.manufacturer,
+            a.asset_group as assetGroup,
+            a.importance_degree as importanceDegree,
+            GROUP_CONCAT(distinct air.ip) AS ips,
+            GROUP_CONCAT(distinct amr.mac) AS macs
+            from asset_monitor_rule as amr
+            left join  asset_monitor_rule_relation as amrr
+            on amr.unique_id=amrr.unique_id and amrr.status=1
+            left join asset as a
+            on amrr.asset_id=a.id on a.status=1
+            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            where amr.unique_id=#{uniqueId}
+            and status=1
+            <if test="areaList !=null and areaList.size()>0">
+                and amr.area_id in
+                <foreach collection="areaList" separator="," item="e" close=")" open="(" >
+                    #{e}
+                </foreach>
+            </if>
+            group by a.id
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
 </mapper>

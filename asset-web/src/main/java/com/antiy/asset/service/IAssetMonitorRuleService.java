@@ -1,15 +1,16 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-
 import com.antiy.asset.entity.AssetMonitorRule;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+
+import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务类 </p>
@@ -61,4 +62,12 @@ public interface IAssetMonitorRuleService extends IBaseService<AssetMonitorRule>
      */
     String deleteAssetMonitorRuleById(BaseRequest baseRequest) throws Exception;
 
+
+    Integer editRuleStatus(String uniqueId, Boolean useFlag);
+
+    Integer deleteByUniqueId(String uniqueId);
+
+    AssetMonitorRuleResponse queryByUniqueId(String uniqueId);
+
+    PageResult<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery uniqueId);
 }

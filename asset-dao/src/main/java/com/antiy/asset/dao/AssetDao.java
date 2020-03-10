@@ -385,4 +385,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<AssetResponse> queryCheckList(AssetSchemeQuery assetSchemeQuery);
 
     Integer countCheckList(AssetSchemeQuery assetSchemeQuery);
+
+    Integer updateAssetStatusById(@Param("assetId") String primaryKey, @Param("assetStatus") Integer assetStatus);
 }

@@ -11,6 +11,7 @@ import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -78,6 +79,19 @@ public class AssetStatusJumpController {
     public ActionResponse assetNoRegister(@ApiParam(value = "assetStatusChangeRequest") @RequestBody(required = false) List<NoRegisterRequest> registerRequestList) throws Exception {
         Integer count = assetService.assetNoRegister(registerRequestList);
         return ActionResponse.success(count);
+    }
+    /**
+     * 继续入网
+     *
+     * @param assetStatusChangeRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产继续入网", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/netIn", method = RequestMethod.POST)
+    public ActionResponse assetContinueNetIn(@ApiParam(value = "queryCondition") @RequestBody QueryCondition queryCondition) throws Exception {
+        Integer result=assetStatusJumpService.continueNetIn(queryCondition.getPrimaryKey());
+        return ActionResponse.success(result);
     }
 
     @ApiOperation(value = "准入实施", response = ActionResponse.class)

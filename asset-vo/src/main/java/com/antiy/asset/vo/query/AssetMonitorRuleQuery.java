@@ -18,6 +18,16 @@ public class AssetMonitorRuleQuery extends AssetBaseQuery {
     private String alarmLevel;
     @ApiModelProperty("是否关联资产数排序")
     private boolean relatedAssetSort;
+    @ApiModelProperty("唯一键")
+    private String uniqueId;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public Boolean getRelatedAssetSort() {
         return relatedAssetSort;

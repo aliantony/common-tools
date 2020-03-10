@@ -93,7 +93,7 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
     }
 
     @Override
-    public List<AssetOperationRecordResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery) {
+    public List<AssetResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery) {
 
         return assetOperationRecordDao.queryAssetSchemListByAssetIds(assetSchemeQuery);
     }

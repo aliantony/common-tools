@@ -1,13 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.component.WrappedRedisUtil;
 import com.antiy.asset.dao.AssetMonitorRuleDao;
@@ -25,11 +17,20 @@ import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务实现类 </p>
@@ -182,5 +183,39 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     public String deleteAssetMonitorRuleById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetMonitorRuleDao.deleteById(baseRequest.getStringId()).toString();
+    }
+
+    @Override
+    public Integer editRuleStatus(String uniqueId, Boolean useFlag) {
+        if (useFlag) {
+            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, 1);
+        } else {
+            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, 0);
+        }
+    }
+
+    @Override
+    public Integer deleteByUniqueId(String uniqueId) {
+
+        return  assetMonitorRuleDao.deleteByUniqueId(uniqueId);
+    }
+
+    @Override
+    public AssetMonitorRuleResponse queryByUniqueId(String uniqueId) {
+        AssetMonitorRule assetMonitorRule = assetMonitorRuleDao.queryByUniqueId(uniqueId);
+        AssetMonitorRuleResponse responseAssetRule = responseConverter.convert(assetMonitorRule, AssetMonitorRuleResponse.class);
+        return  responseAssetRule;
+    }
+
+    @Override
+    public PageResult<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery assetMonitorRuleQuery) {
+        assetMonitorRuleQuery.setAreaList(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        Integer count=assetMonitorRuleDao.countAssetByUniqueId(assetMonitorRuleQuery);
+        if(count==null){
+            return  new PageResult(assetMonitorRuleQuery.getPageSize(),0,assetMonitorRuleQuery.getCurrentPage(),new ArrayList());
+        }
+        List<AssetResponse> asetResponseList=assetMonitorRuleDao.queryAssetByUniqueId(assetMonitorRuleQuery);
+
+        return new PageResult(assetMonitorRuleQuery.getPageSize(),0,assetMonitorRuleQuery.getCurrentPage(),asetResponseList);
     }
 }

@@ -8,7 +8,6 @@ import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import io.swagger.annotations.*;
@@ -91,7 +90,7 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") @Valid AssetBusinessRequest assetBusinessRequest)throws Exception{
+    public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") @Valid @RequestBody AssetBusinessRequest assetBusinessRequest)throws Exception{
         return ActionResponse.success(iAssetBusinessService.updateAssetBusiness(assetBusinessRequest));
     }
 
@@ -125,19 +124,18 @@ public class AssetBusinessController {
         return ActionResponse.success(iAssetBusinessService.queryAssetBusinessById(queryCondition));
     }
 
+
     /**
-     * 通过ID删除
-     *
-     * @param baseRequest
-     * @return actionResponse
+     * 删除业务
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "通过uniqueId删除接口", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest)throws Exception{
-        return ActionResponse.success(iAssetBusinessService.deleteAssetBusinessById(baseRequest));
+    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") AssetBusinessRequest assetBusinessRequest)throws Exception{
+        Integer result=iAssetBusinessService.updateStatusByUniqueId(assetBusinessRequest.getUniqueId());
+        return ActionResponse.success(result);
     }
 }
 

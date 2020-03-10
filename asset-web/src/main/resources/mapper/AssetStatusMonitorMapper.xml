@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetStatusMonitorDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetStatusMonitor">
+        <id column="id" property="id"/>
+        <result column="asset_id" property="assetId"/>
+        <result column="cpu_used_rate" property="cpuUsedRate"/>
+        <result column="memory_total" property="memoryTotal"/>
+        <result column="memory_used" property="memoryUsed"/>
+        <result column="memory_used_rate" property="memoryUsedRate"/>
+        <result column="disk_total" property="diskTotal"/>
+        <result column="disk_used" property="diskUsed"/>
+        <result column="disk_totalused_rate" property="diskTotalusedRate"/>
+        <result column="disk_detail" property="diskDetail"/>
+        <result column="rule_id" property="ruleId"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="location" property="location"/>
+        <result column="supplier" property="supplier"/>
+        <result column="installed_time" property="installedTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="service_status" property="serviceStatus"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="pid" property="pid"/>
+        <result column="network_status" property="networkStatus"/>
+    </resultMap>
+    <resultMap id="BasePerformance" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse">
+        <id property="stringId" column="id"/>
+        <result property="networkStatus" column="network_status"/>
+        <result property="cpuUsedRate" column="cpu_used_rate"/>
+        <result property="memoryUsedRate" column="memory_used_rate"/>
+        <result property="diskTotal" column="disk_total"/>
+        <result property="diskUsed" column="disk_used"/>
+        <result property="diskDetail" column="disk_detail"/>
+        <result property="ruleId" column="rule_id"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <association property="assetMonitorRuleResponse" javaType="com.antiy.asset.vo.response.AssetMonitorRuleResponse" resultMap="ruleMonitor"/>
+    </resultMap>
+    <resultMap id="ruleMonitor" type="com.antiy.asset.vo.response.AssetMonitorRuleResponse">
+        <result property="alarmLevel" column="alarm_level"/>
+        <result property="ruleStatus" column="rule_status"/>
+        <result property="cpuThreshold" column="cpu_threshold"/>
+        <result property="memoryThreshold" column="memory_threshold"/>
+        <result property="diskThreshold" column="disk_threshold"/>
+        <result property="runtimeExceptionThreshold" column="runtime_exception_threshold"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, asset_id, cpu_used_rate, memory_total, memory_used, memory_used_rate, disk_total, disk_used, disk_totalused_rate, disk_detail, rule_id, gmt_modified, type, name, description, location, supplier, installed_time, version, status, service_status, gmt_create, create_user, modify_user, pid, network_status
+    </sql>
+
+    <sql id="Table_Name">
+        asset_status_monitor
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" assetId != null">
+            asset_id,
+        </if>
+        <if test=" cpuUsedRate != null">
+            cpu_used_rate,
+        </if>
+        <if test=" memoryTotal != null">
+            memory_total,
+        </if>
+        <if test=" memoryUsed != null">
+            memory_used,
+        </if>
+        <if test=" memoryUsedRate != null">
+            memory_used_rate,
+        </if>
+        <if test=" diskTotal != null">
+            disk_total,
+        </if>
+        <if test=" diskUsed != null">
+            disk_used,
+        </if>
+        <if test=" diskTotalusedRate != null">
+            disk_totalused_rate,
+        </if>
+        <if test=" diskDetail != null">
+            disk_detail,
+        </if>
+        <if test=" ruleId != null">
+            rule_id,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" type != null">
+            type,
+        </if>
+        <if test=" name != null">
+            name,
+        </if>
+        <if test=" description != null">
+            description,
+        </if>
+        <if test=" location != null">
+            location,
+        </if>
+        <if test=" supplier != null">
+            supplier,
+        </if>
+        <if test=" installedTime != null">
+            installed_time,
+        </if>
+        <if test=" version != null">
+            version,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+        <if test=" serviceStatus != null">
+            service_status,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifyUser != null">
+            modify_user,
+        </if>
+        <if test=" pid != null">
+            pid,
+        </if>
+        <if test=" networkStatus != null">
+            network_status,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" assetId != null">
+            #{assetId },
+        </if>
+        <if test=" cpuUsedRate != null">
+            #{cpuUsedRate },
+        </if>
+        <if test=" memoryTotal != null">
+            #{memoryTotal },
+        </if>
+        <if test=" memoryUsed != null">
+            #{memoryUsed },
+        </if>
+        <if test=" memoryUsedRate != null">
+            #{memoryUsedRate },
+        </if>
+        <if test=" diskTotal != null">
+            #{diskTotal },
+        </if>
+        <if test=" diskUsed != null">
+            #{diskUsed },
+        </if>
+        <if test=" diskTotalusedRate != null">
+            #{diskTotalusedRate },
+        </if>
+        <if test=" diskDetail != null">
+            #{diskDetail },
+        </if>
+        <if test=" ruleId != null">
+            #{ruleId },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" type != null">
+            #{type },
+        </if>
+        <if test=" name != null">
+            #{name },
+        </if>
+        <if test=" description != null">
+            #{description },
+        </if>
+        <if test=" location != null">
+            #{location },
+        </if>
+        <if test=" supplier != null">
+            #{supplier },
+        </if>
+        <if test=" installedTime != null">
+            #{installedTime },
+        </if>
+        <if test=" version != null">
+            #{version },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+        <if test=" serviceStatus != null">
+            #{serviceStatus },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            #{modifyUser },
+        </if>
+        <if test=" pid != null">
+            #{pid },
+        </if>
+        <if test=" networkStatus != null">
+            #{networkStatus },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" assetId != null">
+            asset_id = #{assetId },
+        </if>
+        <if test=" cpuUsedRate != null">
+            cpu_used_rate = #{cpuUsedRate },
+        </if>
+        <if test=" memoryTotal != null">
+            memory_total = #{memoryTotal },
+        </if>
+        <if test=" memoryUsed != null">
+            memory_used = #{memoryUsed },
+        </if>
+        <if test=" memoryUsedRate != null">
+            memory_used_rate = #{memoryUsedRate },
+        </if>
+        <if test=" diskTotal != null">
+            disk_total = #{diskTotal },
+        </if>
+        <if test=" diskUsed != null">
+            disk_used = #{diskUsed },
+        </if>
+        <if test=" diskTotalusedRate != null">
+            disk_totalused_rate = #{diskTotalusedRate },
+        </if>
+        <if test=" diskDetail != null">
+            disk_detail = #{diskDetail },
+        </if>
+        <if test=" ruleId != null">
+            rule_id = #{ruleId },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" type != null">
+            type = #{type },
+        </if>
+        <if test=" name != null">
+            name = #{name },
+        </if>
+        <if test=" description != null">
+            description = #{description },
+        </if>
+        <if test=" location != null">
+            location = #{location },
+        </if>
+        <if test=" supplier != null">
+            supplier = #{supplier },
+        </if>
+        <if test=" installedTime != null">
+            installed_time = #{installedTime },
+        </if>
+        <if test=" version != null">
+            version = #{version },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+        <if test=" serviceStatus != null">
+            service_status = #{serviceStatus },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifyUser != null">
+            modify_user = #{modifyUser },
+        </if>
+        <if test=" pid != null">
+            pid = #{pid },
+        </if>
+        <if test=" networkStatus != null">
+            network_status = #{networkStatus },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" assetId != null">
+            and asset_id = #{assetId }
+        </if>
+        <if test=" cpuUsedRate != null">
+            and cpu_used_rate = #{cpuUsedRate }
+        </if>
+        <if test=" memoryTotal != null">
+            and memory_total = #{memoryTotal }
+        </if>
+        <if test=" memoryUsed != null">
+            and memory_used = #{memoryUsed }
+        </if>
+        <if test=" memoryUsedRate != null">
+            and memory_used_rate = #{memoryUsedRate }
+        </if>
+        <if test=" diskTotal != null">
+            and disk_total = #{diskTotal }
+        </if>
+        <if test=" diskUsed != null">
+            and disk_used = #{diskUsed }
+        </if>
+        <if test=" diskTotalusedRate != null">
+            and disk_totalused_rate = #{diskTotalusedRate }
+        </if>
+        <if test=" diskDetail != null">
+            and disk_detail = #{diskDetail }
+        </if>
+        <if test=" ruleId != null">
+            and rule_id = #{ruleId }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" type != null">
+            and type = #{type }
+        </if>
+        <if test=" name != null">
+            and name = #{name }
+        </if>
+        <if test=" description != null">
+            and description = #{description }
+        </if>
+        <if test=" location != null">
+            and location = #{location }
+        </if>
+        <if test=" supplier != null">
+            and supplier = #{supplier }
+        </if>
+        <if test=" installedTime != null">
+            and installed_time = #{installedTime }
+        </if>
+        <if test=" version != null">
+            and version = #{version }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+        <if test=" serviceStatus != null">
+            and service_status = #{serviceStatus }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifyUser != null">
+            and modify_user = #{modifyUser }
+        </if>
+        <if test=" pid != null">
+            and pid = #{pid }
+        </if>
+        <if test=" networkStatus != null">
+            and network_status = #{networkStatus }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetStatusMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetStatusMonitor" >
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="queryBasePerformance" resultMap="BasePerformance">
+        select
+        asm.id as stringId,
+        asm.network_status,
+        asm.cpu_used_rate ,
+        asm.memory_used_rate ,
+        asm.disk_total ,
+        asm.disk_used ,
+        asm.disk_detail ,
+        asm.rule_id,
+        asm.gmt_modified ,
+        amr.alarm_level ,
+        amr.rule_status ,
+        amr.cpu_threshold ,
+        amr.memory_threshold,
+        amr.disk_threshold,
+        amr.runtime_exception_threshold
+        from
+        asset_status_monitor as asm
+        left join asset_monitor_rule as amr
+        on amr.id=asm.rule_id and amr.status=1
+        where asset_id=#{assetId}
+        and `type`=4
+        and status=1
+        order by gmtModified desc
+        limit 1
+    </select>
+    <select id="maxMonitorGmtModified" resultType="long">
+        select max(gmt_modified)
+        from asset_status_monitor
+        where status=1 and `type`=4
+        and asset_id=#{assetId}
+    </select>
+    <select id="queryMonitor" resultMap="BaseResultMap">
+        select
+            *
+        from
+        asset_status_monitor
+        where `type`=#{type}
+        and asset_id=#{assetId}
+        and gmt_modified=#{gmtModified}
+        and status=1
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="countMonitor" resultType="int">
+        select  count(*)
+        from  <include refid="Table_Name"></include>
+        where `type`=#{type}
+        and asset_id=#{assetId}
+        and gmt_modified=#{gmtModified}
+        and status=1
+    </select>
+</mapper>

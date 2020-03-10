@@ -48,4 +48,10 @@ public interface BaseLineClient {
      */
     ActionResponse baselineConfig(List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList);
 
+    /**
+     * 资产退役
+     * @param assetIdList
+     * @return
+     */
+    ActionResponse removeAsset(List<Integer> assetIdList);
 }

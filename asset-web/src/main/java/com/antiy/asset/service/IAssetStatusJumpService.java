@@ -21,4 +21,11 @@ public interface IAssetStatusJumpService {
     ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception;
 
     String entryExecution(AssetEntryRequest request);
+
+    /**
+     * 继续入网
+     * @param primaryKey
+     * @return
+     */
+    Integer continueNetIn(String primaryKey);
 }
