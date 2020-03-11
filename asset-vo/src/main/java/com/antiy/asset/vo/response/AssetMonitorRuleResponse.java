@@ -29,6 +29,46 @@ public class AssetMonitorRuleResponse {
     private String  ruleStatus;
     @ApiModelProperty("状态")
     private String  ruleStatusName;
+    @ApiModelProperty("CPU监控")
+    private Integer cpuThreshold;
+    @ApiModelProperty("内存监控")
+    private Integer memoryThreshold;
+    @ApiModelProperty("总磁盘监控")
+    private Integer diskThreshold;
+    @ApiModelProperty("运行异常监控")
+    private Integer runtimeExceptionThreshold;
+
+    public Integer getCpuThreshold() {
+        return cpuThreshold;
+    }
+
+    public void setCpuThreshold(Integer cpuThreshold) {
+        this.cpuThreshold = cpuThreshold;
+    }
+
+    public Integer getMemoryThreshold() {
+        return memoryThreshold;
+    }
+
+    public void setMemoryThreshold(Integer memoryThreshold) {
+        this.memoryThreshold = memoryThreshold;
+    }
+
+    public Integer getDiskThreshold() {
+        return diskThreshold;
+    }
+
+    public void setDiskThreshold(Integer diskThreshold) {
+        this.diskThreshold = diskThreshold;
+    }
+
+    public Integer getRuntimeExceptionThreshold() {
+        return runtimeExceptionThreshold;
+    }
+
+    public void setRuntimeExceptionThreshold(Integer runtimeExceptionThreshold) {
+        this.runtimeExceptionThreshold = runtimeExceptionThreshold;
+    }
 
     public String getUniqueId() {
         return uniqueId;

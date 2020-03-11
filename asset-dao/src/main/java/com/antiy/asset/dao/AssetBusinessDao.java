@@ -19,4 +19,6 @@ public interface AssetBusinessDao extends IBaseDao<AssetBusiness> {
     AssetBusiness getByName(String name);
 
     AssetBusiness getByUniqueId(String uniqueId);
+
+    Integer updateStatusByUniqueId(String uniqueId);
 }

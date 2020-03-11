@@ -32,7 +32,7 @@ public interface IAssetOperationRecordService extends IBaseService<AssetOperatio
      */
     ActionResponse batchQueryAssetPreStatusInfo(List<String> ids);
 
-    List<AssetOperationRecordResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
+    List<AssetResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
 
     /**
      * 资产退役/报废/入网审批资产信息列表

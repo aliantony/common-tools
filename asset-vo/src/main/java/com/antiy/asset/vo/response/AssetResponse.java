@@ -286,6 +286,58 @@ public class AssetResponse extends BaseResponse {
     private Integer           isOrphan;
     @ApiModelProperty("自定义字段")
     private List<AssetCustomizeRequest> customField;
+    @ApiModelProperty("附件")
+    private String fileInfo;
+    @ApiModelProperty("审批内容")
+    private String note;
+
+    @ApiModelProperty("审批人主键")
+    @Encode
+    private String  checkUserId;
+    @ApiModelProperty("审批人名字")
+    private String checkUserName;
+    @ApiModelProperty("操作日志内容")
+    private String content;
+
+    public String getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(String fileInfo) {
+        this.fileInfo = fileInfo;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getCheckUserId() {
+        return checkUserId;
+    }
+
+    public void setCheckUserId(String checkUserId) {
+        this.checkUserId = checkUserId;
+    }
+
+    public String getCheckUserName() {
+        return checkUserName;
+    }
+
+    public void setCheckUserName(String checkUserName) {
+        this.checkUserName = checkUserName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public List<AssetCustomizeRequest> getCustomField() {
         return customField;

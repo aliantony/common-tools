@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan({ "com.antiy.asset.dao" })
-@ComponentScan(basePackages = { "com.antiy.biz.util", "com.antiy.asset", "com.antiy.common", "com.antiy.biz.file" })// TODO
+@ComponentScan(basePackages = { "com.antiy.biz.util", "com.antiy.asset", "com.antiy.common", "com.antiy.biz.file","com.antiy.biz.message" })// TODO
 @ServletComponentScan(basePackages = { "com.antiy.common.filter" })
 public class AssetApplication {
 

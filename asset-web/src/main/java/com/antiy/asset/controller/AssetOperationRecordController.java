@@ -49,7 +49,7 @@ public class AssetOperationRecordController {
        /* assetSchemeQuery.setOrginStatusOne(7);
         assetSchemeQuery.setOrginStatusTwo(10);
         assetSchemeQuery.setTargetStatus(9);*/
-        List<AssetOperationRecordResponse> assetOperationRecordList=assetOperationRecordService.queryAssetSchemListByAssetIds(assetSchemeQuery);
+        List<AssetResponse> assetOperationRecordList=assetOperationRecordService.queryAssetSchemListByAssetIds(assetSchemeQuery);
         return ActionResponse.success(assetOperationRecordList);
     }
 

@@ -77,4 +77,9 @@ public class BaseLineClientImpl implements BaseLineClient {
             }, baselineWaitingConfigUrl);
     }
 
+    @Override
+    public ActionResponse removeAsset(List<Integer> assetIdList) {
+        return null;
+    }
+
 }

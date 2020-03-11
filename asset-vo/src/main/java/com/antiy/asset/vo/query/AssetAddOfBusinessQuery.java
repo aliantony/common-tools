@@ -55,10 +55,15 @@ public class AssetAddOfBusinessQuery extends ObjectQuery {
 
     /**
      *
+     *
+     *
+     *
+     *
+     *
+     *
      * 区域id
      *
      */
-    @Encode
     String [] areaIds;
 
     public String[] getAreaIds() {

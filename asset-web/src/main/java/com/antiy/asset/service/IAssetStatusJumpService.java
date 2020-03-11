@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.common.base.ActionResponse;
 
@@ -18,4 +19,13 @@ public interface IAssetStatusJumpService {
      */
     ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception;
     ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception;
+
+    String entryExecution(AssetEntryRequest request);
+
+    /**
+     * 继续入网
+     * @param primaryKey
+     * @return
+     */
+    Integer continueNetIn(String primaryKey);
 }

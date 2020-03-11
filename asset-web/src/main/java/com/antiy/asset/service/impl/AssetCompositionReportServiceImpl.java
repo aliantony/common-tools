@@ -9,22 +9,22 @@ import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.CSVUtils;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.asset.vo.response.AssetCompositionReportResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.PageResult;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.DateUtils;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -56,12 +56,14 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     private ExcelDownloadUtil                                                     excelDownloadUtil;
     @Resource
     private ComReportConvert                                                      comreportconvert;
+    @Resource
+    private RedisUtil                                                             redisUtil;
 
     @Override
     public Integer saveAssetCompositionReport(AssetCompositionReportRequest request) throws Exception {
         // 名称去重
         String name = request.getName();
-        AssetCompositionReportQuery assetCompositionReportQuery = new AssetCompositionReportQuery();
+        AssetCompositionReportTemplateQuery assetCompositionReportQuery = new AssetCompositionReportTemplateQuery();
         assetCompositionReportQuery.setName(name);
         assetCompositionReportQuery.setStatus(1);
         Integer count = assetCompositionReportDao.findCount(assetCompositionReportQuery);
@@ -79,15 +81,36 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
 
     @Override
     public List<AssetCompositionReportResponse> findListAssetCompositionReport(AssetCompositionReportQuery query) throws Exception {
-        List<AssetCompositionReport> assetCompositionReportList = assetCompositionReportDao.findQuery(query);
-        // TODO
-        List<AssetCompositionReportResponse> assetCompositionReportResponse = responseConverter
-            .convert(assetCompositionReportList, AssetCompositionReportResponse.class);
-        return assetCompositionReportResponse;
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return Lists.newArrayList();
+        }
+        if (ArrayUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
+        }
+        List<AssetCompositionReportResponse> assetCompositionReportList = assetCompositionReportDao.findAll(query);
+        if (CollectionUtils.isNotEmpty(assetCompositionReportList)) {
+            assetCompositionReportList.stream().forEach(a -> {
+                try {
+                    String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                        a.getAreaId());
+                    SysArea sysArea = redisUtil.getObject(key, SysArea.class);
+                    a.setAreaName(sysArea.getFullName());
+                } catch (Exception e) {
+                    logger.warn("获取资产区域名称失败", e);
+                }
+            });
+        }
+        return assetCompositionReportList;
     }
 
     @Override
     public PageResult<AssetCompositionReportResponse> findPageAssetCompositionReport(AssetCompositionReportQuery query) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+        }
+
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
             this.findListAssetCompositionReport(query));
     }
@@ -125,10 +148,17 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
             }
 
             LogUtils.recordOperLog(
-                new BusinessData("导出《资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+                new BusinessData("导出《综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
+                    "",
                     assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
+    }
+
+    @Override
+    public List<AssetCompositionReport> findReport(AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
+        List<AssetCompositionReport> query = assetCompositionReportDao.findQuery(assetCompositionReportQuery);
+        return query;
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.antiy.asset.entity.AssetMonitorRuleRelation;
 import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
+import com.antiy.asset.vo.response.AssetMonitorRuleRelationResponse;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -32,4 +33,5 @@ public interface AssetMonitorRuleRelationDao extends IBaseDao<AssetMonitorRuleRe
      */
     Integer insertBatch(List<AssetMonitorRuleRelation> assetList) throws Exception;
 
+    List<AssetMonitorRuleRelationResponse> queryAsset(AssetMonitorRuleRelationQuery query);
 }

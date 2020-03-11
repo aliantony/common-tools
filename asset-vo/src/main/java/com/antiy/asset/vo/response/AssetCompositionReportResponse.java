@@ -22,7 +22,9 @@ public class AssetCompositionReportResponse extends BaseEntity {
      * 首次入网时间
      */
     @ApiModelProperty(value = "区域")
-    private String  area;
+    private String  areaId;
+    @ApiModelProperty(value = "区域name")
+    private String  areaName;
 
     /**
      * 首次入网时间
@@ -82,14 +84,6 @@ public class AssetCompositionReportResponse extends BaseEntity {
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
     }
 
     public Long getFirstEnterNett() {
@@ -170,5 +164,21 @@ public class AssetCompositionReportResponse extends BaseEntity {
 
     public void setNoPatchCount(Integer noPatchCount) {
         this.noPatchCount = noPatchCount;
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(String areaId) {
+        this.areaId = areaId;
     }
 }

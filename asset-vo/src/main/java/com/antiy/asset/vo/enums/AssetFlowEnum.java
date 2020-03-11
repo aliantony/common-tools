@@ -68,6 +68,10 @@ public enum AssetFlowEnum {
      */
     NET_IN_CHECK(AssetStatusEnum.NET_IN_LEADER_CHECK,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN_LEADER_DISAGREE,"","入网审批","入网审批"),
     /**
+     * 继续入网
+     */
+    CONTINUE_NET_IN(AssetStatusEnum.CORRECTING,AssetStatusEnum.NET_IN_LEADER_CHECK,AssetStatusEnum.NET_IN_LEADER_CHECK,"","继续入网","继续入网"),
+    /**
      * 退役审批
      */
     RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE_DISAGREE,"","资产退役审批","资产退役审批"),
@@ -75,10 +79,6 @@ public enum AssetFlowEnum {
      * 报废审批
      */
     SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP_DISAGREE,"","报废审批","报废审批"),
-
-    /**
-     * 入网审批
-     */
 
     /**
      * 报废执行

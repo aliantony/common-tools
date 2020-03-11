@@ -1,14 +1,11 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
+import com.antiy.common.base.BasicRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -16,29 +13,31 @@ import java.util.List;
  * @since 2020/2/14
  */
 @ApiModel(description = "准入资产请求类")
-public class AssetEntryRequest extends BaseRequest implements ObjectValidator {
-    @ApiModelProperty("资产id集合，加密id")
-    @NotEmpty
-    private List<String> assetIds;
+public class AssetEntryRequest extends BasicRequest {
+    @ApiModelProperty("资产集合，加密id")
+    @NotEmpty(message = "资产不能为空")
+    private List<ActivityHandleRequest> assetActivityRequests;
     @ApiModelProperty("准入状态：1-允许，2-禁止")
     @Pattern(regexp = "^[12]$",message = "准入状态参数错误，只能为1或2")
-    private int updateStatus;
+    private String updateStatus;
     @ApiModelProperty("准入指令来源")
     private AssetEntrySourceEnum entrySource;
 
-    public List<String> getAssetIds() {
-        return assetIds;
+    public List<ActivityHandleRequest> getAssetActivityRequests() {
+        return assetActivityRequests;
     }
 
-    public void setAssetIds(List<String> assetIds) {
-        this.assetIds = assetIds;
+    public void setAssetActivityRequests(List<ActivityHandleRequest> assetActivityRequests) {
+        this.assetActivityRequests = assetActivityRequests;
     }
+
+
 
     public int getUpdateStatus() {
-        return updateStatus;
+        return Integer.valueOf(updateStatus);
     }
 
-    public void setUpdateStatus(int updateStatus) {
+    public void setUpdateStatus(String updateStatus) {
         this.updateStatus = updateStatus;
     }
 
@@ -50,8 +49,5 @@ public class AssetEntryRequest extends BaseRequest implements ObjectValidator {
         this.entrySource = entrySource;
     }
 
-    @Override
-    public void validate() throws RequestParamValidateException {
 
-    }
 }

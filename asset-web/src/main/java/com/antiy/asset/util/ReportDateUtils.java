@@ -1,5 +1,7 @@
 package com.antiy.asset.util;
 
+import com.antiy.common.utils.ParamterExceptionUtils;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -9,8 +11,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.antiy.common.utils.ParamterExceptionUtils;
 
 /**
  * @author: zhangbing
@@ -311,10 +311,10 @@ public class ReportDateUtils {
         System.out.println(ReportDateUtils.getSeason());
         // System.out.println(getMonthWithDate(1542468106000L,1558468106000L));
 
-        // System.out.println(getDayOfWeek());
-        // for (Map.Entry<String, String> entry : getDayOfWeek().entrySet()) {
-        // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        // }
+        System.out.println(getDayOfWeek());
+        for (Map.Entry<String, String> entry : getDayOfWeek().entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
         // System.out.println(getSeason());
         // for (Map.Entry<String, String> entry : getWeekOfMonth().entrySet()) {
         // System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());

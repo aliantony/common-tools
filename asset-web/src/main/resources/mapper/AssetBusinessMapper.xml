@@ -253,4 +253,9 @@
         where  `unique_id`=#{uniqueId}
         and status=1
     </select>
+    <update id="updateStatusByUniqueId">
+        update  asset_business
+        set status=0
+        where unique_id=#{uniqueId}
+    </update>
 </mapper>

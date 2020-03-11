@@ -5,6 +5,7 @@ import com.antiy.asset.entity.AssetStatusDetail;
 import com.antiy.asset.entity.AssetStatusNote;
 import com.antiy.asset.vo.query.AssetSchemeQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseDao;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
      */
     List<AssetOperationRecord> listByAssetIds(List<Integer> assetIds);
 
-    List<AssetOperationRecordResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
+    List<AssetResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
 
     AssetOperationRecordResponse queryCheckSchemeByTaskId(Integer taskId);
 }

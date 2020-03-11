@@ -72,4 +72,6 @@ public interface IAssetBusinessService extends IBaseService<AssetBusiness> {
         List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery);
 
         AssetBusinessResponse getByUniqueId(String uniqueId);
+
+    Integer updateStatusByUniqueId(String uniqueId);
 }

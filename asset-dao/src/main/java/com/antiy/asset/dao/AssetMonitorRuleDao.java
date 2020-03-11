@@ -1,7 +1,12 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetMonitorRule;
+import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p> 资产监控规则表 Mapper 接口 </p>
@@ -26,4 +31,14 @@ public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
      * @throws Exception
      */
     Boolean idempotent(String uniqueId) throws Exception;
+
+    Integer editRuleStatusByUI(@Param("uniqueId") String uniqueId, @Param("ruleStatus") Integer ruleStatus);
+
+    Integer deleteByUniqueId(String uniqueId);
+
+    AssetMonitorRule queryByUniqueId(String uniqueId);
+
+    List<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery assetMonitorRuleQuery);
+
+    Integer countAssetByUniqueId(AssetMonitorRuleQuery uniqueId);
 }

@@ -1,12 +1,11 @@
 package com.antiy.asset.vo.request;
 
-import java.util.List;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 /**
  * <p> 资产监控规则请求对象 </p>
@@ -49,6 +48,16 @@ public class AssetMonitorRuleRequest {
     private AssetRuntimeExceptionThreshold runtimeExceptionThreshold;
     @ApiModelProperty("已选中资产")
     private List<String>                   relatedAsset;
+    @ApiModelProperty("启用:true/禁用:false;仅启用/禁用接口传")
+    private Boolean useFlag;
+
+    public Boolean getUseFlag() {
+        return useFlag;
+    }
+
+    public void setUseFlag(Boolean useFlag) {
+        this.useFlag = useFlag;
+    }
 
     public String getUniqueId() {
         return uniqueId;

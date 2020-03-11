@@ -151,10 +151,15 @@
     </select>
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select count(1)
+        select count( distinct asset.id)
         from
-        <include refid="Table_Name"></include>
+        <include refid="Table_Name"/>
+        amrr
+        inner join asset on asset.id=amrr.asset_id and asset.status=1
+        left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
+        left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="queryAssetRealtion"/>
         </trim>
     </select>
 
@@ -186,4 +191,38 @@
             and amr.status = 1
         </trim>
     </select>
+    <select id="queryAsset" resultType="com.antiy.asset.vo.response.AssetMonitorRuleRelationResponse">
+        select asset.id assetId,asset.name,asset.number,asset.manufacturer supplier,
+        group_concat(air.ip) ip,group_concat(amr.mac) mac,asset.asset_group assetGroup,asset.importance_degree importance
+        from
+        <include refid="Table_Name"/>
+        amrr
+        inner join asset on asset.id=amrr.asset_id and asset.status=1
+        left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
+        left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <include refid="queryAssetRealtion"/>
+        </trim>
+        group by asset.id,amrr.gmt_create
+        order by amrr.gmt_create desc,amrr.asset_id desc
+        <if test="pageSize != -1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <sql id="queryAssetRealtion">
+        <if test="multipleQuery != null and multipleQuery.trim != ''">
+            and (asset.name LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.number LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or air.ip like
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or amr.mac like
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            )
+        </if>
+        and amrr.rule_unique_id=#{ruleUniqueId}
+        and amrr.status=1
+    </sql>
 </mapper>

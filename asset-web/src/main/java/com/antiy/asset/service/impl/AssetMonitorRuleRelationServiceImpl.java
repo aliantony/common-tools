@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,22 +26,22 @@ import com.antiy.common.utils.ParamterExceptionUtils;
  */
 @Service
 public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMonitorRuleRelation>
-                                                 implements IAssetMonitorRuleRelationService {
+        implements IAssetMonitorRuleRelationService {
 
-    private Logger                                                                    logger = LogUtils
-        .get(this.getClass());
+    private Logger logger = LogUtils
+            .get(this.getClass());
 
     @Resource
-    private AssetMonitorRuleRelationDao                                               assetMonitorRuleRelationDao;
+    private AssetMonitorRuleRelationDao assetMonitorRuleRelationDao;
     @Resource
-    private BaseConverter<AssetMonitorRuleRelationRequest, AssetMonitorRuleRelation>  requestConverter;
+    private BaseConverter<AssetMonitorRuleRelationRequest, AssetMonitorRuleRelation> requestConverter;
     @Resource
     private BaseConverter<AssetMonitorRuleRelation, AssetMonitorRuleRelationResponse> responseConverter;
 
     @Override
     public String saveAssetMonitorRuleRelation(AssetMonitorRuleRelationRequest request) throws Exception {
         AssetMonitorRuleRelation assetMonitorRuleRelation = requestConverter.convert(request,
-            AssetMonitorRuleRelation.class);
+                AssetMonitorRuleRelation.class);
         assetMonitorRuleRelation.setGmtCreate(System.currentTimeMillis());
         assetMonitorRuleRelationDao.insert(assetMonitorRuleRelation);
         return assetMonitorRuleRelation.getStringId();
@@ -49,29 +50,31 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
     @Override
     public String updateAssetMonitorRuleRelation(AssetMonitorRuleRelationRequest request) throws Exception {
         AssetMonitorRuleRelation assetMonitorRuleRelation = requestConverter.convert(request,
-            AssetMonitorRuleRelation.class);
+                AssetMonitorRuleRelation.class);
         return assetMonitorRuleRelationDao.update(assetMonitorRuleRelation).toString();
     }
 
     @Override
     public List<AssetMonitorRuleRelationResponse> queryListAssetMonitorRuleRelation(AssetMonitorRuleRelationQuery query) throws Exception {
-        List<AssetMonitorRuleRelation> assetMonitorRuleRelationList = assetMonitorRuleRelationDao.findQuery(query);
-        // TODO
-        return responseConverter.convert(assetMonitorRuleRelationList, AssetMonitorRuleRelationResponse.class);
+        return assetMonitorRuleRelationDao.queryAsset(query);
     }
 
     @Override
     public PageResult<AssetMonitorRuleRelationResponse> queryPageAssetMonitorRuleRelation(AssetMonitorRuleRelationQuery query) throws Exception {
-        return new PageResult<AssetMonitorRuleRelationResponse>(query.getPageSize(), this.findCount(query),
-            query.getCurrentPage(), this.queryListAssetMonitorRuleRelation(query));
+        Integer count = this.findCount(query);
+        if (count <= 0) {
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Collections.emptyList());
+        }
+        return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
+                this.queryListAssetMonitorRuleRelation(query));
     }
 
     @Override
     public AssetMonitorRuleRelationResponse queryAssetMonitorRuleRelationById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetMonitorRuleRelationResponse assetMonitorRuleRelationResponse = responseConverter.convert(
-            assetMonitorRuleRelationDao.getById(queryCondition.getPrimaryKey()),
-            AssetMonitorRuleRelationResponse.class);
+                assetMonitorRuleRelationDao.getById(queryCondition.getPrimaryKey()),
+                AssetMonitorRuleRelationResponse.class);
         return assetMonitorRuleRelationResponse;
     }
 

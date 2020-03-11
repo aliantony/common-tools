@@ -14,7 +14,7 @@ public class AssetComReportEntity {
      * 首次入网时间
      */
     @ApiModelProperty(value = "区域")
-    private String  area;
+    private String  areaName;
 
     /**
      * 首次入网时间
@@ -84,12 +84,12 @@ public class AssetComReportEntity {
         this.number = number;
     }
 
-    public String getArea() {
-        return area;
+    public String getAreaName() {
+        return areaName;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 
     public String getFirstEnterNett() {
