@@ -42,9 +42,9 @@ public class AssetOperationRecordController {
      * @param queryCondition 分装主键vo
      * @return actionResponse 响应数据
      */
-    @ApiOperation(value = "退役/报废执行方案列表", notes = "传入资产id")
+    @ApiOperation(value = "退役/报废/准入/执行方案（资产）列表", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/scheme/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/check/list", method = RequestMethod.POST)
     public ActionResponse queryRetExecList(@ApiParam(value = "assetOperationRecordQuery") @RequestBody AssetSchemeQuery assetSchemeQuery) throws Exception {
        /* assetSchemeQuery.setOrginStatusOne(7);
         assetSchemeQuery.setOrginStatusTwo(10);
@@ -56,7 +56,7 @@ public class AssetOperationRecordController {
 
     @ApiOperation(value = "资产退役/报废/入网审批资产信息列表", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/check/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/asset/list", method = RequestMethod.POST)
     public ActionResponse queryCheckList(@ApiParam(value = "assetSchemeQuery") @RequestBody AssetSchemeQuery assetSchemeQuery) throws Exception {
         PageResult<AssetResponse> assetResponseList=assetOperationRecordService.queryCheckList(assetSchemeQuery);
         return ActionResponse.success(assetResponseList);

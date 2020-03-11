@@ -6,6 +6,8 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * <p>
  * AssetBusinessRelationRequest 请求对象
@@ -32,6 +34,7 @@ public class AssetBusinessRelationRequest extends BaseRequest implements ObjectV
      *  业务影响：1-高，2-中，3-低
      */
     @ApiModelProperty("业务影响：1-高，2-中，3-低")
+    @NotNull(message="业务影响不能为空")
     private Integer businessInfluence;
     /**
      *  创建时间

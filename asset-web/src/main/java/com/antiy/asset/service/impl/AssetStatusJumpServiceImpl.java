@@ -319,22 +319,21 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        if (AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-                || AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-                || AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
-            assetOperationRecord.setProcessResult(null);
-        } else {
+        if(AssetFlowEnum.NET_IN_CHECK.equals(statusJumpRequest.getAssetFlowEnum())
+                || AssetFlowEnum.RETIRE_CHECK.equals(statusJumpRequest.getAssetFlowEnum())
+                ||AssetFlowEnum.SCRAP_CHECK.equals(statusJumpRequest.getAssetFlowEnum())){
             assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
+        }else {
+            assetOperationRecord.setProcessResult(null);
         }
-
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
         assetOperationRecord.setFileInfo(statusJumpRequest.getFileInfo() == null ? "" : statusJumpRequest.getFileInfo());
-        assetOperationRecord.setCheckUserId(DataTypeUtils.stringToInteger(statusJumpRequest.getCheckUserId()));
-        assetOperationRecord.setCheckUserName(statusJumpRequest.getCheckUserName());
-        assetOperationRecord.setExecuteUserId(DataTypeUtils.stringToInteger(statusJumpRequest.getExecuteUserId()));
-        assetOperationRecord.setExecuteUserName(statusJumpRequest.getExecuteUserName());
+        assetOperationRecord.setCheckUserId(statusJumpRequest.getCheckUserId()==null ?0:DataTypeUtils.stringToInteger(statusJumpRequest.getCheckUserId()));
+        assetOperationRecord.setCheckUserName(statusJumpRequest.getCheckUserName()==null?"":statusJumpRequest.getCheckUserName());
+        assetOperationRecord.setExecuteUserId(statusJumpRequest.getExecuteUserId()==null?0:DataTypeUtils.stringToInteger(statusJumpRequest.getExecuteUserId()));
+        assetOperationRecord.setExecuteUserName(statusJumpRequest.getExecuteUserName()==null?"":statusJumpRequest.getExecuteUserName());
         if (AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
                 || AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
         ) {

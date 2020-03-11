@@ -198,7 +198,7 @@
 
 
     <sql id="IF_Base_Column_List_ForBatch">
-            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user,check_user_id,check_user_name,execute_user_id,execute_user_name
+            target_object_id,origin_status,target_status,content,operate_user_id,operate_user_name,note,file_info,process_result,gmt_create,create_user,check_user_id,check_user_name,execute_user_id,execute_user_name,task_id
     </sql>
 
 
@@ -219,7 +219,8 @@
             #{entity.checkUserId},
              #{entity.checkUserName},
               #{entity.executeUserId},
-               #{entity.executeUserName}
+               #{entity.executeUserName},
+               #{entity.taskId}
     </sql>
 
 
@@ -419,7 +420,9 @@
         aor.content,
         aor.note,
         aor.check_user_id as checkUserId,
-        aor.check_user_name as checkUserName
+        aor.check_user_name as checkUserName,
+        aor.execute_user_id as executeUserId,
+        aor.execute_user_name as executeUserName
         FROM
         asset AS a
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id

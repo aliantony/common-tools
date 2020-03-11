@@ -15,6 +15,7 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
+import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -29,7 +30,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -201,21 +201,23 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     }
 
     @Override
-    public AssetMonitorRuleResponse queryByUniqueId(String uniqueId) {
+    public AssetMonitorRuleResponse queryByUniqueId(String uniqueId) throws Exception {
         AssetMonitorRule assetMonitorRule = assetMonitorRuleDao.queryByUniqueId(uniqueId);
         AssetMonitorRuleResponse responseAssetRule = responseConverter.convert(assetMonitorRule, AssetMonitorRuleResponse.class);
+        responseAssetRule.setAlarmLevelName(AlarmLevelEnum.getEnumByCode(responseAssetRule.getAlarmLevel()).getName());
+        responseAssetRule.setAreaName(wrappedRedisUtil.bindAreaName(responseAssetRule.getAreaId()));
+        responseAssetRule.setRuleStatusName(StatusEnum.getEnumByCode(responseAssetRule.getRuleStatus()).getName());
         return  responseAssetRule;
     }
 
     @Override
-    public PageResult<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery assetMonitorRuleQuery) {
-        assetMonitorRuleQuery.setAreaList(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
-        Integer count=assetMonitorRuleDao.countAssetByUniqueId(assetMonitorRuleQuery);
-        if(count==null){
-            return  new PageResult(assetMonitorRuleQuery.getPageSize(),0,assetMonitorRuleQuery.getCurrentPage(),new ArrayList());
+    public PageResult<AssetResponse> queryAssetByUniqueId(UniqueKeyQuery uniqueKeyQuery) {
+        uniqueKeyQuery.setAreaList(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        Integer count=assetMonitorRuleDao.countAssetByUniqueId(uniqueKeyQuery);
+        if(count>0){
+            List<AssetResponse> asetResponseList=assetMonitorRuleDao.queryAssetByUniqueId(uniqueKeyQuery);
+            return new PageResult(uniqueKeyQuery.getPageSize(),0,uniqueKeyQuery.getCurrentPage(),asetResponseList);
         }
-        List<AssetResponse> asetResponseList=assetMonitorRuleDao.queryAssetByUniqueId(assetMonitorRuleQuery);
-
-        return new PageResult(assetMonitorRuleQuery.getPageSize(),0,assetMonitorRuleQuery.getCurrentPage(),asetResponseList);
+        return new PageResult<>(uniqueKeyQuery.getPageSize(), 0, uniqueKeyQuery.getCurrentPage(), Lists.newArrayList());
     }
 }

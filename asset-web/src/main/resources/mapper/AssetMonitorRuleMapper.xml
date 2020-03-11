@@ -333,11 +333,11 @@
             left join  asset_monitor_rule_relation as amrr
             on amr.unique_id=amrr.unique_id and amrr.status=1
             left join asset as a
-            on amrr.asset_id=a.id on a.status=1
+            on amrr.asset_id=a.id and a.status=1
             LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            LEFT JOIN asset_mac_relation AS t_mac ON t_mac.asset_id = a.id and t_mac.status=1
             where amr.unique_id=#{uniqueId}
-            and status=1
+            and amr.status=1
             <if test="areaList !=null and areaList.size()>0">
                 and amr.area_id in
                 <foreach collection="areaList" separator="," item="e" close=")" open="(" >
@@ -356,16 +356,16 @@
             a.asset_group as assetGroup,
             a.importance_degree as importanceDegree,
             GROUP_CONCAT(distinct air.ip) AS ips,
-            GROUP_CONCAT(distinct amr.mac) AS macs
+            GROUP_CONCAT(distinct t_mac.mac) AS macs
             from asset_monitor_rule as amr
             left join  asset_monitor_rule_relation as amrr
             on amr.unique_id=amrr.unique_id and amrr.status=1
             left join asset as a
-            on amrr.asset_id=a.id on a.status=1
+            on amrr.asset_id=a.id and a.status=1
             LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            LEFT JOIN asset_mac_relation AS t_mac ON t_mac.asset_id = a.id and t_mac.status=1
             where amr.unique_id=#{uniqueId}
-            and status=1
+            and amr.status=1
             <if test="areaList !=null and areaList.size()>0">
                 and amr.area_id in
                 <foreach collection="areaList" separator="," item="e" close=")" open="(" >
