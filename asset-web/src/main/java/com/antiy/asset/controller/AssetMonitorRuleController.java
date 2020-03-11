@@ -1,5 +1,12 @@
 package com.antiy.asset.controller;
 
+import javax.annotation.Resource;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
@@ -10,13 +17,8 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import io.swagger.annotations.*;
 
 /**
  *
@@ -114,7 +116,7 @@ public class AssetMonitorRuleController {
      */
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class, responseContainer = "List"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleQuery assetMonitorRuleQuery) throws Exception {
         return ActionResponse.success(iAssetMonitorRuleService.queryPageAssetMonitorRule(assetMonitorRuleQuery));
     }
@@ -127,7 +129,7 @@ public class AssetMonitorRuleController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetMonitorRuleService.queryAssetMonitorRuleById(queryCondition));
     }
