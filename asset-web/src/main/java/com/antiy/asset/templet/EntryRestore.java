@@ -22,11 +22,11 @@ public class EntryRestore {
     private Logger logger = LogUtils.get(this.getClass());
     @Resource
     private AssetEntryServiceImpl entryService;
-    private Thread thread;
-    List<EntryRestoreRequest> restoreRequests = new ArrayList<>();
-    private Runnable runnable;
+    private volatile Thread thread;
+    volatile List<EntryRestoreRequest> restoreRequests = new ArrayList<>();
+    private volatile Runnable runnable;
 
-    public void initRestoreRequest(AssetEntryRequest entryRequest) {
+    public synchronized void initRestoreRequest(AssetEntryRequest entryRequest) {
         EntryRestoreRequest entryRestoreRequest = new EntryRestoreRequest(entryRequest, System.currentTimeMillis() + 12 * 60 * 60_1000);
         restoreRequests.add(entryRestoreRequest);
         if (Objects.isNull(runnable)) {
