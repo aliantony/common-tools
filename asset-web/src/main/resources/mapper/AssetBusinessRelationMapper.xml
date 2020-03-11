@@ -275,7 +275,6 @@
             </foreach>
         </if>
         group by a.id
-        order by gmtCreate desc
     </select>
     <update id="update" parameterType="com.antiy.asset.entity.AssetBusinessRelation" >
         update

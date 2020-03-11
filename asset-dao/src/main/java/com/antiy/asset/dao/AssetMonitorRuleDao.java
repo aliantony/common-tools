@@ -1,7 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetMonitorRule;
-import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
@@ -38,7 +38,7 @@ public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
 
     AssetMonitorRule queryByUniqueId(String uniqueId);
 
-    List<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery assetMonitorRuleQuery);
+    List<AssetResponse> queryAssetByUniqueId(UniqueKeyQuery assetMonitorRuleQuery);
 
-    Integer countAssetByUniqueId(AssetMonitorRuleQuery uniqueId);
+    Integer countAssetByUniqueId(UniqueKeyQuery uniqueId);
 }

@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -19,56 +22,32 @@ import java.util.List;
  */
 
 public class AssetBusinessRequest extends BaseRequest implements ObjectValidator{
+
+    @ApiModelProperty("业务id")
+    private Integer id;
     @ApiModelProperty("新增资产")
     /**
      * 新增的资产id
      */
     List<AssetBusinessRelationRequest> assetRelaList;
-    /**
-     *  业务名称（中文字符，去重）
-     */
-
-    /**
-     * 删除的关联资产
-     */
-    List<AssetBusinessRelationRequest> deleteAssetList;
-
-    /**
-     *
-     * 编辑资产
-     */
-    List<AssetBusinessRelationRequest> editAsset;
-
-    public List<AssetBusinessRelationRequest> getEditAsset() {
-        return editAsset;
-    }
-
-    public void setEditAsset(List<AssetBusinessRelationRequest> editAsset) {
-        this.editAsset = editAsset;
-    }
-
-    public List<AssetBusinessRelationRequest> getDeleteAssetList() {
-        return deleteAssetList;
-    }
-
-    public void setDeleteAssetList(List<AssetBusinessRelationRequest> deleteAssetList) {
-        this.deleteAssetList = deleteAssetList;
-    }
 
     @ApiModelProperty("业务名称（中文字符，去重）")
-    @Length(max=50)
+    @NotBlank(message = "业务名称不能为空")
+    @Length(max=50,min = 1,message = "业务名称不能长于50个字符")
     private String name;
     /**
      *  业务重要性：1-高，2-中，3-低
      */
     @ApiModelProperty("业务重要性：1-高，2-中，3-低")
-    @Range(min=1,max=3)
+    @NotNull(message = "业务重要性不能为空")
+   @Range(min=1,max=3)
     private Integer importance;
     /**
      *  描述
      */
     @ApiModelProperty("描述")
-    @Length(max=50)
+    @NotBlank(message = "业务描述不能为空")
+    @Size(max=50,min=1,message = "业务描述不能长于50个字符")
     private String description;
     /**
      *  创建时间
@@ -98,10 +77,17 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
     /**
      * 来源
      */
-    private Integer source;
-
+    @ApiModelProperty("唯一键")
     private String uniqueId;
 
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public List<AssetBusinessRelationRequest> getAssetRelaList() {
         return assetRelaList;
@@ -173,14 +159,6 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Integer getSource() {
-        return source;
-    }
-
-    public void setSource(Integer source) {
-        this.source = source;
     }
 
     public String getUniqueId() {

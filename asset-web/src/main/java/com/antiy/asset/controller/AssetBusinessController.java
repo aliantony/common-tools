@@ -4,12 +4,14 @@ import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
 import com.antiy.asset.vo.request.AssetBusinessRequest;
+import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +48,7 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetBusiness") @RequestBody @Valid AssetBusinessRequest assetBusinessRequest)throws Exception{
+    public ActionResponse saveSingle(@ApiParam(value = "assetBusiness") @RequestBody  AssetBusinessRequest assetBusinessRequest)throws Exception{
         return ActionResponse.success(iAssetBusinessService.saveAssetBusiness(assetBusinessRequest));
     }
 
@@ -62,8 +64,9 @@ public class AssetBusinessController {
     }
     @ApiOperation(value = "查询业务信息", notes = "传入业务主键（uniqueId）")
     @RequestMapping(value = "/query/single", method = RequestMethod.POST)
-    public ActionResponse querySingle(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
-        AssetBusinessResponse assetBusinessResponse= iAssetBusinessService.getByUniqueId(assetAddOfBusinessQuery.getUniqueId());
+    public ActionResponse querySingle(@RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空");
+        AssetBusinessResponse assetBusinessResponse= iAssetBusinessService.getByUniqueId(uniqueKeyRquest.getUniqueId());
         return  ActionResponse.success(assetBusinessResponse);
     }
 
@@ -76,6 +79,7 @@ public class AssetBusinessController {
     @ApiOperation(value = "业务已经关联的资产信息", notes = "传入实体对象信息")
     @RequestMapping(value = "/query/business/asset", method = RequestMethod.POST)
     public ActionResponse queryBusinessAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
+        ParamterExceptionUtils.isNull(assetAddOfBusinessQuery.getUniqueId(),"唯一键不能为空");
         List<AssetBusinessRelationResponse> assetList= iAssetBusinessService.queryAssetByBusinessId(assetAddOfBusinessQuery);
         return  ActionResponse.success(assetList);
     }
@@ -105,7 +109,7 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class, responseContainer = "List"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetBusiness") @RequestBody @Valid AssetBusinessQuery assetBusinessQuery)throws Exception{
+    public ActionResponse queryList(@ApiParam(value = "assetBusiness") @RequestBody  AssetBusinessQuery assetBusinessQuery)throws Exception{
         return ActionResponse.success(iAssetBusinessService.queryPageAssetBusiness(assetBusinessQuery));
     }
 
@@ -133,8 +137,8 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") AssetBusinessRequest assetBusinessRequest)throws Exception{
-        Integer result=iAssetBusinessService.updateStatusByUniqueId(assetBusinessRequest.getUniqueId());
+    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody UniqueKeyRquest uniqueKeyRquest)throws Exception{
+        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(result);
     }
 }

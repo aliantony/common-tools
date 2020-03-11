@@ -298,6 +298,27 @@ public class AssetResponse extends BaseResponse {
     private String checkUserName;
     @ApiModelProperty("操作日志内容")
     private String content;
+    @Encode
+    @ApiModelProperty("执行人主键")
+    private String executeUserId;
+    @ApiModelProperty("执行人名字")
+    private String executeUserName;
+
+    public String getExecuteUserId() {
+        return executeUserId;
+    }
+
+    public void setExecuteUserId(String executeUserId) {
+        this.executeUserId = executeUserId;
+    }
+
+    public String getExecuteUserName() {
+        return executeUserName;
+    }
+
+    public void setExecuteUserName(String executeUserName) {
+        this.executeUserName = executeUserName;
+    }
 
     public String getFileInfo() {
         return fileInfo;

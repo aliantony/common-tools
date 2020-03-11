@@ -40,35 +40,37 @@ public enum AssetStatusEnum implements CodeEnum {
      * 变更中
      */
     IN_CHANGE(8, "变更中"),
+    /**
+     * 待退役
+     */
+    WAIT_RETIRE(9, "待退役"),
 
     /**
      * 退役待审批
      */
-    WAIT_RETIRE_CHECK(9, "退役待审批"),
+    WAIT_RETIRE_CHECK(10, "退役待审批"),
     /**
      * 退役审批未通过
     */
-    RETIRE_DISAGREE(10, "退役审批未通过"),
-    /**
-     * 待退役
-     */
-    WAIT_RETIRE(11, "待退役"),
+    RETIRE_DISAGREE(11, "退役审批未通过"),
+
     /**
      * 已退役
      */
     RETIRE(12, "已退役"),
     /**
+     * 待报废
+     */
+    WAIT_SCRAP(13,"待报废"),
+    /**
      * 报废待审批
      */
-    WAIT_SCRAP_CHECK(13,"报废待审批"),
+    WAIT_SCRAP_CHECK(14,"报废待审批"),
     /**
      * 报废审批未通过
      */
-    SCRAP_DISAGREE(14,"报废审批未通过"),
-    /**
-     * 待报废
-     */
-    WAIT_SCRAP(15,"待报废"),
+    SCRAP_DISAGREE(15,"报废审批未通过"),
+
     /**
      * 已报废
      */

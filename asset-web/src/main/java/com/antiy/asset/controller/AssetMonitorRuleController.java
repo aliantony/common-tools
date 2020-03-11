@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
+import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
@@ -64,9 +66,9 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "规则删除", notes = "传入唯一键")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/uniqueId", method = RequestMethod.POST)
-    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleRequest assetMonitorRuleRequest) throws Exception {
-        ParamterExceptionUtils.isNull(assetMonitorRuleRequest.getUniqueId(),"唯一键不能为空！");
-        Integer result=iAssetMonitorRuleService.deleteByUniqueId(assetMonitorRuleRequest.getUniqueId());
+    public ActionResponse deleteByUniqueId(@ApiParam(value = "uniqueKeyRquest") @RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空！");
+        Integer result=iAssetMonitorRuleService.deleteByUniqueId(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(result);
     }
     /**
@@ -78,9 +80,9 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "规则详情", notes = "传入唯一键")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class), })
     @RequestMapping(value = "query/rule/info", method = RequestMethod.POST)
-    public ActionResponse queryRuleInfo(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleRequest assetMonitorRuleRequest) throws Exception {
-        ParamterExceptionUtils.isNull(assetMonitorRuleRequest.getUniqueId(),"唯一键不能为空！");
-        AssetMonitorRuleResponse assetMonitorRuleResponse=iAssetMonitorRuleService.queryByUniqueId(assetMonitorRuleRequest.getUniqueId());
+    public ActionResponse queryRuleInfo(@ApiParam(value = "uniqueKeyRquest") @RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空！");
+        AssetMonitorRuleResponse assetMonitorRuleResponse=iAssetMonitorRuleService.queryByUniqueId(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(assetMonitorRuleResponse);
     }
     /**
@@ -89,9 +91,9 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "规则关联资产", notes = "传入唯一键")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class ,responseContainer = "List"), })
     @RequestMapping(value = "query/relation/asset", method = RequestMethod.POST)
-    public ActionResponse queryRelationAsset(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleQuery assetMonitorRuleQuery) throws Exception {
-        ParamterExceptionUtils.isNull(assetMonitorRuleQuery.getUniqueId(),"唯一键不能为空！");
-        PageResult<AssetResponse> pageResult=iAssetMonitorRuleService.queryAssetByUniqueId(assetMonitorRuleQuery);
+    public ActionResponse queryRelationAsset(@ApiParam(value = "uniqueKeyQuery") @ RequestBody UniqueKeyQuery uniqueKeyQuery) throws Exception {
+        ParamterExceptionUtils.isNull(uniqueKeyQuery.getUniqueId(),"唯一键不能为空！");
+        PageResult<AssetResponse> pageResult=iAssetMonitorRuleService.queryAssetByUniqueId(uniqueKeyQuery);
         return ActionResponse.success(pageResult);
     }
 

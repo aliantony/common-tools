@@ -20,12 +20,14 @@
                 #{item}
             </foreach>
         </if>
-        <if test="entryStatus != null and entryStatus.length >0">
-            and asset.admittance_status in
-            <foreach collection="entryStatus" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
+        <choose>
+            <when test="entryStatus != null and entryStatus.trim !=''">
+                and asset.admittance_status =#{entryStatus}
+            </when>
+            <otherwise>
+                and asset.admittance_status between 1 and 2
+            </otherwise>
+        </choose>
         <if test="assetStatus !=null and assetStatus.length >0">
             and asset.asset_status in
             <foreach collection="assetStatus" item="item" open="(" separator="," close=")">
@@ -72,7 +74,8 @@
             resultType="com.antiy.asset.vo.response.AssetEntryResponse">
         select asset.id stringId,asset.name,asset.number,group_concat(distinct air.ip) ip,
         group_concat(distinct amr.mac) mac,asset.admittance_status entryStatus,
-        if(asset.asset_status =12 and asset.admittance_status = 2,false,true) isEntryOperation
+        if(asset.asset_status =12 and asset.admittance_status = 2,false,true) isEntryOperation,
+        asset_group as assetGroupName
         from asset
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1

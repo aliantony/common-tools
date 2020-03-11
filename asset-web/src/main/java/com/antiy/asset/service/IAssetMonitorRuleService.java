@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetMonitorRule;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -67,7 +68,7 @@ public interface IAssetMonitorRuleService extends IBaseService<AssetMonitorRule>
 
     Integer deleteByUniqueId(String uniqueId);
 
-    AssetMonitorRuleResponse queryByUniqueId(String uniqueId);
+    AssetMonitorRuleResponse queryByUniqueId(String uniqueId) throws Exception;
 
-    PageResult<AssetResponse> queryAssetByUniqueId(AssetMonitorRuleQuery uniqueId);
+    PageResult<AssetResponse> queryAssetByUniqueId(UniqueKeyQuery uniqueId);
 }

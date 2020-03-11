@@ -76,6 +76,14 @@ public enum AssetFlowEnum {
      */
     RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE_DISAGREE,"","资产退役审批","资产退役审批"),
     /**
+     * 关闭退役
+     */
+    CLOSE_RETIRE(AssetStatusEnum.RETIRE_DISAGREE,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN,"","关闭退役","关闭退役"),
+    /**
+     * 关闭报废
+     */
+    CLOSE_SCRAP(AssetStatusEnum.SCRAP_DISAGREE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","关闭报废","关闭报废"),
+    /**
      * 报废审批
      */
     SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP_DISAGREE,"","报废审批","报废审批"),

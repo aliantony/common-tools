@@ -12,6 +12,8 @@ public class AssetEntryResponse extends BaseResponse{
 
     @ApiModelProperty("资产名称")
     private String name;
+    @ApiModelProperty("资产组名称")
+    private String assetGroupName;
     @ApiModelProperty("资产编号")
     private String number;
     @ApiModelProperty("ip地址")
@@ -69,5 +71,13 @@ public class AssetEntryResponse extends BaseResponse{
 
     public void setEntryOperation(boolean entryOperation) {
         isEntryOperation = entryOperation;
+    }
+
+    public String getAssetGroupName() {
+        return assetGroupName;
+    }
+
+    public void setAssetGroupName(String assetGroupName) {
+        this.assetGroupName = assetGroupName;
     }
 }
