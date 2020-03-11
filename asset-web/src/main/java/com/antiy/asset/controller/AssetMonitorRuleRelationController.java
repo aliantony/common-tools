@@ -2,7 +2,6 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +14,7 @@ import com.antiy.asset.vo.response.AssetMonitorRuleRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
 
@@ -82,7 +82,7 @@ public class AssetMonitorRuleRelationController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleRelationResponse.class), })
-    @RequestMapping(value = "/query/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
         return ActionResponse
             .success(iAssetMonitorRuleRelationService.queryAssetMonitorRuleRelationById(queryCondition));
