@@ -35,4 +35,11 @@ public interface IHomePageService {
      */
     List<EnumCountResponse> assetImportanceDegreePie() throws Exception;
 
+    /**
+     * 资产重要程度分布
+     *
+     * @return
+     */
+    Long getRunDay() throws Exception;
+
 }

@@ -69,4 +69,17 @@ public class AssetHomePageController {
     public ActionResponse assetImportanceDegreePie() throws Exception {
         return ActionResponse.success(homePageService.assetImportanceDegreePie());
     }
+
+    /**
+     * 持续监控天数
+     *
+     * @return actionResponse
+     */
+
+    @ApiOperation(value = "持续监控天数", notes = "无")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/count/runDay", method = RequestMethod.POST)
+    public ActionResponse getRunDay() throws Exception {
+        return ActionResponse.success(homePageService.getRunDay());
+    }
 }

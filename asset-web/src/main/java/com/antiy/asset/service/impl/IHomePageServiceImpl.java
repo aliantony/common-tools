@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.antiy.asset.dao.AssetHomePageDao;
+import com.antiy.asset.dao.AssetRunRecordDao;
 import com.antiy.asset.entity.AssetImportanceDegreeCondition;
 import com.antiy.asset.entity.AssetIncludeManageCondition;
 import com.antiy.asset.entity.AssetOnlineChartCondition;
@@ -30,9 +31,14 @@ public class IHomePageServiceImpl implements IHomePageService {
 
     @Value("${login.user.debug}")
     private static Boolean   enable;
+    @Value("${monitoringDayAmount}")
+    private static Long       monitoringDayAmount;
 
     @Resource
     private AssetHomePageDao homePageDao;
+
+    @Resource
+    private AssetRunRecordDao runRecordDao;
 
     @Override
     public AssetCountIncludeResponse countIncludeManage() throws Exception {
@@ -110,5 +116,18 @@ public class IHomePageServiceImpl implements IHomePageService {
         }
 
         return enumCountResponseList;
+    }
+
+    @Override
+    public Long getRunDay() throws Exception {
+        long day = 0L;
+        // 单位为毫秒的总运行时间转天数，24小时算一天
+        Long totalTime = runRecordDao.getRunDayTime();
+
+        Long dayTime = 24 * 60 * 60 * 1000L;
+        if (totalTime > dayTime) {
+            day = totalTime / dayTime;
+        }
+        return day;
     }
 }
