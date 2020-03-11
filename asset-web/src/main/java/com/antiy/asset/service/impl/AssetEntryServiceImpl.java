@@ -4,6 +4,7 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetEntryDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.iAssetEntryService;
+import com.antiy.asset.templet.EntryRestore;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
@@ -33,7 +34,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -46,8 +47,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,6 +71,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     private AesEncoder aesEncoder;
     @Resource
     private BaseClient client;
+    @Resource
+    private EntryRestore entryRestore;
     @Value("${TypeAreaId}")
     private String getUesrByTagUrl;
     @Value("${queryVulCompleteUrl}")
@@ -138,11 +139,11 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             throw new BusinessException("准入状态变更失败！");
         } else {
             //如果来源是漏洞扫描，补丁安装，配置扫描，启动自动恢复机制
-            if (EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
+            if ((EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
                     || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.VUL_SCAN)
-                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL)
-            ) {
-                scanTask(assetIds, request.getEntrySource());
+                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL))
+                    && (EnumUtil.equals(request.getUpdateStatus(), AssetEnterStatusEnum.NO_ENTER))) {
+                entryRestore.initRestoreRequest(request);
             }
             //更新资产准入状态
             assetEntryDao.updateEntryStatus(request);
@@ -151,20 +152,18 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return "变更成功";
     }
 
-    //每隔12小时扫描一次
-//    @Async
-    public void scanTask(List<String> assetIds, AssetEntrySourceEnum sourceEnum) {
-        //第一次进来休眠12小时
-        try {
-            Thread.currentThread().wait(12 * 60 * 60_000);
-        } catch (InterruptedException e) {
-            logger.info("准入管理-自动恢复入网任务执行完毕");
-            e.printStackTrace();
-        }
-//        BlockingQueue
-        //todo 查询验证 对接漏洞、补丁、配置
+    //找出已经漏洞修复完成、补丁安装完成、配置完成的资产集合 返回未完成的资产
+    public AssetEntryRequest scanTask(AssetEntryRequest request) {
+        //removedRequest 不满足自动恢复准入要求的资产
+        AssetEntryRequest removedRequest = new AssetEntryRequest();
+        BeanUtils.copyProperties(request, removedRequest);
+        removedRequest.getAssetActivityRequests().clear();
+        //自动恢复为准入允许
+        request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));
+        List<ActivityHandleRequest> assets = request.getAssetActivityRequests();
         Map<String, Object> param = new HashMap<>();
-        for (String assetId : assetIds) {
+        for (ActivityHandleRequest asset : assets) {
+            String assetId = asset.getStringId();
             boolean isSuccess = true;
             //查询漏洞是否修复完成
             ActionResponse vulResponse = (ActionResponse) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
@@ -187,14 +186,15 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
                 logger.info("获取资产配置完成情况失败");
                 isSuccess = false;
             }
+            //todo 处理远程接口响应参数，
             if (!isSuccess) {
-                continue;
-            } else {
-
+                //保存没有成功的，待下一次尝试
+                removedRequest.getAssetActivityRequests().add(asset);
+                //移除没有成功的
+                request.getAssetActivityRequests().remove(asset);
             }
         }
-
-
+        return removedRequest;
     }
 
     private boolean sendCommond(AssetEntryRequest request) {

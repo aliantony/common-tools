@@ -20,12 +20,14 @@
                 #{item}
             </foreach>
         </if>
-        <if test="entryStatus != null and entryStatus.length >0">
-            and asset.admittance_status in
-            <foreach collection="entryStatus" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
+        <choose>
+            <when test="entryStatus != null and entryStatus.trim !=''">
+                and asset.admittance_status =#{entryStatus}
+            </when>
+            <otherwise>
+                and asset.admittance_status between 1 and 2
+            </otherwise>
+        </choose>
         <if test="assetStatus !=null and assetStatus.length >0">
             and asset.asset_status in
             <foreach collection="assetStatus" item="item" open="(" separator="," close=")">

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.ArrayUtils;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -25,20 +26,14 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("资产组集合")
     @Encode
     private List<String> assetGroups;
-    @ApiModelProperty("准入状态")
-    private int[] entryStatus;
+    @ApiModelProperty("准入状态：1已允许，2已禁止")
+    @Pattern(regexp = "^\\s*[12]?$",message = "准入状态参数只能为1或2")
+    private String entryStatus;
     @ApiModelProperty(value = "资产状态集合", hidden = true)
     private int[] assetStatus;
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (ArrayUtils.isEmpty(entryStatus)) {
-            int length = AssetEnterStatusEnum.values().length;
-            entryStatus = new int[length];
-            for (int i = 0; i < length; i++) {
-                entryStatus[i] = AssetEnterStatusEnum.values()[i].getCode();
-            }
-        }
         if (ArrayUtils.isEmpty(assetStatus)) {
             assetStatus = new int[]{AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
                     AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode(),
@@ -72,11 +67,11 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
         this.assetGroups = assetGroups;
     }
 
-    public int[] getEntryStatus() {
+    public String getEntryStatus() {
         return entryStatus;
     }
 
-    public void setEntryStatus(int[] entryStatus) {
+    public void setEntryStatus(String entryStatus) {
         this.entryStatus = entryStatus;
     }
 }
