@@ -1,6 +1,6 @@
 package com.antiy.asset.login;
 
-import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class LoginTool {
     }
 
     private static Boolean getPropertiesPath() throws Exception {
-        BufferedInputStream file = (BufferedInputStream) LoginTool.class.getClassLoader()
+        InputStream file = LoginTool.class.getClassLoader()
             .getResourceAsStream("config/application-common.properties");
         Properties properties = new Properties();
         properties.load(file);
