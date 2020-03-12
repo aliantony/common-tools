@@ -132,7 +132,7 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetMonitorRuleService.queryAssetMonitorRuleById(queryCondition));
     }
 
