@@ -5,13 +5,13 @@ package com.antiy.asset.vo.query;
  * @create 2020-03-12 17:00
  **/
 public class BaseQuery {
-    private String uniqueKey;
+    private String uniqueId;
 
-    public String getUniqueKey() {
-        return uniqueKey;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setUniqueKey(String uniqueKey) {
-        this.uniqueKey = uniqueKey;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 }

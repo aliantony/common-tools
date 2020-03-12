@@ -179,9 +179,9 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public AssetMonitorRuleResponse queryAssetMonitorRuleById(BaseQuery query) throws Exception {
-        ParamterExceptionUtils.isBlank(query.getUniqueKey(), "主键Id不能为空");
+        ParamterExceptionUtils.isBlank(query.getUniqueId(), "主键Id不能为空");
         AssetMonitorRuleResponse assetMonitorRuleResponse = responseConverter
-            .convert(assetMonitorRuleDao.getById(query.getUniqueKey()), AssetMonitorRuleResponse.class);
+            .convert(assetMonitorRuleDao.getById(query.getUniqueId()), AssetMonitorRuleResponse.class);
         return assetMonitorRuleResponse;
     }
 
