@@ -1,5 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.component.WrappedRedisUtil;
 import com.antiy.asset.dao.AssetMonitorRuleDao;
@@ -15,22 +23,20 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.AssetMonitorRuleRelationQuery;
+import com.antiy.asset.vo.query.BaseQuery;
 import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.common.base.*;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务实现类 </p>
@@ -172,10 +178,10 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     }
 
     @Override
-    public AssetMonitorRuleResponse queryAssetMonitorRuleById(QueryCondition queryCondition) throws Exception {
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
+    public AssetMonitorRuleResponse queryAssetMonitorRuleById(BaseQuery query) throws Exception {
+        ParamterExceptionUtils.isBlank(query.getUniqueKey(), "主键Id不能为空");
         AssetMonitorRuleResponse assetMonitorRuleResponse = responseConverter
-            .convert(assetMonitorRuleDao.getById(queryCondition.getPrimaryKey()), AssetMonitorRuleResponse.class);
+            .convert(assetMonitorRuleDao.getById(query.getUniqueKey()), AssetMonitorRuleResponse.class);
         return assetMonitorRuleResponse;
     }
 
