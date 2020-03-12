@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
+import com.antiy.asset.vo.query.BaseQuery;
 import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.request.UniqueKeyRquest;
@@ -17,7 +18,6 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -126,14 +126,14 @@ public class AssetMonitorRuleController {
     /**
      * 通过ID查询
      *
-     * @param queryCondition
+     * @param query
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
-    public ActionResponse queryById(@RequestBody @ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
-        return ActionResponse.success(iAssetMonitorRuleService.queryAssetMonitorRuleById(queryCondition));
+    public ActionResponse queryById(@RequestBody @ApiParam(value = "主键封装对象") BaseQuery query) throws Exception {
+        return ActionResponse.success(iAssetMonitorRuleService.queryAssetMonitorRuleById(query));
     }
 
     /**
