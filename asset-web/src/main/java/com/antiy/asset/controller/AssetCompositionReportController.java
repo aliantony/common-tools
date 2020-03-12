@@ -62,7 +62,7 @@ public class AssetCompositionReportController {
      */
     @ApiOperation(value = "综合报表查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") AssetCompositionReportQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse
             .success(iAssetCompositionReportService.findPageAssetCompositionReport(assetCompositionReportQuery));
@@ -75,7 +75,7 @@ public class AssetCompositionReportController {
      */
     @ApiOperation(value = "批量查询模板", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/list/templates", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list/templates", method = RequestMethod.POST)
     public ActionResponse templates(@ApiParam(value = "assetCompositionReportQuery") AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse.success(iAssetCompositionReportService.findReport(assetCompositionReportQuery));
     }
@@ -87,7 +87,7 @@ public class AssetCompositionReportController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/{id}", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "assetCompositionReport") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetCompositionReportService.getById(id));
