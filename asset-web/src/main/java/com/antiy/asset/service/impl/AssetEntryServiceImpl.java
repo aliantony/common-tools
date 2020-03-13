@@ -104,12 +104,13 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         }
         //准入状态一致不用下发，过滤当前资产准入状态与更新状态不一致的资产
         List<ActivityHandleRequest> activityHandleRequests = request.getAssetActivityRequests().stream().filter(v -> {
-            if (!assetDao.getByAssetId(v.getStringId()).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
+            if (!assetDao.getByAssetId(String.valueOf(v.getId())).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
                 return true;
             }
             return false;
         }).collect(Collectors.toList());
-        List<String> assetIds = activityHandleRequests.stream().map(ActivityHandleRequest::getStringId).collect(Collectors.toList());
+        List<String> assetIds = activityHandleRequests.stream()
+                .map(v -> String.valueOf(v.getId())).collect(Collectors.toList());
         if (activityHandleRequests.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder();
             assetIds.forEach(v->stringBuilder.append(v).append(" "));
@@ -126,7 +127,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         assetIds.forEach(v -> {
             Asset asset = assetDao.getByAssetId(v);
             //记录操作日志
-            LogUtils.recordOperLog(new BusinessData(incident, asset.getStringId(), asset.getNumber(), asset,
+            LogUtils.recordOperLog(new BusinessData(incident, asset.getId(), asset.getNumber(), asset,
                     BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.NONE));
             int userId = 0;//0表示系统
             LoginUser loginUser = LoginUserUtil.getLoginUser();
@@ -174,7 +175,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         Map<String, Object> param = new HashMap<>();
         for (ActivityHandleRequest asset : assets) {
 
-            String assetId = asset.getStringId();
+            String assetId = String.valueOf(asset.getId());
             boolean isSuccess = true;
             boolean isChecked = false;
             while (!isChecked) {
@@ -236,7 +237,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     private boolean sendCommond(AssetEntryRequest request) {
         //todo 测试是否可以下发指令通信
-        List<String> assetIds = request.getAssetActivityRequests().stream().map(ActivityHandleRequest::getStringId).collect(Collectors.toList());
+        List<String> assetIds = request.getAssetActivityRequests().stream().map(v -> String.valueOf(v.getId())).collect(Collectors.toList());
         int count = 0;
         ActionResponse response = null;
         //todo 下发参数设置
