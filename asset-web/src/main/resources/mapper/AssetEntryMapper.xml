@@ -62,7 +62,7 @@
     <select id="getByWhere"/>
     <select id="getAll"/>
     <select id="findCount" parameterType="com.antiy.common.base.ObjectQuery" resultType="java.lang.Integer">
-        select count(1) from asset
+        select count(distinct asset.id) from asset
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
@@ -84,8 +84,8 @@
         <trim prefix="where 1=1">
             <include refid="assetEntryQuery"/>
         </trim>
-        group by asset.id,aer.gmt_create
-        order by aer.gmt_create desc
+        group by asset.id
+        order by any_value(aer.gmt_create) desc,any_value(aer.id) desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -96,18 +96,20 @@
         where
         asset_id=#{primaryKey}
         and status=1
+        order by gmt_create desc,id desc
+
     </select>
     <select id="queryEntryStatus" resultType="com.antiy.asset.vo.response.AssetEntryStatusResponse">
-       select id assetId, admittance_status entryStatus
-       from asset
-       <trim prefix="where 1=1">
-           <if test="assetIds !=null and !assetIds.isEmpty">
-               and id in
-               <foreach collection="assetIds" item="item" open="(" separator="," close=")">
-                   #{item}
-               </foreach>
-           </if>
-       </trim>
+        select id assetId, admittance_status entryStatus
+        from asset
+        <trim prefix="where 1=1">
+            <if test="assetIds !=null and !assetIds.isEmpty">
+                and id in
+                <foreach collection="assetIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
     </select>
 
 </mapper>

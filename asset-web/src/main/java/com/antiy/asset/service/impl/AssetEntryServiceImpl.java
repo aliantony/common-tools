@@ -29,12 +29,12 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -47,6 +47,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,30 +104,37 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         }
         //准入状态一致不用下发，过滤当前资产准入状态与更新状态不一致的资产
         List<ActivityHandleRequest> activityHandleRequests = request.getAssetActivityRequests().stream().filter(v -> {
-            if (!assetDao.getByAssetId(v.getStringId()).getAdmittanceStatus().equals(request.getUpdateStatus())) {
+            if (!assetDao.getByAssetId(v.getStringId()).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
                 return true;
             }
             return false;
         }).collect(Collectors.toList());
+        List<String> assetIds = activityHandleRequests.stream().map(ActivityHandleRequest::getStringId).collect(Collectors.toList());
         if (activityHandleRequests.isEmpty()) {
-            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(request.getUpdateStatus()).getMsg() + "状态,操作无效");
+            StringBuilder stringBuilder = new StringBuilder();
+            assetIds.forEach(v->stringBuilder.append(v).append(" "));
+            logger.info("资产id:{}",stringBuilder.toString());
+            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
         }
         request.setAssetActivityRequests(activityHandleRequests);
-        List<String> assetIds = activityHandleRequests.stream().map(ActivityHandleRequest::getStringId).collect(Collectors.toList());
         //todo 下发指令 判断第三方是全部成功还是部分成功
-        boolean isSuccess = sendCommond(request);
+//        boolean isSuccess = sendCommond(request);
+        boolean isSuccess = true;
         //操作日志-安全事件
-        String incident = EnumUtil.equals(request.getUpdateStatus(), AssetEnterStatusEnum.ENTERED) ? "允许入网" : "禁止入网";
+        String incident = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED) ? "允许入网" : "禁止入网";
         List<AssetEntryRecordRequest> recordRequestList = new ArrayList<>();
         assetIds.forEach(v -> {
             Asset asset = assetDao.getByAssetId(v);
             //记录操作日志
             LogUtils.recordOperLog(new BusinessData(incident, asset.getStringId(), asset.getNumber(), asset,
                     BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.NONE));
-
-            int userId = EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_RETIRE) ? 0 : LoginUserUtil.getLoginUser().getId();//0表示系统下发
+            int userId = 0;//0表示系统
+            LoginUser loginUser = LoginUserUtil.getLoginUser();
+            if (!Objects.isNull(loginUser)) {
+                userId = loginUser.getId();
+            }
             AssetEntryRecordRequest recordRequest = new AssetEntryRecordRequest(asset.getStringId(), request.getEntrySource().getCode(),
-                    isSuccess ? 1 : 0, request.getUpdateStatus(), System.currentTimeMillis(), userId
+                    isSuccess ? 1 : 0, Integer.valueOf(request.getUpdateStatus()), System.currentTimeMillis(), userId
             );
             recordRequestList.add(recordRequest);
         });
@@ -135,58 +143,87 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
         //失败发送系统消息
         if (BooleanUtils.isFalse(isSuccess)) {
-            sendMessage(assetIds, request.getUpdateStatus());
+            sendMessage(assetIds, Integer.valueOf(request.getUpdateStatus()));
             throw new BusinessException("准入状态变更失败！");
         } else {
+
+            //更新资产准入状态
+            assetEntryDao.updateEntryStatus(request);
             //如果来源是漏洞扫描，补丁安装，配置扫描，启动自动恢复机制
             if ((EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
                     || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.VUL_SCAN)
                     || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL))
-                    && (EnumUtil.equals(request.getUpdateStatus(), AssetEnterStatusEnum.NO_ENTER))) {
+                    && (EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.NO_ENTER))) {
+                //自动恢复为准入允许
+                request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));
                 entryRestore.initRestoreRequest(request);
             }
-            //更新资产准入状态
-            assetEntryDao.updateEntryStatus(request);
         }
 
         return "变更成功";
     }
 
     //找出已经漏洞修复完成、补丁安装完成、配置完成的资产集合 返回未完成的资产
-    public AssetEntryRequest scanTask(AssetEntryRequest request) {
+    public AssetEntryRequest scanTask(AssetEntryRequest request) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         //removedRequest 不满足自动恢复准入要求的资产
-        AssetEntryRequest removedRequest = new AssetEntryRequest();
-        BeanUtils.copyProperties(request, removedRequest);
-        removedRequest.getAssetActivityRequests().clear();
-        //自动恢复为准入允许
-        request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));
-        List<ActivityHandleRequest> assets = request.getAssetActivityRequests();
+        AssetEntryRequest removedRequest = (AssetEntryRequest) BeanUtils.cloneBean(request);
+        removedRequest.setAssetActivityRequests(new ArrayList<>());
+        removedRequest.setUpdateStatus(request.getUpdateStatus());
+
+        List<ActivityHandleRequest> assets = new ArrayList<>(request.getAssetActivityRequests());
         Map<String, Object> param = new HashMap<>();
         for (ActivityHandleRequest asset : assets) {
+
             String assetId = asset.getStringId();
             boolean isSuccess = true;
-            //查询漏洞是否修复完成
-            ActionResponse vulResponse = (ActionResponse) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
-            }, vulCompleteUrl);
-            if (vulResponse == null || !vulResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                logger.info("获取资产漏洞修复完成情况失败");
-                isSuccess = false;
+            boolean isChecked = false;
+            while (!isChecked) {
+                isChecked = true;
+                //查询漏洞是否修复完成
+                param.put("stringId", assetId);
+                ActionResponse<Integer> vulResponse = (ActionResponse<Integer>) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
+                }, vulCompleteUrl);
+                if (vulResponse == null || !vulResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    logger.info("获取资产漏洞修复完成情况失败");
+                    isSuccess = false;
+                    break;
+                } else {
+                    Integer vulCount = vulResponse.getBody();
+                    if (vulCount > 0) {
+                        isSuccess = false;
+                        break;
+                    }
+                }
+                //查询补丁是否安装完成
+                ActionResponse<Integer> patchResponse = (ActionResponse<Integer>) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
+                }, patchInstallCompleteUrl);
+                if (patchResponse == null || !patchResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    logger.info("获取资产补丁安装完成情况失败");
+                    isSuccess = false;
+                    break;
+                } else {
+                    Integer patchCount = patchResponse.getBody();
+                    if (patchCount > 0) {
+                        isSuccess = false;
+                        break;
+                    }
+                }
+                //查询配置是否完成
+                param.put("assetId", assetId);
+                ActionResponse<Boolean> configResponse = (ActionResponse<Boolean>) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
+                }, configCompleteUrl);
+                if (configResponse == null || !configResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    logger.info("获取资产配置完成情况失败");
+                    isSuccess = false;
+                    break;
+                } else {
+                    boolean isConfigOver = configResponse.getBody();
+                    if (!isConfigOver) {
+                        isSuccess = false;
+                        break;
+                    }
+                }
             }
-            //查询补丁是否安装完成
-            ActionResponse patchResponse = (ActionResponse) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
-            }, patchInstallCompleteUrl);
-            if (patchResponse == null || !patchResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                logger.info("获取资产补丁安装完成情况失败");
-                isSuccess = false;
-            }
-            //查询配置是否完成
-            ActionResponse configResponse = (ActionResponse) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
-            }, configCompleteUrl);
-            if (configResponse == null || !configResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                logger.info("获取资产配置完成情况失败");
-                isSuccess = false;
-            }
-            //todo 处理远程接口响应参数，
             if (!isSuccess) {
                 //保存没有成功的，待下一次尝试
                 removedRequest.getAssetActivityRequests().add(asset);
@@ -282,9 +319,9 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         if (CollectionUtils.isNotEmpty(ids)) {
             LoginUser finalLoginUser = loginUser;
             List<SysMessageRequest> msg = new ArrayList<>();
-            List<Asset> assets = assetDao.queryAssetByIds(ids.toArray(new Integer[ids.size()]));
+            List<Asset> assets = assetDao.queryAssetByIds(ids.stream().map(v -> Integer.valueOf(v)).toArray(Integer[]::new));
 
-            String entryTag = "asset:admittance:accessManagement";
+            String entryTag = "asset:admittance";
             Map<String, String> param = new HashMap<>();
             param.put("tag", entryTag);
             for (Asset asset : assets) {
@@ -294,7 +331,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
                     param.put("areaId", aesEncoder.encode(areaId, loginUser.getUsername()));
                 }
                 //获取该资产区域下拥有准入权限的所有用户
-                ActionResponse<List<Map<String, Object>>> response = (ActionResponse<List<Map<String, Object>>>) client.post(param, new ParameterizedTypeReference() {
+                ActionResponse<List<Map<String, Object>>> response = (ActionResponse<List<Map<String, Object>>>) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
                 }, getUesrByTagUrl);
                 if (response == null && !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
                     logger.info("请求url:{},参数：{}", getUesrByTagUrl, param);

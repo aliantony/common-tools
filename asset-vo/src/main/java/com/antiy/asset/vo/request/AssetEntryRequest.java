@@ -13,10 +13,10 @@ import java.util.List;
  * @since 2020/2/14
  */
 @ApiModel(description = "准入资产请求类")
-public class AssetEntryRequest extends BasicRequest {
+public class AssetEntryRequest extends BasicRequest{
     @ApiModelProperty("资产集合，加密id")
     @NotEmpty(message = "资产不能为空")
-    private List<ActivityHandleRequest> assetActivityRequests;
+    private  List<ActivityHandleRequest> assetActivityRequests;
     @ApiModelProperty("准入状态：1-允许，2-禁止")
     @Pattern(regexp = "^[12]$",message = "准入状态参数错误，只能为1或2")
     private String updateStatus;
@@ -33,8 +33,8 @@ public class AssetEntryRequest extends BasicRequest {
 
 
 
-    public int getUpdateStatus() {
-        return Integer.valueOf(updateStatus);
+    public String getUpdateStatus() {
+        return updateStatus;
     }
 
     public void setUpdateStatus(String updateStatus) {
@@ -49,5 +49,12 @@ public class AssetEntryRequest extends BasicRequest {
         this.entrySource = entrySource;
     }
 
-
+    @Override
+    public String toString() {
+        return "AssetEntryRequest{" +
+                "assetActivityRequests=" + assetActivityRequests +
+                ", updateStatus='" + updateStatus + '\'' +
+                ", entrySource=" + entrySource +
+                '}';
+    }
 }
