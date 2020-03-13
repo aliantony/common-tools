@@ -144,7 +144,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         //失败发送系统消息
         if (BooleanUtils.isFalse(isSuccess)) {
             sendMessage(assetIds, Integer.valueOf(request.getUpdateStatus()));
-            throw new BusinessException("准入状态变更失败！");
+            throw new BusinessException("准入状态变更失败!");
         } else {
 
             //更新资产准入状态
@@ -354,9 +354,9 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             }
             //发送消息
             ActionResponse response = messageSender.batchSendMessage(msg);
-            if (response == null || StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
+            if (response == null || !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
                 logger.info("消息参数：{}", msg);
-                throw new BusinessException("发送消息提醒失败");
+                throw new BusinessException("调用消息模块，发送准入变更失败消息异常");
             }
         }
     }
@@ -366,4 +366,13 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return assetEntryDao.queryEntryStatus(assetIds);
     }
 
+    @Override
+    public boolean queryEntryOperation(AssetEntryQuery query) {
+        for (AssetEntryStatusResponse queryEntryStatus : assetEntryDao.queryEntryStatus(Arrays.asList(query.getAssetIds()))) {
+            if (EnumUtil.equals(queryEntryStatus.getEntryStatus(), AssetEnterStatusEnum.ENTERED)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

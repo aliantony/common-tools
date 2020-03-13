@@ -33,6 +33,8 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     private int[] assetStatus;
     @ApiModelProperty("资产id,未加密")
     private String assetId;
+    @ApiModelProperty("资产ids,未加密")
+    private String[] assetIds;
     @Override
     public void validate() throws RequestParamValidateException {
         if (ArrayUtils.isEmpty(assetStatus)) {
@@ -82,5 +84,13 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;
+    }
+
+    public String[] getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(String[] assetIds) {
+        this.assetIds = assetIds;
     }
 }

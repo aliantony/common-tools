@@ -72,11 +72,17 @@ public class AssetEntryController {
         return ActionResponse.success(iAssetEntryService.queryRecord(query));
     }
 
-    @ApiOperation(value = "准入状态查询", notes = "查询资产准入状态", response = AssetEntryStatusResponse.class, responseContainer = "List")
+    @ApiOperation(hidden = true,value = "准入状态查询", notes = "查询资产准入状态", response = AssetEntryStatusResponse.class, responseContainer = "List")
     @RequestMapping(value = "/query/entryStatus", method = RequestMethod.POST)
     public ActionResponse queryEntryStatus(@RequestBody AssetEntryRequest request) {
         return ActionResponse.success(iAssetEntryService.queryEntryStatus(request.getAssetActivityRequests().stream()
         .map(ActivityHandleRequest::getStringId).collect(Collectors.toList())));
+    }
+
+    @ApiOperation(value = "对接漏洞配置补丁", notes = "是否弹出阻断入网提示窗", response = Boolean.class)
+    @RequestMapping(value = "/query/entryOperation", method = RequestMethod.POST)
+    public ActionResponse queryEntryOperation(@RequestBody AssetEntryQuery query) {
+        return ActionResponse.success(iAssetEntryService.queryEntryOperation(query));
     }
 
     /**

@@ -17,4 +17,6 @@ public interface iAssetEntryService {
    List<AssetEntryRecordResponse> queryRecord(AssetEntryQuery query);
 
     List<AssetEntryStatusResponse> queryEntryStatus(List<String> assetIds);
+
+    boolean queryEntryOperation(AssetEntryQuery query);
 }
