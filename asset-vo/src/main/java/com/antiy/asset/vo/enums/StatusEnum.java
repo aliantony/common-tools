@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public enum StatusEnum {
                         ENABLE("1", "启用"),
 
-                        FOBIDDEN("2", "禁用");
+                        FOBIDDEN("0", "禁用");
 
     public static StatusEnum getEnumByCode(String code) {
         return Arrays.stream(StatusEnum.values()).filter(v -> v.getCode().equals(code)).collect(Collectors.toList())
