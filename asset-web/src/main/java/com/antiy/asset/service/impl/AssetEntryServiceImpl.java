@@ -119,7 +119,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         request.setAssetActivityRequests(activityHandleRequests);
         //todo 下发指令 判断第三方是全部成功还是部分成功
 //        boolean isSuccess = sendCommond(request);
-        boolean isSuccess = true;
+        boolean isSuccess = false;
         //操作日志-安全事件
         String incident = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED) ? "允许入网" : "禁止入网";
         List<AssetEntryRecordRequest> recordRequestList = new ArrayList<>();
@@ -343,9 +343,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
                     request.setSummary("准入管理");
                     request.setContent(new StringBuilder("您有一条由")
                             .append(StringUtils.isEmpty(finalLoginUser.getName()) ? "系统" : finalLoginUser.getName())
-                            .append("提交的下发[")
-                            .append(EnumUtil.equals(entryStatus, AssetEnterStatusEnum.ENTERED) ? "允许入网" : "阻断入网")
-                            .append("]指令失败，请尽快处理").toString());
+                            .append("提交的[准入变更]任务失败，请尽快处理").toString());
                     request.setSendUserId(finalLoginUser.getId());
                     request.setOrigin(1);//资产管理来源
                     request.setReceiveUserId(Integer.valueOf(aesEncoder.decode((String) v.get("stringId"), finalLoginUser.getUsername())));

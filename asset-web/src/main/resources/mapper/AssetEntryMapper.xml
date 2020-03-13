@@ -34,6 +34,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test="assetId !=null and assetId.trim !=''">
+            and asset.id=#{assetId}
+        </if>
         and asset.status=1
     </sql>
     <insert id="insert"/>
@@ -63,12 +66,21 @@
     <select id="getAll"/>
     <select id="findCount" parameterType="com.antiy.common.base.ObjectQuery" resultType="java.lang.Integer">
         select count(distinct asset.id) from asset
-        left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
-        left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
-        left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
-        <trim prefix="where 1=1">
-            <include refid="assetEntryQuery"/>
-        </trim>
+        <choose>
+
+            <when test="assetId !=null and assetId.trim !=''">
+                where asset.id=#{assetId}
+            </when>
+            <otherwise>
+                left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
+                left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
+                left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+                <trim prefix="where 1=1">
+                    <include refid="assetEntryQuery"/>
+                </trim>
+            </otherwise>
+        </choose>
+
     </select>
     <select id="findQuery" parameterType="com.antiy.common.base.ObjectQuery"
             resultType="com.antiy.asset.vo.response.AssetEntryResponse">
