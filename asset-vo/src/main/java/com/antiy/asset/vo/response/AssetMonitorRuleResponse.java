@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.common.encoder.Encode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,6 +18,7 @@ public class AssetMonitorRuleResponse {
     @ApiModelProperty("规则名称")
     private String  name;
     @ApiModelProperty("区域ID")
+    @Encode
     private String  areaId;
     @ApiModelProperty("区域")
     private String  areaName;
