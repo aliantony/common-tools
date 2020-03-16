@@ -256,6 +256,30 @@
                         #{item}
                     </foreach>
                 </if>
+                <if test="suppliers !=null and !suppliers.isEmpty">
+                    and asset.manufacturer in
+                    <foreach collection="suppliers" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="importanceDegree !=null and !importanceDegree.isEmpty">
+                    and asset.importance_degree in
+                    <foreach collection="importanceDegree" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="groupName !=null and !groupName.isEmpty">
+                    and
+                    <foreach collection="groupName" item="item" open="(" close=")" separator="or">
+                        locate(#{item},asset.asset_group)>0
+                    </foreach>
+                </if>
+                <if test="assetIds !=null and !assetIds.isEmpty">
+                    and asset.id in
+                    <foreach collection="assetIds" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
                 and asset.category_model =1
             </otherwise>
         </choose>
