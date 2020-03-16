@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.util.AreaUtils;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -72,6 +73,9 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
             }
             query.setAreaList(loginUser.getAreaIdsOfCurrentUser());
 
+        }else if(query.getAreaList().size()==1){
+            //获取所有的下级区域
+            query.setAreaList(AreaUtils.getWholeNextArea(query.getAreaList().get(0)));
         }
         Integer count = this.findCount(query);
         if (count <= 0) {

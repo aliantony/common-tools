@@ -512,7 +512,7 @@
                 <when test='assetType.name == "h"'>
                     and a.type = 'h'
                 </when>
-                <when test="assetType.name=='o'">
+                <when test='assetType.name=="o"'>
                     and a.type = 'o'
                 </when>
             </choose>
@@ -574,7 +574,7 @@
                 <when test='assetType.name == "h"'>
                     and a.type = 'h'
                 </when>
-                <when test="assetType.name=='o'">
+                <when test='assetType.name=="o"'>
                     and a.type = 'o'
                 </when>
             </choose>

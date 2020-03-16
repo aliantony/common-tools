@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
@@ -82,7 +83,7 @@ public class AssetController {
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "asset") AssetQuery asset) throws Exception {
         if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
-            if (asset.getSortName().equals("gmtCreate")){
+            if (asset.getSortName().equals("gmtCreate")) {
                 asset.setSortName("gmt_create");
             }
         }
@@ -527,7 +528,7 @@ public class AssetController {
 
     @ApiOperation(value = "可用的批量操作", notes = "根据资产当前状态获取可用的下一步批量操作", response = ActionResponse.class)
     @RequestMapping(value = "/query/assetStatusBatch", method = RequestMethod.POST)
-    public ActionResponse queryAssetStatus(@RequestParam Integer assetStatus) {
+    public ActionResponse queryAssetStatus(@RequestParam @NotNull(message = "资产状态不能为空") Integer assetStatus) {
         return ActionResponse.success(iAssetService.findAvailableAssetStatus(assetStatus));
     }
 }

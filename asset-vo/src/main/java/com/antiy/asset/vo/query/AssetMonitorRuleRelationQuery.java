@@ -21,6 +21,46 @@ public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
     private Boolean relatedAssetSort;
     @ApiModelProperty("移除的资产id集合，未加密")
     private List<String> removedAssetIds;
+    @ApiModelProperty("添加或者删除后的所有资产id集合，未加密")
+    private List<String> assetIds;
+    @ApiModelProperty("厂商名称")
+    List<String> suppliers;
+    @ApiModelProperty("资产组名称")
+    List<String> groupName;
+    @ApiModelProperty("重要程度")
+    List<String> importanceDegree;
+
+    public List<String> getSuppliers() {
+        return suppliers;
+    }
+
+    public void setSuppliers(List<String> suppliers) {
+        this.suppliers = suppliers;
+    }
+
+    public List<String> getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(List<String> groupName) {
+        this.groupName = groupName;
+    }
+
+    public List<String> getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(List<String> importanceDegree) {
+        this.importanceDegree = importanceDegree;
+    }
+
+    public List<String> getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(List<String> assetIds) {
+        this.assetIds = assetIds;
+    }
 
     public Boolean getRelatedAssetSort() {
         return relatedAssetSort;
