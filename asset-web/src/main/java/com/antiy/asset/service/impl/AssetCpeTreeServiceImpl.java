@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.entity.AssetCpeTree;
 import com.antiy.asset.service.IAssetCpeTreeService;
@@ -134,11 +133,10 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             buildChildrenNode(treeItem);
             //组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,AssetCpeTreeResponse.class);
+            assetCpeTreeResponse.setShow(true);
             assetCpeTreeResponse.setChildrenNode(treeItem);
-            treeItem.forEach(e->e.setShow(true));
             responseList.add(assetCpeTreeResponse);
         }
-        System.out.println(JSON.toJSONString(responseList));
         return responseList;
     }
 
