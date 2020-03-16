@@ -17,6 +17,7 @@ import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.enums.TimeEnum;
 import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.request.AssetRuntimeExceptionThreshold;
+import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.google.common.collect.Lists;
 
 /**
@@ -30,7 +31,7 @@ public class AssetMonitorRuleServiceImplTest {
     @Resource
     private IAssetMonitorRuleService monitorRuleService;
 
-    @Test
+    //@Test
     public void saveAssetMonitorRule() throws Exception {
         AssetMonitorRuleRequest request = new AssetMonitorRuleRequest();
         request.setAlarmLevel("1");
@@ -50,7 +51,7 @@ public class AssetMonitorRuleServiceImplTest {
         // monitorRuleService.saveAssetMonitorRule(request);
     }
 
-    @Test
+    //@Test
     public void updateAssetMonitorRule() throws Exception {
         AssetMonitorRuleRequest request = new AssetMonitorRuleRequest();
         request.setUniqueId("684768284255453184");
@@ -85,7 +86,13 @@ public class AssetMonitorRuleServiceImplTest {
     public void queryAssetMonitorRuleById() {
     }
 
-    @Test
+    //@Test
+    public void queryByUniqueId() throws Exception {
+        AssetMonitorRuleResponse response = monitorRuleService.queryByUniqueId("689079111502528512");
+        System.out.println(JSON.toJSONString(response));
+    }
+
+    //@Test
     public void getAppPropertis() throws FileNotFoundException {
         String path = AssetMonitorRuleServiceImplTest.class.getClassLoader()
             .getResource("config/application-common.properties").getPath();
