@@ -60,7 +60,7 @@ public class AssetAdmittanceController {
      * @return actionResponse
      */
 
-    @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
+    @ApiOperation(tags = "弃用接口",hidden = true,value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:admittance:queryList')")
@@ -75,7 +75,7 @@ public class AssetAdmittanceController {
      *
      * @return
      */
-    @ApiOperation(value = "准入管理", notes = "准入管理")
+    @ApiOperation(tags = "弃用接口",hidden = true,value = "准入管理", notes = "准入管理")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/anagement", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:admittance:accessManagement')")

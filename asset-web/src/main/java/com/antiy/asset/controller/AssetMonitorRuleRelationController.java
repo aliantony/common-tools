@@ -69,7 +69,6 @@ public class AssetMonitorRuleRelationController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleRelationResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@ApiParam(value = "assetMonitorRuleRelation")@RequestBody AssetMonitorRuleRelationQuery assetMonitorRuleRelationQuery) throws Exception {
-        ParamterExceptionUtils.isBlank(assetMonitorRuleRelationQuery.getRuleUniqueId(),"监控规则唯一键不能为空");
         return ActionResponse
             .success(iAssetMonitorRuleRelationService.queryPageAssetMonitorRuleRelation(assetMonitorRuleRelationQuery));
     }

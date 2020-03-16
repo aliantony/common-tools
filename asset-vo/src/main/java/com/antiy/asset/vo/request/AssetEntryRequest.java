@@ -14,7 +14,7 @@ import java.util.List;
  */
 @ApiModel(description = "准入资产请求类")
 public class AssetEntryRequest extends BasicRequest{
-    @ApiModelProperty("资产集合，加密id")
+    @ApiModelProperty("资产集合")
     @NotEmpty(message = "资产不能为空")
     private  List<ActivityHandleRequest> assetActivityRequests;
     @ApiModelProperty("准入状态：1-允许，2-禁止")

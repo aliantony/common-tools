@@ -155,7 +155,7 @@
         from
         <include refid="Table_Name"/>
         amrr
-        inner join asset on asset.id=amrr.asset_id and asset.status=1
+        right join asset on asset.id=amrr.asset_id and asset.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -193,19 +193,28 @@
     </select>
     <select id="queryAsset" resultType="com.antiy.asset.vo.response.AssetMonitorRuleRelationResponse">
         select asset.id assetId,asset.name,asset.number,asset.manufacturer supplier,
-        group_concat(air.ip) ip,group_concat(amr.mac) mac,asset.asset_group assetGroup,asset.importance_degree importance
+        group_concat(air.ip) ip,group_concat(amr.mac) mac,asset.asset_group assetGroup,asset.importance_degree
+        importance
         from
         <include refid="Table_Name"/>
         amrr
-        inner join asset on asset.id=amrr.asset_id and asset.status=1
+        right join asset on asset.id=amrr.asset_id and asset.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
-
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             <include refid="queryAssetRealtion"/>
         </trim>
-        group by asset.id,amrr.gmt_create
-        order by amrr.gmt_create desc,amrr.asset_id desc
+        <choose>
+            <when test="ruleUniqueId !=null and ruleUniqueId.trim !=''">
+                group by asset.id,amrr.gmt_create
+                order by amrr.gmt_create desc,amrr.asset_id desc
+            </when>
+            <otherwise>
+                group by asset.id
+                order by asset.id desc
+            </otherwise>
+        </choose>
+
         <if test="pageSize != -1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -222,7 +231,35 @@
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             )
         </if>
-        and amrr.rule_unique_id=#{ruleUniqueId}
-        and amrr.status=1
+        <choose>
+            <when test="ruleUniqueId !=null and ruleUniqueId.trim !=''">
+                and amrr.rule_unique_id=#{ruleUniqueId}
+                and amrr.status=1
+                and amrr.id is not null
+            </when>
+            <otherwise>
+                <if test="statusList !=null and !statusList.isEmpty">
+                    and asset.asset_status in
+                    <foreach collection="statusList" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="areaList !=null and !areaList.isEmpty">
+                    and asset.area_id in
+                    <foreach collection="areaList" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="removedAssetIds !=null and !removedAssetIds.isEmpty">
+                    and asset.id not in
+                    <foreach collection="removedAssetIds" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+                and asset.category_model =1
+            </otherwise>
+        </choose>
+
+
     </sql>
 </mapper>

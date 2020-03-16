@@ -2,9 +2,13 @@ package com.antiy.asset.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +65,14 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
 
     @Override
     public PageResult<AssetMonitorRuleRelationResponse> queryPageAssetMonitorRuleRelation(AssetMonitorRuleRelationQuery query) throws Exception {
+        if (CollectionUtils.isEmpty(query.getAreaList())) {
+            LoginUser loginUser=LoginUserUtil.getLoginUser();
+            if (Objects.isNull(loginUser)){
+                throw new BusinessException("获取当前用户信息失败");
+            }
+            query.setAreaList(loginUser.getAreaIdsOfCurrentUser());
+
+        }
         Integer count = this.findCount(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Collections.emptyList());
