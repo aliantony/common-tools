@@ -364,7 +364,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" baselineTemplateIds != null and baselineTemplateIds..size() > 0 ">
+        <if test=" baselineTemplateIds != null and baselineTemplateIds.size() > 0 ">
             and t.baseline_template_id in
             <foreach index="index" item="item" collection="baselineTemplateIds" open="(" separator="," close=")">
                 #{item}
