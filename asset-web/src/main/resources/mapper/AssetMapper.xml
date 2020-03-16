@@ -2101,7 +2101,8 @@ WHERE
 
                 <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
                     <include refid="assetRelationBusiness"></include>
-                    and a.asset_status in (7,8,9,10)
+                    and a.category_model=1
+                    and a.asset_status in (7,8,10,11)
                     and a.status=1
                 </trim>
                 <if test=" areaIds != null and areaIds.length > 0 ">
@@ -2128,7 +2129,7 @@ WHERE
 
             <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
                 <include refid="assetRelationBusiness"></include>
-                and a.asset_status in (7,8,9,10)
+                and a.asset_status in (7,8,10,11)
                 and a.status=1
             </trim>
             <if test=" areaIds != null and areaIds.length > 0 ">

@@ -1,12 +1,12 @@
 package com.antiy.asset.intergration;
 
-import java.util.List;
-
 import com.antiy.asset.vo.query.ActivityWaitingQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
+
+import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -60,4 +60,12 @@ public interface ActivityClient {
      * @return
      */
     ActionResponse deleteProcessInstance(List<String> processInstanceIds);
+
+    /**
+     * 获取taskid
+     * @param key
+     * @return
+     */
+
+    ActionResponse getTaksIdByBusinessKey(String key);
 }

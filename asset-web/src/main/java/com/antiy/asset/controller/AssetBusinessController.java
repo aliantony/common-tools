@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -137,8 +138,9 @@ public class AssetBusinessController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody UniqueKeyRquest uniqueKeyRquest)throws Exception{
-        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueId());
+    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody List<UniqueKeyRquest> uniqueKeyRquest)throws Exception{
+        List<String> uniqueKeys = uniqueKeyRquest.stream().map(t -> t.getUniqueId()).collect(Collectors.toList());
+        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeys);
         return ActionResponse.success(result);
     }
 }

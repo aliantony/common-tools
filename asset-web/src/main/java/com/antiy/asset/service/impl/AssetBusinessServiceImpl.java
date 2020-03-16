@@ -21,6 +21,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,13 +154,13 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         List<String> areaId = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
         String[] strings = areaId.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
-        List<AssetResponse> assetList=assetDao.queryAsset(assetAddOfBusinessQuery);
-
         Integer count=assetDao.countQueryAsset(assetAddOfBusinessQuery);
-        count=count==null?0:count;
-       return  new PageResult<>(assetAddOfBusinessQuery.getPageSize(),count,assetAddOfBusinessQuery.getCurrentPage(),assetList);
+        if(count>0){
+            List<AssetResponse> assetList=assetDao.queryAsset(assetAddOfBusinessQuery);
+            return  new PageResult<>(assetAddOfBusinessQuery.getPageSize(),count,assetAddOfBusinessQuery.getCurrentPage(),assetList);
+        }
+       return  new PageResult<>(assetAddOfBusinessQuery.getPageSize(),0,assetAddOfBusinessQuery.getCurrentPage(), Lists.newArrayList());
     }
-
     @Override
     public List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery) {
         List<String> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
@@ -178,7 +179,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     }
 
     @Override
-    public Integer updateStatusByUniqueId(String uniqueId) {
+    public Integer updateStatusByUniqueId(List<String> uniqueId) {
 
         return assetBusinessDao.updateStatusByUniqueId(uniqueId);
     }

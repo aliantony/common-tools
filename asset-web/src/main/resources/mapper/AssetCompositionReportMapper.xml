@@ -228,19 +228,7 @@
 
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCompositionReport"
-            parameterType="com.antiy.common.base.ObjectQuery">
-        select * from
-        <include refid="Table_Name"></include>
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="Where_Column_List"></include>
-            </trim>
-        </where>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-    </select>
+
     <select id="findAll" resultType="com.antiy.asset.vo.response.AssetCompositionReportResponse"
             parameterType="com.antiy.asset.vo.query.AssetCompositionReportQuery">
         SELECT
@@ -337,7 +325,7 @@
                         ${sortName} ${sortOrder}
                     </when>
                     <otherwise>
-                        first_enter_nett ${sortOrder}
+                        t.first_enter_nett ${sortOrder}
                     </otherwise>
                 </choose>
             </when>
@@ -364,7 +352,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" baselineTemplateIds != null and baselineTemplateIds..size() > 0 ">
+        <if test=" baselineTemplateIds != null and baselineTemplateIds.size() > 0 ">
             and t.baseline_template_id in
             <foreach index="index" item="item" collection="baselineTemplateIds" open="(" separator="," close=")">
                 #{item}
@@ -477,5 +465,17 @@
         </if>
 
     </sql>
-
+    <select id="findQuery" resultType="com.antiy.asset.entity.AssetCompositionReport"
+            parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
 </mapper>

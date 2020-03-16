@@ -82,4 +82,10 @@ public class BaseLineClientImpl implements BaseLineClient {
         return null;
     }
 
+    @Override
+    public ActionResponse situationOfVul(String primaryKey) {
+
+        return null;
+    }
+
 }

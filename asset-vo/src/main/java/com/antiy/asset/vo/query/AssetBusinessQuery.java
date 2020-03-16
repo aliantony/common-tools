@@ -27,8 +27,8 @@ public class AssetBusinessQuery extends ObjectQuery {
     @ApiModelProperty("业务名称（中文字符，去重）")
     @Length(max = 50,message = "业务名称不能超过50个字符")
     private String name;
+    @ApiModelProperty("唯一键")
     private String uniqueId;
-
     public String getUniqueId() {
         return uniqueId;
     }

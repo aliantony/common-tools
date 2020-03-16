@@ -54,4 +54,6 @@ public interface BaseLineClient {
      * @return
      */
     ActionResponse removeAsset(List<Integer> assetIdList);
+
+    ActionResponse situationOfVul(String primaryKey);
 }

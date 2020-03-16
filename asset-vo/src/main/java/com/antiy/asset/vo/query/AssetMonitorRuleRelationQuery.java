@@ -3,6 +3,8 @@ package com.antiy.asset.vo.query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetMonitorRuleRelation 查询条件 </p>
  *
@@ -17,6 +19,8 @@ public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
     private String ruleUniqueId;
     @ApiModelProperty(hidden = true)
     private Boolean relatedAssetSort;
+    @ApiModelProperty("移除的资产id集合，未加密")
+    private List<String> removedAssetIds;
 
     public Boolean getRelatedAssetSort() {
         return relatedAssetSort;
@@ -40,5 +44,13 @@ public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
 
     public void setMultipleQuery(String multipleQuery) {
         this.multipleQuery = multipleQuery;
+    }
+
+    public List<String> getRemovedAssetIds() {
+        return removedAssetIds;
+    }
+
+    public void setRemovedAssetIds(List<String> removedAssetIds) {
+        this.removedAssetIds = removedAssetIds;
     }
 }
