@@ -1,5 +1,7 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 /**
  * <p> AssetCpeTreeResponse 响应对象 </p>
  *
@@ -20,6 +22,31 @@ public class AssetCpeTreeResponse extends BaseResponse {
      * 标题
      */
     private String title;
+    /**
+     * 是否默认显示
+     */
+    private Boolean show;
+
+    /**
+     * 子节点数据
+     */
+    private List<AssetCpeTreeResponse> childrenNode;
+
+    public Boolean getShow() {
+        return show;
+    }
+
+    public void setShow(Boolean show) {
+        this.show = show;
+    }
+
+    public List<AssetCpeTreeResponse> getChildrenNode() {
+        return childrenNode;
+    }
+
+    public void setChildrenNode(List<AssetCpeTreeResponse> childrenNode) {
+        this.childrenNode = childrenNode;
+    }
 
     public String getUniqueId() {
         return uniqueId;

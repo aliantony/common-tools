@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.entity.AssetCpeTree;
 import com.antiy.asset.service.IAssetCpeTreeService;
@@ -36,6 +37,8 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
     private BaseConverter<AssetCpeTreeRequest, AssetCpeTree>  requestConverter;
     @Resource
     private BaseConverter<AssetCpeTree, AssetCpeTreeResponse> responseConverter;
+    @Resource
+    private BaseConverter<AssetCpeTreeResponse, AssetCpeTree> responseReverseConverter;
 
     @Override
     public String saveAssetCpeTree(AssetCpeTreeRequest request) throws Exception {
@@ -114,6 +117,43 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             return responseConverter.convert(assetCpeTreeDao.findNextNode(condition), AssetCpeTreeResponse.class);
         } else {
             return Lists.newArrayList();
+        }
+    }
+
+    @Override
+    public List<AssetCpeTreeResponse> queryTree() throws Exception {
+
+        List<AssetCpeTreeResponse> responseList = Lists.newArrayList();
+        //获取顶级大类
+        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findTopNode();
+        AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        for (AssetCpeTree assetCpeTree : topNodeList){
+            condition.setPid(assetCpeTree.getUniqueId());
+            List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),AssetCpeTreeResponse.class);
+            //查找子节点数据
+            buildChildrenNode(treeItem);
+            //组装基准大类树形数据
+            AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,AssetCpeTreeResponse.class);
+            assetCpeTreeResponse.setChildrenNode(treeItem);
+            treeItem.forEach(e->e.setShow(true));
+            responseList.add(assetCpeTreeResponse);
+        }
+        System.out.println(JSON.toJSONString(responseList));
+        return responseList;
+    }
+
+    private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList) {
+        AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList){
+            condition.setPid(assetCpeTree.getUniqueId());
+            Integer hasNext = assetCpeTreeDao.countNextNode(condition);
+            if (hasNext > 0){
+                assetCpeTree.setShow(false);
+                List<AssetCpeTree> assetCpeTreeList = assetCpeTreeDao.findNextNode(condition);
+                List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList, AssetCpeTreeResponse.class);
+                assetCpeTree.setChildrenNode(responseList);
+                buildChildrenNode(assetCpeTree.getChildrenNode());
+            }
         }
     }
 }

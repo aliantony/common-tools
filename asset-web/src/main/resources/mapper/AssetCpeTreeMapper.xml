@@ -228,4 +228,15 @@
         </trim>
     </select>
 
+    <select id="getAll" resultMap="BaseResultMap">
+        select * from
+        <include refid="Table_Name"></include>
+    </select>
+
+    <select id="findTopNode" resultMap="BaseResultMap">
+        select * from
+        <include refid="Table_Name"></include>
+        where pid = 0
+    </select>
+
 </mapper>

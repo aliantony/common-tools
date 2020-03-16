@@ -76,4 +76,10 @@ public interface IAssetCpeTreeService extends IBaseService<AssetCpeTree> {
      */
     List<AssetCpeTreeResponse> queryNextNodeById(AssetCpeTreeCondition queryCondition) throws Exception;
 
+    /**
+     * 查询所有的树形分类数据
+     * @return
+     */
+    List<AssetCpeTreeResponse> queryTree() throws Exception;
+
 }

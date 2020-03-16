@@ -32,4 +32,11 @@ public class AssetCpeTreeServiceImplTest {
         List<AssetCpeTreeResponse> list = cpeTreeService.queryNextNodeById(condition);
         System.out.println(JSON.toJSONString(list));
     }
+
+    @Test
+    public void queryTree() throws Exception {
+        List<AssetCpeTreeResponse> list = cpeTreeService.queryTree();
+
+        System.out.println("ok");
+    }
 }

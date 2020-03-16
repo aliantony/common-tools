@@ -110,7 +110,7 @@ public class AssetCpeTreeController {
     }
 
     /**
-     * 通过ID查询下级子节点数据
+     * 通过ID查询下级子节点数据,只显示二级节点数据
      *
      * @param cpeTreeCondition
      * @return actionResponse
@@ -120,5 +120,17 @@ public class AssetCpeTreeController {
     @RequestMapping(value = "/query/nextNode/id", method = RequestMethod.POST)
     public ActionResponse queryNextNodeById(@RequestBody @ApiParam(value = "主键封装对象") AssetCpeTreeCondition cpeTreeCondition) throws Exception {
         return ActionResponse.success(iAssetCpeTreeService.queryNextNodeById(cpeTreeCondition));
+    }
+
+    /**
+     * 查询所有的树形分类数据
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询所有的树形分类数据", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCpeTreeResponse.class), })
+    @RequestMapping(value = "/query/tree", method = RequestMethod.POST)
+    public ActionResponse queryTree() throws Exception {
+        return ActionResponse.success(iAssetCpeTreeService.queryTree());
     }
 }
