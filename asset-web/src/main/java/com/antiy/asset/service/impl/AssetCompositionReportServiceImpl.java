@@ -111,8 +111,19 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
 
-        return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
+        return new PageResult<>(query.getPageSize(), this.findCountAsset(query), query.getCurrentPage(),
             this.findListAssetCompositionReport(query));
+    }
+
+    public Integer findCountAsset(AssetCompositionReportQuery query) throws Exception {
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (loginUser == null) {
+            return 0;
+        }
+        if (ArrayUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(DataTypeUtils.integerArrayToStringArray(loginUser.getAreaIdsOfCurrentUser()));
+        }
+        return assetCompositionReportDao.findCount(query);
     }
 
     @Override
