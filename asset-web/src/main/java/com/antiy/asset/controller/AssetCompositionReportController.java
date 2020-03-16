@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Api(value = "AssetCompositionReport", description = "")
 @RestController
-@RequestMapping("/api//v1/asset/assetcompositionreport")
+@RequestMapping("/api/v1/asset/assetcompositionreport")
 public class AssetCompositionReportController {
     private static final Logger           logger = LogUtils.get();
 
