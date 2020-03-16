@@ -1,13 +1,5 @@
 package com.antiy.asset.intergration.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.util.BaseClient;
@@ -18,6 +10,12 @@ import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @auther: zhangbing
@@ -47,6 +45,9 @@ public class ActivityClientImpl implements ActivityClient {
 
     @Value("${deleteProcessInstanceUrl}")
     private String deleteProcessInstanceUrl;
+
+    @Value("${getTaskIdByBusinessKyeUrl}")
+    private String getTaskIdByBusinessKyeUrl;
 
     @Override
     @AssetLog(description = "人工登记启动工作流", operationType = AssetLogOperationType.CREATE)
@@ -96,5 +97,12 @@ public class ActivityClientImpl implements ActivityClient {
                 }, deleteProcessInstanceUrl);
     }
 
+    @Override
+    @AssetLog(description = "根据businessKey获取taskid")
+    public ActionResponse getTaksIdByBusinessKey(String key) {
 
+        return (ActionResponse) baseClient.post(key,
+                new ParameterizedTypeReference<ActionResponse>() {
+                }, getTaskIdByBusinessKyeUrl);
+    }
 }

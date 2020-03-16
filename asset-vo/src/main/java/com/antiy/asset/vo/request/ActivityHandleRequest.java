@@ -22,6 +22,16 @@ public class ActivityHandleRequest extends BaseRequest {
     @ApiModelProperty(value = "主键id,未加密")
     private String id;
 
+    @ApiModelProperty(value = "流程Id")
+    private String processInstanceId;
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
     public Map getFormData() {
         return formData;

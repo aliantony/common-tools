@@ -223,7 +223,16 @@
            <include refid="base_query"></include>
         </trim>
 
-        order by gmt_modified desc
+        order by
+
+        <choose>
+            <when test="sortOrder != null and sortOrder != '' and sortName != null and sortName != ''">
+                ${sortName} ${sortOrder}
+            </when>
+            <otherwise>
+                gmt_modified desc
+            </otherwise>
+        </choose>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -254,8 +263,10 @@
         and status=1
     </select>
     <update id="updateStatusByUniqueId">
-        update  asset_business
-        set status=0
-        where unique_id=#{uniqueId}
+        <foreach collection="list" open="" close="" item="uniqueId" separator=";">
+            update  asset_business
+            set status=0
+            where unique_id=#{uniqueId}
+        </foreach>
     </update>
 </mapper>

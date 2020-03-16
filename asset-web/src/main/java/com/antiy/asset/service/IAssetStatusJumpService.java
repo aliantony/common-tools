@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 
 /**
@@ -28,4 +29,6 @@ public interface IAssetStatusJumpService {
      * @return
      */
     Integer continueNetIn(String primaryKey);
+
+    AssetCorrectIInfoResponse assetCorrectingInfo(String primaryKey) throws Exception;
 }
