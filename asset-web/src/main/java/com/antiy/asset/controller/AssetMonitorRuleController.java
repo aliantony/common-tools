@@ -129,7 +129,7 @@ public class AssetMonitorRuleController {
      * @param query
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询", notes = "主键封装对象",hidden = true)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@RequestBody @ApiParam(value = "主键封装对象") BaseQuery query) throws Exception {

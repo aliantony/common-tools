@@ -182,6 +182,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
         ParamterExceptionUtils.isBlank(query.getUniqueId(), "主键Id不能为空");
         AssetMonitorRuleResponse assetMonitorRuleResponse = responseConverter
             .convert(assetMonitorRuleDao.getById(query.getUniqueId()), AssetMonitorRuleResponse.class);
+        assetMonitorRuleResponse.setAreaName(wrappedRedisUtil.bindAreaName(assetMonitorRuleResponse.getAreaId()));
         return assetMonitorRuleResponse;
     }
 
