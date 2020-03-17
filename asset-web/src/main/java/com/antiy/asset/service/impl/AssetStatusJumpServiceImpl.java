@@ -266,9 +266,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Map<String,String> formData=new HashMap<>(1);
         formData.put("baselineRectifyResult","success");
         activityHandleRequest.setFormData(formData);
-        if(baseLineResponse.getBody().equals("成功")){
+        if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg())){
              return activityClient.completeTask(activityHandleRequest);
-        }else if(baseLineResponse.getBody().equals("失败")) {
+        }else if(baseLineResponse.getBody().equals(AssetBaseLineEnum.FALI.getMsg())) {
             formData.put("baselineRectifyResult","fail");
             return activityClient.completeTask(activityHandleRequest);
         }
