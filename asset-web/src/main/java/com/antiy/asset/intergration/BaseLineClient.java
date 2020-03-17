@@ -2,6 +2,7 @@ package com.antiy.asset.intergration;
 
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
+import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 
 import java.util.List;
@@ -56,4 +57,6 @@ public interface BaseLineClient {
     ActionResponse removeAsset(List<Integer> assetIdList);
 
     ActionResponse situationOfVul(String primaryKey);
+
+    ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId);
 }

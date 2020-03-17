@@ -7,6 +7,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
+import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,6 +35,14 @@ public class BaseLineClientImpl implements BaseLineClient {
     private String     scanUrl;
     @Value("${baselineTemplateUrl}")
     private String     baselineTemplateUrl;
+
+    @Value("${baseLineRectificationUrl}")
+    private String baseLineRectificationUrl;
+
+    @Value("${baseLineRemoveAssetUrl}")
+    private String baseLineRemoveAssetUrl;
+    @Value("${situationOfVulUrl}")
+    private String situationOfVulUrl;
 
     @Resource
     private BaseClient baseClient;
@@ -78,14 +87,26 @@ public class BaseLineClientImpl implements BaseLineClient {
     }
 
     @Override
+    @AssetLog(description = "配置/资产退役", operationType = AssetLogOperationType.ADD)
     public ActionResponse removeAsset(List<Integer> assetIdList) {
-        return null;
+        return (ActionResponse) baseClient.post(assetIdList, new ParameterizedTypeReference<ActionResponse>() {
+        }, baseLineRemoveAssetUrl);
     }
 
     @Override
     public ActionResponse situationOfVul(String primaryKey) {
-
-        return null;
+        JSONObject param = new JSONObject();
+        param.put("stringId", primaryKey);
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        }, situationOfVulUrl);
+    }
+    @Override
+    @AssetLog(description = "配置/整改", operationType = AssetLogOperationType.ADD)
+    public ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId) {
+        JSONObject param = new JSONObject();
+        param.put("assetId", assetId);
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        }, baseLineRectificationUrl);
     }
 
 }
