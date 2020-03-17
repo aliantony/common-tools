@@ -13,10 +13,7 @@ import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetEntryRequest;
-import com.antiy.asset.vo.request.AssetStatusJumpRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
@@ -123,6 +120,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                  * 配置
                  */
                 ActionResponse actionResponse= baseLineClient.removeAsset(assetIdList);
+                if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                    throw new BusinessException("资产退役调用漏洞模块失败");
+                }
                 /**
                  * 准入
                  */
@@ -183,40 +183,109 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         return result;
     }
 
+    private AssetCorrectIInfoResponse correctingAssetOfbaseLine(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse,ActionResponse<AssetCorrectIInfoResponse> vlunResponse,String assetId) throws Exception {
+        AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
+        //资产漏洞或配置模块 “修复”失败
+        if(baseLineResponse.getBody().equals("成功") &&assetCorrectIInfoResponse.getFailureCount()>0 || baseLineResponse.getBody().equals("失败")){
+            assetCorrectIInfoResponse.setNeedManualPush("1");
+
+        }
+        //资产漏洞和配置模块 “修复”成功
+        else if(baseLineResponse.getBody().equals("成功") &&assetCorrectIInfoResponse.getFailureCount()<=0 ){
+            // 改变资产状态
+            Asset asset=new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(assetId));
+            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            assetDao.update(asset);
+            assetCorrectIInfoResponse.setNeedManualPush("0");
+
+        }
+        //配置未完成
+        else{
+            assetCorrectIInfoResponse.setNeedManualPush("0");
+        }
+        assetCorrectIInfoResponse.setCheckStatus(baseLineResponse.getBody().getCheckStatus());
+        assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
+        return  assetCorrectIInfoResponse;
+    }
     @Override
-    public AssetCorrectIInfoResponse assetCorrectingInfo(String primaryKey) throws Exception {
-        Asset assetOfDB = assetDao.getById(primaryKey);
+    @Transactional(rollbackFor = Exception.class)
+    public AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectingRequest activityHandleRequest) throws Exception {
+        Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
         if(assetOfDB==null){
             throw new BusinessException("资产不存在！");
         }
-        ActionResponse<AssetCorrectIInfoResponse> vlunResponse= baseLineClient.situationOfVul(primaryKey);
+        ActionResponse<AssetCorrectIInfoResponse> vlunResponse= baseLineClient.situationOfVul(activityHandleRequest.getStringId());
 
         if (null == vlunResponse || !RespBasicCode.SUCCESS.getResultCode().equals(vlunResponse.getHead().getCode())) {
             LogUtils.error(logger, "调用漏洞模块失败");
+            throw  new BusinessException("调用漏洞模块失败");
         }
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
-        //漏洞流程结束判断
-        if(assetCorrectIInfoResponse.getScan()&& assetCorrectIInfoResponse.getDeal()){
 
-            //变更资产状态
-            /**
-             * 变更资产代码=======================
-             */
-
-            if(AssetCategoryEnum.COMPUTER.getCode().equals(assetOfDB.getCategoryModel())){
-
-               /* ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( "assetId");
-                if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
-                    LogUtils.error(logger, "调用配置模块失败");
-                }*/
-                return  assetCorrectIInfoResponse;
-
-            }
+        //整改流程--漏洞步骤处于进行中状态
+        if(!assetCorrectIInfoResponse.getScan()||! assetCorrectIInfoResponse.getDeal()){
+            assetCorrectIInfoResponse.setNeedManualPush("0");
+            return  assetCorrectIInfoResponse;
         }
-
-        return null;
+        ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest.getBaseLineActivity());
+        if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            LogUtils.error(logger, "资产整改漏洞工作流异常!");
+            throw  new BusinessException("资产整改漏洞工作流异常");
+        }
+        //整改流程--漏洞步骤完成  -进入配置流程（计算机设备 ）
+        ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( "assetId");
+        if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
+            LogUtils.error(logger, "调用配置模块失败");
+            throw  new BusinessException("调用配置模块失败");
+        }
+        if(AssetCategoryEnum.COMPUTER.getCode().equals(assetOfDB.getCategoryModel())){
+            //配置工作流
+            ActionResponse baseLineActivityResponse = baseLineActivity(baseLineResponse, activityHandleRequest.getBaseLineActivity());
+            if (null == baseLineActivityResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineActivityResponse.getHead().getCode())) {
+                LogUtils.error(logger, "资产整改配置工作流异常!");
+                throw  new BusinessException("资产整改配置工作流异常");
+            }
+            return  correctingAssetOfbaseLine(baseLineResponse,vlunResponse,activityHandleRequest.getStringId());
+        }
+        //整改流程--漏洞步骤完成  （非计算机设备 ）
+        if(assetCorrectIInfoResponse.getFailureCount()<=0){
+            //改变资产状态
+            Asset asset=new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
+            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            assetDao.update(asset);
+            assetCorrectIInfoResponse.setNeedManualPush("0");
+        }else {
+            assetCorrectIInfoResponse.setNeedManualPush("1");
+        }
+        return  assetCorrectIInfoResponse;
     }
 
+    private ActionResponse baseLineActivity(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse, ActivityHandleRequest activityHandleRequest) {
+        Map<String,String> formData=new HashMap<>(1);
+        formData.put("baselineRectifyResult","success");
+        activityHandleRequest.setFormData(formData);
+        if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg())){
+             return activityClient.completeTask(activityHandleRequest);
+        }else if(baseLineResponse.getBody().equals(AssetBaseLineEnum.FALI.getMsg())) {
+            formData.put("baselineRectifyResult","fail");
+            return activityClient.completeTask(activityHandleRequest);
+        }
+        return ActionResponse.success();
+    }
+    private ActionResponse vlunActivity( AssetCorrectIInfoResponse assetCorrectIInfoResponse,ActivityHandleRequest activityHandleRequest){
+
+        Map<String,String> formData=new HashMap<>(1);
+        formData.put("vulRectifyResult","success");
+        activityHandleRequest.setFormData(formData);
+        if(assetCorrectIInfoResponse.getFailureCount()<=0){
+            return activityClient.completeTask(activityHandleRequest);
+        }else {
+            formData.put("vulRectifyResult","fail");
+           return activityClient.completeTask(activityHandleRequest);
+        }
+    }
     private void setInProcess(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
         Integer lastAssetStatus = statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode();
 

@@ -16,6 +16,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -100,10 +101,14 @@ public class AssetOperationRecordServiceImpl extends BaseServiceImpl<AssetOperat
 
     @Override
     public PageResult<AssetResponse> queryCheckList(AssetSchemeQuery assetSchemeQuery) {
-        List<AssetResponse> assetResponseList=assetDao.queryCheckList(assetSchemeQuery);
+
         Integer count=assetDao.countCheckList(assetSchemeQuery);
-        count=count==null?0:count;
-        return new PageResult<>(assetSchemeQuery.getPageSize(),count,assetSchemeQuery.getCurrentPage(),assetResponseList);
+        if(count>0){
+            List<AssetResponse> assetResponseList=assetDao.queryCheckList(assetSchemeQuery);
+            return new PageResult<>(assetSchemeQuery.getPageSize(),count,assetSchemeQuery.getCurrentPage(),assetResponseList);
+        }
+
+        return new PageResult<>(assetSchemeQuery.getPageSize(),0,assetSchemeQuery.getCurrentPage(), Lists.newArrayList());
     }
 
     @Override

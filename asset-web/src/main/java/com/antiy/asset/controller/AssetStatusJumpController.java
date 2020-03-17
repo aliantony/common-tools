@@ -8,6 +8,8 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.vo.query.NoRegisterRequest;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
+import com.antiy.asset.vo.request.AssetCorrectingRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
@@ -18,7 +20,10 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -108,8 +113,8 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "整改详情", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/correctiong/info", method = RequestMethod.POST)
-    public ActionResponse assetCorrectingInfo(@ApiParam(value = "queryCondition") @RequestBody QueryCondition queryCondition) throws Exception {
-        AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingInfo(queryCondition.getPrimaryKey());
+    public ActionResponse assetCorrectingInfo(@ApiParam(value = "assetCorrectingRequest") @RequestBody AssetCorrectingRequest assetCorrectingRequest) throws Exception {
+        AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingInfo(assetCorrectingRequest);
         return ActionResponse.success(result);
     }
 }
