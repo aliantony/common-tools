@@ -20,4 +20,6 @@ public interface AssetCpeTreeDao extends IBaseDao<AssetCpeTree> {
 
     List<AssetCpeTree> findTopNode();
 
+    List<AssetCpeTree> findOSTopNode();
+
 }
