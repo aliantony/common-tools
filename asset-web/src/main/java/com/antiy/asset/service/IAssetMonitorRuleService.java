@@ -1,5 +1,7 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+
 import com.antiy.asset.entity.AssetMonitorRule;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.BaseQuery;
@@ -10,8 +12,6 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
-
-import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务类 </p>
@@ -71,4 +71,11 @@ public interface IAssetMonitorRuleService extends IBaseService<AssetMonitorRule>
     AssetMonitorRuleResponse queryByUniqueId(String uniqueId) throws Exception;
 
     PageResult<AssetResponse> queryAssetByUniqueId(UniqueKeyQuery uniqueId);
+
+    /**
+     * 名称去重
+     * @param query
+     * @return
+     */
+    Boolean nameNoRepeat(AssetMonitorRuleQuery query) throws Exception;
 }

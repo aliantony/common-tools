@@ -1,5 +1,12 @@
 package com.antiy.asset.controller;
 
+import javax.annotation.Resource;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.BaseQuery;
@@ -9,16 +16,10 @@ import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import io.swagger.annotations.*;
 
 /**
  *
@@ -135,15 +136,15 @@ public class AssetMonitorRuleController {
     }
 
     /**
-     * 通过ID删除
+     * 规则名称去重
      *
-     * @param baseRequest
+     * @param query
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
+    @ApiOperation(value = "规则名称去重", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
-        return ActionResponse.success(iAssetMonitorRuleService.deleteAssetMonitorRuleById(baseRequest));
+    @RequestMapping(value = "/nameNoRepeat", method = RequestMethod.POST)
+    public ActionResponse nameNoRepeat(@RequestBody @ApiParam(value = "主键封装对象") AssetMonitorRuleQuery query) throws Exception {
+        return ActionResponse.success(iAssetMonitorRuleService.nameNoRepeat(query));
     }
 }

@@ -1,5 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.component.WrappedRedisUtil;
 import com.antiy.asset.dao.AssetMonitorRuleDao;
@@ -30,12 +38,6 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务实现类 </p>
@@ -229,5 +231,10 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
             return new PageResult(uniqueKeyQuery.getPageSize(),0,uniqueKeyQuery.getCurrentPage(),asetResponseList);
         }
         return new PageResult<>(uniqueKeyQuery.getPageSize(), 0, uniqueKeyQuery.getCurrentPage(), Lists.newArrayList());
+    }
+
+    @Override
+    public Boolean nameNoRepeat(AssetMonitorRuleQuery query) throws Exception{
+        return assetMonitorRuleDao.nameNoRepeat(query.getName());
     }
 }
