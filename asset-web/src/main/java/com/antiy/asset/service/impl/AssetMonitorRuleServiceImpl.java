@@ -142,13 +142,13 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
 
     @Override
     public List<AssetMonitorRuleResponse> queryListAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
-        ConditionFactory.createAreaQuery(query);
         List<AssetMonitorRule> assetMonitorRuleList = assetMonitorRuleDao.findQuery(query);
         return responseConverter.convert(assetMonitorRuleList, AssetMonitorRuleResponse.class);
     }
 
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
+        ConditionFactory.createAreaQuery(query);
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
