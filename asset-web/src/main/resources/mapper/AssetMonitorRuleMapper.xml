@@ -316,10 +316,13 @@
         and status=1
     </update>
     <update id="deleteByUniqueId">
-         update  asset_monitor_rule
-        set status=0
-        where unique_id=#{uniqueId}
-        and status=1
+        <foreach collection="list" separator=";" item="item">
+            update  asset_monitor_rule
+            set status=0
+            where unique_id=#{item}
+            and status=1
+        </foreach>
+
     </update>
     <select id="queryByUniqueId" resultMap="BaseResultMap">
         select *

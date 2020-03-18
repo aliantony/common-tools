@@ -205,7 +205,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     }
 
     @Override
-    public Integer deleteByUniqueId(String uniqueId) {
+    public Integer deleteByUniqueId(List<String> uniqueId) {
 
         return  assetMonitorRuleDao.deleteByUniqueId(uniqueId);
     }

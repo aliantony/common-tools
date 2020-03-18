@@ -66,7 +66,7 @@ public class AssetMonitorRuleController {
     @RequestMapping(value = "/delete/uniqueId", method = RequestMethod.POST)
     public ActionResponse deleteByUniqueId(@ApiParam(value = "uniqueKeyRquest") @RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
         ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueIds(),"唯一键不能为空！");
-        Integer result=iAssetMonitorRuleService.deleteByUniqueId(uniqueKeyRquest.getUniqueId());
+        Integer result=iAssetMonitorRuleService.deleteByUniqueId(uniqueKeyRquest.getUniqueIds());
         return ActionResponse.success(result);
     }
     /**
