@@ -105,7 +105,7 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleRequest assetMonitorRuleRequest) throws Exception {
+    public ActionResponse updateSingle(@RequestBody @ApiParam(value = "assetMonitorRule") AssetMonitorRuleRequest assetMonitorRuleRequest) throws Exception {
         return ActionResponse.success(iAssetMonitorRuleService.updateAssetMonitorRule(assetMonitorRuleRequest));
     }
 
@@ -118,7 +118,7 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetMonitorRuleResponse.class, responseContainer = "List"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetMonitorRule") AssetMonitorRuleQuery assetMonitorRuleQuery) throws Exception {
+    public ActionResponse queryList(@RequestBody @ApiParam(value = "assetMonitorRule") AssetMonitorRuleQuery assetMonitorRuleQuery) throws Exception {
         return ActionResponse.success(iAssetMonitorRuleService.queryPageAssetMonitorRule(assetMonitorRuleQuery));
     }
 
