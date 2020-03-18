@@ -223,7 +223,6 @@
     </select>
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-
         <choose>
             <when test="relatedAssetSort">
                 select count(1)
