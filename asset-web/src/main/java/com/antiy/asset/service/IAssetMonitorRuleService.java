@@ -66,7 +66,7 @@ public interface IAssetMonitorRuleService extends IBaseService<AssetMonitorRule>
 
     Integer editRuleStatus(String uniqueId, String useFlag);
 
-    Integer deleteByUniqueId(String uniqueId);
+    Integer deleteByUniqueId(List<String> uniqueId);
 
     AssetMonitorRuleResponse queryByUniqueId(String uniqueId) throws Exception;
 

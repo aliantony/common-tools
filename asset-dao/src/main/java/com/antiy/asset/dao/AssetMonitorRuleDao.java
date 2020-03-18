@@ -34,7 +34,7 @@ public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
 
     Integer editRuleStatusByUI(@Param("uniqueId") String uniqueId, @Param("ruleStatus") Integer ruleStatus);
 
-    Integer deleteByUniqueId(String uniqueId);
+    Integer deleteByUniqueId(List<String> uniqueId);
 
     AssetMonitorRule queryByUniqueId(String uniqueId);
 
