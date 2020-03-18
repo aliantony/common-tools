@@ -225,7 +225,16 @@
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         <choose>
             <when test="relatedAssetSort">
-                select count(1)
+                SELECT
+                count(1)
+                from (
+                SELECT
+                amr.unique_id,
+                count( amr.unique_id ) AS relatedAssetAmount,
+                amr.NAME,
+                amr.area_id,
+                amr.alarm_level,
+                amr.rule_status
                 from
                 asset_monitor_rule amr
                 left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
@@ -240,11 +249,14 @@
                 </trim>
                 group by amr.unique_id
                 order by relatedAssetAmount ${sortOrder}
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
                 ) temp left join asset_monitor_rule amr on amr.unique_id = temp.unique_id
             </when>
             <otherwise>
-                select count(1)
-                from
+                SELECT
+                count(1) from
                 <include refid="Table_Name"></include>
                 amr
                 <trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -261,8 +273,12 @@
                             #{areaId}
                         </foreach>
                     </if>
+                    and amr.status = 1
                 </trim>
                 order by amr.gmt_create desc
+                <if test="pageSize !=-1">
+                    LIMIT #{pageSize} offset #{pageOffset}
+                </if>
             </otherwise>
         </choose>
     </select>
