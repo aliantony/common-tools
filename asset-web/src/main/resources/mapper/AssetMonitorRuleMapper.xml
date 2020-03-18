@@ -284,6 +284,7 @@
                             #{areaId}
                         </foreach>
                     </if>
+                    and amr.status = 1
                 </trim>
                 order by amr.gmt_create desc
                 <if test="pageSize !=-1">
