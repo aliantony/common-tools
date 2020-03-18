@@ -304,6 +304,13 @@
                 asset_monitor_rule amr
                 left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
                 <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                    <if test=" name != null and name !=''">
+                        and amr.`name` like
+                        concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+                    </if>
+                    <if test=" alarmLevel != null and alarmLevel !=''">
+                        and amr.`alarm_level` = #{alarmLevel}
+                    </if>
                     <if test="areaList.size > 0">
                         and amr.area_id in
                         <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
