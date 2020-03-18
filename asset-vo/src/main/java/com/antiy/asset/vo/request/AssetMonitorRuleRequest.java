@@ -48,14 +48,14 @@ public class AssetMonitorRuleRequest {
     private AssetRuntimeExceptionThreshold runtimeExceptionThreshold;
     @ApiModelProperty("已选中资产")
     private List<String>                   relatedAsset;
-    @ApiModelProperty("启用:true/禁用:false;仅启用/禁用接口传")
-    private Boolean useFlag;
+    @ApiModelProperty("启用:1/禁用:0;仅启用/禁用接口传")
+    private String useFlag;
 
-    public Boolean getUseFlag() {
+    public String getUseFlag() {
         return useFlag;
     }
 
-    public void setUseFlag(Boolean useFlag) {
+    public void setUseFlag(String useFlag) {
         this.useFlag = useFlag;
     }
 

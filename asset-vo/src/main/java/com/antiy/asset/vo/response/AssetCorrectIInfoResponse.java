@@ -28,10 +28,18 @@ public class AssetCorrectIInfoResponse {
      * false: 未完成
      */
     private Boolean isDeal;
+    @ApiModelProperty("流程推动标志： 0 不需要手动推动  1 需要手动推动 ")
+    private  String needManualPush;
 
+    public String getNeedManualPush() {
+        return needManualPush;
+    }
 
+    public void setNeedManualPush(String needManualPush) {
+        this.needManualPush = needManualPush;
+    }
 
-     public Boolean getDeal() {
+    public Boolean getDeal() {
             if(amount==repairedCount+failureCount+ignoreCount){
                 return true;
             }

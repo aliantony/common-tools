@@ -239,4 +239,10 @@
         where pid = 0
     </select>
 
+    <select id="findOSTopNode" resultMap="BaseResultMap">
+        select * from
+        <include refid="Table_Name"></include>
+        where title = '操作系统'
+    </select>
+
 </mapper>

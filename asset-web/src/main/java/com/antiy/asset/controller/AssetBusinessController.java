@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -57,14 +56,14 @@ public class AssetBusinessController {
      * 查询业务可以添加的资产
      */
     @ApiOperation(value = "查询业务可以添加的资产", notes = "传入实体对象信息")
-    @RequestMapping(value = "/query/asset", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/asset/list", method = RequestMethod.POST)
     public ActionResponse queryAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
 
         PageResult<AssetResponse> pageResult= iAssetBusinessService.queryAsset(assetAddOfBusinessQuery);
         return  ActionResponse.success(pageResult);
     }
     @ApiOperation(value = "查询业务信息", notes = "传入业务主键（uniqueId）")
-    @RequestMapping(value = "/query/single", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/info", method = RequestMethod.POST)
     public ActionResponse querySingle(@RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
         ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空");
         AssetBusinessResponse assetBusinessResponse= iAssetBusinessService.getByUniqueId(uniqueKeyRquest.getUniqueId());
@@ -78,7 +77,7 @@ public class AssetBusinessController {
      * @throws Exception
      */
     @ApiOperation(value = "业务已经关联的资产信息", notes = "传入实体对象信息")
-    @RequestMapping(value = "/query/business/asset", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/assetRelation/list", method = RequestMethod.POST)
     public ActionResponse queryBusinessAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
         ParamterExceptionUtils.isNull(assetAddOfBusinessQuery.getUniqueId(),"唯一键不能为空");
         List<AssetBusinessRelationResponse> assetList= iAssetBusinessService.queryAssetByBusinessId(assetAddOfBusinessQuery);
@@ -137,10 +136,9 @@ public class AssetBusinessController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
-    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody List<UniqueKeyRquest> uniqueKeyRquest)throws Exception{
-        List<String> uniqueKeys = uniqueKeyRquest.stream().map(t -> t.getUniqueId()).collect(Collectors.toList());
-        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeys);
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody UniqueKeyRquest uniqueKeyRquest)throws Exception{
+        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueIds());
         return ActionResponse.success(result);
     }
 }

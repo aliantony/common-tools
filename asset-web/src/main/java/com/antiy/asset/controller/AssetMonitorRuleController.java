@@ -1,12 +1,5 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.BaseQuery;
@@ -19,8 +12,13 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  *
@@ -67,8 +65,8 @@ public class AssetMonitorRuleController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/delete/uniqueId", method = RequestMethod.POST)
     public ActionResponse deleteByUniqueId(@ApiParam(value = "uniqueKeyRquest") @RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
-        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空！");
-        Integer result=iAssetMonitorRuleService.deleteByUniqueId(uniqueKeyRquest.getUniqueId());
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueIds(),"唯一键不能为空！");
+        Integer result=iAssetMonitorRuleService.deleteByUniqueId(uniqueKeyRquest.getUniqueIds());
         return ActionResponse.success(result);
     }
     /**

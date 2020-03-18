@@ -1,13 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.component.WrappedRedisUtil;
 import com.antiy.asset.dao.AssetMonitorRuleDao;
@@ -17,6 +9,7 @@ import com.antiy.asset.entity.AssetMonitorRuleRelation;
 import com.antiy.asset.factory.ConditionFactory;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetMonitorRuleService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AlarmLevelEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
@@ -37,6 +30,12 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p> 资产监控规则表 服务实现类 </p>
@@ -193,16 +192,20 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     }
 
     @Override
-    public Integer editRuleStatus(String uniqueId, Boolean useFlag) {
-        if (useFlag) {
-            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, 1);
-        } else {
-            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, 0);
+    public Integer editRuleStatus(String uniqueId, String useFlag) {
+
+        if (StatusEnum.ENABLE.getCode().equals(useFlag)) {
+            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, DataTypeUtils.stringToInteger(StatusEnum.ENABLE.getCode()));
+        } else if(StatusEnum.FOBIDDEN.getCode().equals(useFlag)) {
+            return assetMonitorRuleDao.editRuleStatusByUI(uniqueId, DataTypeUtils.stringToInteger(StatusEnum.FOBIDDEN.getCode()));
+        }else {
+            ParamterExceptionUtils.isNull(null,"useflag参数异常");
+            return 0;
         }
     }
 
     @Override
-    public Integer deleteByUniqueId(String uniqueId) {
+    public Integer deleteByUniqueId(List<String> uniqueId) {
 
         return  assetMonitorRuleDao.deleteByUniqueId(uniqueId);
     }

@@ -124,7 +124,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
 
         List<AssetCpeTreeResponse> responseList = Lists.newArrayList();
         //获取顶级大类
-        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findTopNode();
+        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findOSTopNode();
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
         for (AssetCpeTree assetCpeTree : topNodeList){
             condition.setPid(assetCpeTree.getUniqueId());
