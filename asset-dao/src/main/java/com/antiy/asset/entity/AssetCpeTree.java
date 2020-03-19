@@ -26,6 +26,10 @@ public class AssetCpeTree extends BaseEntity {
      */
     private String            title;
     /**
+     * cpe业务主键
+     */
+    private String                     businessId;
+    /**
      * 数据修改时间
      */
     private Long              gmtModified;
@@ -48,6 +52,14 @@ public class AssetCpeTree extends BaseEntity {
 
     public String getUniqueId() {
         return uniqueId;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 
     public void setUniqueId(String uniqueId) {

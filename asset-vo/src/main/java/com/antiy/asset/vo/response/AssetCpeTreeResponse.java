@@ -31,6 +31,18 @@ public class AssetCpeTreeResponse extends BaseResponse {
      * 子节点数据
      */
     private List<AssetCpeTreeResponse> childrenNode;
+    /**
+     * cpe业务主键
+     */
+    private String                     businessId;
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 
     public Boolean getShow() {
         return show;

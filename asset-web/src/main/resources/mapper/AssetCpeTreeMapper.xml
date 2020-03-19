@@ -8,6 +8,7 @@
         <result column="unique_id" property="uniqueId"/>
         <result column="pid" property="pid"/>
         <result column="title" property="title"/>
+        <result column="business_id" property="businessId"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="create_user" property="createUser"/>
@@ -16,7 +17,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, unique_id, pid, title, gmt_modified, gmt_create, create_user, modified_user, status
+        id, unique_id, pid, title, business_id, gmt_modified, gmt_create, create_user, modified_user, status
     </sql>
 
     <sql id="Table_Name">
@@ -27,6 +28,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" uniqueId != null">
             unique_id,
+        </if>
+        <if test=" businessId != null">
+            business_id,
         </if>
         <if test=" pid != null">
             pid,
@@ -55,6 +59,9 @@
         <if test=" uniqueId != null">
             #{uniqueId },
         </if>
+        <if test=" businessId != null">
+            #{businessId },
+        </if>
         <if test=" pid != null">
             #{pid },
         </if>
@@ -79,6 +86,9 @@
     </sql>
 
     <sql id="Set_Column_List">
+        <if test=" businessId != null">
+            business_id = #{businessId },
+        </if>
         <if test=" uniqueId != null">
             unique_id = #{uniqueId },
         </if>
@@ -106,6 +116,9 @@
     </sql>
 
     <sql id="Where_Column_List">
+        <if test=" businessId != null">
+            and business_id = #{businessId }
+        </if>
         <if test=" uniqueId != null">
             and unique_id = #{uniqueId }
         </if>
@@ -177,7 +190,7 @@
         </trim>
     </select>
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findCount" resultType="int" parameterType="com.antiy.base.ObjectQuery">
         select count(1)
         from
         <include refid="Table_Name"></include>
@@ -191,7 +204,7 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -207,7 +220,7 @@
         </if>
     </select>
 
-    <select id="countNextNode" resultType="int" parameterType="com.antiy.asset.vo.query.AssetCpeTreeCondition">
+    <select id="countNextNode" resultType="int" parameterType="com.antiy.query.asset.AssetCpeTreeCondition">
         select count(1)
         from
         <include refid="Table_Name"></include>
@@ -228,11 +241,6 @@
         </trim>
     </select>
 
-    <select id="getAll" resultMap="BaseResultMap">
-        select * from
-        <include refid="Table_Name"></include>
-    </select>
-
     <select id="findTopNode" resultMap="BaseResultMap">
         select * from
         <include refid="Table_Name"></include>
@@ -244,5 +252,4 @@
         <include refid="Table_Name"></include>
         where title = '操作系统'
     </select>
-
 </mapper>
