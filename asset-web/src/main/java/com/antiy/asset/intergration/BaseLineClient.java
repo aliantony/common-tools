@@ -59,4 +59,6 @@ public interface BaseLineClient {
     ActionResponse situationOfVul(String primaryKey);
 
     ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId);
+
+    ActionResponse deleteProcessInstance(List<String> procInstIds);
 }

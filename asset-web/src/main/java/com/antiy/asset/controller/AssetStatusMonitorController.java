@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetStatusMonitor", description = "")
 @RestController
-@RequestMapping("/v1/asset/assetstatusmonitor")
+@RequestMapping("/api/v1/asset/assetstatusmonitor")
 public class AssetStatusMonitorController {
 
     @Resource

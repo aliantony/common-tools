@@ -1,7 +1,8 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.AlarmLevelEnum;
+import com.antiy.asset.vo.enums.StatusEnum;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -38,9 +39,15 @@ public class AssetMonitorRuleResponse {
     private Integer memoryThreshold;
     @ApiModelProperty("总磁盘监控")
     private Integer diskThreshold;
-    @ApiModelProperty("运行异常监控")
-    private Integer runtimeExceptionThreshold;
+    @ApiModelProperty("运行异常监控Json")
+    private String runtimeExceptionThreshold;
 
+    public String getRuntimeExceptionThreshold() {
+        return runtimeExceptionThreshold;
+    }
+    public void setRuntimeExceptionThreshold(String runtimeExceptionThreshold) {
+        this.runtimeExceptionThreshold = runtimeExceptionThreshold;
+    }
     public Integer getCpuThreshold() {
         return cpuThreshold;
     }
@@ -65,13 +72,7 @@ public class AssetMonitorRuleResponse {
         this.diskThreshold = diskThreshold;
     }
 
-    public Integer getRuntimeExceptionThreshold() {
-        return runtimeExceptionThreshold;
-    }
 
-    public void setRuntimeExceptionThreshold(Integer runtimeExceptionThreshold) {
-        this.runtimeExceptionThreshold = runtimeExceptionThreshold;
-    }
 
     public String getUniqueId() {
         return uniqueId;
@@ -98,9 +99,8 @@ public class AssetMonitorRuleResponse {
     }
 
     public String getAlarmLevelName() {
-        return alarmLevelName;
+        return AlarmLevelEnum.getCodeByMsg(alarmLevel);
     }
-
     public void setAlarmLevelName(String alarmLevelName) {
         this.alarmLevelName = alarmLevelName;
     }
@@ -114,7 +114,7 @@ public class AssetMonitorRuleResponse {
     }
 
     public String getRuleStatusName() {
-        return ruleStatusName;
+        return StatusEnum.getCodeByMsg(ruleStatus);
     }
 
     public void setRuleStatusName(String ruleStatusName) {

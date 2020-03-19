@@ -172,8 +172,10 @@
         insert into
         <include refid="Table_Name"></include>
         (asset_id,business_influence,gmt_create,asset_business_id,unique_id,gmt_modified) values
-        <foreach collection="assetRelationList" separator="," item="assetRelation" close=")" open="(">
+        <foreach collection="assetRelationList" separator="," item="assetRelation">
+            (
             #{assetRelation.assetId},#{assetRelation.businessInfluence},#{assetRelation.gmtCreate},#{assetRelation.assetBusinessId},#{assetRelation.uniqueId},#{assetRelation.gmtModified}
+            )
         </foreach>
     </insert>
     <select id="countAssetByBusinessId" resultType="int">
@@ -220,9 +222,11 @@
     <update id="updateBatch">
         <foreach collection="editAsset" item="e" separator=";">
             update  asset_business_relation
-              set business_influence=#{e.businessInfluence}
+              set business_influence=#{e.businessInfluence},
+             gmt_modified=#{e.gmtModified}
             where status=1 and source=1
             and unique_id=#{uniqueId}
+            and asset_id=#{e.assetId}
         </foreach>
     </update>
     <update id="deleteByUniqueId" >

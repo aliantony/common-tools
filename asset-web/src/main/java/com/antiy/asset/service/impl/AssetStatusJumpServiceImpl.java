@@ -24,6 +24,7 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.*;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -108,12 +109,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
 //            setInProcess(statusJumpRequest, assetsInDb);
-            updateData(statusJumpRequest, assetsInDb);
-            boolean activitySuccess = startActivity(statusJumpRequest, loginUser);
-            if (!activitySuccess) {
-                //    assetDao.updateAssetBatch(assetsInDb);
-                LogUtils.error(logger, "资产状态处理失败,statusJumpRequest:{}", statusJumpRequest);
-                return ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION, "操作失败,请刷新页面后重试");
+
+            List<String> procInstIds = startActivity(statusJumpRequest, loginUser);
+            try{
+                updateData(statusJumpRequest, assetsInDb);
+            }catch (Exception e){
+                ActionResponse actionResponse= baseLineClient.deleteProcessInstance(procInstIds);
+                if (actionResponse == null ||!actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    LogUtils.error(logger, "删除流程失败");
+                    throw new BusinessException("删除工作流失败");
+                }
+                throw new BusinessException(e.getMessage());
             }
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE) &&statusJumpRequest.getAgree().equals(true)){
                 /**
@@ -314,7 +320,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
     }
 
-    private boolean startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) throws Exception {
+    private List<String>  startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) throws Exception {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
         //整改后面做
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
@@ -333,6 +339,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         ) {
             // 启动流程
             List<StatusJumpAssetInfo> assetInfoList = assetStatusRequest.getAssetInfoList();
+            List<String> procInstIds=new ArrayList<>();
             for (StatusJumpAssetInfo assetInfo : assetInfoList) {
                 ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
                 manualStartActivityRequest.setAssignee(loginUser.getId().toString());
@@ -343,23 +350,21 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode());
                 }
                 manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
-                try {
-                    ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
 
-                    LogUtils.info(logger, "请求工作流参数:{},请求工作流结果: {}", manualStartActivityRequest, JsonUtil.object2Json(actionResponse));
-                    if (actionResponse == null) {
-                        throw new BusinessException("启动工作流失败");
+                ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
 
-                    }
-                    if (!actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
-                        throw new BusinessException((String) actionResponse.getBody());
-                    }
-                } catch (Exception e) {
-                    LogUtils.error(logger, "请求工作流数据异常:manualStartActivityRequest:{}, 异常:{}", assetStatusRequest.getManualStartActivityRequest(), e);
-                    //return false;
-                    throw new BusinessException(e);
+                LogUtils.info(logger, "请求工作流参数:{},请求工作流结果: {}", manualStartActivityRequest, JsonUtil.object2Json(actionResponse));
+                if (actionResponse == null) {
+                    throw new BusinessException("启动工作流失败");
+
                 }
+                if (!actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+                    throw new BusinessException((String) actionResponse.getBody());
+                }
+                procInstIds.add((String)actionResponse.getBody());
             }
+            return  procInstIds;
+
         } else {
             // 非启动退役流程
             List<ActivityHandleRequest> requestList = new ArrayList<>();
@@ -372,9 +377,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 requestList.add(activityHandleRequest);
             });
 
-            try {
                 ActionResponse actionResponse = activityClient.completeTaskBatch(requestList);
-
                 LogUtils.info(logger, "请求工作流结果: {}", JsonUtil.object2Json(actionResponse));
                 if (actionResponse == null) {
                     throw new BusinessException("启动工作流失败");
@@ -383,13 +386,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 if (!actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     throw new BusinessException(actionResponse.getBody().toString());
                 }
-            } catch (Exception e) {
-                LogUtils.error(logger, "请求工作流数据异常: {}", e);
-                //return false;
-                throw new BusinessException(e);
-            }
+            return Lists.newArrayList();
         }
-        return true;
     }
 
     /**
@@ -468,18 +466,24 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if( AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
              ||AssetFlowEnum.SCRAP_DISAGREE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
         ){
-            Integer taskId = getTaksIdByBusinessKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode() + "-" + assetId);
-            assetOperationRecord.setTaskId(taskId);
+           /* try{
+                Integer taskId = getTaksIdByBusinessKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode() + "-" + assetId);
+                assetOperationRecord.setTaskId(taskId);
+            }catch (Exception e){
+                throw new BusinessException(e.getMessage());
+            }*/
         }
         return assetOperationRecord;
     }
 
     private Integer getTaksIdByBusinessKey(String key){
         ActionResponse actionResponse=activityClient.getTaksIdByBusinessKey(key);
-        Integer taskId=(Integer)actionResponse.getBody();
-        return taskId;
+        if(actionResponse==null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
+            throw new BusinessException("通过businessKey获取taksId 出错");
+        }
+        String taskId=(String)actionResponse.getBody();
+        return  Integer.valueOf(taskId);
     }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String entryExecution(AssetEntryRequest request) {

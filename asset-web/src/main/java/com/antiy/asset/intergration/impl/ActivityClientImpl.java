@@ -1,5 +1,6 @@
 package com.antiy.asset.intergration.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.util.BaseClient;
@@ -100,8 +101,10 @@ public class ActivityClientImpl implements ActivityClient {
     @Override
     @AssetLog(description = "根据businessKey获取taskid")
     public ActionResponse getTaksIdByBusinessKey(String key) {
+        JSONObject param = new JSONObject();
+        param.put("businessKey", key);
 
-        return (ActionResponse) baseClient.post(key,
+        return (ActionResponse) baseClient.post(param,
                 new ParameterizedTypeReference<ActionResponse>() {
                 }, getTaskIdByBusinessKyeUrl);
     }

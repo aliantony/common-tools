@@ -1,10 +1,11 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetBusinessRelation;
-import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.request.AssetBusinessRelationRequest;
+import com.antiy.asset.vo.request.AssetBusinessRequest;
 import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
+import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,9 +30,9 @@ public interface AssetBusinessRelationDao extends IBaseDao<AssetBusinessRelation
 
     Integer countAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery);
 
-    AssetBusinessRelation getByUniqueIdAndAssetId(String uniqueId, Integer assetId);
+    AssetBusinessRelation getByUniqueIdAndAssetId(@Param("uniqueId") String uniqueId, @Param("assetId") Integer assetId);
 
-    void deleteByUniqueIdAndAssetId(@Param("deleteAssetList") List<AssetBusinessRelationRequest> deleteAssetList,@Param("uniqueId")String uniqueId);
+    void deleteByUniqueIdAndAssetId(AssetBusinessRequest request);
 
     void updateBatch(@Param("editAsset") List<AssetBusinessRelationRequest> editAsset, @Param("uniqueId")String uniqueId);
 

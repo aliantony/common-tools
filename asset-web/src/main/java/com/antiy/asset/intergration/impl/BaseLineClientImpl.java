@@ -43,7 +43,8 @@ public class BaseLineClientImpl implements BaseLineClient {
     private String baseLineRemoveAssetUrl;
     @Value("${situationOfVulUrl}")
     private String situationOfVulUrl;
-
+    @Value("${deleteProcessInstanceUrl}")
+    private String deleteProcessInstanceUrl;
     @Resource
     private BaseClient baseClient;
 
@@ -109,4 +110,11 @@ public class BaseLineClientImpl implements BaseLineClient {
         }, baseLineRectificationUrl);
     }
 
+    @Override
+    @AssetLog(description = "流程删除", operationType = AssetLogOperationType.ADD)
+    public ActionResponse deleteProcessInstance(List<String> procInstIds) {
+        return (ActionResponse) baseClient.post(procInstIds, new ParameterizedTypeReference<ActionResponse>() {
+        }, deleteProcessInstanceUrl);
+
+    }
 }

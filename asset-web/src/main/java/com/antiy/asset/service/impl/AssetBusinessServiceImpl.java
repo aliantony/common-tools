@@ -21,6 +21,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -95,7 +99,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             assetBusinessRelationDao.insertBatch(assetRelationList);
             return assetBusiness.getStringId();
         }
-        @Transactional(rollbackFor = Exception.class)
+        /*@Transactional(rollbackFor = Exception.class)
         @Override
         public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
             ParamterExceptionUtils.isNull(request.getUniqueId(),"唯一键不能为空！");
@@ -122,8 +126,106 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             });
             assetBusinessRelationDao.insertBatch(assetBusinessRelationList);
             return assetBusinessId.toString();
-        }
+        }*/
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getUniqueId(),"唯一键不能为空！");
+        ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
+        String name = request.getName();
+        AssetBusiness business= assetBusinessDao.getByName(name);
+        if(business!=null && !business.getUniqueId().equals(request.getUniqueId())){
+            throw new  BusinessException("业务名不能重复！");
+        }
+        //更新基本信息
+        AssetBusiness assetBusiness = requestConverter.convert(request, AssetBusiness.class);
+        String uniqueId=assetBusiness.getUniqueId();
+        assetBusiness.setId(null);
+        assetBusiness.setGmtModified(System.currentTimeMillis());
+        Integer result =assetBusinessDao.updateByUniqueId(assetBusiness);
+
+       //分离出编辑 、 删除 、 新增的 资产
+        AssetAddOfBusinessQuery assetAddOfBusinessQuery=new AssetAddOfBusinessQuery();
+        assetAddOfBusinessQuery.setUniqueId(uniqueId);
+        List<AssetBusinessRelationResponse> assetOfDB = queryAssetByBusinessId(assetAddOfBusinessQuery);
+        setAsset(request,assetOfDB);
+        //更新关联资产信息
+        addAssetOfBusiness(request);
+        deleteAssetOfBusiness(request);
+        editAssetOfBusiness(request);
+
+        return result.toString();
+    }
+    private void setAsset(AssetBusinessRequest request, List<AssetBusinessRelationResponse> assetOfDB){
+        //删除
+        List<AssetBusinessRelationRequest> assetOfParamter=request.getAssetRelaList();
+        Set<String> assetIdOfDB = assetOfDB.stream().map(t -> t.getStringId()).collect(Collectors.toSet());
+        Set<String> assetIdOfParamter = assetOfParamter.stream().map(t -> t.getAssetId()).collect(Collectors.toSet());
+
+        //删除的资产
+        Set<String> deleteAssetId=new HashSet<>(assetIdOfDB);
+        deleteAssetId.removeAll(assetIdOfParamter);
+        request.setDeleteAssetList(deleteAssetId);
+        //新增的资产
+        Set<String> addAssetId=new HashSet<>(assetIdOfParamter);
+        addAssetId.removeAll(assetIdOfDB);
+        List<AssetBusinessRelationRequest> addAsset = assetOfParamter.stream().filter(t -> addAssetId.contains(t.getAssetId())).collect(Collectors.toList());
+        request.setAddAssetList(addAsset);
+
+        //编辑的资产
+        List<AssetBusinessRelationRequest> editAsset=new ArrayList<>();
+        for(AssetBusinessRelationResponse itemOfDb:assetOfDB){
+            for(AssetBusinessRelationRequest itemOfParam:assetOfParamter){
+                if(itemOfDb.getStringId().equals(itemOfParam.getAssetId())&& !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence())){
+                    editAsset.add(itemOfParam);
+                }
+            }
+        }
+        request.setEditAsset(editAsset);
+    }
+
+    private void editAssetOfBusiness(AssetBusinessRequest request){
+        List<AssetBusinessRelationRequest> editAsset = request.getEditAsset();
+        if(CollectionUtils.isNotEmpty(editAsset)){
+            editAsset.forEach(v->v.setGmtModified(System.currentTimeMillis()));
+            assetBusinessRelationDao.updateBatch(editAsset,request.getUniqueId());
+        }
+    }
+    private void deleteAssetOfBusiness(AssetBusinessRequest request){
+        Set<String> deleteAssetList = request.getDeleteAssetList();
+        if(CollectionUtils.isNotEmpty(deleteAssetList)){
+            assetBusinessRelationDao.deleteByUniqueIdAndAssetId(request);
+        }
+    }
+
+    private void addAssetOfBusiness(AssetBusinessRequest request) throws Exception {
+        List<AssetBusinessRelationRequest> assetRelaList = request.getAddAssetList();
+        List<AssetBusinessRelation> assetRelationList=new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(assetRelaList)){
+            for(AssetBusinessRelationRequest item:assetRelaList){
+                String assetId = item.getAssetId();
+                AssetBusinessRelation assetRelation=assetBusinessRelationDao.getByUniqueIdAndAssetId(request.getUniqueId(),Integer.valueOf(item.getAssetId()));
+                if(assetRelation!=null){
+                    throw  new BusinessException("不能重复关联资产！");
+                }
+                Asset asset = assetDao.getById(item.getAssetId());
+                if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())
+                        || AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))){
+                    throw  new BusinessException("资产状态不合符流程！");
+                }
+                AssetBusinessRelation assetBusinessRelation=new AssetBusinessRelation();
+                assetBusinessRelation.setAssetId(item.getAssetId());
+                assetBusinessRelation.setBusinessInfluence(item.getBusinessInfluence());
+                assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
+                assetBusinessRelation.setGmtModified(System.currentTimeMillis());
+                assetBusinessRelation.setAssetBusinessId(request.getId());
+                assetBusinessRelation.setUniqueId(request.getUniqueId());
+                assetRelationList.add(assetBusinessRelation);
+            }
+            assetBusinessRelationDao.insertBatch(assetRelationList);
+        }
+    }
         @Override
         public List<AssetBusinessResponse> queryListAssetBusiness(AssetBusinessQuery query) throws Exception {
             List<AssetBusiness> assetBusinessList = assetBusinessDao.findQuery(query);
