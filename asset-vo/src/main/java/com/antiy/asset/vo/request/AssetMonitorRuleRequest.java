@@ -1,11 +1,14 @@
 package com.antiy.asset.vo.request;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
+
+import com.antiy.common.encoder.Encode;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> 资产监控规则请求对象 </p>
@@ -27,6 +30,7 @@ public class AssetMonitorRuleRequest {
     private String                         name;
     @NotBlank(message = "区域不能为空")
     @ApiModelProperty("区域")
+    @Encode
     private String                         areaId;
     @NotBlank(message = "告警等级不能为空")
     @ApiModelProperty("告警等级")
