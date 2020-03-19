@@ -1,8 +1,6 @@
 package com.antiy.asset.entity;
 
-import com.antiy.asset.vo.query.AssetCompositionReportQuery;
 import com.antiy.common.base.BaseEntity;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -20,7 +18,7 @@ public class AssetCompositionReport extends BaseEntity {
      * 查询条件
      */
     @ApiModelProperty("查询条件")
-    private AssetCompositionReportQuery queryCondition;
+    private String            queryCondition;
     /**
      * 查询模板名称
      */
@@ -38,11 +36,11 @@ public class AssetCompositionReport extends BaseEntity {
      */
     private Integer           status;
 
-    public void setQueryCondition(AssetCompositionReportQuery queryCondition) {
+    public void setQueryCondition(String queryCondition) {
         this.queryCondition = queryCondition;
     }
 
-    public AssetCompositionReportQuery getQueryCondition() {
+    public String getQueryCondition() {
         return queryCondition;
     }
 
