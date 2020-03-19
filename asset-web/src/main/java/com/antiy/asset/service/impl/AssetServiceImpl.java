@@ -233,12 +233,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 添加业务 关联
                     List<AssetBusinessRelationRequest> asetBusinessRelationRequests = request
                             .getAsetBusinessRelationRequests();
-                    List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
+                    if (CollectionUtils.isNotEmpty(asetBusinessRelationRequests)) {
+                        List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
                             .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
-                    AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
-                    assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                        AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
+                        assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                    }
 
-                    // 是否孤岛设备：1、是 0、否
+                    // 是否孤岛设备：1、是 2、否
                     asset.setIsOrphan(requestAsset.getIsOrphan());
 
                     assetDao.insert(asset);
