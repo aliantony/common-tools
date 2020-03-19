@@ -67,7 +67,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
         nameNoRepeat(request.getName());
 
         AssetMonitorRule assetMonitorRule = requestConverter.convert(request, AssetMonitorRule.class);
-        assetMonitorRule.setAreaId(LoginTool.getLoginUser().getAreaId());
+        assetMonitorRule.setAreaId(request.getAreaId());
         assetMonitorRule.setGmtCreate(System.currentTimeMillis());
         assetMonitorRule.setCreateUser(LoginTool.getLoginUser().getId());
         assetMonitorRule.setUniqueId(SnowFlakeUtil.getSnowId());
