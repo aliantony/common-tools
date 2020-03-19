@@ -365,9 +365,9 @@
     <select id="idempotent" resultType="java.lang.Boolean"
             parameterType="com.antiy.common.base.ObjectQuery">
         select IF
-        ( count( 1 ) &gt;= 1, TRUE, FALSE ) as result from
+        ( status = 1, TRUE, FALSE ) as result from
         <include refid="Table_Name"/>
-        where status = 0 and unique_id = #{uniqueId}
+        where unique_id = #{uniqueId}
     </select>
     <update id="editRuleStatusByUI" >
         update  asset_monitor_rule

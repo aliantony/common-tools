@@ -102,12 +102,15 @@
     </insert>
 
     <insert id="insertBatch">
-        insert into<include refid="Table_Name"/>(unique_id,asset_id,rule_unique_id,gmt_create) values
-        <foreach item="monitorRuleRelation" collection="list" open="(" separator="," close=")">
+        insert into<include refid="Table_Name"/>(unique_id,asset_id,rule_unique_id,gmt_create)
+        values
+        <foreach collection="list" item="monitorRuleRelation" separator=",">
+            (
             #{monitorRuleRelation.uniqueId},
             #{monitorRuleRelation.assetId},
             #{monitorRuleRelation.ruleUniqueId},
             #{monitorRuleRelation.gmtCreate}
+            )
         </foreach>
     </insert>
 

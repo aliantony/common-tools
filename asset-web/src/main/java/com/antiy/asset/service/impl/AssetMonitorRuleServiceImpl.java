@@ -108,7 +108,7 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     public String updateAssetMonitorRule(AssetMonitorRuleRequest request) throws Exception {
         // 幂等判断
         Boolean isDelete = assetMonitorRuleDao.idempotent(request.getUniqueId());
-        if (isDelete) {
+        if (!isDelete) {
             throw new BusinessException("资产已被删除");
         }
         // 去重判断
