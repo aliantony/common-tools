@@ -3,8 +3,10 @@ package com.antiy.asset.vo.request;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModel;
@@ -18,7 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @ApiModel("资产监控规则请求对象")
-public class AssetMonitorRuleRequest {
+public class AssetMonitorRuleRequest extends BaseRequest {
     /**
      * 唯一键
      */
@@ -38,16 +40,16 @@ public class AssetMonitorRuleRequest {
     @NotBlank(message = "状态不能为空")
     @ApiModelProperty("状态")
     private String                         ruleStatus;
-    @NotBlank(message = "CPU监控不能为空")
+    @NotNull(message = "CPU监控不能为空")
     @ApiModelProperty("CPU监控")
     private Integer                        cpuThreshold;
-    @NotBlank(message = "内存监控不能为空")
+    @NotNull(message = "内存监控不能为空")
     @ApiModelProperty("内存监控")
     private Integer                        memoryThreshold;
-    @NotBlank(message = "总磁盘监控不能为空")
+    @NotNull(message = "总磁盘监控不能为空")
     @ApiModelProperty("总磁盘监控")
     private Integer                        diskThreshold;
-    @NotBlank(message = "运行异常监控不能为空")
+    @NotNull(message = "运行异常监控不能为空")
     @ApiModelProperty("运行异常监控")
     private AssetRuntimeExceptionThreshold runtimeExceptionThreshold;
     @ApiModelProperty("已选中资产")
