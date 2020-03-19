@@ -190,7 +190,7 @@
         </trim>
     </select>
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.base.ObjectQuery">
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
         select count(1)
         from
         <include refid="Table_Name"></include>
@@ -204,7 +204,7 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.base.ObjectQuery">
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -220,7 +220,7 @@
         </if>
     </select>
 
-    <select id="countNextNode" resultType="int" parameterType="com.antiy.query.asset.AssetCpeTreeCondition">
+    <select id="countNextNode" resultType="int" parameterType="com.antiy.asset.vo.query.AssetCpeTreeCondition">
         select count(1)
         from
         <include refid="Table_Name"></include>
