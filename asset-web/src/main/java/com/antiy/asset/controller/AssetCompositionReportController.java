@@ -52,7 +52,7 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "修改接口", notes = "传入实体对象信息")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetCompositionReport") AssetCompositionReportRequest assetCompositionReportRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetCompositionReport") @RequestBody AssetCompositionReportRequest assetCompositionReportRequest) throws Exception {
         iAssetCompositionReportService.updateAssetCompositionReport(assetCompositionReportRequest);
         return ActionResponse.success();
     }
@@ -65,7 +65,7 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "综合报表查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") AssetCompositionReportQuery assetCompositionReportQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") @RequestBody AssetCompositionReportQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse
             .success(iAssetCompositionReportService.findPageAssetCompositionReport(assetCompositionReportQuery));
     }
@@ -78,7 +78,7 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "批量查询模板", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list/templates", method = RequestMethod.POST)
-    public ActionResponse templates(@ApiParam(value = "assetCompositionReportQuery") AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
+    public ActionResponse templates(@ApiParam(value = "assetCompositionReportQuery") @RequestBody AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse.success(iAssetCompositionReportService.findReport(assetCompositionReportQuery));
     }
 
