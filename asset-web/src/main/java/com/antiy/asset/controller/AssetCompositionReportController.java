@@ -1,10 +1,12 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.AssetCompositionReport;
 import com.antiy.asset.service.IAssetCompositionReportService;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
 import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -90,7 +92,15 @@ public class AssetCompositionReportController {
     @RequestMapping(value = "/query/{id}", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "assetCompositionReport") @PathVariable("id") Integer id) throws Exception {
         ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetCompositionReportService.getById(id));
+        AssetCompositionReport byId = iAssetCompositionReportService.getById(id);
+        AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
+            AssetCompositionReportQuery.class);
+        AssetCompositionReportRequest assetCompositionReportRequest = new AssetCompositionReportRequest();
+        assetCompositionReportRequest.setQuery(assetCompositionReportQuery);
+        assetCompositionReportRequest.setName(byId.getName());
+        assetCompositionReportRequest.setUserId(byId.getUserId());
+
+        return ActionResponse.success(assetCompositionReportRequest);
     }
 
     /**

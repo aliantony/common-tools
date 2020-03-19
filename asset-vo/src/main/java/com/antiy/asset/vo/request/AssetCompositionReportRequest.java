@@ -20,7 +20,7 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
      * 查询条件
      */
     @ApiModelProperty("查询条件")
-    private AssetCompositionReportQuery queryCondition;
+    private AssetCompositionReportQuery query;
     /**
      * 查询模板名称
      */
@@ -42,12 +42,12 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     @ApiModelProperty("0 删除 1存在")
     private Integer status;
 
-    public AssetCompositionReportQuery getQueryCondition() {
-        return queryCondition;
+    public AssetCompositionReportQuery getQuery() {
+        return query;
     }
 
-    public void setQueryCondition(AssetCompositionReportQuery queryCondition) {
-        this.queryCondition = queryCondition;
+    public void setQuery(AssetCompositionReportQuery query) {
+        this.query = query;
     }
 
     public String getName() {

@@ -69,6 +69,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         Integer count = assetCompositionReportDao.findCount(assetCompositionReportQuery);
         BusinessExceptionUtils.isTrue(count < 1, "当前模板名称已经存在!");
         AssetCompositionReport assetCompositionReport = requestConverter.convert(request, AssetCompositionReport.class);
+        assetCompositionReport.setQueryCondition(JsonUtil.object2Json(request.getQuery()));
         assetCompositionReportDao.insert(assetCompositionReport);
         return assetCompositionReport.getId();
     }
