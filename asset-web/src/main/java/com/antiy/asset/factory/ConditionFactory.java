@@ -2,6 +2,7 @@ package com.antiy.asset.factory;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import com.antiy.asset.base.AreaBase;
@@ -26,8 +27,10 @@ public class ConditionFactory {
     }
 
     public static AssetBaseQuery createAreaQuery(AssetBaseQuery query) throws Exception {
-        List<String> areaList = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
-        query.setAreaList(areaList);
+        if (CollectionUtils.isEmpty(query.getAreaList())){
+            List<String> areaList = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
+            query.setAreaList(areaList);
+        }
         return query;
     }
 }
