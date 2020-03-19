@@ -21,6 +21,6 @@ public class WrappedRedisUtil {
     public String bindAreaName(String areaId) throws Exception {
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, areaId);
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        return sysArea.getShortName();
+        return sysArea.getFullName();
     }
 }
