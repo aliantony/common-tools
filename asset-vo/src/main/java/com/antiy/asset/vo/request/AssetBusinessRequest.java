@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -25,11 +26,26 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
 
     @ApiModelProperty("业务id")
     private Integer id;
-    @ApiModelProperty("新增资产")
+    @ApiModelProperty("全量资产")
     /**
-     * 新增的资产id
+     * 全量资产
      */
     List<AssetBusinessRelationRequest> assetRelaList;
+
+    /**
+     * 新增资产
+     */
+    List<AssetBusinessRelationRequest> addAssetList;
+    /**
+     * 删除的关联资产
+     */
+    Set<String> deleteAssetList;
+
+    /**
+     *
+     * 编辑资产
+     */
+    List<AssetBusinessRelationRequest> editAsset;
 
     @ApiModelProperty("业务名称（中文字符，去重）")
     @NotBlank(message = "业务名称不能为空")
@@ -79,6 +95,30 @@ public class AssetBusinessRequest extends BaseRequest implements ObjectValidator
      */
     @ApiModelProperty("唯一键")
     private String uniqueId;
+
+    public Set<String> getDeleteAssetList() {
+        return deleteAssetList;
+    }
+
+    public void setDeleteAssetList(Set<String> deleteAssetList) {
+        this.deleteAssetList = deleteAssetList;
+    }
+
+    public List<AssetBusinessRelationRequest> getEditAsset() {
+        return editAsset;
+    }
+
+    public void setEditAsset(List<AssetBusinessRelationRequest> editAsset) {
+        this.editAsset = editAsset;
+    }
+
+    public List<AssetBusinessRelationRequest> getAddAssetList() {
+        return addAssetList;
+    }
+
+    public void setAddAssetList(List<AssetBusinessRelationRequest> addAssetList) {
+        this.addAssetList = addAssetList;
+    }
 
     @Override
     public Integer getId() {

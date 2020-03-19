@@ -269,4 +269,12 @@
             where unique_id=#{uniqueId}
         </foreach>
     </update>
+    <update id="updateByUniqueId">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where unique_id = #{uniqueId}
+    </update>
 </mapper>

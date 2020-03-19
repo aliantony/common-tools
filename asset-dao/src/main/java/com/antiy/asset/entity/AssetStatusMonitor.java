@@ -87,11 +87,13 @@ private static final long serialVersionUID = 1L;
     */
     private String version;
     /**
+     * 逻辑删除
     *  软件状态：1、未删除 2、已删除
 服务状态：1、启用 2、停用
 进程：1、未删除 2、已删除
     */
-    private String status;
+    private Integer status;
+    private  int relation;
     /**
     *  服务运行该状态： e.g. 正在运行
     */
@@ -117,7 +119,21 @@ private static final long serialVersionUID = 1L;
     */
     private String networkStatus;
 
+    public Integer getStatus() {
+        return status;
+    }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
 
     public Integer getAssetId() {
         return assetId;
@@ -278,15 +294,6 @@ private static final long serialVersionUID = 1L;
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
 

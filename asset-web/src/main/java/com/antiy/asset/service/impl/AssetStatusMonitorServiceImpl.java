@@ -9,6 +9,7 @@ import com.antiy.asset.vo.response.AssetStatusMonitorResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -81,9 +82,18 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
 
     @Override
     public PageResult<AssetStatusMonitorResponse> queryMonitor(AssetStatusMonitorQuery assetStatusMonitorQuery) {
-
-        List<AssetStatusMonitorResponse> assetStatusMonitorResponses=assetStatusMonitorDao.queryMonitor(assetStatusMonitorQuery);
+        ParamterExceptionUtils.isNull(assetStatusMonitorQuery.getAssetId(),"请传入参数资产id");
+        ParamterExceptionUtils.isNull(assetStatusMonitorQuery.getAssetId(),"请传入参数监控类型");
+        /**
+         * 设置最近的监控时间
+         */
+        Long lastTime = assetStatusMonitorDao.maxMonitorGmtModified(assetStatusMonitorQuery);
+        assetStatusMonitorQuery.setGmtModified(lastTime);
         int count= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
-        return null;
+        if(count>0){
+            List<AssetStatusMonitorResponse> assetStatusMonitorResponses=assetStatusMonitorDao.queryMonitor(assetStatusMonitorQuery);
+            return  new PageResult<>(assetStatusMonitorQuery.getPageSize(),count,assetStatusMonitorQuery.getCurrentPage(),assetStatusMonitorResponses);
+        }
+        return new PageResult<>(assetStatusMonitorQuery.getPageSize(),0,assetStatusMonitorQuery.getCurrentPage(), Lists.newArrayList());
     }
 }

@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>
@@ -16,93 +17,113 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     /**
      *  资产id
      */
+    @ApiModelProperty("资产id")
     @Encode
     private String assetId;
     /**
      *  cpu使用率
      */
+    @ApiModelProperty("cpu使用率")
     private Integer cpuUsedRate;
     /**
      *  内存总量
      */
+    @ApiModelProperty("内存总量")
     private Integer memoryTotal;
     /**
      *  已使用内存
      */
+    @ApiModelProperty("已使用内存")
     private Integer memoryUsed;
     /**
      *  内存使用率
      */
+    @ApiModelProperty("内存使用率")
     private Integer memoryUsedRate;
     /**
      *  硬盘总量
      */
+    @ApiModelProperty("硬盘总量")
     private Integer diskTotal;
     /**
      *  硬盘已使用容量
      */
+    @ApiModelProperty("硬盘已使用容量")
     private Integer diskUsed;
     /**
      *  硬盘总使用率
      */
+    @ApiModelProperty("硬盘总使用率")
     private Integer diskTotalusedRate;
     /**
      *  硬盘详细信息
      */
+    @ApiModelProperty("硬盘详细信息")
     private String diskDetail;
     /**
      *  监控规则id
      */
+    @ApiModelProperty("监控规则id")
     private Integer ruleId;
     /**
      *  更新时间
      */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
     /**
      *  监控资源类型 1、进程 2、软件 3、服务 4、性能
      */
+    @ApiModelProperty("监控资源类型")
     private Integer type;
     /**
      *  监控对象名称
      */
+    @ApiModelProperty("监控对象名称")
     private String name;
     /**
      *  描述
      */
+    @ApiModelProperty("描述")
     private String description;
     /**
      *  进程位置
      */
+    @ApiModelProperty("进程位置")
     private String location;
     /**
      *  软件厂商
      */
+    @ApiModelProperty("软件厂商")
     private String supplier;
     /**
      *  安装时间
      */
+    @ApiModelProperty("安装时间")
     private Long installedTime;
     /**
      *  软件版本
      */
+    @ApiModelProperty("软件版本")
     private String version;
     /**
-     *  软件状态：1、未删除 2、已删除
-     服务状态：1、启用 2、停用
-     进程：1、未删除 2、已删除
+     *  逻辑状态
      */
-    private String status;
+
+    private Integer status;
     /**
      *  服务运行该状态： e.g. 正在运行
      */
+    @ApiModelProperty("服务运行该状态")
     private String serviceStatus;
     /**
      *  创建时间
      */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
     /**
      *  创建人
      */
+    @ApiModelProperty("创建人")
     private Integer createUser;
     /**
      *  更新人
@@ -111,11 +132,34 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     /**
      *  进程id
      */
+    @ApiModelProperty("进程id")
     private Integer pid;
     /**
      *  资产网络状态
      */
+    @ApiModelProperty("资产网络状态")
     private String networkStatus;
+
+    /**
+     *  资产与软件关联关系
+     */
+    @ApiModelProperty("资产与软件关联关系")
+    private int relation;
+
+    @ApiModelProperty("资产与软件关联关系描述")
+    private String relationDesc;
+
+    public void setRelationDesc(String relationDesc) {
+        this.relationDesc = relationDesc;
+    }
+
+    public String getRelationDesc() {
+
+        return relationDesc;
+    }
+/*  public String getRelationDesc() {
+        return AssetSoftwareRelationEnum.getMsgByCode(relation);
+    }*/
 
 
     /**
@@ -123,6 +167,16 @@ public class AssetStatusMonitorResponse extends BaseResponse {
      *
      */
     private AssetMonitorRuleResponse assetMonitorRuleResponse;
+
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
+
+
 
     public AssetMonitorRuleResponse getAssetMonitorRuleResponse() {
         return assetMonitorRuleResponse;
@@ -276,11 +330,11 @@ public class AssetStatusMonitorResponse extends BaseResponse {
         this.version = version;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

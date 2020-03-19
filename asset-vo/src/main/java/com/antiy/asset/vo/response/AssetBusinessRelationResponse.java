@@ -43,8 +43,15 @@ public class AssetBusinessRelationResponse extends BaseResponse {
     /**
      * 资产对业务影响
      */
-    private String businessInfluence;
+    private Integer businessInfluence;
 
+    public Integer getBusinessInfluence() {
+        return businessInfluence;
+    }
+
+    public void setBusinessInfluence(Integer businessInfluence) {
+        this.businessInfluence = businessInfluence;
+    }
 
     private String uniqueId;
 
@@ -111,11 +118,4 @@ public class AssetBusinessRelationResponse extends BaseResponse {
         this.manufacturer = manufacturer;
     }
 
-    public String getBusinessInfluence() {
-        return businessInfluence;
-    }
-
-    public void setBusinessInfluence(String businessInfluence) {
-        this.businessInfluence = businessInfluence;
-    }
 }

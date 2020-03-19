@@ -1,6 +1,10 @@
 package com.antiy.asset.vo.enums;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +21,15 @@ public enum StatusEnum {
     public static StatusEnum getEnumByCode(String code) {
         return Arrays.stream(StatusEnum.values()).filter(v -> v.getCode().equals(code)).collect(Collectors.toList())
             .get(0);
+    }
+
+    public static String getCodeByMsg(String code){
+        if(StringUtils.isBlank(code))
+            return  null;
+        List<String> collect = Arrays.stream(StatusEnum.values()).filter(v -> v.getCode().equals(code)).map(t -> t.getName()).collect(Collectors.toList());
+       if(CollectionUtils.isNotEmpty(collect))
+           return  collect.get(0);
+        return null;
     }
 
     StatusEnum(String code, String name) {

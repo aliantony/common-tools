@@ -30,9 +30,11 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="pid" property="pid"/>
         <result column="network_status" property="networkStatus"/>
+        <result column="relation" property="relation"/>
+        <result column="relationDesc" property="relation"/>
     </resultMap>
     <resultMap id="BasePerformance" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse">
-        <id property="stringId" column="id"/>
+
         <result property="networkStatus" column="network_status"/>
         <result property="cpuUsedRate" column="cpu_used_rate"/>
         <result property="memoryUsedRate" column="memory_used_rate"/>
@@ -41,6 +43,7 @@
         <result property="diskDetail" column="disk_detail"/>
         <result property="ruleId" column="rule_id"/>
         <result property="gmtModified" column="gmt_modified"/>
+
         <association property="assetMonitorRuleResponse" javaType="com.antiy.asset.vo.response.AssetMonitorRuleResponse" resultMap="ruleMonitor"/>
     </resultMap>
     <resultMap id="ruleMonitor" type="com.antiy.asset.vo.response.AssetMonitorRuleResponse">
@@ -53,7 +56,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, cpu_used_rate, memory_total, memory_used, memory_used_rate, disk_total, disk_used, disk_totalused_rate, disk_detail, rule_id, gmt_modified, type, name, description, location, supplier, installed_time, version, status, service_status, gmt_create, create_user, modify_user, pid, network_status
+        id, asset_id, cpu_used_rate, memory_total, memory_used, memory_used_rate, disk_total, disk_used, disk_totalused_rate, disk_detail, rule_id, gmt_modified, type, name, description, location, supplier, installed_time, version, status, service_status, gmt_create, create_user, modify_user, pid, network_status,relation
     </sql>
 
     <sql id="Table_Name">
@@ -64,6 +67,9 @@
     <sql id="IF_Base_Column_List">
         <if test=" assetId != null">
             asset_id,
+        </if>
+        <if test=" relation != null">
+            relation,
         </if>
         <if test=" cpuUsedRate != null">
             cpu_used_rate,
@@ -143,6 +149,10 @@
         <if test=" assetId != null">
             #{assetId },
         </if>
+
+        <if test=" relation != null">
+            #{relation },
+        </if>
         <if test=" cpuUsedRate != null">
             #{cpuUsedRate },
         </if>
@@ -221,6 +231,9 @@
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
+        <if test=" relation != null">
+            relation = #{relation },
+        </if>
         <if test=" cpuUsedRate != null">
             cpu_used_rate = #{cpuUsedRate },
         </if>
@@ -298,6 +311,9 @@
     <sql id="Where_Column_List">
         <if test=" assetId != null">
             and asset_id = #{assetId }
+        </if>
+        <if test=" relation != null">
+            and relation = #{relation }
         </if>
         <if test=" cpuUsedRate != null">
             and cpu_used_rate = #{cpuUsedRate }
@@ -457,15 +473,16 @@
         on amr.id=asm.rule_id and amr.status=1
         where asset_id=#{assetId}
         and `type`=4
-        and status=1
-        order by gmtModified desc
+        and asm.status=1
+        order by asm.gmt_modified desc
         limit 1
     </select>
     <select id="maxMonitorGmtModified" resultType="long">
         select max(gmt_modified)
         from asset_status_monitor
-        where status=1 and `type`=4
+        where status=1
         and asset_id=#{assetId}
+        and `type`=#{type}
     </select>
     <select id="queryMonitor" resultMap="BaseResultMap">
         select
@@ -476,6 +493,12 @@
         and asset_id=#{assetId}
         and gmt_modified=#{gmtModified}
         and status=1
+        <if test=" type ==2 and relations !=null and relations.size()>0">
+              and relation in
+            <foreach collection="relations" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -487,5 +510,11 @@
         and asset_id=#{assetId}
         and gmt_modified=#{gmtModified}
         and status=1
+        <if test=" type ==2 and relations !=null and relations.size()>0">
+            and relation in
+            <foreach collection="relations" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>

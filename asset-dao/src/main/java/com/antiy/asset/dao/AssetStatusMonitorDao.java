@@ -38,5 +38,5 @@ public interface AssetStatusMonitorDao extends IBaseDao<AssetStatusMonitor> {
      * @param assetId
      * @return
      */
-    Long maxMonitorGmtModified(Integer assetId);
+    Long maxMonitorGmtModified(AssetStatusMonitorQuery assetId);
 }
