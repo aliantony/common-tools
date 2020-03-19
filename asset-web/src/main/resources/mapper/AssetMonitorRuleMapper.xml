@@ -273,9 +273,6 @@
                     and amr.status = 1
                 </trim>
                 order by amr.gmt_create desc
-                <if test="pageSize !=-1">
-                    LIMIT #{pageSize} offset #{pageOffset}
-                </if>
             </otherwise>
         </choose>
     </select>
