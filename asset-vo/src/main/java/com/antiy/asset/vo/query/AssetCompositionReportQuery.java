@@ -56,11 +56,6 @@ public class AssetCompositionReportQuery extends ObjectQuery {
     @ApiModelProperty(" 未安装补丁 数量")
     private Integer       noPatchCount;
 
-    /**
-     * 排序规则
-     */
-    @ApiModelProperty("排序规则")
-    private SortRule      sortRule;
 
     @ApiModelProperty("导出开始条数")
     private Integer       start;
@@ -135,14 +130,6 @@ public class AssetCompositionReportQuery extends ObjectQuery {
 
     public void setPatchCount(Integer patchCount) {
         this.patchCount = patchCount;
-    }
-
-    public SortRule getSortRule() {
-        return sortRule;
-    }
-
-    public void setSortRule(SortRule sortRule) {
-        this.sortRule = sortRule;
     }
 
     public Integer getStart() {

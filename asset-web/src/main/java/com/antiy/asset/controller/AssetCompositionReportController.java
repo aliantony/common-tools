@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.AssetCompositionReportQuery;
 import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -84,36 +85,33 @@ public class AssetCompositionReportController {
 
     /**
      * 通过ID查询
-     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/{id}", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetCompositionReport") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        AssetCompositionReport byId = iAssetCompositionReportService.getById(id);
+    public ActionResponse queryById(@RequestBody BaseRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
+        AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
         AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
             AssetCompositionReportQuery.class);
         AssetCompositionReportRequest assetCompositionReportRequest = new AssetCompositionReportRequest();
         assetCompositionReportRequest.setQuery(assetCompositionReportQuery);
         assetCompositionReportRequest.setName(byId.getName());
         assetCompositionReportRequest.setUserId(byId.getUserId());
-
         return ActionResponse.success(assetCompositionReportRequest);
     }
 
     /**
      * 通过ID删除
-     * @param id
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetCompositionReportService.deleteById(id));
+    public ActionResponse deleteById(@RequestBody BaseRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
+        return ActionResponse.success(iAssetCompositionReportService.deleteById(request.getId()));
     }
 
     /**
