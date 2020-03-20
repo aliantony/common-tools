@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.query;
 
-import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
@@ -35,14 +34,26 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     private String assetId;
     @ApiModelProperty("资产ids,未加密")
     private String[] assetIds;
+    @ApiModelProperty(value = "区域id集合",hidden = true)
+    private List<String> areaIds;
+
     @Override
     public void validate() throws RequestParamValidateException {
         if (ArrayUtils.isEmpty(assetStatus)) {
+            //todo 根据新需求确定资产状态
             assetStatus = new int[]{AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
                     AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode(),
                     AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.RETIRE.getCode()};
         }
 
+    }
+
+    public List<String> getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(List<String> areaIds) {
+        this.areaIds = areaIds;
     }
 
     public int[] getAssetStatus() {

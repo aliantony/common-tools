@@ -130,6 +130,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query) {
+        //todo 根据基准提供的操作系统来选择合适的软件 先考虑软件与基准操作系统的关联关系
         String osName = iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName().replace('-', '_').replace('.', '_');
         query.setOperationSystem(AssetOperationSystemEnum.valueOf(osName.toUpperCase()).getSerialName());
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);

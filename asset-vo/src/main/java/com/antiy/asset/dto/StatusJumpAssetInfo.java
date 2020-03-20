@@ -1,6 +1,5 @@
 package com.antiy.asset.dto;
 
-import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
@@ -18,6 +17,16 @@ public class StatusJumpAssetInfo {
 
     @ApiModelProperty(value = "任务Id")
     private String taskId;
+    @ApiModelProperty("是否成功: true成功,false失败")
+    private boolean isSuccess;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public String getAssetId() {
         return assetId;

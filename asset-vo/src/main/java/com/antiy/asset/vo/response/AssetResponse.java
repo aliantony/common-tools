@@ -108,7 +108,7 @@ public class AssetResponse extends BaseResponse {
     }
 
     /**
-     * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
+     * 资产状态：详情查看AssetStatusEnum
      */
     @ApiModelProperty("资产状态")
     private Integer                        assetStatus;

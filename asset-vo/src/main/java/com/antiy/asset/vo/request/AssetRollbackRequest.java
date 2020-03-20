@@ -19,8 +19,28 @@ public class AssetRollbackRequest extends BaseRequest {
     List<RollBack> rollBackInfo;
     @ApiModelProperty("创建时间")
     private long gmtCreate;
+    @ApiModelProperty("修改时间")
+    private long gmtModified;
     @ApiModelProperty("创建人")
     private String createUser;
+    @ApiModelProperty("修改人")
+    private String modifyUser;
+
+    public long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser;
+    }
 
     public String getAssetId() {
         return assetId;
@@ -53,18 +73,48 @@ public class AssetRollbackRequest extends BaseRequest {
     public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
- public static    class RollBack {
+
+    public static class RollBack {
         @ApiModelProperty("回滚字段名")
         private String filedName;
         @ApiModelProperty("回滚字段值")
         private String filedValue;
         @ApiModelProperty("回滚表名")
         private String rollbackTableName;
+        @ApiModelProperty("回滚前的操作类型:1-add,2-delete,3-update")
+        private int operationType;
+        @ApiModelProperty("filedValue为关联表的id时，此字段展示该id所在主表的名称，适用于组件表和软件表")
+        private String name;
 
-        public RollBack(String filedName, String filedValue, String rollbackTableName) {
+        public RollBack(String filedName, String filedValue, String rollbackTableName, int operationType) {
             this.filedName = filedName;
             this.filedValue = filedValue;
             this.rollbackTableName = rollbackTableName;
+            this.operationType = operationType;
+        }
+
+        public RollBack(String filedName, String filedValue, String rollbackTableName, int operationType, String name) {
+            this.filedName = filedName;
+            this.filedValue = filedValue;
+            this.rollbackTableName = rollbackTableName;
+            this.operationType = operationType;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getOperationType() {
+            return operationType;
+        }
+
+        public void setOperationType(int operationType) {
+            this.operationType = operationType;
         }
 
         public String getFiledName() {
@@ -91,6 +141,7 @@ public class AssetRollbackRequest extends BaseRequest {
             this.rollbackTableName = rollbackTableName;
         }
     }
+
 }
 
 

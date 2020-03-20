@@ -73,11 +73,11 @@ import com.antiy.common.utils.DataTypeUtils;
  */
 @Service
 public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetService {
-    private static final int                                                    ALL_PAGE = -1;
-    private Logger                                                              logger   = LogUtils
-        .get(this.getClass());
+    private static final int ALL_PAGE = -1;
+    private Logger logger = LogUtils
+            .get(this.getClass());
     @Resource
-    private AssetDao                                                            assetDao;
+    private AssetDao assetDao;
     @Resource
     private AssetCpeFilterDao assetCpeFilterDao;
     @Resource
@@ -235,7 +235,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             .getAsetBusinessRelationRequests();
                     if (CollectionUtils.isNotEmpty(asetBusinessRelationRequests)) {
                         List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
-                            .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
+                                .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
                         AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
                         assetBusinessRelationDao.insertBatch(assetBusinessRelations);
                     }
@@ -1232,9 +1232,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // }
         // }
 
-        //更新资产基础信息及各种关联信息
-        Integer assetCount = updateAssetInfo(assetOuterRequest);
-        ParamterExceptionUtils.isTrue(assetCount != null && assetCount > 0, "信息入库失败");
 
         synchronized (lock) {
             //校验资产状态
@@ -1246,6 +1243,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             //处理资产再次登记流程
             dealRegisterProcess(assetOuterRequest);
         }
+        //更新资产基础信息及各种关联信息
+        Integer assetCount = updateAssetInfo(assetOuterRequest);
+        ParamterExceptionUtils.isTrue(assetCount != null && assetCount > 0, "信息入库失败");
 
 
         // 根据前端判断启动漏扫,排除走基准配置的已入网资产
@@ -1536,10 +1536,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
                 update.append("$更改基础信息:").append("操作系统").append(newOs);
-                AssetRollbackRequest.RollBack operationSystem = new AssetRollbackRequest.RollBack(
-                        "operation_system", String.valueOf(asset.getOperationSystem()), "asset");
-                AssetRollbackRequest.RollBack operationSystemName = new AssetRollbackRequest.RollBack(
-                        "operation_system_name", oldOs, "asset");
+                AssetRollbackRequest.RollBack operationSystem =
+                        new AssetRollbackRequest.RollBack("operation_system", String.valueOf(asset.getOperationSystem()),
+                                "asset", OperationTypeEnum.UPDATE.getCode());
+                AssetRollbackRequest.RollBack operationSystemName =
+                        new AssetRollbackRequest.RollBack("operation_system_name", oldOs, "asset", OperationTypeEnum.UPDATE.getCode());
                 rollbackInfo.add(operationSystem);
                 rollbackInfo.add(operationSystemName);
             }
@@ -1547,18 +1548,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         // 变更之前的硬盘
         List<AssetAssemblyRequest> oldDisks = assetAssemblyDao.findAssemblyByAssetId(assetId, "DISK");
-        //保存回滚前的信息
-        if (oldDisks.isEmpty()) {
-            AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
-                    "business_id", "nothing", "asset_assembly");
-            rollbackInfo.add(rollBack);
-        } else {
-            oldDisks.forEach(v -> {
-                AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
-                        "business_id", v.getBusinessId(), "asset_assembly");
-                rollbackInfo.add(rollBack);
-            });
-        }
 
         if (CollectionUtils.isNotEmpty(assetOuterRequest.getAssemblyRequestList())) {
             // 变更后的硬盘
@@ -1567,12 +1556,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
                     add.append("$新增组件:").append("硬盘").append(disk.getProductName());
+                    AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                            "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.ADD.getCode(),disk.getProductName());
+                    rollbackInfo.add(rollBack);
                 });
             } else {
                 List<String> oldDiskBusinessIds = oldDisks.stream().map(AssetAssemblyRequest::getBusinessId)
                         .collect(Collectors.toList());
-                Map<String, Integer> map = oldDisks.stream()
-                        .collect(Collectors.toMap(AssetAssemblyRequest::getBusinessId, AssetAssemblyRequest::getAmount));
+//                Map<String, Integer> map = oldDisks.stream()
+//                        .collect(Collectors.toMap(AssetAssemblyRequest::getBusinessId, AssetAssemblyRequest::getAmount));
                 newDisks.stream().forEach(disk -> {
                     if (oldDiskBusinessIds.contains(disk.getBusinessId())) {
 //                        if (!disk.getAmount().equals(map.get(disk.getBusinessId()))) {
@@ -1582,6 +1574,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
                         add.append("$新增组件:").append("硬盘").append(disk.getProductName());
+                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.ADD.getCode(),disk.getProductName());
+                        rollbackInfo.add(rollBack);
                     }
                 });
                 if (CollectionUtils.isNotEmpty(oldDiskBusinessIds)) {
@@ -1589,6 +1584,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         delete.append("$删除组件:").append("硬盘")
                                 .append(oldDisks.stream().filter(v -> os.equals(v.getBusinessId()))
                                         .map(AssetAssemblyRequest::getProductName).findFirst().get());
+                        AssetAssemblyRequest assemblyRequest=oldDisks.stream().filter(v -> v.getBusinessId().equals(os)).toArray(AssetAssemblyRequest[]::new)[0];
+                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                "business_id", assemblyRequest.getBusinessId()
+                                , "asset_assembly", OperationTypeEnum.DELETE.getCode(),assemblyRequest.getProductName());
+                        rollbackInfo.add(rollBack);
                     });
                 }
             }
@@ -1596,7 +1596,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isNotEmpty(oldDisks)) {
                 oldDisks.stream().forEach(disk -> {
                     sb.append("$删除组件:").append("硬盘").append(disk.getProductName());
+                    AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                            "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.DELETE.getCode(),disk.getProductName());
+                    rollbackInfo.add(rollBack);
                 });
+
             }
         }
         if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModel())) {
@@ -1605,18 +1609,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 变更前的软件
             List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = assetSoftwareRelationDao
                     .queryInstalledList(queryCondition);
-            //保留回滚前的软件
-            if (assetSoftwareInstallResponseList.isEmpty()) {
-                AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
-                        "software_id", "nothing", "asset_software_relation");
-                rollbackInfo.add(rollBack);
-            } else {
-                assetSoftwareInstallResponseList.forEach(v -> {
-                    AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
-                            "software_id", v.getSoftwareId(), "asset_software_relation");
-                    rollbackInfo.add(rollBack);
-                });
-            }
+
 
             // 变更后的软件
             List<Long> newSoftIds = assetOuterRequest.getSoftwareReportRequest().getSoftId();
@@ -1625,8 +1618,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 变更前没关联过软件
                 if (CollectionUtils.isEmpty(assetSoftwareInstallResponseList)) {
                     newSoftIds.stream().forEach(ns -> {
+                        AssetHardSoftLib hardSoftLib = assetHardSoftLibDao.getByBusinessId(ns.toString());
                         add.append("$新增软件:")
-                                .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
+                                .append(hardSoftLib.getProductName());
+                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                "software_id", ns.toString(), "asset_software_relation", OperationTypeEnum.ADD.getCode(),hardSoftLib.getProductName());
+                        rollbackInfo.add(rollBack);
                     });
                 } else {
                     // 变更前的软件id
@@ -1637,8 +1634,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             (m, v) -> m.put(v.getSoftwareId(), v.getProductName()), HashMap::putAll);
                     newSoftIds.stream().forEach(ns -> {
                         if (!oldSoftIds.contains(String.valueOf(ns))) {
+                            AssetHardSoftLib hardSoftLib = assetHardSoftLibDao.getByBusinessId(ns.toString());
                             add.append("$新增软件:")
-                                    .append(assetHardSoftLibDao.getByBusinessId(ns.toString()).getProductName());
+                                    .append(hardSoftLib.getProductName());
+                            AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                    "software_id", ns.toString(), "asset_software_relation", OperationTypeEnum.ADD.getCode(),hardSoftLib.getProductName());
+                            rollbackInfo.add(rollBack);
                         } else {
                             oldSoftIds.removeIf(a -> a.contains(String.valueOf(ns)));
                         }
@@ -1646,6 +1647,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(oldSoftIds)) {
                         oldSoftIds.stream().forEach(os -> {
                             delete.append("$删除软件:").append(oldMap.get(os));
+                            AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                    "software_id", os, "asset_software_relation", OperationTypeEnum.DELETE.getCode(),oldMap.get(os));
+                            rollbackInfo.add(rollBack);
                         });
                     }
                 }
@@ -1654,6 +1658,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (CollectionUtils.isNotEmpty(assetSoftwareInstallResponseList)) {
                     assetSoftwareInstallResponseList.stream().forEach(asr -> {
                         delete.append("$删除软件:").append(asr.getProductName());
+                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                                "software_id", asr.getSoftwareId(), "asset_software_relation", OperationTypeEnum.DELETE.getCode(),asr.getProductName());
+                        rollbackInfo.add(rollBack);
                     });
                 }
             }
@@ -1778,7 +1785,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Long> softIds = softwareReportRequest.getSoftId() == null ? new ArrayList<>()
                 : softwareReportRequest.getSoftId();
         if (CollectionUtils.isNotEmpty(softIds)) {
-            List<Long> SoftIds = new ArrayList<>(softIds);
             List<Long> deletedSoftIds = new ArrayList<>(softIds);
             List<AssetSoftwareRelation> assetNewSoftware = Lists.newArrayList();
             softIds.removeAll(preSoftIds);

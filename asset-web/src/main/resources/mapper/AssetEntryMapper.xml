@@ -37,6 +37,12 @@
         <if test="assetId !=null and assetId.trim !=''">
             and asset.id=#{assetId}
         </if>
+        <if test="areaIds !=null and areaIds.size >0">
+            and asset.area_id in
+            <foreach collection="areaIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         and asset.status=1
     </sql>
     <insert id="insert"/>

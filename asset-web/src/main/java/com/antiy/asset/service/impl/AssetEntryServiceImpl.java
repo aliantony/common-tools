@@ -85,9 +85,12 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     @Override
     public PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception {
+        if (CollectionUtils.isEmpty(query.getAreaIds())) {
+            query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        }
         int count = assetEntryDao.findCount(query);
         if (count <= 0) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Collections.emptyList());
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Collections.EMPTY_LIST);
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.queryList(query));
     }
@@ -272,6 +275,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             if (response == null || !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
                 logger.info("指令第{}次下发失败,response:{}", response);
                 continue;
+            }else {
+                break;
             }
 
         } while (count < 2);

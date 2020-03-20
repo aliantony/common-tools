@@ -7,6 +7,7 @@ import com.antiy.asset.dao.AssetOperationRecordDao;
 import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.RollbackEntity;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetStatusJumpService;
@@ -15,10 +16,9 @@ import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.RespBasicCode;
+import com.antiy.biz.entity.SysMessageRequest;
+import com.antiy.biz.message.SysMessageSender;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -72,7 +72,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private AssetEntryServiceImpl entryService;
     @Autowired
     private HttpServletRequest servletRequest;
-
+    @Resource
+    private BaseConverter baseConverter;
+    @Resource
+    private SysMessageSender messageSender;
     private Object lock = new Object();
 
     @Transactional(rollbackFor = Exception.class)
@@ -148,21 +151,78 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }
 
         } else {
-            // 配置走完,触发漏洞扫描
-            statusJumpRequest.getAssetInfoList().forEach(e -> {
-                Integer needVulScan = assetOperationRecordDao.getNeedVulScan(DataTypeUtils.stringToInteger(e.getAssetId()));
-                if (needVulScan != null && needVulScan == 1) {
-                    try {
-                        ActionResponse actionResponse = baseLineClient.scan(e.getAssetId());
-                        LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", e.getAssetId(), JsonUtil.object2Json(actionResponse));
-                        if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-                            LogUtils.error(logger, "调用漏洞模块失败");
+            for (int i = 0; i < assetsInDb.size(); i++) {
+                //变更失败回滚信息并发送消息 只针对操作系统、组件、软件信息的回滚(不适用所有)
+                boolean isSuccess = statusJumpRequest.getAssetInfoList().get(i).isSuccess();
+                Asset asset = assetsInDb.get(i);
+                String assetId =asset.getStringId();
+                if (!isSuccess) {
+                    AssetRollbackRequest rollbackRequest = new AssetRollbackRequest();
+                    List<RollbackEntity> rollbackEntities = assetDao.queryRollackInnfo(assetId);
+                    rollbackRequest.setAssetId(assetId);
+                    rollbackRequest.setGmtModified(System.currentTimeMillis());
+                    rollbackRequest.setModifyUser(Objects.isNull(LoginUserUtil.getLoginUser()) ? "0" : LoginUserUtil.getLoginUser().getStringId());
+                    rollbackRequest.setRollBackInfo(baseConverter.convert(rollbackEntities, AssetRollbackRequest.RollBack.class));
+                    assetDao.startRollback(rollbackRequest);
+
+                    //消息发送到变更人
+                    StringBuilder content = new StringBuilder();
+                    content.append("由于");
+                    HashSet<String> addInfo = new HashSet<>();
+                    HashSet<String> deleteInfo = new HashSet<>();
+                    HashSet<String> updateInfo = new HashSet<>();
+                    rollbackEntities.forEach(v -> {
+                        if (EnumUtil.equals(v.getOperationType(), OperationTypeEnum.ADD)) {
+                            addInfo.add(v.getName());
+                        } else if (EnumUtil.equals(v.getOperationType(), OperationTypeEnum.DELETE)) {
+                            deleteInfo.add(v.getName());
+                        } else if (EnumUtil.equals(v.getOperationType(), OperationTypeEnum.UPDATE)
+                                && "operation_system_name".equals(v.getFiledName())) {
+                            updateInfo.add(v.getFiledValue());
                         }
-                    } catch (Exception ex) {
-                        LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
+                    });
+                    if (CollectionUtils.isNotEmpty(addInfo)) {
+                        content.append("增加:");
+                        addInfo.forEach(v->content.append(v).append(","));
+                        content.replace(content.length() - 1,content.length()," ");
+                    }
+                    if (CollectionUtils.isNotEmpty(deleteInfo)) {
+                        content.append("删除:");
+                        deleteInfo.forEach(v->content.append(v).append(","));
+                        content.replace(content.length() - 1,content.length()," ");
+                    }
+                    if (CollectionUtils.isNotEmpty(updateInfo)) {
+                        content.append("变更:");
+                        updateInfo.forEach(v->content.append(v));
+                        content.append("操作系统为").append(asset.getOperationSystemName());
+                    }
+                    content.append("导致配置失败,").append(asset.getName()).append("资产变更失败.");
+                    SysMessageRequest request = new SysMessageRequest();
+                    request.setTopic("代办任务");
+                    request.setSummary("资产变更");
+                    request.setContent(content.toString());
+                    request.setSendUserId(Objects.isNull(LoginUserUtil.getLoginUser()) ? 0 : LoginUserUtil.getLoginUser().getId());
+                    request.setOrigin(1);//资产管理来源
+                    request.setReceiveUserId(asset.getModifyUser());
+                    request.setOther("{\"id\":" + asset.getStringId() + "}");
+                    messageSender.sendMessage(request);
+                }
+                //变更成功触发漏扫
+                else  {
+                    Integer needVulScan = assetOperationRecordDao.getNeedVulScan(DataTypeUtils.stringToInteger(assetId));
+                    if (needVulScan != null && needVulScan == 1) {
+                        try {
+                            ActionResponse actionResponse = baseLineClient.scan(assetId);
+                            LogUtils.info(logger, "调用漏洞模块,assetId:{}, 结果:{}", assetId, JsonUtil.object2Json(actionResponse));
+                            if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                                LogUtils.error(logger, "调用漏洞模块失败");
+                            }
+                        } catch (Exception ex) {
+                            LogUtils.error(logger, "调用漏洞模块异常:{}", ex);
+                        }
                     }
                 }
-            });
+            }
             updateData(statusJumpRequest, assetsInDb);
         }
 
@@ -175,6 +235,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         return ActionResponse.success();
     }
+
 
     @Override
     public ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception {

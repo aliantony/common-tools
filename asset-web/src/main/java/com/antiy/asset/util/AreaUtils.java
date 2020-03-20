@@ -19,7 +19,7 @@ public class AreaUtils {
     /**
      * 获取当前节点的第一级子节点
      * @param areaId
-     * @return 如果返回null，则说明不存在下级节点
+     * @return 如果返回它本身，则说明不存在下级节点
      */
     private static List<String> getNextArea(String areaId) {
         List<SysArea> childAreaList = LoginUserUtil.getLoginUser().getAreas();;

@@ -1,9 +1,6 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
@@ -387,4 +384,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer countCheckList(AssetSchemeQuery assetSchemeQuery);
 
     Integer updateAssetStatusById(@Param("assetId") String primaryKey, @Param("assetStatus") Integer assetStatus);
+
+    List<RollbackEntity> queryRollackInnfo(@Param("assetId") String assetId);
+
+    int startRollback(AssetRollbackRequest request);
 }
