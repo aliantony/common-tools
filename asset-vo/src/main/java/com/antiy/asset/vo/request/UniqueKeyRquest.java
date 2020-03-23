@@ -11,6 +11,17 @@ public class UniqueKeyRquest  {
 
     @ApiModelProperty("唯一键")
     private List<String> uniqueIds;
+    @ApiModelProperty("使用标志")
+    private String useFlag;
+
+    public String getUseFlag() {
+        return useFlag;
+    }
+
+    public void setUseFlag(String useFlag) {
+        this.useFlag = useFlag;
+    }
+
     public String getUniqueId() {
         return uniqueId;
     }

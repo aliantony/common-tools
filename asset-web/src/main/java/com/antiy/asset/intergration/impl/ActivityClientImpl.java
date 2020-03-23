@@ -50,6 +50,9 @@ public class ActivityClientImpl implements ActivityClient {
     @Value("${getTaskIdByBusinessKyeUrl}")
     private String getTaskIdByBusinessKyeUrl;
 
+    @Value("${completeRunningTaskByProcInstIdUrl}")
+    private String completeRunningTaskByProcInstIdUrl;
+
     @Override
     @AssetLog(description = "人工登记启动工作流", operationType = AssetLogOperationType.CREATE)
     public ActionResponse manualStartProcess(ManualStartActivityRequest request) {
@@ -107,5 +110,13 @@ public class ActivityClientImpl implements ActivityClient {
         return (ActionResponse) baseClient.post(param,
                 new ParameterizedTypeReference<ActionResponse>() {
                 }, getTaskIdByBusinessKyeUrl);
+    }
+
+    @Override
+    public ActionResponse completeRunningTaskByProcInstId(ActivityHandleRequest activityHandleRequest) {
+        return (ActionResponse) baseClient.post(activityHandleRequest,
+                new ParameterizedTypeReference<ActionResponse>() {
+                }, completeRunningTaskByProcInstIdUrl);
+
     }
 }

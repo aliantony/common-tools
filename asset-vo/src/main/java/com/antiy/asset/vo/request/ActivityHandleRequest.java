@@ -23,14 +23,14 @@ public class ActivityHandleRequest extends BaseRequest {
     private String id;
 
     @ApiModelProperty(value = "流程实例Id")
-    private String processInstanceId;
+    private String procInstId ;
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
+    public String getProcInstId() {
+        return procInstId;
     }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+    public void setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
     }
 
     public Map getFormData() {

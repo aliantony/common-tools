@@ -38,7 +38,7 @@ public class SaticScheduleTask {
             if(CollectionUtils.isNotEmpty(assetOperationRecords)){
                 for(AssetOperationRecord assetOperationRecord :assetOperationRecords){
                     ActivityHandleRequest activityHandleRequest=new ActivityHandleRequest();
-                    activityHandleRequest.setProcessInstanceId(assetOperationRecord.getTaskId().toString());
+                    activityHandleRequest.setProcInstId(assetOperationRecord.getTaskId().toString());
                     activityHandleRequest.setStringId(assetOperationRecord.getTargetObjectId());
                     iAssetStatusJumpService.assetCorrectingInfo(activityHandleRequest);
                 }

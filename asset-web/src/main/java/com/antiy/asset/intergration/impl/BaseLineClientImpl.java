@@ -95,10 +95,10 @@ public class BaseLineClientImpl implements BaseLineClient {
     }
 
     @Override
-    public ActionResponse situationOfVul(String primaryKey) {
+    public ActionResponse<AssetCorrectIInfoResponse> situationOfVul(String primaryKey) {
         JSONObject param = new JSONObject();
         param.put("stringId", primaryKey);
-        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
         }, situationOfVulUrl);
     }
     @Override
@@ -106,7 +106,7 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId) {
         JSONObject param = new JSONObject();
         param.put("assetId", assetId);
-        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse>() {
+        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
         }, baseLineRectificationUrl);
     }
 

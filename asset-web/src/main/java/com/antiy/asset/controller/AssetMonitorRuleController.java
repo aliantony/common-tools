@@ -1,12 +1,5 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetMonitorRuleService;
 import com.antiy.asset.vo.query.AssetMonitorRuleQuery;
 import com.antiy.asset.vo.query.BaseQuery;
@@ -18,8 +11,13 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  *
@@ -53,10 +51,10 @@ public class AssetMonitorRuleController {
     @ApiOperation(value = "规则禁用/启用", notes = "传入监控规则唯一键")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/edit/rule/status", method = RequestMethod.POST)
-    public ActionResponse editRuleStatus(@ApiParam(value = "assetMonitorRule") @RequestBody AssetMonitorRuleRequest assetMonitorRuleRequest) throws Exception {
-        ParamterExceptionUtils.isNull(assetMonitorRuleRequest.getUniqueId(),"唯一键不能为空！");
-        ParamterExceptionUtils.isNull(assetMonitorRuleRequest.getUseFlag(),"启用/禁用标志不能为空！");
-       Integer result= iAssetMonitorRuleService.editRuleStatus(assetMonitorRuleRequest.getUniqueId(),assetMonitorRuleRequest.getUseFlag());
+    public ActionResponse editRuleStatus(@ApiParam(value = "assetMonitorRule") @RequestBody  UniqueKeyRquest uniqueKeyRquest) throws Exception {
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空！");
+        ParamterExceptionUtils.isNull(uniqueKeyRquest.getUseFlag(),"启用/禁用标志不能为空！");
+       Integer result= iAssetMonitorRuleService.editRuleStatus(uniqueKeyRquest.getUniqueId(),uniqueKeyRquest.getUseFlag());
         return ActionResponse.success(result);
     }
     /**

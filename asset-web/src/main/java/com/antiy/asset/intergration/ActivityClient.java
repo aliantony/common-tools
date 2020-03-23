@@ -68,4 +68,11 @@ public interface ActivityClient {
      */
 
     ActionResponse getTaksIdByBusinessKey(String key);
+
+    /**
+     *漏扫结束推动工作流
+     * @param activityHandleRequest
+     * @return
+     */
+    ActionResponse completeRunningTaskByProcInstId(ActivityHandleRequest activityHandleRequest);
 }

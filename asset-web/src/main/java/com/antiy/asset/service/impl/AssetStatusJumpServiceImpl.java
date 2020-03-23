@@ -261,12 +261,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
             assetDao.update(asset);
             assetCorrectIInfoResponse.setNeedManualPush("0");
-
+            logger.info("资产继续入网");
         }
         //  资产漏洞或配置模块 “修复”失败、配置未完成等情况
-        else{
-            assetCorrectIInfoResponse.setNeedManualPush("0");
-        }
+        else if(baseLineResponse.getBody().equals(AssetBaseLineEnum.FALI.getMsg())){
+            assetCorrectIInfoResponse.setNeedManualPush("1");
+             logger.info("资产手动继续入网");
+        }else{
+             assetCorrectIInfoResponse.setNeedManualPush("0");
+             logger.info("资产处于配置中");
+         }
         assetCorrectIInfoResponse.setCheckStatus(baseLineResponse.getBody().getCheckStatus());
         assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
         return  assetCorrectIInfoResponse;
@@ -286,16 +290,25 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
 
+        assetCorrectIInfoResponse.setScan(true);
+        assetCorrectIInfoResponse.setAmount(0);
+
         //整改流程--漏洞步骤处于进行中状态
         if(!assetCorrectIInfoResponse.getScan()||! assetCorrectIInfoResponse.getDeal()){
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
         }
+        //获取流程实例id
+        Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
+        List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
+        activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+
         ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
-        if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+
+       /* if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             LogUtils.error(logger, "资产整改漏洞工作流异常!");
             throw  new BusinessException("资产整改漏洞工作流异常");
-        }
+        }*/
         if(AssetCategoryEnum.COMPUTER.getCode().equals(assetOfDB.getCategoryModel())){
             //整改流程--漏洞步骤完成  -进入配置流程（计算机设备 ）
             ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( activityHandleRequest.getStringId());
@@ -319,8 +332,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
             assetDao.update(asset);
             assetCorrectIInfoResponse.setNeedManualPush("0");
+            logger.info("资产继续入网");
         }else {
             assetCorrectIInfoResponse.setNeedManualPush("1");
+            logger.info("资产手动继续入网");
         }
         return  assetCorrectIInfoResponse;
     }
@@ -329,10 +344,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         formData.put("baselineRectifyResult","success");
         activityHandleRequest.setFormData(formData);
         if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg())){
-             return activityClient.completeTask(activityHandleRequest);
+             return activityClient.completeRunningTaskByProcInstId(activityHandleRequest);
         }else if(baseLineResponse.getBody().equals(AssetBaseLineEnum.FALI.getMsg())) {
             formData.put("baselineRectifyResult","fail");
-            return activityClient.completeTask(activityHandleRequest);
+            return activityClient.completeRunningTaskByProcInstId(activityHandleRequest);
         }
         return ActionResponse.success();
     }
@@ -341,10 +356,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         formData.put("vulRectifyResult","success");
         activityHandleRequest.setFormData(formData);
         if(assetCorrectIInfoResponse.getFailureCount()<=0){
-            return activityClient.completeTask(activityHandleRequest);
+            return activityClient.completeRunningTaskByProcInstId(activityHandleRequest);
         }else {
             formData.put("vulRectifyResult","fail");
-           return activityClient.completeTask(activityHandleRequest);
+           return activityClient.completeRunningTaskByProcInstId(activityHandleRequest);
         }
     }
     private void setInProcess(AssetStatusJumpRequest statusJumpRequest, List<Asset> assetsInDb) {
