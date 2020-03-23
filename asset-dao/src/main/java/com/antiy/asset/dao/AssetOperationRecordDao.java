@@ -7,6 +7,7 @@ import com.antiy.asset.vo.query.AssetSchemeQuery;
 import com.antiy.asset.vo.response.AssetOperationRecordResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -63,4 +64,5 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
     List<AssetResponse> queryAssetSchemListByAssetIds(AssetSchemeQuery assetSchemeQuery);
 
     AssetOperationRecordResponse queryCheckSchemeByTaskId(Integer taskId);
+    void writeProcInstId(@Param("assetId") int assetId, @Param("procInstId")int procInstId);
 }

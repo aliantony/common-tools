@@ -26,6 +26,7 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="create_user" property="createUser"/>
         <result column="status" property="status"/>
+        <result column="task_id" property="taskId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
 
@@ -372,9 +373,15 @@
         where  task_id=#{taskId}
         and status=1
     </select>
+    <update id="writeProcInstId">
+        update <include refid="Table_Name"/>
+        set task_id=#{procInstId}
+        where target_object_id=#{assetId}
+        and status=1
+    </update>
     <select id="listByAssetIds" resultMap="BaseResultMap">
         select
-        a.target_object_id,a.origin_status
+        a.target_object_id,a.origin_status,task_id
         from
         <include refid="Table_Name"/> a
         inner join
@@ -405,7 +412,6 @@
         GROUP BY target_object_id ) AS t_aor
         JOIN asset_operation_record AS aor ON t_aor.target_object_id = aor.target_object_id
         AND t_aor.gmt_create = aor.gmt_create-->
-
         SELECT
         a.id AS stringId,
         a.`name`,
@@ -463,6 +469,5 @@
         </if>
         GROUP BY
         a.id,aor.id
-
     </select>
 </mapper>

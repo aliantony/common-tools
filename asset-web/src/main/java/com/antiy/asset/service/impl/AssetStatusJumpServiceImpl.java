@@ -252,22 +252,18 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
     private AssetCorrectIInfoResponse correctingAssetOfbaseLine(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse,ActionResponse<AssetCorrectIInfoResponse> vlunResponse,String assetId) throws Exception {
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
-        //资产漏洞或配置模块 “修复”失败
-        if(baseLineResponse.getBody().equals("成功") &&assetCorrectIInfoResponse.getFailureCount()>0 || baseLineResponse.getBody().equals("失败")){
-            assetCorrectIInfoResponse.setNeedManualPush("1");
 
-        }
         //资产漏洞和配置模块 “修复”成功
-        else if(baseLineResponse.getBody().equals("成功") &&assetCorrectIInfoResponse.getFailureCount()<=0 ){
+         if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg()) &&assetCorrectIInfoResponse.getFailureCount()<=0 ){
             // 改变资产状态
             Asset asset=new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
             assetDao.update(asset);
             assetCorrectIInfoResponse.setNeedManualPush("0");
 
         }
-        //配置未完成
+        //  资产漏洞或配置模块 “修复”失败、配置未完成等情况
         else{
             assetCorrectIInfoResponse.setNeedManualPush("0");
         }
@@ -277,7 +273,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectingRequest activityHandleRequest) throws Exception {
+    public AssetCorrectIInfoResponse assetCorrectingInfo(ActivityHandleRequest activityHandleRequest) throws Exception {
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
         if(assetOfDB==null){
             throw new BusinessException("资产不存在！");
@@ -295,20 +291,20 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
         }
-        ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest.getBaseLineActivity());
+        ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
         if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             LogUtils.error(logger, "资产整改漏洞工作流异常!");
             throw  new BusinessException("资产整改漏洞工作流异常");
         }
-        //整改流程--漏洞步骤完成  -进入配置流程（计算机设备 ）
-        ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( "assetId");
-        if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
-            LogUtils.error(logger, "调用配置模块失败");
-            throw  new BusinessException("调用配置模块失败");
-        }
         if(AssetCategoryEnum.COMPUTER.getCode().equals(assetOfDB.getCategoryModel())){
+            //整改流程--漏洞步骤完成  -进入配置流程（计算机设备 ）
+            ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( activityHandleRequest.getStringId());
+            if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
+                LogUtils.error(logger, "调用配置模块失败");
+                throw  new BusinessException("调用配置模块失败");
+            }
             //配置工作流
-            ActionResponse baseLineActivityResponse = baseLineActivity(baseLineResponse, activityHandleRequest.getBaseLineActivity());
+            ActionResponse baseLineActivityResponse = baseLineActivity(baseLineResponse, activityHandleRequest);
             if (null == baseLineActivityResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineActivityResponse.getHead().getCode())) {
                 LogUtils.error(logger, "资产整改配置工作流异常!");
                 throw  new BusinessException("资产整改配置工作流异常");
@@ -320,7 +316,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //改变资产状态
             Asset asset=new Asset();
             asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
-            asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
             assetDao.update(asset);
             assetCorrectIInfoResponse.setNeedManualPush("0");
         }else {
@@ -328,7 +324,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         return  assetCorrectIInfoResponse;
     }
-
     private ActionResponse baseLineActivity(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse, ActivityHandleRequest activityHandleRequest) {
         Map<String,String> formData=new HashMap<>(1);
         formData.put("baselineRectifyResult","success");
@@ -341,8 +336,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         return ActionResponse.success();
     }
-    private ActionResponse vlunActivity( AssetCorrectIInfoResponse assetCorrectIInfoResponse,ActivityHandleRequest activityHandleRequest){
-
+    private ActionResponse vlunActivity(AssetCorrectIInfoResponse assetCorrectIInfoResponse, ActivityHandleRequest activityHandleRequest){
         Map<String,String> formData=new HashMap<>(1);
         formData.put("vulRectifyResult","success");
         activityHandleRequest.setFormData(formData);

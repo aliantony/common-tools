@@ -113,8 +113,8 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "整改详情", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/correctiong/info", method = RequestMethod.POST)
-    public ActionResponse assetCorrectingInfo(@ApiParam(value = "assetCorrectingRequest") @RequestBody AssetCorrectingRequest assetCorrectingRequest) throws Exception {
-        AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingInfo(assetCorrectingRequest);
+    public ActionResponse assetCorrectingInfo(@ApiParam(value = "assetCorrectingRequest") @RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
+        AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingInfo(activityHandleRequest);
         return ActionResponse.success(result);
     }
 }

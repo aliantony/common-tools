@@ -10,6 +10,17 @@ public class AssetCorrectingRequest extends BaseRequest {
     @ApiModelProperty("配置流程")
     private ActivityHandleRequest baseLineActivity;
 
+    @ApiModelProperty("流程实例id")
+    private String processInstanceId;
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
     public ActivityHandleRequest getVlunActivity() {
         return vlunActivity;
     }
