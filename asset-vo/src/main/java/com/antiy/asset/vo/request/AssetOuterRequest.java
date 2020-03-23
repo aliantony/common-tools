@@ -93,6 +93,17 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     private boolean                       needScan;
     @ApiModelProperty(value = "删除切换成其他设备代办")
     private CancelWaitingTask             cancelWaitingTask;
+    @ApiModelProperty(value = "是否需要阻断入网,默认为false不阻断,true/false")
+    private boolean                       needEntryForbidden=false;
+
+
+    public boolean isNeedEntryForbidden() {
+        return needEntryForbidden;
+    }
+
+    public void setNeedEntryForbidden(boolean needEntryForbidden) {
+        this.needEntryForbidden = needEntryForbidden;
+    }
 
     public boolean getNeedScan() {
         return needScan;

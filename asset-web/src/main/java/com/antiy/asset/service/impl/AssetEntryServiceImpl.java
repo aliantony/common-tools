@@ -156,7 +156,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             //如果来源是漏洞扫描，补丁安装，配置扫描，启动自动恢复机制
             if ((EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
                     || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.VUL_SCAN)
-                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL))
+                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL)
+                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_CHANGE))
                     && (EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.NO_ENTER))) {
                 //自动恢复为准入允许
                 request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));

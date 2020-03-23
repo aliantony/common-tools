@@ -158,6 +158,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private BaseLineClient baseLineClient;
     @Resource
     private AssetBusinessRelationDao assetBusinessRelationDao;
+    @Resource
+    private AssetEntryServiceImpl entryService;
     private Object lock = new Object();
 
     @Override
@@ -1368,6 +1370,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 changeStatus = AssetStatusEnum.NET_IN.getCode();
             }
 
+            // 阻断入网判断
+            if (assetOuterRequest.isNeedEntryForbidden()) {
+                new Thread(()->{
+                    AssetEntryRequest request = new AssetEntryRequest();
+                    ActivityHandleRequest handleRequest = new ActivityHandleRequest();
+                    handleRequest.setId(assetId);
+                    request.setAssetActivityRequests(Arrays.asList(handleRequest));
+                    request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.NO_ENTER.getCode()));
+                    request.setEntrySource(AssetEntrySourceEnum.ASSET_CHANGE);
+                    entryService.updateEntryStatus(request);
+                }).start();
+            }
             // 更新资产状态
             updateAssetStatus(changeStatus, System.currentTimeMillis(), assetId);
             //记录操作日志

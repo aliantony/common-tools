@@ -11,7 +11,8 @@ public enum AssetEntrySourceEnum implements CodeEnum {
     VUL_SCAN(3,"漏洞扫描"),
     CONFIG_SCAN(4,"配置扫描"),
     PATCH_INSTALL(5,"补丁安装"),
-    ENTRY_MANAGE(6,"准入管理");
+    ENTRY_MANAGE(6,"准入管理"),
+    ASSET_CHANGE(7,"资产变更");
     private int code;
     private String msg;
 
