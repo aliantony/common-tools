@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -25,9 +26,11 @@ public class AssetCompositionReportQuery extends ObjectQuery {
      * 行政区划主键列表
      */
     @ApiModelProperty("行政区划主键列表")
+    @Encode
     private String[]      areaIds;
     @ApiModelProperty("基准模板id")
-    private List<Integer> baselineTemplateIds;
+    @Encode
+    private List<String>  baselineTemplateIds;
     /**
      * 厂商列表
      */
@@ -172,11 +175,11 @@ public class AssetCompositionReportQuery extends ObjectQuery {
         this.importanceDegrees = importanceDegrees;
     }
 
-    public List<Integer> getBaselineTemplateIds() {
+    public List<String> getBaselineTemplateIds() {
         return baselineTemplateIds;
     }
 
-    public void setBaselineTemplateIds(List<Integer> baselineTemplateIds) {
+    public void setBaselineTemplateIds(List<String> baselineTemplateIds) {
         this.baselineTemplateIds = baselineTemplateIds;
     }
 
