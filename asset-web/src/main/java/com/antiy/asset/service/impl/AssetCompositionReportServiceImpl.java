@@ -62,7 +62,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     @Override
     public Integer saveAssetCompositionReport(AssetCompositionReportRequest request) throws Exception {
         // 名称去重
-        Integer count = assetCompositionReportDao.findCountByName(request.getName());
+        Integer count = assetCompositionReportDao.findCountByName(request.getName(), null);
         BusinessExceptionUtils.isTrue(count < 1, "当前模板名称已经存在!");
         AssetCompositionReport assetCompositionReport = requestConverter.convert(request, AssetCompositionReport.class);
         assetCompositionReport.setQueryCondition(JsonUtil.object2Json(request.getQuery()));
@@ -74,7 +74,11 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
 
     @Override
     public Integer updateAssetCompositionReport(AssetCompositionReportRequest request) throws Exception {
+        // 名称去重
+        Integer count = assetCompositionReportDao.findCountByName(request.getName(), request.getId());
+        BusinessExceptionUtils.isTrue(count < 1, "当前模板名称已经存在!");
         AssetCompositionReport assetCompositionReport = requestConverter.convert(request, AssetCompositionReport.class);
+        assetCompositionReport.setQueryCondition(JsonUtil.object2Json(request.getQuery()));
         return assetCompositionReportDao.update(assetCompositionReport);
     }
 

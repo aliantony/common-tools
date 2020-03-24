@@ -27,6 +27,11 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     @ApiModelProperty("查询模板名称")
     private String  name;
     /**
+     * 查询模板名称
+     */
+    @ApiModelProperty("id")
+    private Integer                     id;
+    /**
      * 用户id
      */
     @ApiModelProperty("用户id")
@@ -87,4 +92,11 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
 
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
