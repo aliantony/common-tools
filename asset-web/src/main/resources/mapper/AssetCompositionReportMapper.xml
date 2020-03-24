@@ -474,9 +474,11 @@
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
+        order by id desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+
     </select>
     <select id="findCountByName" resultType="java.lang.Integer">
  SELECT

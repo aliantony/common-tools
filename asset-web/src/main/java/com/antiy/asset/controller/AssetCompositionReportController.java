@@ -91,7 +91,7 @@ public class AssetCompositionReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@RequestBody BaseRequest request) throws Exception {
-        AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
+        AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getStringId());
         AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
             AssetCompositionReportQuery.class);
         AssetCompositionReportRequest assetCompositionReportRequest = new AssetCompositionReportRequest();
