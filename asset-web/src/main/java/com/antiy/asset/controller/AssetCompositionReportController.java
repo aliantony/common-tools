@@ -7,7 +7,6 @@ import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.asset.vo.request.BaseId;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -112,7 +111,7 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@RequestBody BaseRequest request) throws Exception {
+    public ActionResponse deleteById(@RequestBody BaseId request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(iAssetCompositionReportService.deleteById(request.getId()));
     }
