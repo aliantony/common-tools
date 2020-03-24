@@ -5,6 +5,7 @@ import com.antiy.asset.service.IAssetCompositionReportService;
 import com.antiy.asset.vo.query.AssetCompositionReportQuery;
 import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
+import com.antiy.asset.vo.request.BaseId;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.utils.JsonUtil;
@@ -12,7 +13,10 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -90,8 +94,8 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
-    public ActionResponse queryById(@RequestBody BaseRequest request) throws Exception {
-        AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getStringId());
+    public ActionResponse queryById(@RequestBody BaseId request) throws Exception {
+        AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
         AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
             AssetCompositionReportQuery.class);
         AssetCompositionReportRequest assetCompositionReportRequest = new AssetCompositionReportRequest();
