@@ -478,4 +478,13 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="findCountByName" resultType="java.lang.Integer">
+ SELECT
+	count(1) count
+FROM
+	asset_composition_report
+WHERE
+	NAME = #{name}
+AND STATUS = 1
+    </select>
 </mapper>
