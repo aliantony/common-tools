@@ -489,7 +489,7 @@ WHERE
 	NAME = #{name}
 AND STATUS = 1
         <if test=" id != null">
-            and id=#{id}
+            and id !=#{id}
         </if>
     </select>
 </mapper>
