@@ -15,6 +15,10 @@ public class AssetCompositionReportTemplateQuery extends ObjectQuery {
     private Integer status;
     @ApiModelProperty("name")
     private String  name;
+    @ApiModelProperty("userId")
+    private Integer userId;
+    private String  queryCondition;
+    private Long    gmtCreate;
 
     public Integer getStatus() {
         return status;
@@ -30,5 +34,29 @@ public class AssetCompositionReportTemplateQuery extends ObjectQuery {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getQueryCondition() {
+        return queryCondition;
+    }
+
+    public void setQueryCondition(String queryCondition) {
+        this.queryCondition = queryCondition;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 }
