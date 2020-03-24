@@ -89,7 +89,7 @@ public class AssetCompositionReportController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@RequestBody BaseRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
@@ -108,7 +108,7 @@ public class AssetCompositionReportController {
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     public ActionResponse deleteById(@RequestBody BaseRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(iAssetCompositionReportService.deleteById(request.getId()));
