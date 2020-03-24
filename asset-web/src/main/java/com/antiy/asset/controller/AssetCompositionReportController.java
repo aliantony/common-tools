@@ -91,7 +91,6 @@ public class AssetCompositionReportController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@RequestBody BaseRequest request) throws Exception {
-        ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
         AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
             AssetCompositionReportQuery.class);
