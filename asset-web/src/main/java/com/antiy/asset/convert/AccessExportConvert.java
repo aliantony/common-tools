@@ -18,6 +18,9 @@ public class AccessExportConvert extends BaseConverter<AssetEntryResponse, Acces
         if (assetResponse.getMac() != null) {
             accessExport.setMac(assetResponse.getMac());
         }
+        if (assetResponse.getAssetGroupName() != null) {
+            accessExport.setAssetGroup(assetResponse.getAssetGroupName());
+        }
         super.convert(assetResponse, accessExport);
     }
 }
