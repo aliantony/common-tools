@@ -31,19 +31,22 @@ public class AssetBusinessRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("资产组")
     private String            assetGroup;
-
+    @ApiModelProperty("ip")
     private String            ips;
     /**
      * mac
      */
+    @ApiModelProperty("mac")
     private String            macs;
     /**
      * 厂商
      */
+    @ApiModelProperty("厂商")
     private String            manufacturer;
     /**
      * 资产对业务影响
      */
+    @ApiModelProperty("资产对业务影响")
     private Integer businessInfluence;
 
     public Integer getBusinessInfluence() {

@@ -54,12 +54,14 @@ public class AssetBusinessController {
      * 查询业务可以添加的资产
      */
     @ApiOperation(value = "查询业务可以添加的资产", notes = "传入实体对象信息")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/asset/list", method = RequestMethod.POST)
     public ActionResponse queryAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
         PageResult<AssetResponse> pageResult= iAssetBusinessService.queryAsset(assetAddOfBusinessQuery);
         return  ActionResponse.success(pageResult);
     }
     @ApiOperation(value = "查询业务信息", notes = "传入业务主键（uniqueId）")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/info", method = RequestMethod.POST)
     public ActionResponse querySingle(@RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
         ParamterExceptionUtils.isNull(uniqueKeyRquest.getUniqueId(),"唯一键不能为空");
@@ -74,6 +76,7 @@ public class AssetBusinessController {
      * @throws Exception
      */
     @ApiOperation(value = "业务已经关联的资产信息", notes = "传入实体对象信息")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetBusinessRelationResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/query/assetRelation/list", method = RequestMethod.POST)
     public ActionResponse queryBusinessAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
         ParamterExceptionUtils.isNull(assetAddOfBusinessQuery.getUniqueId(),"唯一键不能为空");
@@ -116,7 +119,7 @@ public class AssetBusinessController {
      * @param queryCondition
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
+    @ApiOperation(value = "通过ID查询 无用", notes = "主键封装对象")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class),
     })
