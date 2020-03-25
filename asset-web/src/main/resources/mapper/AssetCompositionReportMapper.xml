@@ -124,6 +124,7 @@
             </if>
         </set>
         where id = #{item.id}
+        </foreach>
     </update>
 
     <!-- 根据主键查询 -->
