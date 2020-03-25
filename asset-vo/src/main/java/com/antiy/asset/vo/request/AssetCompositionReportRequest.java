@@ -39,13 +39,15 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     /**
      * 创建时间
      */
-    @ApiModelProperty("1 是 0 否  默认那个")
+    @ApiModelProperty("创建时间")
     private Long    gmtCreate;
     /**
      * 0 删除 1存在
      */
     @ApiModelProperty("0 删除 1存在")
     private Integer status;
+    @ApiModelProperty("1 是 0 否  默认那个")
+    private Integer                     Identification;
 
     public AssetCompositionReportQuery getQuery() {
         return query;
@@ -98,5 +100,13 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdentification() {
+        return Identification;
+    }
+
+    public void setIdentification(Integer identification) {
+        Identification = identification;
     }
 }

@@ -24,6 +24,10 @@ public class AssetCompositionReport extends BaseEntity {
      */
     private String            name;
     /**
+     * 查询模板名称
+     */
+    private Integer           Identification;
+    /**
      * 用户id
      */
     private Integer           userId;
@@ -80,5 +84,13 @@ public class AssetCompositionReport extends BaseEntity {
     public String toString() {
         return "AssetCompositionReport{" + ", queryCondition=" + queryCondition + ", name=" + name + ", userId="
                + userId + ", gmtCreate=" + gmtCreate + ", status=" + status + "}";
+    }
+
+    public Integer getIdentification() {
+        return Identification;
+    }
+
+    public void setIdentification(Integer identification) {
+        Identification = identification;
     }
 }
