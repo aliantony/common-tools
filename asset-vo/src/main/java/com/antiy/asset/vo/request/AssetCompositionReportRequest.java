@@ -39,7 +39,7 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     /**
      * 创建时间
      */
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty("1 是 0 否  默认那个")
     private Long    gmtCreate;
     /**
      * 0 删除 1存在

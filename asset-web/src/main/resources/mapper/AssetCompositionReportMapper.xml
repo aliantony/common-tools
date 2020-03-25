@@ -114,6 +114,17 @@
         </trim>
         where id = #{id}
     </update>
+    <update id="updateBatch">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+        update
+        <include refid="Table_Name"></include>
+        <set>
+            <if test="item.gmtCreate != null">
+                gmt_create = #{item.gmtCreate},
+            </if>
+        </set>
+        where id = #{item.id}
+    </update>
 
     <!-- 根据主键查询 -->
     <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">

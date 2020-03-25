@@ -19,4 +19,6 @@ public interface AssetCompositionReportDao extends IBaseDao<AssetCompositionRepo
     List<AssetCompositionReportResponse> findAll(AssetCompositionReportQuery query);
 
     Integer findCountByName(@Param("name") String name, @Param("id") Integer id);
+
+    void updateBatch(List<AssetCompositionReport> report);
 }
