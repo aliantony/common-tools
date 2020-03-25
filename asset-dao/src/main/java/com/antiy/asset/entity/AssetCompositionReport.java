@@ -26,7 +26,7 @@ public class AssetCompositionReport extends BaseEntity {
     /**
      * 查询模板名称
      */
-    private Integer           Identification;
+    private Integer           identification;
     /**
      * 用户id
      */
@@ -87,10 +87,10 @@ public class AssetCompositionReport extends BaseEntity {
     }
 
     public Integer getIdentification() {
-        return Identification;
+        return identification;
     }
 
     public void setIdentification(Integer identification) {
-        Identification = identification;
+        this.identification = identification;
     }
 }

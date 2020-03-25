@@ -71,8 +71,10 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         if (request.getIdentification() == 1) {
             AssetCompositionReportTemplateQuery assetCompositionReportTemplateQuery = new AssetCompositionReportTemplateQuery();
             List<AssetCompositionReport> report = this.findReport(assetCompositionReportTemplateQuery);
-            report.forEach(assetCompositionReport1 -> assetCompositionReport1.setIdentification(0));
-            assetCompositionReportDao.updateBatch(report);
+            if (CollectionUtils.isNotEmpty(report)) {
+                report.forEach(assetCompositionReport1 -> assetCompositionReport1.setIdentification(0));
+                assetCompositionReportDao.updateBatch(report);
+            }
         }
         assetCompositionReport.setGmtCreate(System.currentTimeMillis());
         assetCompositionReportDao.insert(assetCompositionReport);

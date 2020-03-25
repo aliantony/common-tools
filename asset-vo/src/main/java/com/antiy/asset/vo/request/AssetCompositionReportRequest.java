@@ -47,7 +47,7 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     @ApiModelProperty("0 删除 1存在")
     private Integer status;
     @ApiModelProperty("1 是 0 否  默认那个")
-    private Integer                     Identification;
+    private Integer                     identification;
 
     public AssetCompositionReportQuery getQuery() {
         return query;
@@ -103,10 +103,10 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     }
 
     public Integer getIdentification() {
-        return Identification;
+        return identification;
     }
 
     public void setIdentification(Integer identification) {
-        Identification = identification;
+        this.identification = identification;
     }
 }

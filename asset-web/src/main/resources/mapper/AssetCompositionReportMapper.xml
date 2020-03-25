@@ -10,11 +10,11 @@
         <result column="user_id" property="userId"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="status" property="status"/>
-        <result column="Identification" property="Identification"/>
+        <result column="identification" property="identification"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, query_condition, name, user_id, gmt_create, status,Identification
+        id, query_condition, name, user_id, gmt_create, status,identification
     </sql>
 
     <sql id="Table_Name">
@@ -38,8 +38,8 @@
         <if test=" status != null">
             status,
         </if>
-        <if test=" Identification != null">
-            Identification,
+        <if test=" identification != null">
+            identification,
         </if>
     </sql>
 
@@ -59,8 +59,8 @@
         <if test=" status != null">
             #{status },
         </if>
-        <if test=" Identification != null">
-            #{Identification },
+        <if test=" identification != null">
+            #{identification },
         </if>
     </sql>
 
@@ -80,8 +80,8 @@
         <if test=" status != null">
             status = #{status },
         </if>
-        <if test=" Identification != null">
-            Identification = #{Identification },
+        <if test=" identification != null">
+            identification = #{identification },
         </if>
     </sql>
 
@@ -99,8 +99,8 @@
         <if test=" status != null">
             and status = #{status }
         </if>
-        <if test=" Identification != null">
-            and Identification = #{Identification }
+        <if test=" identification != null">
+            and identification = #{identification }
         </if>
     </sql>
 
@@ -129,8 +129,8 @@
         update
         <include refid="Table_Name"></include>
         <set>
-            <if test="item.Identification != null">
-                Identification = #{item.Identification},
+            <if test="item.identification != null">
+                identification = #{item.identification},
             </if>
         </set>
         where id = #{item.id}
@@ -496,7 +496,7 @@
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
-        order by Identification desc , gmt_create desc
+        order by identification desc , gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
