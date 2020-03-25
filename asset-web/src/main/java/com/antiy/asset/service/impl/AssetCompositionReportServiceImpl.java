@@ -68,13 +68,13 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         assetCompositionReport.setQueryCondition(JsonUtil.object2Json(request.getQuery()));
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         assetCompositionReport.setUserId(loginUser.getId());
-        if (request.getGmtCreate() == 1) {
+        if (request.getIdentification() == 1) {
             AssetCompositionReportTemplateQuery assetCompositionReportTemplateQuery = new AssetCompositionReportTemplateQuery();
             List<AssetCompositionReport> report = this.findReport(assetCompositionReportTemplateQuery);
-            report.forEach(assetCompositionReport1 -> assetCompositionReport1.setGmtCreate(0L));
+            report.forEach(assetCompositionReport1 -> assetCompositionReport1.setIdentification(0));
             assetCompositionReportDao.updateBatch(report);
         }
-
+        assetCompositionReport.setGmtCreate(System.currentTimeMillis());
         assetCompositionReportDao.insert(assetCompositionReport);
         return assetCompositionReport.getId();
     }
@@ -86,10 +86,11 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         BusinessExceptionUtils.isTrue(count < 1, "当前模板名称已经存在!");
         AssetCompositionReport assetCompositionReport = requestConverter.convert(request, AssetCompositionReport.class);
         assetCompositionReport.setQueryCondition(JsonUtil.object2Json(request.getQuery()));
-        if (request.getGmtCreate() == 1) {
+        assetCompositionReport.setGmtCreate(System.currentTimeMillis());
+        if (request.getIdentification() == 1) {
             AssetCompositionReportTemplateQuery assetCompositionReportTemplateQuery = new AssetCompositionReportTemplateQuery();
             List<AssetCompositionReport> report = this.findReport(assetCompositionReportTemplateQuery);
-            report.forEach(assetCompositionReport1 -> assetCompositionReport1.setGmtCreate(0L));
+            report.forEach(assetCompositionReport1 -> assetCompositionReport1.setIdentification(0));
             assetCompositionReportDao.updateBatch(report);
         }
 
@@ -177,8 +178,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
 
             LogUtils.recordOperLog(
                 new BusinessData("导出《综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
-                    "",
-                    assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
