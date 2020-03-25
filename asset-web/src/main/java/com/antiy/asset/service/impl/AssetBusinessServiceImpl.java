@@ -6,6 +6,7 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.asset.entity.AssetBusinessRelation;
+import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -19,7 +20,6 @@ import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -78,7 +78,6 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             List<AssetBusinessRelationRequest> list = request.getAssetRelaList();
             List<AssetBusinessRelation> assetRelationList=new ArrayList<>();
             for(AssetBusinessRelationRequest itme:list){
-
                 Asset asset = assetDao.getById(itme.getAssetId());
                 if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())||
                         AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus())||
@@ -253,7 +252,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
 
     @Override
     public PageResult<AssetResponse> queryAsset(AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
-        List<String> areaId = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+        List<String> areaId = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         String[] strings = areaId.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
         Integer count=assetDao.countQueryAsset(assetAddOfBusinessQuery);
@@ -264,13 +263,12 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
        return  new PageResult<>(assetAddOfBusinessQuery.getPageSize(),0,assetAddOfBusinessQuery.getCurrentPage(), Lists.newArrayList());
     }
     @Override
-    public List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery) {
-        List<String> areaIdsOfCurrentUser = LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser();
+    public List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
+        List<String> areaIdsOfCurrentUser = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         String[] strings = areaIdsOfCurrentUser.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
         List<AssetBusinessRelationResponse> assetList=assetBusinessRelationDao.queryAssetByBusinessId(assetAddOfBusinessQuery);
         return  assetList;
-
     }
 
     @Override

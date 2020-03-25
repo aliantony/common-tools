@@ -69,7 +69,7 @@ public interface IAssetBusinessService extends IBaseService<AssetBusiness> {
 
         PageResult<AssetResponse> queryAsset(AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception;
 
-        List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery);
+        List<AssetBusinessRelationResponse> queryAssetByBusinessId(AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception;
 
         AssetBusinessResponse getByUniqueId(String uniqueId);
 

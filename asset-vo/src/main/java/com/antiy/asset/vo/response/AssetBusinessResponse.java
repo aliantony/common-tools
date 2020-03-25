@@ -26,7 +26,7 @@ public class AssetBusinessResponse extends BaseResponse {
     /**
      *  业务重要性：1-高，2-中，3-低
      */
-    @ApiModelProperty("业务重要性")
+    @ApiModelProperty("业务重要性 1-高，2-中，3-低")
     private Integer importance;
     @ApiModelProperty("业务重要性")
     private String importanceDesc;

@@ -1,16 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.AssetApplication;
 import com.antiy.asset.service.IAssetMonitorRuleService;
@@ -19,6 +8,15 @@ import com.antiy.asset.vo.request.AssetMonitorRuleRequest;
 import com.antiy.asset.vo.request.AssetRuntimeExceptionThreshold;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
 import com.google.common.collect.Lists;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * @author zhangyajun
@@ -48,7 +46,7 @@ public class AssetMonitorRuleServiceImplTest {
         request.setRuntimeExceptionThreshold(runtimeExceptionThreshold);
         request.setRelatedAsset(Lists.newArrayList("1", "2", "3"));
         System.out.println(JSON.toJSONString(request));
-        // monitorRuleService.saveAssetMonitorRule(request);
+         monitorRuleService.saveAssetMonitorRule(request);
     }
 
     //@Test
@@ -84,6 +82,7 @@ public class AssetMonitorRuleServiceImplTest {
 
     @Test
     public void queryAssetMonitorRuleById() {
+
     }
 
     //@Test

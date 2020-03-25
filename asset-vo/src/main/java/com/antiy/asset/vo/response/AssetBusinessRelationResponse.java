@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author zhangyajun
  * @since 2018-12-27
  */
-
+@ApiModel("资产关联类")
 public class AssetBusinessRelationResponse extends BaseResponse {
 
     @ApiModelProperty("资产关联业务编号")

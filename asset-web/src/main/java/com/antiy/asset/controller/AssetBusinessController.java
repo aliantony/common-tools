@@ -35,8 +35,6 @@ public class AssetBusinessController {
 
     @Resource
     public IAssetBusinessService iAssetBusinessService;
-
-
     /**
      * 保存
      *
@@ -58,7 +56,6 @@ public class AssetBusinessController {
     @ApiOperation(value = "查询业务可以添加的资产", notes = "传入实体对象信息")
     @RequestMapping(value = "/query/asset/list", method = RequestMethod.POST)
     public ActionResponse queryAsset(@RequestBody AssetAddOfBusinessQuery assetAddOfBusinessQuery) throws Exception {
-
         PageResult<AssetResponse> pageResult= iAssetBusinessService.queryAsset(assetAddOfBusinessQuery);
         return  ActionResponse.success(pageResult);
     }

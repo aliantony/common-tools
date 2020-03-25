@@ -2,6 +2,7 @@ package com.antiy.asset.entity;
 
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p></p>
@@ -18,37 +19,43 @@ private static final long serialVersionUID = 1L;
     /**
     *  业务名称（中文字符，去重）
     */
+    @ApiModelProperty("业务名称")
     private String name;
     /**
     *  业务重要性：1-高，2-中，3-低
     */
+    @ApiModelProperty("业务重要性：1-高，2-中，3-低")
     private Integer importance;
     /**
     *  描述
     */
+    @ApiModelProperty("描述")
     private String description;
     /**
     *  创建时间
     */
+    @ApiModelProperty("创建时间")
     private Long gmtCreate;
     /**
     *  更新时间
     */
+    @ApiModelProperty("更新时间")
     private Long gmtModified;
     /**
     *  创建人
     */
+    @ApiModelProperty("创建人")
     private Integer createUser;
     /**
     *  修改人
     */
+    @ApiModelProperty("修改人")
     private Integer modifyUser;
     /**
     *  状态：1-未删除,0-已删除
     */
     private Integer status;
-
-
+    @ApiModelProperty("唯一键")
     private String uniqueId;
 
     public String getUniqueId() {
