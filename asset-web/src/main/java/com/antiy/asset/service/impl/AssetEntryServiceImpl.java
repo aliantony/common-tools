@@ -334,9 +334,11 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             for (Asset asset : assets) {
                 String areaId = asset.getAreaId();
                 if (StringUtils.isNotBlank(loginUser.getUsername())) {
-                    //todo 如果用户不存在 希望远程接口干掉加密
                     param.put("areaId", aesEncoder.encode(areaId, loginUser.getUsername()));
+                } else {
+                    param.put("areaId",areaId);
                 }
+
                 //获取该资产区域下拥有准入权限的所有用户
                 ActionResponse<List<Map<String, Object>>> response = (ActionResponse<List<Map<String, Object>>>) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
                 }, getUesrByTagUrl);

@@ -110,40 +110,40 @@ public class AssetAdmittanceController {
      *
      * @return
      */
-    @ApiOperation(value = "准入管理导出", notes = "准入管理")
+    @ApiOperation(tags = "启用接口",value = "准入管理导出", notes = "准入管理", hidden = true)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:admittance:export')")
     public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status,
                                  Integer start, Integer end, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
-        if (start != null || end != null) {
-            ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
-            ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
-        }
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAdmittanceStatus(status);
-        assetQuery.setPageSize(Constants.ALL_PAGE);
-        if (start != null) {
-            assetQuery.setStart(start - 1);
-            assetQuery.setEnd(end - start + 1);
-        }
-        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
-        List<AssetResponse> assetList = assetService.findListAsset(assetQuery, null);
-        if (!CollectionUtils.isNotEmpty(assetList)) {
-            return ActionResponse.success("没有数据可以导出");
-        }
-        List<AccessExport> accessExportList = accessExportConvert.convert(assetList, AccessExport.class);
-        DownloadVO downloadVO = new DownloadVO();
-        downloadVO.setDownloadList(accessExportList);
-        excelDownloadUtil.excelDownload(request, response,
-            "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
-        // 记录操作日志和运行日志
-        LogUtils.recordOperLog(
-            new BusinessData("导出《准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
-                assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
-        LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
-            AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
+//        if (start != null || end != null) {
+//            ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
+//            ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
+//        }
+//        AssetQuery assetQuery = new AssetQuery();
+//        assetQuery.setAdmittanceStatus(status);
+//        assetQuery.setPageSize(Constants.ALL_PAGE);
+//        if (start != null) {
+//            assetQuery.setStart(start - 1);
+//            assetQuery.setEnd(end - start + 1);
+//        }
+//        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
+//        List<AssetResponse> assetList = assetService.findListAsset(assetQuery, null);
+//        if (!CollectionUtils.isNotEmpty(assetList)) {
+//            return ActionResponse.success("没有数据可以导出");
+//        }
+//        List<AccessExport> accessExportList = accessExportConvert.convert(assetList, AccessExport.class);
+//        DownloadVO downloadVO = new DownloadVO();
+//        downloadVO.setDownloadList(accessExportList);
+//        excelDownloadUtil.excelDownload(request, response,
+//            "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+//        // 记录操作日志和运行日志
+//        LogUtils.recordOperLog(
+//            new BusinessData("导出《准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
+//                assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+//        LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
+//            AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();
     }
 }

@@ -13,14 +13,20 @@ import java.util.List;
  * @since 2020/2/14
  */
 @ApiModel(description = "准入资产请求类")
-public class AssetEntryRequest extends BasicRequest{
+public class AssetEntryRequest extends BasicRequest {
     @ApiModelProperty("资产集合")
     @NotEmpty(message = "资产不能为空")
-    private  List<ActivityHandleRequest> assetActivityRequests;
+    private List<ActivityHandleRequest> assetActivityRequests;
     @ApiModelProperty("准入状态：1-允许，2-禁止")
-    @Pattern(regexp = "^[12]$",message = "准入状态参数错误，只能为1或2")
+    @Pattern(regexp = "^[12]$", message = "准入状态参数错误，只能为1或2")
     private String updateStatus;
-    @ApiModelProperty("准入指令来源")
+    @ApiModelProperty("准入指令来源:  ASSET_ENTER_NET(资产入网)," +
+            "ASSET_RETIRE(资产退役)," +
+            "VUL_SCAN(漏洞扫描)," +
+            "CONFIG_SCAN(配置扫描)," +
+            "PATCH_INSTALL(补丁安装)," +
+            "ENTRY_MANAGE(准入管理)," +
+            "ASSET_CHANGE(资产变更)")
     private AssetEntrySourceEnum entrySource;
 
     public List<ActivityHandleRequest> getAssetActivityRequests() {
@@ -30,7 +36,6 @@ public class AssetEntryRequest extends BasicRequest{
     public void setAssetActivityRequests(List<ActivityHandleRequest> assetActivityRequests) {
         this.assetActivityRequests = assetActivityRequests;
     }
-
 
 
     public String getUpdateStatus() {

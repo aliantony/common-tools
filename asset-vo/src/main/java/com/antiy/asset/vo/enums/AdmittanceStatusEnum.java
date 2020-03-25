@@ -1,7 +1,8 @@
 package com.antiy.asset.vo.enums;
 
 public enum AdmittanceStatusEnum {
-                                  WAIT_SETTING(1, "待设置"), ALLOW(2, "已允许"), REFUSE(3, "已拒绝");
+//                                  WAIT_SETTING(1, "待设置"),
+    ALLOW(1, "已允许"), REFUSE(2, "已拒绝");
 
     private Integer code;
     private String  name;

@@ -2,18 +2,16 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.convert.AccessExportConvert;
 import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.iAssetEntryService;
+import com.antiy.asset.service.impl.AssetEntryServiceImpl;
 import com.antiy.asset.templet.AccessExport;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetEntryQuery;
-import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.response.AssetEntryRecordResponse;
 import com.antiy.asset.vo.response.AssetEntryResponse;
 import com.antiy.asset.vo.response.AssetEntryStatusResponse;
-import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.download.DownloadVO;
@@ -31,9 +29,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +43,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/asset/entryControl")
 public class AssetEntryController {
     @Resource
-    private iAssetEntryService iAssetEntryService;
+    private AssetEntryServiceImpl iAssetEntryService;
     @Resource
     private IAssetService assetService;
     @Resource
@@ -101,15 +99,17 @@ public class AssetEntryController {
             ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
             ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
         }
-        AssetQuery assetQuery = new AssetQuery();
-        assetQuery.setAdmittanceStatus(status);
-        assetQuery.setPageSize(Constants.ALL_PAGE);
-        if (start != null) {
-            assetQuery.setStart(start - 1);
-            assetQuery.setEnd(end - start + 1);
+        AssetEntryQuery assetQuery = new AssetEntryQuery();
+        if (!Objects.isNull(status)) {
+            assetQuery.setEntryStatus(String.valueOf(status));
         }
-        assetQuery.setAssetStatusList(Arrays.asList(3, 4, 5, 6, 7, 8, 9, 10, 11));
-        List<AssetResponse> assetList = assetService.findListAsset(assetQuery, null);
+        assetQuery.setPageSize(Constants.ALL_PAGE);
+        assetQuery.validate();
+//        if (start != null) {
+//            assetQuery.setStart(start - 1);
+//            assetQuery.setEnd(end - start + 1);
+//        }
+        List<AssetEntryResponse> assetList = iAssetEntryService.queryList(assetQuery);
         if (!CollectionUtils.isNotEmpty(assetList)) {
             return ActionResponse.success("没有数据可以导出");
         }
