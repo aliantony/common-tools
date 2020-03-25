@@ -187,6 +187,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     @Override
     public List<AssetCompositionReport> findReport(AssetCompositionReportTemplateQuery assetCompositionReportQuery) throws Exception {
         assetCompositionReportQuery.setUserId(LoginUserUtil.getLoginUser().getId());
+        assetCompositionReportQuery.setPageSize(-1);
         return assetCompositionReportDao.findQuery(assetCompositionReportQuery);
     }
 }

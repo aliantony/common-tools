@@ -86,9 +86,6 @@
         <if test=" userId != null">
             and user_id = #{userId }
         </if>
-        <if test=" gmtCreate != null">
-            and gmt_create = #{gmtCreate }
-        </if>
         <if test=" status != null">
             and status = #{status }
         </if>
