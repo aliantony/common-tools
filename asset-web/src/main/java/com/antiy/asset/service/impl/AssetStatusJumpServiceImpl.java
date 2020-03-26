@@ -279,7 +279,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AssetCorrectIInfoResponse assetCorrectingInfo(ActivityHandleRequest activityHandleRequest) throws Exception {
+    public AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest assetCorrectRequest) throws Exception {
+        ActivityHandleRequest activityHandleRequest=assetCorrectRequest.getActivityHandleRequest();
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
         if(assetOfDB==null){
             throw new BusinessException("资产不存在！");
@@ -324,6 +325,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 LogUtils.error(logger, "资产整改配置工作流异常!");
                 throw  new BusinessException("资产整改配置工作流异常");
             }
+           // if(assetCorrectRequest.getUseFlag())
             return  correctingAssetOfbaseLine(baseLineResponse,vlunResponse,activityHandleRequest.getStringId());
         }
 
