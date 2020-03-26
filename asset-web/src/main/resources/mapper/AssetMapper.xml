@@ -2147,6 +2147,7 @@ WHERE
 
             <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
                 <include refid="assetRelationBusiness"></include>
+                and a.category_model=1
                 and a.asset_status in (7,8,10,11)
                 and a.status=1
             </trim>
@@ -2161,7 +2162,7 @@ WHERE
     </select>
 
     <sql id="assetRelationBusiness">
-        <if test="multipleQuery != null ">
+        <if test='multipleQuery != null and multipleQuery != "" '>
                 ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
                 or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
                 or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
@@ -2175,10 +2176,11 @@ WHERE
             </foreach>
         </if>
         <if test="assetGroup !=null and assetGroup.size()>0">
-            and a.asset_group in
-            <foreach collection="assetGroup" item="e" separator="," open="(" close=")">
-                #{e}
-            </foreach>
+            <trim prefix="and (" suffix=" )"  suffixOverrides="or">
+                <foreach collection="assetGroup" item="e"   open="" close="">
+                    a.`asset_group` LIKE CONCAT('%',replace(replace(#{e},'%','\%'),'_','\_'),'%') or
+                </foreach>
+            </trim>
         </if>
         <if test="assetIds !=null and assetIds.size()>0">
             and a.id not in

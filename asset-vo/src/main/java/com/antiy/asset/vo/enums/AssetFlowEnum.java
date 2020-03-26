@@ -94,6 +94,10 @@ public enum AssetFlowEnum {
     SCRAP_EXECUTEE(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP,AssetStatusEnum.SCRAP,"","报废执行","报废执行"),
 
     /**
+     * 整改 （已入网到整改）
+     */
+    NET_IN_TO_CORRECT(AssetStatusEnum.NET_IN,AssetStatusEnum.CORRECTING,AssetStatusEnum.CORRECTING,"","已入网整改","已入网整改"),
+    /**
      * 变更中->已入网    配置模块调用.
      */
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE,AssetStatusEnum.NET_IN, AssetStatusEnum.NET_IN, "", "变更完成。", "变更完成"),
@@ -119,8 +123,8 @@ public enum AssetFlowEnum {
     /**
      * 待报废->报废执行
      */
-    SCRAP(AssetStatusEnum.WAIT_SCRAP, "", "报废执行。", "执行报废");
-
+    SCRAP(AssetStatusEnum.WAIT_SCRAP, "", "报废执行。", "执行报废")
+    ;
 
 
     /**

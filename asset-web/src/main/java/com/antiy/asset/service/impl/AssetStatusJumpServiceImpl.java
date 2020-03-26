@@ -275,6 +275,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
         return  assetCorrectIInfoResponse;
     }
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AssetCorrectIInfoResponse assetCorrectingInfo(ActivityHandleRequest activityHandleRequest) throws Exception {
@@ -324,6 +326,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }
             return  correctingAssetOfbaseLine(baseLineResponse,vlunResponse,activityHandleRequest.getStringId());
         }
+
         //整改流程--漏洞步骤完成  （非计算机设备 ）
         if(assetCorrectIInfoResponse.getFailureCount()<=0){
             //改变资产状态
@@ -339,6 +342,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         return  assetCorrectIInfoResponse;
     }
+
+
+
     private ActionResponse baseLineActivity(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse, ActivityHandleRequest activityHandleRequest) {
         Map<String,String> formData=new HashMap<>(1);
         formData.put("baselineRectifyResult","success");
