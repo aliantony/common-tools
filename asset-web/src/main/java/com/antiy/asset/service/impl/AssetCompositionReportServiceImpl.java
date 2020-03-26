@@ -164,7 +164,6 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
         downloadVO.setSheetName("资产综合报表");
         // 3种导方式 1 excel 2 cvs 3 xml
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
-
             if (assetQuery.getExportType() == 1) {
                 excelDownloadUtil.excelDownload(request, response,
                     "综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);

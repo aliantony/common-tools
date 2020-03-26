@@ -393,7 +393,7 @@
                     and vulCount >= #{vulCount}
                 </when>
                 <otherwise>
-                    and vulCount &lt; #{vulCount}
+                    and vulCount &lt;= #{vulCount}
                 </otherwise>
             </choose>
         </if>
@@ -403,7 +403,7 @@
                     and noVulCount >= #{noVulCount}
                 </when>
                 <otherwise>
-                    and noVulCount &lt; #{noVulCount}
+                    and noVulCount &lt;=#{noVulCount}
                 </otherwise>
             </choose>
         </if>
@@ -414,7 +414,7 @@
                     and patchCount >= #{patchCount}
                 </when>
                 <otherwise>
-                    and patchCount &lt; #{patchCount}
+                    and patchCount &lt;= #{patchCount}
                 </otherwise>
             </choose>
         </if>
@@ -424,7 +424,7 @@
                     and noPatchCount >= #{noPatchCount}
                 </when>
                 <otherwise>
-                    and noPatchCount &lt; #{noPatchCount}
+                    and noPatchCount &lt;= #{noPatchCount}
                 </otherwise>
             </choose>
         </if>
