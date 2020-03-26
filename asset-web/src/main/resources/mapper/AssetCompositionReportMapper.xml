@@ -389,7 +389,7 @@
         </if>
         <if test=" vulCount != null ">
             <choose>
-                <when test="vulCountType = 2">
+                <when test="vulCountType == 2">
                     and vulCount >= #{vulCount}
                 </when>
                 <otherwise>
@@ -399,7 +399,7 @@
         </if>
         <if test=" noVulCount != null ">
             <choose>
-                <when test="noVulCountType = 2">
+                <when test="noVulCountType == 2">
                     and noVulCount >= #{noVulCount}
                 </when>
                 <otherwise>
@@ -410,7 +410,7 @@
 
         <if test=" patchCount != null ">
             <choose>
-                <when test="patchCountType = 2">
+                <when test="patchCountType == 2">
                     and patchCount >= #{patchCount}
                 </when>
                 <otherwise>
@@ -420,7 +420,7 @@
         </if>
         <if test=" noPatchCount != null ">
             <choose>
-                <when test="noPatchCountType = 2">
+                <when test="noPatchCountType == 2">
                     and noPatchCount >= #{noPatchCount}
                 </when>
                 <otherwise>
