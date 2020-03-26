@@ -131,9 +131,9 @@
         </if>
     </select>
     <select id="checkRepeat" resultType="java.lang.Integer">
-        select count(1) from asset_mac_relation where mac in
+        select count(1) from asset_mac_relation where replace(mac,':','-') in
         <foreach collection="list" item="item" separator="," open="(" close=")">
-            #{item}
+            replace(#{item},':','-')
         </foreach>
         and asset_id != #{id}
         and status = 1

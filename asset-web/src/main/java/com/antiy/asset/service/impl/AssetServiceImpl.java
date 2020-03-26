@@ -1320,7 +1320,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private void dealChangeProcess(AssetOuterRequest assetOuterRequest) throws Exception {
-        Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
+        Asset asset = (Asset) BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         if (AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
             String assetId = asset.getStringId();
             LoginUser loginUser = LoginUserUtil.getLoginUser();
@@ -1463,11 +1463,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         asset.setCustomField(JsonUtil.ListToJson(assetCustomizeRequests));
                     }
                     // 添加业务 关联
-                    List<AssetBusinessRelationRequest> asetBusinessRelationRequests = assetOuterRequest
-                            .getAsetBusinessRelationRequests();
-                    List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
-                            .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
-                    assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                    if (CollectionUtils.isNotEmpty(assetOuterRequest.getAsetBusinessRelationRequests())) {
+                        List<AssetBusinessRelationRequest> asetBusinessRelationRequests = assetOuterRequest
+                                .getAsetBusinessRelationRequests();
+                        List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
+                                .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
+                        assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                    }
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
@@ -1684,6 +1686,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             rollbackRequest.setAssetId(assetId);
             rollbackRequest.setCreateUser(LoginUserUtil.getLoginUser().getStringId());
             rollbackRequest.setGmtCreate(System.currentTimeMillis());
+            rollbackRequest.setRollBackInfo(rollbackInfo);
             assetDao.insertRollbackInfo(rollbackRequest);
         }
         return add.toString() + "###" + update.toString() + "###" + delete.toString() + sb.toString();

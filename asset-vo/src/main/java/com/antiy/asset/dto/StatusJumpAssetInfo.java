@@ -18,14 +18,14 @@ public class StatusJumpAssetInfo {
     @ApiModelProperty(value = "任务Id")
     private String taskId;
     @ApiModelProperty("是否成功: true成功,false失败")
-    private boolean isSuccess;
+    private boolean success;
 
     public boolean isSuccess() {
-        return isSuccess;
+        return success;
     }
 
     public void setSuccess(boolean success) {
-        isSuccess = success;
+        this.success = success;
     }
 
     public String getAssetId() {

@@ -860,8 +860,8 @@
                 <when test="unknownAssets">
                     and (air.ip like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or amr.mac like
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                    or replace(amr.mac,':','-') like
+                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
                     )
                 </when>
                 <otherwise>
@@ -871,8 +871,8 @@
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
                     or air.ip like
                     CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or amr.mac like
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                    or replace(amr.mac,':','-') like
+                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
                     )
                 </otherwise>
             </choose>
@@ -1638,7 +1638,7 @@
         memo = #{memo },
         modify_user = #{modifyUser },
         is_orphan=#{isOrphan},
-        net_status={netStatus},
+        net_status=#{netStatus},
         custom_field=#{customField}
         where id = #{id}
     </update>
@@ -2191,7 +2191,7 @@ WHERE
     </sql>
     <select id="queryBusinessByAssetId" resultType="com.antiy.asset.entity.AssetBusiness">
     select ab.id,ab.name,ab.importance from asset_business ab INNER JOIN asset_business_relation abr on ab.id =abr.asset_business_id
-where abr.asset_id=#{id} and abr.`status`=1
+    where abr.asset_id=#{id} and abr.`status`=1
     </select>
     <select id="queryRollackInnfo" resultType="com.antiy.asset.entity.RollbackEntity">
      select filed_name filedName, filed_value filedValue,type operationType,rollback_table_name rollbackTableName,name name
