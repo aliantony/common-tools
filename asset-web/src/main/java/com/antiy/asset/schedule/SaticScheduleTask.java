@@ -40,7 +40,7 @@ public class SaticScheduleTask {
                     ActivityHandleRequest activityHandleRequest=new ActivityHandleRequest();
                     activityHandleRequest.setProcInstId(assetOperationRecord.getTaskId().toString());
                     activityHandleRequest.setStringId(assetOperationRecord.getTargetObjectId());
-                    iAssetStatusJumpService.assetCorrectingInfo(activityHandleRequest);
+                  //  iAssetStatusJumpService.assetCorrectingInfo(activityHandleRequest);
                 }
             }
         } catch (Exception e) {
