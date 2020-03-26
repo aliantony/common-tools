@@ -131,7 +131,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Override
     public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getUniqueId(),"唯一键不能为空！");
-        ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
+       // ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
         String name = request.getName();
         AssetBusiness business= assetBusinessDao.getByName(name);
         if(business!=null && !business.getUniqueId().equals(request.getUniqueId())){
