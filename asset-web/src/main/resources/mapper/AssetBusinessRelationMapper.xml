@@ -206,7 +206,7 @@
     <select id="getByUniqueIdAndAssetId" resultMap="BaseResultMap">
         select  *
         from  asset_business_relation
-        where status=1 and source=1
+        where status=1
               and unique_id=#{uniqueId}
               and asset_id=#{assetId}
     </select>
@@ -224,7 +224,7 @@
             update  asset_business_relation
               set business_influence=#{e.businessInfluence},
              gmt_modified=#{e.gmtModified}
-            where status=1 and source=1
+            where status=1
             and unique_id=#{uniqueId}
             and asset_id=#{e.assetId}
         </foreach>
@@ -247,6 +247,7 @@
         a.`number`,
         a.manufacturer,
         a.asset_group AS assetGroup,
+        a.asset_status as assetStatus,
         GROUP_CONCAT( DISTINCT air.ip ) AS ips,
         GROUP_CONCAT( DISTINCT amr.mac ) AS macs,
         ANY_VALUE(abr.business_influence) AS businessInfluence,
@@ -255,7 +256,6 @@
         asset_business_relation AS abr
         INNER JOIN asset AS a ON abr.asset_id = a.id
         AND abr.STATUS = 1
-        AND abr.source = 1
         AND a.STATUS = 1
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = abr.asset_id
         AND air.STATUS = 1
@@ -263,6 +263,7 @@
         AND amr.STATUS = 1
         WHERE
           abr.unique_id=#{uniqueId}
+          and a.asset_status in (7,8,10,11)
         <trim prefix="" suffix="" suffixOverrides="and">
             <if test="multipleQuery != null ">
                 and

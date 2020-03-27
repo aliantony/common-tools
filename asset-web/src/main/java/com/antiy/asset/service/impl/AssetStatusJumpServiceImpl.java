@@ -252,14 +252,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
     private AssetCorrectIInfoResponse correctingAssetOfbaseLine(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse,ActionResponse<AssetCorrectIInfoResponse> vlunResponse,String assetId) throws Exception {
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
-
         //资产漏洞和配置模块 “修复”成功
          if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg()) &&assetCorrectIInfoResponse.getFailureCount()<=0 ){
             // 改变资产状态
-            Asset asset=new Asset();
-            asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
-            assetDao.update(asset);
+             changeAssetStatusToNetIn(assetId);
             assetCorrectIInfoResponse.setNeedManualPush("0");
             logger.info("资产继续入网");
         }
@@ -292,26 +288,19 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             throw  new BusinessException("调用漏洞模块失败");
         }
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
-
-        assetCorrectIInfoResponse.setScan(true);
-        assetCorrectIInfoResponse.setAmount(0);
-
         //整改流程--漏洞步骤处于进行中状态
         if(!assetCorrectIInfoResponse.getScan()||! assetCorrectIInfoResponse.getDeal()){
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
         }
-        //获取流程实例id
+        //获取流程实例id    (漏洞步骤完成)
         Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
         List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
         activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
 
         ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
 
-       /* if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            LogUtils.error(logger, "资产整改漏洞工作流异常!");
-            throw  new BusinessException("资产整改漏洞工作流异常");
-        }*/
+        //整改流程--漏洞步骤完成  （计算机设备 ）
         if(AssetCategoryEnum.COMPUTER.getCode().equals(assetOfDB.getCategoryModel())){
             //整改流程--漏洞步骤完成  -进入配置流程（计算机设备 ）
             ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( activityHandleRequest.getStringId());
@@ -325,17 +314,30 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 LogUtils.error(logger, "资产整改配置工作流异常!");
                 throw  new BusinessException("资产整改配置工作流异常");
             }
-           // if(assetCorrectRequest.getUseFlag())
+            if(AssetFlowEnum.NET_IN_TO_CORRECT.equals(assetCorrectRequest.getAssetFlowEnum())){
+                return netIntoCorrect(baseLineResponse,vlunResponse,activityHandleRequest.getStringId());
+            }
             return  correctingAssetOfbaseLine(baseLineResponse,vlunResponse,activityHandleRequest.getStringId());
         }
 
         //整改流程--漏洞步骤完成  （非计算机设备 ）
+        if(AssetFlowEnum.NET_IN_TO_CORRECT.equals(assetCorrectRequest.getAssetFlowEnum())){
+            changeAssetStatusToNetIn(activityHandleRequest.getStringId());
+            return assetCorrectIInfoResponse;
+        }
+        return correctingAssetOfvlun(assetCorrectIInfoResponse,activityHandleRequest.getStringId());
+    }
+    private void changeAssetStatusToNetIn(String assetId) throws Exception {
+        //改变资产状态
+        Asset asset=new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(assetId));
+        asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
+        assetDao.update(asset);
+    }
+    private  AssetCorrectIInfoResponse correctingAssetOfvlun(AssetCorrectIInfoResponse assetCorrectIInfoResponse,String assetId ) throws Exception {
         if(assetCorrectIInfoResponse.getFailureCount()<=0){
             //改变资产状态
-            Asset asset=new Asset();
-            asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
-            asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
-            assetDao.update(asset);
+            changeAssetStatusToNetIn(assetId);
             assetCorrectIInfoResponse.setNeedManualPush("0");
             logger.info("资产继续入网");
         }else {
@@ -344,9 +346,21 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         return  assetCorrectIInfoResponse;
     }
+    private AssetCorrectIInfoResponse  netIntoCorrect(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse,ActionResponse<AssetCorrectIInfoResponse> vlunResponse,String assetId) throws Exception {
+        AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
 
-
-
+        //资产漏洞和配置模块 “修复”成功
+        if(baseLineResponse.getBody().equals(AssetBaseLineEnum.SUCCESS.getMsg()) && baseLineResponse.getBody().equals(AssetBaseLineEnum.FALI.getMsg())){
+            changeAssetStatusToNetIn(assetId);
+            logger.info("资产配置漏洞流程走完，变更资产状态为已入网");
+        }
+        else{
+            logger.info("资产处于配置流程中");
+        }
+        assetCorrectIInfoResponse.setCheckStatus(baseLineResponse.getBody().getCheckStatus());
+        assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
+        return  assetCorrectIInfoResponse;
+    }
     private ActionResponse baseLineActivity(ActionResponse<AssetCorrectIInfoResponse> baseLineResponse, ActivityHandleRequest activityHandleRequest) {
         Map<String,String> formData=new HashMap<>(1);
         formData.put("baselineRectifyResult","success");
@@ -516,7 +530,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setOriginStatus(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode());
         assetOperationRecord.setTargetStatus(nextStatus);
-        assetOperationRecord.setContent(statusJumpRequest.getAssetFlowEnum().getNextOperaLog());
+        assetOperationRecord.setContent(statusJumpRequest.getAssetFlowEnum().getNextMsg());
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
