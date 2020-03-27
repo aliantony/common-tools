@@ -387,7 +387,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" vulCount != null ">
+        <if test=" vulCount != null and vulCountType != null ">
             <choose>
                 <when test="vulCountType == 2">
                     and vulCount >= #{vulCount}
@@ -397,7 +397,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" noVulCount != null ">
+        <if test=" noVulCount != null and noVulCountType != null ">
             <choose>
                 <when test="noVulCountType == 2">
                     and noVulCount >= #{noVulCount}
@@ -408,7 +408,7 @@
             </choose>
         </if>
 
-        <if test=" patchCount != null ">
+        <if test=" patchCount != null and patchCountType != null ">
             <choose>
                 <when test="patchCountType == 2">
                     and patchCount >= #{patchCount}
@@ -418,7 +418,7 @@
                 </otherwise>
             </choose>
         </if>
-        <if test=" noPatchCount != null ">
+        <if test=" noPatchCount != null and noPatchCountType != null ">
             <choose>
                 <when test="noPatchCountType == 2">
                     and noPatchCount >= #{noPatchCount}
