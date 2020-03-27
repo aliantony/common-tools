@@ -206,7 +206,7 @@
     <select id="getByUniqueIdAndAssetId" resultMap="BaseResultMap">
         select  *
         from  asset_business_relation
-        where status=1 and source=1
+        where status=1
               and unique_id=#{uniqueId}
               and asset_id=#{assetId}
     </select>
@@ -224,7 +224,7 @@
             update  asset_business_relation
               set business_influence=#{e.businessInfluence},
              gmt_modified=#{e.gmtModified}
-            where status=1 and source=1
+            where status=1
             and unique_id=#{uniqueId}
             and asset_id=#{e.assetId}
         </foreach>
