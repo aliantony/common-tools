@@ -9,6 +9,7 @@ import com.antiy.asset.vo.request.AlarmAssetRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.response.AssetMatchResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
@@ -388,4 +389,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<RollbackEntity> queryRollackInnfo(@Param("assetId") String assetId);
 
     int startRollback(AssetRollbackRequest request);
+
+    int deleteRollBack(@Param("assetId") String assetId);
+
+    List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
 }

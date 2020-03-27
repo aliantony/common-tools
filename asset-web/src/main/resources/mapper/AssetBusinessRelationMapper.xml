@@ -304,6 +304,16 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </delete>
+    <update id="deleteByAssetIdAndBusinessId">
+        update
+        <include refid="Table_Name"/>
+        set status=0
+        where asset_id=#{assetId}
+        and business_id in
+        <foreach collection="businessIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
 
     <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select

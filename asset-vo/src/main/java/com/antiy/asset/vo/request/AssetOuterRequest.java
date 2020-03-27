@@ -43,10 +43,8 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "自定义字段")
     @Valid
     private List<AssetCustomizeRequest>   assetCustomizeRequests;
-    /**
-     * 自定义字段
-     */
-    @ApiModelProperty(value = "自定义字段")
+
+    @ApiModelProperty(value = "从属业务")
     @Valid
     private List<AssetBusinessRelationRequest> asetBusinessRelationRequests;
 

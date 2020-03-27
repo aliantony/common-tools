@@ -198,7 +198,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         }
     }
 
-    private void addAssetOfBusiness(AssetBusinessRequest request) throws Exception {
+    public void addAssetOfBusiness(AssetBusinessRequest request) throws Exception {
         List<AssetBusinessRelationRequest> assetRelaList = request.getAddAssetList();
         List<AssetBusinessRelation> assetRelationList=new ArrayList<>();
         if(CollectionUtils.isNotEmpty(assetRelaList)){

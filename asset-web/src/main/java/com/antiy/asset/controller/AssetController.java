@@ -6,10 +6,7 @@ import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -530,5 +527,11 @@ public class AssetController {
     @RequestMapping(value = "/query/assetStatusBatch", method = RequestMethod.POST)
     public ActionResponse queryAssetStatus(@RequestParam @NotNull(message = "资产状态不能为空") Integer assetStatus) {
         return ActionResponse.success(iAssetService.findAvailableAssetStatus(assetStatus));
+    }
+
+    @ApiOperation(value = "根据ip和mac查询资产名称编号", notes = "提供给日志告警", response = AssetMatchResponse.class,responseContainer = "List")
+    @RequestMapping(value = "/query/assetInfo", method = RequestMethod.POST)
+    public ActionResponse queryAssetInfo(@RequestBody AssetMatchRequest request) {
+        return ActionResponse.success(iAssetService.queryAssetInfo(request));
     }
 }

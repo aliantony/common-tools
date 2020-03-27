@@ -157,13 +157,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 Asset asset = assetsInDb.get(i);
                 String assetId =asset.getStringId();
                 if (!isSuccess) {
+                    //将引起配置扫描的的变更内容回滚
                     AssetRollbackRequest rollbackRequest = new AssetRollbackRequest();
                     List<RollbackEntity> rollbackEntities = assetDao.queryRollackInnfo(assetId);
                     rollbackRequest.setAssetId(assetId);
                     rollbackRequest.setGmtModified(System.currentTimeMillis());
                     rollbackRequest.setModifyUser(Objects.isNull(LoginUserUtil.getLoginUser()) ? "0" : LoginUserUtil.getLoginUser().getStringId());
-                    rollbackRequest.setRollBackInfo(baseConverter.convert(rollbackEntities, AssetRollbackRequest.RollBack.class));
+
+                    rollbackRequest.setRollBackInfo(baseConverter.convert(rollbackEntities, RollBack.class));
                     assetDao.startRollback(rollbackRequest);
+                    //删除回滚内容
+                    assetDao.deleteRollBack(assetId);
 
                     //消息发送到变更人
                     StringBuilder content = new StringBuilder();
@@ -196,7 +200,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                         updateInfo.forEach(v->content.append(v));
                         content.append("操作系统为").append(asset.getOperationSystemName());
                     }
-                    content.append("导致配置失败,").append(asset.getName()).append("资产变更失败.");
+                    content.append("导致配置失败,").append(asset.getNumber()).append("资产变更失败.");
                     SysMessageRequest request = new SysMessageRequest();
                     request.setTopic("代办任务");
                     request.setSummary("资产变更");

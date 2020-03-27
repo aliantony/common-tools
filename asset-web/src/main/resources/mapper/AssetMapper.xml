@@ -1051,6 +1051,9 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </delete>
+    <delete id="deleteRollBack">
+        update asset_rollback set status=0 where asset_id=#{assetId}
+    </delete>
 
     <select id="getByWhere" resultType="com.antiy.asset.entity.Asset" parameterType="java.util.Map">
         select
@@ -2198,6 +2201,19 @@ WHERE
      from asset_rollback
      where asset_id=#{assetId}
      and status=1
+
+    </select>
+    <select id="queryAssetInfo" resultType="com.antiy.asset.vo.response.AssetMatchResponse" parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
+            SELECT distinct CONCAT_WS('&amp;',air.ip,amr.mac) as keyId,a.number as assetNumber,a.name assetName
+            from asset a
+            left  join  asset_ip_relation air on   a.id = air.asset_id and  air.`status` = 1
+            left  join  asset_mac_relation amr on   a.id = amr.asset_id and  amr.`status` = 1
+            WHERE
+            a.status = 1 and
+            CONCAT_WS('&amp;',air.ip,amr.mac) in
+            <foreach collection="ipMacPorts" open="(" separator="," item="item" close=")">
+                CONCAT_WS('&amp;',#{item.ip},#{item.mac})
+            </foreach>
 
     </select>
 </mapper>

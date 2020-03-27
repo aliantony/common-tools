@@ -1273,6 +1273,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             assetOperationRecord.setTargetStatus(AssetStatusEnum.CORRECTING.getCode());
         }
+        assetOperationRecord.setNeedVulScan(assetOuterRequest.getNeedScan()?1:0);//1需要漏扫，0否
+        assetOperationRecord.setContent(AssetFlowEnum.CHANGE.getNextMsg());
         assetOperationRecord.setOperateUserId(loginUser.getId());
         assetOperationRecord.setCreateUser(loginUser.getId());
         assetOperationRecord.setOperateUserName(loginUser.getName());
@@ -1464,8 +1466,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     // 添加业务 关联
                     if (CollectionUtils.isNotEmpty(assetOuterRequest.getAsetBusinessRelationRequests())) {
-                        List<AssetBusinessRelationRequest> asetBusinessRelationRequests = assetOuterRequest
-                                .getAsetBusinessRelationRequests();
+                        List<AssetBusinessResponse> preRelation=assetBusinessRelationDao.getBusinessInfoByAssetId(asset.getStringId());
+
+                                                List<AssetBusinessRelationRequest> asetBusinessRelationRequests = assetOuterRequest
+                                .getAsetBusinessRelationRequests().stream().filter(v -> {
+                                                            AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(), asset.getId());
+                                                            if (Objects.isNull(businessRelation) || !v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
+                                                                return true;
+                                                            }
+                                                            return false;
+//                                                            preRelation.c
+                                                        }).collect(Collectors.toList());
+
                         List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
                                 .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
                         assetBusinessRelationDao.insertBatch(assetBusinessRelations);
@@ -1543,7 +1555,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         AssetRequest assetRequest = assetOuterRequest.getAsset();
         String assetId = assetOuterRequest.getAsset().getId();
-        List<AssetRollbackRequest.RollBack> rollbackInfo = new ArrayList<>();
+        List<RollBack> rollbackInfo = new ArrayList<>();
         // 计算设备才有操作系统
         if (AssetCategoryEnum.COMPUTER.getCode().equals(assetRequest.getCategoryModel())) {
             Asset asset = assetDao.getByAssetId(assetId);
@@ -1551,11 +1563,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
             if (!StringUtils.equals(oldOs, newOs)) {
                 update.append("$更改基础信息:").append("操作系统").append(newOs);
-                AssetRollbackRequest.RollBack operationSystem =
-                        new AssetRollbackRequest.RollBack("operation_system", String.valueOf(asset.getOperationSystem()),
+                RollBack operationSystem =
+                        new RollBack("operation_system", String.valueOf(asset.getOperationSystem()),
                                 "asset", OperationTypeEnum.UPDATE.getCode());
-                AssetRollbackRequest.RollBack operationSystemName =
-                        new AssetRollbackRequest.RollBack("operation_system_name", oldOs, "asset", OperationTypeEnum.UPDATE.getCode());
+                RollBack operationSystemName =
+                        new RollBack("operation_system_name", oldOs, "asset", OperationTypeEnum.UPDATE.getCode());
                 rollbackInfo.add(operationSystem);
                 rollbackInfo.add(operationSystemName);
             }
@@ -1571,7 +1583,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isEmpty(oldDisks) && CollectionUtils.isNotEmpty(newDisks)) {
                 newDisks.stream().forEach(disk -> {
                     add.append("$新增组件:").append("硬盘").append(disk.getProductName());
-                    AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                    RollBack rollBack = new RollBack(
                             "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.ADD.getCode(),disk.getProductName());
                     rollbackInfo.add(rollBack);
                 });
@@ -1589,7 +1601,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         oldDiskBusinessIds.removeIf(a -> a.contains(disk.getBusinessId()));
                     } else {
                         add.append("$新增组件:").append("硬盘").append(disk.getProductName());
-                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                        RollBack rollBack = new RollBack(
                                 "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.ADD.getCode(),disk.getProductName());
                         rollbackInfo.add(rollBack);
                     }
@@ -1600,7 +1612,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                                 .append(oldDisks.stream().filter(v -> os.equals(v.getBusinessId()))
                                         .map(AssetAssemblyRequest::getProductName).findFirst().get());
                         AssetAssemblyRequest assemblyRequest=oldDisks.stream().filter(v -> v.getBusinessId().equals(os)).toArray(AssetAssemblyRequest[]::new)[0];
-                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                        RollBack rollBack = new RollBack(
                                 "business_id", assemblyRequest.getBusinessId()
                                 , "asset_assembly", OperationTypeEnum.DELETE.getCode(),assemblyRequest.getProductName());
                         rollbackInfo.add(rollBack);
@@ -1611,7 +1623,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (CollectionUtils.isNotEmpty(oldDisks)) {
                 oldDisks.stream().forEach(disk -> {
                     sb.append("$删除组件:").append("硬盘").append(disk.getProductName());
-                    AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                    RollBack rollBack = new RollBack(
                             "business_id", disk.getBusinessId(), "asset_assembly", OperationTypeEnum.DELETE.getCode(),disk.getProductName());
                     rollbackInfo.add(rollBack);
                 });
@@ -1636,7 +1648,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetHardSoftLib hardSoftLib = assetHardSoftLibDao.getByBusinessId(ns.toString());
                         add.append("$新增软件:")
                                 .append(hardSoftLib.getProductName());
-                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                        RollBack rollBack = new RollBack(
                                 "software_id", ns.toString(), "asset_software_relation", OperationTypeEnum.ADD.getCode(),hardSoftLib.getProductName());
                         rollbackInfo.add(rollBack);
                     });
@@ -1652,7 +1664,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetHardSoftLib hardSoftLib = assetHardSoftLibDao.getByBusinessId(ns.toString());
                             add.append("$新增软件:")
                                     .append(hardSoftLib.getProductName());
-                            AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                            RollBack rollBack = new RollBack(
                                     "software_id", ns.toString(), "asset_software_relation", OperationTypeEnum.ADD.getCode(),hardSoftLib.getProductName());
                             rollbackInfo.add(rollBack);
                         } else {
@@ -1662,7 +1674,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(oldSoftIds)) {
                         oldSoftIds.stream().forEach(os -> {
                             delete.append("$删除软件:").append(oldMap.get(os));
-                            AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                            RollBack rollBack = new RollBack(
                                     "software_id", os, "asset_software_relation", OperationTypeEnum.DELETE.getCode(),oldMap.get(os));
                             rollbackInfo.add(rollBack);
                         });
@@ -1673,7 +1685,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if (CollectionUtils.isNotEmpty(assetSoftwareInstallResponseList)) {
                     assetSoftwareInstallResponseList.stream().forEach(asr -> {
                         delete.append("$删除软件:").append(asr.getProductName());
-                        AssetRollbackRequest.RollBack rollBack = new AssetRollbackRequest.RollBack(
+                        RollBack rollBack = new RollBack(
                                 "software_id", asr.getSoftwareId(), "asset_software_relation", OperationTypeEnum.DELETE.getCode(),asr.getProductName());
                         rollbackInfo.add(rollBack);
                     });
@@ -3593,6 +3605,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             throw new BusinessException("license异常，请联系客服人员！");
         }
+    }
+
+    @Override
+    public List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request) {
+        return assetDao.queryAssetInfo(request);
     }
 }
 

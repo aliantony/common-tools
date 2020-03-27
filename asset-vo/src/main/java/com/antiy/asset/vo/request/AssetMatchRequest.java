@@ -26,7 +26,8 @@ public class AssetMatchRequest extends BaseRequest implements ObjectValidator {
     private List<IpMacPort> ipMacPorts;
 
     @ApiModelProperty(value = "当前用户区域集合")
-    @NotNull(message = "当前用户区域集合不能为空")
+    //区域判空已注释,若要验证，请在代码里验证
+//    @NotNull(message = "当前用户区域集合不能为空")
     private List<String>    areaIds;
 
     @ApiModelProperty(value = "IpMacPort对象", hidden = true)
