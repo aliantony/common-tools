@@ -516,7 +516,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setOriginStatus(statusJumpRequest.getAssetFlowEnum().getCurrentAssetStatus().getCode());
         assetOperationRecord.setTargetStatus(nextStatus);
-        assetOperationRecord.setContent(statusJumpRequest.getAssetFlowEnum().getNextOperaLog());
+        assetOperationRecord.setContent(statusJumpRequest.getAssetFlowEnum().getNextMsg());
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
