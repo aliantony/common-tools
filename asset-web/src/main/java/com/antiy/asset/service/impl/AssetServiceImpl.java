@@ -699,19 +699,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
         activityWaitingQuery.setUser(loginUser.getStringId());
         activityWaitingQuery.setProcessDefinitionKey(definitionKeyType);
-        ActionResponse<List<WaitingTaskReponse>> actionResponse = activityClient
-                .queryAllWaitingTask(activityWaitingQuery);
-        if (actionResponse != null
-                && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
-            return waitingTaskReponses.stream()
-                    .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId())).collect(
-                            Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
-        } else {
+        ActionResponse<List<WaitingTaskReponse>> actionResponse = null;
+        try {
+            actionResponse = activityClient
+                    .queryAllWaitingTask(activityWaitingQuery);
+            if (actionResponse != null
+                    && RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+                List<WaitingTaskReponse> waitingTaskReponses = actionResponse.getBody();
+                return waitingTaskReponses.stream()
+                        .filter(waitingTaskReponse -> StringUtils.isNotBlank(waitingTaskReponse.getBusinessId())).collect(
+                                Collectors.toMap(WaitingTaskReponse::getBusinessId, Function.identity(), (key1, key2) -> key2));
+            }
+            throw new BusinessException("获取工作流异常");
+        } catch (Exception e) {
             LogUtils.info(logger, "获取当前用户的所有代办任务失败" + " {}", definitionKeyType);
             throw new BusinessException("获取工作流异常");
         }
-    }
+     }
 
     @Override
     public PageResult<AssetResponse> findPageAsset(AssetQuery query) throws Exception {

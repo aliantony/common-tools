@@ -166,8 +166,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
                     rollbackRequest.setRollBackInfo(baseConverter.convert(rollbackEntities, RollBack.class));
                     assetDao.startRollback(rollbackRequest);
-                    //删除回滚内容
-                    assetDao.deleteRollBack(assetId);
 
                     //消息发送到变更人
                     StringBuilder content = new StringBuilder();
@@ -226,6 +224,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                         }
                     }
                 }
+                //删除回滚内容
+                assetDao.deleteRollBack(assetId);
             }
             updateData(statusJumpRequest, assetsInDb);
         }
