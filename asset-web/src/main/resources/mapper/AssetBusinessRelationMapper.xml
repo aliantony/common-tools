@@ -91,6 +91,17 @@
             #{status },
         </if>
     </sql>
+    <sql id="Business_Base_Colum_List">
+        asset_business_id, asset_id, business_influence, gmt_create, create_user,unique_id
+    </sql>
+    <sql id="Item_Value_Column_List">
+            #{item.assetBusinessId },
+            #{item.assetId },
+            #{item.businessInfluence },
+            #{item.gmtCreate },
+            #{item.createUser },
+            #{item.uniqueId }
+    </sql>
 
     <sql id="Set_Column_List">
         <if test=" assetBusinessId != null">
@@ -176,6 +187,16 @@
             (
             #{assetRelation.assetId},#{assetRelation.businessInfluence},#{assetRelation.gmtCreate},#{assetRelation.assetBusinessId},#{assetRelation.uniqueId},#{assetRelation.gmtModified}
             )
+        </foreach>
+    </insert>
+    <insert id="insertBatchRelation" parameterType="java.util.List" >
+        insert into <include refid="Table_Name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="Business_Base_Colum_List"></include>
+        </trim>
+        values
+        <foreach collection="list" separator="," item="item">
+            (<include refid="Item_Value_Column_List"/>)
         </foreach>
     </insert>
     <select id="countAssetByBusinessId" resultType="int">
@@ -304,14 +325,38 @@
         <include refid="Table_Name"></include>
         where id = #{id}
     </delete>
-    <update id="deleteByAssetIdAndBusinessId">
+    <update id="deleteByAssetIdAndUniqueId">
         update
         <include refid="Table_Name"/>
         set status=0
         where asset_id=#{assetId}
-        and business_id in
-        <foreach collection="businessIds" item="item" separator="," open="(" close=")">
+        and unique_id in
+        <foreach collection="uniqueIds" item="item" separator="," open="(" close=")">
             #{item}
+        </foreach>
+    </update>
+    <update id="updateBatchInfluenceByAssetId">
+        update
+        <include refid="Table_Name"/>
+        set business_influence= case unique_id
+        <foreach collection="relationRequests" item="item">
+        when #{item.uniqueId} then #{item.businessInfluence}
+        </foreach>
+        end,
+        modify_user= case unique_id
+        <foreach collection="relationRequests" item="item">
+            when #{item.uniqueId} then #{item.modifyUser}
+        </foreach>
+        end,
+        gmt_modified= case unique_id
+        <foreach collection="relationRequests" item="item">
+            when #{item.uniqueId} then #{item.gmtModified}
+        </foreach>
+        end
+        where asset_id=#{assetId}
+        and unique_id in
+        <foreach collection="relationRequests" item="item" open="(" close=")" separator=",">
+            #{item.uniqueId}
         </foreach>
     </update>
 
@@ -348,7 +393,7 @@
         and status=1
     </select>
 <select id="getBusinessInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetBusinessResponse" parameterType="java.lang.String">
-    select ab.id,ab.name,abr.business_influence importance
+    select ab.id,ab.name,abr.business_influence importance,ab.unique_id uniqueId
     from <include refid="Table_Name"/> abr
     inner join asset_business ab on abr.asset_business_id=ab.id and ab.status=1
     where

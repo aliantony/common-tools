@@ -160,6 +160,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetBusinessRelationDao assetBusinessRelationDao;
     @Resource
     private AssetEntryServiceImpl entryService;
+    @Resource
+    private AssetBusinessServiceImpl businessService;
+
     private Object lock = new Object();
 
     @Override
@@ -1431,12 +1434,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(loginUser.getId());
                     asset.setGmtModified(System.currentTimeMillis());
-                    if (asset.getOperationSystem() != null) {
-                        HashMap<String, Object> param = new HashMap<>();
-                        param.put("status", "1");
-                        param.put("businessId", asset.getOperationSystem());
-                        List<AssetCpeFilter> cpeFilters = assetCpeFilterDao.getByWhere(param);
-                        asset.setOperationSystemName(cpeFilters.size() > 0 ? cpeFilters.get(0).getProductName() : null);
+                    if (asset.getOperationSystem() != null && StringUtils.isBlank(asset.getOperationSystemName())) {
+                        //让前端传操作系统和操作系统名称
+//                        HashMap<String, Object> param = new HashMap<>();
+//                        param.put("status", "1");
+//                        param.put("businessId", asset.getOperationSystem());
+//                        List<AssetCpeFilter> cpeFilters = assetCpeFilterDao.getByWhere(param);
+//                        asset.setOperationSystemName(cpeFilters.size() > 0 ? cpeFilters.get(0).getProductName() : null);
                     }
                     //入网审批未通过、不予登记、代理上报、已退役->登记
                     if (!EnumUtil.equals(asset.getAssetStatus(), AssetStatusEnum.NET_IN)) {
@@ -1464,23 +1468,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(assetCustomizeRequests)) {
                         asset.setCustomField(JsonUtil.ListToJson(assetCustomizeRequests));
                     }
-                    // 添加业务 关联
+                    // 处理业务
                     if (CollectionUtils.isNotEmpty(assetOuterRequest.getAsetBusinessRelationRequests())) {
-                        List<AssetBusinessResponse> preRelation=assetBusinessRelationDao.getBusinessInfoByAssetId(asset.getStringId());
-
-                                                List<AssetBusinessRelationRequest> asetBusinessRelationRequests = assetOuterRequest
-                                .getAsetBusinessRelationRequests().stream().filter(v -> {
-                                                            AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(), asset.getId());
-                                                            if (Objects.isNull(businessRelation) || !v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
-                                                                return true;
-                                                            }
-                                                            return false;
-//                                                            preRelation.c
-                                                        }).collect(Collectors.toList());
-
-                        List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
-                                .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
-                        assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                        dealBusiness(asset.getStringId(),assetOuterRequest.getAsetBusinessRelationRequests());
                     }
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
@@ -1539,6 +1529,41 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
         return assetCount;
+    }
+
+    void dealBusiness(String assetId,List<AssetBusinessRelationRequest> relationRequests) {
+        List<String> preRelation = assetBusinessRelationDao.getBusinessInfoByAssetId(assetId).stream().map(AssetBusinessResponse::getUniqueId).collect(Collectors.toList());
+        List<String> filterRelaton = new ArrayList<>();
+        List<AssetBusinessRelationRequest> updateRelation = new ArrayList<>();
+        List<AssetBusinessRelation> insertRelation = relationRequests.stream().filter(v -> {
+            AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(), Integer.valueOf(assetId));
+            if (Objects.isNull(businessRelation)) {
+                v.setGmtCreate(System.currentTimeMillis());
+                v.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                return true;
+            } else if (!v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
+                v.setGmtModified(System.currentTimeMillis());
+                v.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                updateRelation.add(v);
+            }
+            filterRelaton.add(businessRelation.getUniqueId());
+            return false;
+        }).map(t -> BeanConvert.convertBean(t, AssetBusinessRelation.class)).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(filterRelaton)) {
+            preRelation.removeAll(filterRelaton);
+        }
+        //删除以前关联的业务
+        if (CollectionUtils.isNotEmpty(preRelation)) {
+            assetBusinessRelationDao.deleteByAssetIdAndUniqueId(preRelation, assetId);
+        }
+        //更新关联过的业务
+        if (CollectionUtils.isNotEmpty(updateRelation)) {
+            assetBusinessRelationDao.updateBatchInfluenceByAssetId(updateRelation, assetId);
+        }
+        //插入新业务
+        if (CollectionUtils.isNotEmpty(insertRelation)) {
+            assetBusinessRelationDao.insertBatchRelation(insertRelation);
+        }
     }
 
     /**

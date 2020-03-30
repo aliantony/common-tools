@@ -1785,7 +1785,7 @@
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
-        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status FROM asset
+        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status,operation_system_name FROM asset
         WHERE status = 1
         <if test="ids != null and ids.size() > 0">
             and asset.id in
@@ -1832,13 +1832,13 @@
 
     <select id="getByAssetId" resultMap="BaseResultMap" parameterType="java.lang.String">
         SELECT
-        asset.*, lib.product_name AS operation_system_name,
+        asset.*,
         `user`.`name` AS responsible_user_name,
         `user`.`mobile` As contact_tel
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
-        LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
+--         LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
         where asset.id=#{id}
     </select>
 
@@ -2051,15 +2051,15 @@ WHERE
             <choose>
                 <when test="item.operationType==1">
                     update ${item.rollbackTableName} set status=0
-                    where asset_id=#{assetId} and ${item.filedName}=${item.filedValue}
+                    where asset_id=#{assetId} and ${item.filedName}=#{item.filedValue}
                 </when>
                 <when test="item.operationType==2">
                     update ${item.rollbackTableName} set status=1
-                    where asset_id=#{assetId} and ${item.filedName}=${item.filedValue}
+                    where asset_id=#{assetId} and ${item.filedName}=#{item.filedValue}
                 </when>
                 <when test="item.operationType==3">
-                    update ${item.rollbackTableName} set ${item.filedName}=${item.filedValue}
-                    where asset_id=#{assetId} and status=1
+                    update ${item.rollbackTableName} set ${item.filedName}=#{item.filedValue}
+                    where id=#{assetId} and status=1
                 </when>
             </choose>
         </foreach>

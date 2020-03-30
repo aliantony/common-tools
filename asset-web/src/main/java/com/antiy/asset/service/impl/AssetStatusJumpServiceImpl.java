@@ -187,12 +187,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     });
                     if (CollectionUtils.isNotEmpty(addInfo)) {
                         content.append("增加:");
-                        addInfo.forEach(v->content.append(v).append(","));
+                        addInfo.forEach(v->content.append("[").append(v).append("],"));
                         content.replace(content.length() - 1,content.length()," ");
                     }
                     if (CollectionUtils.isNotEmpty(deleteInfo)) {
                         content.append("删除:");
-                        deleteInfo.forEach(v->content.append(v).append(","));
+                        deleteInfo.forEach(v->content.append("[").append(v).append("],"));
                         content.replace(content.length() - 1,content.length()," ");
                     }
                     if (CollectionUtils.isNotEmpty(updateInfo)) {
@@ -200,7 +200,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                         updateInfo.forEach(v->content.append(v));
                         content.append("操作系统为").append(asset.getOperationSystemName());
                     }
-                    content.append("导致配置失败,").append(asset.getNumber()).append("资产变更失败.");
+                    content.append("导致配置失败,编号[").append(asset.getNumber()).append("]资产变更失败.");
                     SysMessageRequest request = new SysMessageRequest();
                     request.setTopic("代办任务");
                     request.setSummary("资产变更");
