@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>
@@ -13,4 +14,195 @@ import com.antiy.common.base.BaseResponse;
 
 public class AssetLendRelationResponse extends BaseResponse {
 
+    /**
+     *  唯一键
+     */
+    @ApiModelProperty("唯一键")
+    private Long uniqueId;
+    /**
+     *  资产id
+     */
+    @ApiModelProperty("资产id")
+    private Integer assetId;
+    /**
+     *  用户id
+     */
+    @ApiModelProperty("用户id")
+    private Integer useId;
+    /**
+     *  订单id
+     */
+    @ApiModelProperty("订单id")
+    private Integer orderId;
+    /**
+     *  归还日期
+     */
+    @ApiModelProperty("归还日期")
+    private Long lendPeriods;
+    /**
+     *  出借目的
+     */
+    @ApiModelProperty("出借目的")
+    private String lendPurpose;
+    /**
+     *  出借状态 1 已借出 2 已归还
+     */
+    @ApiModelProperty("出借状态 1 已借出 2 已归还")
+    private Integer lendStatus;
+    /**
+     *  创建时间
+     */
+    @ApiModelProperty("创建时间")
+    private Long gmtCreate;
+    /**
+     *  修改时间
+     */
+    @ApiModelProperty("修改时间")
+    private Long gmtModified;
+    /**
+     *  创建人
+     */
+    @ApiModelProperty("创建人")
+    private Integer createUser;
+    /**
+     *  修改人
+     */
+    @ApiModelProperty("修改人")
+    private Integer modifyUser;
+    /**
+     *  状态
+     */
+    @ApiModelProperty("状态")
+    private Integer status;
+
+
+    /**
+     *  出借日期
+     */
+    @ApiModelProperty("出借日期")
+    private Long lendTime;
+
+    @ApiModelProperty("资产名称")
+    private String assetName;
+    @ApiModelProperty("资产编号")
+    private String assetNumber;
+    @ApiModelProperty("资产使用者")
+    private String responsibleUserName;
+    @ApiModelProperty("出借者")
+
+    private String useName;
+    public Long getLendTime() {
+        return lendTime;
+    }
+
+    public void setLendTime(Long lendTime) {
+        this.lendTime = lendTime;
+    }
+
+    public Long getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(Long uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+
+    public Integer getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Integer assetId) {
+        this.assetId = assetId;
+    }
+
+
+    public Integer getUseId() {
+        return useId;
+    }
+
+    public void setUseId(Integer useId) {
+        this.useId = useId;
+    }
+
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+
+    public Long getLendPeriods() {
+        return lendPeriods;
+    }
+
+    public void setLendPeriods(Long lendPeriods) {
+        this.lendPeriods = lendPeriods;
+    }
+
+
+    public String getLendPurpose() {
+        return lendPurpose;
+    }
+
+    public void setLendPurpose(String lendPurpose) {
+        this.lendPurpose = lendPurpose;
+    }
+
+
+    public Integer getLendStatus() {
+        return lendStatus;
+    }
+
+    public void setLendStatus(Integer lendStatus) {
+        this.lendStatus = lendStatus;
+    }
+
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+
+    public Integer getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(Integer createUser) {
+        this.createUser = createUser;
+    }
+
+
+    public Integer getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(Integer modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

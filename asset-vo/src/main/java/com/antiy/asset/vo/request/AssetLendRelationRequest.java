@@ -77,6 +77,19 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     private Integer status;
 
 
+    /**
+     *  出借日期
+     */
+    @ApiModelProperty("出借日期")
+    private Long lendTime;
+
+    public Long getLendTime() {
+        return lendTime;
+    }
+
+    public void setLendTime(Long lendTime) {
+        this.lendTime = lendTime;
+    }
 
     public Long getUniqueId() {
         return uniqueId;
