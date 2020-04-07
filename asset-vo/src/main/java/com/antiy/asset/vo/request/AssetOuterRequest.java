@@ -26,7 +26,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     private AssetRequest                  asset;
 
     /**
-     * 主板 /** mac
+     * mac
      */
     @ApiModelProperty(value = "mac")
     @Valid
@@ -61,12 +61,7 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
     @ApiModelProperty(value = "网络设备")
     @Valid
     private AssetNetworkEquipmentRequest  networkEquipment;
-    /**
-     * 安全设备
-     */
-    @ApiModelProperty(value = "安全设备")
-    @Valid
-    private AssetSafetyEquipmentRequest   safetyEquipment;
+
     /**
      * 存储介质
      */
@@ -141,14 +136,6 @@ public class AssetOuterRequest extends BasicRequest implements ObjectValidator, 
 
     public void setNetworkEquipment(AssetNetworkEquipmentRequest networkEquipment) {
         this.networkEquipment = networkEquipment;
-    }
-
-    public AssetSafetyEquipmentRequest getSafetyEquipment() {
-        return safetyEquipment;
-    }
-
-    public void setSafetyEquipment(AssetSafetyEquipmentRequest safetyEquipment) {
-        this.safetyEquipment = safetyEquipment;
     }
 
     public AssetStorageMediumRequest getAssetStorageMedium() {

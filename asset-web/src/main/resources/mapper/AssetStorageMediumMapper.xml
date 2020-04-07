@@ -16,6 +16,10 @@
         <result column="firmware" property="firmwareVersion"/>
         <result column="os_version" property="osVersion"/>
         <result column="gmt_create" property="gmtCreate"/>
+        <result column="is_rent" property="isRent"/>
+        <result column="disk_type" property="diskType"/>
+        <result column="identification" property="identification"/>
+        <result column="identification_authorization" property="identificationAuthorization"/>
         <result column="gmt_modified" property="gmtModified"/>
         <result column="memo" property="memo"/>
         <result column="create_user" property="createUser"/>
@@ -24,13 +28,12 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, maximum_storage, disk_number, high_cache, inner_interface, raid_support, average_transfer_rate, driver_number, firmware, os_version, gmt_create, gmt_modified, memo, create_user, modify_user, status
+        id, asset_id, maximum_storage, disk_number, high_cache, inner_interface, raid_support, average_transfer_rate, driver_number, firmware, os_version,is_rent,disk_type,identification,identification_authorization, gmt_create, gmt_modified, memo, create_user, modify_user, status
     </sql>
 
     <sql id="Table_Name">
         asset_storage_medium
     </sql>
-
 
     <sql id="IF_Base_Column_List">
         <if test=" assetId != null">
@@ -57,11 +60,23 @@
         <if test=" driverNumber != null">
             driver_number,
         </if>
-        <if test=" firmwareVersion != null">
+        <if test=" firmware != null">
             firmware,
         </if>
         <if test=" osVersion != null">
             os_version,
+        </if>
+        <if test=" isRent != null">
+            is_rent,
+        </if>
+        <if test=" diskType != null">
+            disk_type,
+        </if>
+        <if test=" identification != null">
+            identification,
+        </if>
+        <if test=" identificationAuthorization != null">
+            identification_authorization,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -108,11 +123,23 @@
         <if test=" driverNumber != null">
             #{driverNumber },
         </if>
-        <if test=" firmwareVersion != null">
-            #{firmwareVersion },
+        <if test=" firmware != null">
+            #{firmware },
         </if>
         <if test=" osVersion != null">
             #{osVersion },
+        </if>
+        <if test=" isRent != null">
+            #{isRent },
+        </if>
+        <if test=" diskType != null">
+            #{diskType },
+        </if>
+        <if test=" identification != null">
+            #{identification },
+        </if>
+        <if test=" identificationAuthorization != null">
+            #{identificationAuthorization },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -132,77 +159,6 @@
         <if test=" status != null">
             #{status },
         </if>
-    </sql>
-    <sql id="IF_Base_Column_List_ForBatch">
-
-            asset_id,
-
-            maximum_storage,
-
-            disk_number,
-
-            high_cache,
-
-            inner_interface,
-
-            raid_support,
-
-            average_transfer_rate,
-
-            driver_number,
-
-            firmware,
-
-            os_version,
-
-            gmt_create,
-
-            gmt_modified,
-
-            memo,
-
-            create_user,
-
-            modify_user,
-                status
-
-
-    </sql>
-
-    <sql id="IF_Value_Column_List_ForBatch">
-
-            #{entity.assetId },
-
-            #{entity.maximumStorage },
-
-            #{entity.diskNumber },
-
-            #{entity.highCache },
-
-            #{entity.innerInterface },
-
-            #{entity.raidSupport },
-
-            #{entity.averageTransferRate },
-
-            #{entity.driverNumber },
-
-            #{entity.firmwareVersion },
-
-            #{entity.osVersion },
-
-            #{entity.gmtCreate },
-
-            #{entity.gmtModified },
-
-            #{entity.memo },
-
-            #{entity.createUser },
-
-            #{entity.modifyUser },
-
-            #{entity.status }
-
     </sql>
 
     <sql id="Set_Column_List">
@@ -230,11 +186,23 @@
         <if test=" driverNumber != null">
             driver_number = #{driverNumber },
         </if>
-        <if test=" firmwareVersion != null">
-            firmware = #{firmwareVersion },
+        <if test=" firmware != null">
+            firmware = #{firmware },
         </if>
         <if test=" osVersion != null">
             os_version = #{osVersion },
+        </if>
+        <if test=" isRent != null">
+            is_rent = #{isRent },
+        </if>
+        <if test=" diskType != null">
+            disk_type = #{diskType },
+        </if>
+        <if test=" identification != null">
+            identification = #{identification },
+        </if>
+        <if test=" identificationAuthorization != null">
+            identification_authorization = #{identificationAuthorization },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -281,11 +249,23 @@
         <if test=" driverNumber != null">
             and driver_number = #{driverNumber }
         </if>
-        <if test=" firmwareVersion != null">
-            and firmware = #{firmwareVersion }
+        <if test=" firmware != null">
+            and firmware = #{firmware }
         </if>
         <if test=" osVersion != null">
             and os_version = #{osVersion }
+        </if>
+        <if test=" isRent != null">
+            and is_rent = #{isRent }
+        </if>
+        <if test=" diskType != null">
+            and disk_type = #{diskType }
+        </if>
+        <if test=" identification != null">
+            and identification = #{identification }
+        </if>
+        <if test=" identificationAuthorization != null">
+            and identification_authorization = #{identificationAuthorization }
         </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
@@ -307,7 +287,50 @@
         </if>
     </sql>
 
-
+    <sql id="IF_Value_Column_List_ForBatch">
+            #{entity.assetId },
+            #{entity.maximumStorage },
+            #{entity.diskNumber },
+            #{entity.highCache },
+            #{entity.innerInterface },
+            #{entity.raidSupport },
+            #{entity.averageTransferRate },
+            #{entity.driverNumber },
+            #{entity.firmwareVersion },
+            #{entity.osVersion },
+            #{isRent },
+            #{diskType },
+            #{identification },
+            #{identificationAuthorization },
+            #{entity.gmtCreate },
+            #{entity.gmtModified },
+            #{entity.memo },
+            #{entity.createUser },
+            #{entity.modifyUser },
+            #{entity.status }
+    </sql>
+    <sql id="IF_Base_Column_List_ForBatch">
+            asset_id,
+            maximum_storage,
+            disk_number,
+            high_cache,
+            inner_interface,
+            raid_support,
+            average_transfer_rate,
+            driver_number,
+            firmware,
+            os_version,
+            is_rent,
+            disk_type,
+            identification,
+            identification_authorization,
+            gmt_create,
+            gmt_modified,
+            memo,
+            create_user,
+            modify_user,
+            status
+    </sql>
     <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into

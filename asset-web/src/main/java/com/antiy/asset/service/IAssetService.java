@@ -293,14 +293,14 @@ public interface IAssetService extends IBaseService<Asset> {
      *
      * @return
      */
-    boolean CheckRepeatMAC(String mac, Integer id) throws Exception;
+    boolean checkRepeatMAC(String mac, Integer id) throws Exception;
 
     /**
      * 查询编号重复
      *
      * @return
      */
-    boolean CheckRepeatNumber(String number, Integer id) throws Exception;
+    boolean checkRepeatNumber(String number, Integer id) throws Exception;
 
     List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
 

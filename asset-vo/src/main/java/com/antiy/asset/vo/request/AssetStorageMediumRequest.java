@@ -1,14 +1,15 @@
 package com.antiy.asset.vo.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetStorageMediumRequest 请求对象 </p>
@@ -82,6 +83,46 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("OS版本")
     @Size(message = "OS版本长度不能超过30位", max = 30)
     private String  osVersion;
+    @ApiModelProperty("是否可租借,1是，2否")
+    private Integer isRent;
+    @ApiModelProperty("硬盘类型，1机械，2固态，3小硬盘")
+    private Integer diskType;
+    @ApiModelProperty("标识")
+    private String  identification;
+    @ApiModelProperty("标识授权")
+    private String  identificationAuthorization;
+
+    public Integer getIsRent() {
+        return isRent;
+    }
+
+    public void setIsRent(Integer isRent) {
+        this.isRent = isRent;
+    }
+
+    public Integer getDiskType() {
+        return diskType;
+    }
+
+    public void setDiskType(Integer diskType) {
+        this.diskType = diskType;
+    }
+
+    public String getIdentification() {
+        return identification;
+    }
+
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
+
+    public String getIdentificationAuthorization() {
+        return identificationAuthorization;
+    }
+
+    public void setIdentificationAuthorization(String identificationAuthorization) {
+        this.identificationAuthorization = identificationAuthorization;
+    }
 
     public String getId() {
         return id;
