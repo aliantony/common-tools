@@ -62,8 +62,10 @@ public class StatusEnumUtil {
      * @return
      */
     public static List<Integer> getAssetTypeStatus() {
+//        List<Integer> status = Lists.newArrayList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
+//            AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode());
         List<Integer> status = Lists.newArrayList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-            AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode());
+            AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.NET_IN.getCode());
         return status;
     }
 

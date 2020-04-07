@@ -1193,7 +1193,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             ActionResponse response = null;
             LoginUser loginUser = LoginUserUtil.getLoginUser();
             // 入网审批未通过->登记
-            if (EnumUtil.equals(asset.getAssetStatus(), AssetStatusEnum.NET_IN_LEADER_DISAGREE)) {
+            // if (EnumUtil.equals(asset.getAssetStatus(), AssetStatusEnum.NET_IN_LEADER_DISAGREE)) {
+            if (EnumUtil.equals(asset.getAssetStatus(), AssetStatusEnum.NET_IN_CHECK)) {
                 ActivityHandleRequest activityHandleRequest = assetOuterRequest.getActivityHandleRequest();
                 response = activityClient.completeTask(activityHandleRequest);
             }
@@ -3226,7 +3227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer count = 0;
         if (CollectionUtils.isEmpty(query.getAssetStatusList())) {
             List<Integer> status = Arrays.asList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-                AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode());
+                AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.WAIT_SCRAP.getCode());
             query.setAssetStatusList(status);
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
@@ -3560,9 +3561,13 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 }
 
 enum AvailableStatusEnum implements CodeEnum {
+//                                              WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(),
+//                                                            "不予登记"), NET_IN_LEADER_DISAGREE(AssetStatusEnum.NET_IN_LEADER_DISAGREE
+//                                                                .getCode(), "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE.getCode(), "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE.getCode(), "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
+//                                              // 已入网的计算设备才有关联软件
+//                                              COMPUTER(AssetStatusEnum.NET_IN.getCode(), "关联软件");
                                               WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                                                            "不予登记"), NET_IN_LEADER_DISAGREE(AssetStatusEnum.NET_IN_LEADER_DISAGREE
-                                                                .getCode(), "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE.getCode(), "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE.getCode(), "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
+                                                            "不予登记"), NET_IN_LEADER_DISAGREE(0, "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(0, "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(0, "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
                                               // 已入网的计算设备才有关联软件
                                               COMPUTER(AssetStatusEnum.NET_IN.getCode(), "关联软件");
 

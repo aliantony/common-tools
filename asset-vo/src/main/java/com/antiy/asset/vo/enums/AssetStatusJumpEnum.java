@@ -31,19 +31,24 @@ public enum AssetStatusJumpEnum {
                                  /**
                                   * 整改中
                                   */
-                                 CORRECT(AssetStatusEnum.CORRECTING, AssetStatusEnum.NET_IN_LEADER_CHECK,
-                                         AssetStatusEnum.NET_IN_LEADER_DISAGREE),
+//                                 CORRECT(AssetStatusEnum.CORRECTING, AssetStatusEnum.NET_IN_LEADER_CHECK,
+//                                         AssetStatusEnum.NET_IN_LEADER_DISAGREE),
+    CORRECT(AssetStatusEnum.CORRECTING, null,
+                                         null),
                                  /**
                                   * 待准入
                                   */
-                                 NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK, AssetStatusEnum.NET_IN,
-                                              AssetStatusEnum.NET_IN_LEADER_CHECK),
+//                                 NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK, AssetStatusEnum.NET_IN,
+//                                              AssetStatusEnum.NET_IN_LEADER_CHECK),
+    NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK, AssetStatusEnum.NET_IN,
+                                              null),
 
     // CORRECT_CHECK(AssetStatusEnum.WAIT_CORRECT, AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_VALIDATE),
     /**
      * 退役申请
      */
-    RETIRE_APPLICATION(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK),
+//    RETIRE_APPLICATION(AssetStatusEnum.NET_IN, AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK),
+    RETIRE_APPLICATION(AssetStatusEnum.NET_IN, null,null),
     /**
      * 退役
      */

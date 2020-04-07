@@ -249,7 +249,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer continueNetIn(String primaryKey) {
-        Integer result = assetDao.updateAssetStatusById(primaryKey, AssetStatusEnum.NET_IN_LEADER_CHECK.getCode());
+//        Integer result = assetDao.updateAssetStatusById(primaryKey, AssetStatusEnum.NET_IN_LEADER_CHECK.getCode());
+        Integer result = assetDao.updateAssetStatusById(primaryKey, AssetStatusEnum.NET_IN.getCode());
         assetBusinessRelationDao.updateSourceByassetId(primaryKey);
         return result;
     }

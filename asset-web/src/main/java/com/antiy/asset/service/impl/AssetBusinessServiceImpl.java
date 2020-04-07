@@ -79,12 +79,12 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             List<AssetBusinessRelation> assetRelationList=new ArrayList<>();
             for(AssetBusinessRelationRequest itme:list){
                 Asset asset = assetDao.getById(itme.getAssetId());
-                if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())||
+                /*if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())||
                         AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus())||
                         AssetStatusEnum.WAIT_RETIRE_CHECK.getCode().equals(asset.getAssetStatus())||
                    AssetStatusEnum.RETIRE_DISAGREE.getCode().equals(asset.getAssetStatus()))){
                     throw  new BusinessException("资产状态不合符流程！");
-                }
+                }*/
                 AssetBusinessRelation assetBusinessRelation=new AssetBusinessRelation();
                 assetBusinessRelation.setAssetId(itme.getAssetId());
                 assetBusinessRelation.setBusinessInfluence(itme.getBusinessInfluence());
