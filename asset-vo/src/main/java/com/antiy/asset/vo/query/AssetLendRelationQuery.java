@@ -23,6 +23,36 @@ public class AssetLendRelationQuery extends ObjectQuery {
     private List<String> categoryModels;
     @ApiModelProperty("状态")
     private List<Integer> lendStatus;
+    @ApiModelProperty("当前使用者id")
+    private Integer currentUseId;
+    @ApiModelProperty("出借日期")
+    private Long  lendTime;
+    @ApiModelProperty("归还日期")
+    private  Long  lendPeriods;
+
+    public Integer getCurrentUseId() {
+        return currentUseId;
+    }
+
+    public void setCurrentUseId(Integer currentUseId) {
+        this.currentUseId = currentUseId;
+    }
+
+    public Long getLendTime() {
+        return lendTime;
+    }
+
+    public void setLendTime(Long lendTime) {
+        this.lendTime = lendTime;
+    }
+
+    public Long getLendPeriods() {
+        return lendPeriods;
+    }
+
+    public void setLendPeriods(Long lendPeriods) {
+        this.lendPeriods = lendPeriods;
+    }
 
     public String getMultiQuery() {
         return multiQuery;

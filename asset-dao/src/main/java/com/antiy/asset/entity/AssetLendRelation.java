@@ -63,7 +63,18 @@ private static final long serialVersionUID = 1L;
     */
     private Integer status;
 
+    /**
+     *  出借日期
+     */
+    private Long lendTime;
 
+    public Long getLendTime() {
+        return lendTime;
+    }
+
+    public void setLendTime(Long lendTime) {
+        this.lendTime = lendTime;
+    }
 
     public Long getUniqueId() {
         return uniqueId;
