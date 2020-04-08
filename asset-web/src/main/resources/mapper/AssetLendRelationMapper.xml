@@ -18,10 +18,11 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="status" property="status"/>
         <result column="lend_time" property="lendTime"/>
+        <result column="return_time" property="returnTime"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, unique_id, asset_id, use_id, order_id, lend_periods, lend_purpose, lend_status, gmt_create, gmt_modified, create_user, modify_user, status, lend_time
+        id, unique_id, asset_id, use_id, order_id, lend_periods, lend_purpose, lend_status, gmt_create, gmt_modified, create_user, modify_user, status, lend_time, return_time
     </sql>
 
     <sql id="Table_Name">
@@ -69,6 +70,9 @@
         <if test=" lendTime != null">
             lend_time,
         </if>
+        <if test=" returnTime != null">
+            return_time,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -110,6 +114,9 @@
         </if>
         <if test=" lendTime != null">
             #{lendTime },
+        </if>
+        <if test=" returnTime != null">
+            #{returnTime },
         </if>
     </sql>
 
@@ -153,6 +160,9 @@
         <if test=" lendTime != null">
             lend_time = #{lendTime },
         </if>
+        <if test=" returnTime != null">
+            return_time = #{returnTime },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -194,6 +204,9 @@
         </if>
         <if test=" lendTime != null">
             and lend_time = #{lendTime }
+        </if>
+        <if test=" returnTime != null">
+            and return_time = #{returnTime }
         </if>
     </sql>
 
@@ -258,7 +271,7 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         a.name,
         a.number,
@@ -269,6 +282,7 @@
         alr.use_id as useId,
         alr.lend_time as lendTime,
         alr.lend_periods as lendPeriods,
+        alr.unique_id as uniqueId,
         au.name as responsibleUserName,
         asset_user.name as useName
         FROM asset  as a
@@ -286,6 +300,40 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <select id="queryInfo" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
+        select
+          lend_status as lendStatus,
+          lend_time as lendTime,
+          lend_periods as lendPeriods,
+          lend_purpose as lendPurpose,
+          au.name as useName,
+          aooh.order_number as  orderNumber
+          from
+          asset_lend_relation as alr
+          left join asset_user as au on use_id=au.id and au.status=1
+          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
+          where alr.unique_id=#{uniqueId} and alr.status=1
+    </select>
+    <update id="returnConfirm">
+        update asset_lend_relation
+        set gmt_modified=#{returnTime}
+        where unique_id=#{uniqueId} and status=1
+    </update>
+    <select id="queryHistory" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
+       select
+          lend_status as lendStatus,
+          lend_time as lendTime,
+          lend_periods as lendPeriods,
+          lend_purpose as lendPurpose,
+          return_time as returnTime,
+          au.name as useName,
+          aooh.order_number as  orderNumber
+          from
+          asset_lend_relation as alr
+          left join asset_user as au on use_id=au.id and au.status=1
+          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
+          where alr.asset_id=#{assetId} and alr.status=1
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

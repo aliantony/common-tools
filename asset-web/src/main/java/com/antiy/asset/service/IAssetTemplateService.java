@@ -23,6 +23,13 @@ public interface IAssetTemplateService {
     List<String> queryAllArea() throws Exception;
 
     /**
+     * 获取所有的区域信息
+     * @return
+     * @throws Exception
+     */
+    List<String> queryAllAreaWithUser() throws Exception;
+
+    /**
      * 获取所有的使用者
      * @return
      * @throws Exception
@@ -35,4 +42,10 @@ public interface IAssetTemplateService {
      * @throws Exception
      */
     List<String> getAllSystemOs() throws Exception;
+    /**
+     * 获取所有的操作系统
+     * @return
+     * @throws Exception
+     */
+    List<String> queryAllDepartment() throws Exception;
 }

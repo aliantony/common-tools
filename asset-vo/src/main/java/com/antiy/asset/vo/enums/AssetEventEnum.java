@@ -9,9 +9,9 @@ public enum AssetEventEnum {
     ASSET_INSERT(1, "硬件资产登记"),
     ASSET_MODIFY(2, "变更资产信息"),
     ASSET_STATUS_CHANGE(3, "硬件资产状态修改"),
-    ASSET_CATEGORY_DELETE(4, "删除品类型号"),
-    ASSET_CATEGORY_INSERT(5, "登记品类型号"),
-    ASSET_CATEGORY_UPDATE(6, "编辑品类型号"),
+    ASSET_CATEGORY_DELETE(4, "删除资产类型"),
+    ASSET_CATEGORY_INSERT(5, "登记资产类型"),
+    ASSET_CATEGORY_UPDATE(6, "编辑资产类型"),
     ASSET_DELETE(7, "硬件资产删除"),
     ASSET_EXPORT_COMPUTER(8, "导入资产信息"),
     ASSET_EXPORT_NET(9, "导入资产信息"),
@@ -127,7 +127,7 @@ public enum AssetEventEnum {
     ADD_ASSET_MONITOR_RULE_RELATION(124, "新增资产监控规则关联资产"),
     UPDATE_ASSET_MONITOR_RULE_RELATION(125, "修改资产监控规则关联资产"),
     DELETE_ASSET_MONITOR_RULE_RELATION(126, "删除资产监控规则关联资产"),
-    ENTRY_EXECUTION(127,"进行准入实施");
+                            ENTRY_EXECUTION(127, "进行准入实施"), ASSET_EXPORT_USERS(128, "导入人员身份");
 
     private Integer status;
     private String name;

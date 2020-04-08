@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -23,7 +24,8 @@ public class AssetLendRelationResponse extends BaseResponse {
      *  资产id
      */
     @ApiModelProperty("资产id")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      *  用户id
      */
@@ -32,8 +34,17 @@ public class AssetLendRelationResponse extends BaseResponse {
     /**
      *  订单id
      */
-    @ApiModelProperty("订单id")
+    @ApiModelProperty("订单id  暂时不用")
     private Integer orderId;
+
+
+    /**
+     * 订单编号
+     */
+    @ApiModelProperty("订单编号")
+    private String orderNumber;
+
+
     /**
      *  归还日期
      */
@@ -89,8 +100,69 @@ public class AssetLendRelationResponse extends BaseResponse {
     @ApiModelProperty("资产使用者")
     private String responsibleUserName;
     @ApiModelProperty("出借者")
-
     private String useName;
+    @ApiModelProperty("归还日期")
+    private Long returnTime;
+    @ApiModelProperty("出借历史")
+    private String lendTimeDescribtion;
+
+    @ApiModelProperty("出借历史")
+    private String otherInfo;
+
+    public String getOtherInfo() {
+        return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%s-%s;是否有审批表：%s;归还时间：%s",useName,lendPurpose,lendStatus,lendTime,lendPeriods,orderNumber,returnTime);
+    }
+    public String getLendTimeDescribtion() {
+        return String.format("借出日期：%s",lendTimeDescribtion);
+    }
+
+
+    public Long getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Long returnTime) {
+        this.returnTime = returnTime;
+    }
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public String getAssetNumber() {
+        return assetNumber;
+    }
+
+    public void setAssetNumber(String assetNumber) {
+        this.assetNumber = assetNumber;
+    }
+
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
+    public String getUseName() {
+        return useName;
+    }
+
+    public void setUseName(String useName) {
+        this.useName = useName;
+    }
     public Long getLendTime() {
         return lendTime;
     }
@@ -108,14 +180,13 @@ public class AssetLendRelationResponse extends BaseResponse {
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-
 
     public Integer getUseId() {
         return useId;

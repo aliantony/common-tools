@@ -1,9 +1,11 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.common.base.ObjectQuery;
+
 /**
  * @author chenchaowu
  */
-public class AssetKeyManageQuery {
+public class AssetKeyManageQuery extends ObjectQuery {
 
     /**
      * 主键id

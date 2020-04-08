@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetKeyManageDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetKeyManage">
+        <id column="id" property="id"/>
+        <result column="key_num" property="keyNum"/>
+        <result column="key_user_type" property="keyUserType"/>
+        <result column="key_user_id" property="keyUserId"/>
+        <result column="user_num_name" property="userNumName"/>
+        <result column="recip_time" property="recipTime"/>
+        <result column="recip_state" property="recipState"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, key_num, key_user_type, key_user_id, user_num_name, recip_time, recip_state, create_user, modified_user, gmt_create, gmt_modified, is_delete
+    </sql>
+
+    <sql id="Table_Name">
+        asset_key_manage
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" keyNum != null">
+            key_num,
+        </if>
+        <if test=" keyUserType != null">
+            key_user_type,
+        </if>
+        <if test=" keyUserId != null">
+            key_user_id,
+        </if>
+        <if test=" userNumName != null">
+            user_num_name,
+        </if>
+        <if test=" recipTime != null">
+            recip_time,
+        </if>
+        <if test=" recipState != null">
+            recip_state,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+        <if test=" isDelete != null">
+            is_delete,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" keyNum != null">
+            #{keyNum },
+        </if>
+        <if test=" keyUserType != null">
+            #{keyUserType },
+        </if>
+        <if test=" keyUserId != null">
+            #{keyUserId },
+        </if>
+        <if test=" userNumName != null">
+            #{userNumName },
+        </if>
+        <if test=" recipTime != null">
+            #{recipTime },
+        </if>
+        <if test=" recipState != null">
+            #{recipState },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            #{modifiedUser },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+        <if test=" isDelete != null">
+            #{isDelete },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" keyNum != null">
+            key_num = #{keyNum },
+        </if>
+        <if test=" keyUserType != null">
+            key_user_type = #{keyUserType },
+        </if>
+        <if test=" keyUserId != null">
+            key_user_id = #{keyUserId },
+        </if>
+        <if test=" userNumName != null">
+            user_num_name = #{userNumName },
+        </if>
+        <if test=" recipTime != null">
+            recip_time = #{recipTime },
+        </if>
+        <if test=" recipState != null">
+            recip_state = #{recipState },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if><if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+        <if test=" isDelete != null">
+            is_delete = #{isDelete },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" keyNum != null">
+            and key_num = #{keyNum }
+        </if>
+        <if test=" keyUserType != null">
+            and key_user_type = #{keyUserType }
+        </if>
+        <if test=" keyUserId != null">
+            and key_user_id = #{keyUserId }
+        </if>
+        <if test=" userNumName != null">
+            and user_num_name = #{userNumName }
+        </if>
+        <if test=" recipTime != null">
+            and recip_time = #{recipTime }
+        </if>
+        <if test=" recipState != null">
+            and recip_state = #{recipState }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" modifiedUser != null">
+            and modified_user = #{modifiedUser }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+        <if test=" isDelete != null">
+            and is_delete = #{isDelete }
+        </if>
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="queryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{keyId}
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="queryCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetKeyManageQuery">
+        select
+            count(1)
+        from
+        <include refid="Table_Name"></include> asm
+        <include refid="where"></include>
+    </select>
+
+    <select id="queryList" resultMap="BaseResultMap" parameterType="com.antiy.asset.vo.query.AssetKeyManageQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include> asm
+        <include refid="where"></include>
+        order by asm.recip_time desc
+        ,asm.gmt_create desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <sql id="where">
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="keyNum != null and keyNum.length() > 0">
+                and asm.key_num like CONCAT('%',replace(replace(#{keyNum},'%','\%'),'_','\_'),'%')
+            </if>
+            <if test="userNumName != null and userNumName.length() > 0">
+                and asm.user_num_name like CONCAT('%',replace(replace(#{userNumName},'%','\%'),'_','\_'),'%')
+            </if>
+            <if test="recipState != null">
+                and asm.recip_state = #{recipState}
+            </if>
+            <if test="startRecipTime != null">
+                and asm.recip_time &gt;= #{startRecipTime}
+            </if>
+            <if test="endRecipTime != null">
+                and asm.recip_time &lt;= #{endRecipTime}
+            </if>
+            and asm.is_delete = 0
+        </trim>
+    </sql>
+
+    <!-- key登记 -->
+    <insert id="keyRegister" parameterType="com.antiy.asset.entity.AssetKeyManage" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            key_num,recip_state,create_user,gmt_create
+        </trim>
+        values
+
+        <foreach collection="list" item="entity" separator=",">
+            (
+            #{entity.keyNum},#{entity.recipState},#{entity.createUser},#{entity.gmtCreate}
+            )
+        </foreach>
+    </insert>
+
+    <!-- key领用 -->
+    <update id="keyRecipients" parameterType="com.antiy.asset.entity.AssetKeyManage">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- key归还 -->
+    <update id="keyReturn" parameterType="com.antiy.asset.entity.AssetKeyManage">
+        update
+        <include refid="Table_Name"></include>
+        set
+        key_user_type = #{keyUserType},
+        key_user_id = #{keyUserId},
+        user_num_name =#{userNumName},
+        recip_time = #{recipTime},
+        recip_state = #{recipState},
+        modified_user = #{modifiedUser},
+        gmt_modified = #{gmtModified}
+        where id = #{id}
+    </update>
+
+    <!-- key冻结 -->
+    <update id="keyFreeze" parameterType="com.antiy.asset.entity.AssetKeyManage">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- key删除 -->
+    <update id="keyRemove" parameterType="java.lang.Integer">
+        update
+        <include refid="Table_Name"></include>
+        set is_delete = 1
+        where id = #{id}
+    </update>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update
+            <include refid="Table_Name"></include>
+            <set>
+                <if test=" modifiedUser != null">
+                    modified_user = #{item.modifiedUser },
+                </if>
+                <if test=" gmtModified != null">
+                    gmt_modified = #{item.gmtModified },
+                </if>
+
+            </set>
+            where key_num = #item.keyNum}
+        </foreach>
+    </update>
+    <!-- key编号、用户数量校验 -->
+    <select id="keyNumCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
+        select count(id) from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test="keyNum != null and keyNum.length() > 0">
+            and key_num = #{keyNum}
+        </if>
+    </select>
+
+    <select id="keyNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
+        select count(id) from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test="keyUserType != null">
+            and key_user_type = #{keyUserType}
+            and key_user_id = #{keyUserId}
+        </if>
+    </select>
+
+</mapper>

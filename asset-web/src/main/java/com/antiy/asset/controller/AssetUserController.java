@@ -1,16 +1,5 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetDepartmentService;
 import com.antiy.asset.service.IAssetUserService;
@@ -27,9 +16,19 @@ import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-
 import io.swagger.annotations.*;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author lvliang
@@ -146,4 +145,36 @@ public class AssetUserController {
         return ActionResponse.success(iAssetUserService.queryUserInAsset());
     }
 
+    /**
+     * 导出模板
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导出模板", notes = "主键封装对象")
+    @RequestMapping(value = "/export/template", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
+    public void exportTemplate() throws Exception {
+        iAssetUserService.exportTemplate();
+    }
+
+    /**
+     * 硬件资产-导入网络设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入用户", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/user", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
+    public ActionResponse importUser(@ApiParam(value = "file") MultipartFile file) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
+        if (file.getSize() > 1048576 * 5) {
+
+            throw new BusinessException("导入失败，文件不超过5M！");
+        }
+        return ActionResponse.success(iAssetUserService.importUser(file));
+    }
 }

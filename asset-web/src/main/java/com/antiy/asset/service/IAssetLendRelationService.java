@@ -64,4 +64,19 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
          */
         String deleteAssetLendRelationById(BaseRequest baseRequest) throws Exception;
 
+        /**
+         * 查询详情
+         * @param uniqueId
+         * @return
+         */
+    AssetLendRelationResponse queryInfo(String uniqueId);
+
+        /**
+         * 归还确认
+         * @param uniqueId
+         * @return
+         */
+        Integer returnConfirm(AssetLendRelationRequest uniqueId);
+
+        List<AssetLendRelationResponse> queryHistory(String uniqueId);
 }

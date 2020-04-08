@@ -1,7 +1,5 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.asset.vo.request.AssetUserRequest;
@@ -10,6 +8,9 @@ import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p> 资产用户信息 服务类 </p>
@@ -67,4 +68,8 @@ public interface IAssetUserService extends IBaseService<AssetUser> {
      * @return
      */
     ActionResponse deleteUserById(Integer id) throws Exception;
+
+    void exportTemplate();
+
+    String importUser(MultipartFile file) throws Exception;
 }

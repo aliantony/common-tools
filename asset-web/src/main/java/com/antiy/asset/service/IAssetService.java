@@ -362,4 +362,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery asset);
+
+
+    List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
 }

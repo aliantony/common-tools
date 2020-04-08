@@ -68,6 +68,20 @@ private static final long serialVersionUID = 1L;
      */
     private Long lendTime;
 
+    /**
+     * 归还时间
+     *
+     */
+    private Long returnTime;
+
+    public Long getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Long returnTime) {
+        this.returnTime = returnTime;
+    }
+
     public Long getLendTime() {
         return lendTime;
     }

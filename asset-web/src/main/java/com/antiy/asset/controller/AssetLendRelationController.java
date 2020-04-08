@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
+import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -69,10 +71,52 @@ public class AssetLendRelationController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class, responseContainer = "List"),
     })
-    @RequestMapping(value = "/query/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@ApiParam(value = "assetLendRelation") AssetLendRelationQuery assetLendRelationQuery)throws Exception{
         return ActionResponse.success(iAssetLendRelationService.queryPageAssetLendRelation(assetLendRelationQuery));
     }
+
+
+    /**
+     * 查询出借详情
+     */
+
+    @ApiOperation(value = "查询详情接口", notes = "传入唯一键")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
+    })
+    @RequestMapping(value = "/query/info", method = RequestMethod.POST)
+    public ActionResponse queryInfo(@ApiParam(value = "assetLendRelation")UniqueKeyRquest uniqueKeyRquest)throws Exception{
+        AssetLendRelationResponse assetLendRelationResponse= iAssetLendRelationService.queryInfo(uniqueKeyRquest.getUniqueId());
+        return ActionResponse.success(assetLendRelationResponse);
+    }
+
+    /**
+     * 归还确认
+     */
+    @ApiOperation(value = "归还确认接口", notes = "传入唯一键")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class, responseContainer = "List"),
+    })
+    @RequestMapping(value = "/return/confirm", method = RequestMethod.POST)
+    public ActionResponse queryHistory(@ApiParam(value = "assetLendRelation")AssetLendRelationRequest assetLendRelationRequest)throws Exception{
+        Integer returnConfirm= iAssetLendRelationService.returnConfirm(assetLendRelationRequest);
+        return ActionResponse.success(returnConfirm);
+    }
+
+    /**
+     * 出借历史
+     */
+    @ApiOperation(value = "出借历史接口", notes = "传入唯一键")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
+    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation")BaseRequest baseRequest)throws Exception{
+        List<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(baseRequest.getStringId());
+        return ActionResponse.success(assetLendRelationResponses);
+    }
+
 
     /**
      * 通过ID查询
