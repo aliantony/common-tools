@@ -42,6 +42,6 @@ public class StartRunDayMonitor implements ApplicationRunner {
 
         // 定时任务
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
-        executorService.scheduleAtFixedRate(new RunDayTask(runRecordDao), 8, 8, TimeUnit.HOURS);
+        executorService.scheduleAtFixedRate(new RunDayTask(runRecordDao), 5, 1, TimeUnit.HOURS);
     }
 }
