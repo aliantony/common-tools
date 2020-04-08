@@ -78,5 +78,6 @@ public class Constants {
     public static final String  LINUX                              = "Linux";
 
     public static final String  OTHER                              = "其它";
+    public static final String ASSET_CATEGORY                      = "资产类型";
 
 }
