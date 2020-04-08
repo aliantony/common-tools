@@ -5,6 +5,8 @@ import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.IBaseDao;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -22,4 +24,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     AssetLendRelationResponse queryInfo(String uniqueId);
 
     Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest);
+
+    List<AssetLendRelationResponse> queryHistory(String assetId);
 }

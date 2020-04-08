@@ -85,8 +85,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public List<AssetLendRelationResponse> queryHistory(String uniqueId) {
-         //   assetLendRelationDao.queryHistory(uniqueId);
-        return null;
+    public List<AssetLendRelationResponse> queryHistory(String assetId) {
+        List<AssetLendRelationResponse> assetLendRelationResponses=assetLendRelationDao.queryHistory(assetId);
+        return assetLendRelationResponses;
     }
 }

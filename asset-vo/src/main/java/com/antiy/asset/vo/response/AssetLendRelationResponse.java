@@ -101,13 +101,21 @@ public class AssetLendRelationResponse extends BaseResponse {
     private String responsibleUserName;
     @ApiModelProperty("出借者")
     private String useName;
-
-    /**
-     * 归还时间
-     *
-     */
     @ApiModelProperty("归还日期")
     private Long returnTime;
+    @ApiModelProperty("出借历史")
+    private String lendTimeDescribtion;
+
+    @ApiModelProperty("出借历史")
+    private String otherInfo;
+
+    public String getOtherInfo() {
+        return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%s-%s;是否有审批表：%s;归还时间：%s",useName,lendPurpose,lendStatus,lendTime,lendPeriods,orderNumber,returnTime);
+    }
+    public String getLendTimeDescribtion() {
+        return String.format("借出日期：%s",lendTimeDescribtion);
+    }
+
 
     public Long getReturnTime() {
         return returnTime;

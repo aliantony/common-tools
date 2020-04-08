@@ -99,9 +99,9 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class, responseContainer = "List"),
     })
     @RequestMapping(value = "/return/confirm", method = RequestMethod.POST)
-    public ActionResponse queryHistory(@ApiParam(value = "assetLendRelation")UniqueKeyRquest uniqueKeyRquest)throws Exception{
-        List<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(uniqueKeyRquest.getUniqueId());
-        return ActionResponse.success(assetLendRelationResponses);
+    public ActionResponse queryHistory(@ApiParam(value = "assetLendRelation")AssetLendRelationRequest assetLendRelationRequest)throws Exception{
+        Integer returnConfirm= iAssetLendRelationService.returnConfirm(assetLendRelationRequest);
+        return ActionResponse.success(returnConfirm);
     }
 
     /**
@@ -111,10 +111,10 @@ public class AssetLendRelationController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
-    @RequestMapping(value = "/return/confirm", method = RequestMethod.POST)
-    public ActionResponse returnConfirm(@ApiParam(value = "assetLendRelation")AssetLendRelationRequest assetLendRelationRequest)throws Exception{
-        Integer result= iAssetLendRelationService.returnConfirm(assetLendRelationRequest);
-        return ActionResponse.success(result);
+    @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
+    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation")BaseRequest baseRequest)throws Exception{
+        List<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(baseRequest.getStringId());
+        return ActionResponse.success(assetLendRelationResponses);
     }
 
 

@@ -320,6 +320,21 @@
         set gmt_modified=#{returnTime}
         where unique_id=#{uniqueId} and status=1
     </update>
+    <select id="queryHistory" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
+       select
+          lend_status as lendStatus,
+          lend_time as lendTime,
+          lend_periods as lendPeriods,
+          lend_purpose as lendPurpose,
+          return_time as returnTime,
+          au.name as useName,
+          aooh.order_number as  orderNumber
+          from
+          asset_lend_relation as alr
+          left join asset_user as au on use_id=au.id and au.status=1
+          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
+          where alr.asset_id=#{assetId} and alr.status=1
+    </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>
             (
