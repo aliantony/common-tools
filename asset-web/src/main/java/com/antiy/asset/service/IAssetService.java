@@ -353,4 +353,7 @@ public interface IAssetService extends IBaseService<Asset> {
     List<String> findAvailableAssetStatus(Integer assetStatus);
 
     List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
+
+
+    List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
 }
