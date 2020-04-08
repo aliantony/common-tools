@@ -2279,7 +2279,27 @@ WHERE
 
     </select>
     <select id="queryAssetCount" resultType="java.lang.Integer">
-
+        SELECT
+        count(distinct asset.id)
+        FROM
+        (
+        select * from asset
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="mq_asset"/>
+            </trim>
+        </where>
+        ) asset
+        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
+        left join baseline_template bt on asset.baseline_template_id = bt.id
+        left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
+        left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="mq_relation"></include>
+            </trim>
+        </where>
     </select>
     <!--cd01资产列表查询-->
     <select id="queryAssetList" resultMap="BaseResultMap">
@@ -2287,7 +2307,6 @@ WHERE
         asset.*,
         GROUP_CONCAT( DISTINCT air.ip ) AS ip,
         GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
-        GROUP_CONCAT( DISTINCT agr.asset_group_id ) AS asset_group,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name
         FROM
@@ -2301,7 +2320,7 @@ WHERE
         ) asset
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
-        left join baseline_template bt on (asset.baseline_template_id = bt.id and bt.status = 1)
+        left join baseline_template bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         <where>
@@ -2309,7 +2328,7 @@ WHERE
                 <include refid="mq_relation"></include>
             </trim>
         </where>
-        GROUP BY a.id
+        GROUP BY asset.id
         ORDER BY
         <choose>
             <when test="sortOrder != null and sortOrder != ''">
@@ -2464,6 +2483,7 @@ WHERE
         <if test="activiateDateEndTime != null">
             and asset.activiate_date &lt;= #{activiateDateEndTime }
         </if>
+        and asset.status = 1
     </sql>
     <!--left join 后的查询条件-->
     <sql id="mq_relation">

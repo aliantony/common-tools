@@ -9,13 +9,14 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.util.DataTypeUtils;
-import com.google.common.collect.Maps;
 
 /**
  * 资产组缓存数据
@@ -24,6 +25,7 @@ import com.google.common.collect.Maps;
  */
 @Component
 public class AssetGroupCache {
+    private Logger                      log    = LogUtils.get(this.getClass());
 
     /**
      * 缓存数据
@@ -43,6 +45,7 @@ public class AssetGroupCache {
 
     @PostConstruct
     private void init() throws Exception {
+        log.info("初始化资产组数据......");
         List<AssetGroup> assetGroups = assetGroupDao.getAll();
         if (CollectionUtils.isNotEmpty(assetGroups)) {
             caches.putAll(assetGroups.stream().collect(Collectors.toMap(AssetGroup::getId, AssetGroup::getName)));

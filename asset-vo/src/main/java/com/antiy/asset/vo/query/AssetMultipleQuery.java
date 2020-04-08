@@ -125,15 +125,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
      * 1-核心，2-重要，3-一般
      */
     @ApiModelProperty("1-核心，2-重要，3-一般")
-    @Max(message = "重要程度最大为3", value = 3)
-    @Min(message = "重要程度最小为1", value = 1)
     private List<Integer> importanceDegreeList;
     /**
      * 维护方式
      */
-    @ApiModelProperty("维护方式1:人工,2:自动")
-    @Max(message = "维护方式最大为2", value = 2)
-    @Min(message = "维护方式最小为1", value = 1)
+    @ApiModelProperty("维护方式")
     private List<Integer> installTypeList;
     @ApiModelProperty("到期时间起始时间")
     private Long          serviceLifeStartTime;

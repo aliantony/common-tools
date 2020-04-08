@@ -9,11 +9,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.antiy.asset.dao.AssetBusinessDao;
 import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.common.utils.LogUtils;
 import com.google.common.collect.Maps;
 
 /**
@@ -22,6 +24,7 @@ import com.google.common.collect.Maps;
  */
 @Component
 public class AssetBussinessCache {
+    private Logger                      log    = LogUtils.get(this.getClass());
     @Resource
     private AssetBusinessDao            assetBusiness;
     /**
@@ -35,6 +38,7 @@ public class AssetBussinessCache {
      */
     @PostConstruct
     private void init() throws Exception {
+        log.info("初始化从属业务数据......");
         List<AssetBusiness> assetBusinesses = assetBusiness.getAll();
         if (CollectionUtils.isNotEmpty(assetBusinesses)) {
             caches.putAll(

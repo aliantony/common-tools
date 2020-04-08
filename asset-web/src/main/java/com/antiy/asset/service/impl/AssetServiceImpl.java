@@ -1,117 +1,19 @@
 package com.antiy.asset.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.antiy.asset.cache.AssetBussinessCache;
-import com.antiy.asset.cache.AssetGroupCache;
-import com.antiy.asset.cache.AssetUsetCache;
-import com.antiy.asset.dao.AssetAssemblyDao;
-import com.antiy.asset.dao.AssetBusinessRelationDao;
-import com.antiy.asset.dao.AssetCpeFilterDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetGroupDao;
-import com.antiy.asset.dao.AssetGroupRelationDao;
-import com.antiy.asset.dao.AssetHardSoftLibDao;
-import com.antiy.asset.dao.AssetInstallTemplateDao;
-import com.antiy.asset.dao.AssetIpRelationDao;
-import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetLockDao;
-import com.antiy.asset.dao.AssetMacRelationDao;
-import com.antiy.asset.dao.AssetNetworkEquipmentDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
-import com.antiy.asset.dao.AssetSafetyEquipmentDao;
-import com.antiy.asset.dao.AssetSoftwareRelationDao;
-import com.antiy.asset.dao.AssetStorageMediumDao;
-import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.entity.AssetBusinessRelation;
-import com.antiy.asset.entity.AssetCpeFilter;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.entity.AssetInstallTemplate;
-import com.antiy.asset.entity.AssetIpRelation;
-import com.antiy.asset.entity.AssetLock;
-import com.antiy.asset.entity.AssetMacRelation;
-import com.antiy.asset.entity.AssetNetworkEquipment;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSafetyEquipment;
-import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.AssetStorageMedium;
-import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.BaseLineClient;
-import com.antiy.asset.intergration.OperatingSystemClient;
-import com.antiy.asset.intergration.SysUserClient;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.templet.AssetUnkonwEntity;
-import com.antiy.asset.templet.ComputeDeviceEntity;
-import com.antiy.asset.templet.ComputerVo;
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.templet.NetworkDeviceEntity;
-import com.antiy.asset.templet.OtherDeviceEntity;
-import com.antiy.asset.templet.SafetyEquipmentEntiy;
-import com.antiy.asset.templet.StorageDeviceEntity;
-import com.antiy.asset.util.ArrayTypeUtil;
-import com.antiy.asset.util.BeanConvert;
-import com.antiy.asset.util.CSVUtils;
-import com.antiy.asset.util.CloseUtils;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.CountTypeUtil;
-import com.antiy.asset.util.Dom4jUtils;
-import com.antiy.asset.util.EnumUtil;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.util.LogHandle;
-import com.antiy.asset.util.StatusEnumUtil;
-import com.antiy.asset.util.ZipUtil;
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
-import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
-import com.antiy.asset.vo.enums.AssetEventEnum;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
-import com.antiy.asset.vo.enums.AssetImportanceDegreeEnum;
-import com.antiy.asset.vo.enums.AssetInstallTemplateStatusEnum;
-import com.antiy.asset.vo.enums.AssetSourceEnum;
-import com.antiy.asset.vo.enums.AssetStatusEnum;
-import com.antiy.asset.vo.enums.CodeEnum;
-import com.antiy.asset.vo.enums.InstallType;
-import com.antiy.asset.vo.enums.OperationTypeEnum;
-import com.antiy.asset.vo.enums.ReportType;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.asset.vo.user.OauthMenuResponse;
-import com.antiy.asset.vo.user.UserStatus;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.BusinessData;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.RespBasicCode;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.DateUtils;
-import com.antiy.common.utils.JsonUtil;
-import com.antiy.common.utils.LicenseUtil;
-import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -130,29 +32,41 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSON;
+import com.antiy.asset.cache.AssetBussinessCache;
+import com.antiy.asset.cache.AssetGroupCache;
+import com.antiy.asset.cache.AssetUsetCache;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.ActivityClient;
+import com.antiy.asset.intergration.BaseLineClient;
+import com.antiy.asset.intergration.OperatingSystemClient;
+import com.antiy.asset.intergration.SysUserClient;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.user.OauthMenuResponse;
+import com.antiy.asset.vo.user.UserStatus;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -3622,7 +3536,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) {
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
-            assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            // assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
         Integer count = assetDao.queryAssetCount(assetMultipleQuery);
         if (count <= 0) {
@@ -3632,15 +3546,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assetList = assetDao.queryAssetList(assetMultipleQuery);
         assetList.stream().forEach(asset -> {
             // 责任人名称
-            asset.setResponsibleUserName(
-                AssetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
-            // 资产组
-            if (StringUtils.isNotBlank(asset.getAssetGroup())) {
-                asset.setAssetGroup(AssetGroupCache.getAllName(asset.getAssetGroup().split(",")));
+            if (StringUtils.isNotBlank(asset.getResponsibleUserId())) {
+                asset.setResponsibleUserName(
+                    AssetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
             }
             // 所属业务
             if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
                 asset.setAssetBusiness(AssetBussinessCache.getAllName(asset.getAssetBusiness().split(",")));
+            }
+            //所属区域
+            if (StringUtils.isNotBlank(asset.getAreaId())) {
+                String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
+                SysArea sysArea = null;
+                try {
+                    sysArea = redisUtil.getObject(key, SysArea.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
             }
         });
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);

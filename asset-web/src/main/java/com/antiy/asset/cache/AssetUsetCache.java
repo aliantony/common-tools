@@ -9,10 +9,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetUser;
+import com.antiy.common.utils.LogUtils;
 import com.google.common.collect.Maps;
 
 /**
@@ -21,6 +23,8 @@ import com.google.common.collect.Maps;
  */
 @Component
 public class AssetUsetCache {
+    private Logger                         log    = LogUtils.get(this.getClass());
+
     @Resource
     private AssetUserDao                   assetUserDao;
     /**
@@ -34,6 +38,7 @@ public class AssetUsetCache {
      */
     @PostConstruct
     private void init() throws Exception {
+        log.info("初始化人员信息数据......");
         List<AssetUser> assetUsers = assetUserDao.getAll();
         if (CollectionUtils.isNotEmpty(assetUsers)) {
             caches.putAll(assetUsers.stream().collect(Collectors.toMap(AssetUser::getId, Function.identity())));
@@ -52,6 +57,7 @@ public class AssetUsetCache {
         }
         return null;
     }
+
     public static String getName(Integer id) {
         if (caches.containsKey(id)) {
             return caches.get(id).getName();
