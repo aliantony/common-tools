@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.cache.AssetGroupCache;
 import com.antiy.asset.convert.SelectConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
@@ -25,6 +25,7 @@ import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.LogHandle;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetGroupQuery;
@@ -84,6 +85,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
+        // 更新缓存
+        AssetGroupCache.put(assetGroup);
         if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -392,6 +395,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 DataTypeUtils.stringToInteger(id.toString()), assetGroupDao.getNameById(id), id,
                 BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
+            // 更新缓存
+            AssetGroupCache.remove((int) id);
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }

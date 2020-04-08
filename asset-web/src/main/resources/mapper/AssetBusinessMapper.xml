@@ -164,7 +164,13 @@
         </trim>
         where id = #{id}
     </update>
-
+    <select id="getAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where status = 1
+    </select>
     <!-- 根据主键查询 -->
     <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
         select

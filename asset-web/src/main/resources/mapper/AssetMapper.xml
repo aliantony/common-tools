@@ -24,6 +24,7 @@
         <id column="id" property="id"/>
         <result column="business_id" property="businessId"/>
         <result column="asset_group" property="assetGroup"/>
+        <result column="asset_business" property="assetBusiness"/>
         <result column="number" property="number"/>
         <result column="name" property="name"/>
         <result column="install_type" property="installType"/>
@@ -65,13 +66,13 @@
         <result column="status" property="status"/>
         <result column="net_status" property="netStatus"/>
         <result column="is_orphan" property="isOrphan"/>
+        <result column="is_borrow" property="isBorrow"/>
         <result column="custom_field" property="customField"/>
         <result column="ips" property="ips"/>
         <result column="macs" property="macs"/>
         <result column="machine_name" property="machineName"/>
         <result column="is_secrecy" property="isSecrecy"/>
         <result column="code" property="code"/>
-        <collection property="dependentBusiness" ofType="com.antiy.asset.entity.AssetBusiness" javaType="java.util.List" column="id" select="queryBusinessByAssetId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -934,7 +935,7 @@
                         </foreach>
                     </when>
                     <otherwise>
-                        and asset_status in (3,4,5,6,7,8,9)   /*cd01要改*/
+                        and asset_status in (3,4,5,6,7,8,9) /*cd01要改*/
                     </otherwise>
                 </choose>
             </when>
@@ -1324,14 +1325,14 @@
         ORDER BY
         <choose>
             <when test="sortOrder != null and sortOrder != ''">
-            <choose>
-                <when test="sortName != null and sortName != ''">
-                    ${sortName} ${sortOrder}
-                </when>
-                <otherwise>
-                    gmt_create ${sortOrder}
-                </otherwise>
-            </choose>
+                <choose>
+                    <when test="sortName != null and sortName != ''">
+                        ${sortName} ${sortOrder}
+                    </when>
+                    <otherwise>
+                        gmt_create ${sortOrder}
+                    </otherwise>
+                </choose>
             </when>
             <otherwise>
                 asset.id desc
@@ -1430,7 +1431,8 @@
         </foreach>
     </update>
     <!--查询资产漏洞数量-->
-    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="queryAssetVulCount" resultType="com.antiy.asset.entity.IdCount"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         t1.asset_id as id,
         count(1) count
@@ -1465,7 +1467,8 @@
         </if>
     </select>
     <!--查询资产补丁数量-->
-    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="queryAssetPatchCount" resultType="com.antiy.asset.entity.IdCount"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         SELECT
         asset_id as id,
         count(1) as count
@@ -1499,7 +1502,8 @@
         </if>
     </select>
 
-    <select id="queryAllAssetPatchCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="queryAllAssetPatchCount" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(distinct (t1.asset_id)) from patch_asset_rel t1
         inner join patch_info p ON t1.patch_id = p.id
         inner join asset t2
@@ -1520,7 +1524,8 @@
         </foreach>
     </select>
 
-    <select id="queryAllAssetVulCount" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.AssetQuery">
+    <select id="queryAllAssetVulCount" resultType="java.lang.Integer"
+            parameterType="com.antiy.asset.vo.query.AssetQuery">
         select count(distinct (t1.asset_id)) from vuln_asset_rel t1
         inner JOIN vuln_info v ON t1.vul_id = v.id
         inner join asset t2 on t1.asset_id = t2.id
@@ -1773,7 +1778,7 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and status = 1  and (asset_status=6 or asset_status=10)
+        and status = 1 and (asset_status=6 or asset_status=10)
     </select>
 
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">
@@ -1882,7 +1887,7 @@
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
---         LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
+        -- LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
         where asset.id=#{id}
     </select>
 
@@ -2060,7 +2065,7 @@ WHERE
         select origin_status from asset_operation_record where id = (select max(id) from asset_operation_record where target_object_id = #{assetId})
     </select>
     <select id="getByAssetIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,number,asset_status as assetStatus  from asset where
+        SELECT id,number,asset_status as assetStatus from asset where
         <if test="assetIdList == null or assetIdList.size() == 0">
             1!=1
         </if>
@@ -2109,74 +2114,74 @@ WHERE
         </foreach>
     </update>
     <select id="countCheckList" resultType="int">
-        select  count(*)
-        from  asset
-        where  status=1
+        select count(*)
+        from asset
+        where status=1
         <if test="assetIds !=null and assetIds.size()>0">
-            and a.id  in
+            and a.id in
             <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
                 #{id}
             </foreach>
         </if>
     </select>
     <select id="queryCheckList" resultType="com.antiy.asset.vo.response.AssetResponse">
-            SELECT
-            a.id as stringId,
-            a.`name`,
-            a.`number`,
-            a.manufacturer,
-            a.asset_group as assetGroup,
-            a.importance_degree as importanceDegree,
-            a.category_model as categoryModel,
-            GROUP_CONCAT(distinct air.ip) AS ips,
-            GROUP_CONCAT(distinct amr.mac) AS macs,
-            GROUP_CONCAT(distinct ab.name) AS businessName
-            FROM
-            asset AS a
-            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
-            LEFT JOIN asset_business_relation AS abr on a.id=abr.asset_id and abr.status=1
-            LEFT JOIN asset_business AS ab ON abr.unique_id=ab.unique_id and ab.status=1
-            where a.status=1
-            <if test="assetIds !=null and assetIds.size()>0">
-                and a.id  in
-                <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
-                    #{id}
-                </foreach>
-            </if>
-            group by a.id
-            <if test="pageSize !=-1">
-                LIMIT #{pageSize} offset #{pageOffset}
-            </if>
+        SELECT
+        a.id as stringId,
+        a.`name`,
+        a.`number`,
+        a.manufacturer,
+        a.asset_group as assetGroup,
+        a.importance_degree as importanceDegree,
+        a.category_model as categoryModel,
+        GROUP_CONCAT(distinct air.ip) AS ips,
+        GROUP_CONCAT(distinct amr.mac) AS macs,
+        GROUP_CONCAT(distinct ab.name) AS businessName
+        FROM
+        asset AS a
+        LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+        LEFT JOIN asset_business_relation AS abr on a.id=abr.asset_id and abr.status=1
+        LEFT JOIN asset_business AS ab ON abr.unique_id=ab.unique_id and ab.status=1
+        where a.status=1
+        <if test="assetIds !=null and assetIds.size()>0">
+            and a.id in
+            <foreach collection="assetIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        group by a.id
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
     <select id="queryAsset" resultType="com.antiy.asset.vo.response.AssetResponse">
-               SELECT
-                    a.id as stringId,
-                    a.`name`,
-                    a.`number`,
-                    a.manufacturer,
-                    a.asset_group as assetGroup,
-                    a.importance_degree as importanceDegree,
-                    GROUP_CONCAT(distinct air.ip) AS ips,
-                    GROUP_CONCAT(distinct amr.mac) AS macs
-                FROM
-                 asset AS a
-                LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-                LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+        SELECT
+        a.id as stringId,
+        a.`name`,
+        a.`number`,
+        a.manufacturer,
+        a.asset_group as assetGroup,
+        a.importance_degree as importanceDegree,
+        GROUP_CONCAT(distinct air.ip) AS ips,
+        GROUP_CONCAT(distinct amr.mac) AS macs
+        FROM
+        asset AS a
+        LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
-                <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
-                    <include refid="assetRelationBusiness"></include>
-                    and a.category_model=1
-                    and a.asset_status in (7,8,10,11)
-                    and a.status=1
-                </trim>
-                <if test=" areaIds != null and areaIds.length > 0 ">
-                    and a.area_id in
-                    <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                group by a.id
+        <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
+            <include refid="assetRelationBusiness"></include>
+            and a.category_model=1
+            and a.asset_status in (7,8,10,11)
+            and a.status=1
+        </trim>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and a.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by a.id
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -2185,35 +2190,35 @@ WHERE
         select count(id)
         from
         (
-            SELECT
-            a.id
-            FROM
-            asset AS a
-            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+        SELECT
+        a.id
+        FROM
+        asset AS a
+        LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
-            <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
-                <include refid="assetRelationBusiness"></include>
-                and a.category_model=1
-                and a.asset_status in (7,8,10,11)
-                and a.status=1
-            </trim>
-            <if test=" areaIds != null and areaIds.length > 0 ">
-                and a.area_id in
-                <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            group by a.id
+        <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
+            <include refid="assetRelationBusiness"></include>
+            and a.category_model=1
+            and a.asset_status in (7,8,10,11)
+            and a.status=1
+        </trim>
+        <if test=" areaIds != null and areaIds.length > 0 ">
+            and a.area_id in
+            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by a.id
         ) b
     </select>
 
     <sql id="assetRelationBusiness">
         <if test='multipleQuery != null and multipleQuery != "" '>
-                ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="manufacturer != null and manufacturer.size()>0">
@@ -2223,8 +2228,8 @@ WHERE
             </foreach>
         </if>
         <if test="assetGroup !=null and assetGroup.size()>0">
-            <trim prefix="and (" suffix=" )"  suffixOverrides="or">
-                <foreach collection="assetGroup" item="e"   open="" close="">
+            <trim prefix="and (" suffix=" )" suffixOverrides="or">
+                <foreach collection="assetGroup" item="e" open="" close="">
                     a.`asset_group` LIKE CONCAT('%',replace(replace(#{e},'%','\%'),'_','\_'),'%') or
                 </foreach>
             </trim>
@@ -2247,17 +2252,232 @@ WHERE
      and status=1
 
     </select>
-    <select id="queryAssetInfo" resultType="com.antiy.asset.vo.response.AssetMatchResponse" parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
-            SELECT distinct CONCAT_WS('&amp;',air.ip,amr.mac) as keyId,a.number as assetNumber,a.name assetName
-            from asset a
-            left  join  asset_ip_relation air on   a.id = air.asset_id and  air.`status` = 1
-            left  join  asset_mac_relation amr on   a.id = amr.asset_id and  amr.`status` = 1
-            WHERE
-            a.status = 1 and
-            CONCAT_WS('&amp;',air.ip,amr.mac) in
-            <foreach collection="ipMacPorts" open="(" separator="," item="item" close=")">
-                CONCAT_WS('&amp;',#{item.ip},#{item.mac})
-            </foreach>
+    <select id="queryAssetInfo" resultType="com.antiy.asset.vo.response.AssetMatchResponse"
+            parameterType="com.antiy.asset.vo.request.AssetMatchRequest">
+        SELECT distinct CONCAT_WS('&amp;',air.ip,amr.mac) as keyId,a.number as assetNumber,a.name assetName
+        from asset a
+        left join asset_ip_relation air on a.id = air.asset_id and air.`status` = 1
+        left join asset_mac_relation amr on a.id = amr.asset_id and amr.`status` = 1
+        WHERE
+        a.status = 1 and
+        CONCAT_WS('&amp;',air.ip,amr.mac) in
+        <foreach collection="ipMacPorts" open="(" separator="," item="item" close=")">
+            CONCAT_WS('&amp;',#{item.ip},#{item.mac})
+        </foreach>
 
     </select>
+    <select id="queryAssetCount" resultType="java.lang.Integer">
+
+    </select>
+    <!--cd01资产列表查询-->
+    <select id="queryAssetList" resultMap="BaseResultMap">
+        SELECT
+        asset.*,
+        GROUP_CONCAT( DISTINCT air.ip ) AS ip,
+        GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
+        GROUP_CONCAT( DISTINCT agr.asset_group_id ) AS asset_group,
+        GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
+        bt.tp_name as baseline_template_name
+        FROM
+        (
+            select * from asset
+            <where>
+                <trim prefixOverrides="and">
+                    <include refid="mq_asset"/>
+                </trim>
+            </where>
+        ) asset
+        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
+        left join baseline_template bt on (asset.baseline_template_id = bt.id and bt.status = 1)
+        left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
+        left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="mq_relation"></include>
+            </trim>
+        </where>
+        GROUP BY a.id
+        ORDER BY
+        <choose>
+            <when test="sortOrder != null and sortOrder != ''">
+                <choose>
+                    <when test="sortName != null and sortName != ''">
+                        ${sortName} ${sortOrder}
+                    </when>
+                    <otherwise>
+                        gmt_create ${sortOrder}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                asset.id desc
+            </otherwise>
+        </choose>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <!--资产主表的条件-->
+    <sql id="mq_asset">
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            and (asset.name LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.number LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.serial LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.machine_name LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or asset.code LIKE
+            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            )
+        </if>
+        <if test="assetStatusList != null and assetStatusList.size() > 0">
+            and asset.asset_status in
+            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
+                #{assetStatus}
+            </foreach>
+        </if>
+        <if test="location != null and location != ''">
+            and asset.location like CONCAT('%',replace(replace(replace(#{location},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="houseLocation != null and houseLocation != ''">
+            and asset.house_location like
+            CONCAT('%',replace(replace(replace(#{houseLocation},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="describle != null and describle != ''">
+            and asset.describle like
+            CONCAT('%',replace(replace(replace(#{describle},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="key != null and key != ''">
+            and asset.key like CONCAT('%',replace(replace(replace(#{key},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="names != null and names.size() > 0">
+            and asset.name in
+            <foreach item="item" collection="names" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="manufacturerList != null and manufacturerList.size() > 0">
+            and asset.manufacturer in
+            <foreach item="item" collection="manufacturerList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="versionList != null and versionList.size() > 0">
+            and asset.version in
+            <foreach item="item" collection="versionList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="operationSystemList != null and operationSystemList.size() > 0">
+            and asset.operation_system in
+            <foreach item="item" collection="operationSystemList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="assetSourceList != null and assetSourceList.size() > 0">
+            and asset.asset_source in
+            <foreach item="item" collection="assetSourceList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="netType != null">
+            and asset.netType = #{netType}
+        </if>
+        <if test=" areaIds != null and areaIds.size() > 0">
+            and asset.area_id in
+            <foreach item="item" collection="areaIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" responsibleUserIdList != null and responsibleUserIdList.size() > 0">
+            and asset.responsible_user_id in
+            <foreach item="item" collection="responsibleUserIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" admittanceStatus != null">
+            and asset.admittance_status = #{admittanceStatus}
+        </if>
+        <if test=" isBorrow != null">
+            and asset.is_borrow = #{isBorrow}
+        </if>
+        <if test=" baselineTemplateId != null">
+            and asset.baseline_template_id = #{baselineTemplateId}
+        </if>
+        <if test=" netStatus != null">
+            and asset.net_status = #{netStatus}
+        </if>
+        <if test=" isSecrecy != null">
+            and asset.is_secrecy = #{isSecrecy}
+        </if>
+        <if test=" isOrphan != null">
+            and asset.is_orphan = #{isOrphan}
+        </if>
+        <if test=" importanceDegreeList != null and importanceDegreeList.size() > 0">
+            and asset.importance_degree in
+            <foreach item="item" collection="importanceDegreeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" installTypeList != null and installTypeList.size() > 0">
+            and asset.install_type in
+            <foreach item="item" collection="installTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstEnterStartTime != null">
+            and asset.gmt_create &gt;= #{firstEnterStartTime }
+        </if>
+        <if test=" firstEnterEndTime != null">
+            and asset.gmt_create &lt;= #{firstEnterEndTime }
+        </if>
+        <if test=" serviceLifeStartTime != null">
+            and asset.service_life &gt;= #{serviceLifeStartTime }
+        </if>
+        <if test="serviceLifeEndTime != null">
+            and asset.service_life &lt;= #{serviceLifeEndTime }
+        </if>
+        <if test=" installDateStartTime != null">
+            and asset.install_date &gt;= #{installDateStartTime }
+        </if>
+        <if test="installDateEndTime != null">
+            and asset.install_date &lt;= #{installDateEndTime }
+        </if>
+        <if test=" activiateDateStartTime != null">
+            and asset.activiate_date &gt;= #{activiateDateStartTime }
+        </if>
+        <if test="activiateDateEndTime != null">
+            and asset.activiate_date &lt;= #{activiateDateEndTime }
+        </if>
+    </sql>
+    <!--left join 后的查询条件-->
+    <sql id="mq_relation">
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            <choose>
+                <when test="unknownAssets">
+                    and (air.ip like
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                    or replace(amr.mac,':','-') like
+                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
+                    )
+                </when>
+                <otherwise>
+                    and (air.ip like
+                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                    or replace(amr.mac,':','-') like
+                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
+                    )
+                </otherwise>
+            </choose>
+        </if>
+        <if test="assetBusiness != null and assetBusiness.size() > 0">
+            and abr.id in
+            <foreach item="item" collection="assetBusiness" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
 </mapper>

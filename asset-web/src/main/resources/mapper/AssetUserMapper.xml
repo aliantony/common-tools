@@ -181,6 +181,13 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </sql>
+    <select id="getAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where status = 1
+    </select>
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetUser" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
@@ -233,15 +240,6 @@
             </trim>
             and status = 1
         </where>
-    </select>
-
-
-    <select id="getAll" resultType="com.antiy.asset.entity.AssetUser">
-        select
-        <include refid="Base_Column_List"></include>
-        from
-        <include refid="Table_Name"></include>
-        where status = 1
     </select>
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">

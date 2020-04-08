@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.cache.AssetUsetCache;
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetUserDao;
@@ -72,6 +73,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_INSERT.getName(), assetUser.getId(),
             assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser);
+        // 更新缓存
+        AssetUsetCache.put(assetUser);
         return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
@@ -97,7 +100,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                 try {
                     if (StringUtils.isNotBlank(a.getAddress())) {
                         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                              a.getAddress());
+                            a.getAddress());
                         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
                         if (Objects.isNull(sysArea)) {
                             a.setAddress(null);
@@ -137,7 +140,6 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         return userSelectResponseConverter.convert(assetUserDao.findUserInAsset(), SelectResponse.class);
     }
 
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @Override
     public List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser) {
@@ -156,6 +158,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_DELETE.getName(), id,
             userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
+        // 更新缓存
+        AssetUsetCache.remove(id);
         return ActionResponse.success();
     }
 }

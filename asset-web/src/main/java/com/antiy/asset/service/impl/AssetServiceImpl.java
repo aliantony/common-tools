@@ -33,6 +33,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
+import com.antiy.asset.cache.AssetBussinessCache;
+import com.antiy.asset.cache.AssetGroupCache;
+import com.antiy.asset.cache.AssetUsetCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -164,7 +167,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetEntryServiceImpl                                               entryService;
     @Resource
     private AssetBusinessServiceImpl                                            businessService;
-
+    @Resource
+    private AssetUsetCache                                                      assetUsetCache;
+    @Resource
+    private AssetGroupCache                                                     assetGroupCache;
     private Object                                                              lock     = new Object();
 
     @Override
@@ -3521,6 +3527,35 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request) {
         return assetDao.queryAssetInfo(request);
     }
+
+    @Override
+    public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) {
+        if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
+            assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        }
+        Integer count = assetDao.queryAssetCount(assetMultipleQuery);
+        if (count <= 0) {
+            return new PageResult<>(assetMultipleQuery.getPageSize(), 0, assetMultipleQuery.getCurrentPage(),
+                Lists.newArrayList());
+        }
+        List<Asset> assetList = assetDao.queryAssetList(assetMultipleQuery);
+        assetList.stream().forEach(asset -> {
+            // 责任人名称
+            asset.setResponsibleUserName(
+                AssetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
+            // 资产组
+            if (StringUtils.isNotBlank(asset.getAssetGroup())) {
+                asset.setAssetGroup(AssetGroupCache.getAllName(asset.getAssetGroup().split(",")));
+            }
+            // 所属业务
+            if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
+                asset.setAssetBusiness(AssetBussinessCache.getAllName(asset.getAssetBusiness().split(",")));
+            }
+        });
+        List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
+        return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
+            assetResponseList);
+    }
 }
 
 @Component
@@ -3561,13 +3596,22 @@ class AssetEntityConvert extends BaseConverter<AssetResponse, AssetEntity> {
 }
 
 enum AvailableStatusEnum implements CodeEnum {
-//                                              WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(),
-//                                                            "不予登记"), NET_IN_LEADER_DISAGREE(AssetStatusEnum.NET_IN_LEADER_DISAGREE
-//                                                                .getCode(), "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE.getCode(), "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE.getCode(), "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
-//                                              // 已入网的计算设备才有关联软件
-//                                              COMPUTER(AssetStatusEnum.NET_IN.getCode(), "关联软件");
+                                              // WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(),
+                                              // "不予登记"), NET_IN_LEADER_DISAGREE(AssetStatusEnum.NET_IN_LEADER_DISAGREE
+                                              // .getCode(), "入网未通过处理"),
+                                              // NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"),
+                                              // NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"),
+                                              // RETIRE_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE.getCode(), "退役未通过处理"),
+                                              // WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"),
+                                              // RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"),
+                                              // SCRAP_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE.getCode(), "报废未通过处理"),
+                                              // WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
+                                              // // 已入网的计算设备才有关联软件
+                                              // COMPUTER(AssetStatusEnum.NET_IN.getCode(), "关联软件");
                                               WAIT_REGISTER(AssetStatusEnum.WAIT_REGISTER.getCode(),
-                                                            "不予登记"), NET_IN_LEADER_DISAGREE(0, "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK.getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(0, "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(0, "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
+                                                            "不予登记"), NET_IN_LEADER_DISAGREE(0,
+                                                                                            "入网未通过处理"), NET_IN_CHECK(AssetStatusEnum.NET_IN_CHECK
+                                                                                                .getCode(), "准入实施"), NET_IN(AssetStatusEnum.NET_IN.getCode(), "退役申请"), RETIRE_DISAGREE(0, "退役未通过处理"), WAIT_RETIRE(AssetStatusEnum.WAIT_RETIRE.getCode(), "退役执行"), RETIRE(AssetStatusEnum.RETIRE.getCode(), "报废申请"), SCRAP_DISAGREE(0, "报废未通过处理"), WAIT_SCRAP(AssetStatusEnum.WAIT_SCRAP.getCode(), "报废执行"),
                                               // 已入网的计算设备才有关联软件
                                               COMPUTER(AssetStatusEnum.NET_IN.getCode(), "关联软件");
 
