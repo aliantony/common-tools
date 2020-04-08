@@ -79,9 +79,9 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public Integer returnConfirm(AssetLendRelationRequest uniqueId) {
-        return  null;
-      //  return assetLendRelationDao.returnConfirm(uniqueId,System.currentTimeMillis());
+    public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
+
+        return assetLendRelationDao.returnConfirm(assetLendRelationRequest);
     }
 
     @Override
