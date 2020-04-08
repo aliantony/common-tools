@@ -83,6 +83,20 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     @ApiModelProperty("出借日期")
     private Long lendTime;
 
+    /**
+     * 归还时间
+     *
+     */
+    @ApiModelProperty("归还日期")
+    private Long returnTime;
+
+    public Long getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Long returnTime) {
+        this.returnTime = returnTime;
+    }
     public Long getLendTime() {
         return lendTime;
     }
