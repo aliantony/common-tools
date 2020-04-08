@@ -265,10 +265,19 @@
     </update>
 
     <!-- key删除 -->
-    <delete id="keyRemove" parameterType="java.lang.Integer">
-        delete from
+    <update id="keyRemove" parameterType="java.lang.Integer">
+        update
         <include refid="Table_Name"></include>
+        set is_delete = 1
         where id = #{id}
-    </delete>
+    </update>
+
+    <!-- key编号、用户数量校验 -->
+    <select id="numNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest">
+        select count(id) from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <include refid="Where_Column_List"></include>
+    </select>
 
 </mapper>

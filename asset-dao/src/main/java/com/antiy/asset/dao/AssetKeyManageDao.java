@@ -66,4 +66,11 @@ public interface AssetKeyManageDao {
 	 * @return
 	 */
 	Integer keyRemove(Integer keyId);
+
+	/**
+	 * key编号、用户数量校验
+	 * @param request
+	 * @return
+	 */
+	Integer numNameCountVerify(AssetKeyManageRequest request);
 }

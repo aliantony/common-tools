@@ -91,6 +91,32 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         LoginUser user = LoginUserUtil.getLoginUser();
         AssetKeyManage keyManage = converter2.convert(request, AssetKeyManage.class);
 
+        /**
+         * 1、key编号 校验 64位字符，仅英文、数字
+         * 2、key编号重复校验
+         * 3、去重已领过key的用户
+         */
+        if (!keyManage.getKeyNum().matches("^[A-Za-z0-9]+$")){
+            throw new BusinessException("key编号校验失败，需仅由数字及字母组成!");
+        }
+        if (keyManage.getKeyNum().length() > 64){
+            throw new BusinessException("key编号校验失败，64位长度限制!");
+        }
+
+        AssetKeyManageRequest query = new AssetKeyManageRequest();
+        query.setKeyNum(keyManage.getKeyNum());
+        if (keyManageDao.numNameCountVerify(query) > 0) {
+            throw new BusinessException("key编号重复!");
+        }
+
+        if (keyManage.getKeyUserType() == 1) {
+            query.setKeyUserType(keyManage.getKeyUserType());
+            query.setKeyUserId(keyManage.getKeyUserId());
+            if (keyManageDao.numNameCountVerify(query) > 0) {
+                throw new BusinessException("使用者重复!");
+            }
+        }
+
         keyManage.setRecipState(KeyStatusEnum.KEY_RECIPIENTS.getStatus());
         keyManage.setCreateUser(user.getId());
         keyManage.setModifiedUser(user.getId());
@@ -125,6 +151,17 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setGmtCreate(System.currentTimeMillis());
         keyManage.setGmtModified(System.currentTimeMillis());
         keyManage.setIsDelete(0);
+
+        if (keyManage.getKeyUserType() == 1) {
+            AssetKeyManageRequest query = new AssetKeyManageRequest();
+            query.setKeyNum(keyManage.getKeyNum());
+            query.setKeyUserType(keyManage.getKeyUserType());
+            query.setKeyUserId(keyManage.getKeyUserId());
+            if (keyManageDao.numNameCountVerify(query) > 0) {
+                throw new BusinessException("使用者重复!");
+            }
+        }
+
         return keyManageDao.keyRecipients(request);
     }
 
