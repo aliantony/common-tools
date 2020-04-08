@@ -109,7 +109,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             throw new BusinessException("key编号重复!");
         }
 
-        if (keyManage.getKeyUserType() == 1) {
+        if (KeyUserType.KEY_FREEZE.getStatus().equals(keyManage.getKeyUserType())) {
             query.setKeyUserType(keyManage.getKeyUserType());
             query.setKeyUserId(keyManage.getKeyUserId());
             if (keyManageDao.numNameCountVerify(query) > 0) {
@@ -152,7 +152,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setGmtModified(System.currentTimeMillis());
         keyManage.setIsDelete(0);
 
-        if (keyManage.getKeyUserType() == 1) {
+        if (KeyUserType.KEY_FREEZE.getStatus().equals(keyManage.getKeyUserType())) {
             AssetKeyManageRequest query = new AssetKeyManageRequest();
             query.setKeyNum(keyManage.getKeyNum());
             query.setKeyUserType(keyManage.getKeyUserType());
