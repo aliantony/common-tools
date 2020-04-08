@@ -80,4 +80,8 @@ public interface AssetKeyManageDao {
 	 * @return
 	 */
 	Integer keyNameCountVerify(AssetKeyManageRequest request);
+
+    void insertBatch(List<AssetKeyManage> list);
+
+    void updateBatch(List<AssetKeyManage> list);
 }

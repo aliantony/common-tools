@@ -234,6 +234,23 @@
         </trim>
     </insert>
 
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            key_num,recip_state,create_user,gmt_create
+        </trim>
+        values
+
+        <foreach collection="list" item="entity" separator=",">
+            (
+            #{entity.keyNum},#{entity.recipState},#{entity.createUser},#{entity.gmtCreate}
+            )
+        </foreach>
+    </insert>
+
     <!-- key领用 -->
     <update id="keyRecipients" parameterType="com.antiy.asset.entity.AssetKeyManage">
         update
@@ -276,7 +293,22 @@
         set is_delete = 1
         where id = #{id}
     </update>
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update
+            <include refid="Table_Name"></include>
+            <set>
+                <if test=" modifiedUser != null">
+                    modified_user = #{item.modifiedUser },
+                </if>
+                <if test=" gmtModified != null">
+                    gmt_modified = #{item.gmtModified },
+                </if>
 
+            </set>
+            where key_num = #item.keyNum}
+        </foreach>
+    </update>
     <!-- key编号、用户数量校验 -->
     <select id="keyNumCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
         select count(id) from

@@ -1,25 +1,38 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Resource;
+
+import com.antiy.asset.templet.KeyEntity;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.dao.AssetKeyManageDao;
 import com.antiy.asset.entity.AssetKeyManage;
+import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetKeyManageService;
+import com.antiy.asset.templet.KeyEntity;
+import com.antiy.asset.templet.ImportResult;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.KeyStatusEnum;
 import com.antiy.asset.vo.enums.KeyUserType;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetKeyManageResponse;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.LoginUser;
-import com.antiy.common.base.PageResult;
+import com.antiy.common.base.*;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author chenchaowu
@@ -213,4 +226,85 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     public Integer keyRemove(AssetKeyManageRequest request) {
         return keyManageDao.keyRemove(request.getId());
     }
+
+    @Override
+    public void exportTemplate() {
+        List<KeyEntity> dataList = initData();
+        ExcelUtils.exportTemplateToClient(KeyEntity.class, "Key信息模板.xlsx", "key信息",
+            "备注:必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dataList);
+    }
+
+    private List<KeyEntity> initData() {
+        List<KeyEntity> dataList = new ArrayList<>();
+        KeyEntity computeDeviceEntity = new KeyEntity();
+        computeDeviceEntity.setKeyNum("cd002548");
+        return dataList;
+    }
+
+    @Override
+    @Transactional
+    public String importKey(MultipartFile file) throws Exception {
+
+        ImportResult<KeyEntity> result = ExcelUtils.importExcelFromClient(KeyEntity.class, file, 5, 0);
+        if (Objects.isNull(result.getDataList())) {
+            return result.getMsg();
+        }
+        List<KeyEntity> resultDataList = result.getDataList();
+        if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
+            return "导入失败，模板中无数据！" + result.getMsg();
+        }
+
+        StringBuilder sb = new StringBuilder(result.getMsg());
+
+        if (result.getMsg().contains("导入失败")) {
+            return sb.toString();
+        }
+
+        int success = 0;
+        int a = 6;
+        StringBuilder builder = new StringBuilder();
+        List<AssetKeyManage> add = new ArrayList<>();
+        List<AssetKeyManage> update = new ArrayList<>();
+        for (KeyEntity entity : resultDataList) {
+            AssetKeyManage asset = new AssetKeyManage();
+            asset.setKeyNum(entity.getKeyNum());
+            AssetKeyManageQuery assetKeyManageQuery = new AssetKeyManageQuery();
+            assetKeyManageQuery.setKeyNum(entity.getKeyNum());
+            Integer count = keyManageDao.queryCount(assetKeyManageQuery);
+            if (count > 0) {
+                asset.setModifiedUser(LoginUserUtil.getLoginUser().getId());
+                asset.setGmtModified(System.currentTimeMillis());
+                update.add(asset);
+            } else {
+                asset.setRecipState(KeyStatusEnum.KEY_NO_RECIPIENTS.getStatus());
+                asset.setGmtCreate(System.currentTimeMillis());
+                asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                add.add(asset);
+            }
+            a++;
+        }
+
+        try {
+            if (add.size() > 0) {
+                keyManageDao.insertBatch(add);
+            }
+            if (update.size() > 0) {
+                keyManageDao.updateBatch(update);
+            }
+        } catch (DuplicateKeyException exception) {
+            throw new BusinessException("请勿重复提交！");
+        }
+
+        String res = "导入成功" + success + "条";
+        StringBuilder stringBuilder = new StringBuilder(res);
+
+        // 写入业务日志
+
+        // LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_EXPORT_USERS.getName(), 0, "", null,
+        // BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        // LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_USERS.getName() + " {}", assets.toString());
+
+        return stringBuilder.append(builder).append(sb).toString();
+    }
+
 }

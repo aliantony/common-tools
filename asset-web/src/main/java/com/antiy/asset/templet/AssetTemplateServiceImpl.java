@@ -1,23 +1,21 @@
 package com.antiy.asset.templet;
 
+import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.service.*;
+import com.antiy.asset.vo.query.AssetDepartmentQuery;
+import com.antiy.asset.vo.query.OsQuery;
+import com.antiy.asset.vo.response.AssetDepartmentResponse;
+import com.antiy.asset.vo.response.OsSelectResponse;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.utils.LoginUserUtil;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
-import com.antiy.asset.service.IAssetHardSoftLibService;
-import com.antiy.asset.service.IAssetTemplateService;
-import com.antiy.asset.service.IAssetUserService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.vo.query.OsQuery;
-import com.antiy.asset.vo.response.OsSelectResponse;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.utils.LoginUserUtil;
 
 /**
  * @author: zhangbing
@@ -29,6 +27,8 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Resource
     private IAssetUserService          iAssetUserService;
+    @Resource
+    private IAssetDepartmentService  iAssetDepartmentService;
     @Resource
     private IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
@@ -62,8 +62,30 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     }
 
     @Override
+    public List<String> queryAllAreaWithUser() throws Exception {
+        List<SysArea> areaList = LoginUserUtil.getLoginUser().getAreas();
+        Map<String, String> map = areaList.parallelStream()
+            .collect(Collectors.toMap(SysArea::getParentId, e -> e.getId(), (k1, k2) -> k1));
+        List<String> ret = new ArrayList<>();
+        for (SysArea area : areaList) {
+            if (map.get(area.getId()) == null) {
+                ret.add(area.getFullName());
+            }
+        }
+        return ret;
+    }
+
+    @Override
     public List<String> getAllUser() throws Exception {
-        return iAssetUserService.getAll().stream().map(allUser -> allUser.getName()).collect(Collectors.toList());
+        return iAssetUserService.getAll().stream().map(AssetUser::getName).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> queryAllDepartment() throws Exception {
+        List<AssetDepartmentResponse> listAssetDepartment = iAssetDepartmentService
+            .findListAssetDepartment(new AssetDepartmentQuery());
+        return listAssetDepartment.stream().map(AssetDepartmentResponse::getName).collect(Collectors.toList());
+
     }
 
     @Override

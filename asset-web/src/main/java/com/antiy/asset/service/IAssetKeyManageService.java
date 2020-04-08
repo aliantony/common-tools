@@ -4,8 +4,7 @@ import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetKeyManageResponse;
 import com.antiy.common.base.PageResult;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IAssetKeyManageService {
 
@@ -51,4 +50,8 @@ public interface IAssetKeyManageService {
      * @return
      */
     Integer keyRemove(AssetKeyManageRequest request);
+
+    String importKey(MultipartFile file) throws Exception;
+
+    void exportTemplate();
 }

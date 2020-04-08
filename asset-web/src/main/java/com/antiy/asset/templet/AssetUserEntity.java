@@ -13,7 +13,7 @@ public class AssetUserEntity {
     /**
      * 部门名
      */
-    @ExcelField(value = "departmentName", align = 1, title = "所属组织", type = 0, required = true)
+    @ExcelField(value = "departmentName", align = 1, title = "所属组织", type = 0, required = true, defaultDataMethod = "queryAllDepartment", defaultDataBeanName = "assetTemplateServiceImpl")
     private String departmentName;
     /**
      * 电子邮箱
@@ -42,7 +42,7 @@ public class AssetUserEntity {
     /**
      * 住址
      */
-    @ExcelField(value = "address", align = 1, title = "地址", type = 0, length = 100)
+    @ExcelField(value = "address", align = 1, title = "地址", type = 0, length = 100, defaultDataMethod = "queryAllAreaWithUser", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  address;
     /**
      * 详细地址

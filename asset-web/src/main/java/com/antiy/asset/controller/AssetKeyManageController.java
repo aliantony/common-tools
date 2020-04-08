@@ -6,9 +6,14 @@ import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -117,5 +122,38 @@ public class AssetKeyManageController {
     public ActionResponse keyDelete(@RequestBody AssetKeyManageRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyRemove(request));
+    }
+
+    /**
+     * 导出模板
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "导出模板", notes = "主键封装对象")
+    @RequestMapping(value = "/export/template", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
+    public void exportTemplate() throws Exception {
+        keyManageService.exportTemplate();
+    }
+
+    /**
+     * 硬件资产-导入网络设备
+     *
+     * @return
+     */
+    @ApiOperation(value = "导入KEY", notes = "导入EXcel")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/import/key", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
+    public ActionResponse importUser(@ApiParam(value = "file") MultipartFile file) throws Exception {
+        if (file == null) {
+
+            throw new BusinessException("导入失败，文件为空，没有选择文件！");
+        }
+        if (file.getSize() > 1048576 * 5) {
+
+            throw new BusinessException("导入失败，文件不超过5M！");
+        }
+        return ActionResponse.success(keyManageService.importKey(file));
     }
 }
