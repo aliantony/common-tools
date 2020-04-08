@@ -71,4 +71,22 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
              ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
                 return assetLendRelationDao.deleteById(baseRequest.getStringId()).toString();
         }
+
+    @Override
+    public AssetLendRelationResponse queryInfo(String uniqueId) {
+
+        return  assetLendRelationDao.queryInfo(uniqueId);
+    }
+
+    @Override
+    public Integer returnConfirm(AssetLendRelationRequest uniqueId) {
+        return  null;
+      //  return assetLendRelationDao.returnConfirm(uniqueId,System.currentTimeMillis());
+    }
+
+    @Override
+    public List<AssetLendRelationResponse> queryHistory(String uniqueId) {
+         //   assetLendRelationDao.queryHistory(uniqueId);
+        return null;
+    }
 }

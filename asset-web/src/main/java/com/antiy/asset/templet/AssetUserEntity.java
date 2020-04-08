@@ -1,30 +1,24 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
-import io.swagger.annotations.ApiModelProperty;
+import com.antiy.asset.vo.enums.DataTypeEnum;
 
 public class AssetUserEntity {
-
 
     /**
      * 姓名
      */
     @ExcelField(value = "name", align = 1, title = "姓名", type = 0, required = true)
     private String  name;
-
-    /**
-     * 部门主键
-     */
-    private Integer departmentId;
     /**
      * 部门名
      */
-    @ExcelField(value = "departmentName", align = 1, title = "所属部门", type = 0, required = true)
+    @ExcelField(value = "departmentName", align = 1, title = "所属组织", type = 0, required = true)
     private String departmentName;
     /**
      * 电子邮箱
      */
-    @ExcelField(value = "email", align = 1, title = "电子邮箱", type = 0)
+    @ExcelField(value = "email", align = 1, title = "电子邮箱", type = 0, dataType = DataTypeEnum.EMAIL)
     private String  email;
 
     /**
@@ -42,30 +36,25 @@ public class AssetUserEntity {
     /**
      * 手机号
      */
-    @ExcelField(value = "mobile", align = 1, title = "手机号", type = 0)
-
+    @ExcelField(value = "mobile", align = 1, title = "手机号", type = 0, dataType = DataTypeEnum.TEL)
     private String  mobile;
 
     /**
      * 住址
      */
-    @ExcelField(value = "address", align = 1, title = "地址", type = 0)
+    @ExcelField(value = "address", align = 1, title = "地址", type = 0, length = 100)
     private String  address;
     /**
      * 详细地址
      */
-    @ExcelField(value = "detailAddress", align = 1, title = "详细地址", type = 0)
+    @ExcelField(value = "detailAddress", align = 1, title = "详细地址", type = 0, length = 100)
     private String detailAddress;
     /**
      * 职位
      */
     @ExcelField(value = "position", align = 1, title = "职位", type = 0)
     private String position;
-    /**
-     * 备注
-     */
-    @ExcelField(value = "memo", align = 1, title = "备注", type = 0)
-    private String  memo;
+
 
     public String getDetailAddress() {
         return detailAddress;
@@ -83,14 +72,6 @@ public class AssetUserEntity {
         this.position = position;
     }
 
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
     public String getName() {
         return name;
     }
@@ -99,13 +80,6 @@ public class AssetUserEntity {
         this.name = name;
     }
 
-    public Integer getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
-    }
 
     public String getEmail() {
         return email;
