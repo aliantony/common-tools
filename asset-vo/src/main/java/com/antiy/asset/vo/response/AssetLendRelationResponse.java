@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -23,7 +24,8 @@ public class AssetLendRelationResponse extends BaseResponse {
      *  资产id
      */
     @ApiModelProperty("资产id")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      *  用户id
      */
@@ -170,14 +172,13 @@ public class AssetLendRelationResponse extends BaseResponse {
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-
 
     public Integer getUseId() {
         return useId;

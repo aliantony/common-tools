@@ -1,9 +1,9 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetLendRelation;
+import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -21,5 +21,5 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
      */
     AssetLendRelationResponse queryInfo(String uniqueId);
 
-    Integer returnConfirm(@Param("uniqueId")String uniqueId,@Param("returnTime") long returnTime);
+    Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest);
 }

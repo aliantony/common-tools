@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 import com.antiy.common.validation.ObjectValidator;
 import com.antiy.common.exception.RequestParamValidateException;
@@ -24,7 +25,8 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
      *  资产id
      */
     @ApiModelProperty("资产id")
-    private Integer assetId;
+    @Encode
+    private String assetId;
     /**
      *  用户id
      */
@@ -114,14 +116,13 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
-    this.assetId = assetId;
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
-
 
     public Integer getUseId() {
         return useId;
