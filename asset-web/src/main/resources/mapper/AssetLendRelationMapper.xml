@@ -265,7 +265,7 @@
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
-            and a.status in (5,6)
+            and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
         </trim>
@@ -273,8 +273,8 @@
 
     <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        a.name,
-        a.number,
+        a.name as  assetName,
+        a.number as assetNumber,
         a.category_model as categoryModel,
         a.responsible_user_id as responsibleUserId,
         akm.key_num as keyNum,
@@ -293,7 +293,7 @@
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
-            and a.status in (5,6)
+            and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
         </trim>
@@ -308,9 +308,16 @@
           lend_periods as lendPeriods,
           lend_purpose as lendPurpose,
           au.name as useName,
-          aooh.order_number as  orderNumber
+          aooh.order_number as  orderNumber,
+          a.name as assetName ,
+          a.number as assetNumber,
+          a.asset_group as assetGroup,
+          a.category_model as categoryModel,
+          akm.key_num as keyNum
           from
           asset_lend_relation as alr
+          left join asset as a on alr.asset_id=a.id and a.status=1
+          left join asset_key_manage as akm on alr.asset_id=akm.key_user_id and akm.status=1
           left join asset_user as au on use_id=au.id and au.status=1
           left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.unique_id=#{uniqueId} and alr.status=1
@@ -320,6 +327,15 @@
         set gmt_modified=#{returnTime}
         where unique_id=#{uniqueId} and status=1
     </update>
+    <select id="countHistory">
+        select
+          count(*)
+          from
+          asset_lend_relation as alr
+          left join asset_user as au on use_id=au.id and au.status=1
+          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
+          where alr.asset_id=#{assetId} and alr.status=1
+    </select>
     <select id="queryHistory" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
        select
           lend_status as lendStatus,
@@ -334,6 +350,10 @@
           left join asset_user as au on use_id=au.id and au.status=1
           left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.asset_id=#{assetId} and alr.status=1
+         order  by lend_time desc
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

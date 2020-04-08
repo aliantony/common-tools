@@ -5,9 +5,7 @@ import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
-import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 
 /**
@@ -107,13 +104,13 @@ public class AssetLendRelationController {
     /**
      * 出借历史
      */
-    @ApiOperation(value = "出借历史接口", notes = "传入唯一键")
+    @ApiOperation(value = "出借历史接口", notes = "传入资产id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
-    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation")BaseRequest baseRequest)throws Exception{
-        List<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(baseRequest.getStringId());
+    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") ObjectQuery objectQuery)throws Exception{
+        PageResult<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(objectQuery);
         return ActionResponse.success(assetLendRelationResponses);
     }
 

@@ -2169,19 +2169,19 @@ WHERE
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
         LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
-        <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
-            <include refid="assetRelationBusiness"></include>
-            and a.category_model=1
-            and a.asset_status in (7,8,10,11)
-            and a.status=1
-        </trim>
-        <if test=" areaIds != null and areaIds.length > 0 ">
-            and a.area_id in
-            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        group by a.id
+                <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
+                    <include refid="assetRelationBusiness"></include>
+                    and a.category_model=1
+                    and a.asset_status in (5,6)
+                    and a.status=1
+                </trim>
+                <if test=" areaIds != null and areaIds.length > 0 ">
+                    and a.area_id in
+                    <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                group by a.id
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
@@ -2190,35 +2190,35 @@ WHERE
         select count(id)
         from
         (
-        SELECT
-        a.id
-        FROM
-        asset AS a
-        LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
-        LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
+            SELECT
+            a.id
+            FROM
+            asset AS a
+            LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
+            LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
-        <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
-            <include refid="assetRelationBusiness"></include>
-            and a.category_model=1
-            and a.asset_status in (7,8,10,11)
-            and a.status=1
-        </trim>
-        <if test=" areaIds != null and areaIds.length > 0 ">
-            and a.area_id in
-            <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-        group by a.id
+            <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
+                <include refid="assetRelationBusiness"></include>
+                and a.category_model=1
+                and a.asset_status in (5,6)
+                and a.status=1
+            </trim>
+            <if test=" areaIds != null and areaIds.length > 0 ">
+                and a.area_id in
+                <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            group by a.id
         ) b
     </select>
 
     <sql id="assetRelationBusiness">
         <if test='multipleQuery != null and multipleQuery != "" '>
-            ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="manufacturer != null and manufacturer.size()>0">
@@ -2228,8 +2228,8 @@ WHERE
             </foreach>
         </if>
         <if test="assetGroup !=null and assetGroup.size()>0">
-            <trim prefix="and (" suffix=" )" suffixOverrides="or">
-                <foreach collection="assetGroup" item="e" open="" close="">
+            <trim prefix="and (" suffix=" )"  suffixOverrides="or">
+                <foreach collection="assetGroup" item="e"   open="" close="">
                     a.`asset_group` LIKE CONCAT('%',replace(replace(#{e},'%','\%'),'_','\_'),'%') or
                 </foreach>
             </trim>

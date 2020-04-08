@@ -42,69 +42,24 @@ public enum AssetFlowEnum {
     CHANGE(AssetStatusEnum.NET_IN, "", "变更资产信息。", "变更资产信息","退役申请。","提出退役申请"),
 
     /**
-     * 退役申请
-     * 已经入网--->退役待审批
+     * 退回申请
+     *
      */
-//    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","退役申请","退役申请"),
-    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退役申请","退役申请"),
-    /**
-     * 退役申请
-     * 退役审批不通过--->退役待审批
-     */
-//    RETIRE_DISAGREE_APPLICATION(AssetStatusEnum.RETIRE_DISAGREE,AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","继续退役申请","继续退役申请"),
-    RETIRE_DISAGREE_APPLICATION(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","继续退役申请","继续退役申请"),
+    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.WAIT_RETIRE,"","退回申请","退回申请"),
+
     /**
      * 退役执行
      */
     RETIRE_EXECUTEE(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退役执行","退役执行"),
     /**
      * 报废申请
-     * 已退役---->报废待审批
+     *
      */
-//    SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_RETIRE_CHECK,"","报废申请","报废申请"),
-    SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_RETIRE,null,"","报废申请","报废申请"),
-    /**
-     * 报废申请
-     * 报废审批未通过---->报废待审批
-     */
-//    SCRAP_DISAGREE_APPLICATION(AssetStatusEnum.SCRAP_DISAGREE,AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP_CHECK,"","继续报废申请","继续报废申请"),
-    SCRAP_DISAGREE_APPLICATION(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.WAIT_RETIRE,null,"","继续报废申请","继续报废申请"),
-    /**
-     * 入网审批
-     */
-//    NET_IN_CHECK(AssetStatusEnum.NET_IN_LEADER_CHECK,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN_LEADER_DISAGREE,"","入网审批","入网审批"),
-    NET_IN_CHECK(null,AssetStatusEnum.NET_IN,null,"","入网审批","入网审批"),
-    /**
-     * 继续入网
-     */
-//    CONTINUE_NET_IN(AssetStatusEnum.CORRECTING,AssetStatusEnum.NET_IN_LEADER_CHECK,AssetStatusEnum.NET_IN_LEADER_CHECK,"","继续入网","继续入网"),
-    CONTINUE_NET_IN(AssetStatusEnum.CORRECTING,AssetStatusEnum.CORRECTING,AssetStatusEnum.CORRECTING,"","继续入网","继续入网"),
-    /**
-     * 退役审批
-     */
-//    RETIRE_CHECK(AssetStatusEnum.WAIT_RETIRE_CHECK,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE_DISAGREE,"","资产退役审批","资产退役审批"),
-    RETIRE_CHECK(null,AssetStatusEnum.WAIT_RETIRE,null,"","资产退役审批","资产退役审批"),
-    /**
-     * 关闭退役
-     */
-//    CLOSE_RETIRE(AssetStatusEnum.RETIRE_DISAGREE,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN,"","关闭退役","关闭退役"),
-    CLOSE_RETIRE(null,AssetStatusEnum.NET_IN,AssetStatusEnum.NET_IN,"","关闭退役","关闭退役"),
-    /**
-     * 关闭报废
-     */
-//    CLOSE_SCRAP(AssetStatusEnum.SCRAP_DISAGREE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","关闭报废","关闭报废"),
-    CLOSE_SCRAP(null,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","关闭报废","关闭报废"),
-    /**
-     * 报废审批
-     */
-//    SCRAP_CHECK(AssetStatusEnum.WAIT_SCRAP_CHECK,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP_DISAGREE,"","报废审批","报废审批"),
-    SCRAP_CHECK(null,AssetStatusEnum.WAIT_SCRAP,null,"","报废审批","报废审批"),
-
+    SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请","报废申请"),
     /**
      * 报废执行
      */
     SCRAP_EXECUTEE(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP,AssetStatusEnum.SCRAP,"","报废执行","报废执行"),
-
     /**
      * 整改 （已入网到整改）
      */
@@ -115,11 +70,6 @@ public enum AssetFlowEnum {
     CHANGE_COMPLETE(AssetStatusEnum.IN_CHANGE,AssetStatusEnum.NET_IN, AssetStatusEnum.NET_IN, "", "变更完成。", "变更完成"),
 
     /**
-     * 退役审批未通过->继续退役/关闭退役
-     */
-//    RETIRE_CHECK_DISAGREE(AssetStatusEnum.RETIRE_DISAGREE, "", "退役申请。", "重新退役","关闭退役。","关闭退役"),
-    RETIRE_CHECK_DISAGREE(null, "", "退役申请。", "重新退役","关闭退役。","关闭退役"),
-    /**
      * 待退役->退役执行
      */
     RETIRE(AssetStatusEnum.WAIT_RETIRE, "", "退役执行。", "执行退役"),
@@ -129,17 +79,10 @@ public enum AssetFlowEnum {
     RETIRED(AssetStatusEnum.RETIRE, "", "登记资产。", "登记资产信息","报废申请。", "提出报废申请"),
 
     /**
-     * 报废审批未通过->继续报废/关闭报废
-     */
-//    SCRAP_CHECK_DISAGREE(AssetStatusEnum.SCRAP_DISAGREE, "", "报废申请。", "重新报废","关闭报废。","关闭报废"),
-    SCRAP_CHECK_DISAGREE(null, "", "报废申请。", "重新报废","关闭报废。","关闭报废"),
-
-    /**
      * 待报废->报废执行
      */
     SCRAP(AssetStatusEnum.WAIT_SCRAP, "", "报废执行。", "执行报废")
     ;
-
 
     /**
      * 资产当前状态

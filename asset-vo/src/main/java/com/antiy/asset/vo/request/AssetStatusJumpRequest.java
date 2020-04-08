@@ -198,9 +198,9 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
             ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
         }
         if(assetFlowEnum.equals(AssetFlowEnum.RETIRE_APPLICATION)
-            || assetFlowEnum.equals(AssetFlowEnum.RETIRE_DISAGREE_APPLICATION)
+
             || assetFlowEnum.equals(AssetFlowEnum.SCRAP_APPLICATION)
-            || assetFlowEnum.equals(AssetFlowEnum.SCRAP_DISAGREE_APPLICATION)){
+            ){
 
             ParamterExceptionUtils.isBlank(note,"退役方案不能为空");
 

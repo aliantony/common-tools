@@ -3,6 +3,9 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -58,8 +61,10 @@ public class AssetLendRelationResponse extends BaseResponse {
     /**
      *  出借状态 1 已借出 2 已归还
      */
-    @ApiModelProperty("出借状态 1 已借出 2 已归还")
+    @ApiModelProperty("出借状态 1 已借出 2 保管中")
     private Integer lendStatus;
+    @ApiModelProperty("出借状态 ")
+    private String lendStatusDesc;
     /**
      *  创建时间
      */
@@ -97,6 +102,12 @@ public class AssetLendRelationResponse extends BaseResponse {
     private String assetName;
     @ApiModelProperty("资产编号")
     private String assetNumber;
+    @ApiModelProperty("资产类型")
+    private String categoryModel;
+    @ApiModelProperty("资产组")
+    private String assetGroup;
+    @ApiModelProperty("key")
+    private String keyNum;
     @ApiModelProperty("资产使用者")
     private String responsibleUserName;
     @ApiModelProperty("出借者")
@@ -105,17 +116,48 @@ public class AssetLendRelationResponse extends BaseResponse {
     private Long returnTime;
     @ApiModelProperty("出借历史")
     private String lendTimeDescribtion;
-
     @ApiModelProperty("出借历史")
     private String otherInfo;
-
     public String getOtherInfo() {
-        return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%s-%s;是否有审批表：%s;归还时间：%s",useName,lendPurpose,lendStatus,lendTime,lendPeriods,orderNumber,returnTime);
+        if(lendStatus==1 && returnTime !=null){
+            return  String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%s;归还时间：",useName,lendPurpose,lendStatus,new Date(lendTime),new Date(lendPeriods),orderNumber);
+        }
+        else if(lendStatus==2)
+            return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%s;归还时间：%7$tY/%7$tm/%7$td %7$tH:%7$tM",useName,lendPurpose,lendStatus,new Date(lendTime),new Date(lendPeriods),orderNumber,new Date(returnTime));
+        else return null;
     }
     public String getLendTimeDescribtion() {
-        return String.format("借出日期：%s",lendTimeDescribtion);
+        return String.format("借出日期：%1$tY/%1$tm/%1$td %1$tH:%1$tM",new Date(lendTime));
+    }
+    public String getLendStatusDesc() {
+        if(lendStatus==1)
+            return "已借出";
+        return "保管中";
     }
 
+    public String getCategoryModel() {
+        return categoryModel;
+    }
+
+    public void setCategoryModel(String categoryModel) {
+        this.categoryModel = categoryModel;
+    }
+
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
+    public String getKeyNum() {
+        return keyNum;
+    }
+
+    public void setKeyNum(String keyNum) {
+        this.keyNum = keyNum;
+    }
 
     public Long getReturnTime() {
         return returnTime;
@@ -157,7 +199,9 @@ public class AssetLendRelationResponse extends BaseResponse {
     }
 
     public String getUseName() {
-        return useName;
+        if(StringUtils.isNotBlank(useName))
+            return useName;
+        return  responsibleUserName;
     }
 
     public void setUseName(String useName) {
@@ -225,6 +269,7 @@ public class AssetLendRelationResponse extends BaseResponse {
 
 
     public Integer getLendStatus() {
+
         return lendStatus;
     }
 

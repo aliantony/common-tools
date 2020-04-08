@@ -4,10 +4,7 @@ import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
+import com.antiy.common.base.*;
 
 import java.util.List;
 
@@ -78,5 +75,5 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
          */
         Integer returnConfirm(AssetLendRelationRequest uniqueId);
 
-        List<AssetLendRelationResponse> queryHistory(String uniqueId);
+        PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery uniqueId);
 }
