@@ -41,10 +41,10 @@ public interface AssetKeyManageDao {
 
 	/**
 	 * key领用
-	 * @param request
+	 * @param keyManage
 	 * @return
 	 */
-	Integer keyRecipients(AssetKeyManageRequest request);
+	Integer keyRecipients(AssetKeyManage keyManage);
 
 	/**
 	 * key归还
@@ -68,9 +68,16 @@ public interface AssetKeyManageDao {
 	Integer keyRemove(Integer keyId);
 
 	/**
-	 * key编号、用户数量校验
+	 * key编号数量校验
 	 * @param request
 	 * @return
 	 */
-	Integer numNameCountVerify(AssetKeyManageRequest request);
+	Integer keyNumCountVerify(AssetKeyManageRequest request);
+
+	/**
+	 * key领用用户数量校验
+	 * @param request
+	 * @return
+	 */
+	Integer keyNameCountVerify(AssetKeyManageRequest request);
 }

@@ -7,8 +7,8 @@ import com.antiy.common.exception.BusinessException;
  */
 
 public enum KeyUserType {
-    KEY_RECIPIENTS(1, "设备"),
-    KEY_FREEZE(2, "用户");
+    KEY_EQUIPMENT(1, "设备"),
+    KEY_USER(2, "用户");
 
     private Integer status;
     private String name;

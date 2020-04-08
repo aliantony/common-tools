@@ -105,14 +105,14 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
 
         AssetKeyManageRequest query = new AssetKeyManageRequest();
         query.setKeyNum(keyManage.getKeyNum());
-        if (keyManageDao.numNameCountVerify(query) > 0) {
+        if (keyManageDao.keyNumCountVerify(query) > 0) {
             throw new BusinessException("key编号重复!");
         }
 
-        if (KeyUserType.KEY_FREEZE.getStatus().equals(keyManage.getKeyUserType())) {
+        if (KeyStatusEnum.KEY_RECIPIENTS.getStatus().equals(keyManage.getRecipState())) {
             query.setKeyUserType(keyManage.getKeyUserType());
             query.setKeyUserId(keyManage.getKeyUserId());
-            if (keyManageDao.numNameCountVerify(query) > 0) {
+            if (keyManageDao.keyNameCountVerify(query) > 0) {
                 throw new BusinessException("使用者重复!");
             }
         }
@@ -152,17 +152,17 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setGmtModified(System.currentTimeMillis());
         keyManage.setIsDelete(0);
 
-        if (KeyUserType.KEY_FREEZE.getStatus().equals(keyManage.getKeyUserType())) {
+        if (KeyUserType.KEY_USER.getStatus().equals(keyManage.getKeyUserType())) {
             AssetKeyManageRequest query = new AssetKeyManageRequest();
             query.setKeyNum(keyManage.getKeyNum());
             query.setKeyUserType(keyManage.getKeyUserType());
             query.setKeyUserId(keyManage.getKeyUserId());
-            if (keyManageDao.numNameCountVerify(query) > 0) {
+            if (keyManageDao.keyNameCountVerify(query) > 0) {
                 throw new BusinessException("使用者重复!");
             }
         }
 
-        return keyManageDao.keyRecipients(request);
+        return keyManageDao.keyRecipients(keyManage);
     }
 
     /**
@@ -181,7 +181,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setKeyUserId(null);
         keyManage.setUserNumName(null);
         keyManage.setRecipTime(null);
-        keyManage.setRecipState(KeyStatusEnum.KEY_RECIPIENTS.getStatus());
+        keyManage.setRecipState(KeyStatusEnum.KEY_NO_RECIPIENTS.getStatus());
         return keyManageDao.keyReturn(keyManage);
     }
 

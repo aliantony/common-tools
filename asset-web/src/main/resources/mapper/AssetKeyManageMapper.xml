@@ -171,7 +171,7 @@
     </sql>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="queryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -194,11 +194,11 @@
         from
         <include refid="Table_Name"></include> asm
         <include refid="where"></include>
+        order by asm.recip_time desc
+        ,asm.gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
-        order by asm.recip_time desc
-        order by asm.gmt_create desc
     </select>
 
     <sql id="where">
@@ -235,7 +235,7 @@
     </insert>
 
     <!-- key领用 -->
-    <update id="keyRecipients" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest">
+    <update id="keyRecipients" parameterType="com.antiy.asset.entity.AssetKeyManage">
         update
         <include refid="Table_Name"></include>
         <trim prefix="SET" suffixOverrides=",">
@@ -248,9 +248,14 @@
     <update id="keyReturn" parameterType="com.antiy.asset.entity.AssetKeyManage">
         update
         <include refid="Table_Name"></include>
-        <trim prefix="SET" suffixOverrides=",">
-            <include refid="Set_Column_List"></include>
-        </trim>
+        set
+        key_user_type = #{keyUserType},
+        key_user_id = #{keyUserId},
+        user_num_name =#{userNumName},
+        recip_time = #{recipTime},
+        recip_state = #{recipState},
+        modified_user = #{modifiedUser},
+        gmt_modified = #{gmtModified}
         where id = #{id}
     </update>
 
@@ -273,11 +278,23 @@
     </update>
 
     <!-- key编号、用户数量校验 -->
-    <select id="numNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest">
+    <select id="keyNumCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
         select count(id) from
         <include refid="Table_Name"></include>
         where 1 = 1
-        <include refid="Where_Column_List"></include>
+        <if test="keyNum != null and keyNum.length() > 0">
+            and key_num = #{keyNum}
+        </if>
+    </select>
+
+    <select id="keyNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
+        select count(id) from
+        <include refid="Table_Name"></include>
+        where 1 = 1
+        <if test="keyUserType != null">
+            and key_user_type = #{keyUserType}
+            and key_user_id = #{keyUserId}
+        </if>
     </select>
 
 </mapper>
