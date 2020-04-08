@@ -115,9 +115,13 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             if (keyManageDao.keyNameCountVerify(query) > 0) {
                 throw new BusinessException("使用者重复!");
             }
+        }else {
+            keyManage.setKeyUserType(null);
+            keyManage.setKeyUserId(null);
+            keyManage.setUserNumName(null);
+            keyManage.setRecipTime(null);
         }
 
-        keyManage.setRecipState(KeyStatusEnum.KEY_RECIPIENTS.getStatus());
         keyManage.setCreateUser(user.getId());
         keyManage.setModifiedUser(user.getId());
         keyManage.setGmtCreate(System.currentTimeMillis());
