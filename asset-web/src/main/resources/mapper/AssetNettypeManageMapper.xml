@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetNettypeManageDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetNettypeManage">
+        <id column="id" property="id"/>
+        <result column="net_type_name" property="netTypeName"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+        <result column="create_user" property="createUser"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, net_type_name, description, status, create_user, gmt_create, modified_user, gmt_modified
+    </sql>
+
+    <sql id="Table_Name">
+        asset_nettype_manage
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" netTypeName != null">
+            net_type_name,
+        </if>
+        <if test=" description != null">
+            description,
+        </if>
+        <if test=" status != null">
+            status,
+        </if>
+        <if test=" createUser != null">
+            create_user,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user,
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" netTypeName != null">
+            #{netTypeName },
+        </if>
+        <if test=" description != null">
+            #{description },
+        </if>
+        <if test=" status != null">
+            #{status },
+        </if>
+        <if test=" createUser != null">
+            #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+        <if test=" modifiedUser != null">
+            #{modifiedUser },
+        </if>
+        <if test=" gmtModified != null">
+            #{gmtModified },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" netTypeName != null">
+            net_type_name = #{netTypeName },
+        </if>
+        <if test=" description != null">
+            description = #{description },
+        </if>
+        <if test=" status != null">
+            status = #{status },
+        </if>
+        <if test=" createUser != null">
+            create_user = #{createUser },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+        <if test=" modifiedUser != null">
+            modified_user = #{modifiedUser },
+        </if>
+        <if test=" gmtModified != null">
+            gmt_modified = #{gmtModified },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" netTypeName != null">
+            and net_type_name = #{netTypeName }
+        </if>
+        <if test=" description != null">
+            and description = #{description }
+        </if>
+        <if test=" status != null">
+            and status = #{status }
+        </if>
+        <if test=" createUser != null">
+            and create_user = #{createUser }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+        <if test=" modifiedUser != null">
+            and modified_user = #{modifiedUser }
+        </if>
+        <if test=" gmtModified != null">
+            and gmt_modified = #{gmtModified }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetNettypeManage" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetNettypeManage" >
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+        </trim>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="netTypeName != null and netTypeName != ''">
+                net_type_name like CONCAT('%',replace(replace(#{netTypeName},'%','\%'),'_','\_'),'%')
+            </if>
+        </trim>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+          <if test="netTypeName != null and netTypeName != ''">
+              net_type_name like CONCAT('%',replace(replace(#{netTypeName},'%','\%'),'_','\_'),'%')
+          </if>
+        </trim>
+        order by gmt_create
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <select id="getCountByNetTypeName" resultType="java.lang.Integer">
+        select count(1) from
+        <include refid="Table_Name"></include>
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="id != null">
+                AND id != #{id}
+            </if>
+            <if test="netTypeName != null and netTypeName != ''">
+                AND net_type_name = #{netTypeName}
+            </if>
+        </trim>
+    </select>
+</mapper>

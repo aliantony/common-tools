@@ -5,18 +5,40 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
+import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
+import com.antiy.asset.vo.request.AssetIpRequest;
+import com.antiy.asset.vo.request.AssetLockRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.ExportTemplateRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.request.NumberMac;
+import com.antiy.asset.vo.request.ProcessTemplateRequest;
+import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
+import com.antiy.asset.vo.response.AssetCountResponse;
+import com.antiy.asset.vo.response.AssetMatchResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -248,10 +270,10 @@ public class AssetController {
      */
     @ApiOperation(value = "判断mac是否重复,true重复", notes = "传入资产mac")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/CheckRepeatMAC", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatMAC')")
-    public ActionResponse CheckRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatMAC(numberMac.getMac(), numberMac.getId()));
+    @RequestMapping(value = "/checkRepeatMAC", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:checkRepeatMAC')")
+    public ActionResponse checkRepeatMAC(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.checkRepeatMAC(numberMac.getMac(), numberMac.getId()));
     }
 
     /**
@@ -261,10 +283,10 @@ public class AssetController {
      */
     @ApiOperation(value = "判断编号是否重复，true重复", notes = "传入资产编号")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/CheckRepeatNumber", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:CheckRepeatNumber')")
-    public ActionResponse CheckRepeatNumber(@RequestBody NumberMac numberMac) throws Exception {
-        return ActionResponse.success(iAssetService.CheckRepeatNumber(numberMac.getNumber(), numberMac.getId()));
+    @RequestMapping(value = "/checkRepeatNumber", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:checkRepeatNumber')")
+    public ActionResponse checkRepeatNumber(@RequestBody NumberMac numberMac) throws Exception {
+        return ActionResponse.success(iAssetService.checkRepeatNumber(numberMac.getNumber(), numberMac.getId()));
     }
 
 
@@ -533,5 +555,12 @@ public class AssetController {
     @RequestMapping(value = "/query/assetInfo", method = RequestMethod.POST)
     public ActionResponse queryAssetInfo(@RequestBody AssetMatchRequest request) {
         return ActionResponse.success(iAssetService.queryAssetInfo(request));
+    }
+
+    @ApiOperation(value = "资产探测使用-查询该区域资产已使用的ip", notes = "查询该区域资产已使用的ip")
+    @RequestMapping(value = "/queryIpByAreaId", method = RequestMethod.POST)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse")})
+    public ActionResponse queryIpByAreaId(@RequestBody AssetIpRequest request) {
+        return ActionResponse.success(iAssetService.queryIpByAreaId(request));
     }
 }

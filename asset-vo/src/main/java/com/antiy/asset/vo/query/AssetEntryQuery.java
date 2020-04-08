@@ -42,7 +42,8 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
         if (ArrayUtils.isEmpty(assetStatus)) {
             //todo 根据新需求确定资产状态
             assetStatus = new int[]{AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-                    AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode(),
+//                    AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode(),
+                    AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.WAIT_RETIRE.getCode(),
                     AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.RETIRE.getCode()};
         }
 

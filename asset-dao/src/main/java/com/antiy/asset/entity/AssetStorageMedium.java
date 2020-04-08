@@ -55,6 +55,22 @@ public class AssetStorageMedium extends BaseEntity {
      */
     private String  osVersion;
     /**
+     * 是否可租借
+     */
+    private Integer isRent;
+    /**
+     * 硬盘类型
+     */
+    private Integer diskType;
+    /**
+     * 标识
+     */
+    private String  identification;
+    /**
+     * 标识授权
+     */
+    private String  identificationAuthorization;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -78,6 +94,38 @@ public class AssetStorageMedium extends BaseEntity {
      * 状态,1 未删除,0已删除
      */
     private Integer status;
+
+    public Integer getIsRent() {
+        return isRent;
+    }
+
+    public void setIsRent(Integer isRent) {
+        this.isRent = isRent;
+    }
+
+    public Integer getDiskType() {
+        return diskType;
+    }
+
+    public void setDiskType(Integer diskType) {
+        this.diskType = diskType;
+    }
+
+    public String getIdentification() {
+        return identification;
+    }
+
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
+
+    public String getIdentificationAuthorization() {
+        return identificationAuthorization;
+    }
+
+    public void setIdentificationAuthorization(String identificationAuthorization) {
+        this.identificationAuthorization = identificationAuthorization;
+    }
 
     public String getAssetId() {
         return assetId;

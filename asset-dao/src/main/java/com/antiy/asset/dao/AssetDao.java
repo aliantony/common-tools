@@ -1,14 +1,20 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetAssembly;
+import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.entity.RollbackEntity;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.AssetSchemeQuery;
 import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.request.AssetIpRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.response.AssetAreaAndIpResponse;
 import com.antiy.asset.vo.response.AssetMatchResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
@@ -393,4 +399,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     int deleteRollBack(@Param("assetId") String assetId);
 
     List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
+
+
+    List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
 }

@@ -68,12 +68,15 @@
         <result column="custom_field" property="customField"/>
         <result column="ips" property="ips"/>
         <result column="macs" property="macs"/>
+        <result column="machine_name" property="machineName"/>
+        <result column="is_secrecy" property="isSecrecy"/>
+        <result column="code" property="code"/>
         <collection property="dependentBusiness" ofType="com.antiy.asset.entity.AssetBusiness" javaType="java.util.List" column="id" select="queryBusinessByAssetId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
     </sql>
 
     <sql id="Table_Name">
@@ -120,7 +123,10 @@
             modify_user,
             net_status,
             is_orphan,
-        custom_field
+            custom_field,
+            machine_name,
+            is_secrecy,
+            code
     </sql>
 
     <sql id="IF_Value_Column_List_ForBatch">
@@ -161,8 +167,10 @@
         #{entity.modifyUser },
         #{entity.netStatus },
         #{entity.isOrphan },
-        #{entity.customField }
-
+        #{entity.customField  },
+        #{entity.machineName },
+        #{entity.isSecrecy },
+        #{entity.code }
     </sql>
 
     <sql id="Where_Column">
@@ -292,17 +300,8 @@
         <if test=" location != null">
             location,
         </if>
-        <if test=" latitude != null">
-            latitude,
-        </if>
-        <if test=" longitude != null">
-            longitude,
-        </if>
         <if test=" houseLocation != null">
             house_location,
-        </if>
-        <if test=" firmwareVersion != null">
-            firmware_version,
         </if>
         <if test=" uuid != null">
             uuid,
@@ -352,8 +351,41 @@
         <if test=" stepNode != null">
             step_node,
         </if>
-        <if test=" memo != null">
-            memo,
+        <if test=" netStatus != null">
+            net_status,
+        </if>
+        <if test=" isOrphan != null">
+            is_orphan,
+        </if>
+        <if test=" customField != null">
+            custom_field,
+        </if>
+        <if test=" machineName != null">
+            machine_name,
+        </if>
+        <if test=" isSecrecy != null">
+            is_secrecy,
+        </if>
+        <if test=" code != null">
+            code,
+        </if>
+        <if test=" installDate != null">
+            install_date,
+        </if>
+        <if test=" activiateDate != null">
+            activiate_date,
+        </if>
+        <if test=" expirationReminder != null">
+            expiration_reminder,
+        </if>
+        <if test=" netType != null">
+            net_type,
+        </if>
+        <if test=" isBorrow != null">
+            is_borrow,
+        </if>
+        <if test=" key != null">
+            key,
         </if>
         <if test=" gmtCreate != null">
             gmt_create,
@@ -367,17 +399,11 @@
         <if test=" modifyUser != null">
             modify_user,
         </if>
+        <if test=" memo != null">
+            memo,
+        </if>
         <if test=" status != null">
             status,
-        </if>
-        <if test=" netStatus != null">
-            net_status,
-        </if>
-        <if test=" isOrphan != null">
-            is_orphan,
-        </if>
-        <if test=" customField != null">
-            custom_field,
         </if>
     </sql>
 
@@ -427,17 +453,8 @@
         <if test=" location != null">
             #{location },
         </if>
-        <if test=" latitude != null">
-            #{latitude },
-        </if>
-        <if test=" longitude != null">
-            #{longitude },
-        </if>
         <if test=" houseLocation != null">
             #{houseLocation },
-        </if>
-        <if test=" firmwareVersion != null">
-            #{firmwareVersion },
         </if>
         <if test=" uuid != null">
             #{uuid },
@@ -487,8 +504,41 @@
         <if test=" stepNode != null">
             #{stepNode },
         </if>
-        <if test=" memo != null">
-            #{memo },
+        <if test=" netStatus != null">
+            #{netStatus },
+        </if>
+        <if test=" isOrphan != null">
+            #{isOrphan },
+        </if>
+        <if test=" customField != null">
+            #{customField },
+        </if>
+        <if test=" machineName != null">
+            #{machineName },
+        </if>
+        <if test=" isSecrecy != null">
+            #{isSecrecy },
+        </if>
+        <if test=" code != null">
+            #{code },
+        </if>
+        <if test=" installDate != null">
+            #{installDate },
+        </if>
+        <if test=" activiateDate != null">
+            #{activiateDate },
+        </if>
+        <if test=" expirationReminder != null">
+            #{expirationReminder },
+        </if>
+        <if test=" netType != null">
+            #{netType },
+        </if>
+        <if test=" isBorrow != null">
+            #{isBorrow },
+        </if>
+        <if test=" key != null">
+            #{key },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -502,17 +552,11 @@
         <if test=" modifyUser != null">
             #{modifyUser },
         </if>
+        <if test=" memo != null">
+            #{memo },
+        </if>
         <if test=" status != null">
             #{status },
-        </if>
-        <if test=" netStatus != null">
-            #{netStatus },
-        </if>
-        <if test=" isOrphan != null">
-            #{isOrphan },
-        </if>
-        <if test=" customField != null">
-            #{customField },
         </if>
     </sql>
 
@@ -2214,6 +2258,18 @@ WHERE
             <foreach collection="ipMacPorts" open="(" separator="," item="item" close=")">
                 CONCAT_WS('&amp;',#{item.ip},#{item.mac})
             </foreach>
+
+    </select>
+    <select id="queryIpByAreaId" resultType="com.antiy.asset.vo.response.AssetAreaAndIpResponse" parameterType="com.antiy.asset.vo.request.AssetIpRequest">
+
+        SELECT
+            a.area_id as areaId,
+            r.ip
+        FROM
+            asset a
+            LEFT JOIN asset_ip_relation r ON ( a.id = r.asset_id AND a.`status` = 1 AND r.`status` = 1 )
+        WHERE
+        LOCATE(#{areaId}, left(area_id, length(#{areaId})))>0
 
     </select>
 </mapper>

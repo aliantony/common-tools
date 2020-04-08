@@ -21,60 +21,34 @@ public enum AssetStatusEnum implements CodeEnum {
      */
     CORRECTING(3,"整改中"),
     /**
-     * 入网待审批
-     */
-    NET_IN_LEADER_CHECK(4,"入网待审批"),
-    /**
-     * 入网审批未通过
-     */
-    NET_IN_LEADER_DISAGREE(5,"入网审批未通过"),
-    /**
      * 待准入
      */
-    NET_IN_CHECK(6,"待准入"),
+    NET_IN_CHECK(4,"待准入"),
     /**
      * 已入网
      */
-    NET_IN(7, "已入网"),
+    NET_IN(5, "已入网"),
     /**
      * 变更中
      */
-    IN_CHANGE(8, "变更中"),
+    IN_CHANGE(6, "变更中"),
     /**
-     * 待退役
+     * 待退回
      */
-    WAIT_RETIRE(9, "待退役"),
+    WAIT_RETIRE(7, "待退回"),
 
     /**
-     * 退役待审批
+     * 已退回
      */
-    WAIT_RETIRE_CHECK(10, "退役待审批"),
-    /**
-     * 退役审批未通过
-    */
-    RETIRE_DISAGREE(11, "退役审批未通过"),
-
-    /**
-     * 已退役
-     */
-    RETIRE(12, "已退役"),
+    RETIRE(8, "已退回"),
     /**
      * 待报废
      */
-    WAIT_SCRAP(13,"待报废"),
-    /**
-     * 报废待审批
-     */
-    WAIT_SCRAP_CHECK(14,"报废待审批"),
-    /**
-     * 报废审批未通过
-     */
-    SCRAP_DISAGREE(15,"报废审批未通过"),
-
+    WAIT_SCRAP(9,"待报废"),
     /**
      * 已报废
      */
-                             SCRAP(16, "已报废"),
+                             SCRAP(10, "已报废"),
                              /**
                               * 已报废
                               */

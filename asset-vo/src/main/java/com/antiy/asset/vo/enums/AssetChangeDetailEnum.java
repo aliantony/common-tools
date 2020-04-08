@@ -18,7 +18,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 入网审批-4
 	 */
-     OPERATION_WAIT_LEADER_CHECK("入网审批。审批情况：",AssetStatusEnum.NET_IN_LEADER_CHECK.getCode()),
+     OPERATION_WAIT_LEADER_CHECK("入网审批。审批情况：",AssetStatusEnum.NET_IN_CHECK.getCode()),
 	/**
 	 * 准入实施-6
 	 */
@@ -36,7 +36,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 退役申请-9
 	 */
-	OPERATION_APPLY_RETIRE("退役申请。",AssetStatusEnum.WAIT_RETIRE_CHECK.getCode()),
+	OPERATION_APPLY_RETIRE("退役申请。",AssetStatusEnum.WAIT_RETIRE.getCode()),
 	/**
 	 * 待退役-11
 	 */
@@ -48,7 +48,7 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 报废申请-13
 	 */
-	OPERATION_APPLY_SCRAP("报废申请。",AssetStatusEnum.WAIT_SCRAP_CHECK.getCode()),	/**
+	OPERATION_APPLY_SCRAP("报废申请。",AssetStatusEnum.WAIT_SCRAP.getCode()),	/**
 	 * 报废申请-13
 	 */
 	OPERATION_EXECUTE_SCRAP("报废执行。",AssetStatusEnum.SCRAP.getCode()),

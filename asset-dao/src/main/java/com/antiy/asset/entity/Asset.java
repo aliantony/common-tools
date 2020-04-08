@@ -1,10 +1,10 @@
 package com.antiy.asset.entity;
 
+import java.util.List;
+
 import com.antiy.common.base.BaseEntity;
 
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
 
 /**
  * <p> 资产主表 </p>
@@ -15,249 +15,283 @@ import java.util.List;
 
 public class Asset extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-    private Long              businessId;
+    private Long                businessId;
     /**
      * 配置模板idbaselineTemplateId
      */
-    private String            baselineTemplateId;
+    private String              baselineTemplateId;
     /**
      * 网络状态：1、在线 2、离线 3、未知
      */
-    private Integer           netStatus;
+    private Integer             netStatus;
     /**
      * 是否孤岛设备：1、是 0、否
      */
-    private Integer           isOrphan;
+    private Integer             isOrphan;
     /**
      * 自定义字段
      */
-    private String            customField;
+    private String              customField;
     /**
      * 配置模板名称
      */
-    private String            baselineTemplateName;
+    private String              baselineTemplateName;
     /**
      * 装机模板id
      */
-    private String            installTemplateId;
+    private String              installTemplateId;
     /**
      * stepNode
      */
-    private String            stepNode;
+    private String              stepNode;
     /**
      * 品类名称
      */
-    private String            version;
+    private String              version;
 
     /**
      * 是否入网
      */
-    private Integer           isInnet;
+    private Integer             isInnet;
     /**
      * 是否入网
      */
-    private String            latitude;
+    private String              latitude;
     /**
      * 是否入网
      */
-    private String            longitude;
+    private String              longitude;
 
     /**
      * json数据
      */
     @ApiModelProperty("资产组")
-    private String            assetGroup;
+    private String              assetGroup;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String            number;
+    private String              number;
     /**
      * 资产名称
      */
-    private String            name;
+    private String              name;
 
     /**
      * 安装方式1人工2自动
      */
     @ApiModelProperty("安装方式")
-    private Integer           installType;
+    private Integer             installType;
     @ApiModelProperty("安装方式")
-    private String            installTypeName;
+    private String              installTypeName;
     /**
      * 序列号
      */
-    private String            serial;
+    private String              serial;
     /**
      * 行政区划主键
      */
     @ApiModelProperty("归属区域")
-    private String            areaId;
+    private String              areaId;
     /**
      * 行政区划名称
      */
     @ApiModelProperty("行政区划名称")
-    private String            areaName;
+    private String              areaName;
     /**
      * 品类型号
      */
-    private Integer           categoryModel;
+    private Integer             categoryModel;
     /**
      * 品类名称
      */
-    private String            categoryModelName;
+    private String              categoryModelName;
     /**
      * 厂商
      */
-    private String            manufacturer;
+    private String              manufacturer;
     /**
      * 资产状态：1-待登记，2-不予登记，3-待配置，4-待验证，5-待入网，6待检查，7-已入网，8-待退役，9-已退役
      */
-    private Integer           assetStatus;
+    private Integer             assetStatus;
     /**
      * 准入状态，1已允许，2已禁止
      */
-    private Integer           admittanceStatus;
+    private Integer             admittanceStatus;
     /**
      * 操作系统,如果type为IDS或者IPS则此字段存放软件版本信息
      */
     @ApiModelProperty("操作系统")
-    private Long              operationSystem;
+    private Long                operationSystem;
     /**
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
-    private String            operationSystemName;
+    private String              operationSystemName;
 
     /**
      * 使用者主键
      */
     @ApiModelProperty("使用者")
-    private String            responsibleUserId;
+    private String              responsibleUserId;
 
     /**
      * 使用者名称
      */
     @ApiModelProperty("使用者")
-    private String            responsibleUserName;
+    private String              responsibleUserName;
 
     /**
      * 机房位置
      */
     @ApiModelProperty("机房位置")
-    private String            houseLocation;
+    private String              houseLocation;
     @ApiModelProperty("物理位置")
-    private String location;
+    private String              location;
     /**
      * 固件版本
      */
     @ApiModelProperty("固件版本")
-    private String            firmwareVersion;
+    private String              firmwareVersion;
     /**
      * 软件版本
      */
     @ApiModelProperty("软件版本")
-    private String            softwareVersion;
+    private String              softwareVersion;
 
     /**
      * 设备uuid
      */
-    private String            uuid;
+    private String              uuid;
 
-    private String            ips;
+    private String              ips;
     /**
      * mac
      */
-    private String            macs;
+    private String              macs;
     /**
      * 上报来源,1-自动上报，2-人工上报
      */
-    private Integer           assetSource;
+    private Integer             assetSource;
     /**
      * 上报来源名称
      */
-    private String            assetSourceName;
+    private String              assetSourceName;
     /**
      * 资产重要程度：1核心2重要3一般
      */
     @ApiModelProperty("重要程度")
-    private Integer           importanceDegree;
+    private Integer             importanceDegree;
     /**
      * 资产重要程度：1核心2重要3一般
      */
     @ApiModelProperty("重要程度")
-    private String            importanceDegreeName;
+    private String              importanceDegreeName;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String            describle;
-
+    private String              describle;
+    /**
+     * 机器名
+     */
+    private String              machineName;
+    /**
+     * 是否涉密：1涉密，0-不涉密
+     */
+    private Integer             isSecrecy;
+    /**
+     * 国资码
+     */
+    private String              code;
     /**
      * 首次入网时间
      */
-    private Long              firstEnterNett;
+    private Long                firstEnterNett;
     /**
      * 首次发现时间
      */
-    private Long              firstDiscoverTime;
+    private Long                firstDiscoverTime;
     /**
      * 使用到期时间
      */
     @ApiModelProperty("到期时间")
-    private Long              serviceLife;
+    private Long                serviceLife;
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long              buyDate;
+    private Long                buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private String            warranty;
+    private String              warranty;
     /**
      * 创建时间
      */
-    private Long              gmtCreate;
+    private Long                gmtCreate;
     /**
      * 更新时间
      */
-    private Long              gmtModified;
+    private Long                gmtModified;
     /**
      * 备注
      */
     @ApiModelProperty("描述")
-    private String            memo;
+    private String              memo;
     /**
      * 创建人
      */
-    private Integer           createUser;
+    private Integer             createUser;
     /**
      * 修改人
      */
-    private Integer           modifyUser;
+    private Integer             modifyUser;
     /**
      * 状态,1未删除,0已删除
      */
-    private Integer           status;
+    private Integer             status;
     @ApiModelProperty("未修复漏洞数量")
-    private String            vulCount;
+    private String              vulCount;
     @ApiModelProperty("未安装补丁数量")
-    private String            patchCount;
+    private String              patchCount;
     @ApiModelProperty("部门名")
-    private String            departmentName;
+    private String              departmentName;
     @ApiModelProperty("告警数量")
-    private String            alarmCount;
+    private String              alarmCount;
 
+    private Long                baselineTemplateCorrelationGmt;
 
-    private Long              baselineTemplateCorrelationGmt;
-
-    private Long              installTemplateCorrelationGmt;
+    private Long                installTemplateCorrelationGmt;
     @ApiModelProperty("从属业务集合")
     private List<AssetBusiness> dependentBusiness;
+
+    public String getMachineName() {
+        return machineName;
+    }
+
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
+    }
+
+    public Integer getIsSecrecy() {
+        return isSecrecy;
+    }
+
+    public void setIsSecrecy(Integer isSecrecy) {
+        this.isSecrecy = isSecrecy;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public List<AssetBusiness> getDependentBusiness() {
         return dependentBusiness;
@@ -626,9 +660,6 @@ public class Asset extends BaseEntity {
     public void setGmtModified(Long gmtModified) {
         this.gmtModified = gmtModified;
     }
-
-
-
 
     public Integer getCreateUser() {
         return createUser;
