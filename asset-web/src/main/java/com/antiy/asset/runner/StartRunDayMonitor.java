@@ -37,6 +37,7 @@ public class StartRunDayMonitor implements ApplicationRunner {
         assetRunRecord.setUniqueId(SnowFlakeUtil.getSnowId());
         assetRunRecord.setStartTime(currTime);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
         logger.info("记录系统启动时间： " + sdf.format(currTime));
         runRecordDao.insert(assetRunRecord);
 
