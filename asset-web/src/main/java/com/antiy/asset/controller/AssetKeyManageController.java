@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetKeyManageService;
+import com.antiy.asset.vo.enums.KeyStatusEnum;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -33,7 +34,7 @@ public class AssetKeyManageController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
     public ActionResponse queryList(@RequestBody @ApiParam(value = "query") AssetKeyManageQuery query) throws Exception {
-        return ActionResponse.success(keyManageService.queryList(query));
+        return ActionResponse.success(keyManageService.findPageAssetKeys(query));
     }
 
     /**
@@ -87,7 +88,7 @@ public class AssetKeyManageController {
     @RequestMapping(value = "/freeze", method = RequestMethod.POST)
     public ActionResponse keyFreeze(@RequestBody AssetKeyManageRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
-        return ActionResponse.success(keyManageService.keyFreeze(request));
+        return ActionResponse.success(keyManageService.keyFreeze(request, KeyStatusEnum.KEY_FREEZE.getStatus()));
     }
 
     /**
@@ -101,7 +102,7 @@ public class AssetKeyManageController {
     @RequestMapping(value = "/unfreeze", method = RequestMethod.POST)
     public ActionResponse keyUnfreeze(@RequestBody AssetKeyManageRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
-        return ActionResponse.success(keyManageService.keyFreeze(request));
+        return ActionResponse.success(keyManageService.keyFreeze(request, KeyStatusEnum.KEY_RECIPIENTS.getStatus()));
     }
 
     /**
@@ -114,6 +115,7 @@ public class AssetKeyManageController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public ActionResponse keyDelete(@RequestBody AssetKeyManageRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyRemove(request));
     }
 }

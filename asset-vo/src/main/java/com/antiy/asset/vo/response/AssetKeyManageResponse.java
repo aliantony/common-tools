@@ -2,7 +2,7 @@ package com.antiy.asset.vo.response;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class AsssetKeyManageResponse {
+public class AssetKeyManageResponse {
     /**
      * 主键ID
      */
