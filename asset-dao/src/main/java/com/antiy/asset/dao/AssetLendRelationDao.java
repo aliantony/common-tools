@@ -1,8 +1,11 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetLendRelation;
+import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
+import com.antiy.asset.vo.response.ApproveListResponse;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
+import com.antiy.asset.entity.AssetOaOrderHandle;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.ObjectQuery;
 
@@ -29,4 +32,12 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     List<AssetLendRelationResponse> queryHistory(ObjectQuery assetId);
 
     int countHistory(ObjectQuery objectQuery);
+
+    List<AssetLendRelationResponse> queryHistory(String assetId);
+
+    Integer insertOrderHandle(AssetOaOrderHandle assetOaOrderHandle);
+
+    List<ApproveListResponse> queryApproveList(ApproveListQuery query);
+
+    Integer queryApproveListCount(ApproveListQuery query);
 }

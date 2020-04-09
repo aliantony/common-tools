@@ -220,6 +220,12 @@
             <include refid="IF_Value_Column_List"></include>
         </trim>
     </insert>
+    <insert id="insertOrderHandle">
+        INSERT INTO
+            asset_oa_order_handle ( order_number, asset_id )
+        VALUES
+            ( #{orderNumber}, #{assetId} )
+    </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetLendRelation" >
         update
@@ -327,7 +333,7 @@
         set gmt_modified=#{returnTime}
         where unique_id=#{uniqueId} and status=1
     </update>
-    <select id="countHistory">
+    <select id="countHistory" resultType="int">
         select
           count(*)
           from
@@ -354,6 +360,46 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <select id="queryApproveList" resultType="com.antiy.asset.vo.response.ApproveListResponse">
+        SELECT
+            aoo.id AS orderId,
+            aoo.number AS orderNumber,
+            aooa.apply_user_name AS orderUser,
+            aoo.gmt_create AS time
+        FROM
+            asset_oa_order aoo
+            LEFT JOIN asset_oa_order_apply aooa ON aoo.number = aooa.order_number
+        WHERE
+            aoo.order_type = 4
+            AND aoo.order_status = 1
+        <if test=" blurQueryField != null">
+            and ( aoo.number LIKE CONCAT('%',replace(replace(#{blurQueryField},'%','\%'),'_','\_'),'%')
+            or aooa.apply_user_name LIKE CONCAT('%',replace(replace(#{blurQueryField},'%','\%'),'_','\_'),'%'))
+        </if>
+        order by aoo.gmt_create
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+    <select id="queryApproveListCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT( 1 )
+        FROM
+            (
+        SELECT
+            aoo.id
+        FROM
+            asset_oa_order aoo
+            LEFT JOIN asset_oa_order_apply aooa ON aoo.number = aooa.order_number
+        WHERE
+            aoo.order_type = 4
+            AND aoo.order_status = 1
+            <if test=" blurQueryField != null">
+                and ( aoo.number LIKE CONCAT('%',replace(replace(#{blurQueryField},'%','\%'),'_','\_'),'%')
+                or aooa.apply_user_name LIKE CONCAT('%',replace(replace(#{blurQueryField},'%','\%'),'_','\_'),'%'))
+            </if>
+            ) a
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

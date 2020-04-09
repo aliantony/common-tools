@@ -1,7 +1,9 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetLendRelationService;
+import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
+import com.antiy.asset.vo.request.AssetLendInfoRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
@@ -10,6 +12,7 @@ import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -36,7 +39,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetLendRelation") @RequestBody AssetLendRelationRequest assetLendRelationRequest)throws Exception{
+    public ActionResponse saveSingle(@ApiParam(value = "assetLendRelation") @RequestBody AssetLendRelationRequest assetLendRelationRequest) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.saveAssetLendRelation(assetLendRelationRequest));
     }
 
@@ -51,7 +54,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetLendRelation")AssetLendRelationRequest assetLendRelationRequest)throws Exception{
+    public ActionResponse updateSingle(@ApiParam(value = "assetLendRelation") AssetLendRelationRequest assetLendRelationRequest) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.updateAssetLendRelation(assetLendRelationRequest));
     }
 
@@ -123,7 +126,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
     })
     @RequestMapping(value = "/query/id", method = RequestMethod.GET)
-    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition)throws Exception{
+    public ActionResponse queryById(@ApiParam(value = "主键封装对象") QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryAssetLendRelationById(queryCondition));
     }
 
@@ -138,8 +141,38 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest)throws Exception{
+    public ActionResponse deleteById(@ApiParam(value = "主键封装对象") BaseRequest baseRequest) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.deleteAssetLendRelationById(baseRequest));
+    }
+
+    /**
+     * 保存出借信息
+     *
+     * @param request
+     * @return actionResponse
+     */
+    @ApiOperation(value = "保存出借信息", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/save/lendInfo", method = RequestMethod.POST)
+    public ActionResponse saveLendInfo(@ApiParam(value = "AssetLendInfo") AssetLendInfoRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.saveLendInfo(request));
+    }
+
+    /**
+     * 审批单综合查询
+     *
+     * @param request
+     * @return actionResponse
+     */
+    @ApiOperation(value = "审批单综合查询", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/query/approveList", method = RequestMethod.POST)
+    public ActionResponse queryApproveList(@ApiParam(value = "AssetLendInfo") ApproveListQuery request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryApproveList(request));
     }
 }
 
