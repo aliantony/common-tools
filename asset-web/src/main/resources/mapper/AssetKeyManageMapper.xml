@@ -302,7 +302,7 @@
                     modified_user = #{item.modifiedUser },
                 </if>
                 <if test=" gmtModified != null">
-                    gmt_modified = #{item.gmtModified },
+                    gmt_modified = #{item.gmtModified }
                 </if>
 
             </set>
