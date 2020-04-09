@@ -14,6 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.antiy.asset.dao.AssetBusinessDao;
@@ -50,6 +51,16 @@ public class AssetBaseDataCache<T extends BaseEntity> {
     private AssetUserDao                                    assetUserDao;
     @Resource
     private AssetDepartmentDao                              assetDepartmentDao;
+
+    /**
+     * 刷新缓存:10分钟刷新一次
+     */
+    @Scheduled(cron = "0 */10 * * * ?")
+    private void refreshTask() {
+        log.info("定时刷新缓存开始");
+        init();
+        log.info("定时刷新缓存结束");
+    }
 
     @PostConstruct
     private void init() {
