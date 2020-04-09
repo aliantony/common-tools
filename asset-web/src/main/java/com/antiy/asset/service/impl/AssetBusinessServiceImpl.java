@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.AssetBusinessDao;
 import com.antiy.asset.dao.AssetBusinessRelationDao;
+import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetBusiness;
@@ -10,6 +11,7 @@ import com.antiy.asset.entity.AssetBusinessRelation;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.util.SnowFlakeUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
@@ -64,6 +66,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Resource
     private AssetBaseDataCache                                                 assetBaseDataCache;
 
+    @Resource
+    private AssetCategoryModelDao assetCategoryModelDao;
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String saveAssetBusiness(AssetBusinessRequest request) throws Exception {
@@ -121,7 +125,6 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Override
     public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getUniqueId(), "唯一键不能为空！");
-        // ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
         String name = request.getName();
         AssetBusiness business = assetBusinessDao.getByName(name);
         if (business != null && !business.getUniqueId().equals(request.getUniqueId())) {
@@ -255,6 +258,9 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         List<String> areaId = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         String[] strings = areaId.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
+        //获取计算设备的品类型号
+        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        assetAddOfBusinessQuery.setCategoryModels(categoryModels);
         Integer count = assetDao.countQueryAsset(assetAddOfBusinessQuery);
         if (count > 0) {
             List<AssetResponse> assetList = assetDao.queryAsset(assetAddOfBusinessQuery);

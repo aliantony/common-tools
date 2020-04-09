@@ -2171,10 +2171,16 @@ WHERE
 
                 <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
                     <include refid="assetRelationBusiness"></include>
-                    and a.category_model=1
+
                     and a.asset_status in (5,6)
                     and a.status=1
                 </trim>
+                <if test="categoryModels !=null and categoryModels.size()>0">
+                    and a.category_model in
+                    <foreach index="index" item="item" collection="categoryModels" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
                 <if test=" areaIds != null and areaIds.length > 0 ">
                     and a.area_id in
                     <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
@@ -2199,10 +2205,15 @@ WHERE
 
             <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
                 <include refid="assetRelationBusiness"></include>
-                and a.category_model=1
                 and a.asset_status in (5,6)
                 and a.status=1
             </trim>
+            <if test="categoryModels !=null and categoryModels.size()>0">
+                and a.category_model in
+                <foreach index="index" item="item" collection="categoryModels" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
             <if test=" areaIds != null and areaIds.length > 0 ">
                 and a.area_id in
                 <foreach index="index" item="item" collection="areaIds" open="(" separator="," close=")">
