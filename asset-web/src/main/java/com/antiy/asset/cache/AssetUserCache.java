@@ -22,7 +22,7 @@ import com.google.common.collect.Maps;
  * @Date: 2020/4/8 14:45
  */
 @Component
-public class AssetUsetCache {
+public class AssetUserCache {
     private Logger                         log    = LogUtils.get(this.getClass());
 
     @Resource
@@ -45,27 +45,27 @@ public class AssetUsetCache {
         }
     }
 
-    public static void put(AssetUser assetUser) {
+    public void put(AssetUser assetUser) {
         if (!caches.containsKey(assetUser.getId())) {
             caches.put(assetUser.getId(), assetUser);
         }
     }
 
-    public static AssetUser get(Integer id) {
+    public AssetUser get(Integer id) {
         if (caches.containsKey(id)) {
             return caches.get(id);
         }
         return null;
     }
 
-    public static String getName(Integer id) {
+    public String getName(Integer id) {
         if (caches.containsKey(id)) {
             return caches.get(id).getName();
         }
         return null;
     }
 
-    public static void remove(Integer id) {
+    public void remove(Integer id) {
         if (caches.containsKey(id)) {
             caches.remove(id);
         }

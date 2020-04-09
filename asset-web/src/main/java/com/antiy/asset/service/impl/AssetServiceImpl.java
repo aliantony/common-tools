@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBussinessCache;
 import com.antiy.asset.cache.AssetGroupCache;
-import com.antiy.asset.cache.AssetUsetCache;
+import com.antiy.asset.cache.AssetUserCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -168,9 +168,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetBusinessServiceImpl                                            businessService;
     @Resource
-    private AssetUsetCache                                                      assetUsetCache;
+    private AssetUserCache assetUsetCache;
     @Resource
     private AssetGroupCache                                                     assetGroupCache;
+    @Resource
+    private AssetBussinessCache                                                 assetBussinessCache;
     private Object                                                              lock     = new Object();
 
     @Override
@@ -3548,15 +3550,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 责任人名称
             if (StringUtils.isNotBlank(asset.getResponsibleUserId())) {
                 asset.setResponsibleUserName(
-                    AssetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
+                    assetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
             }
             // 所属业务
             if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
-                asset.setAssetBusiness(AssetBussinessCache.getAllName(asset.getAssetBusiness().split(",")));
+                asset.setAssetBusiness(assetBussinessCache.getAllName(asset.getAssetBusiness().split(",")));
             }
-            //所属区域
+            // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {
-                String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
+                String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    asset.getAreaId());
                 SysArea sysArea = null;
                 try {
                     sysArea = redisUtil.getObject(key, SysArea.class);

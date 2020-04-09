@@ -46,7 +46,7 @@ public class AssetBussinessCache {
         }
     }
 
-    public static String getAllName(String[] split) {
+    public String getAllName(String[] split) {
         StringBuilder stringBuilder = new StringBuilder();
         Arrays.stream(split).forEach(s -> {
             stringBuilder.append(caches.get(DataTypeUtils.stringToInteger(s)));
@@ -54,20 +54,20 @@ public class AssetBussinessCache {
         return stringBuilder.substring(0, stringBuilder.length() - 1);
     }
 
-    public static void put(AssetBusiness assetBusiness) {
+    public void put(AssetBusiness assetBusiness) {
         if (!caches.containsKey(assetBusiness.getId())) {
             caches.put(assetBusiness.getId(), assetBusiness.getName());
         }
     }
 
-    public static String get(Integer id) {
+    public String get(Integer id) {
         if (caches.containsKey(id)) {
             return caches.get(id);
         }
         return null;
     }
 
-    public static void remove(Integer id) {
+    public void remove(Integer id) {
         if (caches.containsKey(id)) {
             caches.remove(id);
         }

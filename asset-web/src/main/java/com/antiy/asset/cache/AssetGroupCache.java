@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.antiy.asset.dao.AssetGroupDao;
 import com.antiy.asset.entity.AssetGroup;
 import com.antiy.asset.util.DataTypeUtils;
+import com.antiy.common.utils.LogUtils;
 
 /**
  * 资产组缓存数据
@@ -35,7 +35,7 @@ public class AssetGroupCache {
     @Resource
     private AssetGroupDao               assetGroupDao;
 
-    public static String getAllName(String[] split) {
+    public String getAllName(String[] split) {
         StringBuilder stringBuilder = new StringBuilder();
         Arrays.stream(split).forEach(s -> {
             stringBuilder.append(caches.get(DataTypeUtils.stringToInteger(s)));
@@ -52,20 +52,20 @@ public class AssetGroupCache {
         }
     }
 
-    public static void put(AssetGroup assetGroup) {
+    public void put(AssetGroup assetGroup) {
         if (!caches.containsKey(assetGroup.getId())) {
             caches.put(assetGroup.getId(), assetGroup.getName());
         }
     }
 
-    public static String get(Integer id) {
+    public String get(Integer id) {
         if (caches.containsKey(id)) {
             return caches.get(id);
         }
         return null;
     }
 
-    public static void remove(Integer id) {
+    public void remove(Integer id) {
         if (caches.containsKey(id)) {
             caches.remove(id);
         }

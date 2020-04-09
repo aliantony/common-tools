@@ -46,16 +46,16 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 @Service
 public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> implements IAssetBusinessService {
 
-        private Logger logger = LogUtils.get(this.getClass());
+    private Logger                                                             logger = LogUtils.get(this.getClass());
 
-        @Resource
-        private AssetBusinessDao assetBusinessDao;
-        @Resource
-        private BaseConverter<AssetBusinessRequest, AssetBusiness>  requestConverter;
-        @Resource
-        private BaseConverter<AssetBusiness, AssetBusinessResponse> responseConverter;
-        @Resource
-        private BaseConverter<Asset,AssetResponse> assetConverter;
+    @Resource
+    private AssetBusinessDao                                                   assetBusinessDao;
+    @Resource
+    private BaseConverter<AssetBusinessRequest, AssetBusiness>                 requestConverter;
+    @Resource
+    private BaseConverter<AssetBusiness, AssetBusinessResponse>                responseConverter;
+    @Resource
+    private BaseConverter<Asset, AssetResponse>                                assetConverter;
 
     @Resource
     private BaseConverter<AssetBusinessRelationRequest, AssetBusinessRelation> relationRequestConverter;
@@ -63,6 +63,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     private AssetBusinessRelationDao                                           assetBusinessRelationDao;
     @Resource
     private AssetDao                                                           assetDao;
+    @Resource
+    private AssetBussinessCache                                                assetBussinessCache;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -78,14 +80,14 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         assetBusiness.setGmtModified(System.currentTimeMillis());
         assetBusinessDao.insert(assetBusiness);
         // 更新缓存
-        AssetBussinessCache.put(assetBusiness);
+        assetBussinessCache.put(assetBusiness);
         List<AssetBusinessRelationRequest> list = request.getAssetRelaList();
         List<AssetBusinessRelation> assetRelationList = new ArrayList<>();
         for (AssetBusinessRelationRequest itme : list) {
             Asset asset = assetDao.getById(itme.getAssetId());
-            if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())||
-                    AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))){
-                throw  new BusinessException("资产状态不合符流程！");
+            if (!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())
+                  || AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))) {
+                throw new BusinessException("资产状态不合符流程！");
             }
             AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
             assetBusinessRelation.setAssetId(itme.getAssetId());
@@ -117,74 +119,6 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
      * t.setGmtCreate(System.currentTimeMillis()); t.setUniqueId(request.getUniqueId());
      * t.setAssetBusinessId(request.getId()); }); assetBusinessRelationDao.insertBatch(assetBusinessRelationList);
      * return assetBusinessId.toString(); } */
-        @Resource
-        private BaseConverter<AssetBusinessRelationRequest,AssetBusinessRelation> relationRequestConverter;
-        @Resource
-        private AssetBusinessRelationDao assetBusinessRelationDao;
-        @Resource
-        private AssetDao assetDao;
-        @Transactional(rollbackFor = Exception.class)
-        @Override
-        public String saveAssetBusiness(AssetBusinessRequest request) throws Exception {
-            String name = request.getName();
-            AssetBusiness business= assetBusinessDao.getByName(name);
-            if(business!=null){
-                throw new  BusinessException("业务名不能重复！");
-            }
-            AssetBusiness assetBusiness = requestConverter.convert(request, AssetBusiness.class);
-            assetBusiness.setUniqueId(SnowFlakeUtil.getSnowId());
-            assetBusiness.setGmtCreate(System.currentTimeMillis());
-            assetBusiness.setGmtModified(System.currentTimeMillis());
-            assetBusinessDao.insert(assetBusiness);
-            List<AssetBusinessRelationRequest> list = request.getAssetRelaList();
-            List<AssetBusinessRelation> assetRelationList=new ArrayList<>();
-            for(AssetBusinessRelationRequest itme:list){
-                Asset asset = assetDao.getById(itme.getAssetId());
-                if(!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())||
-                        AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))){
-                    throw  new BusinessException("资产状态不合符流程！");
-                }
-                AssetBusinessRelation assetBusinessRelation=new AssetBusinessRelation();
-                assetBusinessRelation.setAssetId(itme.getAssetId());
-                assetBusinessRelation.setBusinessInfluence(itme.getBusinessInfluence());
-                assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
-                assetBusinessRelation.setAssetBusinessId(assetBusiness.getId());
-                assetBusinessRelation.setUniqueId(assetBusiness.getUniqueId());
-                assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
-                assetBusinessRelation.setGmtModified(System.currentTimeMillis());
-                assetRelationList.add(assetBusinessRelation);
-            }
-            assetBusinessRelationDao.insertBatch(assetRelationList);
-            return assetBusiness.getStringId();
-        }
-        /*@Transactional(rollbackFor = Exception.class)
-        @Override
-        public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
-            ParamterExceptionUtils.isNull(request.getUniqueId(),"唯一键不能为空！");
-            ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
-            String name = request.getName();
-            AssetBusiness business= assetBusinessDao.getByName(name);
-            if(business!=null && !business.getUniqueId().equals(request.getUniqueId())){
-                throw new  BusinessException("业务名不能重复！");
-            }
-            AssetBusiness assetBusiness = requestConverter.convert(request, AssetBusiness.class);
-            String uniqueId=assetBusiness.getUniqueId();
-            assetBusiness.setUniqueId(null);
-            assetBusiness.setGmtModified(System.currentTimeMillis());
-            Integer assetBusinessId = assetBusinessDao.update(assetBusiness);
-            assetBusiness.setUniqueId(uniqueId);
-            assetBusinessRelationDao.deleteByUniqueId(uniqueId);
-            List<AssetBusinessRelationRequest> assetRelaList = request.getAssetRelaList();
-            List<AssetBusinessRelation> assetBusinessRelationList = relationRequestConverter.convert(assetRelaList, AssetBusinessRelation.class);
-            assetBusinessRelationList.forEach(t->{
-                t.setGmtModified(System.currentTimeMillis());
-                t.setGmtCreate(System.currentTimeMillis());
-                t.setUniqueId(request.getUniqueId());
-                t.setAssetBusinessId(request.getId());
-            });
-            assetBusinessRelationDao.insertBatch(assetBusinessRelationList);
-            return assetBusinessId.toString();
-        }*/
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -314,7 +248,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     public String deleteAssetBusinessById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         // 更新缓存
-        AssetBussinessCache.remove(baseRequest.getId());
+        assetBussinessCache.remove(baseRequest.getId());
         return assetBusinessDao.deleteById(baseRequest.getStringId()).toString();
     }
 

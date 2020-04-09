@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -9,11 +10,13 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.antiy.asset.cache.AssetUsetCache;
+import com.antiy.asset.cache.AssetUserCache;
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetDepartmentDao;
@@ -41,20 +44,6 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * <p> 资产用户信息 服务实现类 </p>
@@ -83,6 +72,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     private AssetDao                                    assetDao;
     @Resource
     private AssetDepartmentDao                          assetDepartmentDao;
+    @Resource
+    private AssetUserCache                              assetUserCache;
 
     @Override
     public String saveAssetUser(AssetUserRequest request) throws Exception {
@@ -95,7 +86,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser);
         // 更新缓存
-        AssetUsetCache.put(assetUser);
+        assetUserCache.put(assetUser);
         return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
@@ -180,7 +171,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
         // 更新缓存
-        AssetUsetCache.remove(id);
+        assetUserCache.remove(id);
         return ActionResponse.success();
     }
 

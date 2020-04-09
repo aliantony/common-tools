@@ -71,6 +71,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
+    @Resource
+    private AssetGroupCache                               assetGroupCache;
 
     @Override
     @Transactional
@@ -86,7 +88,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
         // 更新缓存
-        AssetGroupCache.put(assetGroup);
+        assetGroupCache.put(assetGroup);
         if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -396,7 +398,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
             // 更新缓存
-            AssetGroupCache.remove((int) id);
+            assetGroupCache.remove((int) id);
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }
