@@ -97,7 +97,6 @@ public class AssetBusinessController {
     public ActionResponse updateSingle(@ApiParam(value = "assetBusiness") @Valid @RequestBody AssetBusinessRequest assetBusinessRequest)throws Exception{
         return ActionResponse.success(iAssetBusinessService.updateAssetBusiness(assetBusinessRequest));
     }
-
     /**
      * 批量查询
      *
