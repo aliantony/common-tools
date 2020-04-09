@@ -20,7 +20,26 @@ import com.antiy.asset.dao.AssetSafetyEquipmentDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.AssetStorageMediumDao;
 import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.entity.*;
+import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetAssembly;
+import com.antiy.asset.entity.AssetBusiness;
+import com.antiy.asset.entity.AssetBusinessRelation;
+import com.antiy.asset.entity.AssetCpeFilter;
+import com.antiy.asset.entity.AssetDepartment;
+import com.antiy.asset.entity.AssetGroup;
+import com.antiy.asset.entity.AssetGroupRelation;
+import com.antiy.asset.entity.AssetHardSoftLib;
+import com.antiy.asset.entity.AssetInstallTemplate;
+import com.antiy.asset.entity.AssetIpRelation;
+import com.antiy.asset.entity.AssetLock;
+import com.antiy.asset.entity.AssetMacRelation;
+import com.antiy.asset.entity.AssetNetworkEquipment;
+import com.antiy.asset.entity.AssetOperationRecord;
+import com.antiy.asset.entity.AssetSafetyEquipment;
+import com.antiy.asset.entity.AssetSoftwareRelation;
+import com.antiy.asset.entity.AssetStorageMedium;
+import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.entity.IdCount;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
@@ -185,6 +204,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -3629,11 +3649,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request) {
         List<AssetAreaAndIpResponse> assetAreaAndIpResponses = assetDao.queryIpByAreaId(request);
-        LogUtils.info(logger,"查询区域ip",assetAreaAndIpResponses);
+        LogUtils.info(logger,"查询区域ip:{}",assetAreaAndIpResponses);
         return assetAreaAndIpResponses.stream().filter(ipResponse -> StringUtils.isNotBlank(ipResponse.getIp())).collect(Collectors.toList());
     }
 
+    @Override
+    public String recommendName() {
 
+        return UUID.randomUUID().toString();
+    }
 
     /**
      * 授权数量校验
