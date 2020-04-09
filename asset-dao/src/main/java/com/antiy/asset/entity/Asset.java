@@ -12,8 +12,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class Asset extends BaseEntity {
-
-    private static final long serialVersionUID = 1L;
+    /**
+     * 厂商名称版本
+     */
+    private String            mnv;
 
     private Long              businessId;
     /**
@@ -287,6 +289,54 @@ public class Asset extends BaseEntity {
 
     @ApiModelProperty("从属业务,详情展示")
     private String            assetBusiness;
+
+    public String getMnv() {
+        return mnv;
+    }
+
+    public void setMnv(String mnv) {
+        this.mnv = mnv;
+    }
+
+    public Long getInstallDate() {
+        return installDate;
+    }
+
+    public void setInstallDate(Long installDate) {
+        this.installDate = installDate;
+    }
+
+    public Long getActiviateDate() {
+        return activiateDate;
+    }
+
+    public void setActiviateDate(Long activiateDate) {
+        this.activiateDate = activiateDate;
+    }
+
+    public Long getExpirationReminder() {
+        return expirationReminder;
+    }
+
+    public void setExpirationReminder(Long expirationReminder) {
+        this.expirationReminder = expirationReminder;
+    }
+
+    public Integer getIsBorrow() {
+        return isBorrow;
+    }
+
+    public void setIsBorrow(Integer isBorrow) {
+        this.isBorrow = isBorrow;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getAssetBusiness() {
         return assetBusiness;

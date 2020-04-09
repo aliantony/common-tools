@@ -73,6 +73,7 @@
         <result column="machine_name" property="machineName"/>
         <result column="is_secrecy" property="isSecrecy"/>
         <result column="code" property="code"/>
+        <result column="mnv" property="mnv"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -2306,6 +2307,9 @@ WHERE
         left join baseline_template bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        <if test="departmentList != null and departmentList.size() > 0">
+            left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
+        </if>
         <where>
             <trim prefixOverrides="and">
                 <include refid="mq_relation"></include>
@@ -2316,6 +2320,7 @@ WHERE
     <select id="queryAssetList" resultMap="BaseResultMap">
         SELECT
         asset.*,
+        CONCAT_WS('/',asset.manufacturer,asset.name,asset.version) as mnv,
         GROUP_CONCAT( DISTINCT air.ip ) AS ip,
         GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
@@ -2334,6 +2339,9 @@ WHERE
         left join baseline_template bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        <if test="departmentList != null and departmentList.size() > 0">
+            left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
+        </if>
         <where>
             <trim prefixOverrides="and">
                 <include refid="mq_relation"></include>
@@ -2444,10 +2452,6 @@ WHERE
         <if test="houseLocation != null and houseLocation != ''">
             and asset.house_location like
             CONCAT('%',replace(replace(replace(#{houseLocation},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-        </if>
-        <if test="describle != null and describle != ''">
-            and asset.describle like
-            CONCAT('%',replace(replace(replace(#{describle},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="key != null and key != ''">
             and asset.key like CONCAT('%',replace(replace(replace(#{key},'\\','\\\\'),'%','\%'),'_','\_'),'%')
@@ -2576,6 +2580,12 @@ WHERE
         <if test="assetBusiness != null and assetBusiness.size() > 0">
             and abr.id in
             <foreach item="item" collection="assetBusiness" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="departmentList != null and departmentList.size() > 0">
+            and au.department_id in
+            <foreach item="item" collection="departmentList" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
