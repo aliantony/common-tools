@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetLendRelation", description = "")
 @RestController
-@RequestMapping("/v1/asset/assetlendrelation")
+@RequestMapping("/api/v1/asset/assetlendrelation")
 public class AssetLendRelationController {
 
     @Resource

@@ -271,6 +271,7 @@
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
+            and a.is_borrow=1
             and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
@@ -299,6 +300,7 @@
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
+            and a.is_borrow=1
             and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
