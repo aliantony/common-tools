@@ -13,7 +13,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.cache.AssetGroupCache;
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.SelectConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetGroupDao;
@@ -72,7 +72,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Resource
     private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
     @Resource
-    private AssetGroupCache                               assetGroupCache;
+    private AssetBaseDataCache                            assetBaseDataCache;
 
     @Override
     @Transactional
@@ -88,7 +88,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         assetGroup.setGmtCreate(System.currentTimeMillis());
         int result = assetGroupDao.insert(assetGroup);
         // 更新缓存
-        assetGroupCache.put(assetGroup);
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_GROUP, assetGroup);
         if (ArrayUtils.isNotEmpty(request.getAssetIds())) {
             for (String assetId : request.getAssetIds()) {
                 AssetGroupRelation assetGroupRelation = new AssetGroupRelation();
@@ -197,6 +197,8 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             }
 
             updateGroupResult = assetGroupDao.update(assetGroup);
+            // 更新缓存
+            assetBaseDataCache.update(AssetBaseDataCache.ASSET_GROUP, assetGroup);
 
             // -----------------------------更新资产主表的资产组字段内容start-----------------------------
             for (String assetId : assetIdArr) {
@@ -398,7 +400,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
             // 更新缓存
-            assetGroupCache.remove((int) id);
+            assetBaseDataCache.remove(AssetBaseDataCache.ASSET_GROUP, (int) id);
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }

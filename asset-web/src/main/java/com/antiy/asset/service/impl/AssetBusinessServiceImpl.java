@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.antiy.asset.cache.AssetBussinessCache;
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.AssetBusinessDao;
 import com.antiy.asset.dao.AssetBusinessRelationDao;
 import com.antiy.asset.dao.AssetDao;
@@ -64,7 +64,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Resource
     private AssetDao                                                           assetDao;
     @Resource
-    private AssetBussinessCache                                                assetBussinessCache;
+    private AssetBaseDataCache                                                 assetBaseDataCache;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -80,7 +80,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         assetBusiness.setGmtModified(System.currentTimeMillis());
         assetBusinessDao.insert(assetBusiness);
         // 更新缓存
-        assetBussinessCache.put(assetBusiness);
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_BUSINESS, assetBusiness);
         List<AssetBusinessRelationRequest> list = request.getAssetRelaList();
         List<AssetBusinessRelation> assetRelationList = new ArrayList<>();
         for (AssetBusinessRelationRequest itme : list) {
@@ -136,7 +136,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         assetBusiness.setId(null);
         assetBusiness.setGmtModified(System.currentTimeMillis());
         Integer result = assetBusinessDao.updateByUniqueId(assetBusiness);
-
+        // 更新缓存
+        assetBaseDataCache.update(AssetBaseDataCache.ASSET_BUSINESS, assetBusiness);
         // 分离出编辑 、 删除 、 新增的 资产
         AssetAddOfBusinessQuery assetAddOfBusinessQuery = new AssetAddOfBusinessQuery();
         assetAddOfBusinessQuery.setUniqueId(uniqueId);
@@ -248,7 +249,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     public String deleteAssetBusinessById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         // 更新缓存
-        assetBussinessCache.remove(baseRequest.getId());
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_BUSINESS, baseRequest.getId());
         return assetBusinessDao.deleteById(baseRequest.getStringId()).toString();
     }
 

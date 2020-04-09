@@ -1,5 +1,19 @@
 package com.antiy.asset.service.impl;
 
+import static com.antiy.biz.file.FileHelper.logger;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.dao.AssetUserDao;
 import com.antiy.asset.entity.AssetDepartment;
@@ -23,18 +37,6 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.*;
-
-import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -55,11 +57,14 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     private AesEncoder                                              aesEncoder;
     @Resource
     private AssetUserDao                                            assetUserDao;
+    @Resource
+    private AssetBaseDataCache                                      assetBaseDataCache;
     private static Map<String, Integer>                             parentMap = new HashMap<>();
 
     static {
         parentMap.put("0", 0);
     }
+
     @Override
     @Transactional
     public ActionResponse saveAssetDepartment(AssetDepartmentRequest request) throws Exception {
@@ -68,18 +73,20 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         checkParent(request, assetDepartment);
         assetDepartment.setGmtCreate(System.currentTimeMillis());
         Integer result = assetDepartmentDao.insert(assetDepartment);
+        // 更新缓存
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_DEPARTMENT, assetDepartment);
         if (result != null && !Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment
-                .getId(), assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER,
-                BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment.getId(),
+                    assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
-        return ActionResponse.success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser()
-            .getUsername()));
+        return ActionResponse
+            .success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
     }
 
     private boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
@@ -88,7 +95,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             assetDepartmentQuery.setName(request.getName());
             // 根据id是否为null进行不同的查询重名操作
             return assetDepartmentDao.findRepeatName(
-                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()), request.getName()) >= 1;
+                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()),
+                request.getName()) >= 1;
         }
         return false;
     }
@@ -101,13 +109,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         checkParent(request, assetDepartment);
         assetDepartment.setGmtModified(System.currentTimeMillis());
         Integer result = assetDepartmentDao.update(assetDepartment);
+        // 更新缓存
+        assetBaseDataCache.update(AssetBaseDataCache.ASSET_DEPARTMENT, assetDepartment);
         if (!Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(),
                 AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment
-                .getId(), assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER,
-                BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(
+                new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment.getId(),
+                    assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(result);
@@ -201,8 +211,10 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
                     assetDepartmentNodeResponse.setLevelType(1);
                     parentMap.put(assetDepartmentNodeResponse.getStringId(), 1);
                 } else {
-                    parentMap.put(assetDepartmentNodeResponse.getStringId(), parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
-                    assetDepartmentNodeResponse.setLevelType(parentMap.get(assetDepartmentNodeResponse.getParentId())+1);
+                    parentMap.put(assetDepartmentNodeResponse.getStringId(),
+                        parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
+                    assetDepartmentNodeResponse
+                        .setLevelType(parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
                 }
                 dealLevel(assetDepartmentNodeResponse.getChildrenNode());
             }
@@ -227,11 +239,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         BusinessExceptionUtils.isTrue(resultUser.size() <= 0, "部门下存在关联用户，不能删除");
         AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
         int result = assetDepartmentDao.delete(list);
+        // 更新缓存
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_DEPARTMENT,
+            list.stream().map(AssetDepartment::getId).collect(Collectors.toList()));
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
             AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), assetDepartmentLog.getId(), assetDepartmentLog.getName(), assetDepartmentLog,
-            BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
+            assetDepartmentLog.getId(), assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
+            BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
     }
@@ -263,16 +279,18 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         list.add(assetDepartment);
         BusinessExceptionUtils.isEmpty(list, "该部门不存在");
         Integer result = assetDepartmentDao.delete(list);
+        // 更新缓存
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_DEPARTMENT, (Integer) id);
         AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
         if (!Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
                 AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
-            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), (Integer)id, assetDepartmentLog.getName(), assetDepartmentLog,
-                BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), (Integer) id,
+                assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
+                BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);
     }
 }
-

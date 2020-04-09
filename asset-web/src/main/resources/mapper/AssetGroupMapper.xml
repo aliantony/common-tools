@@ -186,7 +186,7 @@
         </if>
 
     </sql>
-    <select id="getAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="getAll" resultType="com.antiy.asset.entity.AssetGroup" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from

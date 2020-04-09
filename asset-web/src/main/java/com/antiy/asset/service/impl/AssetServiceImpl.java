@@ -33,9 +33,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
-import com.antiy.asset.cache.AssetBussinessCache;
-import com.antiy.asset.cache.AssetGroupCache;
-import com.antiy.asset.cache.AssetUserCache;
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
@@ -168,11 +166,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetBusinessServiceImpl                                            businessService;
     @Resource
-    private AssetUserCache assetUsetCache;
-    @Resource
-    private AssetGroupCache                                                     assetGroupCache;
-    @Resource
-    private AssetBussinessCache                                                 assetBussinessCache;
+    private AssetBaseDataCache                                                  assetBaseDataCache;
     private Object                                                              lock     = new Object();
 
     @Override
@@ -3549,12 +3543,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetList.stream().forEach(asset -> {
             // 责任人名称
             if (StringUtils.isNotBlank(asset.getResponsibleUserId())) {
-                asset.setResponsibleUserName(
-                    assetUsetCache.getName(DataTypeUtils.stringToInteger(asset.getResponsibleUserId())));
+                AssetUser assetUser = (AssetUser) assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
+                    DataTypeUtils.stringToInteger(asset.getResponsibleUserId()));
+                if (assetUser!= null) {
+                    if (StringUtils.isNotBlank(assetUser.getDepartmentId())) {
+                        AssetDepartment department = (AssetDepartment) assetBaseDataCache.get(
+                                AssetBaseDataCache.ASSET_DEPARTMENT, DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
+                        asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
+                    }
+                }
             }
             // 所属业务
             if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
-                asset.setAssetBusiness(assetBussinessCache.getAllName(asset.getAssetBusiness().split(",")));
+                List<AssetBusiness> assetBusinessList = assetBaseDataCache.getAll(AssetBaseDataCache.ASSET_BUSINESS,
+                    DataTypeUtils.stringArrayToIntegerArray(asset.getAssetBusiness().split(",")));
+                asset.setAssetBusiness(StringUtils
+                    .join(assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
             }
             // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {
@@ -3564,7 +3568,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 try {
                     sysArea = redisUtil.getObject(key, SysArea.class);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("获取区域名称出错");
                 }
                 asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
             }

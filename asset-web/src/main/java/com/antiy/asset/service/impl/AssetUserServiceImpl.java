@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.antiy.asset.cache.AssetUserCache;
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetDepartmentDao;
@@ -73,7 +73,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Resource
     private AssetDepartmentDao                          assetDepartmentDao;
     @Resource
-    private AssetUserCache                              assetUserCache;
+    private AssetBaseDataCache                          assetBaseDataCache;
 
     @Override
     public String saveAssetUser(AssetUserRequest request) throws Exception {
@@ -86,7 +86,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_INSERT.getName() + " {}", assetUser);
         // 更新缓存
-        assetUserCache.put(assetUser);
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_USER, assetUser);
         return aesEncoder.encode(assetUser.getStringId(), LoginUserUtil.getLoginUser().getUsername());
     }
 
@@ -100,6 +100,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_USER_UPDATE.getName(), assetUser.getId(),
             assetUser.getName(), assetUser, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_UPDATE.getName() + " {}", assetUser);
+        // 更新缓存
+        assetBaseDataCache.update(AssetBaseDataCache.ASSET_USER, assetUser);
         return assetUserDao.update(assetUser);
     }
 
@@ -171,7 +173,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
         // 更新缓存
-        assetUserCache.remove(id);
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_USER, id);
         return ActionResponse.success();
     }
 
