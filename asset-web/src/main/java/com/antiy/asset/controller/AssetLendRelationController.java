@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
+import com.antiy.asset.vo.request.ApproveInfoRequest;
 import com.antiy.asset.vo.request.AssetLendInfoRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.UniqueKeyRquest;
@@ -175,6 +176,21 @@ public class AssetLendRelationController {
     @RequestMapping(value = "/query/approveList", method = RequestMethod.POST)
     public ActionResponse queryApproveList(@ApiParam(value = "AssetLendInfo") ApproveListQuery request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryApproveList(request));
+    }
+
+    /**
+     * 审批信息查询
+     *
+     * @param request
+     * @return actionResponse
+     */
+    @ApiOperation(value = "审批信息查询", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/query/approveInfo", method = RequestMethod.POST)
+    public ActionResponse queryApproveInfo(@ApiParam(value = "AssetLendInfo") ApproveInfoRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryApproveInfo(request));
     }
 }
 

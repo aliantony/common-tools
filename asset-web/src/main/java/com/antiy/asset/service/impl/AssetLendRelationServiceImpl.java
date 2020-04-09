@@ -8,8 +8,10 @@ import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
+import com.antiy.asset.vo.request.ApproveInfoRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.AssetLendInfoRequest;
+import com.antiy.asset.vo.response.ApproveInfoResponse;
 import com.antiy.asset.vo.response.ApproveListResponse;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.*;
@@ -127,11 +129,20 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query) {
-        Integer count = assetLendRelationDao.queryApproveListCount(query);
-
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
 
         return new PageResult<ApproveListResponse>(query.getPageSize(),assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
+    }
+
+    @Override
+    public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
+        ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
+        approveInfoResponse.setOrderNumber(request.getOrderNumber());
+        approveInfoResponse.setOrderUser(request.getOrderUser());
+
+        //Integer departmentId = assetLendRelationDao.found
+
+        return approveInfoResponse;
     }
 }
