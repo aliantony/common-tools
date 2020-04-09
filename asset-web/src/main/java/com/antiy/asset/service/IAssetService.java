@@ -407,4 +407,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     List<SelectResponse> queryTemplate();
+
+    List<SelectResponse> queryBusiness();
 }

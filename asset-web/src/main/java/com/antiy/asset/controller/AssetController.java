@@ -607,4 +607,10 @@ public class AssetController {
     public ActionResponse queryTemplate() {
         return ActionResponse.success(iAssetService.queryTemplate());
     }
+    @ApiOperation(value = "资产列表查询-从属业务下拉查询", notes = "")
+    @RequestMapping(value = "/query/business", method = RequestMethod.POST)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
+    public ActionResponse queryBusiness() {
+        return ActionResponse.success(iAssetService.queryBusiness());
+    }
 }

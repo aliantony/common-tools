@@ -319,7 +319,7 @@ public class AssetResponse extends BaseResponse {
     private Integer                        netStatus;
     @ApiModelProperty("物理位置")
     private String                         location;
-    @ApiModelProperty("从属业务,详情展示")
+    @ApiModelProperty("从属业务名称,详情展示")
     private String                         assetBusiness;
     @ApiModelProperty("从属业务集合")
     private List<AssetBusinessResponse>    dependentBusiness;
