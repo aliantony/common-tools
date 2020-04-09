@@ -9,10 +9,12 @@ import com.antiy.asset.vo.request.UniqueKeyRquest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.*;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 
 /**
@@ -22,7 +24,7 @@ import java.util.List;
  */
 @Api(value = "AssetLendRelation", description = "")
 @RestController
-@RequestMapping("/v1/asset/assetlendrelation")
+@RequestMapping("/api/v1/asset/assetlendrelation")
 public class AssetLendRelationController {
 
     @Resource
@@ -106,7 +108,7 @@ public class AssetLendRelationController {
      */
     @ApiOperation(value = "出借历史接口", notes = "传入资产id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+            @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
     })
     @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
     public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") @RequestBody ObjectQuery objectQuery)throws Exception{

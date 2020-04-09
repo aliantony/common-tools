@@ -265,12 +265,13 @@
           count(*)
         FROM asset  as a
         left join asset_user as au on a.responsible_user_id=au.id and au.status=1
-        left join asset_key_manage as akm on a.id=akm.key_user_id and akm.status=1
+        left join asset_key_manage as akm on a.id=akm.key_user_id and akm.is_delete=1
         left join  asset_lend_relation as alr
         on a.id=alr.asset_id and alr.lend_status =1 and alr.status=1
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
+            and a.is_borrow=1
             and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
@@ -293,12 +294,13 @@
         asset_user.name as useName
         FROM asset  as a
         left join asset_user as au on a.responsible_user_id=au.id and au.status=1
-        left join asset_key_manage as akm on a.id=akm.key_user_id and akm.status=1
+        left join asset_key_manage as akm on a.id=akm.key_user_id and akm.is_delete=1
         left join  asset_lend_relation as alr
         on a.id=alr.asset_id and alr.lend_status =1 and alr.status=1
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
+            and a.is_borrow=1
             and a.status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
@@ -323,7 +325,7 @@
           from
           asset_lend_relation as alr
           left join asset as a on alr.asset_id=a.id and a.status=1
-          left join asset_key_manage as akm on alr.asset_id=akm.key_user_id and akm.status=1
+          left join asset_key_manage as akm on alr.asset_id=akm.key_user_id and akm.is_delete=1
           left join asset_user as au on use_id=au.id and au.status=1
           left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.unique_id=#{uniqueId} and alr.status=1
