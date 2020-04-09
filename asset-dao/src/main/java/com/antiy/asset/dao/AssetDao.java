@@ -418,4 +418,18 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> queryAssetList(AssetMultipleQuery asset);
+
+    List<String> queryManufacturer();
+
+    List<String> queryName();
+
+    List<String> queryVersion();
+
+    List<SelectResponse> queryAssetGroup();
+
+    List<SelectResponse> queryUser();
+
+    List<SelectResponse> queryDepartment();
+
+    List<SelectResponse> queryTemplate();
 }

@@ -3633,6 +3633,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetAreaAndIpResponses.stream().filter(ipResponse -> StringUtils.isNotBlank(ipResponse.getIp())).collect(Collectors.toList());
     }
 
+
+
     /**
      * 授权数量校验
      */
@@ -3700,6 +3702,41 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
+    }
+
+    @Override
+    public List<String> queryManufacturer() {
+        return assetDao.queryManufacturer();
+    }
+
+    @Override
+    public List<String> queryName() {
+        return assetDao.queryName();
+    }
+
+    @Override
+    public List<String> queryVersion() {
+        return assetDao.queryVersion();
+    }
+
+    @Override
+    public List<SelectResponse> queryAssetGroup() {
+        return assetDao.queryAssetGroup();
+    }
+
+    @Override
+    public List<SelectResponse> queryUser() {
+        return assetDao.queryUser();
+    }
+
+    @Override
+    public List<SelectResponse> queryDepartment() {
+        return assetDao.queryDepartment();
+    }
+
+    @Override
+    public List<SelectResponse> queryTemplate() {
+        return assetDao.queryTemplate();
     }
 }
 

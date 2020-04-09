@@ -2360,6 +2360,63 @@ WHERE
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="queryManufacturer" resultType="java.lang.String">
+        select distinct manufacturer from asset where status = 1
+    </select>
+    <select id="queryName" resultType="java.lang.String">
+        select distinct name from asset where status = 1
+    </select>
+    <select id="queryVersion" resultType="java.lang.String">
+        select distinct version from asset where status = 1
+    </select>
+    <select id="queryAssetGroup" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select distinct
+            t2.id,
+            t2.name as value
+        from
+            asset_group_relation t1
+            left join asset_group t2 on t1.asset_group_id = t2.id
+        where
+            t1.status = 1
+            and t2.status = 1
+    </select>
+    <select id="queryUser" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select distinct
+            t2.id,
+            t2.name as value
+        from
+            asset t1
+            left join asset_user t2 on t1.responsible_user_id = t2.id
+        where
+            t1.responsible_user_id is not null
+            and t1.status = 1
+            and t2.status = 1
+    </select>
+    <select id="queryDepartment" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select distinct
+            t3.id,
+            t3.name as value
+        from
+            asset t1
+            left join asset_user t2 on t1.responsible_user_id = t2.id
+            left join asset_department t3 on t2.department_id = t3.id
+        where
+            t1.responsible_user_id is not null
+            and t1.status = 1
+            and t2.status = 1
+            and t3.status = 1
+    </select>
+    <select id="queryTemplate" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select distinct
+            t2.id,
+            t2.tp_name as value
+        from
+            asset t1
+            left join baseline_template t2 on t1.baseline_template_id = t2.id
+        where
+            t1.status = 1
+            and t1.baseline_template_id is not null
+    </select>
     <!--资产主表的条件-->
     <sql id="mq_asset">
         <if test=" multipleQuery != null and multipleQuery.trim != ''">

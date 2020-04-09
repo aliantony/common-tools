@@ -358,11 +358,53 @@ public interface IAssetService extends IBaseService<Asset> {
 
     /**
      * 资产列表综合查询
+     *
      * @param asset
      * @return
      */
     PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery asset);
 
-
     List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
+
+    /**
+     * 资产列表查询-厂商下拉
+     * @return
+     */
+    List<String> queryManufacturer();
+
+    /**
+     * 资产列表查询-名称下拉
+     * @return
+     */
+    List<String> queryName();
+
+    /**
+     * 资产列表查询-版本下拉
+     * @return
+     */
+    List<String> queryVersion();
+
+    /**
+     * 资产列表查询-资产组下拉
+     * @return
+     */
+    List<SelectResponse> queryAssetGroup();
+
+    /**
+     * 资产列表查询-使用者下拉
+     * @return
+     */
+    List<SelectResponse> queryUser();
+
+    /**
+     * 资产列表查询-所属组织下拉
+     * @return
+     */
+    List<SelectResponse> queryDepartment();
+
+    /**
+     * 资产列表查询-基准模板下拉
+     * @return
+     */
+    List<SelectResponse> queryTemplate();
 }
