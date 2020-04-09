@@ -3763,6 +3763,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<SelectResponse> queryTemplate() {
         return assetDao.queryTemplate();
     }
+    @Override
+    public List<SelectResponse> queryBusiness() {
+        return assetDao.queryBusiness();
+    }
 }
 
 @Component
