@@ -7,9 +7,9 @@ import com.antiy.common.exception.BusinessException;
  */
 
 public enum KeyStatusEnum {
-    KEY_NO_RECIPIENTS(0, "未领用"),
-    KEY_RECIPIENTS(1, "领用"),
-    KEY_FREEZE(2, "冻结");
+    KEY_NO_RECIPIENTS(1, "未领用"),
+    KEY_RECIPIENTS(2, "领用"),
+    KEY_FREEZE(3, "冻结");
 
     private Integer status;
     private String name;

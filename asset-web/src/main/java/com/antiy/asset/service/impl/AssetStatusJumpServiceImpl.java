@@ -112,7 +112,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
 //            setInProcess(statusJumpRequest, assetsInDb);
-
             List<String> procInstIds = startActivity(statusJumpRequest, loginUser);
             try{
                 updateData(statusJumpRequest, assetsInDb);
@@ -419,7 +418,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
     private List<String>  startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) throws Exception {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
-        //整改后面做
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
                 && Boolean.FALSE.equals(assetStatusRequest.getWaitCorrectToWaitRegister())) {
@@ -539,13 +537,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setGmtCreate(currentTime);
         assetOperationRecord.setOperateUserId(loginUserId);
-        if(AssetFlowEnum.NET_IN_CHECK.equals(statusJumpRequest.getAssetFlowEnum())
-                || AssetFlowEnum.RETIRE_CHECK.equals(statusJumpRequest.getAssetFlowEnum())
-                ||AssetFlowEnum.SCRAP_CHECK.equals(statusJumpRequest.getAssetFlowEnum())){
-            assetOperationRecord.setProcessResult(Boolean.TRUE.equals(statusJumpRequest.getAgree()) ? 1 : 0);
-        }else {
-            assetOperationRecord.setProcessResult(null);
-        }
         assetOperationRecord.setOperateUserName(loginUserName);
         assetOperationRecord.setCreateUser(loginUserId);
         assetOperationRecord.setNote(statusJumpRequest.getNote() == null ? "" : statusJumpRequest.getNote());
@@ -554,22 +545,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetOperationRecord.setCheckUserName(statusJumpRequest.getCheckUserName()==null?"":statusJumpRequest.getCheckUserName());
         assetOperationRecord.setExecuteUserId(statusJumpRequest.getExecuteUserId()==null?0:DataTypeUtils.stringToInteger(statusJumpRequest.getExecuteUserId()));
         assetOperationRecord.setExecuteUserName(statusJumpRequest.getExecuteUserName()==null?"":statusJumpRequest.getExecuteUserName());
-        if (AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-                || AssetFlowEnum.RETIRE_DISAGREE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-        ) {
-            Integer taskId = getTaksIdByBusinessKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode() + "-" + assetId);
-            assetOperationRecord.setTaskId(taskId);
-        }
-        if( AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-             ||AssetFlowEnum.SCRAP_DISAGREE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())
-        ){
-           /* try{
-                Integer taskId = getTaksIdByBusinessKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode() + "-" + assetId);
-                assetOperationRecord.setTaskId(taskId);
-            }catch (Exception e){
-                throw new BusinessException(e.getMessage());
-            }*/
-        }
         return assetOperationRecord;
     }
 

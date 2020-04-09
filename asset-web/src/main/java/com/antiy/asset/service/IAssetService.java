@@ -1,8 +1,18 @@
 package com.antiy.asset.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
+import com.antiy.asset.vo.query.AssetMultipleQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.*;
@@ -11,13 +21,6 @@ import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -63,7 +66,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * 资产认领/操作
      */
 
-    public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest)throws Exception;
+    public ActionResponse dealAssetOperation(AssetLockRequest assetLockRequest) throws Exception;
 
     /**
      * 判断资产是否重复
@@ -82,7 +85,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer changeStatus(String[] ids, Integer assetStatus) throws Exception;
-
 
     /**
      * 批量保存 <p> 批量保存 m
@@ -285,7 +287,6 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     List<String> queryIdByAreaIds(AreaIdRequest request) throws Exception;
 
-
     // void implementationFile(ProcessTemplateRequest baseRequest) throws Exception;
 
     /**
@@ -311,14 +312,15 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer assetNoRegister(AssetStatusChangeRequest assetStatusChangeRequest) throws Exception;
+
     Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception;
+
     /**
      * 基准模板下拉
      *
      * @return
      */
     List<SelectResponse> queryBaselineTemplate();
-
 
     List<AssetEntity> assetsTemplate(ProcessTemplateRequest asset) throws Exception;
 
@@ -353,6 +355,13 @@ public interface IAssetService extends IBaseService<Asset> {
     List<String> findAvailableAssetStatus(Integer assetStatus);
 
     List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
+
+    /**
+     * 资产列表综合查询
+     * @param asset
+     * @return
+     */
+    PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery asset);
 
 
     List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);

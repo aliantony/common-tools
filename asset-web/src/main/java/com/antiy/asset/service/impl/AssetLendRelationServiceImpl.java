@@ -9,6 +9,7 @@ import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -85,8 +86,12 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public List<AssetLendRelationResponse> queryHistory(String assetId) {
-        List<AssetLendRelationResponse> assetLendRelationResponses=assetLendRelationDao.queryHistory(assetId);
-        return assetLendRelationResponses;
+    public PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
+        int count=assetLendRelationDao.countHistory(objectQuery);
+        if(count>0){
+            List<AssetLendRelationResponse> assetLendRelationResponses=assetLendRelationDao.queryHistory(objectQuery);
+            return new PageResult<>(objectQuery.getPageSize(),count,objectQuery.getCurrentPage(),assetLendRelationResponses);
+        }
+        return new PageResult<>(objectQuery.getPageSize(),0,objectQuery.getCurrentPage(), Lists.newArrayList());
     }
 }

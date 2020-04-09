@@ -4,6 +4,7 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
+import com.antiy.asset.vo.query.AssetMultipleQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
@@ -71,7 +72,6 @@ public class AssetController {
     @ApiOperation(value = "登记资产", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:saveSingle')")
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         return iAssetService.saveAsset(asset);
     }
@@ -555,6 +555,25 @@ public class AssetController {
     @RequestMapping(value = "/query/assetInfo", method = RequestMethod.POST)
     public ActionResponse queryAssetInfo(@RequestBody AssetMatchRequest request) {
         return ActionResponse.success(iAssetService.queryAssetInfo(request));
+    }
+
+    /**
+     * 资产列表综合查询
+     *
+     * @param asset
+     * @return actionResponse
+     */
+    @ApiOperation(value = "资产列表综合查询", notes = "传入查询条件")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"),})
+    @RequestMapping(value = "/query/assetlist", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
+    public ActionResponse queryAssetList(@RequestBody @ApiParam(value = "asset") AssetMultipleQuery asset) throws Exception {
+        if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
+            if (asset.getSortName().equals("gmtCreate")) {
+                asset.setSortName("gmt_create");
+            }
+        }
+        return ActionResponse.success(iAssetService.queryAssetPage(asset));
     }
 
     @ApiOperation(value = "资产探测使用-查询该区域资产已使用的ip", notes = "查询该区域资产已使用的ip")

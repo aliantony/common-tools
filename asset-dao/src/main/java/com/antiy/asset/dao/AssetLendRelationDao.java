@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.IBaseDao;
+import com.antiy.common.base.ObjectQuery;
 
 import java.util.List;
 
@@ -25,5 +26,7 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
 
     Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest);
 
-    List<AssetLendRelationResponse> queryHistory(String assetId);
+    List<AssetLendRelationResponse> queryHistory(ObjectQuery assetId);
+
+    int countHistory(ObjectQuery objectQuery);
 }

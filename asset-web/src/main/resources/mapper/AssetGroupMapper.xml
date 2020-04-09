@@ -186,7 +186,13 @@
         </if>
 
     </sql>
-
+    <select id="getAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where status = 1
+    </select>
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetGroup" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
@@ -235,14 +241,6 @@
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
-    </select>
-
-
-    <select id="getAll" resultType="com.antiy.asset.entity.AssetGroup">
-        select
-        <include refid="Base_Column_List"/>
-        from
-        <include refid="Table_Name"></include>
     </select>
 
 

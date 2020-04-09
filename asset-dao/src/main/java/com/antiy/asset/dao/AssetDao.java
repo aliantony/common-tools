@@ -1,5 +1,13 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.antiy.asset.entity.*;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.entity.AssetHardSoftLib;
@@ -19,11 +27,6 @@ import com.antiy.asset.vo.response.AssetMatchResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -238,7 +241,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Integer> queryIdsByAssetStatus(@Param(value = "assetStatus") Integer assetStatus,
                                         @Param(value = "areaIds") List<String> areaIds);
 
-
     Integer changeAsset(Asset asset);
 
     Integer selectRepeatNumber(@Param("number") String number, @Param("id") String id);
@@ -371,7 +373,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Integer queryOriginStatus(@Param("assetId") String stringId);
 
-    List<Asset> getByAssetIds(@Param("assetIdList")List<String> assetIdList);
+    List<Asset> getByAssetIds(@Param("assetIdList") List<String> assetIdList);
 
     /**
      * 更新资产基准模板
@@ -402,4 +404,18 @@ public interface AssetDao extends IBaseDao<Asset> {
 
 
     List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
+
+    /**
+     * 资产综合查询数量
+     * @param asset
+     * @return
+     */
+    Integer queryAssetCount(AssetMultipleQuery asset);
+
+    /**
+     * 资产综合查询列表
+     * @param asset
+     * @return
+     */
+    List<Asset> queryAssetList(AssetMultipleQuery asset);
 }
