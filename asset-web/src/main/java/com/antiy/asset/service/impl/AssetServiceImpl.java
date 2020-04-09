@@ -20,24 +20,7 @@ import com.antiy.asset.dao.AssetSafetyEquipmentDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
 import com.antiy.asset.dao.AssetStorageMediumDao;
 import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.entity.AssetBusinessRelation;
-import com.antiy.asset.entity.AssetCpeFilter;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetGroupRelation;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.entity.AssetInstallTemplate;
-import com.antiy.asset.entity.AssetIpRelation;
-import com.antiy.asset.entity.AssetLock;
-import com.antiy.asset.entity.AssetMacRelation;
-import com.antiy.asset.entity.AssetNetworkEquipment;
-import com.antiy.asset.entity.AssetOperationRecord;
-import com.antiy.asset.entity.AssetSafetyEquipment;
-import com.antiy.asset.entity.AssetSoftwareRelation;
-import com.antiy.asset.entity.AssetStorageMedium;
-import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.intergration.OperatingSystemClient;
@@ -3650,6 +3633,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return assetAreaAndIpResponses.stream().filter(ipResponse -> StringUtils.isNotBlank(ipResponse.getIp())).collect(Collectors.toList());
     }
 
+
+
     /**
      * 授权数量校验
      */
@@ -3717,6 +3702,41 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
+    }
+
+    @Override
+    public List<String> queryManufacturer() {
+        return assetDao.queryManufacturer();
+    }
+
+    @Override
+    public List<String> queryName() {
+        return assetDao.queryName();
+    }
+
+    @Override
+    public List<String> queryVersion() {
+        return assetDao.queryVersion();
+    }
+
+    @Override
+    public List<SelectResponse> queryAssetGroup() {
+        return assetDao.queryAssetGroup();
+    }
+
+    @Override
+    public List<SelectResponse> queryUser() {
+        return assetDao.queryUser();
+    }
+
+    @Override
+    public List<SelectResponse> queryDepartment() {
+        return assetDao.queryDepartment();
+    }
+
+    @Override
+    public List<SelectResponse> queryTemplate() {
+        return assetDao.queryTemplate();
     }
 }
 
