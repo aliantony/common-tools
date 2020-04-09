@@ -2555,6 +2555,12 @@ WHERE
         <if test="activiateDateEndTime != null">
             and asset.activiate_date &lt;= #{activiateDateEndTime }
         </if>
+        <if test=" updateStartTime != null">
+            and asset.gmt_modified &gt;= #{updateStartTime }
+        </if>
+        <if test="updateEndTime != null">
+            and asset.gmt_modified &lt;= #{updateEndTime }
+        </if>
         and asset.status = 1
     </sql>
     <!--left join 后的查询条件-->

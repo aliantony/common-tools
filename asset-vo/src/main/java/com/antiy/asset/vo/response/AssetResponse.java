@@ -298,7 +298,11 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "装机模板关联时间")
     private Long                           installTemplateCorrelationGmt;
-
+    /**
+     * 首次发现时间
+     */
+    @ApiModelProperty(value = "首次发现时间")
+    private Long                           firstDiscoverTime;
     @ApiModelProperty(value = "解密id")
     private String                         decryptId;
 
@@ -342,6 +346,14 @@ public class AssetResponse extends BaseResponse {
     private String                         executeUserId;
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
+
+    public Long getFirstDiscoverTime() {
+        return firstDiscoverTime;
+    }
+
+    public void setFirstDiscoverTime(Long firstDiscoverTime) {
+        this.firstDiscoverTime = firstDiscoverTime;
+    }
 
     public String getDepartmentName() {
         return departmentName;

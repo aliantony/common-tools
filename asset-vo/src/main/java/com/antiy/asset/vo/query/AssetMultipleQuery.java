@@ -152,6 +152,26 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          activiateDateStartTime;
     @ApiModelProperty("启用时间结束时间")
     private Long          activiateDateEndTime;
+    @ApiModelProperty("更新时间起始时间")
+    private Long          updateStartTime;
+    @ApiModelProperty("更新时间结束时间")
+    private Long          updateEndTime;
+
+    public Long getUpdateStartTime() {
+        return updateStartTime;
+    }
+
+    public void setUpdateStartTime(Long updateStartTime) {
+        this.updateStartTime = updateStartTime;
+    }
+
+    public Long getUpdateEndTime() {
+        return updateEndTime;
+    }
+
+    public void setUpdateEndTime(Long updateEndTime) {
+        this.updateEndTime = updateEndTime;
+    }
 
     public List<String> getDepartmentList() {
         return departmentList;
