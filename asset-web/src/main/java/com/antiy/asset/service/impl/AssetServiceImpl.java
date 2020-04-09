@@ -3676,6 +3676,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetDepartment department = (AssetDepartment) assetBaseDataCache.get(
                                 AssetBaseDataCache.ASSET_DEPARTMENT, DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
                         asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
+                        asset.setDepartmentName(department.getName());
                     }
                 }
             }

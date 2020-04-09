@@ -2,8 +2,6 @@ package com.antiy.asset.vo.query;
 
 import java.util.List;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import com.antiy.common.base.ObjectQuery;
@@ -99,6 +97,12 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("使用者")
     @Encode
     private List<String>  responsibleUserIdList;
+    /**
+     * 所属组织
+     */
+    @ApiModelProperty("所属组织")
+    @Encode
+    private List<String>  departmentList;
 
     /**
      * 资产准入状态
@@ -109,7 +113,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 是否可借用
      */
-    @ApiModelProperty("是否可借用,2-否，1-是")
+    @ApiModelProperty("是否可借用：1-可借用，2-不可借用")
     private Integer       isBorrow;
 
     @ApiModelProperty("基准模板id")
@@ -148,15 +152,33 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          activiateDateStartTime;
     @ApiModelProperty("启用时间结束时间")
     private Long          activiateDateEndTime;
-    @ApiModelProperty("描述")
-    private String        describle;
+    @ApiModelProperty("更新时间起始时间")
+    private Long          updateStartTime;
+    @ApiModelProperty("更新时间结束时间")
+    private Long          updateEndTime;
 
-    public String getDescrible() {
-        return describle;
+    public Long getUpdateStartTime() {
+        return updateStartTime;
     }
 
-    public void setDescrible(String describle) {
-        this.describle = describle;
+    public void setUpdateStartTime(Long updateStartTime) {
+        this.updateStartTime = updateStartTime;
+    }
+
+    public Long getUpdateEndTime() {
+        return updateEndTime;
+    }
+
+    public void setUpdateEndTime(Long updateEndTime) {
+        this.updateEndTime = updateEndTime;
+    }
+
+    public List<String> getDepartmentList() {
+        return departmentList;
+    }
+
+    public void setDepartmentList(List<String> departmentList) {
+        this.departmentList = departmentList;
     }
 
     public String getMultipleQuery() {

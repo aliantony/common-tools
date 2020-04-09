@@ -156,6 +156,36 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     private Integer                 isSecrecy;
     @ApiModelProperty("国资码")
     private String                  code;
+    /**
+     * 网络类型:1红网，2篮网
+     */
+    @ApiModelProperty("网络类型:1红网，2篮网")
+    private String                  netType;
+    /**
+     * 是否借用：1-借用，2-未借用
+     */
+    @ApiModelProperty("是否可借用：1-可借用，2-不可借用")
+    private Integer                 isBorrow;
+    /**
+     * key
+     */
+    @ApiModelProperty("key")
+    private String                  key;
+    /**
+     * 装机时间
+     */
+    @ApiModelProperty("装机时间")
+    private Long                    installDate;
+    /**
+     * 启用时间
+     */
+    @ApiModelProperty("启用时间")
+    private Long                    activiateDate;
+    /**
+     * 到期提醒
+     */
+    @ApiModelProperty("到期提醒")
+    private Long                    expirationReminder;
 
     public String getMachineName() {
         return machineName;

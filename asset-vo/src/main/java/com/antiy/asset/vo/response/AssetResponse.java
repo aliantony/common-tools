@@ -19,12 +19,18 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetResponse extends BaseResponse {
-
+    /**
+     * 厂商名称版本
+     */
+    @ApiModelProperty("厂商名称版本")
+    private String                         mnv;
     /**
      * 业务名称
      */
     @ApiModelProperty("业务名称")
     private String                         businessName;
+    @ApiModelProperty("所属组织")
+    private String                         departmentName;
     /**
      * 资产编号
      */
@@ -122,7 +128,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 是否借用：1-借用，2-未借用
      */
-    @ApiModelProperty("是否借用：1-借用，2-未借用")
+    @ApiModelProperty("是否可借用：1-可借用，2-不可借用")
     private Integer                        isBorrow;
     /**
      * key
@@ -292,7 +298,11 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty(value = "装机模板关联时间")
     private Long                           installTemplateCorrelationGmt;
-
+    /**
+     * 首次发现时间
+     */
+    @ApiModelProperty(value = "首次发现时间")
+    private Long                           firstDiscoverTime;
     @ApiModelProperty(value = "解密id")
     private String                         decryptId;
 
@@ -336,6 +346,38 @@ public class AssetResponse extends BaseResponse {
     private String                         executeUserId;
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
+
+    public Long getFirstDiscoverTime() {
+        return firstDiscoverTime;
+    }
+
+    public void setFirstDiscoverTime(Long firstDiscoverTime) {
+        this.firstDiscoverTime = firstDiscoverTime;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public String getMnv() {
+        return mnv;
+    }
+
+    public void setMnv(String mnv) {
+        this.mnv = mnv;
+    }
+
+    public String getAssetBusiness() {
+        return assetBusiness;
+    }
+
+    public void setAssetBusiness(String assetBusiness) {
+        this.assetBusiness = assetBusiness;
+    }
 
     public String getBusinessName() {
         return businessName;
