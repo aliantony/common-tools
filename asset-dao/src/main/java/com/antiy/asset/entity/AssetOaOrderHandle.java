@@ -3,18 +3,13 @@ package com.antiy.asset.entity;
 
 public class AssetOaOrderHandle {
 
-  private long id;
+  private static final long serialVersionUID = 1L;
+
   private String orderNumber;
-  private long assetId;
-
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
+  /**
+   * 资产id
+   */
+  private Integer assetId;
 
 
   public String getOrderNumber() {
@@ -25,13 +20,21 @@ public class AssetOaOrderHandle {
     this.orderNumber = orderNumber;
   }
 
-
-  public long getAssetId() {
+  public Integer getAssetId() {
     return assetId;
   }
 
-  public void setAssetId(long assetId) {
+  public void setAssetId(Integer assetId) {
     this.assetId = assetId;
+  }
+
+
+  @Override
+  public String toString() {
+    return "AssetOaOrderHandle{" +
+            ", orderNumber=" + orderNumber +
+            ", assetId=" + assetId +
+            "}";
   }
 
 }
