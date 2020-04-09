@@ -1,22 +1,9 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.antiy.asset.cache.AssetBussinessCache;
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.AssetBusinessDao;
 import com.antiy.asset.dao.AssetBusinessRelationDao;
+import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetBusiness;
@@ -24,6 +11,7 @@ import com.antiy.asset.entity.AssetBusinessRelation;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.util.SnowFlakeUtil;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
@@ -36,6 +24,18 @@ import com.antiy.common.base.*;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p> 服务实现类 </p>
@@ -64,8 +64,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Resource
     private AssetDao                                                           assetDao;
     @Resource
-    private AssetBussinessCache                                                assetBussinessCache;
+    private AssetBaseDataCache                                                 assetBaseDataCache;
 
+    @Resource
+    private AssetCategoryModelDao assetCategoryModelDao;
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String saveAssetBusiness(AssetBusinessRequest request) throws Exception {
@@ -80,7 +82,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         assetBusiness.setGmtModified(System.currentTimeMillis());
         assetBusinessDao.insert(assetBusiness);
         // 更新缓存
-        assetBussinessCache.put(assetBusiness);
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_BUSINESS, assetBusiness);
         List<AssetBusinessRelationRequest> list = request.getAssetRelaList();
         List<AssetBusinessRelation> assetRelationList = new ArrayList<>();
         for (AssetBusinessRelationRequest itme : list) {
@@ -119,12 +121,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
      * t.setGmtCreate(System.currentTimeMillis()); t.setUniqueId(request.getUniqueId());
      * t.setAssetBusinessId(request.getId()); }); assetBusinessRelationDao.insertBatch(assetBusinessRelationList);
      * return assetBusinessId.toString(); } */
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getUniqueId(), "唯一键不能为空！");
-        // ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！");
         String name = request.getName();
         AssetBusiness business = assetBusinessDao.getByName(name);
         if (business != null && !business.getUniqueId().equals(request.getUniqueId())) {
@@ -136,7 +136,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         assetBusiness.setId(null);
         assetBusiness.setGmtModified(System.currentTimeMillis());
         Integer result = assetBusinessDao.updateByUniqueId(assetBusiness);
-
+        // 更新缓存
+        assetBaseDataCache.update(AssetBaseDataCache.ASSET_BUSINESS, assetBusiness);
         // 分离出编辑 、 删除 、 新增的 资产
         AssetAddOfBusinessQuery assetAddOfBusinessQuery = new AssetAddOfBusinessQuery();
         assetAddOfBusinessQuery.setUniqueId(uniqueId);
@@ -248,7 +249,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     public String deleteAssetBusinessById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         // 更新缓存
-        assetBussinessCache.remove(baseRequest.getId());
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_BUSINESS, baseRequest.getId());
         return assetBusinessDao.deleteById(baseRequest.getStringId()).toString();
     }
 
@@ -257,6 +258,9 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         List<String> areaId = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         String[] strings = areaId.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
+        //获取计算设备的品类型号
+        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        assetAddOfBusinessQuery.setCategoryModels(categoryModels);
         Integer count = assetDao.countQueryAsset(assetAddOfBusinessQuery);
         if (count > 0) {
             List<AssetResponse> assetList = assetDao.queryAsset(assetAddOfBusinessQuery);

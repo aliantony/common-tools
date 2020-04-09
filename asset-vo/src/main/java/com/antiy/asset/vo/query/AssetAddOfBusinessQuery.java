@@ -25,6 +25,20 @@ public class AssetAddOfBusinessQuery extends ObjectQuery {
     @ApiModelProperty("厂商")
     private List<String> manufacturer;
 
+    /**
+     *
+     * 品类型号
+     */
+    @ApiModelProperty("品类型号")
+    private List<String> categoryModels;
+
+    public List<String> getCategoryModels() {
+        return categoryModels;
+    }
+    public void setCategoryModels(List<String> categoryModels) {
+        this.categoryModels = categoryModels;
+    }
+
     public String getAssetBusinessId() {
         return assetBusinessId;
     }

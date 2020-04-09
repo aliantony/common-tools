@@ -1,13 +1,12 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-
-import com.antiy.asset.entity.CategoryValiEntity;
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.entity.CategoryValiEntity;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p> 品类型号表 Mapper 接口 </p>
@@ -42,5 +41,5 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
 
     Integer hasChild(@Param("id") String categoryModel);
     List<AssetCategoryModel> findAllCategoryCount();
-
+    List<String> getCategoryModelsByParentName(String name);
 }
