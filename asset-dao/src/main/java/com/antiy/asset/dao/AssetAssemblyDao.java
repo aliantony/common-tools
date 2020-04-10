@@ -47,4 +47,6 @@ public interface AssetAssemblyDao extends IBaseDao<AssetAssembly> {
      * @return
      */
     List<AssetAssemblyRequest> findAssemblyByAssetId(@Param("assetId") String assetId, @Param("type") String type);
+
+    Integer updateByUniqueId(AssetAssemblyRequest assetAssemblyRequest);
 }

@@ -14,50 +14,49 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2020-04-09
  */
 
-public class AssetOaOrderLendRequest extends BasicRequest implements ObjectValidator{
+public class AssetOaOrderLendRequest extends BasicRequest implements ObjectValidator {
 
     /**
-     *  订单表编号
+     * 订单表编号
      */
     @ApiModelProperty("订单表编号")
-    private Integer orderNumber;
+    private String orderNumber;
     /**
-     *  是否拒绝出借，1是0否
+     * 是否拒绝出借，1是0否
      */
     @ApiModelProperty("是否拒绝出借，1是0否")
     private Integer lendStatus;
     /**
-     *  拒绝原因 
+     * 拒绝原因
      */
     @ApiModelProperty("拒绝原因 ")
     private String refuseRemark;
 
 
-
-    public Integer getOrderNumber() {
-    return orderNumber;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-public void setOrderNumber(Integer orderNumber) {
-    this.orderNumber = orderNumber;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
 
     public Integer getLendStatus() {
-    return lendStatus;
+        return lendStatus;
     }
 
-public void setLendStatus(Integer lendStatus) {
-    this.lendStatus = lendStatus;
+    public void setLendStatus(Integer lendStatus) {
+        this.lendStatus = lendStatus;
     }
 
 
     public String getRefuseRemark() {
-    return refuseRemark;
+        return refuseRemark;
     }
 
-public void setRefuseRemark(String refuseRemark) {
-    this.refuseRemark = refuseRemark;
+    public void setRefuseRemark(String refuseRemark) {
+        this.refuseRemark = refuseRemark;
     }
 
 

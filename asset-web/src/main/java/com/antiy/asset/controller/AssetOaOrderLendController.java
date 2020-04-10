@@ -17,9 +17,9 @@ import javax.annotation.Resource;
  * @author shenliang
  * @since 2020-04-09
  */
-@Api(value = "AssetOaOrderLend", description = "出借订单拒绝表")
+@Api(value = "AssetOaOrderLend", description = "出借订单表")
 @RestController
-@RequestMapping("/v1/asset/assetoaorderrefuse")
+@RequestMapping("/api/v1/asset/assetoaorderlend")
 public class AssetOaOrderLendController {
     private static final Logger logger = LogUtils.get();
 
@@ -32,11 +32,11 @@ public class AssetOaOrderLendController {
      * @param assetOaOrderRefuseRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "出借订单拒绝接口", notes = "传入实体对象信息")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+    @RequestMapping(value = "/refuse", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderLendRequest assetOaOrderRefuseRequest) throws Exception {
         iAssetOaOrderRefuseService.saveAssetOaOrderRefuse(assetOaOrderRefuseRequest);
         return ActionResponse.success();

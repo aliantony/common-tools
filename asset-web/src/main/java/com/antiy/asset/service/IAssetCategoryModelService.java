@@ -50,8 +50,16 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
 
 
     /**
+     * 查询节点树
      * @return
      */
     AssetCategoryModelNodeResponse queryCategoryNodeCount() throws Exception;
+
+    /**
+     * 查询节点树(去掉根节点）
+     * @return
+     */
+    List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(boolean sourceOfLend) throws Exception;
+
 
 }

@@ -62,6 +62,28 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty("1 未报废 2 已报废")
     private Integer scrap;
 
+    /**
+     * 拆除 1 未 2 已
+     */
+    @ApiModelProperty("拆除 1 未  2 已")
+    private Integer remove;
+
+    public Integer getScrap() {
+        return scrap;
+    }
+
+    public void setScrap(Integer scrap) {
+        this.scrap = scrap;
+    }
+
+    public Integer getRemove() {
+        return remove;
+    }
+
+    public void setRemove(Integer remove) {
+        this.remove = remove;
+    }
+
     public Integer getDemagnetization() {
         return demagnetization;
     }
@@ -84,14 +106,6 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
 
     public void setUniqueId(Long uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    public Integer getScrap() {
-        return scrap;
-    }
-
-    public void setScrap(Integer scrap) {
-        this.scrap = scrap;
     }
 
     public String getId() {

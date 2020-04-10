@@ -2,16 +2,9 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetAssemblyService;
 import com.antiy.asset.vo.query.AssetAssemblyQuery;
-import com.antiy.asset.vo.request.AssetAssemblyRequest;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.QueryCondition;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,5 +38,15 @@ public class AssetAssemblyController {
         return ActionResponse.success(iAssetAssemblyService.queryPageAssetAssembly(assetAssemblyQuery));
     }
 
+    /**
+     * 报废暂存
+     */
+    /*@ApiOperation(value = "报废暂存", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
+    @RequestMapping(value = "/scrap/update", method = RequestMethod.POST)
+    public ActionResponse scrapUpdate(@ApiParam(value = "assetAssembly") @RequestBody AssetAssemblyRequest assetAssemblyRequest) throws Exception {
+       Integer result= iAssetAssemblyService.scrapUpdate(assetAssemblyRequest);
+        return ActionResponse.success(result);
+    }*/
 
 }

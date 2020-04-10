@@ -16,7 +16,11 @@ import java.util.List;
  */
 
 public class AssetLendRelationQuery extends ObjectQuery {
+    @ApiModelProperty("导出开始条数")
+    private Integer       start;
 
+    @ApiModelProperty("导出结束条数")
+    private Integer       end;
     @ApiModelProperty("综合查询")
     private String multiQuery;
     @ApiModelProperty("类型")
@@ -39,6 +43,22 @@ public class AssetLendRelationQuery extends ObjectQuery {
 
     public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getEnd() {
+        return end;
+    }
+
+    public void setEnd(Integer end) {
+        this.end = end;
     }
 
     public Integer getCurrentUseId() {

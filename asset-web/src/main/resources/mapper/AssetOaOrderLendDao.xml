@@ -15,7 +15,7 @@
     </sql>
 
     <sql id="Table_Name">
-        asset_oa_order_refuse
+        asset_oa_order_lend
     </sql>
 
 

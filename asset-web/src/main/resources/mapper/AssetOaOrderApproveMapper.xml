@@ -174,18 +174,21 @@
     <!--批量添加-->
     <insert id="insertBatch" parameterType="List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into asset_oa_order_approve
-        (approve_user_id, approve_user_name)
+        (order_number, view, approve_user_id, approve_user_name, approve_time)
         VALUES
         <foreach collection="list" item="avr" separator=",">
             (
+            #{avr.orderNumber },
+            #{avr.view },
             #{avr.approveUserId },
-            #{avr.approveUserName }
+            #{avr.approveUserName },
+            #{avr.approveTime }
             )
         </foreach>
     </insert>
 
     <!-- 根据orderNumber查询 -->
-    <select id="getByOrderNumber" resultType="com.antiy.asset.entity.AssetOaOrderApprove" parameterType="java.lang.Integer">
+    <select id="getByOrderNumber" resultType="com.antiy.asset.entity.AssetOaOrderApprove" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from
