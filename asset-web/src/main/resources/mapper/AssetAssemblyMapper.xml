@@ -6,14 +6,17 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetAssembly">
         <id column="id" property="id"/>
         <result column="asset_id" property="assetId"/>
-        <result column="amount" property="amount"/>
         <result column="business_id" property="businessId"/>
+        <result column="remove" property="remove"/>
+        <result column="demagnetization" property="demagnetization"/>
+        <result column="smash" property="smash"/>
+        <result column="unique_id" property="uniqueId"/>
+        <result column="scrap" property="scrap"/>
         <result column="status" property="status"/>
-        <result column="product_name" property="productName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, amount, business_id, status
+        id, asset_id, business_id, remove, demagnetization, smash, unique_id, scrap, status
     </sql>
 
     <sql id="Table_Name">
@@ -25,11 +28,23 @@
         <if test=" assetId != null">
             asset_id,
         </if>
-        <if test=" amount != null">
-            amount,
-        </if>
         <if test=" businessId != null">
             business_id,
+        </if>
+        <if test=" remove != null">
+            remove,
+        </if>
+        <if test=" demagnetization != null">
+            demagnetization,
+        </if>
+        <if test=" smash != null">
+            smash,
+        </if>
+        <if test=" uniqueId != null">
+            unique_id,
+        </if>
+        <if test=" scrap != null">
+            scrap,
         </if>
         <if test=" status != null">
             status,
@@ -40,11 +55,23 @@
         <if test=" assetId != null">
             #{assetId },
         </if>
-        <if test=" amount != null">
-            #{amount },
-        </if>
         <if test=" businessId != null">
             #{businessId },
+        </if>
+        <if test=" remove != null">
+            #{remove },
+        </if>
+        <if test=" demagnetization != null">
+            #{demagnetization },
+        </if>
+        <if test=" smash != null">
+            #{smash },
+        </if>
+        <if test=" uniqueId != null">
+            #{uniqueId },
+        </if>
+        <if test=" scrap != null">
+            #{scrap },
         </if>
         <if test=" status != null">
             #{status },
@@ -55,11 +82,23 @@
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
-        <if test=" amount != null">
-            amount = #{amount },
-        </if>
         <if test=" businessId != null">
             business_id = #{businessId },
+        </if>
+        <if test=" remove != null">
+            remove = #{remove },
+        </if>
+        <if test=" demagnetization != null">
+            demagnetization = #{demagnetization },
+        </if>
+        <if test=" smash != null">
+            smash = #{smash },
+        </if>
+        <if test=" uniqueId != null">
+            unique_id = #{uniqueId },
+        </if>
+        <if test=" scrap != null">
+            scrap = #{scrap },
         </if>
         <if test=" status != null">
             status = #{status },
@@ -70,11 +109,23 @@
         <if test=" assetId != null">
             and asset_id = #{assetId }
         </if>
-        <if test=" amount != null">
-            and amount = #{amount }
-        </if>
         <if test=" businessId != null">
             and business_id = #{businessId }
+        </if>
+        <if test=" remove != null">
+            and remove = #{remove }
+        </if>
+        <if test=" demagnetization != null">
+            and demagnetization = #{demagnetization }
+        </if>
+        <if test=" smash != null">
+            and smash = #{smash }
+        </if>
+        <if test=" uniqueId != null">
+            and unique_id = #{uniqueId }
+        </if>
+        <if test=" scrap != null">
+            and scrap = #{scrap }
         </if>
         <if test=" status != null">
             and status = #{status }
@@ -165,7 +216,11 @@
         t1.business_id as businessId,
         t2.product_name as productName,
         t2.type,
-        t1.amount
+        t1.remove,
+        t1.demagnetization,
+        t1.smash,
+        t1.unique_id as uniqueId,
+        t1.scrap
         FROM
         asset_assembly t1
         LEFT JOIN asset_assembly_lib t2 ON t1.business_id = t2.business_id

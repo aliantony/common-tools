@@ -23,6 +23,11 @@ public class AssetOuterResponse {
      */
     @ApiModelProperty("存储介质")
     private AssetStorageMediumResponse    assetStorageMedium;
+    /**
+     * 组件列表
+     */
+    @ApiModelProperty("组件列表")
+    List<AssetAssemblyResponse>           assemblyResponseList;
 
     public AssetResponse getAsset() {
         return asset;
@@ -48,4 +53,11 @@ public class AssetOuterResponse {
         this.assetStorageMedium = assetStorageMedium;
     }
 
+    public List<AssetAssemblyResponse> getAssemblyResponseList() {
+        return assemblyResponseList;
+    }
+
+    public void setAssemblyResponseList(List<AssetAssemblyResponse> assemblyResponseList) {
+        this.assemblyResponseList = assemblyResponseList;
+    }
 }

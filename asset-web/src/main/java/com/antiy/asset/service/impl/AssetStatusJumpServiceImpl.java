@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetBusinessRelationDao;
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetOperationRecordDao;
+import com.antiy.asset.dao.*;
 import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOperationRecord;
@@ -76,6 +73,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     private BaseConverter baseConverter;
     @Resource
     private SysMessageSender messageSender;
+
+    @Resource
+     private AssetAssemblyDao assetAssemblyDao;
     private Object lock = new Object();
 
     @Transactional(rollbackFor = Exception.class)
@@ -122,10 +122,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     throw new BusinessException("删除工作流失败");
                 }
                 throw new BusinessException(e.getMessage());
-            }
-            //退役申请,保存报废信息
-            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-
             }
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE) &&statusJumpRequest.getAgree().equals(true)){
                 /**

@@ -17,32 +17,28 @@ import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.antiy.asset.dao.AssetBusinessDao;
-import com.antiy.asset.dao.AssetDepartmentDao;
-import com.antiy.asset.dao.AssetGroupDao;
-import com.antiy.asset.dao.AssetUserDao;
-import com.antiy.asset.entity.AssetBusiness;
-import com.antiy.asset.entity.AssetDepartment;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetUser;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
 import com.antiy.common.base.BaseEntity;
 import com.antiy.common.utils.LogUtils;
 
 /**
- * 资产基础数据本地缓存
+ * 资产基础数据本地缓存(asset_user,asset_department,asset_business,asset_group,asset_category_model)
  * @Author: lvliang
  * @Date: 2020/4/9 9:53
  */
 @Component
 public class AssetBaseDataCache<T extends BaseEntity> {
-    public static final String                              ASSET_BUSINESS   = "asset_business";
-    public static final String                              ASSET_USER       = "asset_user";
-    public static final String                              ASSET_DEPARTMENT = "asset_department";
-    public static final String                              ASSET_GROUP      = "asset_group";
-    private static Integer                                  DEFAULT_SIZE     = 16;
-    private Logger                                          log              = LogUtils.get(this.getClass());
+    public static final String                              ASSET_BUSINESS       = "asset_business";
+    public static final String                              ASSET_USER           = "asset_user";
+    public static final String                              ASSET_DEPARTMENT     = "asset_department";
+    public static final String                              ASSET_GROUP          = "asset_group";
+    public static final String                              ASSET_CATEGORY_MODEL = "asset_category_model";
 
-    private Map<String, Map<Integer, ? extends BaseEntity>> caches           = new ConcurrentHashMap<>();
+    private static Integer                                  DEFAULT_SIZE         = 16;
+    private Logger                                          log                  = LogUtils.get(this.getClass());
+
+    private Map<String, Map<Integer, ? extends BaseEntity>> caches               = new ConcurrentHashMap<>();
     @Resource
     private AssetBusinessDao                                assetBusinessDao;
     @Resource
@@ -51,6 +47,8 @@ public class AssetBaseDataCache<T extends BaseEntity> {
     private AssetUserDao                                    assetUserDao;
     @Resource
     private AssetDepartmentDao                              assetDepartmentDao;
+    @Resource
+    private AssetCategoryModelDao                           assetCategoryModelDao;
 
     /**
      * 刷新缓存:10分钟刷新一次
@@ -93,6 +91,13 @@ public class AssetBaseDataCache<T extends BaseEntity> {
                     assetDepartments.stream().collect(Collectors.toMap(AssetDepartment::getId, Function.identity())));
             } else {
                 caches.put(ASSET_DEPARTMENT, new ConcurrentHashMap<>(DEFAULT_SIZE));
+            }
+            List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.getAll();
+            if (CollectionUtils.isNotEmpty(assetCategoryModels)) {
+                caches.put(ASSET_CATEGORY_MODEL, assetCategoryModels.stream()
+                    .collect(Collectors.toMap(AssetCategoryModel::getId, Function.identity())));
+            } else {
+                caches.put(ASSET_CATEGORY_MODEL, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
         } catch (Exception e) {
             log.error("缓存数据初始化报错:{}", e.getMessage());

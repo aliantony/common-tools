@@ -272,7 +272,7 @@
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
             and a.is_borrow=1
-            and a.status =5
+            and a.asset_status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
         </trim>
@@ -282,7 +282,7 @@
         SELECT
         a.name as  assetName,
         a.number as assetNumber,
-        a.category_model as categoryModel,
+        acm.name as categoryModel,
         a.responsible_user_id as responsibleUserId,
         akm.key_num as keyNum,
         alr.lend_status as lendStatus,
@@ -295,13 +295,14 @@
         FROM asset  as a
         left join asset_user as au on a.responsible_user_id=au.id and au.status=1
         left join asset_key_manage as akm on a.id=akm.key_user_id and akm.is_delete=1
+        left join asset_category_model as acm on acm.id=a.category_model and acm.status=1
         left join  asset_lend_relation as alr
         on a.id=alr.asset_id and alr.lend_status =1 and alr.status=1
         left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
         <trim prefix="where" prefixOverrides="and">
             <include refid="baseQuery"/>
             and a.is_borrow=1
-            and a.status =5
+            and a.asset_status =5
             and a.status=1
             order by alr.lend_time desc ,a.first_enter_nett desc
         </trim>
@@ -412,6 +413,13 @@
             or
             akm.key_num LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             )
+        </if>
+
+        <if test="areaIds !=null and areaIds.size()>0">
+            a.area_id in
+            <foreach collection="areaIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         <if test="currentUseId !=null">
             and

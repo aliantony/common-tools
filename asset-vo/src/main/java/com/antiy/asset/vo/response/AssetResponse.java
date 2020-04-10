@@ -2,9 +2,7 @@ package com.antiy.asset.vo.response;
 
 import java.util.List;
 
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
-import com.antiy.asset.vo.enums.AssetSourceEnum;
-import com.antiy.asset.vo.enums.InstallType;
+import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
@@ -213,10 +211,15 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("资产来源名称")
     private String                         assetSourceName;
     /**
-     * 1核心2重要3一般
+     * 重要程度
      */
-    @ApiModelProperty("1核心2重要3一般")
+    @ApiModelProperty("重要程度")
     private Integer                        importanceDegree;
+    /**
+     * 重要程度名称
+     */
+    @ApiModelProperty("重要程度名称")
+    private String                         importanceDegreeName;
     /**
      * 描述
      */
@@ -317,6 +320,8 @@ public class AssetResponse extends BaseResponse {
 
     @ApiModelProperty("网络连接状态：1-在线，2-离线，3-未知")
     private Integer                        netStatus;
+    @ApiModelProperty("网络连接状态名称")
+    private String                         netStatusName;
     @ApiModelProperty("物理位置")
     private String                         location;
     @ApiModelProperty("从属业务名称,详情展示")
@@ -353,8 +358,24 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
 
+    public String getImportanceDegreeName() {
+        return importanceDegreeName;
+    }
+
+    public void setImportanceDegreeName(String importanceDegreeName) {
+        this.importanceDegreeName = importanceDegreeName;
+    }
+
     public List<AssetBusinessResponse> getAssetBusinessResponse() {
         return assetBusinessResponse;
+    }
+
+    public String getNetStatusName() {
+        return netStatusName;
+    }
+
+    public void setNetStatusName(String netStatusName) {
+        this.netStatusName = netStatusName;
     }
 
     public void setAssetBusinessResponse(List<AssetBusinessResponse> assetBusinessResponse) {
@@ -555,6 +576,7 @@ public class AssetResponse extends BaseResponse {
 
     public void setNetStatus(Integer netStatus) {
         this.netStatus = netStatus;
+        this.netStatusName = AssetNetStatusEnum.getMsgByCode(netStatus);
     }
 
     public String getLocation() {
@@ -837,6 +859,7 @@ public class AssetResponse extends BaseResponse {
 
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
+        this.importanceDegreeName = AssetImportanceDegreeEnum.getByCode(importanceDegree).getMsg();
     }
 
     public Long getServiceLife() {

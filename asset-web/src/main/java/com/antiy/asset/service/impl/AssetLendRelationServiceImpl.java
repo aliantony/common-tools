@@ -4,6 +4,7 @@ import com.antiy.asset.dao.AssetLendRelationDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.entity.AssetOaOrderHandle;
+import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.query.ApproveListQuery;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,6 +69,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public PageResult<AssetLendRelationResponse> queryPageAssetLendRelation(AssetLendRelationQuery query) throws Exception {
+        List<String> areaIdsOfCurrentUser = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
+        query.setAreaIds(areaIdsOfCurrentUser);
         return new PageResult<AssetLendRelationResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(), this.queryListAssetLendRelation(query));
     }
 
