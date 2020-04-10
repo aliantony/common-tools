@@ -8,12 +8,11 @@
         <result column="number" property="number"/>
         <result column="order_type" property="orderType"/>
         <result column="order_status" property="orderStatus"/>
-        <result column="lend_status" property="lendStatus"/>
         <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, number, order_type, order_status, lend_status, gmt_create
+        id, number, order_type, order_status, gmt_create
     </sql>
 
     <sql id="Table_Name">
@@ -31,9 +30,6 @@
         <if test=" orderStatus != null">
             order_status,
         </if>
-        <if test=" lendStatus != null">
-            lend_status,
-        </if>
         <if test=" gmtCreate!= null">
             gmt_create,
         </if>
@@ -48,9 +44,6 @@
         </if>
         <if test=" orderStatus != null">
             #{orderStatus },
-        </if>
-        <if test=" lendStatus != null">
-            #{lendStatus },
         </if>
         <if test=" gmtCreate!= null">
             #{gmtCreate },
@@ -67,9 +60,6 @@
         <if test=" orderStatus != null">
             order_status = #{orderStatus },
         </if>
-        <if test=" lendStatus != null">
-            lend_status = #{lendStatus },
-        </if>
         <if test=" gmtCreate!= null">
             gmt_create = #{gmtCreate },
         </if>
@@ -84,9 +74,6 @@
         </if>
         <if test=" orderStatus != null">
             and order_status = #{orderStatus }
-        </if>
-        <if test=" lendStatus != null">
-            and lend_status = #{lendStatus }
         </if>
         <if test=" gmtCreate!= null">
             and gmt_create = #{gmtCreate }
