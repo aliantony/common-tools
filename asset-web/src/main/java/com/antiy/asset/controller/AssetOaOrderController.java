@@ -81,7 +81,7 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetOaOrder") @PathVariable("id") Integer id)throws Exception{
+    public ActionResponse queryById(@ApiParam(value = "assetOaOrder") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderService.getDetailById(id));
     }
@@ -96,7 +96,7 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id)throws Exception{
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderService.deleteById(id));
     }
