@@ -250,6 +250,11 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("资产准入状态:1已允许，2已禁止")
     private Integer                        admittanceStatus;
     /**
+     * 资产准入状态名称
+     */
+    @ApiModelProperty("资产准入状态名称")
+    private String                         admittanceStatusName;
+    /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
@@ -357,6 +362,14 @@ public class AssetResponse extends BaseResponse {
     private String                         executeUserId;
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
+
+    public String getAdmittanceStatusName() {
+        return admittanceStatusName;
+    }
+
+    public void setAdmittanceStatusName(String admittanceStatusName) {
+        this.admittanceStatusName = admittanceStatusName;
+    }
 
     public String getImportanceDegreeName() {
         return importanceDegreeName;
@@ -755,6 +768,7 @@ public class AssetResponse extends BaseResponse {
 
     public void setAdmittanceStatus(Integer admittanceStatus) {
         this.admittanceStatus = admittanceStatus;
+        this.admittanceStatusName = AdmittanceStatusEnum.getAdmittanceStatusEnum(admittanceStatus);
     }
 
     public String getCategoryModelName() {
@@ -859,7 +873,7 @@ public class AssetResponse extends BaseResponse {
 
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
-        this.importanceDegreeName = AssetImportanceDegreeEnum.getByCode(importanceDegree).getMsg();
+        this.importanceDegreeName = AssetImportanceDegreeEnum.getMsgByCode(importanceDegree);
     }
 
     public Long getServiceLife() {

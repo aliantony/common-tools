@@ -39,5 +39,12 @@ public enum AssetImportanceDegreeEnum implements CodeEnum {
         }
         return null;
     }
-
+    public static String getMsgByCode(Integer code) {
+        for (AssetImportanceDegreeEnum assetImportanceDegreeEnum : AssetImportanceDegreeEnum.values()) {
+            if (assetImportanceDegreeEnum.getCode().equals(code)) {
+                return assetImportanceDegreeEnum.msg;
+            }
+        }
+        return null;
+    }
 }
