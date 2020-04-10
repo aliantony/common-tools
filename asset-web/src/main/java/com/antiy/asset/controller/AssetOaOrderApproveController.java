@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetOaOrderApprove", description = "订单审批信息表")
 @RestController
-@RequestMapping("/v1/asset/assetoaorderapprove")
+@RequestMapping("/api/v1/asset/assetoaorderapprove")
 public class AssetOaOrderApproveController {
     private static final Logger logger = LogUtils.get();
 
