@@ -233,20 +233,22 @@
         AND t1.`status` = 1
     </select>
     <update id="updateByUniqueId">
-        update
-          asset_assembly
-          <trim suffixOverrides=",">
-              <if test="remove !=nulll">
-                  set remove=#{remove},
-              </if>
-              <if test="demagnetization !=nulll">
-                  set demagnetization=#{demagnetization},
-              </if>
-              <if test="smash !=nulll">
-                  set smash=#{smash},
-              </if>
-          </trim>
-        where unique_id=#{uniqueId} and status=1
+        <foreach collection="list" item="item" separator=";">
+            update
+            asset_assembly
+            <trim suffixOverrides=",">
+                <if test="item.remove !=nulll">
+                    set remove=#{item.remove},
+                </if>
+                <if test="item.demagnetization !=nulll">
+                    set demagnetization=#{item.demagnetization},
+                </if>
+                <if test="item.smash !=nulll">
+                    set smash=#{item.smash},
+                </if>
+            </trim>
+            where unique_id=#{item.uniqueId} and status=1
+        </foreach>
     </update>
     <select id="findAssemblyByBusiness" resultType="integer">
   select count(1) from asset_assembly_lib     where  business_id =#{businessId} and  status =1

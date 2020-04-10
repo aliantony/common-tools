@@ -2,6 +2,7 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetAssemblyQuery;
+import com.antiy.asset.vo.query.AssetAssemblyScrapRequest;
 import com.antiy.asset.vo.request.AssetAssemblyRequest;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.BaseRequest;
@@ -61,5 +62,5 @@ public interface IAssetAssemblyService extends IBaseService<AssetAssembly> {
      */
     String deleteAssetAssemblyById(BaseRequest baseRequest) throws Exception;
 
-    Integer scrapUpdate(AssetAssemblyRequest assetAssemblyRequest);
+    Integer scrapUpdate(AssetAssemblyScrapRequest assetAssemblyRequest) throws Exception;
 }

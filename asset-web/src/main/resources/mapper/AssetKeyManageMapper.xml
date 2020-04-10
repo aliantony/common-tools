@@ -298,15 +298,15 @@
             update
             <include refid="Table_Name"></include>
             <set>
-                <if test=" modifiedUser != null">
+                <if test=" item.modifiedUser != null">
                     modified_user = #{item.modifiedUser },
                 </if>
-                <if test=" gmtModified != null">
+                <if test=" item.gmtModified != null">
                     gmt_modified = #{item.gmtModified }
                 </if>
 
             </set>
-            where key_num = #item.keyNum}
+            where key_num = #{item.keyNum}
         </foreach>
     </update>
     <!-- key编号、用户数量校验 -->

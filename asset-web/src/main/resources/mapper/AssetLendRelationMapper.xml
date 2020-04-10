@@ -280,7 +280,7 @@
 
     <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        a.id as stringId,
+        a.id as assetId,
         a.name as  assetName,
         a.number as assetNumber,
         acm.name as categoryModel,
@@ -404,6 +404,44 @@
                 or aooa.apply_user_name LIKE CONCAT('%',replace(replace(#{blurQueryField},'%','\%'),'_','\_'),'%'))
             </if>
             ) a
+    </select>
+    <select id="queryUserList" resultType="com.antiy.asset.vo.response.UserListResponse">
+        SELECT NAME AS
+            userName,
+            id AS UserId
+        FROM
+            asset_user
+    </select>
+    <select id="queryUserInfo" resultType="com.antiy.asset.vo.response.UserInfoResponse">
+        SELECT
+            au.id AS userId,
+            au.NAME AS userName,
+            au.mobile AS mobile,
+            au.department_id AS departmentId,
+            akm.key_num AS keyNumber
+        FROM
+            asset_user au
+            LEFT JOIN asset_key_manage akm ON au.name = akm.user_num_name
+        WHERE
+            akm.key_user_type = 2
+            and
+            au.name = #{userName}
+    </select>
+    <select id="queryDepartment" resultType="java.lang.String">
+        SELECT
+            name
+        FROM
+            asset_department
+        WHERE
+            id = #{departmentId}
+    </select>
+    <select id="queryDepartmentParent" resultType="java.lang.String">
+        SELECT
+            parent_id as parentId
+        FROM
+            asset_department
+        WHERE
+            id = #{departmentId}
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

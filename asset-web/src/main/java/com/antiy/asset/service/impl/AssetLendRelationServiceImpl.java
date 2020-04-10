@@ -14,9 +14,8 @@ import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.ApproveInfoRequest;
 import com.antiy.asset.vo.request.AssetLendInfoRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
-import com.antiy.asset.vo.response.ApproveInfoResponse;
-import com.antiy.asset.vo.response.ApproveListResponse;
-import com.antiy.asset.vo.response.AssetLendRelationResponse;
+import com.antiy.asset.vo.request.UserInfoRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
@@ -28,6 +27,7 @@ import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
+import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -54,9 +54,9 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private AssetLendRelationDao assetLendRelationDao;
     @Resource
-    private ExcelDownloadUtil                                           excelDownloadUtil;
+    private ExcelDownloadUtil excelDownloadUtil;
     @Resource
-    private LendConvert                                                 lendConvert;
+    private LendConvert lendConvert;
     @Resource
     private BaseConverter<AssetLendRelationRequest, AssetLendRelation> requestConverter;
     @Resource
@@ -108,11 +108,11 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
 
             excelDownloadUtil.excelDownload(request, response,
-                "出借管理表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
+                    "出借管理表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
 
             LogUtils.recordOperLog(
-                new BusinessData("导出《出借管理表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
-                    "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    new BusinessData("导出《出借管理表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
+                            "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
         } else {
             throw new BusinessException("导出数据为空");
         }
@@ -146,12 +146,12 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
-        int count=assetLendRelationDao.countHistory(objectQuery);
-        if(count>0){
-            List<AssetLendRelationResponse> assetLendRelationResponses=assetLendRelationDao.queryHistory(objectQuery);
-            return new PageResult<>(objectQuery.getPageSize(),count,objectQuery.getCurrentPage(),assetLendRelationResponses);
+        int count = assetLendRelationDao.countHistory(objectQuery);
+        if (count > 0) {
+            List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
+            return new PageResult<>(objectQuery.getPageSize(), count, objectQuery.getCurrentPage(), assetLendRelationResponses);
         }
-        return new PageResult<>(objectQuery.getPageSize(),0,objectQuery.getCurrentPage(), Lists.newArrayList());
+        return new PageResult<>(objectQuery.getPageSize(), 0, objectQuery.getCurrentPage(), Lists.newArrayList());
     }
 
     @Override
@@ -177,7 +177,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query) {
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
 
-        return new PageResult<ApproveListResponse>(query.getPageSize(),assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
+        return new PageResult<ApproveListResponse>(query.getPageSize(), assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
     }
 
@@ -190,5 +190,27 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         //Integer departmentId = assetLendRelationDao.found
 
         return approveInfoResponse;
+    }
+
+    @Override
+    public List<UserListResponse> queryUserList() {
+        return assetLendRelationDao.queryUserList();
+    }
+
+    @Override
+    public UserInfoResponse queryUserInfo(UserInfoRequest request) {
+        UserInfoResponse response = assetLendRelationDao.queryUserInfo(request);
+        String department = new String();
+        this.getDepartment(response.getDepartmentId(), department);
+        response.setDepartment(department);
+        return null;
+    }
+
+    public void getDepartment(String departmentId, String department) {
+        department = assetLendRelationDao.queryDepartment(departmentId) + department;
+        String parentId = assetLendRelationDao.queryDepartmentParent(departmentId);
+        if (!StringUtil.isNullOrEmpty(parentId)) {
+            getDepartment(parentId, department);
+        }
     }
 }

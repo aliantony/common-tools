@@ -6,9 +6,8 @@ import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.ApproveInfoRequest;
 import com.antiy.asset.vo.request.AssetLendInfoRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
-import com.antiy.asset.vo.response.ApproveInfoResponse;
-import com.antiy.asset.vo.response.ApproveListResponse;
-import com.antiy.asset.vo.response.AssetLendRelationResponse;
+import com.antiy.asset.vo.request.UserInfoRequest;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -119,4 +118,19 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @return
      */
     ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request);
+
+    /**
+     * 申请人列表查询
+     *
+     * @return
+     */
+    List<UserListResponse> queryUserList();
+
+    /**
+     * 申请人信息查询
+     *
+     * @param request
+     * @return
+     */
+    UserInfoResponse queryUserInfo(UserInfoRequest request);
 }
