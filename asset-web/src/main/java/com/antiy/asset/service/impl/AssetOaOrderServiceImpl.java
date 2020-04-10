@@ -17,12 +17,16 @@ import com.antiy.asset.vo.response.AssetOaOrderResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -109,6 +113,22 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         //查询申请信息
         AssetOaOrderApply assetOaOrderApply = assetOaOrderApplyDao.getByOrderNumber(assetOaOrder.getNumber());
         AssetOaOrderApplyResponse assetOaOrderApplyResponse = applyResponseConverter.convert(assetOaOrderApply, AssetOaOrderApplyResponse.class);
+        //如果是退回和报废，还需要查询资产ip，mac
+        if(!StringUtils.isEmpty(assetOaOrderApply.getAssetNumber())){
+            HashMap<String, Object> result = assetOaOrderApplyDao.getIpAndMacByAssetNumber(assetOaOrderApply.getAssetNumber());
+            if(result != null){
+                assetOaOrderApplyResponse.setAssetIp(result.get("ip").toString());
+                assetOaOrderApplyResponse.setAssetMac(result.get("mac").toString());
+            }
+        }
+        //如果是出借，还需要拼接出借时间
+        if(assetOaOrderApply.getLendStartTime() != null && assetOaOrderApply.getLendEndTime() != null){
+            Date startDate =new Date(assetOaOrderApply.getLendStartTime());
+            Date endDate =new Date(assetOaOrderApply.getLendEndTime());
+            String startTime = DateUtils.getDataString(startDate, DateUtils.NO_TIME_FORMAT).replaceAll("-","/");
+            String endTime = DateUtils.getDataString(endDate, DateUtils.NO_TIME_FORMAT).replaceAll("-","/");
+            assetOaOrderApplyResponse.setLendTime(startTime + "-" + endTime);
+        }
         //查询审批信息
         List<AssetOaOrderApprove> assetOaOrderApproves = assetOaOrderApproveDao.getByOrderNumber(assetOaOrder.getNumber());
         List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses = approveResponseConverter.convert(assetOaOrderApproves, AssetOaOrderApproveResponse.class);

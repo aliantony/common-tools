@@ -6,14 +6,18 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOaOrderApply">
         <id column="id" property="id"/>
         <result column="order_number" property="orderNumber"/>
+        <result column="content" property="content"/>
+        <result column="lend_start_time" property="lendStartTime"/>
+        <result column="lend_end_time" property="lendEndTime"/>
+        <result column="lend_purpose" property="lendPurpose"/>
+        <result column="asset_number" property="assetNumber"/>
         <result column="apply_user_id" property="applyUserId"/>
         <result column="apply_user_name" property="applyUserName"/>
-        <result column="content" property="content"/>
         <result column="apply_time" property="applyTime"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, apply_user_id, apply_user_name, order_number, content, apply_time
+        id, order_number, content, lend_start_time, lend_end_time, lend_purpose,  asset_number, apply_user_id, apply_user_name, apply_time
     </sql>
 
     <sql id="Table_Name">
@@ -22,17 +26,29 @@
 
 
     <sql id="IF_Base_Column_List">
-        <if test=" applyUserId != null">
-            apply_user_id,
-        </if>
-        <if test=" applyUserName != null">
-            apply_user_name,
-        </if>
         <if test=" orderNumber != null">
             order_number,
         </if>
         <if test=" content != null">
             content,
+        </if>
+        <if test=" lendStartTime != null">
+            lend_start_time,
+        </if>
+        <if test=" lendEndTime != null">
+            lend_end_time,
+        </if>
+        <if test=" lendPurpose != null">
+            lend_purpose,
+        </if>
+        <if test="  assetNumber != null">
+            asset_number,
+        </if>
+        <if test=" applyUserId != null">
+            apply_user_id,
+        </if>
+        <if test=" applyUserName != null">
+            apply_user_name,
         </if>
         <if test=" applyTime != null">
             apply_time,
@@ -40,17 +56,29 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
-        <if test=" applyUserId != null">
-            #{applyUserId },
-        </if>
-        <if test=" applyUserName != null">
-            #{applyUserName },
-        </if>
         <if test=" orderNumber != null">
             #{orderNumber },
         </if>
         <if test=" content != null">
             #{content },
+        </if>
+        <if test=" lendStartTime != null">
+            #{lendStartTime },
+        </if>
+        <if test=" lendEndTime != null">
+            #{lendEndTime },
+        </if>
+        <if test=" lendPurpose != null">
+            #{lendPurpose },
+        </if>
+        <if test="  assetNumber != null">
+            #{ assetNumber },
+        </if>
+        <if test=" applyUserId != null">
+            #{applyUserId },
+        </if>
+        <if test=" applyUserName != null">
+            #{applyUserName },
         </if>
         <if test=" applyTime != null">
             #{applyTime },
@@ -58,17 +86,29 @@
     </sql>
 
     <sql id="Set_Column_List">
-        <if test=" applyUserId != null">
-            apply_user_id = #{applyUserId },
-        </if>
-        <if test=" applyUserName != null">
-            apply_user_name = #{applyUserName },
-        </if>
         <if test=" orderNumber != null">
             order_number = #{orderNumber },
         </if>
         <if test=" content != null">
             content = #{content },
+        </if>
+        <if test=" lendStartTime != null">
+            lend_start_time = #{lendStartTime },
+        </if>
+        <if test=" lendEndTime != null">
+            lend_end_time = #{lendEndTime },
+        </if>
+        <if test=" lendPurpose != null">
+            lend_purpose = #{lendPurpose },
+        </if>
+        <if test="  assetNumber != null">
+            asset_number = #{ assetNumber },
+        </if>
+        <if test=" applyUserId != null">
+            apply_user_id = #{applyUserId },
+        </if>
+        <if test=" applyUserName != null">
+            apply_user_name = #{applyUserName },
         </if>
         <if test=" applyTime != null">
             apply_time = #{applyTime },
@@ -76,22 +116,35 @@
     </sql>
 
     <sql id="Where_Column_List">
-        <if test=" applyUserId != null">
-            and apply_user_id = #{applyUserId }
-        </if>
-        <if test=" applyUserName != null">
-            and apply_user_name = #{applyUserName }
-        </if>
         <if test=" orderNumber != null">
             and order_number = #{orderNumber }
         </if>
         <if test=" content != null">
             and content = #{content }
         </if>
+        <if test=" lendStartTime != null">
+            and lend_start_time = #{lendStartTime }
+        </if>
+        <if test=" lendEndTime != null">
+            and lend_end_time = #{lendEndTime }
+        </if>
+        <if test=" lendPurpose != null">
+            and lend_purpose = #{lendPurpose }
+        </if>
+        <if test="  assetNumber != null">
+            and  asset_number = #{ assetNumber }
+        </if>
+        <if test=" applyUserId != null">
+            and apply_user_id = #{applyUserId }
+        </if>
+        <if test=" applyUserName != null">
+            and apply_user_name = #{applyUserName }
+        </if>
         <if test=" applyTime != null">
             and apply_time = #{applyTime }
         </if>
     </sql>
+
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderApply" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into
@@ -180,6 +233,16 @@
         from
         <include refid="Table_Name"></include>
         where order_number = #{orderNumber}
+    </select>
+
+    <!-- 根据资产编号查找ip和mac -->
+    <select id="getIpAndMacByAssetNumber" resultType="hashmap" parameterType="java.lang.String">
+        select
+        ip,mac
+        from asset asset
+        inner join asset_ip_relation aip on asset.id=aip.asset_id
+        inner join asset_mac_relation mip on asset.id=mip.asset_id
+        where aip.status = 1 and mip.status = 1 and asset.number = #{assetNumber} limit 1
     </select>
 
 </mapper>
