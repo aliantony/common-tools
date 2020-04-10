@@ -17,9 +17,9 @@ import javax.annotation.Resource;
  * @author shenliang
  * @since 2020-04-09
  */
-@Api(value = "AssetOaOrderLend", description = "出借订单拒绝表")
+@Api(value = "AssetOaOrderLend", description = "出借订单表")
 @RestController
-@RequestMapping("/v1/asset/assetoaorderrefuse")
+@RequestMapping("/api/v1/asset/assetoaorderlend")
 public class AssetOaOrderLendController {
     private static final Logger logger = LogUtils.get();
 

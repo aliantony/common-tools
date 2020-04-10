@@ -35,7 +35,7 @@ public class AssetOaOrderApprove extends BaseEntity {
     /**
      * 审批时间
      */
-    private String approveTime;
+    private Long approveTime;
 
 
 
@@ -72,11 +72,11 @@ public class AssetOaOrderApprove extends BaseEntity {
         this.view = view;
     }
 
-    public String getApproveTime() {
+    public Long getApproveTime() {
         return approveTime;
     }
 
-    public void setApproveTime(String approveTime) {
+    public void setApproveTime(Long approveTime) {
         this.approveTime = approveTime;
     }
 

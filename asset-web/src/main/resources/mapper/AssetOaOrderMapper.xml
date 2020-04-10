@@ -172,7 +172,7 @@
         <include refid="Base_Column_List"/>
         from
         <include refid="Table_Name"></include>
-        where asset_number = #{number}
+        where number = #{number}
     </select>
 
 

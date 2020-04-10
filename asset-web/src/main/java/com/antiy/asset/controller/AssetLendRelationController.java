@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -192,5 +194,21 @@ public class AssetLendRelationController {
     public ActionResponse queryApproveInfo(@ApiParam(value = "AssetLendInfo") ApproveInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryApproveInfo(request));
     }
+
+    /**
+     * 导出资产信息
+     *
+     * @param assetQuery 封装对象
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据条件导出表信息", notes = "主键封装对象")
+    @RequestMapping(value = "/export/file", method = RequestMethod.GET)
+    // @PreAuthorize(value = "hasAuthority('asset:asset:export')")
+    public void export(@ApiParam(value = "query") AssetLendRelationQuery assetQuery, HttpServletResponse response,
+                       HttpServletRequest request) throws Exception {
+        iAssetLendRelationService.exportData(assetQuery, response, request);
+
+    }
+
 }
 

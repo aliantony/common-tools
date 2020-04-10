@@ -8,6 +8,8 @@ import java.util.*;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -228,6 +230,74 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         String userName = LoginUserUtil.getLoginUser().getUsername();
         aesEncode(categoryModelNodeResponses, userName);
         return categoryModelNodeResponses;
+    }
+
+    @Override
+    public List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(boolean sourceOfLend) throws Exception {
+        List<AssetCategoryModel> models = assetCategoryModelDao.findAllCategory(sourceOfLend);
+        NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
+        List<AssetCategoryModelNodeResponse> nodeResponses = nodeConverter
+                .columnToNode(models, AssetCategoryModelNodeResponse.class);
+        if (CollectionUtils.isEmpty(nodeResponses)) {
+            return Collections.EMPTY_LIST;
+        }
+        //去掉根节点
+        List<AssetCategoryModelNodeResponse> nodes = nodeResponses.get(0).getChildrenNode();
+        //如果来源是出借管理，需要过滤无下挂资产的类型
+        if (BooleanUtils.isTrue(sourceOfLend)) {
+
+            List<AssetCategoryModelNodeResponse> result = new ArrayList<>();
+//            for (AssetCategoryModelNodeResponse node : nodes) {
+//                AssetCategoryModelNodeResponse topNode = new AssetCategoryModelNodeResponse();
+//                BeanUtils.copyProperties(node,topNode,"childrenNode");
+//                findTreeWithAssets(node.getChildrenNode(), null, node, topNode, result,true);
+//            }
+            findTreeWithAssets(nodes, null, null, null, result, true);
+
+            nodes = result;
+
+        }
+        return nodes;
+    }
+
+    private void findTreeWithAssets(List<AssetCategoryModelNodeResponse> nodes, List<AssetCategoryModelNodeResponse> currentChilds
+            , AssetCategoryModelNodeResponse currentNode, AssetCategoryModelNodeResponse topNode, List<AssetCategoryModelNodeResponse> result, boolean isFirstIn) {
+        if (CollectionUtils.isNotEmpty(nodes)) {
+            int childSize = 0;
+            if (BooleanUtils.isFalse(isFirstIn)) {
+                childSize = nodes.size();
+            }
+            for (AssetCategoryModelNodeResponse node : nodes) {
+                if (BooleanUtils.isTrue(isFirstIn)) {
+                    currentNode = node;
+                    topNode = currentNode;
+                } else {
+                    boolean hasAsset = node.getCount() >= 1;
+                    if (BooleanUtils.isTrue(hasAsset)) {
+                        currentChilds = Objects.isNull(currentChilds) ? new ArrayList<>() : currentChilds;
+                        currentChilds.add(node);
+                        currentNode.setChildrenNode(currentChilds);
+                    } else {
+                        childSize--;
+                    }
+//                    AssetCategoryModelNodeResponse parent = currentNode;
+//                    parent.setChildrenNode(currentChilds);
+                    currentNode = node;
+                }
+                findTreeWithAssets(currentNode.getChildrenNode(), null, currentNode, topNode, result, false);
+            }
+            if (childSize <= 0) {
+                currentNode.setChildrenNode(null);
+            }
+        }
+        if (Objects.isNull(result)) {
+            result = new ArrayList<>();
+        }
+        if ((topNode.getCount() >= 1 || CollectionUtils.isNotEmpty(topNode.getChildrenNode()))
+                && !result.contains(topNode)) {
+            result.add(topNode);
+        }
+
     }
 
     private void aesEncode(AssetCategoryModelNodeResponse nodeResponse, String userName) {

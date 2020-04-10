@@ -11,6 +11,8 @@ import com.antiy.asset.vo.response.ApproveListResponse;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -63,6 +65,9 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @return
      */
     AssetLendRelationResponse queryAssetLendRelationById(QueryCondition queryCondition) throws Exception;
+
+    void exportData(AssetLendRelationQuery assetQuery, HttpServletResponse response,
+                    HttpServletRequest request) throws Exception;
 
     /**
      * 通过ID删除

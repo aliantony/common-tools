@@ -19,6 +19,7 @@ import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.List;
  * @author shenliang
  * @since 2020-04-07
  */
+@Transactional(rollbackFor = {Exception.class})
 @Service
 public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderHandle> implements IAssetOaOrderHandleService {
 

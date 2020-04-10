@@ -41,7 +41,7 @@ public class AssetOaOrderApproveRequest extends BasicRequest implements ObjectVa
      * 审批时间
      */
     @ApiModelProperty("审批时间")
-    private Long approvaTime;
+    private Long approveTime;
 
 
     public Integer getApproveUserId() {
@@ -76,12 +76,12 @@ public class AssetOaOrderApproveRequest extends BasicRequest implements ObjectVa
         this.view = view;
     }
 
-    public Long getApprovaTime() {
-        return approvaTime;
+    public Long getapproveTime() {
+        return approveTime;
     }
 
-    public void setApprovaTime(Long approvaTime) {
-        this.approvaTime = approvaTime;
+    public void setapproveTime(Long approveTime) {
+        this.approveTime = approveTime;
     }
 
     @Override

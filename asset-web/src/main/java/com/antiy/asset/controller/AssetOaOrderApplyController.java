@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetOaOrderApply", description = "订单申请信息表")
 @RestController
-@RequestMapping("/v1/asset/assetoaorderapply")
+@RequestMapping("/api/v1/asset/assetoaorderapply")
 public class AssetOaOrderApplyController {
     private static final Logger logger = LogUtils.get();
 
