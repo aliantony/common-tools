@@ -422,6 +422,8 @@
         a.category_model AS categoryModel,
         GROUP_CONCAT( DISTINCT air.ip ) AS ips,
         GROUP_CONCAT( DISTINCT amr.mac ) AS macs,
+        aor.id as assetOperationRecordId,
+        aor.temporary_info as temporaryInfo,
         aor.file_info AS fileInfo,
         aor.content,
         aor.note,

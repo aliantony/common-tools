@@ -16,6 +16,11 @@ import java.util.List;
  */
 
 public class AssetResponse extends BaseResponse {
+    @Encode
+    @ApiModelProperty("操作记录表id")
+    String assetOperationRecordId;
+    @ApiModelProperty("报废暂存备注")
+    private String temporaryInfo;
     /**
      * 厂商名称版本
      */
@@ -371,6 +376,14 @@ public class AssetResponse extends BaseResponse {
 
     public String getMemo() {
         return memo;
+    }
+
+    public String getTemporaryInfo() {
+        return temporaryInfo;
+    }
+
+    public void setTemporaryInfo(String temporaryInfo) {
+        this.temporaryInfo = temporaryInfo;
     }
 
     public void setMemo(String memo) {
@@ -888,6 +901,14 @@ public class AssetResponse extends BaseResponse {
     public void setImportanceDegree(Integer importanceDegree) {
         this.importanceDegree = importanceDegree;
         this.importanceDegreeName = AssetImportanceDegreeEnum.getMsgByCode(importanceDegree);
+    }
+
+    public String getAssetOperationRecordId() {
+        return assetOperationRecordId;
+    }
+
+    public void setAssetOperationRecordId(String assetOperationRecordId) {
+        this.assetOperationRecordId = assetOperationRecordId;
     }
 
     public Long getServiceLife() {

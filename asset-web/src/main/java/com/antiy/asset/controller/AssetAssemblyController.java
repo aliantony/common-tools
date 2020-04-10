@@ -2,7 +2,7 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetAssemblyService;
 import com.antiy.asset.vo.query.AssetAssemblyQuery;
-import com.antiy.asset.vo.request.AssetAssemblyRequest;
+import com.antiy.asset.vo.query.AssetAssemblyScrapRequest;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.ActionResponse;
 import io.swagger.annotations.*;
@@ -45,8 +45,8 @@ public class AssetAssemblyController {
     @ApiOperation(value = "报废暂存", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/scrap/update", method = RequestMethod.POST)
-    public ActionResponse scrapUpdate(@ApiParam(value = "assetAssembly") @RequestBody AssetAssemblyRequest assetAssemblyRequest) throws Exception {
-        Integer result= iAssetAssemblyService.scrapUpdate(assetAssemblyRequest);
+    public ActionResponse scrapUpdate(@ApiParam(value = "assetAssembly") @RequestBody AssetAssemblyScrapRequest assetAssemblyScrapRequest) throws Exception {
+        Integer result= iAssetAssemblyService.scrapUpdate(assetAssemblyScrapRequest);
         return ActionResponse.success(result);
     }
 
