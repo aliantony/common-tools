@@ -40,7 +40,7 @@ public class AssetOaOrderApplyRequest extends BasicRequest implements ObjectVali
      * 申请时间
      */
     @ApiModelProperty("申请时间")
-    private String applyTime;
+    private Long applyTime;
 
 
     public Integer getApplyUserId() {
@@ -76,11 +76,11 @@ public class AssetOaOrderApplyRequest extends BasicRequest implements ObjectVali
         this.content = content;
     }
 
-    public String getApplyTime() {
+    public Long getApplyTime() {
         return applyTime;
     }
 
-    public void setApplyTime(String applyTime) {
+    public void setApplyTime(Long applyTime) {
         this.applyTime = applyTime;
     }
 

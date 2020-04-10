@@ -28,10 +28,6 @@ public class AssetOaOrder extends BaseEntity {
      */
     private Integer orderStatus;
     /**
-     * 是否出借，只针对出借订单，1是，0否
-     */
-    private Integer lendStatus;
-    /**
      * 时间
      */
     private Long gmtCreate;
@@ -64,14 +60,6 @@ public class AssetOaOrder extends BaseEntity {
     }
 
 
-    public Integer getLendStatus() {
-        return lendStatus;
-    }
-
-    public void setLendStatus(Integer lendStatus) {
-        this.lendStatus = lendStatus;
-    }
-
 
     public Long getGmtCreate() {
         return gmtCreate;
@@ -87,7 +75,6 @@ public class AssetOaOrder extends BaseEntity {
                 ", number=" + number +
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +
-                ", lendStatus=" + lendStatus +
                 ", gmtCreate=" + gmtCreate +
                 "}";
     }

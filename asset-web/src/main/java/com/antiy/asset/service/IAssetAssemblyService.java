@@ -1,17 +1,15 @@
 package com.antiy.asset.service;
 
-import com.antiy.common.base.IBaseService;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.QueryCondition;
-import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.ActionResponse;
-import java.io.Serializable;
-import java.util.List;
-
+import com.antiy.asset.entity.AssetAssembly;
 import com.antiy.asset.vo.query.AssetAssemblyQuery;
 import com.antiy.asset.vo.request.AssetAssemblyRequest;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
-import com.antiy.asset.entity.AssetAssembly;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.IBaseService;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.base.QueryCondition;
+
+import java.util.List;
 
 /**
  * <p> 资产组件关系表 服务类 </p>
@@ -63,4 +61,5 @@ public interface IAssetAssemblyService extends IBaseService<AssetAssembly> {
      */
     String deleteAssetAssemblyById(BaseRequest baseRequest) throws Exception;
 
+    Integer scrapUpdate(AssetAssemblyRequest assetAssemblyRequest);
 }

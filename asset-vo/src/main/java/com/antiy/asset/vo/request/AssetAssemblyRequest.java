@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.request;
 
+import java.io.Serializable;
+
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -41,10 +42,106 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     @ApiModelProperty("组件主键")
     private String  businessId;
     /**
-     * 组件主键
+     * 消磁 1 未 2 已
      */
-    @ApiModelProperty("组件数量")
-    private Integer amount;
+    @ApiModelProperty("消磁 1  未  2 已")
+    private Integer demagnetization;
+    /**
+     * 粉碎 1 未粉碎 2 已粉碎
+     */
+    @ApiModelProperty("粉碎  1 未粉碎 2 已粉碎")
+    private Integer smash;
+    /**
+     * 唯一键
+     */
+    @ApiModelProperty("唯一键")
+    private Long    uniqueId;
+    /**
+     * 1 未报废 2 已报废
+     */
+    @ApiModelProperty("1 未报废 2 已报废")
+    private Integer scrap;
+
+    public Integer getDemagnetization() {
+        return demagnetization;
+    }
+
+    public void setDemagnetization(Integer demagnetization) {
+        this.demagnetization = demagnetization;
+    }
+
+    public Integer getSmash() {
+        return smash;
+    }
+
+    public void setSmash(Integer smash) {
+        this.smash = smash;
+    }
+
+    public Long getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(Long uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public Integer getScrap() {
+        return scrap;
+    }
+
+    public void setScrap(Integer scrap) {
+        this.scrap = scrap;
+    }
+
+    /**
+     *  拆除 1 未  2 已
+     */
+    private Integer remove;
+    /**
+     *  消磁 1  未  2 已
+     */
+    private Integer demagnetization;
+    /**
+     *  粉碎  1 未粉碎 2 已粉碎
+     */
+    private Integer smash;
+    /**
+     *  唯一键
+     */
+    private Long uniqueId;
+
+    public Integer getRemove() {
+        return remove;
+    }
+
+    public void setRemove(Integer remove) {
+        this.remove = remove;
+    }
+
+    public Integer getDemagnetization() {
+        return demagnetization;
+    }
+
+    public void setDemagnetization(Integer demagnetization) {
+        this.demagnetization = demagnetization;
+    }
+
+    public Integer getSmash() {
+        return smash;
+    }
+
+    public void setSmash(Integer smash) {
+        this.smash = smash;
+    }
+
+    public Long getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(Long uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public String getId() {
         return id;
@@ -60,14 +157,6 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
 
     public void setAssetId(String assetId) {
         this.assetId = assetId;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
     }
 
     public String getProductName() {
@@ -102,8 +191,8 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     @Override
     public String toString() {
         return "AssetAssemblyRequest{" + "id='" + id + '\'' + ", productName='" + productName + '\'' + ", type='" + type
-               + '\'' + ", assetId='" + assetId + '\'' + ", businessId='" + businessId + '\'' + ", amount=" + amount
-               + '}';
+               + '\'' + ", supplier='" + supplier + '\'' + ", assetId='" + assetId + '\'' + ", businessId='"
+               + businessId + '\'' + '}';
     }
 
     public String getSupplier() {

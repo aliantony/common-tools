@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetOaOrderApply", description = "订单申请信息表")
 @RestController
-@RequestMapping("/v1/asset/assetoaorderapply")
+@RequestMapping("/api/v1/asset/assetoaorderapply")
 public class AssetOaOrderApplyController {
     private static final Logger logger = LogUtils.get();
 
@@ -81,7 +81,7 @@ public class AssetOaOrderApplyController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetOaOrderApply") @PathVariable("id") Integer id)throws Exception{
+    public ActionResponse queryById(@ApiParam(value = "assetOaOrderApply") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderApplyService.getById(id));
     }
@@ -96,7 +96,7 @@ public class AssetOaOrderApplyController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @PathVariable("id") Integer id)throws Exception{
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderApplyService.deleteById(id));
     }

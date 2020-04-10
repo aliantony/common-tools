@@ -31,7 +31,7 @@ private static final long serialVersionUID = 1L;
     */
     private Integer orderId;
     /**
-    *  归还日期
+    *  归还日期（约定归还日期）
     */
     private Long lendPeriods;
     /**
@@ -69,7 +69,7 @@ private static final long serialVersionUID = 1L;
     private Long lendTime;
 
     /**
-     * 归还时间
+     * 实际归还时间
      *
      */
     private Long returnTime;

@@ -34,15 +34,10 @@ public class AssetOaOrderRequest extends BasicRequest implements ObjectValidator
     @ApiModelProperty("1待处理，2已处理")
     private Integer orderStatus;
     /**
-     * 是否出借，只针对出借订单，1是，0否
-     */
-    @ApiModelProperty("是否出借，只针对出借订单，1是，0否")
-    private Integer lendStatus;
-    /**
      * 时间
      */
     @ApiModelProperty("时间")
-    private Long time;
+    private Long gmtCreate;
 
     /**
      * 订单申请信息
@@ -82,21 +77,12 @@ public class AssetOaOrderRequest extends BasicRequest implements ObjectValidator
     }
 
 
-    public Integer getLendStatus() {
-        return lendStatus;
+    public Long getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setLendStatus(Integer lendStatus) {
-        this.lendStatus = lendStatus;
-    }
-
-
-    public Long getTime() {
-        return time;
-    }
-
-    public void setTime(Long time) {
-        this.time = time;
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     public AssetOaOrderApplyRequest getAssetOaOrderApplyRequest() {
