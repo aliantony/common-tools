@@ -377,10 +377,17 @@
 
     <select id="findAllCategory" resultMap="BaseResultMap">
         select
-        id, parent_id,name
+         cm.id, cm.parent_id,cm.name
+        <if test="sourceOfLend">
+            ,count(asset.id) count
+        </if>
         from
-        <include refid="Table_Name"></include>
-        where status=1
+        <include refid="Table_Name"/> cm
+        <if test="sourceOfLend">
+            left join asset on cm.id=asset.category_model and asset.status=1
+        </if>
+        where cm.status=1
+        group by cm.id
     </select>
 
     <select id="getByName" resultMap="BaseResultMap">
@@ -447,7 +454,7 @@
             AND asset_type = 2
             GROUP BY
                 category.id
-           ) category ON category.id = asset_category_model.id
+          ) category ON category.id = asset_category_model.id
         WHERE
             asset_category_model. STATUS = 1
         GROUP BY
