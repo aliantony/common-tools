@@ -61,13 +61,13 @@ public class AssetOperationRecordController {
         PageResult<AssetResponse> assetResponseList=assetOperationRecordService.queryCheckList(assetSchemeQuery);
         return ActionResponse.success(assetResponseList);
     }
-    @ApiOperation(value = "资产 退役/报废/入网审批方案和附件", notes = "传入taskId")
+    /*@ApiOperation(value = "资产 退役/报废/入网审批方案和附件", notes = "传入taskId")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/check/scheme", method = RequestMethod.POST)
     public ActionResponse queryCheckScheme(@ApiParam(value = "operationRecordRequest") @RequestBody AssetOperationRecordRequest operationRecordRequest) throws Exception {
         AssetOperationRecordResponse recordResponse=assetOperationRecordService.queryCheckSchemeByTaskId(operationRecordRequest.getTaskId());
         return ActionResponse.success(recordResponse);
-    }
+    }*/
    /* @ApiOperation(value = "报废执行报废方案列表", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = StatusLogResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/scrapExec/list", method = RequestMethod.POST)
