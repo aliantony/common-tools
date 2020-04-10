@@ -1,12 +1,11 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * <p>
- * AssetBusinessResponse 响应对象
- * </p>
+ * <p> AssetBusinessResponse 响应对象 </p>
  *
  * @author zhangyajun
  * @since 2018-12-27
@@ -19,33 +18,33 @@ public class AssetBusinessResponse extends BaseResponse {
     @ApiModelProperty("业务id")
     private Integer id;
     /**
-     *  业务名称（中文字符，去重）
+     * 业务名称（中文字符，去重）
      */
     @ApiModelProperty("业务名称")
-    private String name;
+    private String  name;
     /**
-     *  业务重要性：1-高，2-中，3-低
+     * 业务重要性：1-高，2-中，3-低
      */
     @ApiModelProperty("业务重要性 1-高，2-中，3-低")
     private Integer importance;
     @ApiModelProperty("业务重要性")
-    private String importanceDesc;
+    private String  importanceDesc;
     /**
-     *  描述
+     * 描述
      */
     @ApiModelProperty("描述")
-    private String description;
+    private String  description;
 
     /**
-     *  创建时间
+     * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long gmtCreate;
+    private Long    gmtCreate;
     /**
-     *  更新时间
+     * 更新时间
      */
     @ApiModelProperty("更新时间")
-    private Long gmtModified;
+    private Long    gmtModified;
     /**
      * 关联资产数量
      */
@@ -55,19 +54,16 @@ public class AssetBusinessResponse extends BaseResponse {
      * 唯一键
      */
     @ApiModelProperty("唯一键")
-    private String uniqueId;
+    private String  uniqueId;
 
     /**
-     * 排序字段
-     * 1 资产数量  2 重要行  3  更新时间
+     * 排序字段 1 资产数量 2 重要行 3 更新时间
      *
      */
     @ApiModelProperty("排序字段 1 资产数量  2 重要行  3  更新时间")
     private Integer orderBy;
     /**
-     * 顺序
-     * 1 从大到小
-     * 2 从小到大
+     * 顺序 1 从大到小 2 从小到大
      */
     @ApiModelProperty("顺序")
     private Integer sortOrder;
@@ -97,16 +93,8 @@ public class AssetBusinessResponse extends BaseResponse {
     }
 
     public String getImportanceDesc() {
-        if(importance==1)
-            return "高";
-        if(importance==2)
-            return "中";
-        if(importance==3)
-            return "低";
-        return null;
+        return importanceDesc;
     }
-
-
 
     public String getUniqueId() {
         return uniqueId;
@@ -130,6 +118,7 @@ public class AssetBusinessResponse extends BaseResponse {
 
     public void setImportance(Integer importance) {
         this.importance = importance;
+        this.importanceDesc = importance == 1 ? "高" : (importance == 2 ? "中" : "低");
     }
 
     public String getDescription() {
