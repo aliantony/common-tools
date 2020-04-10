@@ -26,6 +26,7 @@ public enum KeyStatusEnum {
                 return keyStatusEnum.getName();
             }
         }
+//        return null;
         throw new BusinessException("类型不存在!");
     }
 
@@ -36,6 +37,7 @@ public enum KeyStatusEnum {
                 return keyStatusEnum.getStatus();
             }
         }
+//        return null;
         throw new BusinessException("类型不存在!");
     }
 
@@ -46,6 +48,7 @@ public enum KeyStatusEnum {
                 return keyStatusEnum;
             }
         }
+//        return null;
         throw new BusinessException("类型不存在!");
     }
 
@@ -56,6 +59,7 @@ public enum KeyStatusEnum {
                 return keyStatusEnum;
             }
         }
+//        return null;
         throw new BusinessException("类型不存在!");
     }
 
