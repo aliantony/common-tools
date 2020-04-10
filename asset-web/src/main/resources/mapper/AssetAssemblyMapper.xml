@@ -216,7 +216,11 @@
         t1.business_id as businessId,
         t2.product_name as productName,
         t2.type,
-        t1.amount
+        t1.remove,
+        t1.demagnetization,
+        t1.smash,
+        t1.unique_id as uniqueId,
+        t1.scrap
         FROM
         asset_assembly t1
         LEFT JOIN asset_assembly_lib t2 ON t1.business_id = t2.business_id
