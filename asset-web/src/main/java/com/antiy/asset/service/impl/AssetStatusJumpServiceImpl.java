@@ -123,11 +123,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 }
                 throw new BusinessException(e.getMessage());
             }
-            //退役申请,保存报废信息
-            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-                //List<AssetAssemblyRequest> assemblyByAssetId = assetAssemblyDao.findAssemblyByAssetId(assetId, null);
-
-            }
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE) &&statusJumpRequest.getAgree().equals(true)){
                 /**
                  * 配置

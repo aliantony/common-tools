@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.common.base.BaseEntity;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>资产组件关系表</p>
@@ -19,10 +18,6 @@ public class AssetAssembly extends BaseEntity {
      */
     private String           assetId;
     /**
-     * 组件数量
-     */
-    private Integer           amount;
-    /**
      * 组件主键
      */
     private String           businessId;
@@ -38,17 +33,70 @@ public class AssetAssembly extends BaseEntity {
      * 供应商
      */
     private String            supplier;
+
+    /**
+     *  拆除 1 未  2 已
+     */
+    private Integer remove;
+    /**
+     *  消磁 1  未  2 已
+     */
+    private Integer demagnetization;
+    /**
+     *  粉碎  1 未粉碎 2 已粉碎
+     */
+    private Integer smash;
+    /**
+     *  唯一键
+     */
+    private Long uniqueId;
+    /**
+     *  1 未报废 2 已报废
+     */
+    private Integer scrap;
     /**
      * 状态：1-未删除,0-已删除
      */
     private Integer           status;
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getRemove() {
+        return remove;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setRemove(Integer remove) {
+        this.remove = remove;
+    }
+
+    public Integer getDemagnetization() {
+        return demagnetization;
+    }
+
+    public void setDemagnetization(Integer demagnetization) {
+        this.demagnetization = demagnetization;
+    }
+
+    public Integer getSmash() {
+        return smash;
+    }
+
+    public void setSmash(Integer smash) {
+        this.smash = smash;
+    }
+
+    public Long getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(Long uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public Integer getScrap() {
+        return scrap;
+    }
+
+    public void setScrap(Integer scrap) {
+        this.scrap = scrap;
     }
 
     public String getAssetId() {
@@ -101,8 +149,18 @@ public class AssetAssembly extends BaseEntity {
 
     @Override
     public String toString() {
-        return "AssetAssembly{" + "assetId=" + assetId + ", amount=" + amount + ", businessId=" + businessId
-               + ", type='" + type + '\'' + ", productName='" + productName + '\'' + ", supplier='" + supplier + '\''
-               + ", status=" + status + '}';
+        return "AssetAssembly{" +
+                "assetId='" + assetId + '\'' +
+                ", businessId='" + businessId + '\'' +
+                ", type='" + type + '\'' +
+                ", productName='" + productName + '\'' +
+                ", supplier='" + supplier + '\'' +
+                ", remove=" + remove +
+                ", demagnetization=" + demagnetization +
+                ", smash=" + smash +
+                ", uniqueId=" + uniqueId +
+                ", scrap=" + scrap +
+                ", status=" + status +
+                '}';
     }
 }

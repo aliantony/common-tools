@@ -40,11 +40,6 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("组件主键")
     private String  businessId;
-    /**
-     * 组件主键
-     */
-    @ApiModelProperty("组件数量")
-    private Integer amount;
 
     public String getId() {
         return id;
@@ -61,15 +56,6 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
     public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
     public String getProductName() {
         return productName;
     }
@@ -101,9 +87,14 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
 
     @Override
     public String toString() {
-        return "AssetAssemblyRequest{" + "id='" + id + '\'' + ", productName='" + productName + '\'' + ", type='" + type
-               + '\'' + ", assetId='" + assetId + '\'' + ", businessId='" + businessId + '\'' + ", amount=" + amount
-               + '}';
+        return "AssetAssemblyRequest{" +
+                "id='" + id + '\'' +
+                ", productName='" + productName + '\'' +
+                ", type='" + type + '\'' +
+                ", supplier='" + supplier + '\'' +
+                ", assetId='" + assetId + '\'' +
+                ", businessId='" + businessId + '\'' +
+                '}';
     }
 
     public String getSupplier() {

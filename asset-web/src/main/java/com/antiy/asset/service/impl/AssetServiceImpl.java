@@ -1922,7 +1922,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 AssetAssembly assetAssembly = new AssetAssembly();
                 assetAssembly.setAssetId(id);
                 assetAssembly.setBusinessId(assemblyRequest.getBusinessId());
-                assetAssembly.setAmount(assemblyRequest.getAmount());
+              //  assetAssembly.setAmount(assemblyRequest.getAmount());
                 assetAssemblyList.add(assetAssembly);
             });
             assetAssemblyDao.insertBatch(assetAssemblyList);
