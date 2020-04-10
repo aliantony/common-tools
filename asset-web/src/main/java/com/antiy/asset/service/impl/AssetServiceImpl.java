@@ -3545,7 +3545,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) {
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
-            // assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
         Integer count = assetDao.queryAssetCount(assetMultipleQuery);
         if (count <= 0) {
