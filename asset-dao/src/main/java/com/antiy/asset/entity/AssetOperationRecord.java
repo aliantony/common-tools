@@ -94,6 +94,18 @@ public class AssetOperationRecord extends BaseEntity {
      *
      */
     private Integer taskId;
+    /**
+     *
+     *  备注(报废执行暂存)
+     */
+    private String temporaryInfo;
+
+    public String getTemporaryInfo() {
+        return temporaryInfo;
+    }
+    public void setTemporaryInfo(String temporaryInfo) {
+        this.temporaryInfo = temporaryInfo;
+    }
 
     public Integer getTaskId() {
         return taskId;

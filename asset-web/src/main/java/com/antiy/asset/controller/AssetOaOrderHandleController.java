@@ -32,11 +32,11 @@ public class AssetOaOrderHandleController {
      * @param assetOaOrderHandleRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "订单处理提交接口", notes = "传入实体对象信息")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetOaOrderHandle") @RequestBody AssetOaOrderHandleRequest assetOaOrderHandleRequest)throws Exception{
         iAssetOaOrderHandleService.saveAssetOaOrderHandle(assetOaOrderHandleRequest);
         return ActionResponse.success();

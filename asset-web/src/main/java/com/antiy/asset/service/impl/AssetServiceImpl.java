@@ -189,10 +189,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String areaId = requestAsset.getAreaId();
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, areaId);
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                    BusinessExceptionUtils.isTrue(
-                        !Objects.isNull(
-                            assetUserDao.getById(DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))),
-                        "使用者不存在，或已经注销");
+                    BusinessExceptionUtils.isTrue(!Objects.isNull(assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
+                        DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
@@ -235,18 +233,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(assetCustomizeRequests)) {
                         asset.setCustomField(JsonUtil.ListToJson(assetCustomizeRequests));
                     }
-                    // 添加业务 关联
-                    List<AssetBusinessRelationRequest> asetBusinessRelationRequests = request
-                        .getAsetBusinessRelationRequests();
-                    if (CollectionUtils.isNotEmpty(asetBusinessRelationRequests)) {
-                        List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
-                            .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
-                        assetBusinessRelations.forEach(assetBusinessRelation -> {
-                            assetBusinessRelation.setGmtCreate(currentTimeMillis);
-                            assetBusinessRelation.setCreateUser(curentUser);
-                        });
-                        assetBusinessRelationDao.insertBatch(assetBusinessRelations);
-                    }
 
                     // 是否孤岛设备：1、是 2、否
                     asset.setIsOrphan(requestAsset.getIsOrphan());
@@ -254,7 +240,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 返回的资产id
                     assetDao.insert(asset);
                     aid = asset.getStringId();
-
+                    // 添加业务 关联
+                    List<AssetBusinessRelationRequest> asetBusinessRelationRequests = request
+                        .getAsetBusinessRelationRequests();
+                    if (CollectionUtils.isNotEmpty(asetBusinessRelationRequests)) {
+                        List<AssetBusinessRelation> assetBusinessRelations = BeanConvert
+                            .convert(asetBusinessRelationRequests, AssetBusinessRelation.class);
+                        assetBusinessRelations.forEach(assetBusinessRelation -> {
+                            assetBusinessRelation.setAssetId(aid);
+                            assetBusinessRelation.setGmtCreate(currentTimeMillis);
+                            assetBusinessRelation.setCreateUser(curentUser);
+                        });
+                        assetBusinessRelationDao.insertBatch(assetBusinessRelations);
+                    }
                     // 保存资产与资产组关系
                     insertBatchAssetGroupRelation(aid, assetGroup);
                     uuid[0] = asset.getUuid();
@@ -1105,8 +1103,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         }
         // 查询组件
-        List<AssetAssemblyRequest> assetAssemblys = assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(),"");
-        List<AssetAssemblyResponse> assemblyResponseList = BeanConvert.convert(assetAssemblys, AssetAssemblyResponse.class);
+        List<AssetAssemblyRequest> assetAssemblys = assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(),
+            "");
+        List<AssetAssemblyResponse> assemblyResponseList = BeanConvert.convert(assetAssemblys,
+            AssetAssemblyResponse.class);
         assetOuterResponse.setAssemblyResponseList(assemblyResponseList);
         // 查询代办
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
@@ -3545,7 +3545,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) {
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
-            // assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+            assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
         Integer count = assetDao.queryAssetCount(assetMultipleQuery);
         if (count <= 0) {
