@@ -212,8 +212,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
             BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
-        // 更新缓存
-        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_CATEGORY_MODEL, (Integer) id);
         return deleteAllById(id);
     }
 
