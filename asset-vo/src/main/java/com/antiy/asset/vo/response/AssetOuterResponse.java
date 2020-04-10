@@ -24,9 +24,9 @@ public class AssetOuterResponse {
     @ApiModelProperty("存储介质")
     private AssetStorageMediumResponse    assetStorageMedium;
     /**
-     * 组件里列表
-     */ 
-    @ApiModelProperty("组件里列表")
+     * 组件列表
+     */
+    @ApiModelProperty("组件列表")
     List<AssetAssemblyResponse>           assemblyResponseList;
 
     public AssetResponse getAsset() {
