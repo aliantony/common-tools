@@ -11,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
@@ -24,7 +25,9 @@ import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -40,20 +43,21 @@ import com.antiy.common.utils.LoginUserUtil;
  */
 @Service
 public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategoryModel>
-        implements IAssetCategoryModelService {
+                                           implements IAssetCategoryModelService {
 
     @Resource
-    private AssetCategoryModelDao assetCategoryModelDao;
+    private AssetCategoryModelDao       assetCategoryModelDao;
     @Resource
-    private AssetDao assetDao;
+    private AssetDao                    assetDao;
     @Resource
-    private CategoryRequestConvert requestConverter;
+    private CategoryRequestConvert      requestConverter;
     @Resource
-    private CategoryRequestConvert categoryRequestConvert;
+    private CategoryRequestConvert      categoryRequestConvert;
     @Resource
-    private AesEncoder aesEncoder;
+    private AesEncoder                  aesEncoder;
     private static Map<String, Integer> parentMap = new HashMap<>();
-
+    @Resource
+    private AssetBaseDataCache          assetBaseDataCache;
     static {
         parentMap.put("0", 0);
     }
@@ -80,19 +84,21 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         assetCategoryModel.setIsDefault(Constants.NOT_SYSTEM_DEFAULT_CATEGORY);
 
         Integer result = assetCategoryModelDao.insert(assetCategoryModel);
+        // 更新缓存
+        assetBaseDataCache.put(AssetBaseDataCache.ASSET_CATEGORY_MODEL, assetCategoryModel);
         if (!Objects.equals(0, result)) {
             // 写入业务日志
             // LogHandle.log(assetCategoryModel.toString(), AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
             // AssetEventEnum.ASSET_CATEGORY_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
-                    assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
-                    BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+                assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
+                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
-                    assetCategoryModel.toString());
+                assetCategoryModel.toString());
         }
         return ActionResponse
-                .success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+            .success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
 
     }
 
@@ -124,7 +130,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             }
             levelCount++;
         }
-        //包括资产类型，最大为4级
+        // 包括资产类型，最大为4级
         BusinessExceptionUtils.isTrue(levelCount < 4 && levelCount >= 2, "资产类型限制为3级");
     }
 
@@ -141,19 +147,20 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         updateCategory.setModifyUser(LoginUserUtil.getLoginUser().getId());
         updateCategory.setGmtModified(System.currentTimeMillis());
         Integer result = assetCategoryModelDao.update(updateCategory);
+        // 更新缓存
+        assetBaseDataCache.update(AssetBaseDataCache.ASSET_CATEGORY_MODEL, updateCategory);
         if (!Objects.equals(0, result)) {
             // 写入业务日志
             // LogHandle.log(updateCategory.toString(), AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
             // AssetEventEnum.ASSET_CATEGORY_UPDATE.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
-                    updateCategory.getId(), updateCategory.getName(), updateCategory,
-                    BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+                updateCategory.getId(), updateCategory.getName(), updateCategory,
+                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
         return ActionResponse.success(result);
     }
-
 
     /**
      * 判断是否是自定义的品类
@@ -169,7 +176,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return false;
     }
 
-
     /**
      * 判断是否重名
      *
@@ -181,8 +187,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             AssetCategoryModelQuery assetCategoryModelQuery = new AssetCategoryModelQuery();
             assetCategoryModelQuery.setName(request.getName());
             return assetCategoryModelDao.findRepeatName(
-                    request.getStringId() == null ? null : DataTypeUtils.stringToInteger(request.getStringId()),
-                    request.getName()) >= 1;
+                request.getStringId() == null ? null : DataTypeUtils.stringToInteger(request.getStringId()),
+                request.getName()) >= 1;
         }
         return false;
     }
@@ -203,12 +209,13 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // AssetEventEnum.ASSET_CATEGORY_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
-                assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
-                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+            assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
+            BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
+        // 更新缓存
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_CATEGORY_MODEL, (Integer) id);
         return deleteAllById(id);
     }
-
 
     /**
      * 通过类型查询品类树
@@ -227,7 +234,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
     private void aesEncode(AssetCategoryModelNodeResponse nodeResponse, String userName) {
 
-
         if (nodeResponse != null && CollectionUtils.isNotEmpty(nodeResponse.getChildrenNode())) {
             List<AssetCategoryModelNodeResponse> childrenNodeList = nodeResponse.getChildrenNode();
             childrenNodeList.forEach(e -> {
@@ -239,24 +245,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             });
         }
 
-
     }
 
     private AssetCategoryModelNodeResponse getNextNodeResponse(List<AssetCategoryModel> softWareCategoryCount) throws Exception {
         return getAssetCategoryModelNodeResponse(softWareCategoryCount);
     }
 
-
     private AssetCategoryModelNodeResponse getAssetCategoryModelNodeResponse(List<AssetCategoryModel> assetCategoryModels) throws Exception {
         NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
         List<AssetCategoryModelNodeResponse> assetDepartmentNodeResponses = nodeConverter
-                .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
-        //处理层级和权限
+            .columnToNode(assetCategoryModels, AssetCategoryModelNodeResponse.class);
+        // 处理层级和权限
         dealLevel(assetDepartmentNodeResponses, assetCategoryModels);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
 
-    private void dealLevel(List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses, List<AssetCategoryModel> assetCategoryModels) throws Exception {
+    private void dealLevel(List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses,
+                           List<AssetCategoryModel> assetCategoryModels) throws Exception {
         if (CollectionUtils.isNotEmpty(assetCategoryModelNodeResponses)) {
             for (AssetCategoryModelNodeResponse assetCategoryModelNodeResponse : assetCategoryModelNodeResponses) {
                 if (!parentMap.containsKey(assetCategoryModelNodeResponse.getParentId())) {
@@ -264,26 +269,28 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     parentMap.put(assetCategoryModelNodeResponse.getStringId(), 1);
                 } else {
                     parentMap.put(assetCategoryModelNodeResponse.getStringId(),
-                            parentMap.get(assetCategoryModelNodeResponse.getParentId()) + 1);
+                        parentMap.get(assetCategoryModelNodeResponse.getParentId()) + 1);
                     assetCategoryModelNodeResponse
-                            .setLevelType(parentMap.get(assetCategoryModelNodeResponse.getParentId()) + 1);
+                        .setLevelType(parentMap.get(assetCategoryModelNodeResponse.getParentId()) + 1);
                 }
-                //删除节点权限
+                // 删除节点权限
                 boolean deleteAuthority = false;
-                //添加子节点权限
+                // 添加子节点权限
                 boolean addAuthority = true;
-                //修改节点权限
+                // 修改节点权限
                 boolean changeAuthority = false;
-                //用户自定义类型
+                // 用户自定义类型
                 int defaultNumber = 1;
                 if (assetCategoryModelNodeResponse.getIsDefault().equals(defaultNumber)) {
                     deleteAuthority = true;
                     changeAuthority = true;
-                    //通过判断该节点下是否有资产来设置删除权限
-                    if (assetCategoryModelNodeResponse.getCount() != null && assetCategoryModelNodeResponse.getCount() > 0) {
+                    // 通过判断该节点下是否有资产来设置删除权限
+                    if (assetCategoryModelNodeResponse.getCount() != null
+                        && assetCategoryModelNodeResponse.getCount() > 0) {
                         deleteAuthority = false;
                     } else if (CollectionUtils.isNotEmpty(assetCategoryModelNodeResponse.getChildrenNode())) {
-                        List<AssetCategoryModel> categoryModels = recursionSearch(assetCategoryModels, DataTypeUtils.stringToInteger(assetCategoryModelNodeResponse.getStringId()));
+                        List<AssetCategoryModel> categoryModels = recursionSearch(assetCategoryModels,
+                            DataTypeUtils.stringToInteger(assetCategoryModelNodeResponse.getStringId()));
                         for (AssetCategoryModel categoryModel : categoryModels) {
                             if (categoryModel.getCount() != null && categoryModel.getCount() > 0) {
                                 deleteAuthority = false;
@@ -293,7 +300,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                     }
 
                 }
-                if (assetCategoryModelNodeResponse.getLevelType() >= 4 || assetCategoryModelNodeResponse.getLevelType() <= 1) {
+                if (assetCategoryModelNodeResponse.getLevelType() >= 4
+                    || assetCategoryModelNodeResponse.getLevelType() <= 1) {
                     addAuthority = false;
                 }
 
@@ -304,7 +312,6 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             }
         }
     }
-
 
     /**
      * 删除品类及其子品类,若存在资产则不能删（进行递归）
@@ -320,15 +327,14 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
         assetQuery.setCategoryModels(DataTypeUtils.stringArrayToIntegerArray(ids));
         BusinessExceptionUtils.isTrue(!checkExistAsset(assetQuery), "存在资产，不能删除");
-//        AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
-//        assetSoftwareQuery.setCategoryModels(ids);
-//        BusinessExceptionUtils.isTrue(!checkExistSoftware(assetSoftwareQuery), "存在资产，不能删除");
+        // AssetSoftwareQuery assetSoftwareQuery = new AssetSoftwareQuery();
+        // assetSoftwareQuery.setCategoryModels(ids);
+        // BusinessExceptionUtils.isTrue(!checkExistSoftware(assetSoftwareQuery), "存在资产，不能删除");
         BusinessExceptionUtils.isEmpty(list, "品类不存在，删除失败");
         // 删除品类及其子品类
         Integer result = assetCategoryModelDao.delete(list);
         return ActionResponse.success(result);
     }
-
 
     private String[] getIdList(List<AssetCategoryModel> list) {
         String[] ids = new String[list.size()];
@@ -365,8 +371,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
      * 递归查询出所有的品类和其子品类
      *
      * @param result 查询的结果集
-     * @param list   查询的数据集
-     * @param id     递归的参数
+     * @param list 查询的数据集
+     * @param id 递归的参数
      */
     private void recursion(List<AssetCategoryModel> result, List<AssetCategoryModel> list, Integer id) {
         for (AssetCategoryModel assetCategoryModel : list) {
@@ -377,7 +383,4 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         }
     }
 
-
 }
-
-
