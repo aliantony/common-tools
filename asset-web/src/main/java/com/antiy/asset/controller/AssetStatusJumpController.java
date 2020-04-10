@@ -54,7 +54,6 @@ public class AssetStatusJumpController {
 
     @Resource
     private IAssetStatusJumpService assetStatusJumpService;
-
     /**
      * 资产状态跃迁
      *
@@ -68,6 +67,7 @@ public class AssetStatusJumpController {
     public ActionResponse statusJump(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
         return assetStatusJumpService.changeStatus(statusJumpRequest);
     }
+
 
     /**
      * 资产不予登记

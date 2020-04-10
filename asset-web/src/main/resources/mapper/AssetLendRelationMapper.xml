@@ -280,7 +280,7 @@
 
     <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
-        a.id as stringId,
+        a.id as assetId,
         a.name as  assetName,
         a.number as assetNumber,
         acm.name as categoryModel,
