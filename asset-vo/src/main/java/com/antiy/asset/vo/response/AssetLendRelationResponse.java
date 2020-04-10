@@ -65,6 +65,7 @@ public class AssetLendRelationResponse extends BaseResponse {
     private Integer lendStatus;
     @ApiModelProperty("出借状态 ")
     private String lendStatusDesc;
+
     /**
      *  创建时间
      */
@@ -274,7 +275,9 @@ public class AssetLendRelationResponse extends BaseResponse {
 
 
     public Integer getLendStatus() {
-
+        if(lendStatus==null){
+            return  2;
+        }
         return lendStatus;
     }
 

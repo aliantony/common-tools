@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -362,6 +361,21 @@ public class AssetResponse extends BaseResponse {
     private String                         executeUserId;
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
+
+
+    /**
+     * 备注
+     */
+    @ApiModelProperty("描述")
+    private String  memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     public String getAdmittanceStatusName() {
         return admittanceStatusName;
