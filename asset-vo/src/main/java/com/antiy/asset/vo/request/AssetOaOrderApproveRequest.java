@@ -20,31 +20,69 @@ public class AssetOaOrderApproveRequest extends BasicRequest implements ObjectVa
      * 审批人id
      */
     @ApiModelProperty("审批人id")
-    private Integer approvalUserId;
+    private Integer approveUserId;
     /**
      * 审批人姓名
      */
     @ApiModelProperty("审批人姓名")
-    private String approvalUserName;
+    private String approveUserName;
+    /**
+     * 订单编号
+     */
+    @ApiModelProperty("订单编号")
+    private String orderNumber;
+
+    /**
+     * 审批意见
+     */
+    @ApiModelProperty("审批意见")
+    private String view;
+    /**
+     * 审批时间
+     */
+    @ApiModelProperty("审批时间")
+    private Long approvaTime;
 
 
-    public Integer getApprovalUserId() {
-        return approvalUserId;
+    public Integer getApproveUserId() {
+        return approveUserId;
     }
 
-    public void setApprovalUserId(Integer approvalUserId) {
-        this.approvalUserId = approvalUserId;
+    public void setApproveUserId(Integer approveUserId) {
+        this.approveUserId = approveUserId;
     }
 
-
-    public String getApprovalUserName() {
-        return approvalUserName;
+    public String getApproveUserName() {
+        return approveUserName;
     }
 
-    public void setApprovalUserName(String approvalUserName) {
-        this.approvalUserName = approvalUserName;
+    public void setApproveUserName(String approveUserName) {
+        this.approveUserName = approveUserName;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
+
+    public Long getApprovaTime() {
+        return approvaTime;
+    }
+
+    public void setApprovaTime(Long approvaTime) {
+        this.approvaTime = approvaTime;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {

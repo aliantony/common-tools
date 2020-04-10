@@ -26,6 +26,21 @@ public class AssetOaOrderApplyRequest extends BasicRequest implements ObjectVali
      */
     @ApiModelProperty("申请人姓名")
     private String applyUserName;
+    /**
+     * 订单编号
+     */
+    @ApiModelProperty("订单编号")
+    private String orderNumber;
+    /**
+     * 申请内容
+     */
+    @ApiModelProperty("申请内容")
+    private String content;
+    /**
+     * 申请时间
+     */
+    @ApiModelProperty("申请时间")
+    private String applyTime;
 
 
     public Integer getApplyUserId() {
@@ -45,6 +60,29 @@ public class AssetOaOrderApplyRequest extends BasicRequest implements ObjectVali
         this.applyUserName = applyUserName;
     }
 
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(String applyTime) {
+        this.applyTime = applyTime;
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {
