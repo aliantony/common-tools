@@ -3,10 +3,7 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
-import com.antiy.asset.vo.request.ApproveInfoRequest;
-import com.antiy.asset.vo.request.AssetLendInfoRequest;
-import com.antiy.asset.vo.request.AssetLendRelationRequest;
-import com.antiy.asset.vo.request.UniqueKeyRquest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.common.base.*;
 import io.swagger.annotations.*;
@@ -21,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- *
  * @author zhangyajun
  * @since 2020-04-07
  */
@@ -74,7 +70,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class, responseContainer = "List"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetLendRelation")  @RequestBody AssetLendRelationQuery assetLendRelationQuery)throws Exception{
+    public ActionResponse queryList(@ApiParam(value = "assetLendRelation") @RequestBody AssetLendRelationQuery assetLendRelationQuery) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryPageAssetLendRelation(assetLendRelationQuery));
     }
 
@@ -88,8 +84,8 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
     })
     @RequestMapping(value = "/query/info", method = RequestMethod.POST)
-    public ActionResponse queryInfo(@ApiParam(value = "assetLendRelation") @RequestBody  UniqueKeyRquest uniqueKeyRquest)throws Exception{
-        AssetLendRelationResponse assetLendRelationResponse= iAssetLendRelationService.queryInfo(uniqueKeyRquest.getUniqueId());
+    public ActionResponse queryInfo(@ApiParam(value = "assetLendRelation") @RequestBody UniqueKeyRquest uniqueKeyRquest) throws Exception {
+        AssetLendRelationResponse assetLendRelationResponse = iAssetLendRelationService.queryInfo(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(assetLendRelationResponse);
     }
 
@@ -101,8 +97,8 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class, responseContainer = "List"),
     })
     @RequestMapping(value = "/return/confirm", method = RequestMethod.POST)
-    public ActionResponse queryHistory(@ApiParam(value = "assetLendRelation") @RequestBody AssetLendRelationRequest assetLendRelationRequest)throws Exception{
-        Integer returnConfirm= iAssetLendRelationService.returnConfirm(assetLendRelationRequest);
+    public ActionResponse queryHistory(@ApiParam(value = "assetLendRelation") @RequestBody AssetLendRelationRequest assetLendRelationRequest) throws Exception {
+        Integer returnConfirm = iAssetLendRelationService.returnConfirm(assetLendRelationRequest);
         return ActionResponse.success(returnConfirm);
     }
 
@@ -114,8 +110,8 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
     })
     @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
-    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") @RequestBody ObjectQuery objectQuery)throws Exception{
-        PageResult<AssetLendRelationResponse> assetLendRelationResponses= iAssetLendRelationService.queryHistory(objectQuery);
+    public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") @RequestBody ObjectQuery objectQuery) throws Exception {
+        PageResult<AssetLendRelationResponse> assetLendRelationResponses = iAssetLendRelationService.queryHistory(objectQuery);
         return ActionResponse.success(assetLendRelationResponses);
     }
 
@@ -210,5 +206,32 @@ public class AssetLendRelationController {
 
     }
 
+    /**
+     * 申请人列表查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "申请人列表查询", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/query/userList", method = RequestMethod.POST)
+    public ActionResponse queryUserList() throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryUserList());
+    }
+
+    /**
+     * 申请人信息查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "申请人信息查询", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/query/userInfo", method = RequestMethod.POST)
+    public ActionResponse queryUserInfo(UserInfoRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryUserInfo(request));
+    }
 }
 

@@ -12,7 +12,7 @@ public class AssetLendInfoRequest {
     /**
      *  订单id
      */
-    private Integer orderNumber;
+    private String orderNumber;
     /**
      *  归还日期
      */
@@ -58,11 +58,11 @@ public class AssetLendInfoRequest {
         this.useId = useId;
     }
 
-    public Integer getOrderNumber() {
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(Integer orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
