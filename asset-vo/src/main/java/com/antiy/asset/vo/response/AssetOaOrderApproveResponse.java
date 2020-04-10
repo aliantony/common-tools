@@ -19,45 +19,72 @@ public class AssetOaOrderApproveResponse extends BaseEntity {
     /**
      * 审批人id
      */
-    private Integer approvalUserId;
+    private Integer approveUserId;
     /**
      * 审批人姓名
      */
-    private String approvalUserName;
+    private String approveUserName;
+    /**
+     * 审批意见
+     */
+    private String view;
+
+    /**
+     * 审批时间
+     */
+    private String approveTime;
 
 
-    public String getorderNumber() {
+    public Integer getApproveUserId() {
+        return approveUserId;
+    }
+
+    public void setApproveUserId(Integer approveUserId) {
+        this.approveUserId = approveUserId;
+    }
+
+
+    public String getApproveUserName() {
+        return approveUserName;
+    }
+
+    public void setApproveUserName(String approveUserName) {
+        this.approveUserName = approveUserName;
+    }
+
+
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setorderNumber(String orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
-    public Integer getApprovalUserId() {
-        return approvalUserId;
+    public String getView() {
+        return view;
     }
 
-    public void setApprovalUserId(Integer approvalUserId) {
-        this.approvalUserId = approvalUserId;
+    public void setView(String view) {
+        this.view = view;
     }
 
-
-    public String getApprovalUserName() {
-        return approvalUserName;
+    public String getApproveTime() {
+        return approveTime;
     }
 
-    public void setApprovalUserName(String approvalUserName) {
-        this.approvalUserName = approvalUserName;
+    public void setApproveTime(String approveTime) {
+        this.approveTime = approveTime;
     }
-
 
     @Override
     public String toString() {
         return "AssetOaOrderApproveResponse{" +
                 ", orderNumber=" + orderNumber +
-                ", approvalUserId=" + approvalUserId +
-                ", approvalUserName=" + approvalUserName +
+                ", approveUserId=" + approveUserId +
+                ", approveUserName=" + approveUserName +
+                ", view=" + view +
+                ", approveTime=" + approveTime +
                 "}";
     }
 }

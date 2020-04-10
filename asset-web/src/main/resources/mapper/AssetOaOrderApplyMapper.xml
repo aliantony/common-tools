@@ -8,10 +8,12 @@
         <result column="order_number" property="orderNumber"/>
         <result column="apply_user_id" property="applyUserId"/>
         <result column="apply_user_name" property="applyUserName"/>
+        <result column="content" property="content"/>
+        <result column="apply_time" property="applyTime"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, apply_user_id, apply_user_name
+        id, apply_user_id, apply_user_name, order_number, content, apply_time
     </sql>
 
     <sql id="Table_Name">
@@ -26,6 +28,15 @@
         <if test=" applyUserName != null">
             apply_user_name,
         </if>
+        <if test=" orderNumber != null">
+            order_number,
+        </if>
+        <if test=" content != null">
+            content,
+        </if>
+        <if test=" applyTime != null">
+            apply_time,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -34,6 +45,15 @@
         </if>
         <if test=" applyUserName != null">
             #{applyUserName },
+        </if>
+        <if test=" orderNumber != null">
+            #{orderNumber },
+        </if>
+        <if test=" content != null">
+            #{content },
+        </if>
+        <if test=" applyTime != null">
+            #{applyTime },
         </if>
     </sql>
 
@@ -44,6 +64,15 @@
         <if test=" applyUserName != null">
             apply_user_name = #{applyUserName },
         </if>
+        <if test=" orderNumber != null">
+            order_number = #{orderNumber },
+        </if>
+        <if test=" content != null">
+            content = #{content },
+        </if>
+        <if test=" applyTime != null">
+            apply_time = #{applyTime },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -52,6 +81,15 @@
         </if>
         <if test=" applyUserName != null">
             and apply_user_name = #{applyUserName }
+        </if>
+        <if test=" orderNumber != null">
+            and order_number = #{orderNumber }
+        </if>
+        <if test=" content != null">
+            and content = #{content }
+        </if>
+        <if test=" applyTime != null">
+            and apply_time = #{applyTime }
         </if>
     </sql>
 

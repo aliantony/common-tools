@@ -6,12 +6,12 @@
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOaOrderApprove">
         <id column="id" property="id"/>
         <result column="order_number" property="orderNumber"/>
-        <result column="approval_user_id" property="approvalUserId"/>
-        <result column="approval_user_name" property="approvalUserName"/>
+        <result column="approve_user_id" property="approveUserId"/>
+        <result column="approve_user_name" property="approveUserName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_number, approval_user_id, approval_user_name
+        id, order_number, approve_user_id, approve_user_name, view, approve_time
     </sql>
 
     <sql id="Table_Name">
@@ -23,11 +23,17 @@
         <if test=" orderNumber != null">
             order_number,
         </if>
-        <if test=" approvalUserId != null">
-            approval_user_id,
+        <if test=" approveUserId != null">
+            approve_user_id,
         </if>
-        <if test=" approvalUserName != null">
-            approval_user_name,
+        <if test=" approveUserName != null">
+            approve_user_name,
+        </if>
+        <if test=" view != null">
+            view,
+        </if>
+        <if test=" approveTime != null">
+            approve_time,
         </if>
     </sql>
 
@@ -35,11 +41,17 @@
         <if test=" orderNumber != null">
             #{orderNumber },
         </if>
-        <if test=" approvalUserId != null">
-            #{approvalUserId },
+        <if test=" approveUserId != null">
+            #{approveUserId },
         </if>
-        <if test=" approvalUserName != null">
-            #{approvalUserName },
+        <if test=" approveUserName != null">
+            #{approveUserName },
+        </if>
+        <if test=" view != null">
+            #{view },
+        </if>
+        <if test=" approveTime != null">
+            #{approveTime },
         </if>
     </sql>
 
@@ -47,23 +59,35 @@
         <if test=" orderNumber != null">
             order_number = #{orderNumber },
         </if>
-        <if test=" approvalUserId != null">
-            approval_user_id = #{approvalUserId },
+        <if test=" approveUserId != null">
+            approve_user_id = #{approveUserId },
         </if>
-        <if test=" approvalUserName != null">
-            approval_user_name = #{approvalUserName },
+        <if test=" approveUserName != null">
+            approve_user_name = #{approveUserName },
+        </if>
+        <if test=" view != null">
+            view = #{view },
+        </if>
+        <if test=" approveTime != null">
+            approve_time = #{approveTime },
         </if>
     </sql>
 
     <sql id="Where_Column_List">
         <if test=" orderNumber != null">
-            and order_number = #{orderNumber },
+            and order_number = #{orderNumber }
         </if>
-        <if test=" approvalUserId != null">
-            and approval_user_id = #{approvalUserId }
+        <if test=" approveUserId != null">
+            and approve_user_id = #{approveUserId }
         </if>
-        <if test=" approvalUserName != null">
-            and approval_user_name = #{approvalUserName }
+        <if test=" approveUserName != null">
+            and approve_user_name = #{approveUserName }
+        </if>
+        <if test=" view != null">
+            and view = #{view }
+        </if>
+        <if test=" approveTime != null">
+            and approve_time = #{approveTime }
         </if>
     </sql>
 
@@ -150,12 +174,12 @@
     <!--批量添加-->
     <insert id="insertBatch" parameterType="List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into asset_oa_order_approve
-        (approval_user_id, approval_user_name)
+        (approve_user_id, approve_user_name)
         VALUES
         <foreach collection="list" item="avr" separator=",">
             (
-            #{avr.approvalUserId },
-            #{avr.approvalUserName }
+            #{avr.approveUserId },
+            #{avr.approveUserName }
             )
         </foreach>
     </insert>
