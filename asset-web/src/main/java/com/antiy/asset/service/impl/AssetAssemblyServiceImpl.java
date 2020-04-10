@@ -77,4 +77,9 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetAssemblyDao.deleteById(baseRequest.getStringId()).toString();
     }
+
+    @Override
+    public Integer scrapUpdate(AssetAssemblyRequest assetAssemblyRequest) {
+        return assetAssemblyDao.updateByUniqueId(assetAssemblyRequest);
+    }
 }
