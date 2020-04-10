@@ -94,6 +94,55 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
         this.scrap = scrap;
     }
 
+    /**
+     *  拆除 1 未  2 已
+     */
+    private Integer remove;
+    /**
+     *  消磁 1  未  2 已
+     */
+    private Integer demagnetization;
+    /**
+     *  粉碎  1 未粉碎 2 已粉碎
+     */
+    private Integer smash;
+    /**
+     *  唯一键
+     */
+    private Long uniqueId;
+
+    public Integer getRemove() {
+        return remove;
+    }
+
+    public void setRemove(Integer remove) {
+        this.remove = remove;
+    }
+
+    public Integer getDemagnetization() {
+        return demagnetization;
+    }
+
+    public void setDemagnetization(Integer demagnetization) {
+        this.demagnetization = demagnetization;
+    }
+
+    public Integer getSmash() {
+        return smash;
+    }
+
+    public void setSmash(Integer smash) {
+        this.smash = smash;
+    }
+
+    public Long getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(Long uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public String getId() {
         return id;
     }

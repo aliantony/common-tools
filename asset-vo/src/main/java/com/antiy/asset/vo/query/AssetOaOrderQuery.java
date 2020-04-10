@@ -25,10 +25,6 @@ public class AssetOaOrderQuery extends ObjectQuery {
      */
     private Integer orderStatus;
     /**
-     * 是否出借，只针对出借订单，1是，0否
-     */
-    private Integer lendStatus;
-    /**
      * 开始时间
      */
     private Long startTime;
@@ -36,6 +32,10 @@ public class AssetOaOrderQuery extends ObjectQuery {
      * 结束时间
      */
     private Long endTime;
+    /**
+     * 时间
+     */
+    private Long gmtCreate;
 
 
     public String getNumber() {
@@ -46,7 +46,6 @@ public class AssetOaOrderQuery extends ObjectQuery {
         this.number = number;
     }
 
-
     public Integer getOrderType() {
         return orderType;
     }
@@ -55,22 +54,12 @@ public class AssetOaOrderQuery extends ObjectQuery {
         this.orderType = orderType;
     }
 
-
     public Integer getOrderStatus() {
         return orderStatus;
     }
 
     public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-
-    public Integer getLendStatus() {
-        return lendStatus;
-    }
-
-    public void setLendStatus(Integer lendStatus) {
-        this.lendStatus = lendStatus;
     }
 
 
@@ -92,15 +81,23 @@ public class AssetOaOrderQuery extends ObjectQuery {
         this.endTime = endTime;
     }
 
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
     @Override
     public String toString() {
         return "AssetOaOrderQuery{" +
                 ", number=" + number +
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +
-                ", lendStatus=" + lendStatus +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
+                ", gmtCreate=" + gmtCreate +
                 "}";
     }
 

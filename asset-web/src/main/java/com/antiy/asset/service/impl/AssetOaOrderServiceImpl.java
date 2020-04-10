@@ -72,7 +72,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         //保存审核信息
         List<AssetOaOrderApproveRequest> assetOaOrderApproveRequests = request.getAssetOaOrderApproveRequests();
         List<AssetOaOrderApprove> assetOaOrderApproves = approveRequestConverter.convert(assetOaOrderApproveRequests, AssetOaOrderApprove.class);
-        for(AssetOaOrderApprove assetOaOrderApprove : assetOaOrderApproves){
+        for (AssetOaOrderApprove assetOaOrderApprove : assetOaOrderApproves) {
             assetOaOrderApprove.setOrderNumber(assetOaOrder.getNumber());
         }
         assetOaOrderApproveDao.insertBatch(assetOaOrderApproves);
@@ -102,20 +102,18 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     public AssetOaOrderResponse getDetailById(Integer id) throws Exception {
         //查询订单
         AssetOaOrder assetOaOrder = assetOaOrderDao.getById(id);
-        AssetOaOrderResponse assetOaOrderResponse = responseConverter.convert(assetOaOrder, AssetOaOrderResponse.class);
-        if (assetOaOrderResponse == null) {
+        if (assetOaOrder == null) {
             return null;
-        } else {
-            //查询申请信息
-            AssetOaOrderApply assetOaOrderApply = assetOaOrderApplyDao.getByOrderNumber(assetOaOrder.getNumber());
-            AssetOaOrderApplyResponse assetOaOrderApplyResponse = applyResponseConverter.convert(assetOaOrderApply, AssetOaOrderApplyResponse.class);
-            //查询审批信息
-            List<AssetOaOrderApprove> assetOaOrderApproves = assetOaOrderApproveDao.getByOrderNumber(assetOaOrder.getNumber());
-            List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses = approveResponseConverter.convert(assetOaOrderApproves, AssetOaOrderApproveResponse.class);
-            assetOaOrderResponse.setAssetOaOrderApplyResponse(assetOaOrderApplyResponse);
-            assetOaOrderResponse.setAssetOaOrderApproveResponses(assetOaOrderApproveResponses);
-
         }
+        AssetOaOrderResponse assetOaOrderResponse = responseConverter.convert(assetOaOrder, AssetOaOrderResponse.class);
+        //查询申请信息
+        AssetOaOrderApply assetOaOrderApply = assetOaOrderApplyDao.getByOrderNumber(assetOaOrder.getNumber());
+        AssetOaOrderApplyResponse assetOaOrderApplyResponse = applyResponseConverter.convert(assetOaOrderApply, AssetOaOrderApplyResponse.class);
+        //查询审批信息
+        List<AssetOaOrderApprove> assetOaOrderApproves = assetOaOrderApproveDao.getByOrderNumber(assetOaOrder.getNumber());
+        List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses = approveResponseConverter.convert(assetOaOrderApproves, AssetOaOrderApproveResponse.class);
+        assetOaOrderResponse.setAssetOaOrderApplyResponse(assetOaOrderApplyResponse);
+        assetOaOrderResponse.setAssetOaOrderApproveResponses(assetOaOrderApproveResponses);
         return assetOaOrderResponse;
     }
 }
