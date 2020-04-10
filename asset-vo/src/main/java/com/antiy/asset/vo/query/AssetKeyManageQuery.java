@@ -23,7 +23,7 @@ public class AssetKeyManageQuery extends ObjectQuery {
     private String userNumName;
 
     /**
-     * key当前状态-- 0:未领用 1:领用 2:冻结
+     * key当前状态-- 1:未领用 2:领用 3:冻结
      */
     private Integer recipState;
 

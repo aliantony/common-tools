@@ -28,13 +28,13 @@ public class AssetKeyManageRequest extends BaseRequest implements ObjectValidato
     private String keyNum;
 
     /**
-     * 领用状态 0:未领用 1:领用 2:冻结
+     * 领用状态 1:未领用 2:领用 3:冻结
      */
     @ApiModelProperty("领用状态")
     private Integer recipState;
 
     /**
-     * 使用者类型 0:设备 1:用户
+     * 使用者类型 1:设备 2:用户
      */
     @ApiModelProperty("使用者类型")
     private Integer keyUserType;

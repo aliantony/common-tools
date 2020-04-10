@@ -46,7 +46,7 @@ public class AssetAssemblyController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/scrap/update", method = RequestMethod.POST)
     public ActionResponse scrapUpdate(@ApiParam(value = "assetAssembly") @RequestBody AssetAssemblyRequest assetAssemblyRequest) throws Exception {
-       Integer result= iAssetAssemblyService.scrapUpdate(assetAssemblyRequest);
+        Integer result= iAssetAssemblyService.scrapUpdate(assetAssemblyRequest);
         return ActionResponse.success(result);
     }
 
