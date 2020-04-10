@@ -53,6 +53,12 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产组列表")
     private List<AssetGroupResponse>       assetGroups;
+
+    /**
+     * 从属业务名称集合
+     */
+    @ApiModelProperty("从属业务名称集合")
+    private List<AssetBusinessResponse>    assetBusinessResponse;
     /**
      * ip
      */
@@ -75,9 +81,9 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("mac用于列表展示")
     private String                         macs;
     /**
-     * 序列号
+     * 序列表
      */
-    @ApiModelProperty("序列号")
+    @ApiModelProperty("序列表 ")
     private String                         serial;
     /**
      * 品类
@@ -197,14 +203,14 @@ public class AssetResponse extends BaseResponse {
     private String                         decryptInstallTemplateId;
 
     /**
-     * 上报来源
+     * 资产来源
      */
-    @ApiModelProperty("上报来源")
+    @ApiModelProperty("资产来源")
     private Integer                        assetSource;
     /**
-     * 上报来源名称
+     * 资产来源名称
      */
-    @ApiModelProperty("上报来源名称")
+    @ApiModelProperty("资产来源名称")
     private String                         assetSourceName;
     /**
      * 1核心2重要3一般
@@ -224,9 +230,9 @@ public class AssetResponse extends BaseResponse {
     private Long                           serviceLife;
 
     /**
-     * 制造日期
+     * 购买日期
      */
-    @ApiModelProperty("制造日期")
+    @ApiModelProperty("购买日期")
     private Long                           buyDate;
     /**
      * 保修期
@@ -269,14 +275,14 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("机房位置")
     private String                         houseLocation;
     /**
-     * 安装方式1人工2自动
+     * 维护方式1人工2自动
      */
-    @ApiModelProperty("安装方式1人工2自动")
+    @ApiModelProperty("维护方式1人工2自动")
     private Integer                        installType;
     /**
-     * 安装方式1人工2自动
+     * 维护方式名称
      */
-    @ApiModelProperty("安装方式1人工2自动")
+    @ApiModelProperty("维护方式名称")
     private String                         installTypeName;
     /**
      * 资产流程信息
@@ -313,7 +319,7 @@ public class AssetResponse extends BaseResponse {
     private Integer                        netStatus;
     @ApiModelProperty("物理位置")
     private String                         location;
-    @ApiModelProperty("从属业务,详情展示")
+    @ApiModelProperty("从属业务名称,详情展示")
     private String                         assetBusiness;
     @ApiModelProperty("从属业务集合")
     private List<AssetBusinessResponse>    dependentBusiness;
@@ -346,6 +352,14 @@ public class AssetResponse extends BaseResponse {
     private String                         executeUserId;
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
+
+    public List<AssetBusinessResponse> getAssetBusinessResponse() {
+        return assetBusinessResponse;
+    }
+
+    public void setAssetBusinessResponse(List<AssetBusinessResponse> assetBusinessResponse) {
+        this.assetBusinessResponse = assetBusinessResponse;
+    }
 
     public Long getFirstDiscoverTime() {
         return firstDiscoverTime;

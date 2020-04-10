@@ -1,26 +1,45 @@
 package com.antiy.asset.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetMultipleQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.query.NoRegisterRequest;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.request.AreaIdRequest;
+import com.antiy.asset.vo.request.AssetIdRequest;
+import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetIpRequest;
+import com.antiy.asset.vo.request.AssetLockRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.AssetRequest;
+import com.antiy.asset.vo.request.AssetStatusChangeRequest;
+import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.request.IpMacPort;
+import com.antiy.asset.vo.request.ProcessTemplateRequest;
+import com.antiy.asset.vo.response.AlarmAssetDataResponse;
+import com.antiy.asset.vo.response.AssetAreaAndIpResponse;
+import com.antiy.asset.vo.response.AssetAssemblyResponse;
+import com.antiy.asset.vo.response.AssetMatchResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.asset.vo.response.EnumCountResponse;
+import com.antiy.asset.vo.response.IDResponse;
+import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.WaitingTaskReponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 服务类 </p>
@@ -366,6 +385,8 @@ public interface IAssetService extends IBaseService<Asset> {
 
     List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
 
+    String recommendName();
+
     /**
      * 资产列表查询-厂商下拉
      * @return
@@ -407,4 +428,6 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     List<SelectResponse> queryTemplate();
+
+    List<SelectResponse> queryBusiness();
 }

@@ -218,7 +218,7 @@
             <if test="endRecipTime != null">
                 and asm.recip_time &lt;= #{endRecipTime}
             </if>
-            and asm.is_delete = 0
+            and asm.is_delete = 1
         </trim>
     </sql>
 
@@ -290,7 +290,7 @@
     <update id="keyRemove" parameterType="java.lang.Integer">
         update
         <include refid="Table_Name"></include>
-        set is_delete = 1
+        set is_delete = 2
         where id = #{id}
     </update>
     <update id="updateBatch" parameterType="java.util.List">

@@ -25,7 +25,8 @@ public enum KeyUserType {
                 return keyUserType.getName();
             }
         }
-        throw new BusinessException("类型不存在!");
+        return null;
+//        throw new BusinessException("类型不存在!");
     }
 
     public static Integer getEnumStatus(String name){
@@ -35,7 +36,8 @@ public enum KeyUserType {
                 return keyUserType.getStatus();
             }
         }
-        throw new BusinessException("类型不存在!");
+        return null;
+//        throw new BusinessException("类型不存在!");
     }
 
     public static KeyUserType getEnum(Integer status){
@@ -45,7 +47,8 @@ public enum KeyUserType {
                 return keyUserType;
             }
         }
-        throw new BusinessException("类型不存在!");
+        return null;
+//        throw new BusinessException("类型不存在!");
     }
 
     public static KeyUserType getEnum(String name){
@@ -55,7 +58,8 @@ public enum KeyUserType {
                 return keyUserType;
             }
         }
-        throw new BusinessException("类型不存在!");
+        return null;
+//        throw new BusinessException("类型不存在!");
     }
 
     public Integer getStatus() {
