@@ -121,15 +121,15 @@ public class AssetLendRelationResponse extends BaseResponse {
     private String otherInfo;
     public String getOtherInfo() {
         if(lendStatus==null) return null;
-        if(lendStatus==1 && returnTime !=null){
-            return  String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%s;归还时间：",useName,lendPurpose,lendStatus,new Date(lendTime),new Date(lendPeriods),orderNumber);
+        if(lendStatus==1 && lendPeriods !=null && lendTime!=null){
+          return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%6$s;归还时间：",useName,lendPurpose,getLendStatusDesc(),new Date(lendTime),new Date(lendPeriods),orderNumber);
         }
-        else if(lendStatus==2)
-            return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%s;归还时间：%7$tY/%7$tm/%7$td %7$tH:%7$tM",useName,lendPurpose,lendStatus,new Date(lendTime),new Date(lendPeriods),orderNumber,new Date(returnTime));
+        else if(lendStatus==2 &&  returnTime !=null && lendPeriods !=null && lendTime!=null)
+            return String.format("借用人：%s;借用目的：%s;状态：%s;借用时间：%4$tY/%4$tm/%4$td-%5$tY/%5$tm/%5$td;是否有审批表：%6$s;归还时间：%7$tY/%7$tm/%7$td %7$tH:%7$tM",useName,lendPurpose,lendStatus,new Date(lendTime),new Date(lendPeriods),orderNumber,new Date(returnTime));
         else return null;
     }
     public String getLendTimeDescribtion() {
-        if(lendStatus==null){
+        if(lendTime==null){
             return null;
         }
         return String.format("借出日期：%1$tY/%1$tm/%1$td %1$tH:%1$tM",new Date(lendTime));
