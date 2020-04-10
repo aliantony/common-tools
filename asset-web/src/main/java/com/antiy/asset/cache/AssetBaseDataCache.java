@@ -29,7 +29,7 @@ import com.antiy.common.base.BaseEntity;
 import com.antiy.common.utils.LogUtils;
 
 /**
- * 资产基础数据本地缓存
+ * 资产基础数据本地缓存(asset_user,asset_department,asset_business,asset_group)
  * @Author: lvliang
  * @Date: 2020/4/9 9:53
  */

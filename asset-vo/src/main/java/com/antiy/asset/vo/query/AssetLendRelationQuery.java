@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -18,7 +19,6 @@ public class AssetLendRelationQuery extends ObjectQuery {
 
     @ApiModelProperty("综合查询")
     private String multiQuery;
-
     @ApiModelProperty("类型")
     private List<String> categoryModels;
     @ApiModelProperty("状态")
@@ -29,6 +29,17 @@ public class AssetLendRelationQuery extends ObjectQuery {
     private Long  lendTime;
     @ApiModelProperty("归还日期")
     private  Long  lendPeriods;
+    @ApiModelProperty("区域")
+    @Encode
+    private List<String> areaIds;
+
+    public List<String> getAreaIds() {
+        return areaIds;
+    }
+
+    public void setAreaIds(List<String> areaIds) {
+        this.areaIds = areaIds;
+    }
 
     public Integer getCurrentUseId() {
         return currentUseId;

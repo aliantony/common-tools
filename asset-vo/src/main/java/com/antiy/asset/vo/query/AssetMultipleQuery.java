@@ -69,7 +69,8 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private List<Integer> assetSourceList;
 
     @ApiModelProperty("从属业务")
-    private List<Integer> assetBusiness;
+    @Encode
+    private List<String>  assetBusiness;
 
     /**
      * 资产组
@@ -269,11 +270,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.assetSourceList = assetSourceList;
     }
 
-    public List<Integer> getAssetBusiness() {
+    public List<String> getAssetBusiness() {
         return assetBusiness;
     }
 
-    public void setAssetBusiness(List<Integer> assetBusiness) {
+    public void setAssetBusiness(List<String> assetBusiness) {
         this.assetBusiness = assetBusiness;
     }
 
