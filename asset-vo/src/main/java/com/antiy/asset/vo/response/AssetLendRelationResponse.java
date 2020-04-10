@@ -134,11 +134,10 @@ public class AssetLendRelationResponse extends BaseResponse {
         return String.format("借出日期：%1$tY/%1$tm/%1$td %1$tH:%1$tM",new Date(lendTime));
     }
     public String getLendStatusDesc() {
-        if(lendStatus==null)
-            return null;
-        if(lendStatus==1)
+        if(lendStatus==null || lendStatus==2)
+            return "保管中";
+        else
             return "已借出";
-        return "保管中";
     }
 
     public String getCategoryModel() {
