@@ -188,7 +188,7 @@
     </insert>
 
     <!-- 根据orderNumber查询 -->
-    <select id="getByOrderNumber" resultType="com.antiy.asset.entity.AssetOaOrderApprove" parameterType="java.lang.Integer">
+    <select id="getByOrderNumber" resultType="com.antiy.asset.entity.AssetOaOrderApprove" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from

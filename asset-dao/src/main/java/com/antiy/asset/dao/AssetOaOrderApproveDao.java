@@ -4,6 +4,7 @@ import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderApply;
 import com.antiy.asset.entity.AssetOaOrderApprove;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,5 +26,5 @@ public interface AssetOaOrderApproveDao extends IBaseDao<AssetOaOrderApprove> {
     /**
      * 通过订单id查询
      */
-    List<AssetOaOrderApprove> getByOrderNumber(String orderNumber);
+    List<AssetOaOrderApprove> getByOrderNumber(@Param("orderNumber") String orderNumber);
 }
