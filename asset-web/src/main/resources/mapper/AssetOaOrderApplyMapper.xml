@@ -114,7 +114,7 @@
     </update>
 
     <!-- 根据主键查询 -->
-    <select id="getById" resultType="com.antiy.asset.entity.AssetOaOrderApply" parameterType="java.lang.Integer">
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from
@@ -129,7 +129,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getByWhere" resultType="com.antiy.asset.entity.AssetOaOrderApply" parameterType="java.util.Map">
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
         select
         <include refid="Base_Column_List"/>
         from
@@ -142,7 +142,7 @@
     </select>
 
 
-    <select id="getAll" resultType="com.antiy.asset.entity.AssetOaOrderApply">
+    <select id="getAll" resultMap="BaseResultMap">
         select *
         from
         <include refid="Table_Name"></include>
@@ -160,7 +160,7 @@
         </where>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.entity.AssetOaOrderApply" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
         <where>
@@ -174,7 +174,7 @@
     </select>
 
     <!-- 根据orderNumber查询 -->
-    <select id="getByOrderNumber" resultType="com.antiy.asset.entity.AssetOaOrderApply" parameterType="java.lang.String">
+    <select id="getByOrderNumber" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from
