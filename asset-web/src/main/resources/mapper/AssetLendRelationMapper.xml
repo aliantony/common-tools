@@ -164,7 +164,6 @@
             return_time = #{returnTime },
         </if>
     </sql>
-
     <sql id="Where_Column_List">
         <if test=" uniqueId != null">
             and unique_id = #{uniqueId }
@@ -318,7 +317,7 @@
           lend_periods as lendPeriods,
           lend_purpose as lendPurpose,
           au.name as useName,
-          aooh.order_number as  orderNumber,
+          alr.order_number as  orderNumber,
           a.name as assetName ,
           a.number as assetNumber,
           a.asset_group as assetGroup,
@@ -329,12 +328,11 @@
           left join asset as a on alr.asset_id=a.id and a.status=1
           left join asset_key_manage as akm on alr.asset_id=akm.key_user_id and akm.is_delete=1
           left join asset_user as au on use_id=au.id and au.status=1
-          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.unique_id=#{uniqueId} and alr.status=1
     </select>
     <update id="returnConfirm">
         update asset_lend_relation
-        set gmt_modified=#{returnTime}
+        set return_time=#{returnTime}
         where unique_id=#{uniqueId} and status=1
     </update>
     <select id="countHistory" resultType="int">
@@ -343,7 +341,6 @@
           from
           asset_lend_relation as alr
           left join asset_user as au on use_id=au.id and au.status=1
-          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.asset_id=#{primaryKey} and alr.status=1
     </select>
     <select id="queryHistory" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
@@ -354,12 +351,10 @@
           lend_purpose as lendPurpose,
           return_time as returnTime,
           au.name as useName,
-          aooh.order_number as  orderNumber
+          order_number as  orderNumber
           from
           asset_lend_relation as alr
           left join asset_user as au on use_id=au.id and au.status=1
-
-          left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
           where alr.asset_id=#{primaryKey} and alr.status=1
          order  by lend_time desc
         <if test="pageSize !=-1">
