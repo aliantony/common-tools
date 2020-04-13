@@ -3,10 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
-import com.antiy.asset.vo.request.ApproveInfoRequest;
-import com.antiy.asset.vo.request.AssetLendInfoRequest;
-import com.antiy.asset.vo.request.AssetLendRelationRequest;
-import com.antiy.asset.vo.request.UserInfoRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 
@@ -133,4 +130,13 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @return
      */
     UserInfoResponse queryUserInfo(UserInfoRequest request);
+
+    /**
+     * 保存出借信息(批量)
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    Integer saveLendInfos(AssetLendInfosRequest request) throws Exception;
 }

@@ -1,19 +1,21 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class ApproveListResponse {
-    //审批单ID
+    @ApiModelProperty("审批单ID")
     private String orderId;
 
-    //审批单编号
+    @ApiModelProperty("审批单编号")
     private String orderNumber;
 
-    //审批类型
+    @ApiModelProperty("审批类型")
     private String orderType = "出借审批";
 
-    //申请人
+    @ApiModelProperty("申请人")
     private String orderUser;
 
-    //时间
+    @ApiModelProperty("时间")
     private String time;
 
     public String getOrderId() {
@@ -54,5 +56,16 @@ public class ApproveListResponse {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "ApproveListResponse{" +
+                "orderId='" + orderId + '\'' +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", orderType='" + orderType + '\'' +
+                ", orderUser='" + orderUser + '\'' +
+                ", time='" + time + '\'' +
+                '}';
     }
 }

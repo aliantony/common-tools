@@ -1,10 +1,12 @@
 package com.antiy.asset.vo.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class ApproveInfoRequest {
-    //审批单号
+    @ApiModelProperty("审批单号")
     private String orderNumber;
 
-    //申请人
+    @ApiModelProperty("申请人")
     private String orderUser;
 
     public String getOrderNumber() {
@@ -21,5 +23,13 @@ public class ApproveInfoRequest {
 
     public void setOrderUser(String orderUser) {
         this.orderUser = orderUser;
+    }
+
+    @Override
+    public String toString() {
+        return "ApproveInfoRequest{" +
+                "orderNumber='" + orderNumber + '\'' +
+                ", orderUser='" + orderUser + '\'' +
+                '}';
     }
 }

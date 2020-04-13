@@ -1,10 +1,12 @@
 package com.antiy.asset.vo.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UserInfoRequest {
-    //申请人
+    @ApiModelProperty("申请人")
     private String userName;
 
-    //申请人ID
+    @ApiModelProperty("申请人ID")
     private String userId;
 
     public String getUserName() {
@@ -21,5 +23,13 @@ public class UserInfoRequest {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfoRequest{" +
+                "userName='" + userName + '\'' +
+                ", userId='" + userId + '\'' +
+                '}';
     }
 }

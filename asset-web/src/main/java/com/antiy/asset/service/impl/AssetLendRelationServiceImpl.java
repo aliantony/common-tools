@@ -11,10 +11,7 @@ import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
-import com.antiy.asset.vo.request.ApproveInfoRequest;
-import com.antiy.asset.vo.request.AssetLendInfoRequest;
-import com.antiy.asset.vo.request.AssetLendRelationRequest;
-import com.antiy.asset.vo.request.UserInfoRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
@@ -183,6 +180,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
+        //TODO 产品确认oa人员与资产人员关系 再进行开发
         ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
         approveInfoResponse.setOrderNumber(request.getOrderNumber());
         approveInfoResponse.setOrderUser(request.getOrderUser());
@@ -203,6 +201,12 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         String department = new String();
         this.getDepartment(response.getDepartmentId(), department);
         response.setDepartment(department);
+        return response;
+    }
+
+    @Override
+    public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
+        //TODO 产品确认oa人员与资产人员关系 再进行开发
         return null;
     }
 

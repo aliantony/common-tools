@@ -157,7 +157,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/save/lendInfo", method = RequestMethod.POST)
-    public ActionResponse saveLendInfo(@ApiParam(value = "AssetLendInfo") AssetLendInfoRequest request) throws Exception {
+    public ActionResponse saveLendInfo(@ApiParam(value = "AssetLendInfo") @RequestBody AssetLendInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.saveLendInfo(request));
     }
 
@@ -172,7 +172,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/query/approveList", method = RequestMethod.POST)
-    public ActionResponse queryApproveList(@ApiParam(value = "AssetLendInfo") ApproveListQuery request) throws Exception {
+    public ActionResponse queryApproveList(@ApiParam(value = "AssetLendInfo") @RequestBody ApproveListQuery request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryApproveList(request));
     }
 
@@ -187,7 +187,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/query/approveInfo", method = RequestMethod.POST)
-    public ActionResponse queryApproveInfo(@ApiParam(value = "AssetLendInfo") ApproveInfoRequest request) throws Exception {
+    public ActionResponse queryApproveInfo(@ApiParam(value = "AssetLendInfo") @RequestBody ApproveInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryApproveInfo(request));
     }
 
@@ -230,7 +230,7 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/query/userInfo", method = RequestMethod.POST)
-    public ActionResponse queryUserInfo(UserInfoRequest request) throws Exception {
+    public ActionResponse queryUserInfo(@RequestBody UserInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryUserInfo(request));
     }
 }
