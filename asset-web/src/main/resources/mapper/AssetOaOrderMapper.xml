@@ -67,7 +67,7 @@
 
     <sql id="Where_Column_List">
         <if test=" number != null">
-            and number = #{number }
+            and number LIKE CONCAT('%',replace(replace(#{number},'%','\%'),'_','\_'),'%')
         </if>
         <if test=" orderType != null">
             and order_type = #{orderType }

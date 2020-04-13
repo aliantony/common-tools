@@ -81,7 +81,7 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetOaOrder") @RequestParam Integer id)throws Exception{
+    public ActionResponse queryById(@ApiParam(value = "订单主键id") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderService.getDetailById(id));
     }

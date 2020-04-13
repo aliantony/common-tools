@@ -60,6 +60,10 @@ public class AssetOaOrderApplyResponse extends BaseEntity {
      * 申请时间
      */
     private Long applyTime;
+    /**
+     * 申请时间字符串
+     */
+    private String applyTimeStr;
 
 
     public String getOrderNumber() {
@@ -158,6 +162,14 @@ public class AssetOaOrderApplyResponse extends BaseEntity {
         this.lendTime = lendTime;
     }
 
+    public String getApplyTimeStr() {
+        return applyTimeStr;
+    }
+
+    public void setApplyTimeStr(String applyTimeStr) {
+        this.applyTimeStr = applyTimeStr;
+    }
+
     @Override
     public String toString() {
         return "AssetOaOrderApply{" +
@@ -172,6 +184,7 @@ public class AssetOaOrderApplyResponse extends BaseEntity {
                 ", applyUserId=" + applyUserId +
                 ", applyUserName=" + applyUserName +
                 ", applyTime=" + applyTime +
+                ", applyTimeStr=" + applyTimeStr +
                 ", lendTime=" + lendTime +
                 "}";
     }

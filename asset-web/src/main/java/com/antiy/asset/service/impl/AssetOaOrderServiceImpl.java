@@ -19,6 +19,7 @@ import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,9 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         //查询申请信息
         AssetOaOrderApply assetOaOrderApply = assetOaOrderApplyDao.getByOrderNumber(assetOaOrder.getNumber());
         AssetOaOrderApplyResponse assetOaOrderApplyResponse = applyResponseConverter.convert(assetOaOrderApply, AssetOaOrderApplyResponse.class);
+        Date applyTime = new Date(assetOaOrderApplyResponse.getApplyTime());
+        String applyTimeStr = DateUtils.getDataString(applyTime, DateUtils.WHOLE_FORMAT).replaceAll("-","/");
+        assetOaOrderApplyResponse.setApplyTimeStr(applyTimeStr);
         //如果是退回和报废，还需要查询资产ip，mac
         if(!StringUtils.isEmpty(assetOaOrderApply.getAssetNumber())){
             HashMap<String, Object> result = assetOaOrderApplyDao.getIpAndMacByAssetNumber(assetOaOrderApply.getAssetNumber());
@@ -132,6 +136,13 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         //查询审批信息
         List<AssetOaOrderApprove> assetOaOrderApproves = assetOaOrderApproveDao.getByOrderNumber(assetOaOrder.getNumber());
         List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses = approveResponseConverter.convert(assetOaOrderApproves, AssetOaOrderApproveResponse.class);
+        if(!CollectionUtils.isEmpty(assetOaOrderApproveResponses)){
+            for(AssetOaOrderApproveResponse assetOaOrderApproveResponse : assetOaOrderApproveResponses){
+                Date approveTime = new Date(assetOaOrderApproveResponse.getApproveTime());
+                String approveTimeStr = DateUtils.getDataString(approveTime, DateUtils.WHOLE_FORMAT).replaceAll("-","/");
+                assetOaOrderApproveResponse.setApproveTimeStr(approveTimeStr);
+            }
+        }
         assetOaOrderResponse.setAssetOaOrderApplyResponse(assetOaOrderApplyResponse);
         assetOaOrderResponse.setAssetOaOrderApproveResponses(assetOaOrderApproveResponses);
         return assetOaOrderResponse;

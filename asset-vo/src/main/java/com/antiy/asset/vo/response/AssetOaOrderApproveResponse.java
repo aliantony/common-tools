@@ -32,7 +32,12 @@ public class AssetOaOrderApproveResponse extends BaseEntity {
     /**
      * 审批时间
      */
-    private String approveTime;
+    private Long approveTime;
+
+    /**
+     * 审批时间字符串
+     */
+    private String approveTimeStr;
 
 
     public Integer getApproveUserId() {
@@ -69,12 +74,20 @@ public class AssetOaOrderApproveResponse extends BaseEntity {
         this.view = view;
     }
 
-    public String getApproveTime() {
+    public Long getApproveTime() {
         return approveTime;
     }
 
-    public void setApproveTime(String approveTime) {
+    public void setApproveTime(Long approveTime) {
         this.approveTime = approveTime;
+    }
+
+    public String getApproveTimeStr() {
+        return approveTimeStr;
+    }
+
+    public void setApproveTimeStr(String approveTimeStr) {
+        this.approveTimeStr = approveTimeStr;
     }
 
     @Override
@@ -85,6 +98,7 @@ public class AssetOaOrderApproveResponse extends BaseEntity {
                 ", approveUserName=" + approveUserName +
                 ", view=" + view +
                 ", approveTime=" + approveTime +
+                ", approveTimeStr=" + approveTimeStr +
                 "}";
     }
 }
