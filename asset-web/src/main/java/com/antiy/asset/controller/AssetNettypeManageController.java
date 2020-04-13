@@ -78,6 +78,21 @@ public class AssetNettypeManageController {
         return ActionResponse.success(iAssetNettypeManageService.queryPageAssetNettypeManage(assetNettypeManageQuery));
     }
 
+
+    /**
+     * 批量查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询全部", notes = "传入查询条件")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetNettypeManageResponse.class, responseContainer = "List"),
+    })
+    @RequestMapping(value = "/query/getAll", method = RequestMethod.POST)
+    public ActionResponse queryListAll()throws Exception{
+        return ActionResponse.success(iAssetNettypeManageService.getAllList());
+    }
+
     /**
      * 通过ID查询
      *

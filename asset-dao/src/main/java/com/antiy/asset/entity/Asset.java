@@ -27,7 +27,7 @@ public class Asset extends BaseEntity {
      */
     private Integer netStatus;
     /**
-     * 是否孤岛设备：1、是 0、否
+     * 是否孤岛设备：1、是 2、否
      */
     private Integer isOrphan;
     /**
@@ -199,7 +199,7 @@ public class Asset extends BaseEntity {
      */
     private String  machineName;
     /**
-     * 是否涉密：1涉密，0-不涉密
+     * 是否涉密：1涉密，2-不涉密
      */
     private Integer isSecrecy;
     /**
@@ -290,6 +290,16 @@ public class Asset extends BaseEntity {
 
     @ApiModelProperty("从属业务,详情展示")
     private String  assetBusiness;
+    @ApiModelProperty("网络类型")
+    private String  netType;
+
+    public String getNetType() {
+        return netType;
+    }
+
+    public void setNetType(String netType) {
+        this.netType = netType;
+    }
 
     public String getMnv() {
         return mnv;
