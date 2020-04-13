@@ -8,6 +8,8 @@
         <result column="order_number" property="orderNumber"/>
         <result column="approve_user_id" property="approveUserId"/>
         <result column="approve_user_name" property="approveUserName"/>
+        <result column="view" property="view"/>
+        <result column="approve_time" property="approveTime"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">

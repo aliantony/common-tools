@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
 
-    @ApiModelProperty("")
+    @ApiModelProperty("订单流水号")
     private String orderNumber;
     /**
      * 资产id
