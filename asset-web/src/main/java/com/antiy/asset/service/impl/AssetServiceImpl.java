@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -97,6 +98,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetOperationRecordDao                                             assetOperationRecordDao;
     @Resource
     private AssetLockDao                                                        assetLockDao;
+    @Resource
+    private AssetNettypeManageDao                                               assetNettypeManageDao;
     @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
@@ -2031,6 +2034,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<ComputeDeviceEntity> dataList = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
         computeDeviceEntity.setArea("成都市");
+        computeDeviceEntity.setCode("cd002");
+        computeDeviceEntity.setIsOrphan("是");
+        computeDeviceEntity.setIsSecrecy("是");
+        computeDeviceEntity.setNetType("红网");
+        computeDeviceEntity.setActiviateDate(System.currentTimeMillis());
+        computeDeviceEntity.setInstallDate(System.currentTimeMillis());
+        computeDeviceEntity.setExpirationReminder(System.currentTimeMillis());
         computeDeviceEntity.setName("ar500");
         computeDeviceEntity.setIp("192.168.1.1");
         computeDeviceEntity.setMac("00-01-6C-06-A6-29");
@@ -2046,7 +2056,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setManufacturer("huawei");
         computeDeviceEntity.setOperationSystem("Window 10");
-        computeDeviceEntity.setIsOrphan(0);
         dataList.add(computeDeviceEntity);
         return dataList;
     }
@@ -2193,6 +2202,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (entity.getExpirationReminder() >= entity.getDueTime()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                continue;
+            }
+
             if (entity.getBuyDate() != null) {
 
                 if (isBuyDataBig(entity.getBuyDate())) {
@@ -2254,7 +2270,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
-            asset.setIsOrphan(entity.getIsOrphan());
+            asset.setActiviateDate(entity.getActiviateDate());
+            asset.setInstallDate(entity.getInstallDate());
+            if (null == entity.getExpirationReminder()) {
+                asset.setExpirationReminder(getCalendar(entity.getDueTime()));
+            } else {
+                asset.setExpirationReminder(entity.getExpirationReminder());
+            }
+            asset.setCode(entity.getCode());
+            asset.setNetType(getNetTypeByName(entity.getNetType()));
+            asset.setIsOrphan("是".equals(entity.getIsOrphan()) ? 1 : 2);
+            asset.setIsSecrecy("是".equals(entity.getIsOrphan()) ? 1 : 2);
             asset.setAdmittanceStatus(1);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
@@ -2322,6 +2348,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return stringBuilder.append(builder).append(sb).toString();
 
+    }
+
+    // 前一周 时间
+    private Long getCalendar(Long time) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        c.add(Calendar.DATE, -7);
+        return c.getTimeInMillis();
+    }
+
+    private String getNetTypeByName(String netType) {
+        // TODO: 2020/4/13
+        return "";
+        // return assetNettypeManageDao.findQuery ()
     }
 
     @Override

@@ -42,10 +42,24 @@ public interface IAssetTemplateService {
      * @throws Exception
      */
     List<String> getAllSystemOs() throws Exception;
+
+    /**
+     * 获取所有的网络
+     * @return
+     * @throws Exception
+     */
+    List<String> getNetType() throws Exception;
     /**
      * 获取所有的操作系统
      * @return
      * @throws Exception
      */
     List<String> queryAllDepartment() throws Exception;
+
+    /**
+     * 是否
+     * @return
+     * @throws Exception
+     */
+    List<String> yesNo() throws Exception;
 }
