@@ -2,9 +2,12 @@ package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetKeyManage;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
+import com.antiy.asset.vo.query.KeyPullQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
+import com.antiy.asset.vo.response.KeyPullDownResponse;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chenchaowu
@@ -84,4 +87,22 @@ public interface AssetKeyManageDao {
     void insertBatch(List<AssetKeyManage> list);
 
     void updateBatch(List<AssetKeyManage> list);
+
+	/**
+	 * key--设备下拉
+	 * @param query
+	 * @return
+	 */
+	Integer assetMapCount(KeyPullQuery query);
+
+    List<KeyPullDownResponse> assetMapList(KeyPullQuery query);
+
+	/**
+	 * key -- 用户下拉
+	 * @param query
+	 * @return
+	 */
+	Integer userMapCount(KeyPullQuery query);
+
+	List<KeyPullDownResponse> userMapList(KeyPullQuery query);
 }

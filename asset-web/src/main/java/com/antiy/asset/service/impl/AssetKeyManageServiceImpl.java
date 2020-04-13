@@ -1,12 +1,14 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.templet.KeyEntity;
+import com.antiy.asset.vo.query.KeyPullQuery;
+import com.antiy.asset.vo.response.KeyPullDownResponse;
+import com.google.common.collect.Maps;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -74,7 +76,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             return new ArrayList<>();
         }
         List<AssetKeyManageResponse> responses = converter.convert(responseList, AssetKeyManageResponse.class);
-        for (AssetKeyManageResponse response : responses){
+        for (AssetKeyManageResponse response : responses) {
             response.setStateName(KeyStatusEnum.getEnumName(response.getRecipState()));
             response.setTypeName(KeyUserType.getEnumName(response.getKeyUserType()));
         }
@@ -109,10 +111,10 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
          * 2、key编号重复校验
          * 3、去重已领过key的用户
          */
-        if (!keyManage.getKeyNum().matches("^[A-Za-z0-9]+$")){
+        if (!keyManage.getKeyNum().matches("^[A-Za-z0-9]+$")) {
             throw new BusinessException("key编号校验失败，需仅由数字及字母组成!");
         }
-        if (keyManage.getKeyNum().length() > 64){
+        if (keyManage.getKeyNum().length() > 64) {
             throw new BusinessException("key编号校验失败，64位长度限制!");
         }
 
@@ -128,7 +130,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             if (keyManageDao.keyNameCountVerify(query) > 0) {
                 throw new BusinessException("使用者重复!");
             }
-        }else {
+        } else {
             keyManage.setKeyUserType(null);
             keyManage.setKeyUserId(null);
             keyManage.setUserNumName(null);
@@ -231,7 +233,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     public void exportTemplate() {
         List<KeyEntity> dataList = initData();
         ExcelUtils.exportTemplateToClient(KeyEntity.class, "Key信息模板.xlsx", "key信息",
-            "备注:必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dataList);
+                "备注:必填项必须填写，否则会插入失败，请不要删除示例，保持模版原样从第七行开始填写。", dataList);
     }
 
     private List<KeyEntity> initData() {
@@ -307,4 +309,21 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         return stringBuilder.append(builder).append(sb).toString();
     }
 
+    @Override
+    public PageResult<KeyPullDownResponse> assetMapList(KeyPullQuery query) throws Exception {
+
+        LoginUser user = LoginUserUtil.getLoginUser();
+        List<String> areaIds = user.getAreaIdsOfCurrentUser();
+        if (areaIds.isEmpty()) {
+            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+        }
+        query.setAreaIds(user.getAreaIdsOfCurrentUser());
+
+        return new PageResult<>(query.getPageSize(), keyManageDao.assetMapCount(query), query.getCurrentPage(), keyManageDao.assetMapList(query));
+    }
+
+    @Override
+    public PageResult<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception {
+        return new PageResult<>(query.getPageSize(), keyManageDao.userMapCount(query), query.getCurrentPage(), keyManageDao.userMapList(query));
+    }
 }
