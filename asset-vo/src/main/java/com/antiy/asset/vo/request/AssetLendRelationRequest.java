@@ -35,8 +35,8 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     /**
      *  订单id
      */
-    @ApiModelProperty("订单id")
-    private Integer orderId;
+    @ApiModelProperty("订单编号")
+    private String orderNumber;
     /**
      *  归还日期
      */
@@ -132,15 +132,13 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     this.useId = useId;
     }
 
-
-    public Integer getOrderId() {
-        return orderId;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setOrderId(Integer orderId) {
-    this.orderId = orderId;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
-
 
     public Long getLendPeriods() {
         return lendPeriods;

@@ -8,7 +8,7 @@
         <result column="unique_id" property="uniqueId"/>
         <result column="asset_id" property="assetId"/>
         <result column="use_id" property="useId"/>
-        <result column="order_id" property="orderId"/>
+        <result column="order_number" property="orderNumber"/>
         <result column="lend_periods" property="lendPeriods"/>
         <result column="lend_purpose" property="lendPurpose"/>
         <result column="lend_status" property="lendStatus"/>
@@ -22,7 +22,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, unique_id, asset_id, use_id, order_id, lend_periods, lend_purpose, lend_status, gmt_create, gmt_modified, create_user, modify_user, status, lend_time, return_time
+        id, unique_id, asset_id, use_id, order_number, lend_periods, lend_purpose, lend_status, gmt_create, gmt_modified, create_user, modify_user, status, lend_time, return_time
     </sql>
 
     <sql id="Table_Name">
@@ -40,8 +40,8 @@
         <if test=" useId != null">
             use_id,
         </if>
-        <if test=" orderId != null">
-            order_id,
+        <if test=" orderNumber != null">
+            order_number,
         </if>
         <if test=" lendPeriods != null">
             lend_periods,
@@ -85,8 +85,8 @@
         <if test=" useId != null">
             #{useId },
         </if>
-        <if test=" orderId != null">
-            #{orderId },
+        <if test=" orderNumber != null">
+            #{orderNumber },
         </if>
         <if test=" lendPeriods != null">
             #{lendPeriods },
@@ -130,8 +130,8 @@
         <if test=" useId != null">
             use_id = #{useId },
         </if>
-        <if test=" orderId != null">
-            order_id = #{orderId },
+        <if test=" orderNumber != null">
+            order_number = #{orderNumber },
         </if>
         <if test=" lendPeriods != null">
             lend_periods = #{lendPeriods },
@@ -175,8 +175,8 @@
         <if test=" useId != null">
             and use_id = #{useId }
         </if>
-        <if test=" orderId != null">
-            and order_id = #{orderId }
+        <if test=" orderNumber != null">
+            and order_number = #{orderNumber }
         </if>
         <if test=" lendPeriods != null">
             and lend_periods = #{lendPeriods }
@@ -344,7 +344,7 @@
           asset_lend_relation as alr
           left join asset_user as au on use_id=au.id and au.status=1
           left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
-          where alr.asset_id=#{assetId} and alr.status=1
+          where alr.asset_id=#{primaryKey} and alr.status=1
     </select>
     <select id="queryHistory" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
        select
@@ -358,8 +358,9 @@
           from
           asset_lend_relation as alr
           left join asset_user as au on use_id=au.id and au.status=1
+
           left join  asset_oa_order_handle as aooh on aooh.asset_id=alr.asset_id
-          where alr.asset_id=#{assetId} and alr.status=1
+          where alr.asset_id=#{primaryKey} and alr.status=1
          order  by lend_time desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}

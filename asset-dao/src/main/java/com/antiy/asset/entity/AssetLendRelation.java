@@ -27,9 +27,9 @@ private static final long serialVersionUID = 1L;
     */
     private Integer useId;
     /**
-    *  订单id
+    *  订单编号
     */
-    private Integer orderId;
+    private String orderNumber;
     /**
     *  归还日期（约定归还日期）
     */
@@ -117,14 +117,13 @@ private static final long serialVersionUID = 1L;
     }
 
 
-    public Integer getOrderId() {
-        return orderId;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
-
 
     public Long getLendPeriods() {
         return lendPeriods;
@@ -197,22 +196,23 @@ private static final long serialVersionUID = 1L;
         this.status = status;
     }
 
-
     @Override
     public String toString() {
-            return "AssetLendRelation{" +
-                        ", uniqueId=" + uniqueId +
-                        ", assetId=" + assetId +
-                        ", useId=" + useId +
-                        ", orderId=" + orderId +
-                        ", lendPeriods=" + lendPeriods +
-                        ", lendPurpose=" + lendPurpose +
-                        ", lendStatus=" + lendStatus +
-                        ", gmtCreate=" + gmtCreate +
-                        ", gmtModified=" + gmtModified +
-                        ", createUser=" + createUser +
-                        ", modifyUser=" + modifyUser +
-                        ", status=" + status +
-            "}";
+        return "AssetLendRelation{" +
+                "uniqueId=" + uniqueId +
+                ", assetId=" + assetId +
+                ", useId=" + useId +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", lendPeriods=" + lendPeriods +
+                ", lendPurpose='" + lendPurpose + '\'' +
+                ", lendStatus=" + lendStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", lendTime=" + lendTime +
+                ", returnTime=" + returnTime +
+                '}';
     }
 }

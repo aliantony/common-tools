@@ -34,19 +34,12 @@ public class AssetLendRelationResponse extends BaseResponse {
      */
     @ApiModelProperty("用户id")
     private Integer useId;
-    /**
-     *  订单id
-     */
-    @ApiModelProperty("订单id  暂时不用")
-    private Integer orderId;
-
 
     /**
      * 订单编号
      */
     @ApiModelProperty("订单编号")
     private String orderNumber;
-
 
     /**
      *  归还日期
@@ -246,14 +239,6 @@ public class AssetLendRelationResponse extends BaseResponse {
         this.useId = useId;
     }
 
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
 
 
     public Long getLendPeriods() {
