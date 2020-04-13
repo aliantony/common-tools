@@ -64,4 +64,9 @@ public interface IAssetNettypeManageService extends IBaseService<AssetNettypeMan
          */
         String deleteAssetNettypeManageById(BaseRequest baseRequest) throws Exception;
 
+        /**
+         * 查询全部
+         * @return
+         */
+        List<AssetNettypeManageResponse> getAllList() throws Exception;
 }

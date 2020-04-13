@@ -68,11 +68,16 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
         @Override
         public List<AssetNettypeManageResponse> queryListAssetNettypeManage(AssetNettypeManageQuery query) throws Exception {
             List<AssetNettypeManage> assetNettypeManageList = assetNettypeManageDao.findQuery(query);
-            //TODO
             return responseConverter.convert(assetNettypeManageList,AssetNettypeManageResponse.class);
         }
 
-        @Override
+    @Override
+    public List<AssetNettypeManageResponse> getAllList() throws Exception {
+        List<AssetNettypeManage> assetNettypeManageList = assetNettypeManageDao.getAll();
+        return responseConverter.convert(assetNettypeManageList,AssetNettypeManageResponse.class);
+    }
+
+    @Override
         public PageResult<AssetNettypeManageResponse> queryPageAssetNettypeManage(AssetNettypeManageQuery query) throws Exception {
                 return new PageResult<AssetNettypeManageResponse>(query.getPageSize(), this.findCount(query),query.getCurrentPage(), this.queryListAssetNettypeManage(query));
         }

@@ -200,4 +200,9 @@
             </if>
         </trim>
     </select>
+    <select id="getAll" resultMap="BaseResultMap">
+        select * from
+        <include refid="Table_Name"></include>
+        order by gmt_create
+    </select>
 </mapper>
