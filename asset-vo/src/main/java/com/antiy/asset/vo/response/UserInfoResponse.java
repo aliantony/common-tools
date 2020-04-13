@@ -1,22 +1,24 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UserInfoResponse {
-    //申请人
+    @ApiModelProperty("申请人")
     private String userName;
 
-    //申请人ID
+    @ApiModelProperty("申请人ID")
     private String userId;
 
-    //手机号
+    @ApiModelProperty("手机号")
     private String mobile;
 
-    //组织
+    @ApiModelProperty("组织")
     private String department;
 
-    //组织id
+    @ApiModelProperty("组织id")
     private String departmentId;
 
-    //key
+    @ApiModelProperty("key")
     private String key;
 
     public String getUserName() {

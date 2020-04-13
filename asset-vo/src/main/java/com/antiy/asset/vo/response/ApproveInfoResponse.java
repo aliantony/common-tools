@@ -1,13 +1,18 @@
 package com.antiy.asset.vo.response;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class ApproveInfoResponse {
     //审批单号
+    @ApiModelProperty("审批单号")
     private String orderNumber;
 
     //申请人
+    @ApiModelProperty("申请人")
     private String orderUser;
 
     //所属组织
+    @ApiModelProperty("所属组织")
     private String department;
 
     public String getOrderNumber() {
@@ -32,5 +37,14 @@ public class ApproveInfoResponse {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "ApproveInfoResponse{" +
+                "orderNumber='" + orderNumber + '\'' +
+                ", orderUser='" + orderUser + '\'' +
+                ", department='" + department + '\'' +
+                '}';
     }
 }
