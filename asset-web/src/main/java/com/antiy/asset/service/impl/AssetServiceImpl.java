@@ -1892,19 +1892,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private List<OtherDeviceEntity> initOtherData() {
         List<OtherDeviceEntity> dataList = new ArrayList<>();
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
-        otherDeviceEntity.setArea("四川省");
-        otherDeviceEntity.setBuyDate(System.currentTimeMillis());
-        otherDeviceEntity.setDueDate(System.currentTimeMillis());
-        otherDeviceEntity.setUser("留小查");
-        otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
-        otherDeviceEntity.setName("ar500");
-        otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         otherDeviceEntity.setManufacturer("huawei");
-        otherDeviceEntity.setWarranty("2年");
+        otherDeviceEntity.setName("ar500");
+        otherDeviceEntity.setVersion("1.0.2::~~~wordpress~~");
+        otherDeviceEntity.setArea("四川省");
         otherDeviceEntity.setNumber("000001");
+        otherDeviceEntity.setCode("3773287221233");
+        otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setImportanceDegree("1");
+        otherDeviceEntity.setMachineName("dsa02321");
+        otherDeviceEntity.setIsSecrecy("1");
+        otherDeviceEntity.setNetType("0");
         otherDeviceEntity.setIp("192.158.58.58");
         otherDeviceEntity.setMac("00-01-6C-06-A6-29");
+        otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
+        otherDeviceEntity.setHouseLocation("07-08-1");
+        otherDeviceEntity.setLocation("武侯大道108号");
+        otherDeviceEntity.setBuyDate(System.currentTimeMillis());
+        otherDeviceEntity.setDueDate(System.currentTimeMillis());
+        otherDeviceEntity.setExpirationReminder(System.currentTimeMillis());
+        otherDeviceEntity.setInstallDate(System.currentTimeMillis());
+        otherDeviceEntity.setActiviateDate(System.currentTimeMillis());
+        otherDeviceEntity.setWarranty("2年");
+        otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         dataList.add(otherDeviceEntity);
         return dataList;
     }

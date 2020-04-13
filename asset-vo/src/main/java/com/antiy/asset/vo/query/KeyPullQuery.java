@@ -29,12 +29,6 @@ public class KeyPullQuery implements ObjectValidator {
     @Encode
     private List<String> areaIds;
 
-    @ApiModelProperty("每页数据量")
-    private int pageSize = 30;
-
-    @ApiModelProperty("当前页")
-    private int currentPage = 1;
-
     @Override
     public void validate() throws RequestParamValidateException {
     }
@@ -45,26 +39,6 @@ public class KeyPullQuery implements ObjectValidator {
 
     public void setMultipleQuery(String multipleQuery) {
         this.multipleQuery = multipleQuery;
-    }
-
-    public int getPageSize() {
-        return this.pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getCurrentPage() {
-        return this.currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getPageOffset() {
-        return (this.currentPage - 1) * this.pageSize;
     }
 
     public List<String> getAreaIds() {

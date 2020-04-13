@@ -3,30 +3,28 @@ package com.antiy.asset.templet;
 import com.antiy.asset.annotation.ExcelField;
 import com.antiy.asset.vo.enums.DataTypeEnum;
 
+/**
+ * @author chenchaowu
+ */
 public class OtherDeviceEntity {
 
-    /**
-     * 资产编号
-     */
-    @ExcelField(value = "number", align = 1, title = "资产编号(必填)",required = true)
-    private String number;
     /**
      * 厂商
      */
     @ExcelField(value = "manufacturer", align = 1, title = "厂商(必填) 格式由:小写英文,数字,符号等组成", length = 80, required = true)
     private String manufacturer;
+
     /**
      * 资产名称
      */
     @ExcelField(value = "name", align = 1, title = "名称(必填)  备注:填写该厂商下的名称 ", length = 128, required = true)
     private String name;
 
-
     /**
-     * 使用者
+     * 版本号
      */
-    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true, defaultDataMethod = "getAllUser", defaultDataBeanName = "assetTemplateServiceImpl")
-    private String  user;
+    @ExcelField(value = "version", align = 1, title = "版本(必填) 备注:填写该版本下的版本号", required = true, defaultDataMethod = "queryVersion", defaultDataBeanName = "assetServiceImpl")
+    private String version;
 
     /**
      * area
@@ -35,35 +33,106 @@ public class OtherDeviceEntity {
     private String  area;
 
     /**
+     * 资产编号
+     */
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填) 备注:仅限字母数字组合",required = true)
+    private String number;
+
+    /**
+     * 国资码
+     */
+    @ExcelField(value = "code", align = 1, title = "国资码(必填) 备注:仅限字母数字组合", length = 128, required = true)
+    private String code;
+
+    /**
+     * 使用者
+     */
+    @ExcelField(value = "user", align = 1, title = "使用者(必填)", required = true, defaultDataMethod = "getAllUser", defaultDataBeanName = "assetTemplateServiceImpl")
+    private String  user;
+
+    /**
      * 重要程度
      */
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String  importanceDegree;
+
     /**
-     * 到期时间
+     * 机器名
      */
-    @ExcelField(value = "dueDate", align = 1, title = "到期时间(必填)", isDate = true, required = true)
-    private Long   dueDate;
+    @ExcelField(value = "machineName", align = 1, title = "机器名(必填)", required = true)
+    private String machineName;
+
     /**
-     * 购买日期
+     * 是否涉密
      */
-    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
-    private Long   buyDate;
+    @ExcelField(value = "isSecrecy", align = 1, title = "是否涉密(必填)", dictType = "major_type", required = true)
+    private String isSecrecy;
+
+    /**
+     * 网络类型
+     */
+    @ExcelField(value = "netType", align = 1, title = "网络类型(必填)", dictType = "major_type", required = true)
+    private String netType;
+
     /**
      * ip地址
      */
     @ExcelField(value = "ip", align = 1, title = "ip地址", required = false, dataType = DataTypeEnum.IP)
     private String ip;
+
     /**
-     * ip地址
+     * mac地址
      */
     @ExcelField(value = "mac", align = 1, title = "mac地址", required = false, dataType = DataTypeEnum.MAC)
     private String mac;
+
     /**
      * 序列号
      */
     @ExcelField(value = "serial", align = 1, title = "序列号")
     private String serial;
+
+    /**
+     * 机房位置
+     */
+    @ExcelField(value = "houseLocation", align = 1, title = "机房位置")
+    private String houseLocation;
+
+    /**
+     * 物理位置
+     */
+    @ExcelField(value = "location", align = 1, title = "物理位置")
+    private String location;
+
+    /**
+     * 购买日期
+     */
+    @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
+    private Long   buyDate;
+
+    /**
+     * 到期时间
+     */
+    @ExcelField(value = "dueDate", align = 1, title = "到期时间", isDate = true)
+    private Long   dueDate;
+
+    /**
+     * 到期提醒
+     */
+    @ExcelField(value = "expirationReminder", align = 1, title = "到期提醒", isDate = true)
+    private Long expirationReminder;
+
+    /**
+     * 装机时间
+     */
+    @ExcelField(value = "installDate", align = 1, title = "装机时间", isDate = true)
+    private Long installDate;
+
+    /**
+     * 启用时间
+     */
+    @ExcelField(value = "activiateDate", align = 1, title = "启用时间", isDate = true)
+    private Long activiateDate;
 
     /**
      * 保修期
@@ -75,6 +144,94 @@ public class OtherDeviceEntity {
      */
     @ExcelField(value = "memo", align = 1, title = "描述", length = 300)
     private String memo;
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getImportanceDegree() {
+        return importanceDegree;
+    }
+
+    public void setImportanceDegree(String importanceDegree) {
+        this.importanceDegree = importanceDegree;
+    }
+
+    public String getMachineName() {
+        return machineName;
+    }
+
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
+    }
+
+    public String getIsSecrecy() {
+        return isSecrecy;
+    }
+
+    public void setIsSecrecy(String isSecrecy) {
+        this.isSecrecy = isSecrecy;
+    }
+
+    public String getNetType() {
+        return netType;
+    }
+
+    public void setNetType(String netType) {
+        this.netType = netType;
+    }
 
     public String getIp() {
         return ip;
@@ -92,22 +249,6 @@ public class OtherDeviceEntity {
         this.mac = mac;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
     public String getSerial() {
         return serial;
     }
@@ -116,12 +257,20 @@ public class OtherDeviceEntity {
         this.serial = serial;
     }
 
-    public String getUser() {
-        return user;
+    public String getHouseLocation() {
+        return houseLocation;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Long getBuyDate() {
@@ -140,6 +289,30 @@ public class OtherDeviceEntity {
         this.dueDate = dueDate;
     }
 
+    public Long getExpirationReminder() {
+        return expirationReminder;
+    }
+
+    public void setExpirationReminder(Long expirationReminder) {
+        this.expirationReminder = expirationReminder;
+    }
+
+    public Long getInstallDate() {
+        return installDate;
+    }
+
+    public void setInstallDate(Long installDate) {
+        this.installDate = installDate;
+    }
+
+    public Long getActiviateDate() {
+        return activiateDate;
+    }
+
+    public void setActiviateDate(Long activiateDate) {
+        this.activiateDate = activiateDate;
+    }
+
     public String getWarranty() {
         return warranty;
     }
@@ -154,29 +327,5 @@ public class OtherDeviceEntity {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getImportanceDegree() {
-        return importanceDegree;
-    }
-
-    public void setImportanceDegree(String importanceDegree) {
-        this.importanceDegree = importanceDegree;
     }
 }

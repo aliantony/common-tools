@@ -371,9 +371,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
+        LIMIT 30 offset 0
     </select>
 
     <select id="userMapCount" parameterType="com.antiy.asset.vo.query.KeyPullQuery" resultType="java.lang.Integer">
@@ -401,9 +399,7 @@
         <if test=" multipleQuery != null and multipleQuery.trim != ''">
             and t.name LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
+        LIMIT 30 offset 0
     </select>
 
 </mapper>
