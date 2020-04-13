@@ -126,7 +126,8 @@
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
-        </if><if test=" gmtModified != null">
+        </if>
+        <if test=" gmtModified != null">
             gmt_modified = #{gmtModified },
         </if>
         <if test=" isDelete != null">
@@ -182,9 +183,10 @@
     <!-- 分页查询 -->
     <select id="queryCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetKeyManageQuery">
         select
-            count(1)
+        count(1)
         from
-        <include refid="Table_Name"></include> asm
+        <include refid="Table_Name"></include>
+        asm
         <include refid="where"></include>
     </select>
 
@@ -192,7 +194,8 @@
         select
         <include refid="Base_Column_List"/>
         from
-        <include refid="Table_Name"></include> asm
+        <include refid="Table_Name"></include>
+        asm
         <include refid="where"></include>
         order by asm.recip_time desc
         ,asm.gmt_create desc
@@ -223,7 +226,8 @@
     </sql>
 
     <!-- key登记 -->
-    <insert id="keyRegister" parameterType="com.antiy.asset.entity.AssetKeyManage" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="keyRegister" parameterType="com.antiy.asset.entity.AssetKeyManage" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -310,7 +314,8 @@
         </foreach>
     </update>
     <!-- key编号、用户数量校验 -->
-    <select id="keyNumCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
+    <select id="keyNumCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest"
+            resultType="java.lang.Integer">
         select count(id) from
         <include refid="Table_Name"></include>
         where 1 = 1
@@ -319,13 +324,85 @@
         </if>
     </select>
 
-    <select id="keyNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest" resultType="java.lang.Integer">
+    <select id="keyNameCountVerify" parameterType="com.antiy.asset.vo.request.AssetKeyManageRequest"
+            resultType="java.lang.Integer">
         select count(id) from
         <include refid="Table_Name"></include>
         where 1 = 1
         <if test="keyUserType != null">
             and key_user_type = #{keyUserType}
             and key_user_id = #{keyUserId}
+        </if>
+    </select>
+
+    <select id="assetMapCount" parameterType="com.antiy.asset.vo.query.KeyPullQuery" resultType="java.lang.Integer">
+        select
+        count(t.id)
+        from asset t
+        where
+        t.is_borrow = 1
+        and t.status = 1
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            and t.number LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="areaIds != null and areaIds.size() > 0">
+            and t.area_id IN
+            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="assetMapList" parameterType="com.antiy.asset.vo.query.KeyPullQuery"
+            resultType="com.antiy.asset.vo.response.KeyPullDownResponse">
+        select
+        t.id as id,
+        t.number as numOrName
+        from asset t
+        where
+        t.is_borrow = 1
+        and t.status = 1
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            and t.number LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="areaIds != null and areaIds.size() > 0">
+            and t.area_id IN
+            <foreach collection="areaIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
+    <select id="userMapCount" parameterType="com.antiy.asset.vo.query.KeyPullQuery" resultType="java.lang.Integer">
+        select
+        count(t.id)
+        from
+        asset_user t
+        where
+        t.status = 1
+        and t.id not in (select key_user_id from asset_key_manage where key_user_type = 2)
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            and t.name LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+    </select>
+
+    <select id="userMapList" parameterType="com.antiy.asset.vo.query.KeyPullQuery" resultType="com.antiy.asset.vo.response.KeyPullDownResponse">
+        select
+        t.id as id,
+        t.name as numOrName
+        from
+        asset_user t
+        where
+        t.status = 1
+        and t.id not in (select key_user_id from asset_key_manage where key_user_type = 2)
+        <if test=" multipleQuery != null and multipleQuery.trim != ''">
+            and t.name LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
 
