@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -3681,6 +3680,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<SelectResponse> queryBusiness() {
         return assetDao.queryBusiness();
+    }
+
+    @Override
+    public List<SelectResponse> queryNetType() {
+        return assetDao.queryNetType();
     }
 }
 
