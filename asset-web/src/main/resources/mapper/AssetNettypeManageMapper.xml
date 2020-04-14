@@ -205,4 +205,9 @@
         <include refid="Table_Name"></include>
         order by gmt_create
     </select>
+    <select id="findIdsByName" resultType="integer">
+        select id from
+        <include refid="Table_Name"></include>
+        where net_type_name = #{name}
+    </select>
 </mapper>
