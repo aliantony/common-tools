@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -254,25 +253,25 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private void filterTreeWithAssets(List<AssetCategoryModelNodeResponse> childNodes, AssetCategoryModelNodeResponse parentNode) {
         if (CollectionUtils.isNotEmpty(childNodes)) {
             for (int i = 0; i < childNodes.size(); i++) {
-                //处理兄弟节点
-                if (i >= 1) {
-                    //lastNode 上次的parentNode节点
-                    AssetCategoryModelNodeResponse lastNode = childNodes.get(i - 1);
-                    if (lastNode.getCount() >= 0 && CollectionUtils.isEmpty(lastNode.getChildrenNode())) {
-                        parentNode.getChildrenNode().remove(lastNode);
-                        i--;
-                    }
-                }
+                AssetCategoryModelNodeResponse lastNode = null;
                 AssetCategoryModelNodeResponse node = childNodes.get(i);
-                if (!Objects.isNull(parentNode) && CollectionUtils.isEmpty(node.getChildrenNode()) && node.getCount() <= 0) {
-                    if (CollectionUtils.isNotEmpty(childNodes)) {
-                        childNodes.remove(node);
-                        i--;
-                        continue;
-                    }
+                //标记有孩子节点的node,便于递归结束后处理，防止遗漏
+                if (CollectionUtils.isNotEmpty(node.getChildrenNode())) {
+                    lastNode = node;
+                }
+                if (CollectionUtils.isEmpty(node.getChildrenNode()) && node.getCount() <= 0) {
+                    childNodes.remove(node);
+                    i--;
+                    continue;
                 }
                 parentNode = node;
                 filterTreeWithAssets(parentNode.getChildrenNode(), parentNode);
+                if (!Objects.isNull(lastNode) && lastNode.getChildrenNode().isEmpty() && lastNode.getCount() <= 0) {
+                    childNodes.remove(lastNode);
+                    i--;
+                } else if (!Objects.isNull(lastNode) && lastNode.getChildrenNode().isEmpty()) {
+                    lastNode.setChildrenNode(null);
+                }
             }
 
         }

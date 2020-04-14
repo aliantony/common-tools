@@ -1,22 +1,10 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.entity.AssetLinkRelation;
-import com.antiy.asset.entity.AssetLinkedCount;
+import com.antiy.asset.dao.AssetMacRelationDao;
+import com.antiy.asset.dao.AssetUserDao;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.util.BeanConvert;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
@@ -26,9 +14,7 @@ import com.antiy.asset.vo.query.AssetLinkRelationQuery;
 import com.antiy.asset.vo.request.AssetLinkRelationRequest;
 import com.antiy.asset.vo.request.SysArea;
 import com.antiy.asset.vo.request.UseableIpRequest;
-import com.antiy.asset.vo.response.AssetLinkRelationResponse;
-import com.antiy.asset.vo.response.AssetLinkedCountResponse;
-import com.antiy.asset.vo.response.IpPortResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
@@ -40,6 +26,14 @@ import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * <p> 通联关系表 服务实现类 </p>
@@ -63,7 +57,12 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private AssetDao                                                    assetDao;
     @Resource
     private RedisUtil                                                   redisUtil;
-
+    @Resource
+    private AssetMacRelationDao                                         assetMacRelationDao;
+    @Resource
+    private BaseConverter<AssetMacRelation, AssetMacRelationResponse>           macResponseConverter;
+    @Resource
+    AssetUserDao                                                         assetUserDao;
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
@@ -202,6 +201,51 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         if (CollectionUtils.isEmpty(assetResponseList)) {
             return Lists.newArrayList();
         }
+        assetResponseList.forEach(assetResponse -> {
+            // 获取区域
+            String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), com.antiy.common.base.SysArea.class, assetResponse.getParentAssetAreaId());
+            com.antiy.common.base.SysArea sysArea = null;
+            try {
+                sysArea = redisUtil.getObject(key, com.antiy.common.base.SysArea.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            assetResponse.setParentAssetAreaName(Optional.ofNullable(sysArea).map(com.antiy.common.base.SysArea::getFullName).orElse(null));
+            // 设置品类型号名
+            assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
+            assetResponse.setParentCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getParentCategoryModel()));
+            // 姓名、所属组织转换
+            AssetUser assetUser = assetUserDao.findUserAndDepartment(String.valueOf(assetResponse.getParentAssetUserId()));
+            if (Objects.nonNull(assetUser)){
+                assetResponse.setParentAssetUserName(assetUser.getName());
+                assetResponse.setParentAssetUserDepartment(assetUser.getDepartmentName());
+            }
+            // 资产和父类资产mac获取
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("status", "1");
+            param.put("assetId", assetResponse.getAssetId());
+            // 查询资产mac
+            List<AssetMacRelation> assetMacRelation = null;
+            try {
+                assetMacRelation = assetMacRelationDao.getByWhere(param);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            assetResponse.setAssetMac(macResponseConverter.convert(assetMacRelation, AssetMacRelationResponse.class));
+
+            HashMap<String, Object> parentParam = new HashMap<>();
+            parentParam.put("status", "1");
+            parentParam.put("assetId", assetResponse.getParentAssetId());
+            // 查询资产mac
+            List<AssetMacRelation> parentAssetMacRelation = null;
+            try {
+                parentAssetMacRelation = assetMacRelationDao.getByWhere(parentParam);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            assetResponse.setParentAssetMac(macResponseConverter.convert(parentAssetMacRelation, AssetMacRelationResponse.class));
+        });
+
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
 

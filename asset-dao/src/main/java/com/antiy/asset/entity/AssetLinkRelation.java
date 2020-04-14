@@ -1,9 +1,12 @@
 package com.antiy.asset.entity;
 
+import com.antiy.asset.vo.response.AssetMacRelationResponse;
 import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
 
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p>通联关系表</p>
@@ -93,6 +96,189 @@ public class AssetLinkRelation extends BaseEntity {
      */
     @ApiModelProperty("设备类型")
     private CategoryType      categoryType;
+
+    /**
+     * 父类资产编号
+     */
+    private String parentAssetNumber;
+
+    /**
+     * 父类资产区域id
+     */
+    private String parentAssetAreaId;
+
+    /**
+     * 父类资产区域名称
+     */
+    private String parentAssetAreaName;
+
+    /**
+     * 父类资产负责人
+     */
+    private Integer parentAssetUserId;
+
+    /**
+     * 父类资产负责人名称
+     */
+    private String parentAssetUserName;
+
+    /**
+     * 父类资产负责人所属组织
+     */
+    private String parentAssetUserDepartment;
+
+    /**
+     * 配件房间号
+     */
+    private String partRoomNo;
+
+    /**
+     * 办公室网口
+     */
+    private Integer officeNet;
+
+    /**
+     * 办公室网口状态
+     */
+    private String officeNetState;
+
+    /**
+     * 交换机状态
+     */
+    private String switchState;
+
+    /**
+     * vlan号
+     */
+    private String vlan;
+
+    /**
+     * 自定义字段
+     */
+    private String customField;
+
+    /**
+     * 资产mac
+     */
+    private List<AssetMacRelationResponse> assetMac;
+
+    /**
+     * 父类资产mac
+     */
+    private List<AssetMacRelationResponse> parentAssetMac;
+
+
+    public List<AssetMacRelationResponse> getAssetMac() {
+        return assetMac;
+    }
+
+    public void setAssetMac(List<AssetMacRelationResponse> assetMac) {
+        this.assetMac = assetMac;
+    }
+
+    public List<AssetMacRelationResponse> getParentAssetMac() {
+        return parentAssetMac;
+    }
+
+    public void setParentAssetMac(List<AssetMacRelationResponse> parentAssetMac) {
+        this.parentAssetMac = parentAssetMac;
+    }
+
+    public String getParentAssetAreaName() {
+        return parentAssetAreaName;
+    }
+
+    public void setParentAssetAreaName(String parentAssetAreaName) {
+        this.parentAssetAreaName = parentAssetAreaName;
+    }
+
+    public String getParentAssetUserName() {
+        return parentAssetUserName;
+    }
+
+    public void setParentAssetUserName(String parentAssetUserName) {
+        this.parentAssetUserName = parentAssetUserName;
+    }
+
+    public String getParentAssetUserDepartment() {
+        return parentAssetUserDepartment;
+    }
+
+    public void setParentAssetUserDepartment(String parentAssetUserDepartment) {
+        this.parentAssetUserDepartment = parentAssetUserDepartment;
+    }
+
+    public String getParentAssetNumber() {
+        return parentAssetNumber;
+    }
+
+    public void setParentAssetNumber(String parentAssetNumber) {
+        this.parentAssetNumber = parentAssetNumber;
+    }
+
+    public String getParentAssetAreaId() {
+        return parentAssetAreaId;
+    }
+
+    public void setParentAssetAreaId(String parentAssetAreaId) {
+        this.parentAssetAreaId = parentAssetAreaId;
+    }
+
+    public Integer getParentAssetUserId() {
+        return parentAssetUserId;
+    }
+
+    public void setParentAssetUserId(Integer parentAssetUserId) {
+        this.parentAssetUserId = parentAssetUserId;
+    }
+
+    public String getPartRoomNo() {
+        return partRoomNo;
+    }
+
+    public void setPartRoomNo(String partRoomNo) {
+        this.partRoomNo = partRoomNo;
+    }
+
+    public Integer getOfficeNet() {
+        return officeNet;
+    }
+
+    public void setOfficeNet(Integer officeNet) {
+        this.officeNet = officeNet;
+    }
+
+    public String getOfficeNetState() {
+        return officeNetState;
+    }
+
+    public void setOfficeNetState(String officeNetState) {
+        this.officeNetState = officeNetState;
+    }
+
+    public String getSwitchState() {
+        return switchState;
+    }
+
+    public void setSwitchState(String switchState) {
+        this.switchState = switchState;
+    }
+
+    public String getVlan() {
+        return vlan;
+    }
+
+    public void setVlan(String vlan) {
+        this.vlan = vlan;
+    }
+
+    public String getCustomField() {
+        return customField;
+    }
+
+    public void setCustomField(String customField) {
+        this.customField = customField;
+    }
 
     public CategoryType getCategoryType() {
         return categoryType;
