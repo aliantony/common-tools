@@ -174,6 +174,21 @@ public class AssetLendRelationController {
     }
 
     /**
+     * 保存出借信息(pi)
+     *
+     * @param request
+     * @return actionResponse
+     */
+    @ApiOperation(value = "保存出借信息", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/save/lendInfos", method = RequestMethod.POST)
+    public ActionResponse saveLendInfos(@RequestBody AssetLendInfosRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.saveLendInfos(request));
+    }
+
+    /**
      * 审批单综合查询
      *
      * @param request

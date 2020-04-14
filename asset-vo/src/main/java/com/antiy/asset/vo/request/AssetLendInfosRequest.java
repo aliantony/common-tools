@@ -6,15 +6,22 @@ import java.util.List;
 
 public class AssetLendInfosRequest {
     /**
-     *  资产id
+     * 资产id
      */
     @ApiModelProperty("资产id")
     private List<String> assetIdList;
     /**
-     *  订单id
+     * 订单id
      */
     @ApiModelProperty("订单id")
     private String orderNumber;
+
+    /**
+     * 订单id
+     */
+    @ApiModelProperty("订单id")
+    private Integer useId;
+
 
     public List<String> getAssetIdList() {
         return assetIdList;
@@ -32,11 +39,20 @@ public class AssetLendInfosRequest {
         this.orderNumber = orderNumber;
     }
 
+    public Integer getUseId() {
+        return useId;
+    }
+
+    public void setUseId(Integer useId) {
+        this.useId = useId;
+    }
+
     @Override
     public String toString() {
         return "AssetLendInfosRequest{" +
                 "assetIdList=" + assetIdList +
                 ", orderNumber='" + orderNumber + '\'' +
+                ", useId=" + useId +
                 '}';
     }
 }

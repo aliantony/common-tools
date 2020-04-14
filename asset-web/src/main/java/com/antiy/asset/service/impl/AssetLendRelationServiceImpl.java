@@ -63,6 +63,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     private BaseConverter<AssetLendRelation, AssetLendRelationResponse> responseConverter;
     @Resource
     private BaseConverter<AssetLendInfoRequest, AssetLendRelation> lendRelationBaseConverter;
+    @Resource
+    private LoginUserUtil loginUserUtil;
 
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
@@ -188,7 +190,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
+        //TODO 暂时保留该接口，如果web不添加字段，删除
         ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
         approveInfoResponse.setOrderNumber(request.getOrderNumber());
         approveInfoResponse.setOrderUser(request.getOrderUser());
@@ -214,7 +216,23 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
+        ParamterExceptionUtils.isNull(request.getUseId(), "用户ID不能为空");
+        ParamterExceptionUtils.isNull(request.getAssetIdList(), "资产列表不能为空");
+        ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
+        Integer creatUser = LoginUserUtil.getLoginUser().getId();
+        Long gmtCreat = System.currentTimeMillis();
+        for (String item : request.getAssetIdList()) {
+            AssetLendRelation assetLendRelation = new AssetLendRelation();
+            assetLendRelation.setStatus(1);
+            assetLendRelation.setCreateUser(creatUser);
+            assetLendRelation.setGmtCreate(gmtCreat);
+            assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+
+            assetLendRelation.setUseId(request.getUseId());
+            assetLendRelation.setOrderNumber(request.getOrderNumber());
+            assetLendRelation.setAssetId(Integer.valueOf(item));
+            assetLendRelationDao.insert(assetLendRelation);
+        }
         return null;
     }
 
