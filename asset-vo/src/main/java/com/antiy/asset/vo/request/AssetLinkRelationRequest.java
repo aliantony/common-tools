@@ -1,13 +1,15 @@
 package com.antiy.asset.vo.request;
 
-import javax.validation.constraints.NotBlank;
-
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * <p> AssetLinkRelationRequest 请求对象 </p>
@@ -84,6 +86,92 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      */
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
+    /**
+     * 配件房间号
+     */
+    @ApiModelProperty("配件房间号")
+    private String partRoomNo;
+
+    /**
+     * 办公室网口
+     */
+    @ApiModelProperty("办公室网口")
+    private Integer officeNet;
+
+    /**
+     * 办公室网口状态
+     */
+    @ApiModelProperty("办公室网口状态: 1.正常 0.损坏")
+    @Size(min = 0, max = 1)
+    private String officeNetState;
+
+    /**
+     * 交换机状态
+     */
+    @ApiModelProperty("交换机状态: 1.正常 0.损坏")
+    @Size(min = 0, max = 1)
+    private Integer switchState;
+
+    /**
+     * vlan号
+     */
+    @ApiModelProperty("vlan号")
+    private String vlan;
+
+    /**
+     * 自定义字段
+     */
+    @ApiModelProperty("自定义字段")
+    private String customField;
+
+
+    public String getPartRoomNo() {
+        return partRoomNo;
+    }
+
+    public void setPartRoomNo(String partRoomNo) {
+        this.partRoomNo = partRoomNo;
+    }
+
+    public Integer getOfficeNet() {
+        return officeNet;
+    }
+
+    public void setOfficeNet(Integer officeNet) {
+        this.officeNet = officeNet;
+    }
+
+    public String getOfficeNetState() {
+        return officeNetState;
+    }
+
+    public void setOfficeNetState(String officeNetState) {
+        this.officeNetState = officeNetState;
+    }
+
+    public Integer getSwitchState() {
+        return switchState;
+    }
+
+    public void setSwitchState(Integer switchState) {
+        this.switchState = switchState;
+    }
+
+    public String getVlan() {
+        return vlan;
+    }
+
+    public void setVlan(String vlan) {
+        this.vlan = vlan;
+    }
+
+    public String getCustomField() {
+        return customField;
+    }
+
+    public void setCustomField(String customField) {
+        this.customField = customField;
+    }
 
     public String getAssetIp() {
         return assetIp;
@@ -184,6 +272,11 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     @Override
     public void validate() throws RequestParamValidateException {
 
+        if (Objects.nonNull(memo) | Objects.nonNull(customField)){
+            if (!(Objects.nonNull(memo) ^ Objects.nonNull(customField))) {
+                throw new BusinessException("备注、自定义字段限添加1个");
+            }
+        }
     }
 
 }
