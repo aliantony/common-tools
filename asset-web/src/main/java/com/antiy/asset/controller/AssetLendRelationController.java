@@ -6,7 +6,10 @@ import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
 import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.QueryCondition;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 /**
@@ -123,7 +127,7 @@ public class AssetLendRelationController {
     })
     @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
     public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") @RequestBody ObjectQuery objectQuery) throws Exception {
-        PageResult<AssetLendRelationResponse> assetLendRelationResponses = iAssetLendRelationService.queryHistory(objectQuery);
+        List<AssetLendRelationResponse> assetLendRelationResponses = iAssetLendRelationService.queryHistory(objectQuery);
         return ActionResponse.success(assetLendRelationResponses);
     }
 

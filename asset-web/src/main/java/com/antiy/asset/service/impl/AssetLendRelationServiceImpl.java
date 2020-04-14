@@ -24,7 +24,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -147,18 +146,18 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
-        int count = assetLendRelationDao.countHistory(objectQuery);
-        if (count > 0) {
+    public List<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
+
             List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
-            assetLendRelationResponses.forEach(t->{
-                if(t.getLendStatus()==2){
-                    t.setLendStatusDesc("已归还");
-                }
-            });
-            return new PageResult<>(objectQuery.getPageSize(), count, objectQuery.getCurrentPage(), assetLendRelationResponses);
-        }
-        return new PageResult<>(objectQuery.getPageSize(), 0, objectQuery.getCurrentPage(), Lists.newArrayList());
+            if(CollectionUtils.isNotEmpty(assetLendRelationResponses)){
+                assetLendRelationResponses.forEach(t->{
+                    if(t.getLendStatus()==2){
+                        t.setLendStatusDesc("已归还");
+                    }
+                });
+            }
+            return assetLendRelationResponses;
+
     }
 
     @Override
