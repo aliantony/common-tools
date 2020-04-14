@@ -132,8 +132,6 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
     UserInfoResponse queryUserInfo(UserInfoRequest request);
 
     AssetResponse queryAssetInfo(Integer id);
-}
-
     /**
      * 保存出借信息(批量)
      *
@@ -143,3 +141,4 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      */
     Integer saveLendInfos(AssetLendInfosRequest request) throws Exception;
 }
+
