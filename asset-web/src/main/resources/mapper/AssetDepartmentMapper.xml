@@ -290,4 +290,12 @@
           and status = 1
           limit 0,1
     </select>
+
+    <select id="getParentIdById" resultType="com.antiy.asset.entity.AssetDepartment">
+        select
+        name,
+        parent_id as parentId
+        from asset_department
+        where id = #{id}
+    </select>
 </mapper>
