@@ -470,11 +470,11 @@
             alr.use_id=#{currentUseId} or ( a.responsible_user_id=#{currentUseId} and alr.use_id is null )
             )
         </if>
-        <if test="lendTime !=null">
-            and alr.lend_time &lt;= #{lendTime}
+        <if test="beginTime !=null">
+            and alr.lend_time &gt;= #{beginTime}
         </if>
-        <if test="lendPeriods !=null">
-            and alr.lend_periods &gt;= #{lendPeriods}
+        <if test="endTime !=null">
+            and alr.lend_time &lt;= #{endTime}
         </if>
         <if test='categoryModels !=null and categoryModels.size()>0 '>
             and a.category_model in
