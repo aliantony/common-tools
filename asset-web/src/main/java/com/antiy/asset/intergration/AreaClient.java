@@ -14,5 +14,7 @@ public interface AreaClient {
 
     ActionResponse queryByArea(String type, String areaId);
 
+    ActionResponse getIP(String areaId, String ip, String typeId);
+
     Object getInvokeResult(String id);
 }
