@@ -310,20 +310,20 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     }
 
     @Override
-    public PageResult<KeyPullDownResponse> assetMapList(KeyPullQuery query) throws Exception {
+    public List<KeyPullDownResponse> assetMapList(KeyPullQuery query) throws Exception {
 
         LoginUser user = LoginUserUtil.getLoginUser();
         List<String> areaIds = user.getAreaIdsOfCurrentUser();
         if (areaIds.isEmpty()) {
-            return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
+            return Lists.newArrayList();
         }
         query.setAreaIds(user.getAreaIdsOfCurrentUser());
 
-        return new PageResult<>(query.getPageSize(), keyManageDao.assetMapCount(query), query.getCurrentPage(), keyManageDao.assetMapList(query));
+        return keyManageDao.assetMapList(query);
     }
 
     @Override
-    public PageResult<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception {
-        return new PageResult<>(query.getPageSize(), keyManageDao.userMapCount(query), query.getCurrentPage(), keyManageDao.userMapList(query));
+    public List<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception {
+        return keyManageDao.userMapList(query);
     }
 }

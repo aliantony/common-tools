@@ -152,6 +152,24 @@
         <if test=" status != null">
             status,
         </if>
+        <if test=" partRoomNo != null">
+            part_room_no,
+        </if>
+        <if test=" officeNet != null">
+            office_net,
+        </if>
+        <if test=" officeNetState != null">
+            office_net_state,
+        </if>
+        <if test=" switchState != null">
+            switch_state,
+        </if>
+        <if test=" vlan != null">
+            vlan,
+        </if>
+        <if test=" customField != null">
+            custom_field,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -190,6 +208,24 @@
         </if>
         <if test=" status != null">
             #{status },
+        </if>
+        <if test=" partRoomNo != null">
+            #{partRoomNo},
+        </if>
+        <if test=" officeNet != null">
+            #{officeNet},
+        </if>
+        <if test=" officeNetState != null">
+            #{officeNetState},
+        </if>
+        <if test=" switchState != null">
+            #{switchState},
+        </if>
+        <if test=" vlan != null">
+            #{vlan},
+        </if>
+        <if test=" customField != null">
+            #{customField},
         </if>
     </sql>
 
@@ -710,7 +746,16 @@
         t.name as parentAssetName,
         t.category_model as parentCategoryModel,
         alr.parent_asset_ip AS parentAssetIp,
-        alr.parent_asset_port AS parentAssetPort
+        alr.parent_asset_port AS parentAssetPort,
+        t.number as parentAssetNumber,
+        t.area_id as parentAssetAreaId,
+        t.responsible_user_id as parentAssetUserId,
+        alr.part_room_no as partRoomNo,
+        alr.office_net as officeNet,
+        alr.office_net_state as officeNetState,
+        alr.switch_state as switchState,
+        alr.vlan as vlan,
+        alr.custom_field as customField
         FROM
         asset asset
         LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
@@ -718,6 +763,7 @@
         left join asset t on alr.parent_asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
+        and alr.parent_asset_id is not null
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
         asset.id )
         UNION
@@ -732,7 +778,16 @@
         t.name as parentAssetName,
         t.category_model as parentCategoryModel,
         alr.asset_ip AS parentAssetIp,
-        alr.asset_port AS parentAssetPort
+        alr.parent_asset_port AS parentAssetPort,
+        t.number as parentAssetNumber,
+        t.area_id as parentAssetAreaId,
+        t.responsible_user_id as parentAssetUserId,
+        alr.part_room_no as partRoomNo,
+        alr.office_net as officeNet,
+        alr.office_net_state as officeNetState,
+        alr.switch_state as switchState,
+        alr.vlan as vlan,
+        alr.custom_field as customField
         FROM
         asset asset
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
@@ -743,6 +798,7 @@
         left join asset t on alr.asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
+        and alr.parent_asset_id is not null
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ORDER BY assetPort
         <if test="pageSize !=-1">
@@ -820,6 +876,7 @@
             left join asset t on alr.parent_asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
+            and alr.parent_asset_id is not null
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
             UNION
             SELECT
@@ -843,6 +900,7 @@
             left join asset t on alr.asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
+            and alr.parent_asset_id is not null
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ) t
     </select>

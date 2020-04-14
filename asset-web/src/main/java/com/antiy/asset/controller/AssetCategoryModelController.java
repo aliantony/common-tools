@@ -5,10 +5,7 @@ import javax.annotation.Resource;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
@@ -81,13 +78,22 @@ public class AssetCategoryModelController {
      */
     @ApiOperation(value = "查询品类树", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelNodeResponse.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/query/nodes", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/node", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
-    public ActionResponse queryCategoryNodeWhihoutNode() throws Exception {
-//        iAssetCategoryModelService.queryCategoryNode(1);
-//        iAssetCategoryModelService.queryCategoryNode(2);
-//        List<AssetCategoryModelNodeResponse> assetCategoryModelNodeResponses = new ArrayList(){{add(iAssetCategoryModelService.queryCategoryNode(1));add(iAssetCategoryModelService.queryCategoryNode(2));}};
+    public ActionResponse queryCategoryNode() throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.queryCategoryNodeCount());
+    }
+    /**
+     * 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询品类树(去掉根节点）", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelNodeResponse.class, responseContainer = "list"), })
+    @RequestMapping(value = "/query/withoutnode", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
+    public ActionResponse queryCategoryNodeWhihoutNode(@RequestParam("sourceOfLend") boolean sourceOfLend) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryWithOutRootNode(sourceOfLend));
     }
 
 }

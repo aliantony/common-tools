@@ -82,6 +82,19 @@ public class AssetUser extends BaseEntity {
      */
     private Integer status;
 
+    /**
+     * 部门主键未加密
+     */
+    private String  departmentIdNoEncrypt;
+
+    public String getDepartmentIdNoEncrypt() {
+        return departmentIdNoEncrypt;
+    }
+
+    public void setDepartmentIdNoEncrypt(String departmentIdNoEncrypt) {
+        this.departmentIdNoEncrypt = departmentIdNoEncrypt;
+    }
+
     public String getAddressName() {
         return addressName;
     }

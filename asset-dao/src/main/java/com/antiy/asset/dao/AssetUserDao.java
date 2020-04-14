@@ -1,10 +1,10 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.vo.query.AssetUserQuery;
 import com.antiy.common.base.IBaseDao;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,4 +33,10 @@ public interface AssetUserDao extends IBaseDao<AssetUser> {
     List<AssetUser> findExportListAssetUser(AssetUserQuery assetUser);
 
     String findUserName(String id);
+
+    /**
+     * 查询资产的使用者及所属部门
+     */
+    AssetUser findUserAndDepartment(String userId);
+
 }

@@ -98,6 +98,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetLockDao                                                        assetLockDao;
     @Resource
+    private AssetNettypeManageDao                                               assetNettypeManageDao;
+    @Resource
     private BaseConverter<AssetRequest, Asset>                                  requestConverter;
     @Resource
     private BaseConverter<Asset, AssetResponse>                                 responseConverter;
@@ -367,13 +369,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));
         }
 
-        // 扫描
-        ActionResponse scan = baseLineClient.scan(id.toString());
-        // 如果漏洞为空,直接返回错误信息
-        if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-            // 调用失败，逻辑删登记的资产
-            assetDao.deleteById(id);
-            return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+        // 是否需要进行漏扫
+        if (request.getNeedScan()) {
+            ActionResponse scan = baseLineClient.scan(id.toString());
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
+                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+            }
         }
         return ActionResponse.success(msg);
     }
@@ -1892,19 +1896,29 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private List<OtherDeviceEntity> initOtherData() {
         List<OtherDeviceEntity> dataList = new ArrayList<>();
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
-        otherDeviceEntity.setArea("四川省");
-        otherDeviceEntity.setBuyDate(System.currentTimeMillis());
-        otherDeviceEntity.setDueDate(System.currentTimeMillis());
-        otherDeviceEntity.setUser("留小查");
-        otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
-        otherDeviceEntity.setName("ar500");
-        otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         otherDeviceEntity.setManufacturer("huawei");
-        otherDeviceEntity.setWarranty("2年");
+        otherDeviceEntity.setName("ar500");
+        otherDeviceEntity.setVersion("1.0.2::~~~wordpress~~");
+        otherDeviceEntity.setArea("四川省");
         otherDeviceEntity.setNumber("000001");
+        otherDeviceEntity.setCode("3773287221233");
+        otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setImportanceDegree("1");
+        otherDeviceEntity.setMachineName("dsa02321");
+        otherDeviceEntity.setIsSecrecy("是");
+        otherDeviceEntity.setNetType("红网");
         otherDeviceEntity.setIp("192.158.58.58");
         otherDeviceEntity.setMac("00-01-6C-06-A6-29");
+        otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
+        otherDeviceEntity.setHouseLocation("07-08-1");
+        otherDeviceEntity.setLocation("武侯大道108号");
+        otherDeviceEntity.setBuyDate(System.currentTimeMillis());
+        otherDeviceEntity.setDueDate(System.currentTimeMillis());
+        otherDeviceEntity.setExpirationReminder(System.currentTimeMillis());
+        otherDeviceEntity.setInstallDate(System.currentTimeMillis());
+        otherDeviceEntity.setActiviateDate(System.currentTimeMillis());
+        otherDeviceEntity.setWarranty("2年");
+        otherDeviceEntity.setMemo("宣传展览导视查询畅销触控一体机，采用FULL HD全视角高清IPS硬屏");
         dataList.add(otherDeviceEntity);
         return dataList;
     }
@@ -2031,6 +2045,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<ComputeDeviceEntity> dataList = new ArrayList<>();
         ComputeDeviceEntity computeDeviceEntity = new ComputeDeviceEntity();
         computeDeviceEntity.setArea("成都市");
+        computeDeviceEntity.setCode("cd002");
+        computeDeviceEntity.setIsOrphan("是");
+        computeDeviceEntity.setIsSecrecy("是");
+        computeDeviceEntity.setNetType("红网");
+        computeDeviceEntity.setActiviateDate(System.currentTimeMillis());
+        computeDeviceEntity.setInstallDate(System.currentTimeMillis());
+        computeDeviceEntity.setExpirationReminder(System.currentTimeMillis());
         computeDeviceEntity.setName("ar500");
         computeDeviceEntity.setIp("192.168.1.1");
         computeDeviceEntity.setMac("00-01-6C-06-A6-29");
@@ -2046,7 +2067,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setManufacturer("huawei");
         computeDeviceEntity.setOperationSystem("Window 10");
-        computeDeviceEntity.setIsOrphan(0);
         dataList.add(computeDeviceEntity);
         return dataList;
     }
@@ -2193,6 +2213,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
+            if (entity.getExpirationReminder() >= entity.getDueTime()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                continue;
+            }
+
             if (entity.getBuyDate() != null) {
 
                 if (isBuyDataBig(entity.getBuyDate())) {
@@ -2254,7 +2281,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
-            asset.setIsOrphan(entity.getIsOrphan());
+            asset.setActiviateDate(entity.getActiviateDate());
+            asset.setInstallDate(entity.getInstallDate());
+            if (null == entity.getExpirationReminder()) {
+                asset.setExpirationReminder(getCalendar(entity.getDueTime()));
+            } else {
+                asset.setExpirationReminder(entity.getExpirationReminder());
+            }
+            asset.setCode(entity.getCode());
+            asset.setNetType(getNetTypeByName(entity.getNetType()));
+            asset.setIsOrphan("是".equals(entity.getIsOrphan()) ? 1 : 2);
+            asset.setIsSecrecy("是".equals(entity.getIsOrphan()) ? 1 : 2);
             asset.setAdmittanceStatus(1);
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
@@ -2322,6 +2359,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return stringBuilder.append(builder).append(sb).toString();
 
+    }
+
+    // 前一周 时间
+    private Long getCalendar(Long time) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        c.add(Calendar.DATE, -7);
+        return c.getTimeInMillis();
+    }
+
+    private String getNetTypeByName(String netType) {
+        // TODO: 2020/4/13
+        return "";
+        // return assetNettypeManageDao.findQuery ()
     }
 
     @Override
@@ -3631,6 +3682,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<SelectResponse> queryBusiness() {
         return assetDao.queryBusiness();
+    }
+
+    @Override
+    public List<SelectResponse> queryNetType() {
+        return assetDao.queryNetType();
     }
 }
 
