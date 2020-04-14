@@ -403,11 +403,12 @@
             ) a
     </select>
     <select id="queryUserList" resultType="com.antiy.asset.vo.response.UserListResponse">
-        SELECT NAME AS
-            userName,
+        SELECT
+            NAME AS userName,
             id AS UserId
         FROM
             asset_user
+            where status = 1
     </select>
     <select id="queryUserInfo" resultType="com.antiy.asset.vo.response.UserInfoResponse">
         SELECT
@@ -418,11 +419,13 @@
             akm.key_num AS keyNumber
         FROM
             asset_user au
-            LEFT JOIN asset_key_manage akm ON au.name = akm.user_num_name
+            LEFT JOIN asset_key_manage akm ON (au.id = akm.key_user_id and akm.is_delete = 1)
         WHERE
+            au.status = 1
+            and
             akm.key_user_type = 2
             and
-            au.name = #{userName}
+            au.id = #{userId}
     </select>
     <select id="queryDepartment" resultType="java.lang.String">
         SELECT
@@ -430,6 +433,8 @@
         FROM
             asset_department
         WHERE
+            status = 1
+            and
             id = #{departmentId}
     </select>
     <select id="queryDepartmentParent" resultType="java.lang.String">
@@ -438,6 +443,8 @@
         FROM
             asset_department
         WHERE
+            status = 1
+            and
             id = #{departmentId}
     </select>
     <sql id="baseQuery">

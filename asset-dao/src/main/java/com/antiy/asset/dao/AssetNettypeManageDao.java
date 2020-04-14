@@ -4,6 +4,8 @@ import com.antiy.asset.entity.AssetNettypeManage;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -21,4 +23,6 @@ public interface AssetNettypeManageDao extends IBaseDao<AssetNettypeManage> {
      * @return
      */
     public Integer getCountByNetTypeName(@Param("id") Integer id, @Param("netTypeName") String netTypeName);
+
+    List<String> findIdsByName(String name);
 }
