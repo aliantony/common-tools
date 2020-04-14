@@ -131,6 +131,9 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      */
     UserInfoResponse queryUserInfo(UserInfoRequest request);
 
+    AssetResponse queryAssetInfo(Integer id);
+}
+
     /**
      * 保存出借信息(批量)
      *

@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.convert.LendConvert;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLendRelationDao;
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.entity.AssetOaOrderHandle;
@@ -54,6 +55,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     private ExcelDownloadUtil excelDownloadUtil;
     @Resource
     private LendConvert lendConvert;
+    @Resource
+    private AssetDao assetDao;
     @Resource
     private BaseConverter<AssetLendRelationRequest, AssetLendRelation> requestConverter;
     @Resource
@@ -137,7 +140,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
-
+        //assetDao.getByAssetId()
         return assetLendRelationDao.returnConfirm(assetLendRelationRequest);
     }
 
@@ -146,6 +149,11 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         int count = assetLendRelationDao.countHistory(objectQuery);
         if (count > 0) {
             List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
+            assetLendRelationResponses.forEach(t->{
+                if(t.getLendStatus()==2){
+                    t.setLendStatusDesc("已归还");
+                }
+            });
             return new PageResult<>(objectQuery.getPageSize(), count, objectQuery.getCurrentPage(), assetLendRelationResponses);
         }
         return new PageResult<>(objectQuery.getPageSize(), 0, objectQuery.getCurrentPage(), Lists.newArrayList());
@@ -208,6 +216,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
         //TODO 产品确认oa人员与资产人员关系 再进行开发
         return null;
+    }
+
+    @Override
+    public AssetResponse queryAssetInfo(Integer id) {
+
+        AssetResponse assetResponse=assetDao.queryInfoByAssetId(id);
+        return assetResponse;
     }
 
     public void getDepartment(String departmentId, String department) {

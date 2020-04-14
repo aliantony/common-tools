@@ -17,8 +17,10 @@ import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -84,7 +86,7 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         return assetAssemblyDao.deleteById(baseRequest.getStringId()).toString();
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer scrapUpdate(AssetAssemblyScrapRequest assetAssemblyScrapRequest) throws Exception {
         if(assetAssemblyScrapRequest.getAssetId().size()>1){
@@ -94,10 +96,10 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
         AssetSchemeQuery assetSchemeQuery=new AssetSchemeQuery();
         assetSchemeQuery.setAssetIds(assetAssemblyScrapRequest.getAssetId());
         assetSchemeQuery.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
-        assetSchemeQuery.setOrginStatusOne(AssetStatusEnum.NET_IN.getCode());
-        assetSchemeQuery.setOrginStatusTwo(AssetStatusEnum.NET_IN.getCode());
+        assetSchemeQuery.setOrginStatusOne(AssetStatusEnum.RETIRE.getCode());
+        assetSchemeQuery.setOrginStatusTwo(AssetStatusEnum.RETIRE.getCode());
         List<AssetResponse> assetResponseList = assetOperationRecordDao.queryAssetSchemListByAssetIds(assetSchemeQuery);
-        if(CollectionUtils.isNotEmpty(assetResponseList)){
+        if(CollectionUtils.isNotEmpty(assetResponseList) && StringUtils.isNotBlank(assetAssemblyScrapRequest.getTemporaryInfo())){
             AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
             assetOperationRecord.setId(DataTypeUtils.stringToInteger(assetResponseList.get(0).getAssetOperationRecordId()));
             assetOperationRecord.setTemporaryInfo(assetAssemblyScrapRequest.getTemporaryInfo());

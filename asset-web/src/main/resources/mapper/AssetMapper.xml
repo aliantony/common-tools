@@ -19,6 +19,7 @@
         <result property="value" column="install_type"/>
     </resultMap>
 
+
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.Asset">
         <id column="id" property="id"/>
@@ -1915,6 +1916,21 @@
         where asset.id=#{id}
     </select>
 
+    <select id="queryInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetResponse" >
+        SELECT
+        asset.name,
+        asset.number,
+        asset.asset_group as assetGroup,
+        `user`.`name` AS responsibleUserName,
+         akm.key_num as keyNumber,
+          acm.name as categoryModelName
+        FROM
+        <include refid="Table_Name"></include>
+        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        left join asset_key_manage as akm on akm.key_user_id=asset.id and akm.is_delete=1
+        left join asset_category_model as acm on acm.id=asset.category_model and  acm.status=1
+        where asset.id=#{id}
+    </select>
     <select id="getAssemblyInfoById" parameterType="java.lang.String" resultType="com.antiy.asset.entity.AssetAssembly">
   SELECT
   asset.id as assetId,
