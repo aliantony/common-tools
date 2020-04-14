@@ -1708,6 +1708,8 @@
         activiate_date = #{activiateDate },
         is_orphan=#{isOrphan},
         is_borrow = #{isBorrow },
+        expiration_reminder = #{expirationReminder },
+        install_date = #{installDate },
         custom_field=#{customField},
         gmt_modified = #{gmtModified },
         modify_user = #{modifyUser },
