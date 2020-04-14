@@ -80,8 +80,7 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
 
     @Override
     public Integer getIdsByName(String name) {
-        Integer id = assetNettypeManageDao.findIdsByName(name);
-        return id;
+        return assetNettypeManageDao.findIdsByName(name);
     }
 
     @Override
