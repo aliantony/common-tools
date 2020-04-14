@@ -332,7 +332,8 @@
     </select>
     <update id="returnConfirm">
         update asset_lend_relation
-        set return_time=#{returnTime}
+        set return_time=#{returnTime},
+         lend_status=2
         where unique_id=#{uniqueId} and status=1
     </update>
     <select id="countHistory" resultType="int">

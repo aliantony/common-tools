@@ -10,13 +10,13 @@
         id,target_object_id AS assetId,note
     </sql>
 
-
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOperationRecord">
         <id column="id" property="id"/>
         <result column="target_object_id" property="targetObjectId"/>
         <result column="origin_status" property="originStatus"/>
         <result column="target_status" property="targetStatus"/>
+        <result column="need_vul_scan" property="needVulScan"/>
         <result column="content" property="content"/>
         <result column="operate_user_id" property="operateUserId"/>
         <result column="process_result" property="processResult"/>
@@ -26,9 +26,13 @@
         <result column="gmt_create" property="gmtCreate"/>
         <result column="create_user" property="createUser"/>
         <result column="status" property="status"/>
+        <result column="check_user_id" property="checkUserId"/>
+        <result column="check_user_name" property="checkUserName"/>
+        <result column="execute_user_id" property="executeUserId"/>
+        <result column="execute_user_name" property="executeUserName"/>
         <result column="task_id" property="taskId"/>
+        <result column="temporary_info" property="temporaryInfo"/>
     </resultMap>
-    <!-- 通用查询结果列 -->
 
     <sql id="Table_Name">
         asset_operation_record
@@ -75,6 +79,24 @@
         <if test=" status != null">
             status,
         </if>
+        <if test=" checkUserId != null">
+            check_user_id,
+        </if>
+        <if test=" checkUserName != null">
+            check_user_name,
+        </if>
+        <if test=" executeUserId != null">
+            execute_user_id,
+        </if>
+        <if test=" executeUserName != null">
+            execute_user_name,
+        </if>
+        <if test=" taskId != null">
+            task_id,
+        </if>
+        <if test=" temporaryInfo != null">
+            temporary_info,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -117,6 +139,24 @@
         <if test=" status != null">
             #{status },
         </if>
+        <if test=" checkUserId != null">
+            #{checkUserId },
+        </if>
+        <if test=" checkUserName != null">
+            #{checkUserName },
+        </if>
+        <if test=" executeUserId != null">
+            #{executeUserId },
+        </if>
+        <if test=" executeUserName != null">
+            #{executeUserName },
+        </if>
+        <if test=" taskId != null">
+            #{taskId },
+        </if>
+        <if test=" temporaryInfo != null">
+            #{temporaryInfo },
+        </if>
     </sql>
 
     <sql id="Set_Column_List">
@@ -128,6 +168,9 @@
         </if>
         <if test=" targetStatus != null">
             target_status = #{targetStatus },
+        </if>
+        <if test=" needVulScan != null">
+            need_vul_scan = #{needVulScan },
         </if>
         <if test=" content != null">
             content = #{content },
@@ -156,6 +199,24 @@
         <if test=" status != null">
             status = #{status },
         </if>
+        <if test=" checkUserId != null">
+            check_user_id = #{checkUserId },
+        </if>
+        <if test=" checkUserName != null">
+            check_user_name = #{checkUserName },
+        </if>
+        <if test=" executeUserId != null">
+            execute_user_id = #{executeUserId },
+        </if>
+        <if test=" executeUserName != null">
+            execute_user_name = #{executeUserName },
+        </if>
+        <if test=" taskId != null">
+            task_id = #{taskId },
+        </if>
+        <if test=" temporaryInfo != null">
+            temporary_info = #{temporaryInfo },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -167,6 +228,9 @@
         </if>
         <if test=" targetStatus != null">
             and target_status = #{targetStatus }
+        </if>
+        <if test=" needVulScan != null">
+            and need_vul_scan = #{needVulScan }
         </if>
         <if test=" content != null">
             and content = #{content }
@@ -195,7 +259,26 @@
         <if test=" status != null">
             and status = #{status }
         </if>
+        <if test=" checkUserId != null">
+            and check_user_id = #{checkUserId }
+        </if>
+        <if test=" checkUserName != null">
+            and check_user_name = #{checkUserName }
+        </if>
+        <if test=" executeUserId != null">
+            and execute_user_id = #{executeUserId }
+        </if>
+        <if test=" executeUserName != null">
+            and execute_user_name = #{executeUserName }
+        </if>
+        <if test=" taskId != null">
+            and task_id = #{taskId }
+        </if>
+        <if test=" temporaryInfo != null">
+            and temporary_info = #{temporaryInfo }
+        </if>
     </sql>
+
 
 
     <sql id="IF_Base_Column_List_ForBatch">
@@ -379,6 +462,13 @@
         where target_object_id=#{assetId}
         and status=1
     </update>
+    <select id="getLastByAssetId" resultMap="BaseResultMap">
+        select  * from <include refid="Table_Name"/>
+        where target_object_id=#{assetId}
+        and status=1
+        order by id desc
+        limit 1
+    </select>
     <select id="listByAssetIds" resultMap="BaseResultMap">
         select
         a.target_object_id,a.origin_status,task_id

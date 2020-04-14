@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,7 +75,6 @@ public class AssetLendRelationController {
         return ActionResponse.success(iAssetLendRelationService.queryPageAssetLendRelation(assetLendRelationQuery));
     }
 
-
     /**
      * 查询出借详情
      */
@@ -102,6 +102,18 @@ public class AssetLendRelationController {
         return ActionResponse.success(returnConfirm);
     }
 
+    /**
+     *资产
+     */
+    @ApiOperation(value = "资产详情", notes = "传入资产id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetResponse.class),
+    })
+    @RequestMapping(value = "/query/asset/info", method = RequestMethod.POST)
+    public ActionResponse queryAssetInfo(@ApiParam(value = "baseRequest") @RequestBody BaseRequest baseRequest) throws Exception {
+        AssetResponse assetResponse=iAssetLendRelationService.queryAssetInfo(baseRequest.getId());
+        return ActionResponse.success(assetResponse);
+    }
     /**
      * 出借历史
      */

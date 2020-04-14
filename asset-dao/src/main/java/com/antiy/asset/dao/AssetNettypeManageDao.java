@@ -3,7 +3,6 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetNettypeManage;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
-
 /**
  * <p>
  *  Mapper 接口
@@ -22,5 +21,5 @@ public interface AssetNettypeManageDao extends IBaseDao<AssetNettypeManage> {
      */
     public Integer getCountByNetTypeName(@Param("id") Integer id, @Param("netTypeName") String netTypeName);
 
-    Integer findIdsByName(String name);
+    public Integer findIdsByName(String name);
 }
