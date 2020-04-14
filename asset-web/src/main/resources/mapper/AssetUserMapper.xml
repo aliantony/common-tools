@@ -414,7 +414,7 @@
         au.name as name,
         ad.name as departmentName
         from asset_user au
-        left join asset_department ad on (au.department_id = ad.id and status = 1)
+        left join asset_department ad on (au.department_id = ad.id and ad.status = 1)
         where au.id = #{userId}
     </select>
 </mapper>
