@@ -369,13 +369,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));
         }
 
-        // 扫描
-        ActionResponse scan = baseLineClient.scan(id.toString());
-        // 如果漏洞为空,直接返回错误信息
-        if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-            // 调用失败，逻辑删登记的资产
-            assetDao.deleteById(id);
-            return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+        // 是否需要进行漏扫
+        if (request.getNeedScan()) {
+            ActionResponse scan = baseLineClient.scan(id.toString());
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
+                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+            }
         }
         return ActionResponse.success(msg);
     }

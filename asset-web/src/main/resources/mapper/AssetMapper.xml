@@ -1662,14 +1662,33 @@
         <if test="businessId != null and businessId != ''">
             business_id = #{businessId},
         </if>
-
+        <if test=" installTemplateId != null">
+            install_template_id = #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id = #{baselineTemplateId },
+        </if>
         <if test=" baselineTemplateCorrelationGmt != null">
             baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt},
         </if>
         <if test=" installTemplateCorrelationGmt != null">
             install_template_correlation_gmt = #{installTemplateCorrelationGmt},
         </if>
-
+        <if test=" code != null">
+            #{code },
+        </if>
+        <if test=" netType != null">
+            net_type = #{netType },
+        </if>
+        <if test=" isSecrecy != null">
+            is_secrecy = #{isSecrecy },
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree = #{importanceDegree },
+        </if>
+        <if test=" machineName != null">
+            machine_name = #{machineName },
+        </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
         asset_source = #{assetSource},
@@ -1678,21 +1697,21 @@
         operation_system = #{operationSystem },
         operation_system_name = #{operationSystemName },
         responsible_user_id = #{responsibleUserId },
-        baseline_template_id = #{baselineTemplateId},
-        install_template_id = #{installTemplateId},
         house_location = #{houseLocation },
+        location = #{location },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
         describle = #{describle },
         service_life = #{serviceLife},
         buy_date = #{buyDate },
         warranty = #{warranty },
-        gmt_modified = #{gmtModified },
-        memo = #{memo },
-        modify_user = #{modifyUser },
+        activiate_date = #{activiateDate },
         is_orphan=#{isOrphan},
-        net_status=#{netStatus},
-        custom_field=#{customField}
+        is_borrow = #{isBorrow },
+        custom_field=#{customField},
+        gmt_modified = #{gmtModified },
+        modify_user = #{modifyUser },
+        memo = #{memo }
         where id = #{id}
     </update>
 
