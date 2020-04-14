@@ -78,11 +78,6 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
         return responseConverter.convert(assetNettypeManageList, AssetNettypeManageResponse.class);
     }
 
-    @Override
-    public List<String> getIdsByName(String name) {
-        List<String> ids = assetNettypeManageDao.findIdsByName(name);
-        return ids;
-    }
 
     @Override
     public PageResult<AssetNettypeManageResponse> queryPageAssetNettypeManage(AssetNettypeManageQuery query) throws Exception {
