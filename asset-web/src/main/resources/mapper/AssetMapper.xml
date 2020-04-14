@@ -1662,14 +1662,33 @@
         <if test="businessId != null and businessId != ''">
             business_id = #{businessId},
         </if>
-
+        <if test=" installTemplateId != null">
+            install_template_id = #{installTemplateId },
+        </if>
+        <if test=" baselineTemplateId != null">
+            baseline_template_id = #{baselineTemplateId },
+        </if>
         <if test=" baselineTemplateCorrelationGmt != null">
             baseline_template_correlation_gmt = #{baselineTemplateCorrelationGmt},
         </if>
         <if test=" installTemplateCorrelationGmt != null">
             install_template_correlation_gmt = #{installTemplateCorrelationGmt},
         </if>
-
+        <if test=" code != null">
+            #{code },
+        </if>
+        <if test=" netType != null">
+            net_type = #{netType },
+        </if>
+        <if test=" isSecrecy != null">
+            is_secrecy = #{isSecrecy },
+        </if>
+        <if test=" importanceDegree != null">
+            importance_degree = #{importanceDegree },
+        </if>
+        <if test=" machineName != null">
+            machine_name = #{machineName },
+        </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
         asset_source = #{assetSource},
@@ -1678,21 +1697,21 @@
         operation_system = #{operationSystem },
         operation_system_name = #{operationSystemName },
         responsible_user_id = #{responsibleUserId },
-        baseline_template_id = #{baselineTemplateId},
-        install_template_id = #{installTemplateId},
         house_location = #{houseLocation },
+        location = #{location },
         firmware_version = #{firmwareVersion },
         importance_degree = #{importanceDegree },
         describle = #{describle },
         service_life = #{serviceLife},
         buy_date = #{buyDate },
         warranty = #{warranty },
-        gmt_modified = #{gmtModified },
-        memo = #{memo },
-        modify_user = #{modifyUser },
+        activiate_date = #{activiateDate },
         is_orphan=#{isOrphan},
-        net_status=#{netStatus},
-        custom_field=#{customField}
+        is_borrow = #{isBorrow },
+        custom_field=#{customField},
+        gmt_modified = #{gmtModified },
+        modify_user = #{modifyUser },
+        memo = #{memo }
         where id = #{id}
     </update>
 
@@ -1884,10 +1903,12 @@
         SELECT
         asset.*,
         `user`.`name` AS responsible_user_name,
-        `user`.`mobile` As contact_tel
+        `user`.`mobile` As contact_tel,
+        anm.net_type_name as netTypeName
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        left join asset_nettype_manage anm on asset.net_type = anm.id and anm.status = 1
         -- LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
         where asset.id=#{id}
     </select>
@@ -2324,7 +2345,8 @@ WHERE
         GROUP_CONCAT( DISTINCT air.ip ) AS ip,
         GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
-        bt.tp_name as baseline_template_name
+        bt.tp_name as baseline_template_name,
+        anm.net_type_name as netTypeName
         FROM
         (
             select * from asset
@@ -2339,6 +2361,7 @@ WHERE
         left join baseline_template bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        left join asset_nettype_manage anm on (asset.net_type = anm.id and anm.status = 1)
         <if test="departmentList != null and departmentList.size() > 0">
             left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
         </if>
@@ -2433,6 +2456,9 @@ WHERE
             asset_business_relation t1
             left join asset_business t2 on t1.asset_business_id = t2.id and t2.status = 1
         where t2.id is not null
+    </select>
+    <select id="queryNetType" resultType="com.antiy.asset.vo.response.SelectResponse">
+        select id,net_type_name as value from asset_nettype_manage  where status = 1
     </select>
     <!--资产主表的条件-->
     <sql id="mq_asset">

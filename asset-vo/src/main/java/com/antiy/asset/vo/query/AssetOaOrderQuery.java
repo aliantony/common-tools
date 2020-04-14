@@ -16,6 +16,11 @@ public class AssetOaOrderQuery extends ObjectQuery {
     /**
      * 流水号
      */
+    @ApiModelProperty("主键")
+    private Integer id;
+    /**
+     * 流水号
+     */
     @ApiModelProperty("流水号")
     private String number;
     /**
@@ -44,6 +49,13 @@ public class AssetOaOrderQuery extends ObjectQuery {
     @ApiModelProperty("时间")
     private Long gmtCreate;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNumber() {
         return number;
@@ -99,6 +111,7 @@ public class AssetOaOrderQuery extends ObjectQuery {
     @Override
     public String toString() {
         return "AssetOaOrderQuery{" +
+                ", id=" + id +
                 ", number=" + number +
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +

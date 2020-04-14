@@ -434,4 +434,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<SelectResponse> queryTemplate();
 
     List<SelectResponse> queryBusiness();
+
+    List<SelectResponse> queryNetType();
 }

@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -370,13 +369,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));
         }
 
-        // 扫描
-        ActionResponse scan = baseLineClient.scan(id.toString());
-        // 如果漏洞为空,直接返回错误信息
-        if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-            // 调用失败，逻辑删登记的资产
-            assetDao.deleteById(id);
-            return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+        // 是否需要进行漏扫
+        if (request.getNeedScan()) {
+            ActionResponse scan = baseLineClient.scan(id.toString());
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                // 调用失败，逻辑删登记的资产
+                assetDao.deleteById(id);
+                return scan == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : scan;
+            }
         }
         return ActionResponse.success(msg);
     }
@@ -1904,8 +1905,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setImportanceDegree("1");
         otherDeviceEntity.setMachineName("dsa02321");
-        otherDeviceEntity.setIsSecrecy("1");
-        otherDeviceEntity.setNetType("0");
+        otherDeviceEntity.setIsSecrecy("是");
+        otherDeviceEntity.setNetType("红网");
         otherDeviceEntity.setIp("192.158.58.58");
         otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
@@ -3681,6 +3682,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<SelectResponse> queryBusiness() {
         return assetDao.queryBusiness();
+    }
+
+    @Override
+    public List<SelectResponse> queryNetType() {
+        return assetDao.queryNetType();
     }
 }
 

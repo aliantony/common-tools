@@ -65,13 +65,13 @@ public class OtherDeviceEntity {
     /**
      * 是否涉密
      */
-    @ExcelField(value = "isSecrecy", align = 1, title = "是否涉密(必填)", dictType = "major_type", required = true)
+    @ExcelField(value = "isSecrecy", align = 1, title = "是否涉密(必填)", required = true, defaultDataMethod = "yesNo", defaultDataBeanName = "assetTemplateServiceImpl")
     private String isSecrecy;
 
     /**
      * 网络类型
      */
-    @ExcelField(value = "netType", align = 1, title = "网络类型(必填)", dictType = "major_type", required = true)
+    @ExcelField(value = "netType", align = 1, title = "网络类型(必填)", required = true, defaultDataMethod = "getNetType", defaultDataBeanName = "assetTemplateServiceImpl")
     private String netType;
 
     /**

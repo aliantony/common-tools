@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * @author shenliang
  * @since 2020-04-07
  */
-@Api(value = "AssetOaOrder", description = "OA订单表")
+@Api(value = "AssetOaOrder", description = "OA订单管理")
 @RestController
 @RequestMapping("/api/v1/asset/assetoaorder")
 public class AssetOaOrderController {
@@ -81,9 +81,9 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "订单主键id") @RequestParam Integer id)throws Exception{
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderService.getDetailById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetOaOrder") @RequestBody AssetOaOrderQuery assetOaOrderQuery)throws Exception{
+        ParamterExceptionUtils.isNull(assetOaOrderQuery.getId(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderService.getDetailById(assetOaOrderQuery.getId()));
     }
 
     /**
