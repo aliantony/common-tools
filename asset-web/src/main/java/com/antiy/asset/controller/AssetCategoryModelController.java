@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.vo.query.LendSourceQuery;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -92,8 +93,8 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelNodeResponse.class, responseContainer = "list"), })
     @RequestMapping(value = "/query/withoutnode", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
-    public ActionResponse queryCategoryNodeWhihoutNode(@RequestParam("sourceOfLend") boolean sourceOfLend) throws Exception {
-        return ActionResponse.success(iAssetCategoryModelService.queryCategoryWithOutRootNode(sourceOfLend));
+    public ActionResponse queryCategoryNodeWhihoutNode(@RequestBody LendSourceQuery sourceOfLend) throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryWithOutRootNode(sourceOfLend.isSourceOfLend()));
     }
 
 }
