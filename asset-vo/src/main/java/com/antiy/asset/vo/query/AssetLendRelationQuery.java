@@ -25,7 +25,7 @@ public class AssetLendRelationQuery extends ObjectQuery {
     private String multiQuery;
     @ApiModelProperty("类型")
     private List<String> categoryModels;
-    @ApiModelProperty("状态  1 全部  2  已经借用  3 保管中")
+    @ApiModelProperty("状态  1 全部  2  已借用  3 保管中")
     private int lendStatus;
     @ApiModelProperty("当前使用者id")
     private Integer currentUseId;
