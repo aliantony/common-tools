@@ -79,9 +79,9 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
     }
 
     @Override
-    public List<String> getIdsByName(String name) {
-        List<String> ids = assetNettypeManageDao.findIdsByName(name);
-        return ids;
+    public Integer getIdsByName(String name) {
+        Integer id = assetNettypeManageDao.findIdsByName(name);
+        return id;
     }
 
     @Override

@@ -75,5 +75,5 @@ public interface IAssetNettypeManageService extends IBaseService<AssetNettypeMan
          * @param name
          * @return
          */
-        List<String> getIdsByName(String name);
+        Integer getIdsByName(String name);
 }
