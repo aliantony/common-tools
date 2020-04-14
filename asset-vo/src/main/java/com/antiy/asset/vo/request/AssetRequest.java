@@ -160,6 +160,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 网络类型:1红网，2篮网
      */
     @ApiModelProperty("网络类型:1红网，2篮网")
+    @Encode
     private String                  netType;
     /**
      * 是否借用：1-借用，2-未借用

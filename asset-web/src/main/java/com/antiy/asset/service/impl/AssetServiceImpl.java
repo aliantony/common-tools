@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1904,8 +1903,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setImportanceDegree("1");
         otherDeviceEntity.setMachineName("dsa02321");
-        otherDeviceEntity.setIsSecrecy("1");
-        otherDeviceEntity.setNetType("0");
+        otherDeviceEntity.setIsSecrecy("是");
+        otherDeviceEntity.setNetType("红网");
         otherDeviceEntity.setIp("192.158.58.58");
         otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
@@ -3681,6 +3680,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public List<SelectResponse> queryBusiness() {
         return assetDao.queryBusiness();
+    }
+
+    @Override
+    public List<SelectResponse> queryNetType() {
+        return assetDao.queryNetType();
     }
 }
 
