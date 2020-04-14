@@ -292,6 +292,18 @@ public class Asset extends BaseEntity {
     private String  assetBusiness;
     @ApiModelProperty("网络类型")
     private String  netType;
+    /**
+     * 网络类型名称
+     */
+    private String  netTypeName;
+
+    public String getNetTypeName() {
+        return netTypeName;
+    }
+
+    public void setNetTypeName(String netTypeName) {
+        this.netTypeName = netTypeName;
+    }
 
     public String getNetType() {
         return netType;
