@@ -101,6 +101,20 @@ public class AssetUserResponse extends BaseResponse {
     @ApiModelProperty("状态,1未删除,0已删除")
     private Integer status;
 
+    /**
+     * key管理中key
+     */
+    @ApiModelProperty("key管理中key")
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getAddressName() {
         return addressName;
     }

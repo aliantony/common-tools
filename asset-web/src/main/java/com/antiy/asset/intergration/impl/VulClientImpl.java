@@ -1,6 +1,5 @@
 package com.antiy.asset.intergration.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.intergration.VulClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.request.AssetIdRequest;
@@ -22,10 +21,11 @@ public class VulClientImpl implements VulClient {
     @Value("${getPatchVulCountUrl}")
     private String     getPatchVulCountUrl;
 
-    public AssetVulPatchResponse getVulPatchCount(AssetIdRequest assetIdRequest) {
+    @Override
+    public AssetVulPatchResponse getVulPatchCount(AssetIdRequest assetIdRequest, String token) {
         ActionResponse<AssetVulPatchResponse> actionResponse = (ActionResponse) baseClient.post(assetIdRequest,
             new ParameterizedTypeReference<ActionResponse<AssetVulPatchResponse>>() {
-            }, getPatchVulCountUrl);
+            }, getPatchVulCountUrl, token);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             throw new BusinessException("调用远程接口失败");

@@ -410,7 +410,7 @@
             asset_user
             where status = 1
     </select>
-    <select id="queryUserInfo" resultType="com.antiy.asset.vo.response.UserInfoResponse">
+    <select id="queryUserInfo" parameterType="com.antiy.asset.vo.request.UserInfoRequest" resultType="com.antiy.asset.vo.response.UserInfoResponse">
         SELECT
             au.id AS userId,
             au.NAME AS userName,

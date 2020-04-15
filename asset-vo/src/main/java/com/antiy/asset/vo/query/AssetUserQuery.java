@@ -4,11 +4,7 @@ import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.Size;
 
 /**
  * <p> AssetUser 查询条件 </p>
@@ -66,6 +62,20 @@ public class AssetUserQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("住址")
     private String  address;
+
+    /**
+     * key
+     */
+    @ApiModelProperty("key管理关联key")
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getName() {
         return name;
