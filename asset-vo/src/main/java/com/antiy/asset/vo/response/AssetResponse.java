@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -18,8 +17,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetResponse extends BaseResponse {
 
-    @ApiModelProperty("key键")
-    private String keyNumber;
     @Encode
     @ApiModelProperty("操作记录表id")
     String                                 assetOperationRecordId;
@@ -1055,13 +1052,6 @@ public class AssetResponse extends BaseResponse {
         this.decryptId = decryptId;
     }
 
-    public String getKeyNumber() {
-        return keyNumber;
-    }
-
-    public void setKeyNumber(String keyNumber) {
-        this.keyNumber = keyNumber;
-    }
 
     @Override
     public String toString() {

@@ -107,9 +107,9 @@ public class AssetStatusJumpController {
     }
 
     /**
-     * 整改详情
+     * 漏洞整改详情
      */
-    @ApiOperation(value = "整改详情", notes = "传入资产id")
+    @ApiOperation(value = "漏洞整改详情", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/correctiong/info", method = RequestMethod.POST)
     public ActionResponse assetCorrectingInfo(@ApiParam(value = "assetCorrectingRequest") @RequestBody AssetCorrectRequest assetCorrectRequest) throws Exception {
@@ -117,5 +117,14 @@ public class AssetStatusJumpController {
         return ActionResponse.success(result);
     }
 
-
+    /**
+     * 配置整改详情
+     */
+    @ApiOperation(value = "配置整改详情", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/correctiong/baseLine/info", method = RequestMethod.POST)
+    public ActionResponse assetCorrectingBaseLineInfo(@ApiParam(value = "assetCorrectingRequest") @RequestBody AssetCorrectRequest assetCorrectRequest) throws Exception {
+        AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingOfbaseLine(assetCorrectRequest);
+        return ActionResponse.success(result);
+    }
 }
