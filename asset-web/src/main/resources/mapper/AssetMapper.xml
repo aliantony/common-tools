@@ -39,7 +39,6 @@
         <result column="operation_system_name" property="operationSystemName"/>
         <result column="responsible_user_id" property="responsibleUserId"/>
         <result column="location" property="location"/>
-        <result column="latitude" property="latitude"/>
         <result column="longitude" property="longitude"/>
         <result column="house_location" property="houseLocation"/>
         <result column="firmware_version" property="firmwareVersion"/>
@@ -75,11 +74,12 @@
         <result column="is_secrecy" property="isSecrecy"/>
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
+        <result column="key" property="key"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location, latitude, longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location,  longitude, house_location, firmware_version, uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
     </sql>
 
     <sql id="Table_Name">
@@ -609,9 +609,7 @@
         <if test=" location != null">
             location = #{location },
         </if>
-        <if test=" latitude != null">
-            latitude = #{latitude },
-        </if>
+
         <if test=" longitude != null">
             longitude = #{longitude },
         </if>
@@ -744,9 +742,7 @@
         <if test=" location != null">
             and location = #{location }
         </if>
-        <if test=" latitude != null">
-            and latitude = #{latitude }
-        </if>
+
         <if test=" longitude != null">
             and longitude = #{longitude }
         </if>
@@ -1288,7 +1284,7 @@
         asset.operation_system,
         asset.operation_system_name as operation_system_name,
         asset.house_location,
-        asset.latitude,
+
         asset.longitude,
         asset.firmware_version,
         asset.uuid,
@@ -2649,4 +2645,35 @@ WHERE
             </foreach>
         </if>
     </sql>
+
+    <update id="updateStatusByNumber" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where number = #{number}
+    </update>
+
+    <select id="queryOrderAssetCount" resultType="java.lang.Integer">
+        select count(1) count
+        from asset_oa_order tb1
+        inner join asset_oa_order_handle tb2 on tb1.number = tb2.order_number
+        inner join asset tb3 on tb3.id = tb2.asset_id
+        where
+        tb1.id = #{id}
+    </select>
+
+    <select id="queryOrderAssetList" resultMap="BaseResultMap">
+        select tb3.*
+        from asset_oa_order tb1
+        inner join asset_oa_order_handle tb2 on tb1.number = tb2.order_number
+        inner join asset tb3 on tb3.id = tb2.asset_id
+        where
+        tb1.id = #{id}
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
 </mapper>

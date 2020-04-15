@@ -238,7 +238,11 @@
     <!-- 根据资产编号查找ip和mac -->
     <select id="getIpAndMacByAssetNumber" resultType="hashmap" parameterType="java.lang.String">
         select
-        ip,mac
+        ip,
+        mac,
+        asset.id as assetId,
+        asset.asset_status as assetStatus,
+		(case asset.is_innet when 1 then '已入网' when 2 then '未入网' else '' end) as isInnet
         from asset asset
         inner join asset_ip_relation aip on asset.id=aip.asset_id
         inner join asset_mac_relation mip on asset.id=mip.asset_id

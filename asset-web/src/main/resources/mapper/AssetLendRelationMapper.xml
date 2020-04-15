@@ -464,11 +464,18 @@
                 #{item}
             </foreach>
         </if>
-        <if test="currentUseId !=null">
-            and
-            (
-            alr.use_id=#{currentUseId} or ( a.responsible_user_id=#{currentUseId} and alr.use_id is null )
-            )
+        <if test="currentUseIds !=null and currentUseIds.size()>0">
+            and (
+                alr.use_id in
+                <foreach collection="currentUseIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                or
+                a.responsible_user_id in
+                <foreach collection="currentUseIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                )
         </if>
         <if test="beginTime !=null">
             and alr.lend_time &gt;= #{beginTime}

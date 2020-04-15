@@ -18,6 +18,12 @@ import java.util.List;
 
 public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
 
+    @ApiModelProperty("是否拒绝，1是 0否")
+    private Integer isRefuse;
+
+    @ApiModelProperty("拒绝原因")
+    private String refuseReason;
+
     @ApiModelProperty("订单流水号")
     private String orderNumber;
     /**
@@ -27,21 +33,36 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     private List<Integer> assetIds;
 
 
-    public String getorderNumber() {
-        return orderNumber;
-    }
-
-    public void setorderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-
     public List<Integer> getAssetIds() {
         return assetIds;
     }
 
     public void setAssetIds(List<Integer> assetIds) {
         this.assetIds = assetIds;
+    }
+
+    public Integer getIsRefuse() {
+        return isRefuse;
+    }
+
+    public void setIsRefuse(Integer isRefuse) {
+        this.isRefuse = isRefuse;
+    }
+
+    public String getRefuseReason() {
+        return refuseReason;
+    }
+
+    public void setRefuseReason(String refuseReason) {
+        this.refuseReason = refuseReason;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     @Override

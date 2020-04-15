@@ -467,6 +467,7 @@
             asset_category_model parent
             LEFT JOIN asset_category_model child ON parent.id = child.parent_id
             AND child.STATUS = 1
+            or  parent.id=child.id
         WHERE
             parent.STATUS = 1
             AND parent.parent_id = 1

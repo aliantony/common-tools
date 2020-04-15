@@ -7,14 +7,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.query.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
-import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
-import com.antiy.asset.vo.query.AssetMultipleQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
@@ -417,4 +414,13 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     List<SelectResponse> queryNetType();
+
+    /**
+     * 订单关联资产列表综合查询
+     *
+     * @param assetId
+     * @return
+     */
+    PageResult<AssetResponse> queryOrderAssetPage(AssetOaOrderQuery assetOaOrderQuery);
+
 }
