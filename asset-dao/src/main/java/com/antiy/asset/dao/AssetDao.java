@@ -438,4 +438,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<SelectResponse> queryNetType();
 
     AssetResponse queryInfoByAssetId(Integer id);
+
+    Integer updateStatusByNumber(Asset asset);
 }

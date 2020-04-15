@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.base.BaseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,9 +33,20 @@ public class AssetOaOrderResponse extends BaseEntity {
      */
     private Long gmtCreate;
 
+    /**
+     * 申请信息
+     */
     private AssetOaOrderApplyResponse assetOaOrderApplyResponse;
 
+    /**
+     * 审批信息
+     */
     private List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses;
+
+    /**
+     * 资产信息
+     */
+    private Map<String, Object> assetInfo;
 
     public String getNumber() {
         return number;
@@ -82,5 +94,13 @@ public class AssetOaOrderResponse extends BaseEntity {
 
     public void setAssetOaOrderApproveResponses(List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses) {
         this.assetOaOrderApproveResponses = assetOaOrderApproveResponses;
+    }
+
+    public Map<String, Object> getAssetInfo() {
+        return assetInfo;
+    }
+
+    public void setAssetInfo(Map<String, Object> assetInfo) {
+        this.assetInfo = assetInfo;
     }
 }

@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.request.AssetOaOrderRequest;
@@ -32,12 +33,13 @@ public class AssetOaOrderController {
      * @param assetOaOrderRequest
      * @return actionResponse
      */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+    @ApiOperation(value = "订单保存接口", notes = "传入实体对象信息")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetOaOrder") @RequestBody AssetOaOrderRequest assetOaOrderRequest)throws Exception{
+        logger.info("订单保存接口，assetOaOrderRequest:{}", JSON.toJSONString(assetOaOrderRequest));
         iAssetOaOrderService.saveAssetOaOrder(assetOaOrderRequest);
         return ActionResponse.success();
     }

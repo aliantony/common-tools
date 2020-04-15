@@ -26,7 +26,7 @@ private static final long serialVersionUID = 1L;
     /**
     *  拒绝原因 
     */
-    private String refuseRemark;
+    private String refuseReason;
 
 
 
@@ -48,12 +48,12 @@ private static final long serialVersionUID = 1L;
     }
 
 
-    public String getRefuseRemark() {
-        return refuseRemark;
+    public String getRefuseReason() {
+        return refuseReason;
     }
 
-    public void setRefuseRemark(String refuseRemark) {
-    this.refuseRemark = refuseRemark;
+    public void setRefuseReason(String refuseReason) {
+    this.refuseReason = refuseReason;
     }
 
 
@@ -62,7 +62,7 @@ private static final long serialVersionUID = 1L;
             return "AssetOaOrderLend{" +
                         ", orderNumber=" + orderNumber +
                         ", lendStatus=" + lendStatus +
-                        ", refuseRemark=" + refuseRemark +
+                        ", refuseReason=" + refuseReason +
             "}";
     }
 }

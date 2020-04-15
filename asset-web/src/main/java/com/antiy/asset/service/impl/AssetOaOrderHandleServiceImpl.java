@@ -1,13 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOaOrderDao;
 import com.antiy.asset.dao.AssetOaOrderHandleDao;
 import com.antiy.asset.dao.AssetOaOrderLendDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderHandle;
 import com.antiy.asset.entity.AssetOaOrderLend;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
+import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetOaOrderHandleQuery;
 import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
 import com.antiy.asset.vo.response.AssetOaOrderHandleResponse;
@@ -45,6 +49,8 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetOaOrderDao assetOaOrderDao;
     @Resource
     private AssetOaOrderLendDao assetOaOrderLendDao;
+    @Resource
+    private AssetDao assetDao;
 
     @Resource
     private BaseConverter<AssetOaOrderHandleRequest, AssetOaOrderHandle> requestConverter;
@@ -53,28 +59,50 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
 
     @Override
     public Integer saveAssetOaOrderHandle(AssetOaOrderHandleRequest request) throws Exception {
-       String orderNumber = request.getorderNumber();
+        if (CollectionUtils.isEmpty(request.getAssetIds())) {
+            throw new BusinessException("请关联资产");
+        }
+        String orderNumber = request.getOrderNumber();
         AssetOaOrder assetOaOrder = assetOaOrderDao.getByNumber(orderNumber);
-        if(AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())){
-            //如果是出借，需要保存出借记录
+        if (AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())) {
+            //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
             AssetOaOrderLend assetOaOrderLend = new AssetOaOrderLend();
-            assetOaOrderLend.setLendStatus(1);
             assetOaOrderLend.setOrderNumber(orderNumber);
-            assetOaOrderLendDao.insert(assetOaOrderLend);
+            assetOaOrderLend.setLendStatus(request.getIsRefuse());
+            if (request.getIsRefuse().equals(1)) {
+                assetOaOrderLend.setRefuseReason(request.getRefuseReason());
+                assetOaOrderLendDao.insert(assetOaOrderLend);
+                return 0;
+            } else {
+                assetOaOrderLendDao.insert(assetOaOrderLend);
+            }
+        }
+        List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
+        for (Integer assetId : request.getAssetIds()) {
+            AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
+            assetOaOrderHandle.setAssetId(assetId);
+            assetOaOrderHandle.setOrderNumber(orderNumber);
+            assetOaOrderHandles.add(assetOaOrderHandle);
+        }
+        assetOaOrderHandleDao.insertBatch(assetOaOrderHandles);
+        //对资产做相应操作
+        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
+            //如果是入网，不更改资产状态
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
+            //如果是退回,资产状态改为待退回
+            Asset asset = new Asset();
+            asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+            assetDao.updateStatusByNumber(asset);
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
+            //如果是报废
+
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
+            //如果是出借
 
         }
-        if(CollectionUtils.isEmpty(request.getAssetIds())){
-            throw new BusinessException("请选择资产");
-        }else{
-            List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
-            for(Integer assetId : request.getAssetIds()){
-                AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
-                assetOaOrderHandle.setAssetId(assetId);
-                assetOaOrderHandle.setOrderNumber(orderNumber);
-                assetOaOrderHandles.add(assetOaOrderHandle);
-            }
-            assetOaOrderHandleDao.insertBatch(assetOaOrderHandles);
-        }
+        //更改订单状态为已处理
+        assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
+        assetOaOrderDao.update(assetOaOrder);
         return request.getAssetIds().size();
     }
 

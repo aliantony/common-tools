@@ -6,19 +6,19 @@ package com.antiy.asset.vo.enums;
  */
 public enum AssetOaOrderTypeEnum {
 
-    INNET("1","入网"),
-    BACK("2","退回"),
-    SCRAP("3","报废"),
-    LEND("4","出借");
+    INNET(1,"入网"),
+    BACK(2,"退回"),
+    SCRAP(3,"报废"),
+    LEND(4,"出借");
 
-    private String code;
+    private Integer code;
     private String msg;
 
-    AssetOaOrderTypeEnum(String code, String msg){
+    AssetOaOrderTypeEnum(Integer code, String msg){
         this.code=code;
         this.msg=msg;
     }
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 

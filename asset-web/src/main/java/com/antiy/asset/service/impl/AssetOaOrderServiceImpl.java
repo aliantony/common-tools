@@ -17,8 +17,10 @@ import com.antiy.asset.vo.response.AssetOaOrderResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -63,6 +66,9 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     private BaseConverter<AssetOaOrderApproveRequest, AssetOaOrderApprove> approveRequestConverter;
     @Resource
     private BaseConverter<AssetOaOrderApprove, AssetOaOrderApproveResponse> approveResponseConverter;
+
+    @Resource
+    private AesEncoder aesEncoder;
 
     @Override
     public Integer saveAssetOaOrder(AssetOaOrderRequest request) throws Exception {
@@ -118,8 +124,9 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         String applyTimeStr = DateUtils.getDataString(applyTime, DateUtils.WHOLE_FORMAT).replaceAll("-","/");
         assetOaOrderApplyResponse.setApplyTimeStr(applyTimeStr);
         //如果是退回和报废，还需要查询资产ip，mac
+        HashMap<String, Object> result = null;
         if(!StringUtils.isEmpty(assetOaOrderApply.getAssetNumber())){
-            HashMap<String, Object> result = assetOaOrderApplyDao.getIpAndMacByAssetNumber(assetOaOrderApply.getAssetNumber());
+            result = assetOaOrderApplyDao.getIpAndMacByAssetNumber(assetOaOrderApply.getAssetNumber());
             if(result != null){
                 assetOaOrderApplyResponse.setAssetIp(result.get("ip").toString());
                 assetOaOrderApplyResponse.setAssetMac(result.get("mac").toString());
@@ -133,6 +140,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             String endTime = DateUtils.getDataString(endDate, DateUtils.NO_TIME_FORMAT).replaceAll("-","/");
             assetOaOrderApplyResponse.setLendTime(startTime + "-" + endTime);
         }
+        assetOaOrderResponse.setAssetOaOrderApplyResponse(assetOaOrderApplyResponse);
         //查询审批信息
         List<AssetOaOrderApprove> assetOaOrderApproves = assetOaOrderApproveDao.getByOrderNumber(assetOaOrder.getNumber());
         List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses = approveResponseConverter.convert(assetOaOrderApproves, AssetOaOrderApproveResponse.class);
@@ -143,8 +151,14 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
                 assetOaOrderApproveResponse.setApproveTimeStr(approveTimeStr);
             }
         }
-        assetOaOrderResponse.setAssetOaOrderApplyResponse(assetOaOrderApplyResponse);
         assetOaOrderResponse.setAssetOaOrderApproveResponses(assetOaOrderApproveResponses);
+        //资产详情
+        if(result != null){
+            Map<String, Object> assetInfo = new HashMap<String, Object>();
+            assetInfo.put("assetId", aesEncoder.encode(result.get("assetId").toString(), LoginUserUtil.getLoginUser().getUsername()));
+            assetInfo.put("isInnet", result.get("isInnet"));
+            assetOaOrderResponse.setAssetInfo(assetInfo);
+        }
         return assetOaOrderResponse;
     }
 }

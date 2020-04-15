@@ -2649,4 +2649,14 @@ WHERE
             </foreach>
         </if>
     </sql>
+
+    <update id="updateStatusByNumber" parameterType="com.antiy.asset.entity.Asset">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where number = #{number}
+    </update>
+
 </mapper>
