@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetOaOrderQuery extends ObjectQuery {
     /**
-     * 流水号
+     * 主键
      */
     @ApiModelProperty("主键")
     private Integer id;

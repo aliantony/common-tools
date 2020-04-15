@@ -3774,6 +3774,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<SelectResponse> queryNetType() {
         return assetDao.queryNetType();
     }
+
+    @Override
+    public PageResult<AssetResponse> queryOrderAssetPage(AssetOaOrderQuery assetOaOrderQuery) {
+        List<Asset> assets = assetDao.queryOrderAssetList(assetOaOrderQuery);
+        List<AssetResponse> assetResponses = responseConverter.convert(assets, AssetResponse.class);
+        return new PageResult<>(assetOaOrderQuery.getPageSize(), assetDao.queryOrderAssetCount(assetOaOrderQuery), assetOaOrderQuery.getCurrentPage(), assetResponses );
+    }
 }
 
 @Component

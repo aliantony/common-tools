@@ -2654,4 +2654,25 @@ WHERE
         where number = #{number}
     </update>
 
+    <select id="queryOrderAssetCount" resultType="java.lang.Integer">
+        select count(1) count
+        from asset_oa_order tb1
+        inner join asset_oa_order_handle tb2 on tb1.number = tb2.order_number
+        inner join asset tb3 on tb3.id = tb2.asset_id
+        where
+        tb1.id = #{id}
+    </select>
+
+    <select id="queryOrderAssetList" resultMap="BaseResultMap">
+        select tb3.*
+        from asset_oa_order tb1
+        inner join asset_oa_order_handle tb2 on tb1.number = tb2.order_number
+        inner join asset tb3 on tb3.id = tb2.asset_id
+        where
+        tb1.id = #{id}
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+
 </mapper>
