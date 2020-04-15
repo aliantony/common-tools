@@ -21,7 +21,7 @@ private static final long serialVersionUID = 1L;
     /**
     *  资产id
     */
-    private Integer assetId;
+    private String assetId;
     /**
     *  用户id
     */
@@ -99,11 +99,11 @@ private static final long serialVersionUID = 1L;
     }
 
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

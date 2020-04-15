@@ -17,6 +17,7 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -24,6 +25,7 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -64,6 +66,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     private BaseConverter<AssetLendInfoRequest, AssetLendRelation> lendRelationBaseConverter;
     @Resource
     private LoginUserUtil loginUserUtil;
+    @Resource
+    private AesEncoder aesEncoder;
 
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
@@ -163,18 +167,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public Integer saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
+        request.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
         assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
-
-        //保存资产、订单关联关系
-        AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
-        assetOaOrderHandle.setAssetId(request.getAssetId());
-        assetOaOrderHandle.setOrderNumber(String.valueOf(request.getOrderNumber()));
-        assetLendRelationDao.insertOrderHandle(assetOaOrderHandle);
 
         return assetLendRelationDao.insert(assetLendRelation);
     }
@@ -219,6 +218,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         ParamterExceptionUtils.isNull(request.getAssetIdList(), "资产列表不能为空");
         ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
         Integer creatUser = LoginUserUtil.getLoginUser().getId();
+        String userName = LoginUserUtil.getLoginUser().getUsername();
         Long gmtCreat = System.currentTimeMillis();
         for (String item : request.getAssetIdList()) {
             AssetLendRelation assetLendRelation = new AssetLendRelation();
@@ -229,7 +229,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
             assetLendRelation.setUseId(request.getUseId());
             assetLendRelation.setOrderNumber(request.getOrderNumber());
-            assetLendRelation.setAssetId(Integer.valueOf(item));
+            assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
             assetLendRelationDao.insert(assetLendRelation);
         }
         return null;
@@ -238,7 +238,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public AssetResponse queryAssetInfo(Integer id) {
 
-        AssetResponse assetResponse=assetDao.queryInfoByAssetId(id);
+        AssetResponse assetResponse = assetDao.queryInfoByAssetId(id);
         return assetResponse;
     }
 

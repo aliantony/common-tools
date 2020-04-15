@@ -11,7 +11,7 @@ public class AssetOaOrderHandle extends BaseEntity {
   /**
    * 资产id
    */
-  private Integer assetId;
+  private String assetId;
 
 
   public String getOrderNumber() {
@@ -22,11 +22,11 @@ public class AssetOaOrderHandle extends BaseEntity {
     this.orderNumber = orderNumber;
   }
 
-  public Integer getAssetId() {
+  public String getAssetId() {
     return assetId;
   }
 
-  public void setAssetId(Integer assetId) {
+  public void setAssetId(String assetId) {
     this.assetId = assetId;
   }
 

@@ -21,6 +21,7 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.kafka.common.protocol.types.Field;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +79,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             }
         }
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
-        for (Integer assetId : request.getAssetIds()) {
+        for (String assetId : request.getAssetIds()) {
             AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
             assetOaOrderHandle.setAssetId(assetId);
             assetOaOrderHandle.setOrderNumber(orderNumber);

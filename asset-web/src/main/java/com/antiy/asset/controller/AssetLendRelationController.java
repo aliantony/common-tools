@@ -178,12 +178,12 @@ public class AssetLendRelationController {
     }
 
     /**
-     * 保存出借信息(pi)
+     * 保存出借信息(批量)
      *
      * @param request
      * @return actionResponse
      */
-    @ApiOperation(value = "保存出借信息", notes = "传入实体对象信息")
+    @ApiOperation(value = "保存出借信息(批量)", notes = "传入实体对象信息")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })

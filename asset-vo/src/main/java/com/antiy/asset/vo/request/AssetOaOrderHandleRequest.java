@@ -30,14 +30,23 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
      * 资产id
      */
     @ApiModelProperty("资产id")
-    private List<Integer> assetIds;
+    private List<String> assetIds;
 
 
-    public List<Integer> getAssetIds() {
+    public String getorderNumber() {
+        return orderNumber;
+    }
+
+    public void setorderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+
+    public List<String> getAssetIds() {
         return assetIds;
     }
 
-    public void setAssetIds(List<Integer> assetIds) {
+    public void setAssetIds(List<String> assetIds) {
         this.assetIds = assetIds;
     }
 

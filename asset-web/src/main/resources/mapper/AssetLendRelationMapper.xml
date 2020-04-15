@@ -219,12 +219,6 @@
             <include refid="IF_Value_Column_List"></include>
         </trim>
     </insert>
-    <insert id="insertOrderHandle">
-        INSERT INTO
-            asset_oa_order_handle ( order_number, asset_id )
-        VALUES
-            ( #{orderNumber}, #{assetId} )
-    </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetLendRelation" >
         update
