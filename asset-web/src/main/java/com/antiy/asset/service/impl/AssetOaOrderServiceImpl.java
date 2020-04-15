@@ -7,6 +7,9 @@ import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderApply;
 import com.antiy.asset.entity.AssetOaOrderApprove;
 import com.antiy.asset.service.IAssetOaOrderService;
+import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
+import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.request.AssetOaOrderApplyRequest;
 import com.antiy.asset.vo.request.AssetOaOrderApproveRequest;
@@ -99,9 +102,12 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Override
     public List<AssetOaOrderResponse> findListAssetOaOrder(AssetOaOrderQuery query) throws Exception {
         List<AssetOaOrder> assetOaOrderList = assetOaOrderDao.findQuery(query);
-        //TODO
-        List<AssetOaOrderResponse> assetOaOrderResponse = responseConverter.convert(assetOaOrderList, AssetOaOrderResponse.class);
-        return assetOaOrderResponse;
+        List<AssetOaOrderResponse> assetOaOrderResponses = responseConverter.convert(assetOaOrderList, AssetOaOrderResponse.class);
+        for(AssetOaOrderResponse assetOaOrderResponse : assetOaOrderResponses){
+            assetOaOrderResponse.setOrderStatusName(AssetOaOrderStatusEnum.getValueByCode(assetOaOrderResponse.getOrderStatus()).getMsg());
+            assetOaOrderResponse.setOrderTypeName(AssetOaOrderTypeEnum.getValueByCode(assetOaOrderResponse.getOrderType()).getMsg());
+        }
+        return assetOaOrderResponses;
     }
 
     @Override
@@ -117,6 +123,8 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             return null;
         }
         AssetOaOrderResponse assetOaOrderResponse = responseConverter.convert(assetOaOrder, AssetOaOrderResponse.class);
+        assetOaOrderResponse.setOrderStatusName(AssetOaOrderStatusEnum.getValueByCode(assetOaOrderResponse.getOrderStatus()).getMsg());
+        assetOaOrderResponse.setOrderTypeName(AssetOaOrderTypeEnum.getValueByCode(assetOaOrderResponse.getOrderType()).getMsg());
         //查询申请信息
         AssetOaOrderApply assetOaOrderApply = assetOaOrderApplyDao.getByOrderNumber(assetOaOrder.getNumber());
         AssetOaOrderApplyResponse assetOaOrderApplyResponse = applyResponseConverter.convert(assetOaOrderApply, AssetOaOrderApplyResponse.class);
@@ -157,6 +165,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             Map<String, Object> assetInfo = new HashMap<String, Object>();
             assetInfo.put("assetId", aesEncoder.encode(result.get("assetId").toString(), LoginUserUtil.getLoginUser().getUsername()));
             assetInfo.put("isInnet", result.get("isInnet"));
+            assetInfo.put("assetStatus", AssetStatusEnum.getAssetByCode(Integer.parseInt(result.get("assetStatus").toString())).getMsg());
             assetOaOrderResponse.setAssetInfo(assetInfo);
         }
         return assetOaOrderResponse;

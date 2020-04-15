@@ -29,6 +29,14 @@ public class AssetOaOrderResponse extends BaseEntity {
      */
     private Integer orderStatus;
     /**
+     * 1入网审批，2退回审批，3报废审批，4出借审批
+     */
+    private String orderTypeName;
+    /**
+     * 1待处理，2已处理
+     */
+    private String orderStatusName;
+    /**
      * 时间
      */
     private Long gmtCreate;
@@ -102,5 +110,21 @@ public class AssetOaOrderResponse extends BaseEntity {
 
     public void setAssetInfo(Map<String, Object> assetInfo) {
         this.assetInfo = assetInfo;
+    }
+
+    public String getOrderTypeName() {
+        return orderTypeName;
+    }
+
+    public void setOrderTypeName(String orderTypeName) {
+        this.orderTypeName = orderTypeName;
+    }
+
+    public String getOrderStatusName() {
+        return orderStatusName;
+    }
+
+    public void setOrderStatusName(String orderStatusName) {
+        this.orderStatusName = orderStatusName;
     }
 }
