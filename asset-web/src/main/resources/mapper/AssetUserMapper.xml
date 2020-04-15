@@ -385,8 +385,11 @@
         b.name as departmentName,
         a.email, a.qq, a.weixin, a.mobile, a.address,detail_address as detailAddress, position, a.create_user AS
         createUser, a.modify_user AS modifyUser,
-        a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo
-        from asset_user a left join asset_department b on a.department_id = b.id
+        a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo,
+        akm.key_num as key
+        from asset_user a
+        left join asset_department b on a.department_id = b.id
+        left join asset_key_manage akm on (akm.key_user_id = a.id and akm.isdelete = 1)
         where 1 = 1
         <if test=" departmentId != null and departmentId != ''">
             AND a.department_id in
