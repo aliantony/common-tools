@@ -237,13 +237,13 @@
             update
             asset_assembly
             <trim suffixOverrides=",">
-                <if test="item.remove !=nulll">
+                <if test="item.remove !=null">
                     set remove=#{item.remove},
                 </if>
-                <if test="item.demagnetization !=nulll">
+                <if test="item.demagnetization !=null">
                     set demagnetization=#{item.demagnetization},
                 </if>
-                <if test="item.smash !=nulll">
+                <if test="item.smash !=null">
                     set smash=#{item.smash},
                 </if>
             </trim>

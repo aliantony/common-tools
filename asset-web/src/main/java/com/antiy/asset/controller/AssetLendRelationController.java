@@ -5,7 +5,11 @@ import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
-import com.antiy.common.base.*;
+import com.antiy.asset.vo.response.AssetResponse;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
+import com.antiy.common.base.ObjectQuery;
+import com.antiy.common.base.QueryCondition;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 /**
@@ -74,7 +79,6 @@ public class AssetLendRelationController {
         return ActionResponse.success(iAssetLendRelationService.queryPageAssetLendRelation(assetLendRelationQuery));
     }
 
-
     /**
      * 查询出借详情
      */
@@ -103,6 +107,18 @@ public class AssetLendRelationController {
     }
 
     /**
+     *资产
+     */
+    @ApiOperation(value = "资产详情", notes = "传入资产id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetResponse.class),
+    })
+    @RequestMapping(value = "/query/asset/info", method = RequestMethod.POST)
+    public ActionResponse queryAssetInfo(@ApiParam(value = "baseRequest") @RequestBody BaseRequest baseRequest) throws Exception {
+        AssetResponse assetResponse=iAssetLendRelationService.queryAssetInfo(baseRequest.getId());
+        return ActionResponse.success(assetResponse);
+    }
+    /**
      * 出借历史
      */
     @ApiOperation(value = "出借历史接口", notes = "传入资产id")
@@ -111,7 +127,7 @@ public class AssetLendRelationController {
     })
     @RequestMapping(value = "/query/lend/history", method = RequestMethod.POST)
     public ActionResponse queryLendHistory(@ApiParam(value = "assetLendRelation") @RequestBody ObjectQuery objectQuery) throws Exception {
-        PageResult<AssetLendRelationResponse> assetLendRelationResponses = iAssetLendRelationService.queryHistory(objectQuery);
+        List<AssetLendRelationResponse> assetLendRelationResponses = iAssetLendRelationService.queryHistory(objectQuery);
         return ActionResponse.success(assetLendRelationResponses);
     }
 
@@ -159,6 +175,21 @@ public class AssetLendRelationController {
     @RequestMapping(value = "/save/lendInfo", method = RequestMethod.POST)
     public ActionResponse saveLendInfo(@ApiParam(value = "AssetLendInfo") @RequestBody AssetLendInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.saveLendInfo(request));
+    }
+
+    /**
+     * 保存出借信息(pi)
+     *
+     * @param request
+     * @return actionResponse
+     */
+    @ApiOperation(value = "保存出借信息", notes = "传入实体对象信息")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+    })
+    @RequestMapping(value = "/save/lendInfos", method = RequestMethod.POST)
+    public ActionResponse saveLendInfos(@RequestBody AssetLendInfosRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.saveLendInfos(request));
     }
 
     /**

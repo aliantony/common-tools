@@ -1,9 +1,6 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetLinkRelationDao;
-import com.antiy.asset.dao.AssetMacRelationDao;
-import com.antiy.asset.dao.AssetUserDao;
+import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetLinkRelationService;
 import com.antiy.asset.util.BeanConvert;
@@ -62,7 +59,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     @Resource
     private BaseConverter<AssetMacRelation, AssetMacRelationResponse>           macResponseConverter;
     @Resource
-    AssetUserDao                                                         assetUserDao;
+    private AssetUserDao                                                assetUserDao;
+    @Resource
+    private AssetDepartmentDao                                          assetDepartmentDao;
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
@@ -218,7 +217,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             AssetUser assetUser = assetUserDao.findUserAndDepartment(String.valueOf(assetResponse.getParentAssetUserId()));
             if (Objects.nonNull(assetUser)){
                 assetResponse.setParentAssetUserName(assetUser.getName());
-                assetResponse.setParentAssetUserDepartment(assetUser.getDepartmentName());
+                String departmentId = assetUser.getDepartmentIdNoEncrypt();
+                String departmentName = "";
+                for (;;){
+                    if (Objects.isNull(departmentId)){
+                        assetResponse.setParentAssetUserDepartment(departmentName);
+                        break;
+                    }
+                    AssetDepartment assetDepartment = assetDepartmentDao.getParentIdById(departmentId);
+                    departmentId = assetDepartment.getParentId();
+                    departmentName = departmentName + assetDepartment.getName();
+                }
             }
             // 资产和父类资产mac获取
             HashMap<String, Object> param = new HashMap<>();

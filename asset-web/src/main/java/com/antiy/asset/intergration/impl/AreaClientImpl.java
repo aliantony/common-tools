@@ -24,6 +24,8 @@ public class AreaClientImpl implements AreaClient {
     private String     areaUrl;
     @Value("${cdeAndAreaId}")
     private String     cdeAndAreaId;
+    @Value("${verifyIP}")
+    private String     verifyIP;
     @Value("${TypeAreaId}")
     private String     TypeAreaId;
 
@@ -51,6 +53,16 @@ public class AreaClientImpl implements AreaClient {
         object.put("areaId", areaId);
         return (ActionResponse) baseClient.post(object, new ParameterizedTypeReference<ActionResponse>() {
         }, TypeAreaId);
+    }
+
+    @Override
+    public ActionResponse getIP(String areaId, String ip, String typeId) {
+        JSONObject object = new JSONObject();
+        object.put("areaId", areaId);
+        object.put("ip", ip);
+        object.put("typeId", typeId);
+        return (ActionResponse) baseClient.post(object, new ParameterizedTypeReference<ActionResponse>() {
+        }, verifyIP);
     }
 
     @Override

@@ -93,6 +93,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
     /**
      * 父类资产区域id
      */
+    @Encode
     private String parentAssetAreaId;
 
     /**
@@ -104,6 +105,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
     /**
      * 父类资产负责人
      */
+    @Encode
     private Integer parentAssetUserId;
 
     /**

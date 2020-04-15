@@ -1,6 +1,7 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.convert.LendConvert;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLendRelationDao;
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.entity.AssetOaOrderHandle;
@@ -23,7 +24,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -55,11 +55,15 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private LendConvert lendConvert;
     @Resource
+    private AssetDao assetDao;
+    @Resource
     private BaseConverter<AssetLendRelationRequest, AssetLendRelation> requestConverter;
     @Resource
     private BaseConverter<AssetLendRelation, AssetLendRelationResponse> responseConverter;
     @Resource
     private BaseConverter<AssetLendInfoRequest, AssetLendRelation> lendRelationBaseConverter;
+    @Resource
+    private LoginUserUtil loginUserUtil;
 
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
@@ -137,18 +141,23 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
-
+        //assetDao.getByAssetId()
         return assetLendRelationDao.returnConfirm(assetLendRelationRequest);
     }
 
     @Override
-    public PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
-        int count = assetLendRelationDao.countHistory(objectQuery);
-        if (count > 0) {
+    public List<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
+
             List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
-            return new PageResult<>(objectQuery.getPageSize(), count, objectQuery.getCurrentPage(), assetLendRelationResponses);
-        }
-        return new PageResult<>(objectQuery.getPageSize(), 0, objectQuery.getCurrentPage(), Lists.newArrayList());
+            if(CollectionUtils.isNotEmpty(assetLendRelationResponses)){
+                assetLendRelationResponses.forEach(t->{
+                    if(t.getLendStatus()==2){
+                        t.setLendStatusDesc("已归还");
+                    }
+                });
+            }
+            return assetLendRelationResponses;
+
     }
 
     @Override
@@ -180,7 +189,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
+        //TODO 暂时保留该接口，如果web不添加字段，删除
         ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
         approveInfoResponse.setOrderNumber(request.getOrderNumber());
         approveInfoResponse.setOrderUser(request.getOrderUser());
@@ -206,8 +215,31 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
+        ParamterExceptionUtils.isNull(request.getUseId(), "用户ID不能为空");
+        ParamterExceptionUtils.isNull(request.getAssetIdList(), "资产列表不能为空");
+        ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
+        Integer creatUser = LoginUserUtil.getLoginUser().getId();
+        Long gmtCreat = System.currentTimeMillis();
+        for (String item : request.getAssetIdList()) {
+            AssetLendRelation assetLendRelation = new AssetLendRelation();
+            assetLendRelation.setStatus(1);
+            assetLendRelation.setCreateUser(creatUser);
+            assetLendRelation.setGmtCreate(gmtCreat);
+            assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+
+            assetLendRelation.setUseId(request.getUseId());
+            assetLendRelation.setOrderNumber(request.getOrderNumber());
+            assetLendRelation.setAssetId(Integer.valueOf(item));
+            assetLendRelationDao.insert(assetLendRelation);
+        }
         return null;
+    }
+
+    @Override
+    public AssetResponse queryAssetInfo(Integer id) {
+
+        AssetResponse assetResponse=assetDao.queryInfoByAssetId(id);
+        return assetResponse;
     }
 
     public void getDepartment(String departmentId, String department) {

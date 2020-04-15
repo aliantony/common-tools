@@ -7,11 +7,11 @@
         <id column="id" property="id"/>
         <result column="order_number" property="orderNumber"/>
         <result column="lend_status" property="lendStatus"/>
-        <result column="refuse_remark" property="refuseRemark"/>
+        <result column="refuse_reason" property="refuseReason"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_number, lend_status, refuse_remark
+        id, order_number, lend_status, refuse_reason
     </sql>
 
     <sql id="Table_Name">
@@ -26,8 +26,8 @@
         <if test=" lendStatus != null">
             lend_status,
         </if>
-        <if test=" refuseRemark != null">
-            refuse_remark,
+        <if test=" refuseReason != null">
+            refuse_reason,
         </if>
     </sql>
 
@@ -38,8 +38,8 @@
         <if test=" lendStatus != null">
             #{lendStatus },
         </if>
-        <if test=" refuseRemark != null">
-            #{refuseRemark },
+        <if test=" refuseReason != null">
+            #{refuseReason },
         </if>
     </sql>
 
@@ -50,8 +50,8 @@
         <if test=" lendStatus != null">
             lend_status = #{lendStatus },
         </if>
-        <if test=" refuseRemark != null">
-            refuse_remark = #{refuseRemark },
+        <if test=" refuseReason != null">
+            refuse_reason = #{refuseReason },
         </if>
     </sql>
 
@@ -62,8 +62,8 @@
         <if test=" lendStatus != null">
             and lend_status = #{lendStatus }
         </if>
-        <if test=" refuseRemark != null">
-            and refuse_remark = #{refuseRemark }
+        <if test=" refuseReason != null">
+            and refuse_reason = #{refuseReason }
         </if>
     </sql>
 

@@ -6,6 +6,8 @@ import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 
+import java.util.List;
+
 /**
  * @auther: zhangbing
  * @date: 2019/1/22 15:05
@@ -24,12 +26,8 @@ public interface IAssetStatusJumpService {
 
     String entryExecution(AssetEntryRequest request);
 
-    /**
-     * 继续入网
-     * @param primaryKey
-     * @return
-     */
-    Integer continueNetIn(String primaryKey);
 
     AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest activityHandleRequest) throws Exception;
+
+    Integer netToCorrect(List<String> assetIds);
 }

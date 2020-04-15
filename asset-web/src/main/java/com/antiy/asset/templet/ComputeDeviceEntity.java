@@ -68,7 +68,7 @@ public class ComputeDeviceEntity {
     /**
      * p地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip(必填)", dataType = DataTypeEnum.IP, required = true)
+    @ExcelField(value = "ip", align = 1, title = "ip(必填)  备注:该IP需要是在(归属区域、网络类型)下推荐的可用IP", dataType = DataTypeEnum.IP, required = true)
     private String ip;
     /**
      * mac地址

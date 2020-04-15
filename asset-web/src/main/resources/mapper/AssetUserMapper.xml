@@ -412,7 +412,8 @@
     <select id="findUserAndDepartment" resultType="com.antiy.asset.entity.AssetUser">
         select
         au.name as name,
-        ad.name as departmentName
+        ad.name as departmentName,
+        ad.id as departmentIdNoEncrypt
         from asset_user au
         left join asset_department ad on (au.department_id = ad.id and ad.status = 1)
         where au.id = #{userId}

@@ -17,6 +17,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetResponse extends BaseResponse {
+
+    @ApiModelProperty("key键")
+    private String keyNumber;
     @Encode
     @ApiModelProperty("操作记录表id")
     String                                 assetOperationRecordId;
@@ -1050,6 +1053,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setDecryptId(String decryptId) {
         this.decryptId = decryptId;
+    }
+
+    public String getKeyNumber() {
+        return keyNumber;
+    }
+
+    public void setKeyNumber(String keyNumber) {
+        this.keyNumber = keyNumber;
     }
 
     @Override

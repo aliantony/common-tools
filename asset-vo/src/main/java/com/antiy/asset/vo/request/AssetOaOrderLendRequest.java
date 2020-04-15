@@ -30,7 +30,7 @@ public class AssetOaOrderLendRequest extends BasicRequest implements ObjectValid
      * 拒绝原因
      */
     @ApiModelProperty("拒绝原因 ")
-    private String refuseRemark;
+    private String refuseReason;
 
 
     public String getOrderNumber() {
@@ -51,12 +51,12 @@ public class AssetOaOrderLendRequest extends BasicRequest implements ObjectValid
     }
 
 
-    public String getRefuseRemark() {
-        return refuseRemark;
+    public String getRefuseReason() {
+        return refuseReason;
     }
 
-    public void setRefuseRemark(String refuseRemark) {
-        this.refuseRemark = refuseRemark;
+    public void setRefuseReason(String refuseReason) {
+        this.refuseReason = refuseReason;
     }
 
 

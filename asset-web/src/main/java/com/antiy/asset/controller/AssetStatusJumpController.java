@@ -11,6 +11,7 @@ import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 资产状态跃迁统一接口
@@ -83,17 +85,17 @@ public class AssetStatusJumpController {
         Integer count = assetService.assetNoRegister(registerRequestList);
         return ActionResponse.success(count);
     }
+
     /**
-     * 继续入网
+     * 整改
      *
-     * @param assetStatusChangeRequest
-     * @return actionResponse
      */
-    @ApiOperation(value = "资产继续入网", notes = "传入资产id")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
-    @RequestMapping(value = "/netIn", method = RequestMethod.POST)
-    public ActionResponse assetContinueNetIn(@ApiParam(value = "queryCondition") @RequestBody QueryCondition queryCondition) throws Exception {
-        Integer result=assetStatusJumpService.continueNetIn(queryCondition.getPrimaryKey());
+    @ApiOperation(value = "资产已入网到整改", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
+    @RequestMapping(value = "/netToCorrect", method = RequestMethod.POST)
+    public ActionResponse netToCorrect(@ApiParam(value = "queryCondition") @RequestBody List<BaseRequest> baseList) throws Exception {
+        List<String> assetIds = baseList.stream().map(t -> t.getStringId()).collect(Collectors.toList());
+        Integer result=assetStatusJumpService.netToCorrect(assetIds);
         return ActionResponse.success(result);
     }
 
@@ -114,5 +116,6 @@ public class AssetStatusJumpController {
         AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingInfo(assetCorrectRequest);
         return ActionResponse.success(result);
     }
+
 
 }
