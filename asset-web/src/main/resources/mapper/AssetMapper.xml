@@ -74,6 +74,7 @@
         <result column="is_secrecy" property="isSecrecy"/>
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
+        <result column="key" property="key"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
