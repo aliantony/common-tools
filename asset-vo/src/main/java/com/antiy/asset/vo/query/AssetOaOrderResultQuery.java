@@ -11,6 +11,6 @@ import com.antiy.common.base.ObjectQuery;
  * @since 2020-04-09
  */
 
-public class AssetOaOrderLendQuery extends ObjectQuery {
+public class AssetOaOrderResultQuery extends ObjectQuery {
 
 }

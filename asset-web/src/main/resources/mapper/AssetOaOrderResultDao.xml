@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.antiy.asset.dao.AssetOaOrderLendDao">
+<mapper namespace="com.antiy.asset.dao.AssetOaOrderResultDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOaOrderLend">
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOaOrderResult">
         <id column="id" property="id"/>
         <result column="order_number" property="orderNumber"/>
         <result column="lend_status" property="lendStatus"/>
@@ -12,11 +12,15 @@
         <result column="lend_time" property="lendTime"/>
         <result column="return_time" property="returnTime"/>
         <result column="lend_remark" property="lendRemark"/>
+        <result column="plan" property="plan"/>
+        <result column="file" property="file"/>
+        <result column="excute_user_id" property="excuteUserId"/>
+        <result column="handle_type" property="handleType"/>
         <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_number, lend_status, refuse_reason, lend_user_id, lend_time, return_time, lend_remark, gmt_create
+        id, order_number, lend_status, refuse_reason, lend_user_id, lend_time, return_time, lend_remark, plan, file, excute_user_id, handle_type, gmt_create
     </sql>
 
     <sql id="Table_Name">
@@ -46,6 +50,18 @@
         <if test=" lendRemark != null">
             lend_remark,
         </if>
+        <if test=" plan != null">
+            plan,
+        </if>
+        <if test=" file != null">
+            file,
+        </if>
+        <if test=" excuteUserId != null">
+            excute_user_id,
+        </if>
+        <if test=" handleType != null">
+            handle_type,
+        </if>
         <if test=" gmtCreate != null">
             gmt_create,
         </if>
@@ -72,6 +88,18 @@
         </if>
         <if test=" lendRemark != null">
             #{lendRemark },
+        </if>
+        <if test=" plan != null">
+            #{plan },
+        </if>
+        <if test=" file != null">
+            #{file },
+        </if>
+        <if test=" excuteUserId != null">
+            #{excuteUserId },
+        </if>
+        <if test=" handleType != null">
+            #{handleType },
         </if>
         <if test=" gmtCreate != null">
             #{gmtCreate },
@@ -100,6 +128,18 @@
         <if test=" lendRemark != null">
             lend_remark = #{lendRemark },
         </if>
+        <if test=" plan != null">
+            plan = #{plan },
+        </if>
+        <if test=" file != null">
+            file = #{file },
+        </if>
+        <if test=" excuteUserId != null">
+            excute_user_id = #{excuteUserId },
+        </if>
+        <if test=" handleType != null">
+            handle_type = #{handleType },
+        </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
         </if>
@@ -127,12 +167,24 @@
         <if test=" lendRemark != null">
             and lend_remark = #{lendRemark }
         </if>
+        <if test=" plan != null">
+            and plan = #{plan }
+        </if>
+        <if test=" file != null">
+            and file = #{file }
+        </if>
+        <if test=" excuteUserId != null">
+            and excute_user_id = #{excuteUserId }
+        </if>
+        <if test=" handleType != null">
+            and handle_type = #{handleType }
+        </if>
         <if test=" gmtCreate != null">
             and gmt_create = #{gmtCreate }
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderLend" useGeneratedKeys="true" keyProperty="id"
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderResult" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
@@ -144,7 +196,7 @@
         </trim>
     </insert>
 
-    <update id="update" parameterType="com.antiy.asset.entity.AssetOaOrderLend">
+    <update id="update" parameterType="com.antiy.asset.entity.AssetOaOrderResult">
         update
         <include refid="Table_Name"></include>
         <trim prefix="SET" suffixOverrides=",">

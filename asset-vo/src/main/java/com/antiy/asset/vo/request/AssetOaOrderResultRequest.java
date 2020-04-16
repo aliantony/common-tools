@@ -1,20 +1,20 @@
-package com.antiy.asset.entity;
+package com.antiy.asset.vo.request;
 
-
-import com.antiy.common.base.BaseEntity;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * <p>出借订单拒绝表</p>
+ * <p>
+ * AssetOaOrderResultRequest 请求对象
+ * </p>
  *
  * @author shenliang
  * @since 2020-04-09
  */
 
-public class AssetOaOrderLend extends BaseEntity {
-
-
-    private static final long serialVersionUID = 1L;
+public class AssetOaOrderResultRequest extends BasicRequest implements ObjectValidator {
 
     @ApiModelProperty("是否出借，1是 0否")
     private Integer lendStatus;
@@ -37,18 +37,20 @@ public class AssetOaOrderLend extends BaseEntity {
     @ApiModelProperty("借出说明")
     private String lendRemark;
 
+    @ApiModelProperty("方案")
+    private String plan;
+
+    @ApiModelProperty("附件")
+    private String file;
+
+    @ApiModelProperty("执行人")
+    private Integer excuteUserId;
+
+    @ApiModelProperty("处理类型")
+    private Integer handleType;
+
     @ApiModelProperty("记录生成时间")
     private Long gmtCreate;
-
-
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
 
 
     public Integer getLendStatus() {
@@ -59,13 +61,20 @@ public class AssetOaOrderLend extends BaseEntity {
         this.lendStatus = lendStatus;
     }
 
-
     public String getRefuseReason() {
         return refuseReason;
     }
 
     public void setRefuseReason(String refuseReason) {
         this.refuseReason = refuseReason;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public Integer getLendUserId() {
@@ -100,6 +109,38 @@ public class AssetOaOrderLend extends BaseEntity {
         this.lendRemark = lendRemark;
     }
 
+    public String getPlan() {
+        return plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public Integer getExcuteUserId() {
+        return excuteUserId;
+    }
+
+    public void setExcuteUserId(Integer excuteUserId) {
+        this.excuteUserId = excuteUserId;
+    }
+
+    public Integer getHandleType() {
+        return handleType;
+    }
+
+    public void setHandleType(Integer handleType) {
+        this.handleType = handleType;
+    }
+
     public Long getGmtCreate() {
         return gmtCreate;
     }
@@ -109,16 +150,8 @@ public class AssetOaOrderLend extends BaseEntity {
     }
 
     @Override
-    public String toString() {
-        return "AssetOaOrderLend{" +
-                ", orderNumber=" + orderNumber +
-                ", lendStatus=" + lendStatus +
-                ", refuseReason=" + refuseReason +
-                ", lendUserId=" + lendUserId +
-                ", lendTime=" + lendTime +
-                ", returnTime=" + returnTime +
-                ", lendRemark=" + lendRemark +
-                ", gmtCreate=" + gmtCreate +
-                "}";
+    public void validate() throws RequestParamValidateException {
+
     }
+
 }

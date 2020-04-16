@@ -3,11 +3,11 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOaOrderDao;
 import com.antiy.asset.dao.AssetOaOrderHandleDao;
-import com.antiy.asset.dao.AssetOaOrderLendDao;
+import com.antiy.asset.dao.AssetOaOrderResultDao;
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderHandle;
-import com.antiy.asset.entity.AssetOaOrderLend;
+import com.antiy.asset.entity.AssetOaOrderResult;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
@@ -18,10 +18,11 @@ import com.antiy.asset.vo.response.AssetOaOrderHandleResponse;
 import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.kafka.common.protocol.types.Field;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     @Resource
     private AssetOaOrderDao assetOaOrderDao;
     @Resource
-    private AssetOaOrderLendDao assetOaOrderLendDao;
+    private AssetOaOrderResultDao assetOaOrderResultDao;
     @Resource
     private AssetDao assetDao;
 
@@ -57,6 +58,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private BaseConverter<AssetOaOrderHandleRequest, AssetOaOrderHandle> requestConverter;
     @Resource
     private BaseConverter<AssetOaOrderHandle, AssetOaOrderHandleResponse> responseConverter;
+
+    @Resource
+    private AesEncoder aesEncoder;
 
     @Override
     public Integer saveAssetOaOrderHandle(AssetOaOrderHandleRequest request) throws Exception {
@@ -67,28 +71,42 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         AssetOaOrder assetOaOrder = assetOaOrderDao.getByNumber(orderNumber);
         if (AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())) {
             //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
-            AssetOaOrderLend assetOaOrderLend = new AssetOaOrderLend();
-            assetOaOrderLend.setOrderNumber(orderNumber);
-            assetOaOrderLend.setLendStatus(request.getLendStatus());
-            assetOaOrderLend.setGmtCreate(System.currentTimeMillis());
-            if (request.getLendStatus().equals(0)) {
-                logger.info("----------不许出借,OrderNumber：{}",request.getOrderNumber());
-                assetOaOrderLend.setRefuseReason(request.getRefuseReason());
-                assetOaOrderLendDao.insert(assetOaOrderLend);
+            AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
+            assetOaOrderResult.setOrderNumber(orderNumber);
+            assetOaOrderResult.setLendStatus(request.getLendStatus());
+            assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
+            assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+            if (!request.getLendStatus().equals(1)) {
+                logger.info("----------不许出借,OrderNumber：{}", request.getOrderNumber());
+                assetOaOrderResult.setRefuseReason(request.getRefuseReason());
+                assetOaOrderResultDao.insert(assetOaOrderResult);
                 return 0;
             } else {
-                logger.info("----------允许出借,OrderNumber：{}",request.getOrderNumber());
-                assetOaOrderLend.setLendUserId(request.getLendUserId());
-                assetOaOrderLend.setLendTime(request.getLendTime());
-                assetOaOrderLend.setReturnTime(request.getReturnTime());
-                assetOaOrderLend.setLendRemark(request.getLendRemark());
-                assetOaOrderLendDao.insert(assetOaOrderLend);
+                logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
+                assetOaOrderResult.setLendUserId(request.getLendUserId());
+                assetOaOrderResult.setLendTime(request.getLendTime());
+                assetOaOrderResult.setReturnTime(request.getReturnTime());
+                assetOaOrderResult.setLendRemark(request.getLendRemark());
+                assetOaOrderResultDao.insert(assetOaOrderResult);
             }
+        }else if (AssetOaOrderTypeEnum.BACK.getCode().equals(assetOaOrder.getOrderType()) || AssetOaOrderTypeEnum.SCRAP.getCode().equals(assetOaOrder.getOrderType())) {
+            logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
+            //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
+            AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
+            assetOaOrderResult.setOrderNumber(orderNumber);
+            assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
+            assetOaOrderResult.setPlan(request.getPlan());
+            assetOaOrderResult.setFile(request.getFile());
+            assetOaOrderResult.setHandleType(request.getHandleType());
+            assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+            assetOaOrderResultDao.insert(assetOaOrderResult);
         }
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
         for (String assetId : request.getAssetIds()) {
+            assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+            Integer assetIdInt = Integer.parseInt(assetId);
             AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
-            assetOaOrderHandle.setAssetId(assetId);
+            assetOaOrderHandle.setAssetId(assetIdInt);
             assetOaOrderHandle.setOrderNumber(orderNumber);
             assetOaOrderHandles.add(assetOaOrderHandle);
         }
