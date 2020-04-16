@@ -4,7 +4,6 @@ import com.antiy.asset.convert.LendConvert;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLendRelationDao;
 import com.antiy.asset.entity.AssetLendRelation;
-import com.antiy.asset.entity.AssetOaOrderHandle;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.templet.AssetLendRelationEntity;
@@ -25,7 +24,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -36,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -207,8 +206,10 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public UserInfoResponse queryUserInfo(UserInfoRequest request) {
         UserInfoResponse response = assetLendRelationDao.queryUserInfo(request);
         String department = new String();
-        this.getDepartment(response.getDepartmentId(), department);
-        response.setDepartment(department);
+        if (Objects.nonNull(response)) {
+            this.getDepartment(response.getDepartmentId(), department);
+            response.setDepartment(department);
+        }
         return response;
     }
 
