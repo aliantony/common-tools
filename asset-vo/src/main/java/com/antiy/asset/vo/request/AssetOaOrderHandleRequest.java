@@ -18,8 +18,8 @@ import java.util.List;
 
 public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
 
-    @ApiModelProperty("是否拒绝，1是 0否")
-    private Integer isRefuse;
+    @ApiModelProperty("是否出借，1是 0否")
+    private Integer lendStatus;
 
     @ApiModelProperty("拒绝原因")
     private String refuseReason;
@@ -32,30 +32,24 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("资产id")
     private List<String> assetIds;
 
+    @ApiModelProperty("借出人")
+    private Integer lendUserId;
 
-    public String getorderNumber() {
-        return orderNumber;
+    @ApiModelProperty("借出日期")
+    private Long lendTime;
+
+    @ApiModelProperty("归还日期")
+    private Long returnTime;
+
+    @ApiModelProperty("借出说明")
+    private String lendRemark;
+
+    public Integer getLendStatus() {
+        return lendStatus;
     }
 
-    public void setorderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-
-    public List<String> getAssetIds() {
-        return assetIds;
-    }
-
-    public void setAssetIds(List<String> assetIds) {
-        this.assetIds = assetIds;
-    }
-
-    public Integer getIsRefuse() {
-        return isRefuse;
-    }
-
-    public void setIsRefuse(Integer isRefuse) {
-        this.isRefuse = isRefuse;
+    public void setLendStatus(Integer lendStatus) {
+        this.lendStatus = lendStatus;
     }
 
     public String getRefuseReason() {
@@ -73,6 +67,47 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
+
+    public List<String> getAssetIds() {
+        return assetIds;
+    }
+
+    public void setAssetIds(List<String> assetIds) {
+        this.assetIds = assetIds;
+    }
+
+    public Integer getLendUserId() {
+        return lendUserId;
+    }
+
+    public void setLendUserId(Integer lendUserId) {
+        this.lendUserId = lendUserId;
+    }
+
+    public Long getLendTime() {
+        return lendTime;
+    }
+
+    public void setLendTime(Long lendTime) {
+        this.lendTime = lendTime;
+    }
+
+    public Long getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Long returnTime) {
+        this.returnTime = returnTime;
+    }
+
+    public String getLendRemark() {
+        return lendRemark;
+    }
+
+    public void setLendRemark(String lendRemark) {
+        this.lendRemark = lendRemark;
+    }
+
 
     @Override
     public void validate() throws RequestParamValidateException {

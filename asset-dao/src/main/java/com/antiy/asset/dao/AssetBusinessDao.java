@@ -3,8 +3,6 @@ package com.antiy.asset.dao;
 import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.common.base.IBaseDao;
 
-import java.util.List;
-
 /**
  * <p>
  *  Mapper 接口
@@ -22,7 +20,7 @@ public interface AssetBusinessDao extends IBaseDao<AssetBusiness> {
 
     AssetBusiness getByUniqueId(String uniqueId);
 
-    Integer updateStatusByUniqueId(List<String> uniqueId);
+    Integer updateStatusByUniqueId(String uniqueId);
 
     Integer updateByUniqueId(AssetBusiness assetBusiness);
 }

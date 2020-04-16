@@ -8,10 +8,15 @@
         <result column="order_number" property="orderNumber"/>
         <result column="lend_status" property="lendStatus"/>
         <result column="refuse_reason" property="refuseReason"/>
+        <result column="lend_user_id" property="lendUserId"/>
+        <result column="lend_time" property="lendTime"/>
+        <result column="return_time" property="returnTime"/>
+        <result column="lend_remark" property="lendRemark"/>
+        <result column="gmt_create" property="gmtCreate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_number, lend_status, refuse_reason
+        id, order_number, lend_status, refuse_reason, lend_user_id, lend_time, return_time, lend_remark, gmt_create
     </sql>
 
     <sql id="Table_Name">
@@ -29,6 +34,21 @@
         <if test=" refuseReason != null">
             refuse_reason,
         </if>
+        <if test=" lendUserId != null">
+            lend_user_id,
+        </if>
+        <if test=" lendTime != null">
+            lend_time,
+        </if>
+        <if test=" returnTime != null">
+            return_time,
+        </if>
+        <if test=" lendRemark != null">
+            lend_remark,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
     </sql>
 
     <sql id="IF_Value_Column_List">
@@ -40,6 +60,21 @@
         </if>
         <if test=" refuseReason != null">
             #{refuseReason },
+        </if>
+        <if test=" lendUserId != null">
+            #{lendUserId },
+        </if>
+        <if test=" lendTime != null">
+            #{lendTime },
+        </if>
+        <if test=" returnTime != null">
+            #{returnTime },
+        </if>
+        <if test=" lendRemark != null">
+            #{lendRemark },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
         </if>
     </sql>
 
@@ -53,6 +88,21 @@
         <if test=" refuseReason != null">
             refuse_reason = #{refuseReason },
         </if>
+        <if test=" lendUserId != null">
+            lend_user_id = #{lendUserId },
+        </if>
+        <if test=" lendTime != null">
+            lend_time = #{lendTime },
+        </if>
+        <if test=" returnTime != null">
+            return_time = #{returnTime },
+        </if>
+        <if test=" lendRemark != null">
+            lend_remark = #{lendRemark },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
     </sql>
 
     <sql id="Where_Column_List">
@@ -65,9 +115,25 @@
         <if test=" refuseReason != null">
             and refuse_reason = #{refuseReason }
         </if>
+        <if test=" lendUserId != null">
+            and lend_user_id = #{lendUserId }
+        </if>
+        <if test=" lendTime != null">
+            and lend_time = #{lendTime }
+        </if>
+        <if test=" returnTime != null">
+            and return_time = #{returnTime }
+        </if>
+        <if test=" lendRemark != null">
+            and lend_remark = #{lendRemark }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderLend" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderLend" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">

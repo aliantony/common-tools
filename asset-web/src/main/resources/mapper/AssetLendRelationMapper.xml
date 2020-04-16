@@ -278,7 +278,7 @@
         a.number as assetNumber,
         acm.name as categoryModel,
         a.responsible_user_id as responsibleUserId,
-        akm.key_num as key,
+        akm.key_num as `key`,
         alr.lend_status as lendStatus,
         alr.use_id as useId,
         alr.lend_time as lendTime,
@@ -316,7 +316,7 @@
           a.number as assetNumber,
           a.asset_group as assetGroup,
           a.category_model as categoryModel,
-          akm.key_num as key
+          akm.key_num as `key`
           from
           asset_lend_relation as alr
           left join asset as a on alr.asset_id=a.id and a.status=1

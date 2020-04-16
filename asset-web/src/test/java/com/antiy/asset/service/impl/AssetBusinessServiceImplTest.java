@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest(classes = AssetApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -78,7 +77,7 @@ public class AssetBusinessServiceImplTest {
 
     @Test
     public void updateStatusByUniqueId() {
-        Integer integer = iAssetBusinessService.updateStatusByUniqueId(Arrays.asList("692011214217150464"));
+        Integer integer = iAssetBusinessService.updateStatusByUniqueId("692011214217150464");
         System.out.println(integer);
     }
 }

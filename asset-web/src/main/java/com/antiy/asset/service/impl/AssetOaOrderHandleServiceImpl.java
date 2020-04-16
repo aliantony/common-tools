@@ -69,12 +69,19 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
             AssetOaOrderLend assetOaOrderLend = new AssetOaOrderLend();
             assetOaOrderLend.setOrderNumber(orderNumber);
-            assetOaOrderLend.setLendStatus(request.getIsRefuse());
-            if (request.getIsRefuse().equals(1)) {
+            assetOaOrderLend.setLendStatus(request.getLendStatus());
+            assetOaOrderLend.setGmtCreate(System.currentTimeMillis());
+            if (request.getLendStatus().equals(0)) {
+                logger.info("----------不许出借,OrderNumber：{}",request.getOrderNumber());
                 assetOaOrderLend.setRefuseReason(request.getRefuseReason());
                 assetOaOrderLendDao.insert(assetOaOrderLend);
                 return 0;
             } else {
+                logger.info("----------允许出借,OrderNumber：{}",request.getOrderNumber());
+                assetOaOrderLend.setLendUserId(request.getLendUserId());
+                assetOaOrderLend.setLendTime(request.getLendTime());
+                assetOaOrderLend.setReturnTime(request.getReturnTime());
+                assetOaOrderLend.setLendRemark(request.getLendRemark());
                 assetOaOrderLendDao.insert(assetOaOrderLend);
             }
         }
