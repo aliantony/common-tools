@@ -137,7 +137,7 @@ public class AssetBusinessController {
     })
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody UniqueKeyRquest uniqueKeyRquest)throws Exception{
-        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueIds());
+        Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(result);
     }
 }
