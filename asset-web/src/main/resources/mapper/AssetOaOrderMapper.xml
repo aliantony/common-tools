@@ -84,7 +84,7 @@
         <if test=" gmtCreate!= null">
             and gmt_create = #{gmtCreate }
         </if>
-        <if test=" startTime!= null">
+        <if test=" beginTime!= null">
             and gmt_create &gt;= #{beginTime }
         </if>
         <if test=" endTime!= null">
