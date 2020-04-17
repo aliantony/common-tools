@@ -7,6 +7,7 @@ import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -120,6 +121,9 @@ public class AssetOaOrderHandleController {
     })
     @PostMapping(value = "/upload", consumes = "multipart/*", headers = "content-type=multipart/form-data")
     public ActionResponse upload(@ApiParam(value = "fileList", required = true) MultipartFile file) throws Exception {
+        if(file == null){
+            throw new BusinessException("请选择文件");
+        }
         //定义文件返回对象
         List<FileRespVO> fileRespVOS = new ArrayList<>();
         iAssetOaOrderHandleService.uploadToHdfs(file, fileRespVOS);
