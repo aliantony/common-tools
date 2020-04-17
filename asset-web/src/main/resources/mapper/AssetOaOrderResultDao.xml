@@ -25,7 +25,7 @@
     </sql>
 
     <sql id="Table_Name">
-        asset_oa_order_lend
+        asset_oa_order_result
     </sql>
 
 
@@ -57,8 +57,8 @@
         <if test=" fileUrl != null">
             file_url,
         </if>
-        <if test=" file != null">
-            file,
+        <if test=" fileName != null">
+            file_name,
         </if>
         <if test=" excuteUserId != null">
             excute_user_id,
