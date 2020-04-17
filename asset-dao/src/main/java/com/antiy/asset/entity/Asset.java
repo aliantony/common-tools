@@ -108,6 +108,7 @@ public class Asset extends BaseEntity {
      * 品类名称
      */
     private String  categoryModelName;
+    private Integer categoryModelType;
     /**
      * 厂商
      */
@@ -296,6 +297,14 @@ public class Asset extends BaseEntity {
      * 网络类型名称
      */
     private String  netTypeName;
+
+    public Integer getCategoryModelType() {
+        return categoryModelType;
+    }
+
+    public void setCategoryModelType(Integer categoryModelType) {
+        this.categoryModelType = categoryModelType;
+    }
 
     public String getNetTypeName() {
         return netTypeName;
