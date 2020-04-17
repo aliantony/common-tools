@@ -1,6 +1,6 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.entity.AssetOaOrderLend;
+import com.antiy.asset.entity.AssetOaOrderResult;
 import com.antiy.common.base.IBaseDao;
 
 /**
@@ -11,6 +11,6 @@ import com.antiy.common.base.IBaseDao;
  * @author shenliang
  * @since 2020-04-09
  */
-public interface AssetOaOrderLendDao extends IBaseDao<AssetOaOrderLend> {
+public interface AssetOaOrderResultDao extends IBaseDao<AssetOaOrderResult> {
 
 }

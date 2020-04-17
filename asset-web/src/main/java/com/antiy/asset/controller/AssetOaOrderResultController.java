@@ -1,8 +1,8 @@
 package com.antiy.asset.controller;
 
-import com.antiy.asset.service.IAssetOaOrderLendService;
-import com.antiy.asset.vo.query.AssetOaOrderLendQuery;
-import com.antiy.asset.vo.request.AssetOaOrderLendRequest;
+import com.antiy.asset.service.IAssetOaOrderResultService;
+import com.antiy.asset.vo.query.AssetOaOrderResultQuery;
+import com.antiy.asset.vo.request.AssetOaOrderResultRequest;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -17,14 +17,14 @@ import javax.annotation.Resource;
  * @author shenliang
  * @since 2020-04-09
  */
-@Api(value = "AssetOaOrderLend", description = "出借订单表")
+@Api(value = "AssetOaOrderResult", description = "出借订单表")
 @RestController
-@RequestMapping("/api/v1/asset/assetoaorderlend")
-public class AssetOaOrderLendController {
+@RequestMapping("/api/v1/asset/assetoaorderresult")
+public class AssetOaOrderResultController {
     private static final Logger logger = LogUtils.get();
 
     @Resource
-    public IAssetOaOrderLendService iAssetOaOrderRefuseService;
+    public IAssetOaOrderResultService iAssetOaOrderRefuseService;
 
     /**
      * 保存
@@ -37,7 +37,7 @@ public class AssetOaOrderLendController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/refuse", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderLendRequest assetOaOrderRefuseRequest) throws Exception {
+    public ActionResponse saveSingle(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderResultRequest assetOaOrderRefuseRequest) throws Exception {
         iAssetOaOrderRefuseService.saveAssetOaOrderRefuse(assetOaOrderRefuseRequest);
         return ActionResponse.success();
     }
@@ -53,7 +53,7 @@ public class AssetOaOrderLendController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
-    public ActionResponse updateSingle(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderLendRequest assetOaOrderRefuseRequest) throws Exception {
+    public ActionResponse updateSingle(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderResultRequest assetOaOrderRefuseRequest) throws Exception {
         iAssetOaOrderRefuseService.updateAssetOaOrderRefuse(assetOaOrderRefuseRequest);
         return ActionResponse.success();
     }
@@ -69,7 +69,7 @@ public class AssetOaOrderLendController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderLendQuery assetOaOrderRefuseQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetOaOrderRefuse") @RequestBody AssetOaOrderResultQuery assetOaOrderRefuseQuery) throws Exception {
         return ActionResponse.success(iAssetOaOrderRefuseService.findPageAssetOaOrderRefuse(assetOaOrderRefuseQuery));
     }
 
