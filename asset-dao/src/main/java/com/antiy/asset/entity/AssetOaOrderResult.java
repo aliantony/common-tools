@@ -40,8 +40,11 @@ public class AssetOaOrderResult extends BaseEntity {
     @ApiModelProperty("方案")
     private String plan;
 
-    @ApiModelProperty("附件")
-    private String file;
+    @ApiModelProperty("附件地址")
+    private String fileUrl;
+
+    @ApiModelProperty("附件名")
+    private String fileName;
 
     @ApiModelProperty("执行人")
     private Integer excuteUserId;
@@ -120,12 +123,20 @@ public class AssetOaOrderResult extends BaseEntity {
         this.plan = plan;
     }
 
-    public String getFile() {
-        return file;
+    public String getFileUrl() {
+        return fileUrl;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Integer getExcuteUserId() {
@@ -164,7 +175,8 @@ public class AssetOaOrderResult extends BaseEntity {
                 ", returnTime=" + returnTime +
                 ", lendRemark=" + lendRemark +
                 ", plan=" + plan +
-                ", file=" + file +
+                ", fileUrl=" + fileUrl +
+                ", fileName=" + fileName +
                 ", excuteUserId=" + excuteUserId +
                 ", handleType=" + handleType +
                 ", gmtCreate=" + gmtCreate +

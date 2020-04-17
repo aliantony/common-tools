@@ -47,8 +47,11 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("方案")
     private String plan;
 
-    @ApiModelProperty("附件")
-    private String file;
+    @ApiModelProperty("附件地址")
+    private String fileUrl;
+
+    @ApiModelProperty("附件名")
+    private String fileName;
 
     @ApiModelProperty("执行人")
     private Integer excuteUserId;
@@ -128,12 +131,20 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
         this.plan = plan;
     }
 
-    public String getFile() {
-        return file;
+    public String getFileUrl() {
+        return fileUrl;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Integer getExcuteUserId() {
