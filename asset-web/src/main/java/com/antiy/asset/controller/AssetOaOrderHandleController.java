@@ -119,7 +119,7 @@ public class AssetOaOrderHandleController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @PostMapping(value = "/upload", consumes = "multipart/*", headers = "content-type=multipart/form-data")
-    public ActionResponse upload(@ApiParam(value = "fileList", required = true) MultipartFile file) throws Exception {
+    public ActionResponse upload(@ApiParam(value = "file", required = true) MultipartFile file) throws Exception {
         //定义文件返回对象
         List<FileRespVO> fileRespVOS = new ArrayList<>();
         iAssetOaOrderHandleService.uploadToHdfs(file, fileRespVOS);
