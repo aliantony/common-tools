@@ -252,4 +252,11 @@
         <include refid="Table_Name"></include>
         where title = '操作系统'
     </select>
+    
+    <select id="getBusIdByNodeName" parameterType="com.antiy.asset.vo.request.AssetCpeTreeRequest" resultType="java.lang.String">
+        select business_id from
+        <include refid="Table_Name"></include>
+        where title = #{title}
+        and status = 1
+    </select>
 </mapper>
