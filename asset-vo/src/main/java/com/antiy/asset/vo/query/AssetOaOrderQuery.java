@@ -35,16 +35,7 @@ public class AssetOaOrderQuery extends ObjectQuery {
      */
     @ApiModelProperty("1待处理，2已处理")
     private List<Integer> orderStatus;
-    /**
-     * 开始时间
-     */
-    @ApiModelProperty("开始时间")
-    private Long beginTime;
-    /**
-     * 结束时间
-     */
-    @ApiModelProperty("结束时间")
-    private Long endTime;
+
     /**
      * 时间
      */
@@ -83,25 +74,6 @@ public class AssetOaOrderQuery extends ObjectQuery {
         this.orderStatus = orderStatus;
     }
 
-    @Override
-    public Long getBeginTime() {
-        return beginTime;
-    }
-
-    @Override
-    public void setBeginTime(Long beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    @Override
-    public Long getEndTime() {
-        return endTime;
-    }
-
-    @Override
-    public void setEndTime(Long endTime) {
-        this.endTime = endTime;
-    }
 
     public Long getGmtCreate() {
         return gmtCreate;
@@ -118,8 +90,6 @@ public class AssetOaOrderQuery extends ObjectQuery {
                 ", number=" + number +
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +
-                ", beginTime=" + beginTime +
-                ", endTime=" + endTime +
                 ", gmtCreate=" + gmtCreate +
                 "}";
     }
