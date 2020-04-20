@@ -22,7 +22,7 @@ public class AssetLendInfoRequest {
     /**
      *  归还日期
      */
-    @ApiModelProperty("归还日期")
+    @ApiModelProperty("预计归还日期")
     private Long lendPeriods;
     /**
      *  出借目的
