@@ -139,8 +139,22 @@ public class AssetCpeTreeController {
      */
     @ApiOperation(value = "通过节点名获取对应的BusinessId", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", responseContainer = "actionResponse", response = ActionResponse.class),})
-    @RequestMapping(value = "/query/busId", method = RequestMethod.POST)
+    @RequestMapping(value = "/query/unId", method = RequestMethod.POST)
     public ActionResponse queryBusIdByNodeName(@ApiParam(value = "title") @RequestBody AssetCpeTreeRequest request) throws Exception {
-        return ActionResponse.success(iAssetCpeTreeService.queryBusIdByNodeName(request));
+        return ActionResponse.success(iAssetCpeTreeService.queryUniqueIdByNodeName(request));
+    }
+
+    /**
+     * 查询所有操作系统名
+     *
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "查询所有操作系统名列表", notes = "")
+    @ApiResponses(value = {@ApiResponse(
+            code = 200, message = "OK", responseContainer = "actionResponse", response = ActionResponse.class),})
+    @PostMapping(value = "/query/osNameList")
+    public ActionResponse queryOsNameList() throws Exception {
+        return ActionResponse.success(iAssetCpeTreeService.queryOsNameList());
     }
 }

@@ -89,5 +89,7 @@ public interface IAssetCpeTreeService extends IBaseService<AssetCpeTree> {
      * @return
      * @throws Exception
      */
-    String queryBusIdByNodeName(AssetCpeTreeRequest request)  throws Exception;
+    String queryUniqueIdByNodeName(AssetCpeTreeRequest request)  throws Exception;
+
+    List<String> queryOsNameList() throws Exception;
 }

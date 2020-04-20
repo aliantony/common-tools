@@ -252,11 +252,31 @@
         <include refid="Table_Name"></include>
         where title = '操作系统'
     </select>
-    
-    <select id="getBusIdByNodeName" parameterType="com.antiy.asset.vo.request.AssetCpeTreeRequest" resultType="java.lang.String">
-        select business_id from
+
+    <select id="queryUniqueIdByNodeName" parameterType="com.antiy.asset.vo.request.AssetCpeTreeRequest"
+            resultType="java.lang.String">
+        select unique_id from
         <include refid="Table_Name"></include>
         where title = #{title}
         and status = 1
+    </select>
+
+    <select id="getOsNameList" resultType="java.lang.String">
+        SELECT
+            title
+        FROM
+            (SELECT
+                t1.node,t1.title,
+                    IF(FIND_IN_SET(parent_node, @pids) > 0, @pids:=CONCAT(@pids, ',', node), 0) AS ischild
+            FROM
+                (SELECT
+                unique_id AS node, pid AS parent_node, title
+            FROM
+                asset_cpe_tree
+            WHERE
+                status = 1
+            ORDER BY parent_node , node) t1, (SELECT @pids:=('688792976662462464')) t2) t3
+        WHERE
+        ischild != 0
     </select>
 </mapper>
