@@ -297,6 +297,18 @@ public class Asset extends BaseEntity {
      * 网络类型名称
      */
     private String  netTypeName;
+    /**
+     * 行颜色
+     */
+    private String  rowColor;
+
+    public String getRowColor() {
+        return rowColor;
+    }
+
+    public void setRowColor(String rowColor) {
+        this.rowColor = rowColor;
+    }
 
     public Integer getCategoryModelType() {
         return categoryModelType;

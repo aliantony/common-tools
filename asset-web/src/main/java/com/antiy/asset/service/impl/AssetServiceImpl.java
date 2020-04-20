@@ -3752,6 +3752,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
             }
+            //行颜色
+            if (asset.getServiceLife() != null && asset.getServiceLife() > 0) {
+                //已过到期时间,显示黄色
+                if (System.currentTimeMillis() > asset.getServiceLife()) {
+                    asset.setRowColor("yellow");
+                } else {
+                    if (asset.getExpirationReminder() != null && asset.getExpirationReminder() > 0) {
+                        //未到到期时间，但是以到到期提醒时间，显示绿色
+                        if (System.currentTimeMillis() > asset.getServiceLife()) {
+                            asset.setRowColor("green");
+                        }
+                    }
+                }
+            }
         });
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
