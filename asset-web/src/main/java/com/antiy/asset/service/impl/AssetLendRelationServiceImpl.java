@@ -166,6 +166,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public Integer saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
+        request.setLendStatus(1);
         request.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
@@ -180,7 +181,6 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query) {
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
-
         return new PageResult<ApproveListResponse>(query.getPageSize(), assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
     }
