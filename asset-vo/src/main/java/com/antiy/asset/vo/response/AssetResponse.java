@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -378,6 +379,19 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("描述")
     private String                         memo;
+    /**
+     * 行颜色
+     */
+    @ApiModelProperty("行颜色:green,yellow")
+    private String                         rowColor;
+
+    public String getRowColor() {
+        return rowColor;
+    }
+
+    public void setRowColor(String rowColor) {
+        this.rowColor = rowColor;
+    }
 
     public String getNetTypeName() {
         return netTypeName;
@@ -1051,7 +1065,6 @@ public class AssetResponse extends BaseResponse {
     public void setDecryptId(String decryptId) {
         this.decryptId = decryptId;
     }
-
 
     @Override
     public String toString() {
