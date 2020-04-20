@@ -266,11 +266,11 @@
             title
         FROM
             (SELECT
-                t1.node,t1.title,
+                t1.node,t1.title,t1.business_id,
                     IF(FIND_IN_SET(parent_node, @pids) > 0, @pids:=CONCAT(@pids, ',', node), 0) AS ischild
             FROM
                 (SELECT
-                unique_id AS node, pid AS parent_node, title
+                unique_id AS node, pid AS parent_node, title, business_id
             FROM
                 asset_cpe_tree
             WHERE
@@ -278,5 +278,6 @@
             ORDER BY parent_node , node) t1, (SELECT @pids:=('688792976662462464')) t2) t3
         WHERE
         ischild != 0
+        and business_id != ''
     </select>
 </mapper>
