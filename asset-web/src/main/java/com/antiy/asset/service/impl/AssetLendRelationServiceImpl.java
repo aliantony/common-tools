@@ -64,6 +64,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private BaseConverter<AssetLendInfoRequest, AssetLendRelation> lendRelationBaseConverter;
     @Resource
+    private BaseConverter<AssetLendInfosRequest, AssetLendRelation> lendInfosRequestAssetLendRelationBaseConverter;
+    @Resource
     private LoginUserUtil loginUserUtil;
     @Resource
     private AesEncoder aesEncoder;
@@ -169,6 +171,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         request.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
+        assetLendRelation.setLendStatus(Integer.valueOf(1));
         assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -180,7 +183,6 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query) {
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
-
         return new PageResult<ApproveListResponse>(query.getPageSize(), assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
     }
@@ -214,26 +216,25 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
+    public String saveLendInfos(AssetLendInfosRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getUseId(), "用户ID不能为空");
-        ParamterExceptionUtils.isNull(request.getAssetIdList(), "资产列表不能为空");
+        ParamterExceptionUtils.isNull(request.getAssetIds(), "资产列表不能为空");
         ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
-        Integer creatUser = LoginUserUtil.getLoginUser().getId();
-        String userName = LoginUserUtil.getLoginUser().getUsername();
-        Long gmtCreat = System.currentTimeMillis();
-        for (String item : request.getAssetIdList()) {
-            AssetLendRelation assetLendRelation = new AssetLendRelation();
-            assetLendRelation.setStatus(1);
-            assetLendRelation.setCreateUser(creatUser);
-            assetLendRelation.setGmtCreate(gmtCreat);
-            assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
 
-            assetLendRelation.setUseId(request.getUseId());
-            assetLendRelation.setOrderNumber(request.getOrderNumber());
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+
+        AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request,AssetLendRelation.class);
+        assetLendRelation.setLendStatus(Integer.valueOf(1));
+        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setGmtCreate(System.currentTimeMillis());
+        assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetLendRelation.setStatus(Integer.valueOf(1));
+
+        for (String item : request.getAssetIds()) {
             assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
             assetLendRelationDao.insert(assetLendRelation);
         }
-        return null;
+        return request.toString();
     }
 
     @Override

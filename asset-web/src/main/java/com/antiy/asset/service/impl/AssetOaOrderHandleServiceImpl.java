@@ -88,6 +88,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         if (CollectionUtils.isEmpty(request.getAssetIds())) {
             throw new BusinessException("请关联资产");
         }
+        if(request.getAssetIds().size() > 1 && !AssetOaOrderTypeEnum.LEND.getCode().equals(request.getHandleType())){
+            throw new BusinessException("只允许关联一条资产信息");
+        }
         String orderNumber = request.getOrderNumber();
         AssetOaOrder assetOaOrder = assetOaOrderDao.getByNumber(orderNumber);
         if (AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())) {
@@ -123,6 +126,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
             assetOaOrderResultDao.insert(assetOaOrderResult);
         }
+        //保存订单与资产关联关系
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
         for (String assetId : request.getAssetIds()) {
             assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
@@ -139,13 +143,17 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
             //如果是退回,资产状态改为待退回
             Asset asset = new Asset();
+            asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-            assetDao.updateStatusByNumber(asset);
+            assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
-            //如果是报废
-
+            //如果是报废，资产状态改为待报废
+            Asset asset = new Asset();
+            asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
+            asset.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
+            assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
-            //如果是出借
+            //如果是出借，调用金楚迅提供接口
 
         }
         //更改订单状态为已处理
