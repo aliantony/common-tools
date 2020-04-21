@@ -35,7 +35,7 @@ public class AssetKeyManageController {
 
     @ApiOperation(value = "批量查询接口", notes = "传入查询条件")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/query/list", method = RequestMethod.POST)
+    @PostMapping(value = "/query/list")
     public ActionResponse queryList(@RequestBody @ApiParam(value = "query") AssetKeyManageQuery query) throws Exception {
         return ActionResponse.success(keyManageService.findPageAssetKeys(query));
     }
@@ -48,8 +48,8 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key登记", notes = "key登记")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) throws Exception {
+    @PostMapping(value = "/register")
+    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) {
         return ActionResponse.success(keyManageService.keyRegister(request));
     }
 
@@ -61,7 +61,7 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key领用", notes = "key领用")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/recipients", method = RequestMethod.POST)
+    @PostMapping(value = "/recipients")
     public ActionResponse keyRecipients(@RequestBody AssetKeyManageRequest request) throws Exception {
         return ActionResponse.success(keyManageService.keyRecipients(request));
     }
@@ -74,8 +74,8 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key归还", notes = "key归还")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/return", method = RequestMethod.POST)
-    public ActionResponse keyReturn(@RequestBody AssetKeyManageRequest request) throws Exception {
+    @PostMapping(value = "/return")
+    public ActionResponse keyReturn(@RequestBody AssetKeyManageRequest request) {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyReturn(request));
     }
@@ -88,8 +88,8 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key冻结", notes = "key冻结")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/freeze", method = RequestMethod.POST)
-    public ActionResponse keyFreeze(@RequestBody AssetKeyManageRequest request) throws Exception {
+    @PostMapping(value = "/freeze")
+    public ActionResponse keyFreeze(@RequestBody AssetKeyManageRequest request) {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyFreeze(request, KeyStatusEnum.KEY_FREEZE.getStatus()));
     }
@@ -102,8 +102,8 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key解冻", notes = "key解冻")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/unfreeze", method = RequestMethod.POST)
-    public ActionResponse keyUnfreeze(@RequestBody AssetKeyManageRequest request) throws Exception {
+    @PostMapping(value = "/unfreeze")
+    public ActionResponse keyUnfreeze(@RequestBody AssetKeyManageRequest request) {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyFreeze(request, KeyStatusEnum.KEY_RECIPIENTS.getStatus()));
     }
@@ -116,8 +116,8 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "key删除", notes = "key删除")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ActionResponse keyDelete(@RequestBody AssetKeyManageRequest request) throws Exception {
+    @PostMapping(value = "/delete")
+    public ActionResponse keyDelete(@RequestBody AssetKeyManageRequest request) {
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyRemove(request));
     }
@@ -128,9 +128,8 @@ public class AssetKeyManageController {
      * @return actionResponse
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
-    @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
-    public void exportTemplate() throws Exception {
+    @GetMapping(value = "/export/template")
+    public void exportTemplate() {
         keyManageService.exportTemplate();
     }
 
@@ -141,8 +140,7 @@ public class AssetKeyManageController {
      */
     @ApiOperation(value = "导入KEY", notes = "导入EXcel")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
-    @RequestMapping(value = "/import/key", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
+    @PostMapping(value = "/import/key")
     public ActionResponse importUser(@ApiParam(value = "file") MultipartFile file) throws Exception {
         if (file == null) {
 
