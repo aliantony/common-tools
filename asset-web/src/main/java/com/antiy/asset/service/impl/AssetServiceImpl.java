@@ -168,6 +168,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetBusinessServiceImpl                                            businessService;
     @Resource
     private AssetBaseDataCache                                                  assetBaseDataCache;
+    @Resource
+    private AssetCpeTreeDao                                                     treeDao;
     private Object                                                              lock     = new Object();
 
     @Override
@@ -816,12 +818,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<Integer> currentStatusAssetIds = assetDao.queryIdsByAssetStatus(
                     AssetStatusEnum.WAIT_REGISTER.getCode(), LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
                 if (CollectionUtils.isNotEmpty(currentStatusAssetIds)) {
-                    // List<AssetOperationRecord> operationRecordList = operationRecordDao
-                    // .listByAssetIds(currentStatusAssetIds);
-                    // 当前为资产登记的 有待办任务的资产Id
-                    // List<Integer> waitTaskIds = processMap.entrySet().stream()
-                    // .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
-                    // .collect(Collectors.toList());
                     waitRegistIds = currentStatusAssetIds.stream().map(DataTypeUtils::integerToString)
                         .collect(Collectors.toList());
                 }
@@ -835,7 +831,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
     }
-
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
      */
@@ -2289,13 +2284,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            // if (!checkOperatingSystem(entity.getOperationSystem())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-            // continue;
-            // }
-
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
             List<String> areasStrings = new ArrayList<>();
@@ -2326,10 +2314,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetMac.add(entity.getMac());
             ComputerVo computerVo = new ComputerVo();
             Asset asset = new Asset();
-            HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-            stringObjectHashMap.put("productName", entity.getOperationSystem());
-            AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-            asset.setOperationSystem(assetCpeFilter.getBusinessId());
+            asset.setOperationSystem(Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem())));
             asset.setOperationSystemName(entity.getOperationSystem());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
@@ -2746,12 +2731,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("系统中没有此使用者，或已被注销！");
                 continue;
             }
-            // if (!checkOperatingSystem(entity.getOperationSystem())) {
-            // error++;
-            // a++;
-            // builder.append("第").append(a).append("行").append("操作系统不存在，或已被注销！");
-            // continue;
-            // }
 
             String areaId = null;
             List<SysArea> areas = LoginUserUtil.getLoginUser().getAreas();
@@ -2797,13 +2776,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCode(entity.getCode());
             asset.setNetType(typeId);
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
-            if (StringUtils.isNotBlank(entity.getOperationSystem())) {
-                HashMap<String, Object> stringObjectHashMap = new HashMap<>();
-                stringObjectHashMap.put("productName", entity.getOperationSystem());
-                AssetCpeFilter assetCpeFilter = assetCpeFilterDao.getByWhere(stringObjectHashMap).get(0);
-                asset.setOperationSystem(assetCpeFilter.getBusinessId());
-                asset.setOperationSystemName(entity.getOperationSystem());
-            }
+            asset.setOperationSystem(Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem())));
+            asset.setOperationSystemName(entity.getOperationSystem());
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
@@ -3491,43 +3465,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
             downloadVO.setDownloadList(assetEntities);
         }
-        // List<AssetEntity> listr = Lists.newArrayList ();
-        // AssetEntity AssetEntity = new AssetEntity ();
-        // AssetEntity.setServiceLife ("掌上1");
-        // AssetEntity.setResponsibleUserName ("掌上setResponsibleUserName");
-        // AssetEntity.setOperationSystemName ("掌上setOperationSystemName");
-        // AssetEntity.setNumber ("掌上2");
-        // AssetEntity.setName ("掌上3");
-        // AssetEntity.setManufacturer ("掌上5");
-        // AssetEntity.setMacs ("掌上4");
-        // AssetEntity.setIps ("掌上343");
-        // AssetEntity.setImportanceDegree ("掌上2423");
-        // AssetEntity.setGmtCreate ("掌上234");
-        // AssetEntity.setFirstEnterNett ("掌上324");
-        // AssetEntity.setCategoryModelName ("掌423上");
-        // AssetEntity.setAssetStatus ("掌234上");
-        // AssetEntity.setAssetSource ("掌234上");
-        //
-        // AssetEntity AssetEntity1 = new AssetEntity ();
-        // AssetEntity1.setServiceLife ("掌上1");
-        // AssetEntity1.setResponsibleUserName ("掌上setResponsibleUserName");
-        // AssetEntity1.setOperationSystemName ("掌上setOperationSystemName");
-        // AssetEntity1.setNumber ("掌上2");
-        // AssetEntity1.setName ("掌上3");
-        // AssetEntity1.setManufacturer ("掌上5");
-        // AssetEntity1.setMacs ("掌上4");
-        // AssetEntity1.setIps ("掌上343");
-        // AssetEntity1.setImportanceDegree ("掌上2423");
-        // AssetEntity1.setGmtCreate ("掌上234");
-        // AssetEntity1.setFirstEnterNett ("掌上324");
-        // AssetEntity1.setCategoryModelName ("掌423上");
-        // AssetEntity1.setAssetStatus ("掌234上");
-        // AssetEntity1.setAssetSource ("掌234上");
-        // listr.add (AssetEntity1);
-        // listr.add (AssetEntity);
-        //
-        // downloadVO.setDownloadList (listr);
-        // downloadVO.setSheetName("资产信息表");
+
         // 3种导方式 1 excel 2 cvs 3 xml
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
 
@@ -3712,6 +3650,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
+        //查询待办
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
+        //工作台进入,过滤当前用户待办的资产id
+        if (assetMultipleQuery.getEnterControl()) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                // 待办资产id
+                Set<String> ids  = processMap.keySet();
+                assetMultipleQuery.setIds(ids.toArray(new String[ids.size()]));
+            }
+        }
+
         Integer count = assetDao.queryAssetCount(assetMultipleQuery);
         if (count <= 0) {
             return new PageResult<>(assetMultipleQuery.getPageSize(), 0, assetMultipleQuery.getCurrentPage(),
@@ -3752,14 +3701,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
             }
-            //行颜色
+            // 行颜色
             if (asset.getServiceLife() != null && asset.getServiceLife() > 0) {
-                //已过到期时间,显示黄色
+                // 已过到期时间,显示黄色
                 if (System.currentTimeMillis() > asset.getServiceLife()) {
                     asset.setRowColor("yellow");
                 } else {
                     if (asset.getExpirationReminder() != null && asset.getExpirationReminder() > 0) {
-                        //未到到期时间，但是以到到期提醒时间，显示绿色
+                        // 未到到期时间，但是以到到期提醒时间，显示绿色
                         if (System.currentTimeMillis() > asset.getServiceLife()) {
                             asset.setRowColor("green");
                         }
@@ -3768,6 +3717,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
+        for (AssetResponse object : assetResponseList) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                object.setWaitingTaskReponse(processMap.get(object.getStringId()));
+            }
+        }
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
     }

@@ -1,12 +1,11 @@
 package com.antiy.asset.templet;
 
+import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.*;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
-import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.asset.vo.response.AssetNettypeManageResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -36,7 +35,7 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Resource
     private IAssetNettypeManageService iAssetNettypeManageService;
     @Resource
-    private IRedisService              redisService;
+    private AssetCpeTreeDao            treeDao;
 
 
     private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
@@ -100,9 +99,7 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> getAllSystemOs() throws Exception {
-        OsQuery osQuery = new OsQuery();
-        List<OsSelectResponse> osList = iAssetHardSoftLibService.pullDownOs(osQuery);
-        return osList.stream().map(OsSelectResponse::getValue).collect(Collectors.toList());
+        return treeDao.getOsNameList();
     }
     @Override
     public List<String> yesNo() throws Exception {
