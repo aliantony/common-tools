@@ -1141,12 +1141,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        // 查询组件
+        /*// 查询组件
         List<AssetAssemblyRequest> assetAssemblys = assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(),
             "");
         List<AssetAssemblyResponse> assemblyResponseList = BeanConvert.convert(assetAssemblys,
             AssetAssemblyResponse.class);
-        assetOuterResponse.setAssemblyResponseList(assemblyResponseList);
+        assetOuterResponse.setAssemblyResponseList(assemblyResponseList);*/
         // 查询代办
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
