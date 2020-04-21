@@ -27,7 +27,7 @@ import javax.annotation.Resource;
  */
 @Api(value = "AssetNettypeManage", description = "网络类型管理api")
 @RestController
-@RequestMapping("/v1/asset/assetnettypemanage")
+@RequestMapping("/api/v1/asset/assetnettypemanage")
 public class AssetNettypeManageController {
 
     @Resource
