@@ -38,8 +38,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
 
     List<AssetLendRelationResponse> queryHistory(String assetId);
 
-    Integer insertOrderHandle(AssetOaOrderHandle assetOaOrderHandle);
-
     List<ApproveListResponse> queryApproveList(ApproveListQuery query);
 
     Integer queryApproveListCount(ApproveListQuery query);

@@ -1,9 +1,9 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.convert.LendConvert;
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLendRelationDao;
 import com.antiy.asset.entity.AssetLendRelation;
-import com.antiy.asset.entity.AssetOaOrderHandle;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.templet.AssetLendRelationEntity;
@@ -16,6 +16,7 @@ import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.*;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -23,7 +24,6 @@ import com.antiy.common.utils.DateUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -55,11 +56,19 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private LendConvert lendConvert;
     @Resource
+    private AssetDao assetDao;
+    @Resource
     private BaseConverter<AssetLendRelationRequest, AssetLendRelation> requestConverter;
     @Resource
     private BaseConverter<AssetLendRelation, AssetLendRelationResponse> responseConverter;
     @Resource
     private BaseConverter<AssetLendInfoRequest, AssetLendRelation> lendRelationBaseConverter;
+    @Resource
+    private BaseConverter<AssetLendInfosRequest, AssetLendRelation> lendInfosRequestAssetLendRelationBaseConverter;
+    @Resource
+    private LoginUserUtil loginUserUtil;
+    @Resource
+    private AesEncoder aesEncoder;
 
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
@@ -137,35 +146,36 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
-
+        //assetDao.getByAssetId()
         return assetLendRelationDao.returnConfirm(assetLendRelationRequest);
     }
 
     @Override
-    public PageResult<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
-        int count = assetLendRelationDao.countHistory(objectQuery);
-        if (count > 0) {
+    public List<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
+
             List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
-            return new PageResult<>(objectQuery.getPageSize(), count, objectQuery.getCurrentPage(), assetLendRelationResponses);
-        }
-        return new PageResult<>(objectQuery.getPageSize(), 0, objectQuery.getCurrentPage(), Lists.newArrayList());
+            if(CollectionUtils.isNotEmpty(assetLendRelationResponses)){
+                assetLendRelationResponses.forEach(t->{
+                    if(t.getLendStatus()==2){
+                        t.setLendStatusDesc("已归还");
+                    }
+                });
+            }
+            return assetLendRelationResponses;
+
     }
 
     @Override
     public Integer saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
+        request.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
+        assetLendRelation.setLendStatus(Integer.valueOf(1));
         assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
-
-        //保存资产、订单关联关系
-        AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
-        assetOaOrderHandle.setAssetId(request.getAssetId());
-        assetOaOrderHandle.setOrderNumber(String.valueOf(request.getOrderNumber()));
-        assetLendRelationDao.insertOrderHandle(assetOaOrderHandle);
 
         return assetLendRelationDao.insert(assetLendRelation);
     }
@@ -173,14 +183,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query) {
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
-
         return new PageResult<ApproveListResponse>(query.getPageSize(), assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
     }
 
     @Override
     public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
+        //TODO 暂时保留该接口，如果web不添加字段，删除
         ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
         approveInfoResponse.setOrderNumber(request.getOrderNumber());
         approveInfoResponse.setOrderUser(request.getOrderUser());
@@ -199,15 +208,40 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public UserInfoResponse queryUserInfo(UserInfoRequest request) {
         UserInfoResponse response = assetLendRelationDao.queryUserInfo(request);
         String department = new String();
-        this.getDepartment(response.getDepartmentId(), department);
-        response.setDepartment(department);
+        if (Objects.nonNull(response)) {
+            this.getDepartment(response.getDepartmentId(), department);
+            response.setDepartment(department);
+        }
         return response;
     }
 
     @Override
-    public Integer saveLendInfos(AssetLendInfosRequest request) throws Exception {
-        //TODO 产品确认oa人员与资产人员关系 再进行开发
-        return null;
+    public String saveLendInfos(AssetLendInfosRequest request) throws Exception {
+        ParamterExceptionUtils.isNull(request.getUseId(), "用户ID不能为空");
+        ParamterExceptionUtils.isNull(request.getAssetIds(), "资产列表不能为空");
+        ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
+
+        String userName = LoginUserUtil.getLoginUser().getUsername();
+
+        AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request,AssetLendRelation.class);
+        assetLendRelation.setLendStatus(Integer.valueOf(1));
+        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setGmtCreate(System.currentTimeMillis());
+        assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetLendRelation.setStatus(Integer.valueOf(1));
+
+        for (String item : request.getAssetIds()) {
+            assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
+            assetLendRelationDao.insert(assetLendRelation);
+        }
+        return request.toString();
+    }
+
+    @Override
+    public AssetResponse queryAssetInfo(Integer id) {
+
+        AssetResponse assetResponse = assetDao.queryInfoByAssetId(id);
+        return assetResponse;
     }
 
     public void getDepartment(String departmentId, String department) {

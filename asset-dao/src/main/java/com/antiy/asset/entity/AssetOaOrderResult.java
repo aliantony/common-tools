@@ -1,22 +1,20 @@
-package com.antiy.asset.vo.request;
+package com.antiy.asset.entity;
 
-import com.antiy.common.base.BasicRequest;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.validation.ObjectValidator;
+
+import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-
 /**
- * <p>
- * AssetOaOrderHandleRequest 请求对象
- * </p>
+ * <p>出借订单拒绝表</p>
  *
  * @author shenliang
- * @since 2020-04-07
+ * @since 2020-04-09
  */
 
-public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
+public class AssetOaOrderResult extends BaseEntity {
+
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("是否出借，1是 0否")
     private Integer lendStatus;
@@ -26,11 +24,6 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
 
     @ApiModelProperty("订单流水号")
     private String orderNumber;
-    /**
-     * 资产id
-     */
-    @ApiModelProperty("资产id")
-    private List<String> assetIds;
 
     @ApiModelProperty("借出人")
     private Integer lendUserId;
@@ -56,24 +49,13 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("执行人")
     private Integer excuteUserId;
 
-    @ApiModelProperty("处理类型，1入网，2退回，3报废，4出借")
+    @ApiModelProperty("处理类型")
     private Integer handleType;
 
-    public Integer getLendStatus() {
-        return lendStatus;
-    }
+    @ApiModelProperty("记录生成时间")
+    private Long gmtCreate;
 
-    public void setLendStatus(Integer lendStatus) {
-        this.lendStatus = lendStatus;
-    }
 
-    public String getRefuseReason() {
-        return refuseReason;
-    }
-
-    public void setRefuseReason(String refuseReason) {
-        this.refuseReason = refuseReason;
-    }
 
     public String getOrderNumber() {
         return orderNumber;
@@ -83,12 +65,22 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
         this.orderNumber = orderNumber;
     }
 
-    public List<String> getAssetIds() {
-        return assetIds;
+
+    public Integer getLendStatus() {
+        return lendStatus;
     }
 
-    public void setAssetIds(List<String> assetIds) {
-        this.assetIds = assetIds;
+    public void setLendStatus(Integer lendStatus) {
+        this.lendStatus = lendStatus;
+    }
+
+
+    public String getRefuseReason() {
+        return refuseReason;
+    }
+
+    public void setRefuseReason(String refuseReason) {
+        this.refuseReason = refuseReason;
     }
 
     public Integer getLendUserId() {
@@ -163,9 +155,31 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
         this.handleType = handleType;
     }
 
-    @Override
-    public void validate() throws RequestParamValidateException {
-
+    public Long getGmtCreate() {
+        return gmtCreate;
     }
 
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+
+    @Override
+    public String toString() {
+        return "AssetOaOrderResult{" +
+                ", orderNumber=" + orderNumber +
+                ", lendStatus=" + lendStatus +
+                ", refuseReason=" + refuseReason +
+                ", lendUserId=" + lendUserId +
+                ", lendTime=" + lendTime +
+                ", returnTime=" + returnTime +
+                ", lendRemark=" + lendRemark +
+                ", plan=" + plan +
+                ", fileUrl=" + fileUrl +
+                ", fileName=" + fileName +
+                ", excuteUserId=" + excuteUserId +
+                ", handleType=" + handleType +
+                ", gmtCreate=" + gmtCreate +
+                "}";
+    }
 }

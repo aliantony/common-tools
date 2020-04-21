@@ -167,15 +167,18 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         List<AssetBusinessRelationRequest> addAsset = assetOfParamter.stream()
             .filter(t -> addAssetId.contains(t.getAssetId())).collect(Collectors.toList());
         request.setAddAssetList(addAsset);
-
         // 编辑的资产
         List<AssetBusinessRelationRequest> editAsset = new ArrayList<>();
         for (AssetBusinessRelationResponse itemOfDb : assetOfDB) {
             for (AssetBusinessRelationRequest itemOfParam : assetOfParamter) {
-                if (itemOfDb.getStringId().equals(itemOfParam.getAssetId())
-                    && !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence())) {
+                if (
+                    itemOfDb.getStringId().equals(itemOfParam.getAssetId())
+                    && (itemOfDb.getBusinessInfluence()==null && itemOfParam.getBusinessInfluence()!=null
+                    || !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence()))
+                ) {
                     editAsset.add(itemOfParam);
                 }
+
             }
         }
         request.setEditAsset(editAsset);
@@ -290,7 +293,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     }
 
     @Override
-    public Integer updateStatusByUniqueId(List<String> uniqueId) {
+    public Integer updateStatusByUniqueId(String uniqueId) {
 
         return assetBusinessDao.updateStatusByUniqueId(uniqueId);
     }

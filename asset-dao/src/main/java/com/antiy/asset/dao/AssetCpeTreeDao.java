@@ -22,4 +22,7 @@ public interface AssetCpeTreeDao extends IBaseDao<AssetCpeTree> {
 
     List<AssetCpeTree> findOSTopNode();
 
+    String queryUniqueIdByNodeName(String title);
+
+    List<String> getOsNameList();
 }

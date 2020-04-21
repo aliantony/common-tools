@@ -69,17 +69,23 @@
         <if test=" number != null">
             and number LIKE CONCAT('%',replace(replace(#{number},'%','\%'),'_','\_'),'%')
         </if>
-        <if test=" orderType != null">
-            and order_type = #{orderType }
+        <if test="orderType !=null and orderType.size()>0">
+            and  order_type in
+            <foreach collection="orderType" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
-        <if test=" orderStatus != null">
-            and order_status = #{orderStatus }
+        <if test="orderStatus !=null and orderStatus.size()>0">
+            and  order_status in
+            <foreach collection="orderStatus" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         <if test=" gmtCreate!= null">
             and gmt_create = #{gmtCreate }
         </if>
-        <if test=" startTime!= null">
-            and gmt_create &gt;= #{startTime }
+        <if test=" beginTime!= null">
+            and gmt_create &gt;= #{beginTime }
         </if>
         <if test=" endTime!= null">
             and gmt_create &lt;= #{endTime }

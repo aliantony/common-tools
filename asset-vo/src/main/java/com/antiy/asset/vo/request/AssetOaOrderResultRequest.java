@@ -5,18 +5,16 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-
 /**
  * <p>
- * AssetOaOrderHandleRequest 请求对象
+ * AssetOaOrderResultRequest 请求对象
  * </p>
  *
  * @author shenliang
- * @since 2020-04-07
+ * @since 2020-04-09
  */
 
-public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
+public class AssetOaOrderResultRequest extends BasicRequest implements ObjectValidator {
 
     @ApiModelProperty("是否出借，1是 0否")
     private Integer lendStatus;
@@ -26,11 +24,6 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
 
     @ApiModelProperty("订单流水号")
     private String orderNumber;
-    /**
-     * 资产id
-     */
-    @ApiModelProperty("资产id")
-    private List<String> assetIds;
 
     @ApiModelProperty("借出人")
     private Integer lendUserId;
@@ -56,8 +49,12 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
     @ApiModelProperty("执行人")
     private Integer excuteUserId;
 
-    @ApiModelProperty("处理类型，1入网，2退回，3报废，4出借")
+    @ApiModelProperty("处理类型")
     private Integer handleType;
+
+    @ApiModelProperty("记录生成时间")
+    private Long gmtCreate;
+
 
     public Integer getLendStatus() {
         return lendStatus;
@@ -81,14 +78,6 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
 
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
-    }
-
-    public List<String> getAssetIds() {
-        return assetIds;
-    }
-
-    public void setAssetIds(List<String> assetIds) {
-        this.assetIds = assetIds;
     }
 
     public Integer getLendUserId() {
@@ -161,6 +150,14 @@ public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectVal
 
     public void setHandleType(Integer handleType) {
         this.handleType = handleType;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.base.BaseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -28,13 +29,32 @@ public class AssetOaOrderResponse extends BaseEntity {
      */
     private Integer orderStatus;
     /**
+     * 1入网审批，2退回审批，3报废审批，4出借审批
+     */
+    private String orderTypeName;
+    /**
+     * 1待处理，2已处理
+     */
+    private String orderStatusName;
+    /**
      * 时间
      */
     private Long gmtCreate;
 
+    /**
+     * 申请信息
+     */
     private AssetOaOrderApplyResponse assetOaOrderApplyResponse;
 
+    /**
+     * 审批信息
+     */
     private List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses;
+
+    /**
+     * 资产信息
+     */
+    private Map<String, Object> assetInfo;
 
     public String getNumber() {
         return number;
@@ -82,5 +102,29 @@ public class AssetOaOrderResponse extends BaseEntity {
 
     public void setAssetOaOrderApproveResponses(List<AssetOaOrderApproveResponse> assetOaOrderApproveResponses) {
         this.assetOaOrderApproveResponses = assetOaOrderApproveResponses;
+    }
+
+    public Map<String, Object> getAssetInfo() {
+        return assetInfo;
+    }
+
+    public void setAssetInfo(Map<String, Object> assetInfo) {
+        this.assetInfo = assetInfo;
+    }
+
+    public String getOrderTypeName() {
+        return orderTypeName;
+    }
+
+    public void setOrderTypeName(String orderTypeName) {
+        this.orderTypeName = orderTypeName;
+    }
+
+    public String getOrderStatusName() {
+        return orderStatusName;
+    }
+
+    public void setOrderStatusName(String orderStatusName) {
+        this.orderStatusName = orderStatusName;
     }
 }

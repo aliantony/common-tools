@@ -1,16 +1,27 @@
 package com.antiy.asset.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
 import com.antiy.asset.vo.query.AssetOaOrderHandleQuery;
 import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
+import com.antiy.biz.file.FileRespVO;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -38,6 +49,7 @@ public class AssetOaOrderHandleController {
     })
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ActionResponse saveSingle(@ApiParam(value = "assetOaOrderHandle") @RequestBody AssetOaOrderHandleRequest assetOaOrderHandleRequest)throws Exception{
+        logger.info("订单处理提交接口，assetOaOrderHandleRequest:{}", JSON.toJSONString(assetOaOrderHandleRequest));
         iAssetOaOrderHandleService.saveAssetOaOrderHandle(assetOaOrderHandleRequest);
         return ActionResponse.success();
     }
@@ -99,6 +111,44 @@ public class AssetOaOrderHandleController {
     public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id)throws Exception{
         ParamterExceptionUtils.isNull(id, "ID不能为空");
         return ActionResponse.success(iAssetOaOrderHandleService.deleteById(id));
+    }
+
+    /**
+     * 上传文件到hdfs
+     */
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @PostMapping(value = "/upload", consumes = "multipart/*", headers = "content-type=multipart/form-data")
+    public ActionResponse upload(@ApiParam(value = "fileList", required = true) MultipartFile file) throws Exception {
+        if(file == null){
+            throw new BusinessException("请选择文件");
+        }
+        //定义文件返回对象
+        List<FileRespVO> fileRespVOS = new ArrayList<>();
+        iAssetOaOrderHandleService.uploadToHdfs(file, fileRespVOS);
+        return ActionResponse.success(fileRespVOS);
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param fileUrl fileUrl地址
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "文件下载通用接口", notes = "传入下载参数信息")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
+    @GetMapping(value = "/download")
+    public void download(@ApiParam(value = "fileUrl") @RequestParam String fileUrl, @ApiParam(value = "fileName") @RequestParam String fileName, HttpServletRequest request,
+                         HttpServletResponse response) throws Exception {
+        ParamterExceptionUtils.isBlank(fileUrl, "url地址不能为空");
+        // 文件名为空则取下载路径的
+        if (StringUtils.isEmpty(fileName)) {
+            fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+        }
+        // 下载文件
+        iAssetOaOrderHandleService.downloadFromHdfs(request, response, fileName, fileUrl);
     }
 }
 

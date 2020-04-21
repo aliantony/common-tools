@@ -69,4 +69,11 @@ public interface IAssetNettypeManageService extends IBaseService<AssetNettypeMan
          * @return
          */
         List<AssetNettypeManageResponse> getAllList() throws Exception;
+
+        /**
+         * 根据网络类型名称查询id
+         * @param name
+         * @return
+         */
+        Integer getIdsByName(String name);
 }

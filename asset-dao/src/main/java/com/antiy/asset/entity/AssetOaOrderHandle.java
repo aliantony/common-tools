@@ -1,7 +1,9 @@
 package com.antiy.asset.entity;
 
 
-public class AssetOaOrderHandle {
+import com.antiy.common.base.BaseEntity;
+
+public class AssetOaOrderHandle extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,7 +29,6 @@ public class AssetOaOrderHandle {
   public void setAssetId(Integer assetId) {
     this.assetId = assetId;
   }
-
 
   @Override
   public String toString() {

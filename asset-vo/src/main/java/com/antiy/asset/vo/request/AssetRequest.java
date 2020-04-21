@@ -63,9 +63,10 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @Size(message = "资产序列号不能超过30位", max = 30)
     private String                  serial;
 
-    @ApiModelProperty("品类型号:1计算设备,2网络设备3安全设备4存储设备5其它设备")
+    @ApiModelProperty("品类型号")
     private Integer                 categoryModel;
-
+    @ApiModelProperty("品类型号:1计算设备,2网络设备3安全设备4存储设备5其它设备")
+    private Integer                 categoryModelType;
     @ApiModelProperty("行政区id")
     @Encode
     @NotBlank(message = "行政区域信息不能为空")
@@ -160,6 +161,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      * 网络类型:1红网，2篮网
      */
     @ApiModelProperty("网络类型:1红网，2篮网")
+    @Encode
     private String                  netType;
     /**
      * 是否借用：1-借用，2-未借用
@@ -186,6 +188,62 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      */
     @ApiModelProperty("到期提醒")
     private Long                    expirationReminder;
+
+    public Integer getCategoryModelType() {
+        return categoryModelType;
+    }
+
+    public void setCategoryModelType(Integer categoryModelType) {
+        this.categoryModelType = categoryModelType;
+    }
+
+    public String getNetType() {
+        return netType;
+    }
+
+    public void setNetType(String netType) {
+        this.netType = netType;
+    }
+
+    public Integer getIsBorrow() {
+        return isBorrow;
+    }
+
+    public void setIsBorrow(Integer isBorrow) {
+        this.isBorrow = isBorrow;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Long getInstallDate() {
+        return installDate;
+    }
+
+    public void setInstallDate(Long installDate) {
+        this.installDate = installDate;
+    }
+
+    public Long getActiviateDate() {
+        return activiateDate;
+    }
+
+    public void setActiviateDate(Long activiateDate) {
+        this.activiateDate = activiateDate;
+    }
+
+    public Long getExpirationReminder() {
+        return expirationReminder;
+    }
+
+    public void setExpirationReminder(Long expirationReminder) {
+        this.expirationReminder = expirationReminder;
+    }
 
     public String getMachineName() {
         return machineName;

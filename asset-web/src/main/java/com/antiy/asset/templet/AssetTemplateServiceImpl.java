@@ -1,13 +1,14 @@
 package com.antiy.asset.templet;
 
+import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.*;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
-import com.antiy.asset.vo.query.OsQuery;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
-import com.antiy.asset.vo.response.OsSelectResponse;
+import com.antiy.asset.vo.response.AssetNettypeManageResponse;
 import com.antiy.common.base.SysArea;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,7 +33,9 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Resource
     private IAssetHardSoftLibService iAssetHardSoftLibService;
     @Resource
-    private IRedisService              redisService;
+    private IAssetNettypeManageService iAssetNettypeManageService;
+    @Resource
+    private AssetCpeTreeDao            treeDao;
 
 
     private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
@@ -81,6 +84,12 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     }
 
     @Override
+    public List<String> getNetType() throws Exception {
+        return iAssetNettypeManageService.getAllList().stream().map(AssetNettypeManageResponse::getNetTypeName)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public List<String> queryAllDepartment() throws Exception {
         List<AssetDepartmentResponse> listAssetDepartment = iAssetDepartmentService
             .findListAssetDepartment(new AssetDepartmentQuery());
@@ -90,8 +99,13 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
 
     @Override
     public List<String> getAllSystemOs() throws Exception {
-        OsQuery osQuery = new OsQuery();
-        List<OsSelectResponse> osList = iAssetHardSoftLibService.pullDownOs(osQuery);
-        return osList.stream().map(OsSelectResponse::getValue).collect(Collectors.toList());
+        return treeDao.getOsNameList();
+    }
+    @Override
+    public List<String> yesNo() throws Exception {
+        List<String> objects = Lists.newArrayList();
+        objects.add("否");
+        objects.add("是");
+        return objects;
     }
 }

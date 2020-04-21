@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.request;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 public class AssetLendInfoRequest {
@@ -7,7 +8,7 @@ public class AssetLendInfoRequest {
      *  资产id
      */
     @ApiModelProperty("资产id")
-    private Integer assetId;
+    private String assetId;
     /**
      *  用户id
      */
@@ -21,7 +22,7 @@ public class AssetLendInfoRequest {
     /**
      *  归还日期
      */
-    @ApiModelProperty("归还日期")
+    @ApiModelProperty("预计归还日期")
     private Long lendPeriods;
     /**
      *  出借目的
@@ -53,11 +54,11 @@ public class AssetLendInfoRequest {
     @ApiModelProperty("归还时间")
     private Long returnTime;
 
-    public Integer getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(Integer assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

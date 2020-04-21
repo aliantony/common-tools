@@ -20,7 +20,21 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "name", align = 1, title = "名称(必填)  备注:填写该厂商下的名称 ", length = 128, required = true)
     private String name;
-
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "code", align = 1, title = "国资码(必填)", length = 255, required = true)
+    private String code;
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "netType", align = 1, title = "网络类型(必填)", required = true, defaultDataMethod = "getNetType", defaultDataBeanName = "assetTemplateServiceImpl")
+    private String netType;
+    /**
+     * 资产名称
+     */
+    @ExcelField(value = "isSecrecy", align = 1, title = "是否涉密(必填)", required = true, defaultDataMethod = "yesNo", defaultDataBeanName = "assetTemplateServiceImpl")
+    private String isSecrecy;
     /**
      * 软件版本
      */
@@ -41,7 +55,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = false, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = true, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
     private String operationSystem;
 
     /**
@@ -50,9 +64,9 @@ public class SafetyEquipmentEntiy {
     @ExcelField(value = "importanceDegree", align = 1, title = "重要程度(必填)", dictType = "major_type", required = true)
     private String importanceDegree;
     /**
-     * ip地址
+     * p地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", required = true, dataType = DataTypeEnum.IP)
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)  备注:该IP需要是在(归属区域、网络类型)下推荐的可用IP", dataType = DataTypeEnum.IP, required = true)
     private String ip;
     /**
      * ip地址
@@ -70,6 +84,21 @@ public class SafetyEquipmentEntiy {
      */
     @ExcelField(value = "buyDate", align = 1, title = "购买日期", isDate = true)
     private Long   buyDate;
+    /**
+     * 使用到期时间
+     */
+    @ExcelField(value = "expirationReminder", align = 1, title = "到期提醒", isDate = true, required = false)
+    private Long   expirationReminder;
+    /**
+     * 使用到期时间
+     */
+    @ExcelField(value = "installDate", align = 1, title = "装机时间", isDate = true, required = false)
+    private Long   installDate;
+    /**
+     * 使用到期时间
+     */
+    @ExcelField(value = "activiateDate", align = 1, title = "启用时间", isDate = true, required = false)
+    private Long   activiateDate;
     /**
      * 序列号
      */
@@ -95,6 +124,53 @@ public class SafetyEquipmentEntiy {
     private String            memo;
 
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getNetType() {
+        return netType;
+    }
+
+    public void setNetType(String netType) {
+        this.netType = netType;
+    }
+
+    public String getIsSecrecy() {
+        return isSecrecy;
+    }
+
+    public void setIsSecrecy(String isSecrecy) {
+        this.isSecrecy = isSecrecy;
+    }
+
+    public Long getExpirationReminder() {
+        return expirationReminder;
+    }
+
+    public void setExpirationReminder(Long expirationReminder) {
+        this.expirationReminder = expirationReminder;
+    }
+
+    public Long getInstallDate() {
+        return installDate;
+    }
+
+    public void setInstallDate(Long installDate) {
+        this.installDate = installDate;
+    }
+
+    public Long getActiviateDate() {
+        return activiateDate;
+    }
+
+    public void setActiviateDate(Long activiateDate) {
+        this.activiateDate = activiateDate;
+    }
 
     public String getName() {
         return name;

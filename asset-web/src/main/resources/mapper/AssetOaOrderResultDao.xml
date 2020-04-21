@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.antiy.asset.dao.AssetOaOrderResultDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.antiy.asset.entity.AssetOaOrderResult">
+        <id column="id" property="id"/>
+        <result column="order_number" property="orderNumber"/>
+        <result column="lend_status" property="lendStatus"/>
+        <result column="refuse_reason" property="refuseReason"/>
+        <result column="lend_user_id" property="lendUserId"/>
+        <result column="lend_time" property="lendTime"/>
+        <result column="return_time" property="returnTime"/>
+        <result column="lend_remark" property="lendRemark"/>
+        <result column="plan" property="plan"/>
+        <result column="file_url" property="fileUrl"/>
+        <result column="file_name" property="fileName"/>
+        <result column="excute_user_id" property="excuteUserId"/>
+        <result column="handle_type" property="handleType"/>
+        <result column="gmt_create" property="gmtCreate"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_number, lend_status, refuse_reason, lend_user_id, lend_time, return_time, lend_remark, plan, file_url, file_name, excute_user_id, handle_type, gmt_create
+    </sql>
+
+    <sql id="Table_Name">
+        asset_oa_order_result
+    </sql>
+
+
+    <sql id="IF_Base_Column_List">
+        <if test=" orderNumber != null">
+            order_number,
+        </if>
+        <if test=" lendStatus != null">
+            lend_status,
+        </if>
+        <if test=" refuseReason != null">
+            refuse_reason,
+        </if>
+        <if test=" lendUserId != null">
+            lend_user_id,
+        </if>
+        <if test=" lendTime != null">
+            lend_time,
+        </if>
+        <if test=" returnTime != null">
+            return_time,
+        </if>
+        <if test=" lendRemark != null">
+            lend_remark,
+        </if>
+        <if test=" plan != null">
+            plan,
+        </if>
+        <if test=" fileUrl != null">
+            file_url,
+        </if>
+        <if test=" fileName != null">
+            file_name,
+        </if>
+        <if test=" excuteUserId != null">
+            excute_user_id,
+        </if>
+        <if test=" handleType != null">
+            handle_type,
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create,
+        </if>
+    </sql>
+
+    <sql id="IF_Value_Column_List">
+        <if test=" orderNumber != null">
+            #{orderNumber },
+        </if>
+        <if test=" lendStatus != null">
+            #{lendStatus },
+        </if>
+        <if test=" refuseReason != null">
+            #{refuseReason },
+        </if>
+        <if test=" lendUserId != null">
+            #{lendUserId },
+        </if>
+        <if test=" lendTime != null">
+            #{lendTime },
+        </if>
+        <if test=" returnTime != null">
+            #{returnTime },
+        </if>
+        <if test=" lendRemark != null">
+            #{lendRemark },
+        </if>
+        <if test=" plan != null">
+            #{plan },
+        </if>
+        <if test=" fileUrl != null">
+            #{fileUrl },
+        </if>
+        <if test=" fileName != null">
+            #{fileName },
+        </if>
+        <if test=" excuteUserId != null">
+            #{excuteUserId },
+        </if>
+        <if test=" handleType != null">
+            #{handleType },
+        </if>
+        <if test=" gmtCreate != null">
+            #{gmtCreate },
+        </if>
+    </sql>
+
+    <sql id="Set_Column_List">
+        <if test=" orderNumber != null">
+            order_number = #{orderNumber },
+        </if>
+        <if test=" lendStatus != null">
+            lend_status = #{lendStatus },
+        </if>
+        <if test=" refuseReason != null">
+            refuse_reason = #{refuseReason },
+        </if>
+        <if test=" lendUserId != null">
+            lend_user_id = #{lendUserId },
+        </if>
+        <if test=" lendTime != null">
+            lend_time = #{lendTime },
+        </if>
+        <if test=" returnTime != null">
+            return_time = #{returnTime },
+        </if>
+        <if test=" lendRemark != null">
+            lend_remark = #{lendRemark },
+        </if>
+        <if test=" plan != null">
+            plan = #{plan },
+        </if>
+        <if test=" fileUrl != null">
+            file_url = #{fileUrl },
+        </if>
+        <if test=" fileName != null">
+            file_name = #{fileName },
+        </if>
+        <if test=" excuteUserId != null">
+            excute_user_id = #{excuteUserId },
+        </if>
+        <if test=" handleType != null">
+            handle_type = #{handleType },
+        </if>
+        <if test=" gmtCreate != null">
+            gmt_create = #{gmtCreate },
+        </if>
+    </sql>
+
+    <sql id="Where_Column_List">
+        <if test=" orderNumber != null">
+            and order_number = #{orderNumber }
+        </if>
+        <if test=" lendStatus != null">
+            and lend_status = #{lendStatus }
+        </if>
+        <if test=" refuseReason != null">
+            and refuse_reason = #{refuseReason }
+        </if>
+        <if test=" lendUserId != null">
+            and lend_user_id = #{lendUserId }
+        </if>
+        <if test=" lendTime != null">
+            and lend_time = #{lendTime }
+        </if>
+        <if test=" returnTime != null">
+            and return_time = #{returnTime }
+        </if>
+        <if test=" lendRemark != null">
+            and lend_remark = #{lendRemark }
+        </if>
+        <if test=" plan != null">
+            and plan = #{plan }
+        </if>
+        <if test=" fileUrl != null">
+            and file_url = #{fileUrl }
+        </if>
+        <if test=" fileName != null">
+            and file_name = #{fileName }
+        </if>
+        <if test=" excuteUserId != null">
+            and excute_user_id = #{excuteUserId }
+        </if>
+        <if test=" handleType != null">
+            and handle_type = #{handleType }
+        </if>
+        <if test=" gmtCreate != null">
+            and gmt_create = #{gmtCreate }
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderResult" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into
+        <include refid="Table_Name"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="IF_Base_Column_List"></include>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="IF_Value_Column_List"></include>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.antiy.asset.entity.AssetOaOrderResult">
+        update
+        <include refid="Table_Name"></include>
+        <trim prefix="SET" suffixOverrides=",">
+            <include refid="Set_Column_List"></include>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </select>
+
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="Table_Name"></include>
+        where id = #{id}
+    </delete>
+
+    <select id="getByWhere" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select *
+        from
+        <include refid="Table_Name"></include>
+    </select>
+
+
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select count(1)
+        from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+    </select>
+
+    <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
+        select * from
+        <include refid="Table_Name"></include>
+        <where>
+            <trim prefixOverrides="and">
+                <include refid="Where_Column_List"></include>
+            </trim>
+        </where>
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+    </select>
+</mapper>

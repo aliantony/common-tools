@@ -434,4 +434,24 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<SelectResponse> queryTemplate();
 
     List<SelectResponse> queryBusiness();
+
+    List<SelectResponse> queryNetType();
+
+    AssetResponse queryInfoByAssetId(Integer id);
+
+    Integer updateStatusByNumber(Asset asset);
+
+    /**
+     * 订单关联资产综合查询数量
+     * @param assetOaOrderQuery
+     * @return
+     */
+    Integer queryOrderAssetCount(AssetOaOrderQuery assetOaOrderQuery);
+
+    /**
+     * 订单关联资产综合查询列表
+     * @param assetOaOrderQuery
+     * @return
+     */
+    List<Asset> queryOrderAssetList(AssetOaOrderQuery assetOaOrderQuery);
 }

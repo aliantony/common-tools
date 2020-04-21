@@ -67,7 +67,7 @@ public interface IAssetKeyManageService {
      * @return
      * @throws Exception
      */
-    PageResult<KeyPullDownResponse> assetMapList(KeyPullQuery query) throws Exception;
+    List<KeyPullDownResponse> assetMapList(KeyPullQuery query) throws Exception;
 
     /**
      * key--用户ID、名列表获取
@@ -75,5 +75,5 @@ public interface IAssetKeyManageService {
      * @return
      * @throws Exception
      */
-    PageResult<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception;
+    List<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception;
 }

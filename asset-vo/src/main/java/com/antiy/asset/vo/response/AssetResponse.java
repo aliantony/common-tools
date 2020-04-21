@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.response;
 
+import java.util.List;
+
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -16,11 +17,12 @@ import java.util.List;
  */
 
 public class AssetResponse extends BaseResponse {
+
     @Encode
     @ApiModelProperty("操作记录表id")
-    String assetOperationRecordId;
+    String                                 assetOperationRecordId;
     @ApiModelProperty("报废暂存备注")
-    private String temporaryInfo;
+    private String                         temporaryInfo;
     /**
      * 厂商名称版本
      */
@@ -132,7 +134,12 @@ public class AssetResponse extends BaseResponse {
      * 网络类型:1红网，2篮网
      */
     @ApiModelProperty("网络类型:1红网，2篮网")
+    @Encode
     private String                         netType;
+    /**
+     * 网络类型名称
+     */
+    private String                         netTypeName;
     /**
      * 是否借用：1-借用，2-未借用
      */
@@ -367,12 +374,32 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("执行人名字")
     private String                         executeUserName;
 
-
     /**
      * 备注
      */
     @ApiModelProperty("描述")
-    private String  memo;
+    private String                         memo;
+    /**
+     * 行颜色
+     */
+    @ApiModelProperty("行颜色:green,yellow")
+    private String                         rowColor;
+
+    public String getRowColor() {
+        return rowColor;
+    }
+
+    public void setRowColor(String rowColor) {
+        this.rowColor = rowColor;
+    }
+
+    public String getNetTypeName() {
+        return netTypeName;
+    }
+
+    public void setNetTypeName(String netTypeName) {
+        this.netTypeName = netTypeName;
+    }
 
     public String getMemo() {
         return memo;

@@ -269,11 +269,9 @@
         and status=1
     </select>
     <update id="updateStatusByUniqueId">
-        <foreach collection="list" open="" close="" item="uniqueId" separator=";">
             update  asset_business
             set status=0
             where unique_id=#{uniqueId}
-        </foreach>
     </update>
     <update id="updateByUniqueId">
         update

@@ -219,12 +219,6 @@
             <include refid="IF_Value_Column_List"></include>
         </trim>
     </insert>
-    <insert id="insertOrderHandle">
-        INSERT INTO
-            asset_oa_order_handle ( order_number, asset_id )
-        VALUES
-            ( #{orderNumber}, #{assetId} )
-    </insert>
 
     <update id="update" parameterType="com.antiy.asset.entity.AssetLendRelation" >
         update
@@ -284,7 +278,7 @@
         a.number as assetNumber,
         acm.name as categoryModel,
         a.responsible_user_id as responsibleUserId,
-        akm.key_num as keyNum,
+        akm.key_num as `key`,
         alr.lend_status as lendStatus,
         alr.use_id as useId,
         alr.lend_time as lendTime,
@@ -322,7 +316,7 @@
           a.number as assetNumber,
           a.asset_group as assetGroup,
           a.category_model as categoryModel,
-          akm.key_num as keyNum
+          akm.key_num as `key`
           from
           asset_lend_relation as alr
           left join asset as a on alr.asset_id=a.id and a.status=1
@@ -332,7 +326,8 @@
     </select>
     <update id="returnConfirm">
         update asset_lend_relation
-        set return_time=#{returnTime}
+        set return_time=#{returnTime},
+         lend_status=2
         where unique_id=#{uniqueId} and status=1
     </update>
     <select id="countHistory" resultType="int">
@@ -402,13 +397,14 @@
             ) a
     </select>
     <select id="queryUserList" resultType="com.antiy.asset.vo.response.UserListResponse">
-        SELECT NAME AS
-            userName,
+        SELECT
+            NAME AS userName,
             id AS UserId
         FROM
             asset_user
+            where status = 1
     </select>
-    <select id="queryUserInfo" resultType="com.antiy.asset.vo.response.UserInfoResponse">
+    <select id="queryUserInfo" parameterType="com.antiy.asset.vo.request.UserInfoRequest" resultType="com.antiy.asset.vo.response.UserInfoResponse">
         SELECT
             au.id AS userId,
             au.NAME AS userName,
@@ -417,11 +413,13 @@
             akm.key_num AS keyNumber
         FROM
             asset_user au
-            LEFT JOIN asset_key_manage akm ON au.name = akm.user_num_name
+            LEFT JOIN asset_key_manage akm ON (au.id = akm.key_user_id and akm.is_delete = 1)
         WHERE
+            au.status = 1
+            and
             akm.key_user_type = 2
             and
-            au.name = #{userName}
+            au.id = #{userId}
     </select>
     <select id="queryDepartment" resultType="java.lang.String">
         SELECT
@@ -429,6 +427,8 @@
         FROM
             asset_department
         WHERE
+            status = 1
+            and
             id = #{departmentId}
     </select>
     <select id="queryDepartmentParent" resultType="java.lang.String">
@@ -437,36 +437,45 @@
         FROM
             asset_department
         WHERE
+            status = 1
+            and
             id = #{departmentId}
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>
             (
-            a.name LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            a.name LIKE CONCAT('%',replace(replace(#{multiQuery},'%','\%'),'_','\_'),'%')
             or
-            a.number LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            a.number LIKE CONCAT('%',replace(replace(#{multiQuery},'%','\%'),'_','\_'),'%')
             or
-            akm.key_num LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            akm.key_num LIKE CONCAT('%',replace(replace(#{multiQuery},'%','\%'),'_','\_'),'%')
             )
         </if>
 
         <if test="areaIds !=null and areaIds.size()>0">
-            a.area_id in
+           and   a.area_id in
             <foreach collection="areaIds" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
         </if>
-        <if test="currentUseId !=null">
-            and
-            (
-            alr.use_id=#{currentUseId} or ( a.responsible_user_id=#{currentUseId} and alr.use_id is null )
-            )
+        <if test="currentUseIds !=null and currentUseIds.size()>0">
+            and (
+                alr.use_id in
+                <foreach collection="currentUseIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                or
+                a.responsible_user_id in
+                <foreach collection="currentUseIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                )
         </if>
-        <if test="lendTime !=null">
-            and alr.lend_time &lt;= #{lendTime}
+        <if test="beginTime !=null">
+            and alr.lend_time &gt;= #{beginTime}
         </if>
-        <if test="lendPeriods !=null">
-            and alr.lend_periods &gt;= #{lendPeriods}
+        <if test="endTime !=null">
+            and alr.lend_time &lt;= #{endTime}
         </if>
         <if test='categoryModels !=null and categoryModels.size()>0 '>
             and a.category_model in
@@ -474,11 +483,14 @@
                 #{item}
             </foreach>
         </if>
-        <if test='lendStatus !=null and lendStatus.size()>0 '>
-            and alr.lend_status in
-            <foreach collection="lendStatus" item="item" open="(" close=")" separator=",">
-                #{item}
-            </foreach>
-        </if>
+        <choose>
+
+            <when test="lendStatus ==1">
+                and alr.lend_status =1
+            </when>
+            <when test="lendStatus ==2">
+                and alr.lend_status  is null
+            </when>
+        </choose>
     </sql>
 </mapper>

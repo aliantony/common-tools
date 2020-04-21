@@ -5,6 +5,7 @@ import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetMultipleQuery;
+import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
@@ -637,5 +638,27 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
     public ActionResponse queryBusiness() {
         return ActionResponse.success(iAssetService.queryBusiness());
+    }
+    @ApiOperation(value = "资产列表查询-网络类型下拉", notes = "")
+    @RequestMapping(value = "/query/netType", method = RequestMethod.POST)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse") })
+    public ActionResponse queryNetType() {
+        return ActionResponse.success(iAssetService.queryNetType());
+    }
+
+    /**
+     * 根据订单id分页查询关联资产
+     *
+     * @param assetOaOrderQuery
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据订单id分页查询关联资产", notes = "传入查询条件")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/orderAssetlist", method = RequestMethod.POST)
+    public ActionResponse queryOrderAssetList(@RequestBody @ApiParam(value = "assetOaOrderQuery") AssetOaOrderQuery assetOaOrderQuery) throws Exception {
+        if(assetOaOrderQuery.getId() == null){
+            throw new BusinessException("请传订单id");
+        }
+        return ActionResponse.success(iAssetService.queryOrderAssetPage(assetOaOrderQuery));
     }
 }
