@@ -143,20 +143,24 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         //对资产做相应操作
         if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
             //如果是入网，不更改资产状态
+            logger.info("入网处理，orderNumber:{}", request.getOrderNumber());
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
             //如果是退回,资产状态改为待退回
+            logger.info("退回处理，orderNumber:{}", request.getOrderNumber());
             Asset asset = new Asset();
             asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
             //如果是报废，资产状态改为待报废
+            logger.info("报废处理，orderNumber:{}", request.getOrderNumber());
             Asset asset = new Asset();
             asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
             //如果是出借，调用金楚迅提供接口
+            logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
             AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
             assetLendInfosRequest.setAssetIds(request.getAssetIds());
             assetLendInfosRequest.setLendStatus(request.getLendStatus());
