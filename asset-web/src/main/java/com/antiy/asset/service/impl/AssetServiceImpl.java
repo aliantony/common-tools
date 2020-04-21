@@ -816,12 +816,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<Integer> currentStatusAssetIds = assetDao.queryIdsByAssetStatus(
                     AssetStatusEnum.WAIT_REGISTER.getCode(), LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
                 if (CollectionUtils.isNotEmpty(currentStatusAssetIds)) {
-                    // List<AssetOperationRecord> operationRecordList = operationRecordDao
-                    // .listByAssetIds(currentStatusAssetIds);
-                    // 当前为资产登记的 有待办任务的资产Id
-                    // List<Integer> waitTaskIds = processMap.entrySet().stream()
-                    // .filter(e -> "资产登记".equals(e.getValue().getName())).map(e -> Integer.valueOf(e.getKey()))
-                    // .collect(Collectors.toList());
                     waitRegistIds = currentStatusAssetIds.stream().map(DataTypeUtils::integerToString)
                         .collect(Collectors.toList());
                 }
@@ -835,7 +829,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
     }
-
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
      */
@@ -3712,6 +3705,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
+        //查询待办
+        Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
+        //工作台进入,过滤当前用户待办的资产id
+        if (assetMultipleQuery.getEnterControl()) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                // 待办资产id
+                Set<String> ids  = processMap.keySet();
+                assetMultipleQuery.setIds(ids.toArray(new String[ids.size()]));
+            }
+        }
+
         Integer count = assetDao.queryAssetCount(assetMultipleQuery);
         if (count <= 0) {
             return new PageResult<>(assetMultipleQuery.getPageSize(), 0, assetMultipleQuery.getCurrentPage(),
@@ -3768,6 +3772,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         });
         List<AssetResponse> assetResponseList = responseConverter.convert(assetList, AssetResponse.class);
+        for (AssetResponse object : assetResponseList) {
+            if (MapUtils.isNotEmpty(processMap)) {
+                object.setWaitingTaskReponse(processMap.get(object.getStringId()));
+            }
+        }
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
     }
