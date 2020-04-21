@@ -498,9 +498,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
-        return assemblyResponseBaseConverter.convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()),
-            AssetAssemblyResponse.class);
+    public List<AssetAssemblyDetailResponse> getAssemblyInfo(QueryCondition condition) {
+        List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
+        List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
+            .convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()), AssetAssemblyResponse.class);
+        if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
+            Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
+                .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
+            for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
+                AssetAssemblyDetailResponse detailResponse = new AssetAssemblyDetailResponse();
+                detailResponse.setAssemblyResponseList(entryAssembly.getValue());
+                detailResponse.setCount(entryAssembly.getValue().size());
+                detailResponse.setType(entryAssembly.getKey());
+                detailResponse
+                    .setTypeName(AssemblyTypeEnum.getNameByCode(DataTypeUtils.stringToInteger(entryAssembly.getKey())));
+                assemblyDetailResponseList.add(detailResponse);
+            }
+        }
+        return assemblyDetailResponseList;
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -831,6 +846,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
     }
+
     /**
      * 通联设置的资产查询 与普通资产查询类似， 不同点在于品类型号显示二级品类， 只查已入网，网络设备和计算设备的资产,且会去掉通联表中已存在的资产
      */
@@ -1125,12 +1141,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        // 查询组件
+        /*// 查询组件
         List<AssetAssemblyRequest> assetAssemblys = assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(),
             "");
         List<AssetAssemblyResponse> assemblyResponseList = BeanConvert.convert(assetAssemblys,
             AssetAssemblyResponse.class);
-        assetOuterResponse.setAssemblyResponseList(assemblyResponseList);
+        assetOuterResponse.setAssemblyResponseList(assemblyResponseList);*/
         // 查询代办
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
@@ -3650,13 +3666,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
-        //查询待办
+        // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
-        //工作台进入,过滤当前用户待办的资产id
+        // 工作台进入,过滤当前用户待办的资产id
         if (assetMultipleQuery.getEnterControl()) {
             if (MapUtils.isNotEmpty(processMap)) {
                 // 待办资产id
-                Set<String> ids  = processMap.keySet();
+                Set<String> ids = processMap.keySet();
                 assetMultipleQuery.setIds(ids.toArray(new String[ids.size()]));
             }
         }

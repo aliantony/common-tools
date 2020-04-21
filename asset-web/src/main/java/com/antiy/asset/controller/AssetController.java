@@ -18,11 +18,7 @@ import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.request.NumberMac;
 import com.antiy.asset.vo.request.ProcessTemplateRequest;
 import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
-import com.antiy.asset.vo.response.AssetCountColumnarResponse;
-import com.antiy.asset.vo.response.AssetCountResponse;
-import com.antiy.asset.vo.response.AssetMatchResponse;
-import com.antiy.asset.vo.response.AssetOuterResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -149,15 +145,14 @@ public class AssetController {
     }
 
     /**
-     * 通过ID查询资产详情
+     * 通过ID查询已关联组件列表
      *
      * @param condition 主键封装对象
      * @return actionResponse
      */
-    @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @ApiOperation(value = "通过ID查询已关联组件列表", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAssemblyDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/assemblyInfo", method = RequestMethod.POST)
-    // @PreAuthorize(value = "hasAuthority('asset:asset:queryById')")
     public ActionResponse getAssemblyInfo(@RequestBody @ApiParam(value = "asset") QueryCondition condition) {
         ParamterExceptionUtils.isNull(condition, "资产不能为空");
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
