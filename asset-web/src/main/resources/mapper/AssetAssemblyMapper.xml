@@ -179,11 +179,12 @@
 
     <sql id="where">
         <trim prefix="WHERE" prefixOverrides="AND | OR ">
-            <if test="excludeAssemblyIds != null and excludeAssemblyIds.size() > 0">
+            <if test="assetId != null and assetId != ''">
                 and lib.business_id not in
-                <foreach collection="excludeAssemblyIds" item="aid" separator="," open="(" close=")">
-                    #{aid}
-                </foreach>
+                (select business_id from asset_assembly where asset_id = #{assetId} and status = 1)
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
             </if>
             <if test="supplier != null and supplier.length() > 0">
                 and supplier like CONCAT('%',replace(replace(#{supplier},'%','\%'),'_','\_'),'%')

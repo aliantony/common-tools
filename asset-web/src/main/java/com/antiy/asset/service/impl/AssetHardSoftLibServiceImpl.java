@@ -8,11 +8,12 @@ import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.vo.enums.AssetOperationSystemEnum;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.AssetHardSoftLibRequest;
 import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.*;
+import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BaseServiceImpl;
+import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LogUtils;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -39,8 +40,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Resource
     private AssetHardSoftLibDao assetHardSoftLibDao;
-    @Resource
-    private BaseConverter<AssetHardSoftLibRequest, AssetHardSoftLib> requestConverter;
+
     @Resource
     private BaseConverter<AssetHardSoftLib, AssetHardSoftLibResponse> responseConverter;
     @Resource
@@ -91,8 +91,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     public List<OsSelectResponse> pullDownOs(OsQuery query) {
         query.setType("o");
         query.setIsfilter(true);
-        List<OsSelectResponse> osList = assetHardSoftLibDao.pullDownOs(query);
-        return osList;
+        return assetHardSoftLibDao.pullDownOs(query);
     }
 
     @Override

@@ -338,163 +338,164 @@ public class ImportExcel {
 
             // 列号
             int column = 0;
-            for (Object[] os : annotationList) {
-                Object val = this.getCellValue(dataRow, column++);
-                ExcelField ef = (ExcelField) os[0];
-                // 必填字段校验
-                if ((val == null || StringUtils.isBlank(val.toString())) && ef.required()) {
-                    failNums++;
-                    sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                            .append(",");
-                    log.error("数据不能为空,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
-                    flag = false;
-                    break;
-                }
-                if (val != null) {
-                    if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
+            if (flag) {
+                for (Object[] os : annotationList) {
+                    Object val = this.getCellValue(dataRow, column++);
+                    ExcelField ef = (ExcelField) os[0];
+                    // 必填字段校验
+                    if ((val == null || StringUtils.isBlank(val.toString())) && ef.required()) {
                         failNums++;
-                        sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
-                                .append(",");
-                        log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                        sb.append("数据不能为空,第").append(i + 1).append("行，第").append(column).append("列").append(ef.title())
+                            .append(",");
+                        log.error("数据不能为空,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
                         flag = false;
                         break;
                     }
-                    // 长度校验
-                    if (val instanceof Double) {
-                        if (val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length()) {
+                    if (val != null) {
+                        if (ef.dataType() != null && !DataTypeEnum.validate(val.toString(), ef.dataType())) {
                             failNums++;
-                            sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
-                                    .append(",数据长度超出").append(",");
-                            log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
-                            flag = false;
-                            break;
-                        }
-                    } else {
-                        if (val.toString().length() > ef.length()) {
-                            failNums++;
-                            sb.append("第").append(i + 1).append("行，第").append(column).append("列,").append(ef.title())
-                                    .append(",数据长度超出").append(",");
-                            log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
-                            flag = false;
-                            break;
-                        }
-                    }
-                    // 是码表数据
-                    if (StringUtils.isNotBlank(ef.dictType())) {
-                        // 转换
-                        val = CodeUtils.getCodeValue(ef.dictType(), val.toString());
-                    }
-                    // 获取属性类型
-                    Class<?> valType = Class.class;
-                    if (os[1] instanceof Field) {
-                        valType = ((Field) os[1]).getType();
-                    } else if (os[1] instanceof Method) {
-                        Method method = ((Method) os[1]);
-                        if (method.getName().startsWith("get")) {
-                            valType = method.getReturnType();
-                        } else if (method.getName().startsWith("set")) {
-                            valType = method.getParameterTypes()[0];
-                        }
-                    }
-                    // 转换数据
-                    if (valType == String.class) {
-                        val = val.toString();
-                        boolean falg = true;
-                        if (((String) val).endsWith(".0")) {
-                            String substring = ((String) val).substring(0, ((String) val).lastIndexOf(".0"));
-                            try {
-                                DataTypeUtils.stringToInteger(substring);
-                            } catch (Exception e) {
-                                falg = false;
-                            }
-                            if (falg) {
-
-                                val = substring;
-                            }
-
-                        }
-
-                    } else if (valType == int.class) {
-                        val = Integer.parseInt(val.toString().substring(0, val.toString().lastIndexOf(".")));
-                    } else if (valType == Integer.class) {
-                        try {
-                            val = Double.valueOf(val.toString()).intValue();
-                        } catch (Exception e) {
-                            failNums++;
-                            flag = false;
                             sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                    .append(ef.title()).append(":").append(val).append(",");
+                                .append(ef.title()).append(",");
                             log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                            flag = false;
                             break;
                         }
-                    } else if (valType == Long.class) {
-                        try {
-                            if (val instanceof Double) {
-                                Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
-                                val = date.getTime();
-                            } else if (val instanceof String) {
-                                if (!val.toString().matches("^\\d{4}(\\-|\\/|\\.)\\d{1,2}\\1\\d{1,2}$")) {
-                                    flag = false;
-                                    failNums++;
-                                    sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                            .append(ef.title()).append(val).append(",");
-                                    log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
-                                    break;
+                        // 长度校验
+                        if (val instanceof Double) {
+                            if (val.toString().substring(0, val.toString().lastIndexOf('.')).length() > ef.length()) {
+                                failNums++;
+                                sb.append("第").append(i + 1).append("行，第").append(column).append("列,")
+                                    .append(ef.title()).append(",数据长度超出").append(",");
+                                log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
+                                flag = false;
+                                break;
+                            }
+                        } else {
+                            if (val.toString().length() > ef.length()) {
+                                failNums++;
+                                sb.append("第").append(i + 1).append("行，第").append(column).append("列,")
+                                    .append(ef.title()).append(",数据长度超出").append(",");
+                                log.error("第" + (i + 1) + "行，第" + column + "列," + ef.title() + ",数据长度超出");
+                                flag = false;
+                                break;
+                            }
+                        }
+                        // 是码表数据
+                        if (StringUtils.isNotBlank(ef.dictType())) {
+                            // 转换
+                            val = CodeUtils.getCodeValue(ef.dictType(), val.toString());
+                        }
+                        // 获取属性类型
+                        Class<?> valType = Class.class;
+                        if (os[1] instanceof Field) {
+                            valType = ((Field) os[1]).getType();
+                        } else if (os[1] instanceof Method) {
+                            Method method = ((Method) os[1]);
+                            if (method.getName().startsWith("get")) {
+                                valType = method.getReturnType();
+                            } else if (method.getName().startsWith("set")) {
+                                valType = method.getParameterTypes()[0];
+                            }
+                        }
+                        // 转换数据
+                        if (valType == String.class) {
+                            val = val.toString();
+                            boolean falg = true;
+                            if (((String) val).endsWith(".0")) {
+                                String substring = ((String) val).substring(0, ((String) val).lastIndexOf(".0"));
+                                try {
+                                    DataTypeUtils.stringToInteger(substring);
+                                } catch (Exception e) {
+                                    falg = false;
                                 }
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                                Date date = simpleDateFormat.parse(val.toString());
-                                val = date.getTime();
+                                if (falg) {
+
+                                    val = substring;
+                                }
+
                             }
-                        } catch (NumberFormatException e) {
-                            flag = false;
-                            failNums++;
-                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                    .append(ef.title()).append(val).append(",");
-                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
-                            break;
-                        } catch (ParseException e) {
-                            failNums++;
-                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
-                                    .append(ef.title()).append(val).append(",");
-                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
-                        }
-                    } else if (valType == Double.class) {
-                        try {
-                            val = Double.valueOf(val.toString());
-                        } catch (Exception e) {
-                            failNums++;
-                            flag = false;
-                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+
+                        } else if (valType == int.class) {
+                            val = Integer.parseInt(val.toString().substring(0, val.toString().lastIndexOf(".")));
+                        } else if (valType == Integer.class) {
+                            try {
+                                val = Double.valueOf(val.toString()).intValue();
+                            } catch (Exception e) {
+                                failNums++;
+                                flag = false;
+                                sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
                                     .append(ef.title()).append(":").append(val).append(",");
-                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
-                            break;
-                        }
-                    } else if (valType == Float.class) {
-                        try {
-                            val = Float.valueOf(val.toString());
-                        } catch (Exception e) {
-                            failNums++;
-                            flag = false;
-                            sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                                break;
+                            }
+                        } else if (valType == Long.class) {
+                            try {
+                                if (val instanceof Double) {
+                                    Date date = DateUtil.getJavaDate(Double.valueOf(val.toString()).doubleValue());
+                                    val = date.getTime();
+                                } else if (val instanceof String) {
+                                    if (!val.toString().matches("^\\d{4}(\\-|\\/|\\.)\\d{1,2}\\1\\d{1,2}$")) {
+                                        flag = false;
+                                        failNums++;
+                                        sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                            .append(ef.title()).append(val).append(",");
+                                        log.error(
+                                            "数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
+                                        break;
+                                    }
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                    Date date = simpleDateFormat.parse(val.toString());
+                                    val = date.getTime();
+                                }
+                            } catch (NumberFormatException e) {
+                                flag = false;
+                                failNums++;
+                                sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                    .append(ef.title()).append(val).append(",");
+                                log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
+                                break;
+                            } catch (ParseException e) {
+                                failNums++;
+                                sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                    .append(ef.title()).append(val).append(",");
+                                log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列：" + ef.title() + " " + val);
+                            }
+                        } else if (valType == Double.class) {
+                            try {
+                                val = Double.valueOf(val.toString());
+                            } catch (Exception e) {
+                                failNums++;
+                                flag = false;
+                                sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
                                     .append(ef.title()).append(":").append(val).append(",");
-                            log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
-                            break;
+                                log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                                break;
+                            }
+                        } else if (valType == Float.class) {
+                            try {
+                                val = Float.valueOf(val.toString());
+                            } catch (Exception e) {
+                                failNums++;
+                                flag = false;
+                                sb.append("数据格式错误,第").append(i + 1).append("行，第").append(column).append("列")
+                                    .append(ef.title()).append(":").append(val).append(",");
+                                log.error("数据格式错误,第" + (i + 1) + "行，第" + column + "列" + ef.title() + " " + val);
+                                break;
+                            }
+                        } else if (valType == Date.class) {
+                            val = DateUtil.getJavaDate((Double) val);
                         }
-                    } else if (valType == Date.class) {
-                        val = DateUtil.getJavaDate((Double) val);
-                    }
-                    if (os[1] instanceof Field) {
-                        ReflectionUtils.invokeSetterMethod(data, ((Field) os[1]).getName(), val);
-                    } else if (os[1] instanceof Method) {
-                        String methodName = ((Method) os[1]).getName();
-                        if (methodName.startsWith("set")) {
-                            methodName = methodName.replaceAll("set", "get");
+                        if (os[1] instanceof Field) {
+                            ReflectionUtils.invokeSetterMethod(data, ((Field) os[1]).getName(), val);
+                        } else if (os[1] instanceof Method) {
+                            String methodName = ((Method) os[1]).getName();
+                            if (methodName.startsWith("set")) {
+                                methodName = methodName.replaceAll("set", "get");
+                            }
+                            clazz.getMethod(methodName, valType).invoke(data, val);
                         }
-                        clazz.getMethod(methodName, valType).invoke(data, val);
                     }
                 }
-            }
-            if (flag) {
                 dataList.add(data);
                 successNums++;
             }

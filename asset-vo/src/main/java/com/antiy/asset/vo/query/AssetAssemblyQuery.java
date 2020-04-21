@@ -1,9 +1,9 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.common.base.ObjectQuery;
-import io.swagger.annotations.ApiModelProperty;
+import com.antiy.common.encoder.Encode;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p> AssetAssembly 查询条件 </p>
@@ -13,15 +13,31 @@ import java.util.List;
  */
 
 public class AssetAssemblyQuery extends ObjectQuery {
-
+    @ApiModelProperty("组件类型")
+    private String type;
     @ApiModelProperty("厂商")
-    private String            supplier;
-
+    private String supplier;
     @ApiModelProperty("名称")
-    private String            productName;
+    private String productName;
+    @ApiModelProperty("资产id")
+    @Encode
+    private String assetId;
 
-    @ApiModelProperty("排除的组件id集合")
-    private List<String> excludeAssemblyIds;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
 
     public String getSupplier() {
         return supplier;
@@ -37,13 +53,5 @@ public class AssetAssemblyQuery extends ObjectQuery {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public List<String> getExcludeAssemblyIds() {
-        return excludeAssemblyIds;
-    }
-
-    public void setExcludeAssemblyIds(List<String> excludeAssemblyIds) {
-        this.excludeAssemblyIds = excludeAssemblyIds;
     }
 }

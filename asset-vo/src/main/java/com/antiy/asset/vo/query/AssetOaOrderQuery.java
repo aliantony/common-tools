@@ -3,6 +3,8 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p>
  * AssetOaOrder 查询条件
@@ -27,22 +29,13 @@ public class AssetOaOrderQuery extends ObjectQuery {
      * 1入网审批，2退回审批，3报废审批，4出借审批
      */
     @ApiModelProperty("1入网审批，2退回审批，3报废审批，4出借审批")
-    private Integer orderType;
+    private List<Integer> orderType;
     /**
      * 1待处理，2已处理
      */
     @ApiModelProperty("1待处理，2已处理")
-    private Integer orderStatus;
-    /**
-     * 开始时间
-     */
-    @ApiModelProperty("开始时间")
-    private Long startTime;
-    /**
-     * 结束时间
-     */
-    @ApiModelProperty("结束时间")
-    private Long endTime;
+    private List<Integer> orderStatus;
+
     /**
      * 时间
      */
@@ -65,40 +58,22 @@ public class AssetOaOrderQuery extends ObjectQuery {
         this.number = number;
     }
 
-    public Integer getOrderType() {
+    public List<Integer> getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(Integer orderType) {
+    public void setOrderType(List<Integer> orderType) {
         this.orderType = orderType;
     }
 
-    public Integer getOrderStatus() {
+    public List<Integer> getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
+    public void setOrderStatus(List<Integer> orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-
-    public Long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Long startTime) {
-        this.startTime = startTime;
-    }
-
-    @Override
-    public Long getEndTime() {
-        return endTime;
-    }
-
-    @Override
-    public void setEndTime(Long endTime) {
-        this.endTime = endTime;
-    }
 
     public Long getGmtCreate() {
         return gmtCreate;
@@ -115,8 +90,6 @@ public class AssetOaOrderQuery extends ObjectQuery {
                 ", number=" + number +
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
                 ", gmtCreate=" + gmtCreate +
                 "}";
     }

@@ -1916,22 +1916,26 @@
         where asset.id=#{id}
     </select>
     <select id="getAssemblyInfoById" parameterType="java.lang.String" resultType="com.antiy.asset.entity.AssetAssembly">
-  SELECT
-  asset.id as assetId,
-	assembly.business_id as businessId,
-	assembly.amount,
-	lib.product_name AS productName,
-	lib.supplier,
-	lib.type
-FROM
-	asset
-LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
-LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
-WHERE
-	asset.id = #{id}
-  and asset.status=1
-  and assembly.status=1
-  and lib.status=1
+      SELECT
+        asset.id as assetId,
+        assembly.business_id as businessId,
+        lib.product_name AS productName,
+        lib.supplier,
+        lib.type,
+        assembly.remove,
+        assembly.demagnetization,
+        assembly.smash,
+        assembly.unique_id as uniqueId,
+        assembly.scrap
+    FROM
+        asset
+    LEFT JOIN asset_assembly assembly ON assembly.asset_id = asset.id
+    LEFT JOIN asset_assembly_lib lib ON lib.business_id = assembly.business_id
+    WHERE
+        asset.id = #{id}
+      and asset.status=1
+      and assembly.status=1
+      and lib.status=1
     </select>
     <select id="countCategoryModel" resultMap="categoryModelResultMap">
         SELECT
@@ -2464,6 +2468,12 @@ WHERE
     </select>
     <!--资产主表的条件-->
     <sql id="mq_asset">
+        <if test="ids != null and ids.length > 0">
+            and asset.identity in
+            <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
         <if test=" multipleQuery != null and multipleQuery.trim != ''">
             and (asset.name LIKE
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')

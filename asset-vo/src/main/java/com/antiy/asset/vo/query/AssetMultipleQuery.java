@@ -19,6 +19,12 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel
 public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
+    /**
+     * 待办事项的资产id
+     */
+    private String[]      ids;
+    @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
+    private Boolean       enterControl = false;
     @ApiModelProperty("综合查询条件")
     @Size(max = 30, message = "综合查询条件不能超过30")
     private String        multipleQuery;
@@ -157,6 +163,22 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          updateStartTime;
     @ApiModelProperty("更新时间结束时间")
     private Long          updateEndTime;
+
+    public Boolean getEnterControl() {
+        return enterControl;
+    }
+
+    public void setEnterControl(Boolean enterControl) {
+        this.enterControl = enterControl;
+    }
+
+    public String[] getIds() {
+        return ids;
+    }
+
+    public void setIds(String[] ids) {
+        this.ids = ids;
+    }
 
     public Long getUpdateStartTime() {
         return updateStartTime;

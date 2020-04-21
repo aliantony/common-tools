@@ -82,4 +82,14 @@ public interface IAssetCpeTreeService extends IBaseService<AssetCpeTree> {
      */
     List<AssetCpeTreeResponse> queryTree() throws Exception;
 
+    /**
+     * 根据节点名获取对应的BusinessId
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    String queryUniqueIdByNodeName(AssetCpeTreeRequest request)  throws Exception;
+
+    List<String> queryOsNameList() throws Exception;
 }

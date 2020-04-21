@@ -197,4 +197,13 @@ public class AssetBaseDataCache<T extends BaseEntity> {
         }
         return list;
     }
+    /**
+     * 获取某个缓存的全部数据
+     * @param type
+     * @return
+     */
+    public List<T> getAll(String type) {
+        Map cache = caches.get(type);
+        return (List<T>) cache.values();
+    }
 }

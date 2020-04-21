@@ -140,6 +140,24 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
         return responseList;
     }
 
+    /**
+     * 根据节点名获取对应的UniqueId
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public String queryUniqueIdByNodeName(AssetCpeTreeRequest request) throws Exception {
+        ParamterExceptionUtils.isBlank(request.getTitle(), "节点名为空!");
+        return assetCpeTreeDao.queryUniqueIdByNodeName(request.getTitle());
+    }
+
+    @Override
+    public List<String> queryOsNameList() throws Exception {
+        return assetCpeTreeDao.getOsNameList();
+    }
+
     private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList) {
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
         for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList){

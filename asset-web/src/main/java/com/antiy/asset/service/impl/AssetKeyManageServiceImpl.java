@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import com.antiy.asset.templet.KeyEntity;
 import com.antiy.asset.vo.query.KeyPullQuery;
 import com.antiy.asset.vo.response.KeyPullDownResponse;
-import com.google.common.collect.Maps;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,22 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.dao.AssetKeyManageDao;
 import com.antiy.asset.entity.AssetKeyManage;
-import com.antiy.asset.entity.AssetUser;
 import com.antiy.asset.service.IAssetKeyManageService;
-import com.antiy.asset.templet.KeyEntity;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.KeyStatusEnum;
 import com.antiy.asset.vo.enums.KeyUserType;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetKeyManageResponse;
 import com.antiy.common.base.*;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
@@ -72,7 +65,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     private List<AssetKeyManageResponse> findList(AssetKeyManageQuery query) {
         List<AssetKeyManage> responseList = keyManageDao.queryList(query);
 
-        if (responseList.isEmpty() || responseList == null) {
+        if (responseList.isEmpty()) {
             return new ArrayList<>();
         }
         List<AssetKeyManageResponse> responses = converter.convert(responseList, AssetKeyManageResponse.class);
@@ -252,7 +245,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             return result.getMsg();
         }
         List<KeyEntity> resultDataList = result.getDataList();
-        if (resultDataList.size() == 0 && StringUtils.isBlank(result.getMsg())) {
+        if (resultDataList.isEmpty() && StringUtils.isBlank(result.getMsg())) {
             return "导入失败，模板中无数据！" + result.getMsg();
         }
 
@@ -287,10 +280,10 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         }
 
         try {
-            if (add.size() > 0) {
+            if (!add.isEmpty()) {
                 keyManageDao.insertBatch(add);
             }
-            if (update.size() > 0) {
+            if (!update.isEmpty()) {
                 keyManageDao.updateBatch(update);
             }
         } catch (DuplicateKeyException exception) {
@@ -299,12 +292,6 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
 
         String res = "导入成功" + success + "条";
         StringBuilder stringBuilder = new StringBuilder(res);
-
-        // 写入业务日志
-
-        // LogUtils.recordOperLog(new BusinessData (AssetEventEnum.ASSET_EXPORT_USERS.getName(), 0, "", null,
-        // BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
-        // LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_USERS.getName() + " {}", assets.toString());
 
         return stringBuilder.append(builder).append(sb).toString();
     }
