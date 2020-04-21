@@ -141,16 +141,21 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
     }
 
     /**
-     * 根据节点名获取对应的BusinessId
+     * 根据节点名获取对应的UniqueId
      *
      * @param request
      * @return
      * @throws Exception
      */
     @Override
-    public String queryBusIdByNodeName(AssetCpeTreeRequest request) throws Exception {
+    public String queryUniqueIdByNodeName(AssetCpeTreeRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(request.getTitle(), "节点名为空!");
-        return assetCpeTreeDao.getBusIdByNodeName(request.getTitle());
+        return assetCpeTreeDao.queryUniqueIdByNodeName(request.getTitle());
+    }
+
+    @Override
+    public List<String> queryOsNameList() throws Exception {
+        return assetCpeTreeDao.getOsNameList();
     }
 
     private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList) {

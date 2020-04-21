@@ -4,15 +4,15 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOaOrderDao;
 import com.antiy.asset.dao.AssetOaOrderHandleDao;
 import com.antiy.asset.dao.AssetOaOrderResultDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetOaOrder;
-import com.antiy.asset.entity.AssetOaOrderHandle;
-import com.antiy.asset.entity.AssetOaOrderResult;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.query.AssetOaOrderHandleQuery;
+import com.antiy.asset.vo.request.AssetLendInfosRequest;
 import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
 import com.antiy.asset.vo.response.AssetOaOrderHandleResponse;
 import com.antiy.biz.file.FileRespVO;
@@ -66,6 +66,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetOaOrderResultDao assetOaOrderResultDao;
     @Resource
     private AssetDao assetDao;
+
+    @Resource
+    private IAssetLendRelationService assetLendRelationService;
 
     @Resource
     private BaseConverter<AssetOaOrderHandleRequest, AssetOaOrderHandle> requestConverter;
@@ -140,21 +143,33 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         //对资产做相应操作
         if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
             //如果是入网，不更改资产状态
+            logger.info("入网处理，orderNumber:{}", request.getOrderNumber());
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
             //如果是退回,资产状态改为待退回
+            logger.info("退回处理，orderNumber:{}", request.getOrderNumber());
             Asset asset = new Asset();
             asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
             //如果是报废，资产状态改为待报废
+            logger.info("报废处理，orderNumber:{}", request.getOrderNumber());
             Asset asset = new Asset();
             asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
             //如果是出借，调用金楚迅提供接口
-
+            logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
+            AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
+            assetLendInfosRequest.setAssetIds(request.getAssetIds());
+            assetLendInfosRequest.setLendStatus(request.getLendStatus());
+            assetLendInfosRequest.setLendTime(request.getLendTime());
+            assetLendInfosRequest.setLendPeriods(request.getReturnTime());
+            assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
+            assetLendInfosRequest.setUseId(request.getLendUserId());
+            assetLendInfosRequest.setLendPurpose("");
+            assetLendRelationService.saveLendInfos(assetLendInfosRequest);
         }
         //更改订单状态为已处理
         assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
