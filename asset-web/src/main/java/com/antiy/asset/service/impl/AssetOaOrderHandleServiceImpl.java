@@ -4,15 +4,15 @@ import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetOaOrderDao;
 import com.antiy.asset.dao.AssetOaOrderHandleDao;
 import com.antiy.asset.dao.AssetOaOrderResultDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetOaOrder;
-import com.antiy.asset.entity.AssetOaOrderHandle;
-import com.antiy.asset.entity.AssetOaOrderResult;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.query.AssetOaOrderHandleQuery;
+import com.antiy.asset.vo.request.AssetLendInfosRequest;
 import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
 import com.antiy.asset.vo.response.AssetOaOrderHandleResponse;
 import com.antiy.biz.file.FileRespVO;
@@ -66,6 +66,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetOaOrderResultDao assetOaOrderResultDao;
     @Resource
     private AssetDao assetDao;
+
+    @Resource
+    private IAssetLendRelationService assetLendRelationService;
 
     @Resource
     private BaseConverter<AssetOaOrderHandleRequest, AssetOaOrderHandle> requestConverter;
@@ -154,7 +157,15 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
             //如果是出借，调用金楚迅提供接口
-
+            AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
+            assetLendInfosRequest.setAssetIds(request.getAssetIds());
+            assetLendInfosRequest.setLendStatus(request.getLendStatus());
+            assetLendInfosRequest.setLendTime(request.getLendTime());
+            assetLendInfosRequest.setLendPeriods(request.getReturnTime());
+            assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
+            assetLendInfosRequest.setUseId(request.getLendUserId());
+            assetLendInfosRequest.setLendPurpose("");
+            assetLendRelationService.saveLendInfos(assetLendInfosRequest);
         }
         //更改订单状态为已处理
         assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
