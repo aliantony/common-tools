@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.antiy.asset.entity.AssetAssemblyLib;
+import com.antiy.asset.vo.response.AssetAssemblyDetailResponse;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,10 +39,10 @@ public class AssetAssemblyLibController {
      * @return
      */
     @ApiOperation(value = "通过四库id查询关联组件", notes = "无查询条件")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAssemblyDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/assembly/id", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:queryAssemblyById')")
-    public ActionResponse<List<AssetAssemblyResponse>> queryAssemblyByHardSoftId(@ApiParam(value = "下拉查询类") @RequestBody AssetAssemblyLibQuery query) throws Exception {
+    public ActionResponse queryAssemblyByHardSoftId(@ApiParam(value = "下拉查询类") @RequestBody AssetAssemblyLibQuery query) throws Exception {
         ParamterExceptionUtils.isNull(query, "id不能为空");
         ParamterExceptionUtils.isNull(query.getBusinessId(), "id不能为空");
         return ActionResponse.success(iAssetAssemblyLibService.queryAssemblyByHardSoftId(query));

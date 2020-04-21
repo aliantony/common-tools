@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.response.AssetAssemblyDetailResponse;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.IBaseService;
 import com.antiy.common.base.PageResult;
@@ -22,6 +23,6 @@ import com.antiy.asset.entity.AssetAssemblyLib;
  */
 public interface IAssetAssemblyLibService extends IBaseService<AssetAssemblyLib> {
 
-    List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query);
+    List<AssetAssemblyDetailResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query);
 
 }

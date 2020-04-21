@@ -1,8 +1,12 @@
 package com.antiy.asset.service.impl;
 
 import com.antiy.asset.entity.AssetAssembly;
+import com.antiy.asset.vo.enums.AssemblyTypeEnum;
+import com.antiy.asset.vo.response.AssetAssemblyDetailResponse;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.common.base.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,6 +24,8 @@ import com.antiy.asset.vo.query.AssetAssemblyLibQuery;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p> 组件表 服务实现类 </p>
@@ -43,9 +49,24 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
 
 
     @Override
-    public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
-        return assemblyResponseBaseConverter
-            .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
+    public List<AssetAssemblyDetailResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
+        List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
+        List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
+                .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
+        if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
+            Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
+                    .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
+            for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
+                AssetAssemblyDetailResponse detailResponse = new AssetAssemblyDetailResponse();
+                detailResponse.setAssemblyResponseList(entryAssembly.getValue());
+                detailResponse.setCount(entryAssembly.getValue().size());
+                detailResponse.setType(entryAssembly.getKey());
+                detailResponse
+                        .setTypeName(AssemblyTypeEnum.getNameByCode(DataTypeUtils.stringToInteger(entryAssembly.getKey())));
+                assemblyDetailResponseList.add(detailResponse);
+            }
+        }
+        return assemblyDetailResponseList;
     }
 
 }

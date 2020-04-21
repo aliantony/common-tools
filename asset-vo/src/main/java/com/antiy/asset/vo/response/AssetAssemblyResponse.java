@@ -3,6 +3,7 @@ package com.antiy.asset.vo.response;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author zhangyajun
  * @since 2018-12-27
  */
-
+@ApiModel
 public class AssetAssemblyResponse extends BaseResponse {
 
     /**

@@ -7,11 +7,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.vo.query.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.entity.Asset;
 import com.antiy.asset.templet.AssetEntity;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
@@ -300,7 +300,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     boolean checkRepeatNumber(String number, Integer id) throws Exception;
 
-    List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
+    List<AssetAssemblyDetailResponse> getAssemblyInfo(QueryCondition condition);
 
     /**
      * 不予登记
