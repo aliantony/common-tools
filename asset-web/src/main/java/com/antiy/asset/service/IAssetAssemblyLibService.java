@@ -23,6 +23,6 @@ import com.antiy.asset.entity.AssetAssemblyLib;
  */
 public interface IAssetAssemblyLibService extends IBaseService<AssetAssemblyLib> {
 
-    List<AssetAssemblyDetailResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query);
+    List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query);
 
 }

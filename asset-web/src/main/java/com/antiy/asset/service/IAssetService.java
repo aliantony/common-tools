@@ -300,7 +300,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     boolean checkRepeatNumber(String number, Integer id) throws Exception;
 
-    List<AssetAssemblyDetailResponse> getAssemblyInfo(QueryCondition condition);
+    List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
 
     /**
      * 不予登记

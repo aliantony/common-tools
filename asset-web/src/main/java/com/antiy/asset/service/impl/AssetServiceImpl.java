@@ -509,11 +509,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public List<AssetAssemblyDetailResponse> getAssemblyInfo(QueryCondition condition) {
+    public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
             .convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()), AssetAssemblyResponse.class);
-        if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
+        /*if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
             Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
                 .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
             for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
@@ -525,8 +525,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     .setTypeName(AssemblyTypeEnum.getNameByCode(entryAssembly.getKey()));
                 assemblyDetailResponseList.add(detailResponse);
             }
-        }
-        return assemblyDetailResponseList;
+        }*/
+        return assemblyResponseList;
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
