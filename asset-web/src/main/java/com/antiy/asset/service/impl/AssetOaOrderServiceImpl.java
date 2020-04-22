@@ -76,6 +76,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Override
     public Integer saveAssetOaOrder(AssetOaOrderRequest request) throws Exception {
         AssetOaOrder assetOaOrder = requestConverter.convert(request, AssetOaOrder.class);
+        assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.WAIT_HANDLE.getCode());
         //保存订单信息
         assetOaOrderDao.insert(assetOaOrder);
         //保存申请信息

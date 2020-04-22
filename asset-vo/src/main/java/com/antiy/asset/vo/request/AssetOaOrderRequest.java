@@ -5,6 +5,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -22,11 +23,13 @@ public class AssetOaOrderRequest extends BasicRequest implements ObjectValidator
      * 流水号
      */
     @ApiModelProperty("流水号")
+    @NotNull(message = "订单流水号不为空")
     private String number;
     /**
      * 1入网审批，2退回审批，3报废审批，4出借审批
      */
     @ApiModelProperty("1入网审批，2退回审批，3报废审批，4出借审批")
+    @NotNull(message = "类型不为空")
     private Integer orderType;
     /**
      * 1待处理，2已处理
