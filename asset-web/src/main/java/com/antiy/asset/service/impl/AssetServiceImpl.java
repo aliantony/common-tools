@@ -1387,7 +1387,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setAssetGroup(dealAssetGroup(assetOuterRequest.getAsset().getId(), assetGroup));
                     asset.setModifyUser(loginUser.getId());
                     asset.setGmtModified(System.currentTimeMillis());
-                    // 入网审批未通过、不予登记、代理上报、已退役->登记
+                    // 不予登记、代理上报、已退役->登记
                     if (!EnumUtil.equals(asset.getAssetStatus(), AssetStatusEnum.NET_IN)) {
                         if (StringUtils.isNotBlank(asset.getInstallTemplateId())) {
                             dealInstallTemplete(asset.getInstallTemplateId(), assetOuterRequest.getAsset().getId());
