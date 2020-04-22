@@ -208,21 +208,6 @@ public class AssetLendRelationController {
     }
 
     /**
-     * 审批信息查询
-     *
-     * @param request
-     * @return actionResponse
-     */
-    @ApiOperation(value = "审批信息查询", notes = "传入实体对象信息")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Integer.class),
-    })
-    @RequestMapping(value = "/query/approveInfo", method = RequestMethod.POST)
-    public ActionResponse queryApproveInfo(@ApiParam(value = "AssetLendInfo") @RequestBody ApproveInfoRequest request) throws Exception {
-        return ActionResponse.success(iAssetLendRelationService.queryApproveInfo(request));
-    }
-
-    /**
      * 导出资产信息
      *
      * @param assetQuery 封装对象

@@ -98,7 +98,7 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @return
      * @throws Exception
      */
-    Integer saveLendInfo(AssetLendInfoRequest request) throws Exception;
+    String saveLendInfo(AssetLendInfoRequest request) throws Exception;
 
     /**
      * 审批单综合查询
@@ -107,14 +107,6 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @return
      */
     PageResult<ApproveListResponse> queryApproveList(ApproveListQuery query);
-
-    /**
-     * 审批信息查询
-     *
-     * @param request
-     * @return
-     */
-    ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request);
 
     /**
      * 申请人列表查询
