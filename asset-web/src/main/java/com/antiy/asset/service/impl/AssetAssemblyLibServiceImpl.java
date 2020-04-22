@@ -52,19 +52,11 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
     public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
                 .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
-       /* if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
-            Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
-                    .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
-            for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
-                AssetAssemblyDetailResponse detailResponse = new AssetAssemblyDetailResponse();
-                detailResponse.setAssemblyResponseList(entryAssembly.getValue());
-                detailResponse.setCount(entryAssembly.getValue().size());
-                detailResponse.setType(entryAssembly.getKey());
-                detailResponse
-                        .setTypeName(AssemblyTypeEnum.getNameByCode(entryAssembly.getKey()));
-                assemblyDetailResponseList.add(detailResponse);
-            }
-        }*/
+        if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
+            assemblyResponseList.stream().forEach(assetAssemblyResponse -> {
+                assetAssemblyResponse.setAmount(1);
+            });
+        }
         return assemblyResponseList;
     }
 

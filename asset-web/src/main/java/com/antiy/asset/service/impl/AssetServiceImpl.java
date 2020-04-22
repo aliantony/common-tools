@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -31,6 +30,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
@@ -43,6 +43,7 @@ import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.asset.vo.user.OauthMenuResponse;
@@ -61,7 +62,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -512,19 +512,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
             .convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()), AssetAssemblyResponse.class);
-        /*if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
-            Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
-                .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
-            for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
-                AssetAssemblyDetailResponse detailResponse = new AssetAssemblyDetailResponse();
-                detailResponse.setAssemblyResponseList(entryAssembly.getValue());
-                detailResponse.setCount(entryAssembly.getValue().size());
-                detailResponse.setType(entryAssembly.getKey());
-                detailResponse
-                    .setTypeName(AssemblyTypeEnum.getNameByCode(entryAssembly.getKey()));
-                assemblyDetailResponseList.add(detailResponse);
-            }
-        }*/
+        if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
+            assemblyResponseList.stream().forEach(assetAssemblyResponse -> {
+                assetAssemblyResponse.setAmount(1);
+            });
+        }
         return assemblyResponseList;
     }
 
