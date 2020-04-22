@@ -2673,5 +2673,19 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="getWorkNumByCondition" resultType="int">
+        select  count(id)  from  asset where
+        asset_status = #{assetStatus} and status = 1
+        <!--   上报来源   -->
+        <if test="assetSource != null">
+            and asset_source = #{assetStatus}
+        </if>
+        <!--   区域     -->
+        <if test="areaId != null and areaId.size()> 0">
+            <foreach collection="areaId" item="area" open="and (" separator=" or " close=")">
+                LOCATE(#{area}, left(a.area_id, length(#{area})))>0
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.antiy.asset.dto.AssetWorkQueryDto;
 import org.apache.ibatis.annotations.Param;
 
 import com.antiy.asset.entity.*;
@@ -454,4 +455,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> queryOrderAssetList(AssetOaOrderQuery assetOaOrderQuery);
+
+    int getWorkNumByCondition(AssetWorkQueryDto dto);
 }
