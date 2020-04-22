@@ -32,6 +32,7 @@
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
         <result column="category_model" property="categoryModel"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
         <result column="admittance_status" property="admittanceStatus"/>
@@ -75,6 +76,7 @@
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
         <result column="key" property="key"/>
+        <result column="net_type_name" property="netTypeName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -2352,7 +2354,8 @@
         GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name,
-        anm.net_type_name as netTypeName
+        anm.net_type_name,
+        acm.name as category_model_name
         FROM
         (
             select * from asset
@@ -2368,6 +2371,7 @@
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         left join asset_nettype_manage anm on (asset.net_type = anm.id and anm.status = 1)
+        left join asset_category_model acm on (asset.category_model = acm.id and acm.status = 1)
         <if test="departmentList != null and departmentList.size() > 0">
             left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
         </if>

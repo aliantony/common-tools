@@ -3,8 +3,8 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.vo.query.LendSourceQuery;
+import com.antiy.asset.vo.query.UncodeBaseQuery;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +66,7 @@ public class AssetCategoryModelController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/delete/id", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:deleteById')")
-    public ActionResponse deleteById(@RequestBody @ApiParam(value = "QueryCondition") QueryCondition condition)
+    public ActionResponse deleteById(@RequestBody @ApiParam(value = "QueryCondition") UncodeBaseQuery condition)
             throws Exception {
         ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "id不能为空");
         return iAssetCategoryModelService.delete(Integer.parseInt(condition.getPrimaryKey()));
