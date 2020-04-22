@@ -7,6 +7,7 @@ import com.antiy.asset.vo.response.AssetNettypeManageResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -60,6 +61,8 @@ public class AssetNettypeManageController {
     })
     @RequestMapping(value = "/update/single", method = RequestMethod.POST)
     public ActionResponse updateSingle(@ApiParam(value = "assetNettypeManage") @RequestBody AssetNettypeManageRequest assetNettypeManageRequest)throws Exception{
+        ParamterExceptionUtils.isNull(assetNettypeManageRequest, "请求体不能为空");
+        ParamterExceptionUtils.isBlank(assetNettypeManageRequest.getStringId(), "stringId不能为空");
         return ActionResponse.success(iAssetNettypeManageService.updateAssetNettypeManage(assetNettypeManageRequest));
     }
 
