@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.antiy.asset.vo.query.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -30,7 +31,6 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
@@ -43,7 +43,6 @@ import com.antiy.asset.templet.*;
 import com.antiy.asset.util.*;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.asset.vo.user.OauthMenuResponse;
@@ -62,6 +61,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -289,6 +289,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(request.getAssemblyRequestList())) {
                         List<AssetAssemblyRequest> assemblyRequestList = request.getAssemblyRequestList();
                         List<AssetAssembly> convert = BeanConvert.convert(assemblyRequestList, AssetAssembly.class);
+                        List<AssetAssembly> insert = Lists.newArrayList();
                         StringBuilder builder = new StringBuilder();
                         convert.forEach(assetAssembly -> {
                             if (assetAssemblyDao.findAssemblyByBusiness(assetAssembly.getBusinessId()) <= 0) {
@@ -299,8 +300,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         });
                         if (builder.length() > 0) {
                             BusinessExceptionUtils.isTrue(false, builder.append(",所选组件已更新，请刷新页面后重新添加!").toString());
+                        } else {
+                            convert.forEach(assetAssembly -> {
+                                for (int i = 0; i < assetAssembly.getAmount(); i++) {
+                                    insert.add(assetAssembly);
+                                }
+                            });
                         }
-                        assetAssemblyDao.insertBatch(convert);
+                        assetAssemblyDao.insertBatch(insert);
                     }
                     // 插入ip/net mac
                     if (CollectionUtils.isNotEmpty(request.getIpRelationRequests())) {
@@ -1141,12 +1148,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         }
-        /*// 查询组件
-        List<AssetAssemblyRequest> assetAssemblys = assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(),
-            "");
-        List<AssetAssemblyResponse> assemblyResponseList = BeanConvert.convert(assetAssemblys,
-            AssetAssemblyResponse.class);
-        assetOuterResponse.setAssemblyResponseList(assemblyResponseList);*/
+        /* // 查询组件 List<AssetAssemblyRequest> assetAssemblys =
+         * assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(), ""); List<AssetAssemblyResponse>
+         * assemblyResponseList = BeanConvert.convert(assetAssemblys, AssetAssemblyResponse.class);
+         * assetOuterResponse.setAssemblyResponseList(assemblyResponseList); */
         // 查询代办
         ActivityWaitingQuery activityWaitingQuery = new ActivityWaitingQuery();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
@@ -1824,11 +1829,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isNotEmpty(assemblyRequestList)) {
             List<AssetAssembly> assetAssemblyList = Lists.newArrayList();
             assemblyRequestList.stream().forEach(assemblyRequest -> {
-                AssetAssembly assetAssembly = new AssetAssembly();
-                assetAssembly.setAssetId(id);
-                assetAssembly.setBusinessId(assemblyRequest.getBusinessId());
-                // assetAssembly.setAmount(assemblyRequest.getAmount());
-                assetAssemblyList.add(assetAssembly);
+                for (int i = 0; i < assemblyRequest.getAmount(); i++) {
+                    AssetAssembly assetAssembly = new AssetAssembly();
+                    assetAssembly.setAssetId(id);
+                    assetAssembly.setBusinessId(assemblyRequest.getBusinessId());
+                    assetAssemblyList.add(assetAssembly);
+                }
             });
             assetAssemblyDao.insertBatch(assetAssemblyList);
             for (AssetAssembly assetAssembly : assetAssemblyList) {

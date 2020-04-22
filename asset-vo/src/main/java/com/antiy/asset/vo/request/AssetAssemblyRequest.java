@@ -67,6 +67,19 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
      */
     @ApiModelProperty("拆除 1 未  2 已")
     private Integer remove;
+    /**
+     * 数量
+     */
+    @ApiModelProperty("数量")
+    private Integer amount;
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
 
     public Integer getScrap() {
         return scrap;
