@@ -50,7 +50,6 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
 
     @Override
     public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
-        List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
                 .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
        /* if (CollectionUtils.isNotEmpty(assemblyResponseList)) {

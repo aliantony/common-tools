@@ -510,7 +510,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition) {
-        List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
             .convert(assetDao.getAssemblyInfoById(condition.getPrimaryKey()), AssetAssemblyResponse.class);
         /*if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
