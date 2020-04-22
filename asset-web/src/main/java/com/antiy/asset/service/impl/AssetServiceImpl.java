@@ -303,7 +303,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         } else {
                             convert.forEach(assetAssembly -> {
                                 for (int i = 0; i < assetAssembly.getAmount(); i++) {
-                                    insert.add(assetAssembly);
+                                    AssetAssembly assembly = new AssetAssembly();
+                                    assembly.setAssetId(assetAssembly.getAssetId());
+                                    assembly.setBusinessId(assetAssembly.getBusinessId());
+                                    assembly.setUniqueId(Long.parseLong(SnowFlakeUtil.getSnowId()));
+                                    insert.add(assembly);
                                 }
                             });
                         }
@@ -1832,6 +1836,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 for (int i = 0; i < assemblyRequest.getAmount(); i++) {
                     AssetAssembly assetAssembly = new AssetAssembly();
                     assetAssembly.setAssetId(id);
+                    assetAssembly.setUniqueId(Long.parseLong(SnowFlakeUtil.getSnowId()));
                     assetAssembly.setBusinessId(assemblyRequest.getBusinessId());
                     assetAssemblyList.add(assetAssembly);
                 }
