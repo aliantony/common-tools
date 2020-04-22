@@ -62,7 +62,7 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
                 detailResponse.setCount(entryAssembly.getValue().size());
                 detailResponse.setType(entryAssembly.getKey());
                 detailResponse
-                        .setTypeName(AssemblyTypeEnum.getNameByCode(DataTypeUtils.stringToInteger(entryAssembly.getKey())));
+                        .setTypeName(AssemblyTypeEnum.getNameByCode(entryAssembly.getKey()));
                 assemblyDetailResponseList.add(detailResponse);
             }
         }

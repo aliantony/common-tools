@@ -522,7 +522,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 detailResponse.setCount(entryAssembly.getValue().size());
                 detailResponse.setType(entryAssembly.getKey());
                 detailResponse
-                    .setTypeName(AssemblyTypeEnum.getNameByCode(DataTypeUtils.stringToInteger(entryAssembly.getKey())));
+                    .setTypeName(AssemblyTypeEnum.getNameByCode(entryAssembly.getKey()));
                 assemblyDetailResponseList.add(detailResponse);
             }
         }
