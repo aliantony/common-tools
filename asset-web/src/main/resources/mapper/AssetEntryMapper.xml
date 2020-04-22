@@ -43,6 +43,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test="assetCategorys !=null and assetCategorys.size >0">
+            and asset.category_model in
+            <foreach collection="assetCategorys" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
         and asset.status=1
     </sql>
     <insert id="insert"/>
@@ -92,8 +98,8 @@
             resultType="com.antiy.asset.vo.response.AssetEntryResponse">
         select asset.id stringId,asset.name,asset.number,group_concat(distinct air.ip) ip,
         group_concat(distinct amr.mac) mac,asset.admittance_status entryStatus,
-        if(asset.asset_status =12 and asset.admittance_status = 2,false,true) isEntryOperation,
-        asset_group as assetGroupName
+        if((asset.asset_status between 7 and 10) and asset.admittance_status = 2,false,true) isEntryOperation,
+        asset_group as assetGroupName, asset_status assetStatus
         from asset
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
