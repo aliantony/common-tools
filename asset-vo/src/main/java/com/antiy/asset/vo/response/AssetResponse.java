@@ -830,7 +830,7 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
+        this.categoryModelName = categoryModelName;
     }
 
     public String getAssetGroup() {
