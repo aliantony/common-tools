@@ -21,11 +21,12 @@ public class AssetEntryRequest extends BasicRequest {
     @Pattern(regexp = "^[12]$", message = "准入状态参数错误，只能为1或2")
     private String updateStatus;
     @ApiModelProperty("准入指令来源:  ASSET_ENTER_NET(资产入网)," +
-            "ASSET_RETIRE(资产退役)," +
+            "ASSET_RETIRE(资产退回)," +
             "VUL_SCAN(漏洞扫描)," +
             "CONFIG_SCAN(配置扫描)," +
             "PATCH_INSTALL(补丁安装)," +
             "ENTRY_MANAGE(准入管理)," +
+            "ASSET_SCRAP(资产报废)," +
             "ASSET_CHANGE(资产变更)")
     private AssetEntrySourceEnum entrySource;
 

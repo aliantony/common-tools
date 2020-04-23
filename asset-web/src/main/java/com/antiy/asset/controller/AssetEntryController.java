@@ -120,8 +120,8 @@ public class AssetEntryController {
                 "准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(
-                new BusinessData("导出《准入管理" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0, "",
-                        assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                new BusinessData("导出资产", 0, "",
+                        assetQuery, BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.NONE));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();
