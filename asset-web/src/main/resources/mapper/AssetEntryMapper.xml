@@ -50,6 +50,8 @@
             </foreach>
         </if>
         and asset.status=1
+        and asset.is_borrow=2
+        and asset.is_orphan=2
     </sql>
     <insert id="insert"/>
     <insert id="insertRecord" parameterType="com.antiy.asset.vo.request.AssetEntryRecordRequest">
