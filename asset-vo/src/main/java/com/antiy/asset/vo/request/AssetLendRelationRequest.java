@@ -211,6 +211,25 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
     this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "AssetLendRelationRequest{" +
+                "uniqueId=" + uniqueId +
+                ", assetId='" + assetId + '\'' +
+                ", useId=" + useId +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", lendPeriods=" + lendPeriods +
+                ", lendPurpose='" + lendPurpose + '\'' +
+                ", lendStatus=" + lendStatus +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", lendTime=" + lendTime +
+                ", returnTime=" + returnTime +
+                '}';
+    }
 
     @Override
     public void validate() throws RequestParamValidateException {

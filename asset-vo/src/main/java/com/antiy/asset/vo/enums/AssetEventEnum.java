@@ -127,7 +127,10 @@ public enum AssetEventEnum {
     ADD_ASSET_MONITOR_RULE_RELATION(124, "新增资产监控规则关联资产"),
     UPDATE_ASSET_MONITOR_RULE_RELATION(125, "修改资产监控规则关联资产"),
     DELETE_ASSET_MONITOR_RULE_RELATION(126, "删除资产监控规则关联资产"),
-                            ENTRY_EXECUTION(127, "进行准入实施"), ASSET_EXPORT_USERS(128, "导入人员身份");
+    ENTRY_EXECUTION(127, "进行准入实施"),
+    ASSET_EXPORT_USERS(128, "导入人员身份"),
+    BATCH_ENTRY_EXECUTION(129,"批量对资产做准入操作")
+    ;
 
     private Integer status;
     private String name;
