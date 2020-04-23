@@ -172,11 +172,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetCpeTreeDao                                                     treeDao;
     private Object                                                              lock     = new Object();
-    @Resource
-    private SysMessageSender                                                    messageSender;
-    @Value(value = "${user.workflow.listRy}")
-    private String                                                              userWorkflowListRy;
-
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
         // 授权数量校验
@@ -1282,8 +1277,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         String assetId = asset.getStringId();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
-        Integer changeStatus = null;
-        BusinessPhaseEnum businessPhaseEnum = null;
+        Integer changeStatus;
+        BusinessPhaseEnum businessPhaseEnum;
         // 判断计算设备变更走基准配置
         if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
             // 判断计算设备硬盘,软件,操作系统是否变化
@@ -1292,14 +1287,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 状态->变更中
                 changeStatus = AssetStatusEnum.IN_CHANGE.getCode();
                 businessPhaseEnum = BusinessPhaseEnum.WAIT_SETTING;
-                String[] bids = assetOuterRequest.getManualStartActivityRequest().getFormData()
-                    .get("baselineConfigUserId").toString().split(",");
-                StringBuilder sb = new StringBuilder();
-                Arrays.stream(bids).forEach(bid -> {
-                    sb.append(aesEncoder.decode(bid, loginUser.getUsername())).append(",");
-                });
+                List<String> bids = assetOuterRequest.getManualStartActivityRequest().getConfigUserIds();
                 Map formData = new HashMap();
-                formData.put("baselineConfigUserId", sb.toString());
+                formData.put("baselineConfigUserId", Arrays.toString(bids.toArray()));
                 List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                 // ------------------对接配置模块------------------start
                 BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -1315,7 +1305,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineWaitingConfigRequest.setSource(2);
                 baselineWaitingConfigRequest.setFormData(formData);
                 baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
-                baselineWaitingConfigRequest.setAdvice("xxx");
+                baselineWaitingConfigRequest.setAdvice(assetOuterRequest.getManualStartActivityRequest().getSuggest());
                 baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
                 ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                 if (null == actionResponse
@@ -1355,7 +1345,47 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     private boolean checkIsChange(AssetOuterRequest assetOuterRequest) {
-        return true;
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更前的软件
+        List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = assetSoftwareRelationDao
+            .queryInstalledList(queryCondition);
+        List<String> oldSoft = CollectionUtils.isEmpty(assetSoftwareInstallResponseList) ? Lists.newArrayList()
+            : assetSoftwareInstallResponseList.stream().map(AssetSoftwareInstallResponse::getSoftwareId)
+                .collect(Collectors.toList());
+        // 变更后软件
+        List<Long> newSofts = Objects.isNull(assetOuterRequest.getSoftwareReportRequest()) ? Lists.newArrayList()
+            : assetOuterRequest.getSoftwareReportRequest().getSoftId();
+        List<String> newSoft = Lists.newArrayList();
+        newSofts.stream().forEach(s->{
+            newSoft.add(String.valueOf(s));
+        });
+        // 变更之前的硬盘
+        List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
+            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), "DISK");
+        List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
+            : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+        // 变更后的硬盘
+        List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+            ? Lists.newArrayList()
+            : assetOuterRequest.getAssemblyRequestList().stream().map(AssetAssemblyRequest::getBusinessId)
+                .collect(Collectors.toList());
+        Asset asset = assetDao.getByAssetId(assetOuterRequest.getAsset().getId());
+        String oldOs = asset.getOperationSystemName();
+        String newOs = assetOuterRequest.getAsset().getOperationSystemName();
+        // 比较操作系统
+        if (!StringUtils.equals(oldOs, newOs)) {
+            return true;
+        }
+        // 比较软件
+        if (!oldSoft.containsAll(newSoft) || !newSoft.containsAll(oldSoft)) {
+            return true;
+        }
+        // 比较硬盘
+        if (!newDisk.containsAll(oldDisk) || !oldDisk.containsAll(newDisk)) {
+            return true;
+        }
+        return false;
     }
 
     private void checkAssetCompliance(AssetOuterRequest assetOuterRequest) {
