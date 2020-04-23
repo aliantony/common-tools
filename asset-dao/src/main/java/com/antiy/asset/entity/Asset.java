@@ -301,6 +301,18 @@ public class Asset extends BaseEntity {
      * 行颜色
      */
     private String  rowColor;
+    /**
+     * 软件版本
+     */
+    private String  softVersion;
+
+    public String getSoftVersion() {
+        return softVersion;
+    }
+
+    public void setSoftVersion(String softVersion) {
+        this.softVersion = softVersion;
+    }
 
     public String getRowColor() {
         return rowColor;

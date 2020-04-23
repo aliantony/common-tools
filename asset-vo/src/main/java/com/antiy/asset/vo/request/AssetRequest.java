@@ -188,6 +188,19 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      */
     @ApiModelProperty("到期提醒")
     private Long                    expirationReminder;
+    /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    private String                  softVersion;
+
+    public String getSoftVersion() {
+        return softVersion;
+    }
+
+    public void setSoftVersion(String softVersion) {
+        this.softVersion = softVersion;
+    }
 
     public Integer getCategoryModelType() {
         return categoryModelType;

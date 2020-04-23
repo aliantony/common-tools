@@ -77,11 +77,12 @@
         <result column="mnv" property="mnv"/>
         <result column="key" property="key"/>
         <result column="net_type_name" property="netTypeName"/>
+        <result column="soft_version" property="softVersion"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location,   house_location,  uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location,   house_location,  uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field,softVersion
     </sql>
 
     <sql id="Table_Name">
@@ -257,7 +258,10 @@
 
     </sql>
 
-    <sql id="IF_Base_Column_List">
+    <sql id="IF_Base_Column_List">softVersion
+        <if test=" softVersion != null">
+            soft_version,
+        </if>
         <if test=" businessId != null">
             business_id,
         </if>
@@ -411,6 +415,9 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" softVersion != null">
+            #{softVersion },
+        </if>
         <if test=" businessId != null">
             #{businessId },
         </if>
@@ -1675,6 +1682,9 @@
         </if>
         <if test=" machineName != null">
             machine_name = #{machineName },
+        </if>
+        <if test=" softVersion != null">
+            soft_version = #{softVersion },
         </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
