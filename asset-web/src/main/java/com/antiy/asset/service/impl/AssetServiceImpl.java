@@ -20,7 +20,6 @@ import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,6 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.asset.vo.user.OauthMenuResponse;
 import com.antiy.asset.vo.user.UserStatus;
-import com.antiy.biz.message.SysMessageSender;
 import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
@@ -172,6 +170,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetCpeTreeDao                                                     treeDao;
     private Object                                                              lock     = new Object();
+
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
         // 授权数量校验
@@ -203,15 +202,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
                     // 不跳过整改=>整改中(计算设备，安全设备)
                     if (request.getNeedScan()) {
+                        // 已整改
+                        asset.setRectification(1);
                         asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
                     } else {
                         // 计算设备、网络设备=>待准入
                         if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
                             || AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModelType())) {
                             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
+                            asset.setRectification(2);
                         } else {
                             // 安全设备、存储设备、其他设备 =>已入网
                             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                            asset.setRectification(2);
                             asset.setFirstEnterNett(currentTimeMillis);
                         }
                     }
@@ -1252,17 +1255,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (assetOuterRequest.getNeedScan()) {
             asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
             status = AssetStatusEnum.CORRECTING.getCode();
+            assetOuterRequest.getAsset().setRectification(1);
         } else {
             // 计算设备、网络设备=>待准入
             if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
                 || AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModelType())) {
                 asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                 status = AssetStatusEnum.NET_IN_CHECK.getCode();
+                assetOuterRequest.getAsset().setRectification(2);
             } else {
                 // 安全设备、存储设备、其他设备 =>已入网
                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                 asset.setFirstEnterNett(System.currentTimeMillis());
                 status = AssetStatusEnum.NET_IN.getCode();
+                assetOuterRequest.getAsset().setRectification(2);
             }
         }
         // 更新资产状态
@@ -1357,7 +1363,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Long> newSofts = Objects.isNull(assetOuterRequest.getSoftwareReportRequest()) ? Lists.newArrayList()
             : assetOuterRequest.getSoftwareReportRequest().getSoftId();
         List<String> newSoft = Lists.newArrayList();
-        newSofts.stream().forEach(s->{
+        newSofts.stream().forEach(s -> {
             newSoft.add(String.valueOf(s));
         });
         // 变更之前的硬盘

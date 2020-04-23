@@ -193,6 +193,18 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
      */
     @ApiModelProperty("软件版本")
     private String                  softVersion;
+    /**
+     * 是否被整改过：1,已整改,2未整改(不用传)
+     */
+    private Integer                 rectification;
+
+    public Integer getRectification() {
+        return rectification;
+    }
+
+    public void setRectification(Integer rectification) {
+        this.rectification = rectification;
+    }
 
     public String getSoftVersion() {
         return softVersion;
