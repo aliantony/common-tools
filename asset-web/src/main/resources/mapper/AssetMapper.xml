@@ -258,7 +258,10 @@
 
     </sql>
 
-    <sql id="IF_Base_Column_List">softVersion
+    <sql id="IF_Base_Column_List">
+        <if test=" rectification != null">
+            rectification,
+        </if>
         <if test=" softVersion != null">
             soft_version,
         </if>
@@ -415,6 +418,9 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" rectification != null">
+            #{rectification},
+        </if>
         <if test=" softVersion != null">
             #{softVersion },
         </if>
@@ -1685,6 +1691,9 @@
         </if>
         <if test=" softVersion != null">
             soft_version = #{softVersion },
+        </if>
+        <if test=" rectification != null">
+            rectification = #{rectification },
         </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
