@@ -5,6 +5,7 @@ import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.request.AssetOaOrderRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -75,7 +76,7 @@ public class AssetOaOrderController {
 
     /**
      * 通过ID查询
-     * @param id
+     * @param assetOaOrderQuery
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
@@ -98,9 +99,24 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id)throws Exception{
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderService.deleteById(id));
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition)throws Exception{
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderService.deleteById(Integer.parseInt(queryCondition.getPrimaryKey())));
+    }
+
+    /**
+     * 通过ID查询订单处理状态
+     * @param queryCondition
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID查询订单处理状态", notes = "主键封装对象")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @RequestMapping(value = "/getStatus", method = RequestMethod.POST)
+    public ActionResponse getStatus(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition)throws Exception{
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderService.getStatus(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 }
 
