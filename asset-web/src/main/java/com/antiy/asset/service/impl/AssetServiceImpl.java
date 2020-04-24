@@ -1986,14 +1986,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setCode("3773287221233");
         otherDeviceEntity.setUser("留小查");
         otherDeviceEntity.setImportanceDegree("1");
-        otherDeviceEntity.setMachineName("dsa02321");
         otherDeviceEntity.setIsSecrecy("是");
         otherDeviceEntity.setNetType("红网");
         otherDeviceEntity.setIp("192.158.58.58");
         otherDeviceEntity.setMac("00-01-6C-06-A6-29");
         otherDeviceEntity.setSerial("ANFRWGDFETYRYF");
         otherDeviceEntity.setHouseLocation("07-08-1");
-        otherDeviceEntity.setLocation("武侯大道108号");
         otherDeviceEntity.setBuyDate(System.currentTimeMillis());
         otherDeviceEntity.setDueDate(System.currentTimeMillis());
         otherDeviceEntity.setExpirationReminder(System.currentTimeMillis());
