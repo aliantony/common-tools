@@ -2380,6 +2380,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
+            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -2405,7 +2406,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getDescription());
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
-            asset.setCategoryModel(AssetCategoryEnum.COMPUTER.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             AssetIpRelation assetIpRelation = new AssetIpRelation();
             assetIpRelation.setIp(entity.getIp());
@@ -2423,20 +2423,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 Asset asset = computerVo.getAsset();
                 AssetIpRelation assetIpRelation = computerVo.getAssetIpRelation();
                 AssetMacRelation assetMacRelation = computerVo.getAssetMacRelation();
+                // 代理上报的 mac 重复更新 .ip 资产
+                Integer aid = checkNoRepate(assetMacRelation.getMac());
+                if (null != aid) {
+                    asset.setId(aid);
+                    asset.setAssetSource(null);
+                    asset.setInstallType(null);
+                    assetDao.update(asset);
+                    assetIpRelation.setAssetId(aid);
+                    List<String> ipsByAssetId = assetIpRelationDao.findIpsByAssetId(aid.toString());
+                    if (CollectionUtils.isEmpty(ipsByAssetId)) {
+                        assetIpRelationDao.insert(assetIpRelation);
+                    } else {
+                        if (!ipsByAssetId.contains(assetIpRelation.getIp())) {
+                            assetIpRelationDao.insert(assetIpRelation);
+                        }
+                    }
 
-                try {
-                    assetDao.insert(asset);
-                } catch (DuplicateKeyException exception) {
-                    throw new BusinessException("请勿重复提交！");
+                } else {
+                    try {
+                        assetDao.insert(asset);
+                    } catch (DuplicateKeyException exception) {
+                        throw new BusinessException("请勿重复提交！");
+                    }
+                    // ip/mac
+                    assetIpRelation.setAssetId(asset.getId());
+                    assetMacRelation.setAssetId(asset.getId());
+                    assetIpRelationDao.insert(assetIpRelation);
+                    assetMacRelationDao.insert(assetMacRelation);
+                    // 记录资产操作流程
+                    AssetOperationRecord assetOperationRecord = assetRecord(asset.getStringId(), asset.getAreaId());
+                    assetOperationRecordDao.insert(assetOperationRecord);
                 }
-                // ip/mac
-                assetIpRelation.setAssetId(asset.getId());
-                assetMacRelation.setAssetId(asset.getId());
-                assetIpRelationDao.insert(assetIpRelation);
-                assetMacRelationDao.insert(assetMacRelation);
-                // 记录资产操作流程
-                AssetOperationRecord assetOperationRecord = assetRecord(asset.getStringId(), asset.getAreaId());
-                assetOperationRecordDao.insert(assetOperationRecord);
+
                 success++;
             }
 
@@ -2458,6 +2477,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         return stringBuilder.append(builder).append(sb).toString();
 
+    }
+
+    private Integer checkNoRepate(String mac) {
+        return assetDao.checkNoRepate(mac);
     }
 
     @Override
@@ -2598,6 +2621,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
+            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -2623,7 +2647,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setBuyDate(entity.getButDate());
             asset.setServiceLife(entity.getDueDate());
             asset.setWarranty(entity.getWarranty());
-            asset.setCategoryModel(AssetCategoryEnum.NETWORK.getCode());
             asset.setDescrible(entity.getMemo());
             asset.setIsInnet(0);
             asset.setAdmittanceStatus(1);
@@ -2826,6 +2849,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetIpRelations.add(assetIpRelation);
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             Asset asset = new Asset();
+            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -2857,7 +2881,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setDescrible(entity.getMemo());
             asset.setIsInnet(0);
             asset.setAdmittanceStatus(1);
-            asset.setCategoryModel(AssetCategoryEnum.SAFETY.getCode());
             assets.add(asset);
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
             assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3019,6 +3042,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
+            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
             if (null == entity.getExpirationReminder()) {
                 asset.setExpirationReminder(getCalendar(entity.getDueDate()));
             } else {
@@ -3029,7 +3053,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
-            asset.setCategoryModel(AssetCategoryEnum.STORAGE.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
             asset.setAssetStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
@@ -3220,6 +3243,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
+            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
@@ -3238,7 +3262,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setServiceLife(entity.getDueDate());
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getMemo());
-            asset.setCategoryModel(AssetCategoryEnum.OTHER.getCode());
             assets.add(asset);
             AssetIpRelation assetIpRelation = new AssetIpRelation();
             assetIpRelation.setIp(entity.getIp());

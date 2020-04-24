@@ -1,5 +1,18 @@
 package com.antiy.asset.controller;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
@@ -7,17 +20,7 @@ import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
 import com.antiy.asset.vo.query.AssetMultipleQuery;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
-import com.antiy.asset.vo.request.AssetIpRequest;
-import com.antiy.asset.vo.request.AssetLockRequest;
-import com.antiy.asset.vo.request.AssetMatchRequest;
-import com.antiy.asset.vo.request.AssetOuterRequest;
-import com.antiy.asset.vo.request.ExportTemplateRequest;
-import com.antiy.asset.vo.request.ManualStartActivityRequest;
-import com.antiy.asset.vo.request.NumberMac;
-import com.antiy.asset.vo.request.ProcessTemplateRequest;
-import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
@@ -25,26 +28,8 @@ import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
+import io.swagger.annotations.*;
 
 /**
  * @author zhangyajun
@@ -365,7 +350,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
-    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,
+                                   AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -374,7 +360,7 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件不超过10M！");
         }
-        return ActionResponse.success(iAssetService.importPc(file, null));
+        return ActionResponse.success(iAssetService.importPc(file, assetImportRequest));
     }
 
     /**
@@ -386,7 +372,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
-    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,
+                                    AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -395,7 +382,7 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件不超过10M！");
         }
-        return ActionResponse.success(iAssetService.importNet(file, null));
+        return ActionResponse.success(iAssetService.importNet(file, assetImportRequest));
     }
 
     /**
@@ -407,7 +394,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
-    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
+                                       AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -417,7 +405,7 @@ public class AssetController {
             throw new BusinessException("导入失败，文件不超过10M！");
         }
 
-        return ActionResponse.success(iAssetService.importSecurity(file, null));
+        return ActionResponse.success(iAssetService.importSecurity(file, assetImportRequest));
     }
 
     /**
@@ -429,7 +417,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
-    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,
+                                        AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -438,7 +427,7 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件不超过10M！");
         }
-        return ActionResponse.success(iAssetService.importStory(file, null));
+        return ActionResponse.success(iAssetService.importStory(file, assetImportRequest));
     }
 
     /**
@@ -450,7 +439,8 @@ public class AssetController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
-    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file) throws Exception {
+    public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,
+                                       AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -459,7 +449,7 @@ public class AssetController {
 
             throw new BusinessException("导入失败，文件不超过10M！");
         }
-        return ActionResponse.success(iAssetService.importOhters(file, null));
+        return ActionResponse.success(iAssetService.importOhters(file, assetImportRequest));
     }
 
     @ApiOperation(value = "(无效)启动流程", notes = "启动流程")

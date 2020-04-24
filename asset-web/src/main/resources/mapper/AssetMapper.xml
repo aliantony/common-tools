@@ -3,7 +3,7 @@
 <mapper namespace="com.antiy.asset.dao.AssetDao">
 
     <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
-        <result property="key" column="manufacturer"/>
+    <result property="key" column="manufacturer"/>
         <result property="value" column="num"/>
     </resultMap>
     <resultMap id="StatusResultMap" type="java.util.HashMap">
@@ -2715,6 +2715,18 @@
                 LOCATE(#{area}, left(a.area_id, length(#{area})))>0
             </foreach>
         </if>
+    </select>
+    <select id="checkNoRepate" resultType="java.lang.Integer">
+SELECT
+	a.id
+FROM
+	asset a
+inner JOIN asset_mac_relation b ON b.asset_id = a.id
+AND a.`status` = 1
+AND b.`status` = 1
+WHERE
+        upper( ( REPLACE ( REPLACE (b.mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
+        '' ) )
     </select>
 
 </mapper>

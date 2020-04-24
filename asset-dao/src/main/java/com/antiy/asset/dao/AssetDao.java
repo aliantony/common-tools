@@ -1,33 +1,19 @@
 package com.antiy.asset.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.antiy.asset.dto.AssetWorkQueryDto;
-import org.apache.ibatis.annotations.Param;
-
 import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.*;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetAssembly;
-import com.antiy.asset.entity.AssetHardSoftLib;
-import com.antiy.asset.entity.IdCount;
-import com.antiy.asset.entity.RollbackEntity;
-import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
-import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
-import com.antiy.asset.vo.query.AssetQuery;
-import com.antiy.asset.vo.query.AssetSchemeQuery;
-import com.antiy.asset.vo.request.AlarmAssetRequest;
-import com.antiy.asset.vo.request.AssetIpRequest;
-import com.antiy.asset.vo.request.AssetMatchRequest;
-import com.antiy.asset.vo.request.AssetRollbackRequest;
-import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetAreaAndIpResponse;
 import com.antiy.asset.vo.response.AssetMatchResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.IBaseDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -457,4 +443,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<Asset> queryOrderAssetList(AssetOaOrderQuery assetOaOrderQuery);
 
     int getWorkNumByCondition(AssetWorkQueryDto dto);
+
+    Integer checkNoRepate(String mac);
 }
