@@ -4,11 +4,15 @@ import com.antiy.asset.service.IAssetOaOrderResultService;
 import com.antiy.asset.vo.query.AssetOaOrderResultQuery;
 import com.antiy.asset.vo.request.AssetOaOrderResultRequest;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -76,7 +80,7 @@ public class AssetOaOrderResultController {
     /**
      * 通过ID查询
      *
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
@@ -84,15 +88,15 @@ public class AssetOaOrderResultController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetOaOrderRefuse") @RequestParam Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderRefuseService.getById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetOaOrderRefuse") @RequestBody QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderRefuseService.getById(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 
     /**
      * 通过ID删除
      *
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
@@ -100,9 +104,9 @@ public class AssetOaOrderResultController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id) throws Exception {
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderRefuseService.deleteById(id));
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition) throws Exception {
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderRefuseService.deleteById(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 }
 
