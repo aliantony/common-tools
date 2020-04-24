@@ -182,7 +182,7 @@
     </select>
     <select id="getNumByCondition" resultType="int">
         select
-        count (id)
+        count(id)
         from
         <include refid="Table_Name"></include>
         where order_type = #{orderType}

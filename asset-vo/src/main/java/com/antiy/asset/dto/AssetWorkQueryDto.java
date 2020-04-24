@@ -23,6 +23,11 @@ public class AssetWorkQueryDto {
 
 
     /**
+     * rectification，是否被整改过 1,已整改,2未整改
+     */
+    private Integer rectification;
+
+    /**
      * 区域id
      */
     private List<String> areaId;
@@ -44,6 +49,13 @@ public class AssetWorkQueryDto {
         AssetStatus = assetStatus;
     }
 
+    public Integer getRectification() {
+        return rectification;
+    }
+
+    public void setRectification(Integer rectification) {
+        this.rectification = rectification;
+    }
 
     public List<String> getAreaId() {
         return areaId;

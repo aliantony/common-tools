@@ -56,19 +56,21 @@ public class AssetWorkbenchServiceImpl implements IAssetWorkbenchService {
         dto.setAreaId(Collections.singletonList(LoginUserUtil.getLoginUser().getAreaId()));
         dto.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
         response.setScapeExeNum(assetDao.getWorkNumByCondition(dto));
-        //安全整改 暂时不懂
-        //dto.setAssetStatus(AssetStatusEnum.W.getCode());
-        dto.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
-        //整改处理
+        //整改处理 有整改详细的按钮的资产（整改中，已入网）
         dto.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
         response.setChangeHandleNum(assetDao.getWorkNumByCondition(dto));
-        //准入实施
+        //准入实施 （代准入状态）
         dto.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         response.setAccessDoNum(assetDao.getWorkNumByCondition(dto));
-        //代理上报
+        //代理上报 （未知资产代理上报）
         dto.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         dto.setAssetSource(AssetSourceEnum.AGENCY_REPORT.getCode());
         response.setProxyUpNum(assetDao.getWorkNumByCondition(dto));
+        //安全整改 已跳过安全整改的已入网资产
+        dto.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        dto.setAssetSource(null);
+        dto.setRectification(1);
+        response.setSafeChangeNum(assetDao.getWorkNumByCondition(dto));
         return response;
     }
 }

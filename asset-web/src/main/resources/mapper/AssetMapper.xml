@@ -2697,8 +2697,14 @@
         </if>
     </select>
     <select id="getWorkNumByCondition" resultType="int">
-        select  count(id)  from  asset where
-        asset_status = #{assetStatus} and status = 1
+        select  count(a.id)  from  asset a where
+        status = 1
+        and
+        asset_status = #{assetStatus}
+        <!--   是否跳过整改  -->
+        <if test="rectification != null">
+            and rectification = #{rectification}
+        </if>
         <!--   上报来源   -->
         <if test="assetSource != null">
             and asset_source = #{assetStatus}
