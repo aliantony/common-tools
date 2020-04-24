@@ -423,4 +423,10 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     PageResult<AssetResponse> queryOrderAssetPage(AssetOaOrderQuery assetOaOrderQuery);
 
+    /**
+     * 根据网络类型id查询关联的资产数
+     * @param id
+     * @return
+     */
+    Integer queryAssetCountByNetTypeId(Integer id);
 }

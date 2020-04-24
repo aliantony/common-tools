@@ -454,4 +454,6 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<Asset> queryOrderAssetList(AssetOaOrderQuery assetOaOrderQuery);
+
+    Integer queryAssetCountByNetTypeId(Integer id);
 }

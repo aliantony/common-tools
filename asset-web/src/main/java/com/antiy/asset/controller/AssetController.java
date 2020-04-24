@@ -13,12 +13,18 @@ import com.antiy.asset.vo.request.AssetIpRequest;
 import com.antiy.asset.vo.request.AssetLockRequest;
 import com.antiy.asset.vo.request.AssetMatchRequest;
 import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.BaseId;
 import com.antiy.asset.vo.request.ExportTemplateRequest;
 import com.antiy.asset.vo.request.ManualStartActivityRequest;
 import com.antiy.asset.vo.request.NumberMac;
 import com.antiy.asset.vo.request.ProcessTemplateRequest;
 import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.response.AssetAssemblyDetailResponse;
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
+import com.antiy.asset.vo.response.AssetCountResponse;
+import com.antiy.asset.vo.response.AssetMatchResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
@@ -655,5 +661,12 @@ public class AssetController {
             throw new BusinessException("请传订单id");
         }
         return ActionResponse.success(iAssetService.queryOrderAssetPage(assetOaOrderQuery));
+    }
+
+    @ApiOperation(value = "根据网络类型id查询绑定的资产数", notes = "传入网络类型id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/queryAssetCountByNetTypeId", method = RequestMethod.POST)
+    public ActionResponse queryAssetCountByNetTypeId(@RequestBody @ApiParam(value = "query") BaseId query) {
+       return ActionResponse.success(iAssetService.queryAssetCountByNetTypeId(query.getId()));
     }
 }

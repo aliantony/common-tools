@@ -3794,6 +3794,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return new PageResult<>(assetOaOrderQuery.getPageSize(), assetDao.queryOrderAssetCount(assetOaOrderQuery),
             assetOaOrderQuery.getCurrentPage(), assetResponses);
     }
+
+    @Override
+    public Integer queryAssetCountByNetTypeId(Integer id) {
+        return assetDao.queryAssetCountByNetTypeId(id);
+    }
 }
 
 @Component

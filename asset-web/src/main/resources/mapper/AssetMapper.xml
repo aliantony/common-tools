@@ -2673,5 +2673,8 @@
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="queryAssetCountByNetTypeId" resultType="integer">
+       select count(id) from asset where net_type = #{id}
+    </select>
 
 </mapper>
