@@ -4,11 +4,18 @@ import static com.antiy.biz.file.FileHelper.logger;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +59,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     private AssetDao assetDao;
     @Resource
     private CategoryRequestConvert requestConverter;
+    @Resource
+    private BaseConverter baseConverter;
     @Resource
     private CategoryRequestConvert categoryRequestConvert;
     @Resource
@@ -133,7 +142,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             levelCount++;
         }
         // 包括资产类型，最大为4级
-        BusinessExceptionUtils.isTrue(levelCount < 4 && levelCount >= 2, "资产类型限制为3级");
+        BusinessExceptionUtils.isTrue(levelCount < 4 && levelCount >= 2, "超过资产类型允许的最大层级");
     }
 
     @Override
@@ -233,18 +242,23 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     }
 
     @Override
-    public List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(boolean sourceOfLend) throws Exception {
-        List<AssetCategoryModel> models = assetCategoryModelDao.findAllCategory(sourceOfLend);
-        NodeUtilsConverter<AssetCategoryModel, AssetCategoryModelNodeResponse> nodeConverter = new NodeUtilsConverter<>();
-        List<AssetCategoryModelNodeResponse> nodeResponses = nodeConverter
-                .columnToNode(models, AssetCategoryModelNodeResponse.class);
+    public List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(AssetCategoryModelQuery query) throws Exception {
+        List<AssetCategoryModel> models = assetCategoryModelDao.findAllCategory(query.isSourceOfLend());
+        Map<String, AssetCategoryModel> map = models.stream().collect(Collectors.toMap(AssetCategoryModel::getName, Function.identity()));
+        if (StringUtils.isNotBlank(query.getName())) {
+            AssetCategoryModel model = map.get(query.getName());
+            ParamterExceptionUtils.isNull(model, "该类型不存在");
+            models = recursionSearch(models, model.getId());
+        }
+        List<AssetCategoryModelNodeResponse> nodeResponses = convertNode(models);
+
         if (CollectionUtils.isEmpty(nodeResponses)) {
             return Collections.EMPTY_LIST;
         }
         //去掉根节点
-        List<AssetCategoryModelNodeResponse> nodes = nodeResponses.get(0).getChildrenNode();
+        List<AssetCategoryModelNodeResponse> nodes = StringUtils.isNotBlank(query.getName())?nodeResponses:nodeResponses.get(0).getChildrenNode();
         //如果来源是出借管理，需要过滤无下挂资产的类型
-        if (BooleanUtils.isTrue(sourceOfLend)) {
+        if (BooleanUtils.isTrue(query.isSourceOfLend())) {
             filterTreeWithAssets(nodes, null);
         }
         return nodes;
@@ -276,6 +290,8 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
 
         }
     }
+
+
 
     private void aesEncode(AssetCategoryModelNodeResponse nodeResponse, String userName) {
 
@@ -426,6 +442,26 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 recursion(result, list, assetCategoryModel.getId());
             }
         }
+    }
+
+    private List<AssetCategoryModelNodeResponse> convertNode(List<AssetCategoryModel> models) {
+        if (CollectionUtils.isEmpty(models)) {
+            return Collections.<AssetCategoryModelNodeResponse>emptyList();
+        }
+        List<AssetCategoryModelNodeResponse> result = new LinkedList<>();
+        List<AssetCategoryModelNodeResponse> nodeResponses = baseConverter.convert(models, AssetCategoryModelNodeResponse.class);
+        Map<String, AssetCategoryModelNodeResponse> map = nodeResponses.stream().collect(Collectors.toMap(AssetCategoryModelNodeResponse::getStringId, Function.identity()));
+        for (AssetCategoryModelNodeResponse nodeRespons : nodeResponses) {
+            AssetCategoryModelNodeResponse node = map.get(nodeRespons.getParentId());
+        if (Objects.isNull(node)) {
+                result.add(nodeRespons);
+        }else{
+            List<AssetCategoryModelNodeResponse> childs = CollectionUtils.isEmpty(node.getChildrenNode())?new LinkedList<>():node.getChildrenNode();
+            childs.add(nodeRespons);
+            node.setChildrenNode(childs);
+            }
+        }
+        return result;
     }
 
 }

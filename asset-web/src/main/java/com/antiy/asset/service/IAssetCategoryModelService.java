@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.antiy.asset.entity.AssetCategoryModel;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
@@ -59,7 +60,7 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * 查询节点树(去掉根节点）
      * @return
      */
-    List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(boolean sourceOfLend) throws Exception;
+    List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(AssetCategoryModelQuery query) throws Exception;
 
 
 }

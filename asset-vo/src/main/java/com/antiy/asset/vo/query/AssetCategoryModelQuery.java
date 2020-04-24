@@ -35,7 +35,7 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
     /**
      * 名称
      */
-    @ApiModelProperty("名称")
+    @ApiModelProperty("类型名称")
     private String   name;
     /**
      * 类型:1-品类，2-型号
@@ -56,6 +56,16 @@ public class AssetCategoryModelQuery extends ObjectQuery implements ObjectValida
 
     @ApiModelProperty("status")
     private Integer  status;
+    @ApiModelProperty("是否来源于借用管理：true是,false否")
+    private boolean sourceOfLend;
+
+    public boolean isSourceOfLend() {
+        return sourceOfLend;
+    }
+
+    public void setSourceOfLend(boolean sourceOfLend) {
+        this.sourceOfLend = sourceOfLend;
+    }
 
     public String getId() {
         return id;
