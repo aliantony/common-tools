@@ -9,6 +9,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetEntryQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetEntryRecordRequest;
@@ -88,7 +89,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     @Override
     public PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception {
-        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(false)
+        AssetCategoryModelQuery modelQuery = new AssetCategoryModelQuery();
+        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(modelQuery)
                 .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
                         LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
         query.setAssetCategorys(categoryIds);
