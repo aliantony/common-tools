@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.AssemblyTypeEnum;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
 
@@ -38,6 +39,11 @@ public class AssetAssemblyResponse extends BaseResponse {
     @ApiModelProperty("组件类型")
     private String  type;
     /**
+     * 组件类型名称
+     */
+    @ApiModelProperty("组件类型名称")
+    private String  typeName;
+    /**
      * 产品名
      */
     @ApiModelProperty("产品名")
@@ -73,6 +79,14 @@ public class AssetAssemblyResponse extends BaseResponse {
      */
     @ApiModelProperty("1 未报废 2 已报废")
     private Integer scrap;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
 
     public Integer getRemove() {
         return remove;
@@ -144,6 +158,7 @@ public class AssetAssemblyResponse extends BaseResponse {
 
     public void setType(String type) {
         this.type = type;
+        this.typeName = AssemblyTypeEnum.getNameByCode(type);
     }
 
     public String getProductName() {

@@ -611,8 +611,20 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             throw new BusinessException("调用工作流模块失败");
         }
         //记录操作日志
-        newAssets.forEach(v -> LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ENTRY_EXECUTION.getName(), v.getId()
-                , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NET_IN)));
+        if (newAssets.size() > 1) {
+            StringBuilder ids = new StringBuilder();
+            //numbers 资产编号
+            StringBuilder numbers = new StringBuilder();
+            newAssets.stream().forEach(v->{
+                ids.append(v.getStringId()).append(",");
+                numbers.append(v.getNumber()).append(",");
+            });
+            LogUtils.recordOperLog(new BusinessData(AssetEventEnum.BATCH_ENTRY_EXECUTION.getName(), ids.deleteCharAt(ids.length()-1).toString()
+                    , numbers.deleteCharAt(numbers.length()-1).toString(), null, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NET_IN));
+        }else {
+            newAssets.forEach(v -> LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ENTRY_EXECUTION.getName(), v.getId()
+                    , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NET_IN)));
+        }
         //下发准入指令
         SecurityContext context=SecurityContextHolder.getContext();
         new Thread(() -> {

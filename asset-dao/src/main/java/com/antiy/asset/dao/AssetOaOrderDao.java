@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.dto.WorkOaQueryDto;
 import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.common.base.IBaseDao;
 
@@ -20,4 +21,5 @@ public interface AssetOaOrderDao extends IBaseDao<AssetOaOrder> {
      */
     AssetOaOrder getByNumber(String number) throws Exception;
 
+    int getNumByCondition(WorkOaQueryDto workOaQueryDto);
 }

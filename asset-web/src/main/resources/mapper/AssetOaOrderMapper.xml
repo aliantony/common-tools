@@ -180,6 +180,14 @@
         <include refid="Table_Name"></include>
         where number = #{number}
     </select>
+    <select id="getNumByCondition" resultType="int">
+        select
+        count(id)
+        from
+        <include refid="Table_Name"></include>
+        where order_type = #{orderType}
+        and  order_status = #{orderStatus}
+    </select>
 
 
 </mapper>

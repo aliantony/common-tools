@@ -384,6 +384,32 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("行颜色:green,yellow")
     private String                         rowColor;
+    /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    private String                         softVersion;
+    /**
+     * 是否被整改过：1,已整改,2未整改
+     */
+    @ApiModelProperty("是否被整改过：1,已整改,2未整改")
+    private Integer                        rectification;
+
+    public Integer getRectification() {
+        return rectification;
+    }
+
+    public void setRectification(Integer rectification) {
+        this.rectification = rectification;
+    }
+
+    public String getSoftVersion() {
+        return softVersion;
+    }
+
+    public void setSoftVersion(String softVersion) {
+        this.softVersion = softVersion;
+    }
 
     public String getRowColor() {
         return rowColor;
@@ -830,7 +856,7 @@ public class AssetResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
+        this.categoryModelName = categoryModelName;
     }
 
     public String getAssetGroup() {

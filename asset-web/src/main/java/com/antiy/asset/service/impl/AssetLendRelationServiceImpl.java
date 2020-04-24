@@ -147,37 +147,48 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
         //assetDao.getByAssetId()
-        return assetLendRelationDao.returnConfirm(assetLendRelationRequest);
+        Integer result =  assetLendRelationDao.returnConfirm(assetLendRelationRequest);
+        LogUtils.recordOperLog(
+                new BusinessData("归还出借资产", assetLendRelationRequest.getAssetId(), assetDao.getNumberById(assetLendRelationRequest.getAssetId()),
+                        assetLendRelationRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE)
+        );
+        return result;
     }
 
     @Override
     public List<AssetLendRelationResponse> queryHistory(ObjectQuery objectQuery) {
 
-            List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
-            if(CollectionUtils.isNotEmpty(assetLendRelationResponses)){
-                assetLendRelationResponses.forEach(t->{
-                    if(t.getLendStatus()==2){
-                        t.setLendStatusDesc("已归还");
-                    }
-                });
-            }
-            return assetLendRelationResponses;
+        List<AssetLendRelationResponse> assetLendRelationResponses = assetLendRelationDao.queryHistory(objectQuery);
+        if (CollectionUtils.isNotEmpty(assetLendRelationResponses)) {
+            assetLendRelationResponses.forEach(t -> {
+                if (t.getLendStatus() == 2) {
+                    t.setLendStatusDesc("已归还");
+                }
+            });
+        }
+        return assetLendRelationResponses;
 
     }
 
     @Override
-    public Integer saveLendInfo(AssetLendInfoRequest request) throws Exception {
+    public String saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
-        request.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
+        assetLendRelation.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         assetLendRelation.setLendStatus(Integer.valueOf(1));
         assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
+        assetLendRelationDao.insert(assetLendRelation);
 
-        return assetLendRelationDao.insert(assetLendRelation);
+        LogUtils.recordOperLog(
+                new BusinessData("借出资产", assetLendRelation.getAssetId(), assetDao.getNumberById(assetLendRelation.getAssetId()),
+                        request, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE)
+        );
+
+        return request.toString();
     }
 
     @Override
@@ -185,18 +196,6 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         List<ApproveListResponse> assetLendRelationResponses = assetLendRelationDao.queryApproveList(query);
         return new PageResult<ApproveListResponse>(query.getPageSize(), assetLendRelationDao.queryApproveListCount(query), query.getCurrentPage(), assetLendRelationResponses);
 
-    }
-
-    @Override
-    public ApproveInfoResponse queryApproveInfo(ApproveInfoRequest request) {
-        //TODO 暂时保留该接口，如果web不添加字段，删除
-        ApproveInfoResponse approveInfoResponse = new ApproveInfoResponse();
-        approveInfoResponse.setOrderNumber(request.getOrderNumber());
-        approveInfoResponse.setOrderUser(request.getOrderUser());
-
-        //Integer departmentId = assetLendRelationDao.found
-
-        return approveInfoResponse;
     }
 
     @Override
@@ -223,7 +222,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         String userName = LoginUserUtil.getLoginUser().getUsername();
 
-        AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request,AssetLendRelation.class);
+        AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request, AssetLendRelation.class);
         assetLendRelation.setLendStatus(Integer.valueOf(1));
         assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
@@ -232,6 +231,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         for (String item : request.getAssetIds()) {
             assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
+            //由oa系统发起出借，出借模块无需添加日志
             assetLendRelationDao.insert(assetLendRelation);
         }
         return request.toString();

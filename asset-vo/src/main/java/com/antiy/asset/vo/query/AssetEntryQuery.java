@@ -28,7 +28,7 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("准入状态：1已允许，2已禁止")
     @Pattern(regexp = "^\\s*[12]?$",message = "准入状态参数只能为1或2")
     private String entryStatus;
-    @ApiModelProperty(value = "资产状态集合", hidden = true)
+    @ApiModelProperty(value = "资产状态集合")
     private int[] assetStatus;
     @ApiModelProperty("资产id,未加密")
     private String assetId;
@@ -36,17 +36,26 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     private String[] assetIds;
     @ApiModelProperty(value = "区域id集合",hidden = true)
     private List<String> areaIds;
+    @ApiModelProperty(value = "资产类型",hidden = true)
+    private List<String>  assetCategorys;
 
     @Override
     public void validate() throws RequestParamValidateException {
         if (ArrayUtils.isEmpty(assetStatus)) {
-            //todo 根据新需求确定资产状态
             assetStatus = new int[]{AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-//                    AssetStatusEnum.WAIT_RETIRE_CHECK.getCode(), AssetStatusEnum.RETIRE_DISAGREE.getCode(),
-                    AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.WAIT_RETIRE.getCode(),
-                    AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.RETIRE.getCode()};
+                    AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.RETIRE.getCode(),
+                    AssetStatusEnum.WAIT_SCRAP.getCode(), AssetStatusEnum.SCRAP.getCode()};
         }
 
+    }
+
+
+    public List<String> getAssetCategorys() {
+        return assetCategorys;
+    }
+
+    public void setAssetCategorys(List<String> assetCategorys) {
+        this.assetCategorys = assetCategorys;
     }
 
     public List<String> getAreaIds() {
