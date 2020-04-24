@@ -20,12 +20,6 @@ public class OtherDeviceEntity {
     @ExcelField(value = "name", align = 1, title = "名称(必填)  备注:填写该厂商下的名称 ", length = 128, required = true)
     private String name;
 
-    // /**
-    // * 版本号
-    // */
-    // @ExcelField(value = "version", align = 1, title = "版本(必填) 备注:填写该版本下的版本号", required = true, defaultDataMethod =
-    // "queryVersion", defaultDataBeanName = "assetServiceImpl")
-    // private String version;
 
     /**
      * area
@@ -161,14 +155,6 @@ public class OtherDeviceEntity {
     public void setName(String name) {
         this.name = name;
     }
-
-    // public String getVersion() {
-    // return version;
-    // }
-    //
-    // public void setVersion(String version) {
-    // this.version = version;
-    // }
 
     public String getArea() {
         return area;
