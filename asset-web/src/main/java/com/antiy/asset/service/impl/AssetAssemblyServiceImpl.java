@@ -13,6 +13,7 @@ import com.antiy.asset.vo.request.AssetAssemblyRequest;
 import com.antiy.asset.vo.response.AssetAssemblyResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -89,12 +91,14 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer scrapUpdate(AssetAssemblyScrapRequest assetAssemblyScrapRequest) throws Exception {
-        if(assetAssemblyScrapRequest.getAssetId().size()>1){
-            return assetAssemblyDao.updateByUniqueId(assetAssemblyScrapRequest.getAssetAssemblyRequestList());
+        if(StringUtils.isNotBlank(assetAssemblyScrapRequest.getTemporaryInfo())){
+            if(assetAssemblyScrapRequest.getTemporaryInfo().length()>300){
+                 throw new BusinessException("备注不能超过300字符");
+            }
         }
         //把备注信息写入到该条资产报废申请的 temporary_info 列
         AssetSchemeQuery assetSchemeQuery=new AssetSchemeQuery();
-        assetSchemeQuery.setAssetIds(assetAssemblyScrapRequest.getAssetId());
+        assetSchemeQuery.setAssetIds(Arrays.asList(assetAssemblyScrapRequest.getAssetId()));
         assetSchemeQuery.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
         assetSchemeQuery.setOrginStatusOne(AssetStatusEnum.RETIRE.getCode());
         assetSchemeQuery.setOrginStatusTwo(AssetStatusEnum.RETIRE.getCode());
