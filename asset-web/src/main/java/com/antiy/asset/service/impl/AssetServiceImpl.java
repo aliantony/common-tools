@@ -1981,7 +1981,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         OtherDeviceEntity otherDeviceEntity = new OtherDeviceEntity();
         otherDeviceEntity.setManufacturer("huawei");
         otherDeviceEntity.setName("ar500");
-        otherDeviceEntity.setVersion("1.0.2::~~~wordpress~~");
         otherDeviceEntity.setArea("四川省");
         otherDeviceEntity.setNumber("000001");
         otherDeviceEntity.setCode("3773287221233");
