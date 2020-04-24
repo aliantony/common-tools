@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import javax.annotation.Resource;
 
 import com.antiy.asset.service.IAssetWorkbenchService;
+import com.antiy.asset.vo.response.AssetWorkBenchResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +50,7 @@ public class AssetWorkbenchController {
      * @date 19:37
      */
     @ApiOperation(value = "退回和报废申请和执行数量", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetWorkBenchResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/workbench/num", method = RequestMethod.POST)
     public ActionResponse queryAssetWorkNum() throws Exception {
         return ActionResponse.success(iAssetWorkbenchService.queryWorkBench());
