@@ -53,4 +53,10 @@ public interface IAssetOaOrderService extends IBaseService<AssetOaOrder> {
          * 查询单个详情
          */
         AssetOaOrderResponse getDetailById(Integer id) throws Exception;
+
+
+        /**
+         * 查询单个详情
+         */
+        boolean getStatus(Integer id) throws Exception;
 }
