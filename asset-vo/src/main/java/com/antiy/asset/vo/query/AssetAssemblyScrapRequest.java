@@ -11,11 +11,11 @@ public class AssetAssemblyScrapRequest extends BaseRequest {
 
     @ApiModelProperty("资产id")
     @Encode
-    private List<String> assetId;
+    private String assetId;
     @ApiModelProperty("组件")
     List<AssetAssemblyRequest> assetAssemblyRequestList;
 
-    @ApiModelProperty("资产id")
+    @ApiModelProperty("备注")
     private String  temporaryInfo;
 
     public String getTemporaryInfo() {
@@ -26,11 +26,11 @@ public class AssetAssemblyScrapRequest extends BaseRequest {
         this.temporaryInfo = temporaryInfo;
     }
 
-    public List<String> getAssetId() {
+    public String getAssetId() {
         return assetId;
     }
 
-    public void setAssetId(List<String> assetId) {
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
     }
 

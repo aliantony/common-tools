@@ -6,6 +6,7 @@ import com.antiy.asset.vo.query.AssetOaOrderHandleQuery;
 import com.antiy.asset.vo.request.AssetOaOrderHandleRequest;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.QueryCondition;
 import com.antiy.common.base.RespBasicCode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
@@ -85,7 +86,7 @@ public class AssetOaOrderHandleController {
 
     /**
      * 通过ID查询
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
@@ -93,14 +94,14 @@ public class AssetOaOrderHandleController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
-    public ActionResponse queryById(@ApiParam(value = "assetOaOrderHandle") @RequestParam Integer id)throws Exception{
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderHandleService.getById(id));
+    public ActionResponse queryById(@ApiParam(value = "assetOaOrderHandle") @RequestBody QueryCondition queryCondition)throws Exception{
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderHandleService.getById(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 
     /**
      * 通过ID删除
-     * @param id
+     * @param queryCondition
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID删除接口", notes = "主键封装对象")
@@ -108,9 +109,9 @@ public class AssetOaOrderHandleController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    public ActionResponse deleteById(@ApiParam(value = "id") @RequestParam Integer id)throws Exception{
-        ParamterExceptionUtils.isNull(id, "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderHandleService.deleteById(id));
+    public ActionResponse deleteById(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition)throws Exception{
+        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderHandleService.deleteById(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 
     /**

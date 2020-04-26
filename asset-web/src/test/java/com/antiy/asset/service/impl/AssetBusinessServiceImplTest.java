@@ -2,6 +2,7 @@ package com.antiy.asset.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.AssetApplication;
+import com.antiy.asset.dao.AssetBusinessDao;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.request.AssetBusinessRequest;
@@ -21,6 +22,9 @@ public class AssetBusinessServiceImplTest {
 
     @Resource
     private IAssetBusinessService iAssetBusinessService;
+
+    @Resource
+    private AssetBusinessDao assetBusinessDao;
    // @Test
     public void saveAssetBusiness() throws Exception {
 
@@ -40,7 +44,6 @@ public class AssetBusinessServiceImplTest {
     }
     @Test
     public void queryListAssetBusiness() {
-
     }
 
     @Test

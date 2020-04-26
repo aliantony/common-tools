@@ -76,6 +76,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Override
     public Integer saveAssetOaOrder(AssetOaOrderRequest request) throws Exception {
         AssetOaOrder assetOaOrder = requestConverter.convert(request, AssetOaOrder.class);
+        assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.WAIT_HANDLE.getCode());
         //保存订单信息
         assetOaOrderDao.insert(assetOaOrder);
         //保存申请信息
@@ -169,5 +170,15 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             assetOaOrderResponse.setAssetInfo(assetInfo);
         }
         return assetOaOrderResponse;
+    }
+
+    @Override
+    public boolean getStatus(Integer id) throws Exception {
+        AssetOaOrder assetOaOrder = assetOaOrderDao.getById(id);
+        if(AssetOaOrderStatusEnum.WAIT_HANDLE.equals(assetOaOrder.getOrderStatus())){
+            //待处理状态，说明可以进行处理
+            return true;
+        }
+        return false;
     }
 }

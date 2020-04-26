@@ -264,14 +264,14 @@
         <include refid="Table_Name"></include>
         (
         asset_id,
-        amount,
+        unique_id,
         business_id
         )
         values
         <foreach collection="assetAssemblyList" item="item" separator=",">
             (
             #{item.assetId},
-            #{item.amount},
+            #{item.uniqueId},
             #{item.businessId}
             )
         </foreach>

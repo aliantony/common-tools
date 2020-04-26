@@ -49,24 +49,15 @@ public class AssetAssemblyLibServiceImpl extends BaseServiceImpl<AssetAssemblyLi
 
 
     @Override
-    public List<AssetAssemblyDetailResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
-        List<AssetAssemblyDetailResponse> assemblyDetailResponseList = Lists.newArrayList();
+    public List<AssetAssemblyResponse> queryAssemblyByHardSoftId(AssetAssemblyLibQuery query) {
         List<AssetAssemblyResponse> assemblyResponseList = assemblyResponseBaseConverter
                 .convert(assetAssemblyLibDao.queryAssemblyByHardSoftId(query.getBusinessId()), AssetAssemblyResponse.class);
         if (CollectionUtils.isNotEmpty(assemblyResponseList)) {
-            Map<String, List<AssetAssemblyResponse>> map = assemblyResponseList.stream()
-                    .collect(Collectors.groupingBy(AssetAssemblyResponse::getType));
-            for (Map.Entry<String, List<AssetAssemblyResponse>> entryAssembly : map.entrySet()) {
-                AssetAssemblyDetailResponse detailResponse = new AssetAssemblyDetailResponse();
-                detailResponse.setAssemblyResponseList(entryAssembly.getValue());
-                detailResponse.setCount(entryAssembly.getValue().size());
-                detailResponse.setType(entryAssembly.getKey());
-                detailResponse
-                        .setTypeName(AssemblyTypeEnum.getNameByCode(DataTypeUtils.stringToInteger(entryAssembly.getKey())));
-                assemblyDetailResponseList.add(detailResponse);
-            }
+            assemblyResponseList.stream().forEach(assetAssemblyResponse -> {
+                assetAssemblyResponse.setAmount(1);
+            });
         }
-        return assemblyDetailResponseList;
+        return assemblyResponseList;
     }
 
 }

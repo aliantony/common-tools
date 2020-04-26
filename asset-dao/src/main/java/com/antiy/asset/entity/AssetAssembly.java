@@ -56,6 +56,18 @@ public class AssetAssembly extends BaseEntity {
      * 状态：1-未删除,0-已删除
      */
     private Integer status;
+    /**
+     * 数量
+     */
+    private Integer amount;
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
 
     public Integer getRemove() {
         return remove;

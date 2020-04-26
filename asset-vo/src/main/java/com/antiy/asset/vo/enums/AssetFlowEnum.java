@@ -53,9 +53,17 @@ public enum AssetFlowEnum {
     RETIRE_EXECUTEE(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退役执行","退役执行"),
     /**
      * 报废申请
-     *
+     * 已退回 --> 待报废
      */
     SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请","报废申请"),
+
+
+    /**
+     * 报废申请
+     * 已入网 --> 待报废
+     */
+    NET_IN_TO_SCRAP_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请","报废申请"),
+
     /**
      * 报废执行
      */

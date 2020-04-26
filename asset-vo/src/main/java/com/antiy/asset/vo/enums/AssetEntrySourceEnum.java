@@ -7,12 +7,15 @@ package com.antiy.asset.vo.enums;
 
 public enum AssetEntrySourceEnum implements CodeEnum {
     ASSET_ENTER_NET(1,"资产入网"),
-    ASSET_RETIRE(2,"资产退役"),
+    ASSET_RETIRE(2,"资产退回"),
     VUL_SCAN(3,"漏洞扫描"),
     CONFIG_SCAN(4,"配置扫描"),
     PATCH_INSTALL(5,"补丁安装"),
     ENTRY_MANAGE(6,"准入管理"),
-    ASSET_CHANGE(7,"资产变更");
+    ASSET_CHANGE(7,"资产变更"),
+    ASSET_SCRAP(8,"资产报废"),
+
+    ;
     private int code;
     private String msg;
 

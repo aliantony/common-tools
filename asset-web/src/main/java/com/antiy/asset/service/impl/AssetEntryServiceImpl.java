@@ -9,10 +9,12 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetEntryQuery;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetEntryRecordRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.asset.vo.response.AssetEntryRecordResponse;
 import com.antiy.asset.vo.response.AssetEntryResponse;
 import com.antiy.asset.vo.response.AssetEntryStatusResponse;
@@ -69,6 +71,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     @Resource
     private SysMessageSender messageSender;
     @Resource
+    private AssetCategoryModelServiceImpl categoryModelService;
+    @Resource
     private AesEncoder aesEncoder;
     @Resource
     private BaseClient client;
@@ -85,6 +89,11 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     @Override
     public PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception {
+        AssetCategoryModelQuery modelQuery = new AssetCategoryModelQuery();
+        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(modelQuery)
+                .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
+                        LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
+        query.setAssetCategorys(categoryIds);
         if (CollectionUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         }
@@ -95,6 +104,19 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.queryList(query));
     }
 
+    /**
+     * 获取某节点（包含该节点)下的所有子节点的资产类型id
+     * @param nodes
+     * @return
+     */
+    private void getCategoryIds(AssetCategoryModelNodeResponse nodes,List<String> result )  {
+        result.add(nodes.getStringId());
+        if (CollectionUtils.isNotEmpty(nodes.getChildrenNode())) {
+            for (AssetCategoryModelNodeResponse node : nodes.getChildrenNode()) {
+                getCategoryIds(node,result);
+            }
+        }
+    }
     public List<AssetEntryResponse> queryList(AssetEntryQuery query) throws Exception {
         return assetEntryDao.findQuery(query);
     }
@@ -123,7 +145,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         request.setAssetActivityRequests(activityHandleRequests);
         //todo 下发指令 判断第三方是全部成功还是部分成功
 //        boolean isSuccess = sendCommond(request);
-        boolean isSuccess = false;
+        boolean isSuccess = true;
         //操作日志-安全事件
         String incident = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED) ? "允许入网" : "禁止入网";
         List<AssetEntryRecordRequest> recordRequestList = new ArrayList<>();

@@ -24,6 +24,17 @@ public class AssetEntryResponse extends BaseResponse{
     private int entryStatus;
     @ApiModelProperty("是否可以准入操作：true可以，false不可以")
     private boolean isEntryOperation;
+    @ApiModelProperty("资产状态")
+    private Integer assetStatus;
+
+
+    public Integer getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(Integer assetStatus) {
+        this.assetStatus = assetStatus;
+    }
 
     public String getName() {
         return name;

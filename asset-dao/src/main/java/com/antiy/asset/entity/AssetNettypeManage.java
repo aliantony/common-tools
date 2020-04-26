@@ -2,6 +2,9 @@ package com.antiy.asset.entity;
 
 
 import com.antiy.common.base.BaseEntity;
+
+import java.io.Serializable;
+
 /**
  * <p></p>
  *
@@ -9,7 +12,7 @@ import com.antiy.common.base.BaseEntity;
  * @since 2020-04-07
  */
 
-public class AssetNettypeManage extends BaseEntity {
+public class AssetNettypeManage extends BaseEntity implements Serializable {
 
 
 private static final long serialVersionUID = 1L;

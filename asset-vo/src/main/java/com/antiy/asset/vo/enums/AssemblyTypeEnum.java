@@ -47,7 +47,7 @@ public enum AssemblyTypeEnum {
         return null;
     }
 
-    public static String getNameByCode(Integer code){
+    public static String getNameByCode(String code){
         for (AssemblyTypeEnum typeEnum : AssemblyTypeEnum.values()) {
             if (Objects.equals(typeEnum.code,code)){
                 return typeEnum.name;

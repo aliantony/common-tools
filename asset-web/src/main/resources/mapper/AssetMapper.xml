@@ -3,7 +3,7 @@
 <mapper namespace="com.antiy.asset.dao.AssetDao">
 
     <resultMap id="ManufacturerResultMap" type="java.util.HashMap">
-        <result property="key" column="manufacturer"/>
+    <result property="key" column="manufacturer"/>
         <result property="value" column="num"/>
     </resultMap>
     <resultMap id="StatusResultMap" type="java.util.HashMap">
@@ -32,6 +32,7 @@
         <result column="serial" property="serial"/>
         <result column="area_id" property="areaId"/>
         <result column="category_model" property="categoryModel"/>
+        <result column="category_model_name" property="categoryModelName"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="asset_status" property="assetStatus"/>
         <result column="admittance_status" property="admittanceStatus"/>
@@ -75,11 +76,13 @@
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
         <result column="key" property="key"/>
+        <result column="net_type_name" property="netTypeName"/>
+        <result column="soft_version" property="softVersion"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location,   house_location,  uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field
+        id, business_id, asset_group, number, name, install_type, serial, area_id, category_model, manufacturer, asset_status, admittance_status, operation_system, operation_system_name, responsible_user_id, location,   house_location,  uuid, asset_source, importance_degree, describle, first_enter_nett, first_discover_time, is_innet, service_life, buy_date, version, warranty, install_template_id, baseline_template_id, baseline_template_correlation_gmt, install_template_correlation_gmt,machine_name, is_secrecy, code, step_node, memo, gmt_create, gmt_modified, create_user, modify_user, status, net_status, is_orphan, custom_field,softVersion
     </sql>
 
     <sql id="Table_Name">
@@ -256,6 +259,12 @@
     </sql>
 
     <sql id="IF_Base_Column_List">
+        <if test=" rectification != null">
+            rectification,
+        </if>
+        <if test=" softVersion != null">
+            soft_version,
+        </if>
         <if test=" businessId != null">
             business_id,
         </if>
@@ -409,6 +418,12 @@
     </sql>
 
     <sql id="IF_Value_Column_List">
+        <if test=" rectification != null">
+            #{rectification},
+        </if>
+        <if test=" softVersion != null">
+            #{softVersion },
+        </if>
         <if test=" businessId != null">
             #{businessId },
         </if>
@@ -1674,6 +1689,12 @@
         <if test=" machineName != null">
             machine_name = #{machineName },
         </if>
+        <if test=" softVersion != null">
+            soft_version = #{softVersion },
+        </if>
+        <if test=" rectification != null">
+            rectification = #{rectification },
+        </if>
         asset_group = #{assetGroup },
         install_type = #{installType },
         asset_source = #{assetSource},
@@ -2352,7 +2373,8 @@
         GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name,
-        anm.net_type_name as netTypeName
+        anm.net_type_name,
+        acm.name as category_model_name
         FROM
         (
             select * from asset
@@ -2368,6 +2390,7 @@
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         left join asset_nettype_manage anm on (asset.net_type = anm.id and anm.status = 1)
+        left join asset_category_model acm on (asset.category_model = acm.id and acm.status = 1)
         <if test="departmentList != null and departmentList.size() > 0">
             left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
         </if>
@@ -2672,6 +2695,41 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <select id="getWorkNumByCondition" resultType="int">
+        select  count(a.id)  from  asset a where
+        status = 1
+        and
+        asset_status = #{assetStatus}
+        <!--   是否跳过整改  -->
+        <if test="rectification != null">
+            and rectification = #{rectification}
+        </if>
+        <!--   上报来源   -->
+        <if test="assetSource != null">
+            and asset_source = #{assetStatus}
+        </if>
+        <!--   区域     -->
+        <if test="areaId != null and areaId.size()> 0">
+            <foreach collection="areaId" item="area" open="and (" separator=" or " close=")">
+                LOCATE(#{area}, left(a.area_id, length(#{area})))>0
+            </foreach>
+        </if>
+    </select>
+    <select id="checkNoRepate" resultType="java.lang.Integer">
+SELECT
+	a.id
+FROM
+	asset a
+inner JOIN asset_mac_relation b ON b.asset_id = a.id
+AND a.`status` = 1
+AND b.`status` = 1
+WHERE
+        upper( ( REPLACE ( REPLACE (b.mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
+        '' ) )
+    </select>
+    <select id="queryAssetCountByNetTypeId" resultType="integer">
+       select count(id) from asset where net_type = #{id}
     </select>
 
 </mapper>
