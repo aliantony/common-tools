@@ -168,6 +168,12 @@ public class AssetLinkRelationResponse extends BaseResponse {
     @ApiModelProperty("父类资产mac")
     private List<AssetMacRelationResponse> parentAssetMac;
 
+    /**
+     * 备注
+     */
+    @ApiModelProperty("备注")
+    private String            memo;
+
 
     public String getParentAssetNumber() {
         return parentAssetNumber;
@@ -385,14 +391,45 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentAssetName = parentAssetName;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
     @Override
     public String toString() {
-        return "AssetLinkRelationResponse{" + "assetId=" + assetId + ", assetName='" + assetName + '\'' + ", assetIp='"
-               + assetIp + '\'' + ", assetPort='" + assetPort + '\'' + ", categoryModel='" + categoryModel + '\''
-               + ", categoryModelName='" + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId
-               + ", parentAssetName='" + parentAssetName + '\'' + ", parentAssetIp='" + parentAssetIp + '\''
-               + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel + '\''
-               + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", categoryType=" + categoryType
-               + '}';
+        return "AssetLinkRelationResponse{" +
+                "assetId='" + assetId + '\'' +
+                ", assetName='" + assetName + '\'' +
+                ", assetIp='" + assetIp + '\'' +
+                ", assetPort='" + assetPort + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", parentAssetId='" + parentAssetId + '\'' +
+                ", parentAssetName='" + parentAssetName + '\'' +
+                ", parentAssetIp='" + parentAssetIp + '\'' +
+                ", parentAssetPort='" + parentAssetPort + '\'' +
+                ", parentCategoryModel=" + parentCategoryModel +
+                ", parentCategoryModelName='" + parentCategoryModelName + '\'' +
+                ", categoryType=" + categoryType +
+                ", parentAssetNumber='" + parentAssetNumber + '\'' +
+                ", parentAssetAreaId='" + parentAssetAreaId + '\'' +
+                ", parentAssetAreaName='" + parentAssetAreaName + '\'' +
+                ", parentAssetUserId='" + parentAssetUserId + '\'' +
+                ", parentAssetUserName='" + parentAssetUserName + '\'' +
+                ", parentAssetUserDepartment='" + parentAssetUserDepartment + '\'' +
+                ", partRoomNo='" + partRoomNo + '\'' +
+                ", officeNet=" + officeNet +
+                ", officeNetState='" + officeNetState + '\'' +
+                ", switchState='" + switchState + '\'' +
+                ", vlan='" + vlan + '\'' +
+                ", customField='" + customField + '\'' +
+                ", assetMac=" + assetMac +
+                ", parentAssetMac=" + parentAssetMac +
+                ", memo='" + memo + '\'' +
+                '}';
     }
 }
