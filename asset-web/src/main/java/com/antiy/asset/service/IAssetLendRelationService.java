@@ -113,7 +113,7 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      *
      * @return
      */
-    List<UserListResponse> queryUserList();
+    List<UserListResponse> queryUserList(ApplicantRequest request);
 
     /**
      * 申请人信息查询
@@ -124,6 +124,7 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
     UserInfoResponse queryUserInfo(UserInfoRequest request);
 
     AssetResponse queryAssetInfo(Integer id);
+
     /**
      * 保存出借信息(批量)
      *

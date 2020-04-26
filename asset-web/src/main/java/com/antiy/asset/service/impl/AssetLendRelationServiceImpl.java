@@ -147,7 +147,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
         //assetDao.getByAssetId()
-        Integer result =  assetLendRelationDao.returnConfirm(assetLendRelationRequest);
+        Integer result = assetLendRelationDao.returnConfirm(assetLendRelationRequest);
         LogUtils.recordOperLog(
                 new BusinessData("归还出借资产", assetLendRelationRequest.getAssetId(), assetDao.getNumberById(assetLendRelationRequest.getAssetId()),
                         assetLendRelationRequest, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE)
@@ -181,7 +181,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
-        assetLendRelationDao.insert(assetLendRelation);
+        //出借保存
+        this.insertAssetLendRelation(assetLendRelation);
 
         LogUtils.recordOperLog(
                 new BusinessData("借出资产", assetLendRelation.getAssetId(), assetDao.getNumberById(assetLendRelation.getAssetId()),
@@ -199,8 +200,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     }
 
     @Override
-    public List<UserListResponse> queryUserList() {
-        return assetLendRelationDao.queryUserList();
+    public List<UserListResponse> queryUserList(ApplicantRequest request) {
+        return assetLendRelationDao.queryUserList(request);
     }
 
     @Override
@@ -230,9 +231,10 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setStatus(Integer.valueOf(1));
 
         for (String item : request.getAssetIds()) {
+            //出借保存
             assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
             //由oa系统发起出借，出借模块无需添加日志
-            assetLendRelationDao.insert(assetLendRelation);
+            this.insertAssetLendRelation(assetLendRelation);
         }
         return request.toString();
     }
@@ -251,4 +253,15 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
             getDepartment(parentId, department);
         }
     }
+
+    private void insertAssetLendRelation(AssetLendRelation assetLendRelation) throws Exception {
+        if (assetLendRelationDao.countAsset(assetLendRelation.getAssetId()) <= 0) {
+            logger.info("资产{}出借成功！", assetLendRelation.getAssetId());
+            assetLendRelationDao.insert(assetLendRelation);
+        } else {
+            logger.error("资产{}重复出借！", assetLendRelation.getAssetId());
+            throw new BusinessException("资产借出，请勿重复出借！");
+        }
+    }
+
 }

@@ -2,11 +2,11 @@ package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.vo.query.ApproveListQuery;
+import com.antiy.asset.vo.request.ApplicantRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.UserInfoRequest;
 import com.antiy.asset.vo.response.ApproveListResponse;
 import com.antiy.asset.vo.response.AssetLendRelationResponse;
-import com.antiy.asset.entity.AssetOaOrderHandle;
 import com.antiy.asset.vo.response.UserInfoResponse;
 import com.antiy.asset.vo.response.UserListResponse;
 import com.antiy.common.base.IBaseDao;
@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author zhangyajun
@@ -25,6 +25,7 @@ import java.util.List;
 public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     /**
      * 查询详情
+     *
      * @param uniqueId
      * @return
      */
@@ -42,11 +43,13 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
 
     Integer queryApproveListCount(ApproveListQuery query);
 
-    List<UserListResponse> queryUserList();
+    List<UserListResponse> queryUserList(ApplicantRequest request);
 
     UserInfoResponse queryUserInfo(UserInfoRequest request);
 
     String queryDepartment(String departmentId);
 
     String queryDepartmentParent(String departmentId);
+
+    Integer countAsset(String assetId);
 }
