@@ -396,13 +396,17 @@
             </if>
             ) a
     </select>
-    <select id="queryUserList" resultType="com.antiy.asset.vo.response.UserListResponse">
+    <select id="queryUserList" resultType="com.antiy.asset.vo.response.UserListResponse" parameterType="com.antiy.asset.vo.request.ApplicantRequest">
         SELECT
             NAME AS userName,
-            id AS UserId
+            id AS userId
         FROM
             asset_user
             where status = 1
+        <if test="multiply != null  and  multiply != ''">
+            and name like CONCAT('%',replace(replace(replace(#{multiply},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+        </if>
+        LIMIT 30
     </select>
     <select id="queryUserInfo" parameterType="com.antiy.asset.vo.request.UserInfoRequest" resultType="com.antiy.asset.vo.response.UserInfoResponse">
         SELECT
@@ -440,6 +444,16 @@
             status = 1
             and
             id = #{departmentId}
+    </select>
+    <select id="countAsset" resultType="java.lang.Integer">
+        SELECT
+            COUNT( 1 )
+        FROM
+            asset_lend_relation
+        WHERE
+            `status` = 1
+            AND asset_id = #{assetId}
+            AND lend_status = 1
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

@@ -107,7 +107,7 @@ public class AssetLendRelationController {
     }
 
     /**
-     *资产
+     * 资产
      */
     @ApiOperation(value = "资产详情", notes = "传入资产id")
     @ApiResponses(value = {
@@ -115,9 +115,10 @@ public class AssetLendRelationController {
     })
     @RequestMapping(value = "/query/asset/info", method = RequestMethod.POST)
     public ActionResponse queryAssetInfo(@ApiParam(value = "baseRequest") @RequestBody BaseRequest baseRequest) throws Exception {
-        AssetResponse assetResponse=iAssetLendRelationService.queryAssetInfo(baseRequest.getId());
+        AssetResponse assetResponse = iAssetLendRelationService.queryAssetInfo(baseRequest.getId());
         return ActionResponse.success(assetResponse);
     }
+
     /**
      * 出借历史
      */
@@ -232,8 +233,8 @@ public class AssetLendRelationController {
             @ApiResponse(code = 200, message = "OK", response = Integer.class),
     })
     @RequestMapping(value = "/query/userList", method = RequestMethod.POST)
-    public ActionResponse queryUserList() throws Exception {
-        return ActionResponse.success(iAssetLendRelationService.queryUserList());
+    public ActionResponse queryUserList(@RequestBody ApplicantRequest request) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryUserList(request));
     }
 
     /**
