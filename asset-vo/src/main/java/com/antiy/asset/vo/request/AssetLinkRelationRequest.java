@@ -101,15 +101,15 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     /**
      * 办公室网口状态
      */
-    @ApiModelProperty("办公室网口状态: 1.正常 0.损坏")
-    @Size(min = 0, max = 1)
+    @ApiModelProperty("办公室网口状态: 1.正常 2.损坏")
+    @Size(min = 1, max = 2)
     private String officeNetState;
 
     /**
      * 交换机状态
      */
-    @ApiModelProperty("交换机状态: 1.正常 0.损坏")
-    @Size(min = 0, max = 1)
+    @ApiModelProperty("交换机状态: 1.正常 2.损坏")
+    @Size(min = 1, max = 2)
     private Integer switchState;
 
     /**

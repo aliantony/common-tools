@@ -755,7 +755,8 @@
         alr.office_net_state as officeNetState,
         alr.switch_state as switchState,
         alr.vlan as vlan,
-        alr.custom_field as customField
+        alr.custom_field as customField,
+        alr.memo as memo
         FROM
         asset asset
         LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
@@ -786,7 +787,8 @@
         alr.office_net_state as officeNetState,
         alr.switch_state as switchState,
         alr.vlan as vlan,
-        alr.custom_field as customField
+        alr.custom_field as customField,
+        alr.memo as memo
         FROM
         asset asset
         LEFT JOIN asset_ip_relation air ON asset.id = air.asset_id
