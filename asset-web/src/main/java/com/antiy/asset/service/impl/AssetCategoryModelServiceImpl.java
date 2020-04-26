@@ -196,7 +196,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             assetCategoryModelQuery.setName(request.getName());
             return assetCategoryModelDao.findRepeatName(
                     request.getStringId() == null ? null : DataTypeUtils.stringToInteger(request.getStringId()),
-                    request.getName()) >= 1;
+                    request.getName().trim()) >= 1;
         }
         return false;
     }

@@ -10,8 +10,8 @@
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or air.ip like
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or amr.mac like
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            or replace(amr.mac,':','-') like
+            CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
             )
         </if>
         <if test="assetGroups !=null and assetGroups.size >0">
