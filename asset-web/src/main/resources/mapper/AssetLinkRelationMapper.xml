@@ -763,7 +763,6 @@
         left join asset t on alr.parent_asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
-        and alr.parent_asset_id is not null
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
         asset.id )
         UNION
@@ -798,7 +797,6 @@
         left join asset t on alr.asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
-        and alr.parent_asset_id is not null
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ORDER BY assetPort
         <if test="pageSize !=-1">
@@ -876,7 +874,6 @@
             left join asset t on alr.parent_asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
-            and alr.parent_asset_id is not null
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
             UNION
             SELECT
@@ -900,7 +897,6 @@
             left join asset t on alr.asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
-            and alr.parent_asset_id is not null
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ) t
     </select>
