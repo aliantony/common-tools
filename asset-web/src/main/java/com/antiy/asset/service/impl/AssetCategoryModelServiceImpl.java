@@ -6,8 +6,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -108,8 +106,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                     assetCategoryModel.toString());
         }
-        return ActionResponse
-                .success(aesEncoder.encode(assetCategoryModel.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+        return ActionResponse.success(result);
 
     }
 
@@ -235,9 +232,9 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
     public AssetCategoryModelNodeResponse queryCategoryNodeCount() throws Exception {
         List<AssetCategoryModel> categoryCount = assetCategoryModelDao.findAllCategoryCount();
         AssetCategoryModelNodeResponse categoryModelNodeResponses = getNextNodeResponse(categoryCount);
-        // 加密数据
-        String userName = LoginUserUtil.getLoginUser().getUsername();
-        aesEncode(categoryModelNodeResponses, userName);
+//        // 加密数据
+//        String userName = LoginUserUtil.getLoginUser().getUsername();
+//        aesEncode(categoryModelNodeResponses, userName);
         return categoryModelNodeResponses;
     }
 
