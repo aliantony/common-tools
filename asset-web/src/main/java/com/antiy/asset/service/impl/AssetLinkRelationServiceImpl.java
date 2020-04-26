@@ -225,6 +225,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                         break;
                     }
                     AssetDepartment assetDepartment = assetDepartmentDao.getParentIdById(departmentId);
+                    if (Objects.isNull(assetDepartment)){
+                        break;
+                    }
                     departmentId = assetDepartment.getParentId();
                     departmentName = departmentName + assetDepartment.getName();
                 }
