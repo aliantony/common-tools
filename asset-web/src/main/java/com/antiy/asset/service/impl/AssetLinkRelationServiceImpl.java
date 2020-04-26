@@ -230,6 +230,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                     }
                     departmentId = assetDepartment.getParentId();
                     departmentName = departmentName + assetDepartment.getName();
+                    assetResponse.setParentAssetUserDepartment(departmentName);
                 }
             }
             // 资产和父类资产mac获取
