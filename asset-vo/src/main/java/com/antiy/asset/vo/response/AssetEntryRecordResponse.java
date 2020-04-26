@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "AssetEntryRecordResponse", description = "准入记录VO对象")
 public class AssetEntryRecordResponse extends BaseResponse {
-    @ApiModelProperty("准入来源：1-资产入网，2-资产退役，3-漏洞扫描，4-配置扫描，5-补丁安装，6-准入管理")
+    @ApiModelProperty("准入来源：1-资产入网，2-资产退回，3-漏洞扫描，4-配置扫描，5-补丁安装，6-准入管理，7-资产变更，8-资产报废")
     private int entrySource;
     @ApiModelProperty("准入结果：1成功，0失败")
     private int entryResult;
