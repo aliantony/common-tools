@@ -229,7 +229,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                         break;
                     }
                     departmentId = assetDepartment.getParentId();
-                    departmentName = departmentName + assetDepartment.getName();
+                    departmentName = assetDepartment.getName() + departmentName;
                     assetResponse.setParentAssetUserDepartment(departmentName);
                 }
             }
