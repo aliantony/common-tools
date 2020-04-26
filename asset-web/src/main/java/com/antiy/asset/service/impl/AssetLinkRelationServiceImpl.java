@@ -214,7 +214,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
             assetResponse.setParentCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getParentCategoryModel()));
             // 姓名、所属组织转换
-            AssetUser assetUser = assetUserDao.findUserAndDepartment(String.valueOf(assetResponse.getParentAssetUserId()));
+            AssetUser assetUser = assetUserDao.findUserAndDepartment(assetResponse.getParentAssetUserId());
             if (Objects.nonNull(assetUser)){
                 assetResponse.setParentAssetUserName(assetUser.getName());
                 String departmentId = assetUser.getDepartmentIdNoEncrypt();

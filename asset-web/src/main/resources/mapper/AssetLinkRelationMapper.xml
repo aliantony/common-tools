@@ -857,7 +857,7 @@
     </select>
     <select id="queryLinkedCountAssetByAssetId" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.vo.query.AssetLinkRelationQuery">
-        select count(1) count from(
+        select count(1) from(
           SELECT
             asset.id AS assetId,
             asset.NAME AS assetName,

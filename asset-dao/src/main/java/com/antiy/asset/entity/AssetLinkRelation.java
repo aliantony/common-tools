@@ -115,7 +115,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 父类资产负责人
      */
-    private Integer parentAssetUserId;
+    private String parentAssetUserId;
 
     /**
      * 父类资产负责人名称
@@ -224,11 +224,11 @@ public class AssetLinkRelation extends BaseEntity {
         this.parentAssetAreaId = parentAssetAreaId;
     }
 
-    public Integer getParentAssetUserId() {
+    public String getParentAssetUserId() {
         return parentAssetUserId;
     }
 
-    public void setParentAssetUserId(Integer parentAssetUserId) {
+    public void setParentAssetUserId(String parentAssetUserId) {
         this.parentAssetUserId = parentAssetUserId;
     }
 

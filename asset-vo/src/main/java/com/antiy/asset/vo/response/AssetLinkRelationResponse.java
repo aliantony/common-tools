@@ -106,7 +106,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 父类资产负责人
      */
     @Encode
-    private Integer parentAssetUserId;
+    private String parentAssetUserId;
 
     /**
      * 父类资产负责人名称
@@ -193,11 +193,11 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentAssetAreaName = parentAssetAreaName;
     }
 
-    public Integer getParentAssetUserId() {
+    public String getParentAssetUserId() {
         return parentAssetUserId;
     }
 
-    public void setParentAssetUserId(Integer parentAssetUserId) {
+    public void setParentAssetUserId(String parentAssetUserId) {
         this.parentAssetUserId = parentAssetUserId;
     }
 
