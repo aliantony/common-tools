@@ -30,8 +30,11 @@
         <result column="modify_user" property="modifyUser"/>
         <result column="pid" property="pid"/>
         <result column="network_status" property="networkStatus"/>
-        <result column="relation" property="relation"/>
+        <result column="business_id" property="businessId"/>
         <result column="relationDesc" property="relation"/>
+    </resultMap>
+    <resultMap id="queryMonitorMap" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse" extends="BaseResultMap" >
+        <result column="software_id" property="softwareId"/>
     </resultMap>
     <resultMap id="BasePerformance" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse">
 
@@ -56,7 +59,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, asset_id, cpu_used_rate, memory_total, memory_used, memory_used_rate, disk_total, disk_used, disk_totalused_rate, disk_detail, rule_id, gmt_modified, type, name, description, location, supplier, installed_time, version, status, service_status, gmt_create, create_user, modify_user, pid, network_status,relation
+        id, asset_id, cpu_used_rate, memory_total, memory_used, memory_used_rate, disk_total, disk_used, disk_totalused_rate, disk_detail, rule_id, gmt_modified, type, name, description, location, supplier, installed_time, version, status, service_status, gmt_create, create_user, modify_user, pid, network_status,business_id
     </sql>
 
     <sql id="Table_Name">
@@ -68,8 +71,8 @@
         <if test=" assetId != null">
             asset_id,
         </if>
-        <if test=" relation != null">
-            relation,
+        <if test=" businessId != null">
+            business_id,
         </if>
         <if test=" cpuUsedRate != null">
             cpu_used_rate,
@@ -150,8 +153,8 @@
             #{assetId },
         </if>
 
-        <if test=" relation != null">
-            #{relation },
+        <if test="businessId != null">
+            #{businessId},
         </if>
         <if test=" cpuUsedRate != null">
             #{cpuUsedRate },
@@ -231,8 +234,8 @@
         <if test=" assetId != null">
             asset_id = #{assetId },
         </if>
-        <if test=" relation != null">
-            relation = #{relation },
+        <if test=" businessId != null">
+            business_id = #{businessId },
         </if>
         <if test=" cpuUsedRate != null">
             cpu_used_rate = #{cpuUsedRate },
@@ -312,8 +315,8 @@
         <if test=" assetId != null">
             and asset_id = #{assetId }
         </if>
-        <if test=" relation != null">
-            and relation = #{relation }
+        <if test=" businessId != null">
+            and business_id = #{businessId }
         </if>
         <if test=" cpuUsedRate != null">
             and cpu_used_rate = #{cpuUsedRate }
@@ -484,37 +487,63 @@
         and asset_id=#{assetId}
         and `type`=#{type}
     </select>
-    <select id="queryMonitor" resultMap="BaseResultMap">
+    <select id="queryMonitor" resultMap="queryMonitorMap">
+
         select
-            *
+        asm.*,asr.software_id
         from
-        asset_status_monitor
+        asset_status_monitor as asm
+
+        left join asset_software_relation as asr
+        on asr.software_id=asm.business_id
+        and asr.asset_id =asm.asset_id
+        and asr.status=1
         where `type`=#{type}
         and asset_id=#{assetId}
         and gmt_modified=#{gmtModified}
-        and status=1
-        <if test=" type ==2 and relations !=null and relations.size()>0">
-              and relation in
-            <foreach collection="relations" separator="," open="(" close=")" item="item">
-                #{item}
-            </foreach>
+        and asm.status=1
+        <if test=" type ==2">
+            <choose>
+                <when test="relation == 1">
+                    and asr.software_id is not null
+                </when>
+                <when test="relation == 2">
+                    and asr.software_id is  null
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
         </if>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
     <select id="countMonitor" resultType="int">
-        select  count(*)
-        from  <include refid="Table_Name"></include>
+        select
+        count(*)
+        from
+        asset_status_monitor as asm
+        left join asset_software_relation as asr
+        on asr.software_id=asm.business_id
+        and asr.asset_id =asm.asset_id
+        and asr.status=1
         where `type`=#{type}
         and asset_id=#{assetId}
         and gmt_modified=#{gmtModified}
-        and status=1
-        <if test=" type ==2 and relations !=null and relations.size()>0">
-            and relation in
-            <foreach collection="relations" separator="," open="(" close=")" item="item">
-                #{item}
-            </foreach>
+        and asm.status=1
+        <if test=" type ==2">
+            <choose>
+                <when test="relation == 1">
+                    and asr.software_id is not null
+                </when>
+                <when test="relation == 2">
+                    and asr.software_id is  null
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
         </if>
     </select>
 </mapper>

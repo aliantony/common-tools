@@ -14,6 +14,11 @@ public class AssetStatusMonitor extends BaseEntity {
 
 private static final long serialVersionUID = 1L;
 
+/**
+ * 软件业务 id
+ */
+
+    private Long businessId;
     /**
     *  资产id
     */
@@ -93,7 +98,6 @@ private static final long serialVersionUID = 1L;
 进程：1、未删除 2、已删除
     */
     private Integer status;
-    private  int relation;
     /**
     *  服务运行该状态： e.g. 正在运行
     */
@@ -119,6 +123,14 @@ private static final long serialVersionUID = 1L;
     */
     private String networkStatus;
 
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -126,15 +138,6 @@ private static final long serialVersionUID = 1L;
     public void setStatus(Integer status) {
         this.status = status;
     }
-
-    public int getRelation() {
-        return relation;
-    }
-
-    public void setRelation(int relation) {
-        this.relation = relation;
-    }
-
     public Integer getAssetId() {
         return assetId;
     }

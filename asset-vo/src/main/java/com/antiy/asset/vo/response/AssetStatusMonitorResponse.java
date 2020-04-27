@@ -20,6 +20,12 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     @ApiModelProperty("资产id")
     @Encode
     private String assetId;
+
+    /**
+     *软件业务id
+     */
+    @ApiModelProperty("软件业务id")
+    private Long softwareId;
     /**
      *  cpu使用率
      */
@@ -140,11 +146,7 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     @ApiModelProperty("资产网络状态")
     private String networkStatus;
 
-    /**
-     *  资产与软件关联关系
-     */
-    @ApiModelProperty("资产与软件关联关系")
-    private int relation;
+
 
     @ApiModelProperty("资产与软件关联关系描述")
     private String relationDesc;
@@ -168,15 +170,12 @@ public class AssetStatusMonitorResponse extends BaseResponse {
      */
     private AssetMonitorRuleResponse assetMonitorRuleResponse;
 
-    public int getRelation() {
-        return relation;
+    public Long getSoftwareId() {
+        return softwareId;
     }
-
-    public void setRelation(int relation) {
-        this.relation = relation;
+    public void setSoftwareId(Long softwareId) {
+        this.softwareId = softwareId;
     }
-
-
 
     public AssetMonitorRuleResponse getAssetMonitorRuleResponse() {
         return assetMonitorRuleResponse;
@@ -385,4 +384,5 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     public void setNetworkStatus(String networkStatus) {
         this.networkStatus = networkStatus;
     }
+
 }

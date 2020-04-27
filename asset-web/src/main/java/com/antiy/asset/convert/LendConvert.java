@@ -18,8 +18,8 @@ public class LendConvert extends BaseConverter<AssetLendRelationResponse, AssetL
     @Override
     protected void convert(AssetLendRelationResponse asset, AssetLendRelationEntity assetEntity) {
         assetEntity.setLendTime(longToDateString(asset.getLendTime()));
-        assetEntity
-            .setLendPeriods(longToDateString(asset.getLendTime()) + "-" + longToDateString(asset.getLendPeriods()));
+        // assetEntity
+        // .setLendPeriods(longToDateString(asset.getLendTime()) + "-" + longToDateString(asset.getLendPeriods()));
         super.convert(asset, assetEntity);
     }
 
