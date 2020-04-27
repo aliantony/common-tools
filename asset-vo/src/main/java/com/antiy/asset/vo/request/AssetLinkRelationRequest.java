@@ -119,11 +119,18 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     private String vlan;
 
     /**
-     * 自定义字段
+     * 自定义名称
      */
-    @ApiModelProperty("自定义字段")
-    private String customField;
+    @Size(max = 10)
+    @ApiModelProperty("自定义名称")
+    private String customName;
 
+    /**
+     * 自定义内容
+     */
+    @Size(max = 300)
+    @ApiModelProperty("自定义内容")
+    private String customContent;
 
     public String getPartRoomNo() {
         return partRoomNo;
@@ -165,13 +172,6 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
         this.vlan = vlan;
     }
 
-    public String getCustomField() {
-        return customField;
-    }
-
-    public void setCustomField(String customField) {
-        this.customField = customField;
-    }
 
     public String getAssetIp() {
         return assetIp;
@@ -269,11 +269,27 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
         this.status = status;
     }
 
+    public String getCustomName() {
+        return customName;
+    }
+
+    public void setCustomName(String customName) {
+        this.customName = customName;
+    }
+
+    public String getCustomContent() {
+        return customContent;
+    }
+
+    public void setCustomContent(String customContent) {
+        this.customContent = customContent;
+    }
+
     @Override
     public void validate() throws RequestParamValidateException {
 
-        if (Objects.nonNull(memo) | Objects.nonNull(customField)){
-            if (!(Objects.nonNull(memo) ^ Objects.nonNull(customField))) {
+        if (Objects.nonNull(memo) | Objects.nonNull(customName)){
+            if (!(Objects.nonNull(memo) ^ Objects.nonNull(customName))) {
                 throw new BusinessException("备注、自定义字段限添加1个");
             }
         }

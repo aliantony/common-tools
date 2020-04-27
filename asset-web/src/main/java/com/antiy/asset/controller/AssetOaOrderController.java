@@ -1,6 +1,7 @@
 package com.antiy.asset.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.request.AssetOaOrderRequest;
@@ -115,7 +116,8 @@ public class AssetOaOrderController {
     })
     @RequestMapping(value = "/getStatus", method = RequestMethod.POST)
     public ActionResponse getStatus(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition)throws Exception{
-        ParamterExceptionUtils.isNull(queryCondition.getPrimaryKey(), "ID不能为空");
+        logger.info("查询订单状态,queryCondition:{}", JSONObject.toJSONString(queryCondition));
+        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "ID不能为空");
         return ActionResponse.success(iAssetOaOrderService.getStatus(Integer.parseInt(queryCondition.getPrimaryKey())));
     }
 }

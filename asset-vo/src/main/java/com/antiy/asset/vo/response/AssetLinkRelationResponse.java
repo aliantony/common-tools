@@ -151,10 +151,16 @@ public class AssetLinkRelationResponse extends BaseResponse {
     private String vlan;
 
     /**
-     * 自定义字段
+     * 自定义名称
      */
-    @ApiModelProperty("自定义字段")
-    private String customField;
+    @ApiModelProperty("自定义名称")
+    private String customName;
+
+    /**
+     * 自定义内容
+     *
+     */
+    private String customContent;
 
     /**
      * 资产mac
@@ -263,12 +269,20 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.vlan = vlan;
     }
 
-    public String getCustomField() {
-        return customField;
+    public String getCustomName() {
+        return customName;
     }
 
-    public void setCustomField(String customField) {
-        this.customField = customField;
+    public void setCustomName(String customName) {
+        this.customName = customName;
+    }
+
+    public String getCustomContent() {
+        return customContent;
+    }
+
+    public void setCustomContent(String customContent) {
+        this.customContent = customContent;
     }
 
     public List<AssetMacRelationResponse> getAssetMac() {
@@ -426,7 +440,8 @@ public class AssetLinkRelationResponse extends BaseResponse {
                 ", officeNetState='" + officeNetState + '\'' +
                 ", switchState='" + switchState + '\'' +
                 ", vlan='" + vlan + '\'' +
-                ", customField='" + customField + '\'' +
+                ", customName='" + customName + '\'' +
+                ", customContent='" + customContent + '\'' +
                 ", assetMac=" + assetMac +
                 ", parentAssetMac=" + parentAssetMac +
                 ", memo='" + memo + '\'' +

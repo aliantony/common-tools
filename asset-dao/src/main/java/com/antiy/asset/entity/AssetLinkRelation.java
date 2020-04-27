@@ -3,7 +3,6 @@ package com.antiy.asset.entity;
 import com.antiy.asset.vo.response.AssetMacRelationResponse;
 import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
-
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -153,9 +152,14 @@ public class AssetLinkRelation extends BaseEntity {
     private String vlan;
 
     /**
-     * 自定义字段
+     * 自定义名称
      */
-    private String customField;
+    private String customName;
+
+    /**
+     * 自定义内容
+     */
+    private String customContent;
 
     /**
      * 资产mac
@@ -272,13 +276,6 @@ public class AssetLinkRelation extends BaseEntity {
         this.vlan = vlan;
     }
 
-    public String getCustomField() {
-        return customField;
-    }
-
-    public void setCustomField(String customField) {
-        this.customField = customField;
-    }
 
     public CategoryType getCategoryType() {
         return categoryType;
@@ -432,15 +429,59 @@ public class AssetLinkRelation extends BaseEntity {
         this.parentAssetName = parentAssetName;
     }
 
+    public String getCustomName() {
+        return customName;
+    }
+
+    public void setCustomName(String customName) {
+        this.customName = customName;
+    }
+
+    public String getCustomContent() {
+        return customContent;
+    }
+
+    public void setCustomContent(String customContent) {
+        this.customContent = customContent;
+    }
+
     @Override
     public String toString() {
-        return "AssetLinkRelation{" + "assetId=" + assetId + ", assetName='" + assetName + '\'' + ", assetIp='"
-               + assetIp + '\'' + ", assetPort='" + assetPort + '\'' + ", categoryModel='" + categoryModel + '\''
-               + ", categoryModelName='" + categoryModelName + '\'' + ", parentAssetId=" + parentAssetId
-               + ", parentAssetName='" + parentAssetName + '\'' + ", parentAssetIp='" + parentAssetIp + '\''
-               + ", parentAssetPort='" + parentAssetPort + '\'' + ", parentCategoryModel='" + parentCategoryModel + '\''
-               + ", parentCategoryModelName='" + parentCategoryModelName + '\'' + ", gmtCreate=" + gmtCreate
-               + ", gmtModified=" + gmtModified + ", memo='" + memo + '\'' + ", createUser=" + createUser
-               + ", modifyUser=" + modifyUser + ", status=" + status + ", categoryType=" + categoryType + '}';
+        return "AssetLinkRelation{" +
+                "assetId='" + assetId + '\'' +
+                ", assetName='" + assetName + '\'' +
+                ", assetIp='" + assetIp + '\'' +
+                ", assetPort='" + assetPort + '\'' +
+                ", categoryModel=" + categoryModel +
+                ", categoryModelName='" + categoryModelName + '\'' +
+                ", parentAssetId='" + parentAssetId + '\'' +
+                ", parentAssetName='" + parentAssetName + '\'' +
+                ", parentAssetIp='" + parentAssetIp + '\'' +
+                ", parentAssetPort='" + parentAssetPort + '\'' +
+                ", parentCategoryModel=" + parentCategoryModel +
+                ", parentCategoryModelName='" + parentCategoryModelName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", memo='" + memo + '\'' +
+                ", createUser=" + createUser +
+                ", modifyUser=" + modifyUser +
+                ", status=" + status +
+                ", categoryType=" + categoryType +
+                ", parentAssetNumber='" + parentAssetNumber + '\'' +
+                ", parentAssetAreaId='" + parentAssetAreaId + '\'' +
+                ", parentAssetAreaName='" + parentAssetAreaName + '\'' +
+                ", parentAssetUserId='" + parentAssetUserId + '\'' +
+                ", parentAssetUserName='" + parentAssetUserName + '\'' +
+                ", parentAssetUserDepartment='" + parentAssetUserDepartment + '\'' +
+                ", partRoomNo='" + partRoomNo + '\'' +
+                ", officeNet=" + officeNet +
+                ", officeNetState='" + officeNetState + '\'' +
+                ", switchState='" + switchState + '\'' +
+                ", vlan='" + vlan + '\'' +
+                ", customName='" + customName + '\'' +
+                ", customContent='" + customContent + '\'' +
+                ", assetMac=" + assetMac +
+                ", parentAssetMac=" + parentAssetMac +
+                '}';
     }
 }

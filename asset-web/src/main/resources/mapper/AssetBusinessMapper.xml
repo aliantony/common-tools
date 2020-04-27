@@ -218,7 +218,6 @@
         asset_business_relation
         WHERE
         asset_business_relation.asset_business_id = asset_business.id
-        AND asset_business_relation.source = 1
         AND asset_business_relation.STATUS = 1
         ) as assetCount,
         asset_business.unique_id as uniqueId

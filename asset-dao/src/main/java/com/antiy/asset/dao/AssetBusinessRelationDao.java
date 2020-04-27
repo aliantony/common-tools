@@ -45,4 +45,6 @@ public interface AssetBusinessRelationDao extends IBaseDao<AssetBusinessRelation
     int updateBatchInfluenceByAssetId(@Param("relationRequests") List<AssetBusinessRelationRequest> relationRequests,@Param("assetId") String assetId);
 
     int insertBatchRelation(List<AssetBusinessRelation> assetRelationList);
+
+    void deleteByAssetId(List<String> assetIdList);
 }
