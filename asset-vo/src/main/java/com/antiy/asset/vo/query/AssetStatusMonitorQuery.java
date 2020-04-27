@@ -15,12 +15,12 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetStatusMonitorQuery extends ObjectQuery {
 
-    @ApiModelProperty("监控资源类型")
+    @ApiModelProperty(" 监控资源类型 1、进程 2、软件 3、服务 4、性能")
     Integer type;
     @ApiModelProperty("资产id")
     @Encode
     private String assetId;
-    @ApiModelProperty("关联筛选")
+    @ApiModelProperty("关联筛选 1 已关联 2  未关联 ")
     int relation;
     /**
      * 更新时间
