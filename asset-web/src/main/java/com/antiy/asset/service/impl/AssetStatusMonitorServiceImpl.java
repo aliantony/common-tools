@@ -99,7 +99,7 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
         /**
          * 设置最近的监控时间
          */
-        Long lastTime = assetStatusMonitorDao.maxMonitorGmtModified(assetStatusMonitorQuery);
+        Long lastTime = assetStatusMonitorDao.maxMonitorGmtCreate(assetStatusMonitorQuery);
         assetStatusMonitorQuery.setGmtModified(lastTime);
         int count= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
         if(count>0){

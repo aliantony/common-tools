@@ -507,8 +507,8 @@
         order by asm.gmt_modified desc
         limit 1
     </select>
-    <select id="maxMonitorGmtModified" resultType="long">
-        select max(gmt_modified)
+    <select id="maxMonitorGmtCreate" resultType="long">
+        select max(gmt_create)
         from asset_status_monitor
         where status=1
         and asset_id=#{assetId}
