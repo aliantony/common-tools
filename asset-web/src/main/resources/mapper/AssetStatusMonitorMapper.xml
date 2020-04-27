@@ -33,7 +33,34 @@
         <result column="business_id" property="businessId"/>
         <result column="relationDesc" property="relation"/>
     </resultMap>
-    <resultMap id="queryMonitorMap" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse" extends="BaseResultMap" >
+    <resultMap id="queryMonitorMap" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse"  >
+        <result column="asset_id" property="assetId"/>
+        <result column="cpu_used_rate" property="cpuUsedRate"/>
+        <result column="memory_total" property="memoryTotal"/>
+        <result column="memory_used" property="memoryUsed"/>
+        <result column="memory_used_rate" property="memoryUsedRate"/>
+        <result column="disk_total" property="diskTotal"/>
+        <result column="disk_used" property="diskUsed"/>
+        <result column="disk_totalused_rate" property="diskTotalusedRate"/>
+        <result column="disk_detail" property="diskDetail"/>
+        <result column="rule_id" property="ruleId"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="location" property="location"/>
+        <result column="supplier" property="supplier"/>
+        <result column="installed_time" property="installedTime"/>
+        <result column="version" property="version"/>
+        <result column="status" property="status"/>
+        <result column="service_status" property="serviceStatus"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="create_user" property="createUser"/>
+        <result column="modify_user" property="modifyUser"/>
+        <result column="pid" property="pid"/>
+        <result column="network_status" property="networkStatus"/>
+        <result column="business_id" property="businessId"/>
+        <result column="relationDesc" property="relation"/>
         <result column="software_id" property="softwareId"/>
     </resultMap>
     <resultMap id="BasePerformance" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse">
@@ -493,14 +520,13 @@
         asm.*,asr.software_id
         from
         asset_status_monitor as asm
-
         left join asset_software_relation as asr
         on asr.software_id=asm.business_id
         and asr.asset_id =asm.asset_id
         and asr.status=1
-        where `type`=#{type}
-        and asset_id=#{assetId}
-        and gmt_modified=#{gmtModified}
+        where asm.`type`=#{type}
+        and asm.asset_id=#{assetId}
+        and asm.gmt_modified=#{gmtModified}
         and asm.status=1
         <if test=" type ==2">
             <choose>
@@ -521,16 +547,16 @@
     </select>
     <select id="countMonitor" resultType="int">
         select
-        count(*)
+        count(asm.id)
         from
         asset_status_monitor as asm
         left join asset_software_relation as asr
         on asr.software_id=asm.business_id
         and asr.asset_id =asm.asset_id
         and asr.status=1
-        where `type`=#{type}
-        and asset_id=#{assetId}
-        and gmt_modified=#{gmtModified}
+        where asm.`type`=#{type}
+        and asm.asset_id=#{assetId}
+        and asm.gmt_modified=#{gmtModified}
         and asm.status=1
         <if test=" type ==2">
             <choose>

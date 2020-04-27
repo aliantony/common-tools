@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetStatusMonitorDao;
 import com.antiy.asset.entity.AssetStatusMonitor;
 import com.antiy.asset.service.IAssetStatusMonitorService;
+import com.antiy.asset.vo.enums.TimeEnum;
 import com.antiy.asset.vo.query.AssetStatusMonitorQuery;
 import com.antiy.asset.vo.request.AssetStatusMonitorRequest;
 import com.antiy.asset.vo.response.AssetStatusMonitorResponse;
@@ -10,6 +11,7 @@ import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
         private BaseConverter<AssetStatusMonitorRequest, AssetStatusMonitor>  requestConverter;
         @Resource
         private BaseConverter<AssetStatusMonitor, AssetStatusMonitorResponse> responseConverter;
+
 
         @Override
         public String saveAssetStatusMonitor(AssetStatusMonitorRequest request) throws Exception {
@@ -77,6 +80,15 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
     @Override
     public AssetStatusMonitorResponse queryBasePerformance(String primaryKey) {
         AssetStatusMonitorResponse assetStatusMonitorResponse= assetStatusMonitorDao.queryBasePerformance(primaryKey);
+        String runtimeExceptionThreshold = assetStatusMonitorResponse.getAssetMonitorRuleResponse().getRuntimeExceptionThreshold();
+        if(StringUtils.isNotBlank(runtimeExceptionThreshold)){
+            if(runtimeExceptionThreshold.contains(TimeEnum.HOUR.getName())){
+                assetStatusMonitorResponse.getAssetMonitorRuleResponse().setRuntimeExceptionThreshold(runtimeExceptionThreshold.replace(TimeEnum.HOUR.getName(),"小时"));
+            }
+            if(runtimeExceptionThreshold.contains(TimeEnum.DAY.getName())){
+                assetStatusMonitorResponse.getAssetMonitorRuleResponse().setRuntimeExceptionThreshold(runtimeExceptionThreshold.replace(TimeEnum.DAY.getName(),TimeEnum.DAY.getMsg()));
+            }
+        }
         return assetStatusMonitorResponse;
     }
 
