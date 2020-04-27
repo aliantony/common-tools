@@ -53,7 +53,7 @@ public class AssetStatusMonitorController {
      */
     @ApiOperation(value = "资产基本性能监控", notes = "传入资产id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+            @ApiResponse(code = 200, message = "OK", response = AssetStatusMonitorResponse.class),
     })
     @RequestMapping(value = "/query/base/performance", method = RequestMethod.POST)
     public ActionResponse queryBasePerformance(@ApiParam(value = "queryCondition") @RequestBody QueryCondition queryCondition)throws Exception{
@@ -69,7 +69,7 @@ public class AssetStatusMonitorController {
      */
     @ApiOperation(value = "资产 进程/服务监控", notes = "传入资产id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Integer.class),
+            @ApiResponse(code = 200, message = "OK", response = AssetStatusMonitorResponse.class),
     })
     @RequestMapping(value = "/query/monitor", method = RequestMethod.POST)
     public ActionResponse queryProcess(@ApiParam(value = "queryCondition") @RequestBody AssetStatusMonitorQuery assetStatusMonitorQuery)throws Exception{
