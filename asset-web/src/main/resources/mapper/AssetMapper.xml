@@ -1912,11 +1912,13 @@
         asset.*,
         `user`.`name` AS responsible_user_name,
         `user`.`mobile` As contact_tel,
-        anm.net_type_name as netTypeName
+        anm.net_type_name as netTypeName,
+        acm.name as category_model_name
         FROM
         <include refid="Table_Name"></include>
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
         left join asset_nettype_manage anm on asset.net_type = anm.id and anm.status = 1
+        left join asset_category_model acm on asset.category_model = acm.id
         -- LEFT JOIN asset_hard_soft_lib lib ON lib.business_id = asset.operation_system
         where asset.id=#{id}
     </select>
