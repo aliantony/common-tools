@@ -36,6 +36,7 @@ import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IAssetCpeTreeService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
 import com.antiy.asset.templet.*;
@@ -170,6 +171,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private AssetCpeTreeDao                                                     treeDao;
     private Object                                                              lock     = new Object();
+    @Resource
+    private IAssetCpeTreeService                                                assetCpeTreeService;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -3862,6 +3865,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     public Integer queryAssetCountByNetTypeId(Integer id) {
         return assetDao.queryAssetCountByNetTypeId(id);
+    }
+
+    @Override
+    public PageResult<AssetHardSoftLibResponse> queryOS(AssetOsQuery query) throws Exception {
+        // 获取大类子节点
+        QueryCondition condition = new QueryCondition();
+        condition.setPrimaryKey(query.getParentNode());
+        List<AssetCpeTreeResponse> list = assetCpeTreeService.querySubTreeById(condition);
+        if (CollectionUtils.isNotEmpty(list)) {
+            query.setChildIds(list.stream().map(AssetCpeTreeResponse::getBusinessId).collect(Collectors.toList()));
+            Integer count = assetDao.queryOSCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
+            }
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetDao.queryOSList(query));
+        }
+        return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
     }
 }
 

@@ -429,4 +429,11 @@ public interface IAssetService extends IBaseService<Asset> {
      * @return
      */
     Integer queryAssetCountByNetTypeId(Integer id);
+
+    /**
+     * 操作系统查询
+     * @param query
+     * @return
+     */
+    PageResult<AssetHardSoftLibResponse> queryOS(AssetOsQuery query) throws Exception;
 }

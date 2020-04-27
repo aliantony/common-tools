@@ -3,10 +3,7 @@ package com.antiy.asset.controller;
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
-import com.antiy.asset.vo.query.AssetMultipleQuery;
-import com.antiy.asset.vo.query.AssetOaOrderQuery;
-import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
 import com.antiy.asset.vo.request.AssetImportRequest;
@@ -674,5 +671,12 @@ public class AssetController {
     @RequestMapping(value = "/query/queryAssetCountByNetTypeId", method = RequestMethod.POST)
     public ActionResponse queryAssetCountByNetTypeId(@RequestBody @ApiParam(value = "query") BaseId query) {
        return ActionResponse.success(iAssetService.queryAssetCountByNetTypeId(query.getId()));
+    }
+
+    @ApiOperation(value = "资产登记操作系统查询", notes = "传入网络类型id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/OS", method = RequestMethod.POST)
+    public ActionResponse queryOS(@RequestBody @ApiParam(value = "query") AssetOsQuery query) throws Exception {
+        return ActionResponse.success(iAssetService.queryOS(query));
     }
 }

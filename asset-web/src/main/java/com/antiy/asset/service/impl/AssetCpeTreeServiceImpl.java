@@ -91,6 +91,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
 
         if (num > 0) {
             cpeTreeList = assetCpeTreeDao.findQuery(query);
+            allList.addAll(cpeTreeList);
             for (AssetCpeTree cpeTree : cpeTreeList) {
                 recursionTree(new AssetCpeTreeQuery(), cpeTree, allList);
             }
@@ -123,16 +124,18 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
     public List<AssetCpeTreeResponse> queryTree() throws Exception {
 
         List<AssetCpeTreeResponse> responseList = Lists.newArrayList();
-        //获取顶级大类
+        // 获取顶级大类
         List<AssetCpeTree> topNodeList = assetCpeTreeDao.findOSTopNode();
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
-        for (AssetCpeTree assetCpeTree : topNodeList){
+        for (AssetCpeTree assetCpeTree : topNodeList) {
             condition.setPid(assetCpeTree.getUniqueId());
-            List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),AssetCpeTreeResponse.class);
-            //查找子节点数据
+            List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),
+                AssetCpeTreeResponse.class);
+            // 查找子节点数据
             buildChildrenNode(treeItem);
-            //组装基准大类树形数据
-            AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,AssetCpeTreeResponse.class);
+            // 组装基准大类树形数据
+            AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
+                AssetCpeTreeResponse.class);
             assetCpeTreeResponse.setShow(true);
             assetCpeTreeResponse.setChildrenNode(treeItem);
             responseList.add(assetCpeTreeResponse);
@@ -160,13 +163,14 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
 
     private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList) {
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
-        for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList){
+        for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList) {
             condition.setPid(assetCpeTree.getUniqueId());
             Integer hasNext = assetCpeTreeDao.countNextNode(condition);
-            if (hasNext > 0){
+            if (hasNext > 0) {
                 assetCpeTree.setShow(false);
                 List<AssetCpeTree> assetCpeTreeList = assetCpeTreeDao.findNextNode(condition);
-                List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList, AssetCpeTreeResponse.class);
+                List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList,
+                    AssetCpeTreeResponse.class);
                 assetCpeTree.setChildrenNode(responseList);
                 buildChildrenNode(assetCpeTree.getChildrenNode());
             }

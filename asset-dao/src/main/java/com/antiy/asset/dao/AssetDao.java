@@ -4,10 +4,7 @@ import com.antiy.asset.dto.AssetWorkQueryDto;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.AssetAreaAndIpResponse;
-import com.antiy.asset.vo.response.AssetMatchResponse;
-import com.antiy.asset.vo.response.AssetResponse;
-import com.antiy.asset.vo.response.SelectResponse;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
 
@@ -447,4 +444,8 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer checkNoRepate(String mac);
 
     Integer queryAssetCountByNetTypeId(Integer id);
+
+    Integer queryOSCount(AssetOsQuery query);
+
+    List<AssetHardSoftLibResponse> queryOSList(AssetOsQuery query);
 }
