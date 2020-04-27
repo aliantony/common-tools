@@ -292,6 +292,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
 
         Set<Integer> allNodes = new HashSet<>();
+        allNodes.addAll(currentNodes);
         getNodesForrecursion(currentNodes, allNodes);
 
         return new ArrayList<>(allNodes);
