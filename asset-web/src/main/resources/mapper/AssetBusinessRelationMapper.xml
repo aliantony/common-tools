@@ -189,6 +189,15 @@
             )
         </foreach>
     </insert>
+    <update id="deleteByAssetId">
+        update
+        <include refid="Table_Name"/>
+        set status=0
+        where asset_id in
+        <foreach collection="list" close=")" open="(" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
     <insert id="insertBatchRelation" parameterType="java.util.List" >
         insert into <include refid="Table_Name"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">

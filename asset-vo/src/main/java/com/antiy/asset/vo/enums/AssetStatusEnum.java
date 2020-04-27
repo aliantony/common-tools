@@ -40,7 +40,7 @@ public enum AssetStatusEnum implements CodeEnum {
     /**
      * 已退回
      */
-    RETIRE(8, "已退回"),
+        RETIRE(8, "已退回"),
     /**
      * 待报废
      */

@@ -79,12 +79,23 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
      private AssetAssemblyDao assetAssemblyDao;
     private Object lock = new Object();
 
+    private static int MAX_FILE_COUNT=5;
+    private static int MAX_STR_LENGTH=300;
     @Transactional(rollbackFor = Exception.class)
     @Override
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
 
+        //参数校验
+        if(StringUtils.isNotBlank(statusJumpRequest.getFileInfo())){
+           if( MAX_FILE_COUNT<statusJumpRequest.getFileInfo().split(";").length){
+               throw  new BusinessException("上传附件不允许超过5个!");
+            }
+        }
+        if(StringUtils.isNotBlank(statusJumpRequest.getNote()) && statusJumpRequest.getNote().length()>MAX_STR_LENGTH){
+            throw  new BusinessException("备注不允许超过300字符!");
+        }
         // 配置调接口时是加密类型的id,(不用@Encode)使用手动解密
         if (loginUser != null) {
             statusJumpRequest.getAssetInfoList().forEach(e -> {
@@ -121,6 +132,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }
 
         }
+
         // 2.不是变更完成,提交至工作流
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
@@ -136,7 +148,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 }
                 throw new BusinessException(e.getMessage());
             }
-
 
             /**
              * 准入
@@ -161,16 +172,22 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                     throw new BusinessException("资产退役调用漏洞模块失败");
                 }
-
+                //删除关联业务的资产
+                List<String> assetIs = assetIdList.stream().map(e -> e.toString()).collect(Collectors.toList());
+                assetBusinessRelationDao.deleteByAssetId(assetIs);
                 //准入来源设置
                 assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
             }
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)){
+                //删除关联业务的资产
+                List<String> assetIs = assetIdList.stream().map(e -> e.toString()).collect(Collectors.toList());
+                assetBusinessRelationDao.deleteByAssetId(assetIs);
                 //准入来源设置
                 assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_SCRAP);
             }
             //准入更新
             entryService.updateEntryStatus(assetEntryRequest);
+
         } else {
             for (int i = 0; i < assetsInDb.size(); i++) {
                 //变更失败回滚信息并发送消息 只针对操作系统、组件、软件信息的回滚(不适用所有)
