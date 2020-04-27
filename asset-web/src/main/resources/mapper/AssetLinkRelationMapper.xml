@@ -167,8 +167,11 @@
         <if test=" vlan != null">
             vlan,
         </if>
-        <if test=" customField != null">
-            custom_field,
+        <if test=" customName != null">
+            custom_name,
+        </if>
+        <if test=" customContent != null">
+            custom_content
         </if>
     </sql>
 
@@ -224,8 +227,11 @@
         <if test=" vlan != null">
             #{vlan},
         </if>
-        <if test=" customField != null">
-            #{customField},
+        <if test=" customName != null">
+            #{customName},
+        </if>
+        <if test=" customContent != null">
+            #{customContent}
         </if>
     </sql>
 
@@ -755,7 +761,8 @@
         alr.office_net_state as officeNetState,
         alr.switch_state as switchState,
         alr.vlan as vlan,
-        alr.custom_field as customField,
+        alr.custom_name as customName,
+        alr.custom_content as customContent,
         alr.memo as memo
         FROM
         asset asset
@@ -787,7 +794,8 @@
         alr.office_net_state as officeNetState,
         alr.switch_state as switchState,
         alr.vlan as vlan,
-        alr.custom_field as customField,
+        alr.custom_name as customName,
+        alr.custom_content as customContent,
         alr.memo as memo
         FROM
         asset asset
