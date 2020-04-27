@@ -147,12 +147,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
         assetLinkRelationQuery.setStatusList(statusList);
         // 品类型号
-        if (CollectionUtils.isEmpty(assetLinkRelationQuery.getCategoryModels())) {
+        if (Objects.isNull(assetLinkRelationQuery.getCategoryModel())) {
             assetLinkRelationQuery.setCategoryModels(
                     // 循环获取计算设备，网络设备下所有子节点
                     // todo 由于资产类型枚举存在问题，暂时用魔法值代替
                     getCategoryNodeList(Arrays.asList(2, 3)));
+        }else {
+            assetLinkRelationQuery.setCategoryModels(
+                    // 循环获取所有子节点
+                    getCategoryNodeList(Arrays.asList(assetLinkRelationQuery.getCategoryModel())));
         }
+
         // 区域条件
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getAreaIds())) {
             assetLinkRelationQuery.setAreaIds(Arrays.asList(
