@@ -20,6 +20,12 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     @ApiModelProperty("资产id")
     @Encode
     private String assetId;
+
+    /**
+     *软件业务id
+     */
+    @ApiModelProperty("软件业务id")
+    private Long softwareId;
     /**
      *  cpu使用率
      */
@@ -176,7 +182,12 @@ public class AssetStatusMonitorResponse extends BaseResponse {
         this.relation = relation;
     }
 
-
+    public Long getSoftwareId() {
+        return softwareId;
+    }
+    public void setSoftwareId(Long softwareId) {
+        this.softwareId = softwareId;
+    }
 
     public AssetMonitorRuleResponse getAssetMonitorRuleResponse() {
         return assetMonitorRuleResponse;
@@ -385,4 +396,5 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     public void setNetworkStatus(String networkStatus) {
         this.networkStatus = networkStatus;
     }
+
 }

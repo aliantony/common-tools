@@ -14,6 +14,11 @@ public class AssetStatusMonitor extends BaseEntity {
 
 private static final long serialVersionUID = 1L;
 
+/**
+ * 软件业务 id
+ */
+
+    private Long businessId;
     /**
     *  资产id
     */
@@ -118,6 +123,14 @@ private static final long serialVersionUID = 1L;
     *  资产网络状态
     */
     private String networkStatus;
+
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
+    }
 
     public Integer getStatus() {
         return status;
