@@ -62,6 +62,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private AssetUserDao                                                assetUserDao;
     @Resource
     private AssetDepartmentDao                                          assetDepartmentDao;
+    @Resource AssetCategoryModelDao assetCategoryModelDao;
     @Override
     public Boolean saveAssetLinkRelation(AssetLinkRelationRequest request) throws Exception {
         AssetLinkRelation assetLinkRelation = requestConverter.convert(request, AssetLinkRelation.class);
@@ -148,7 +149,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         // 品类型号
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getCategoryModels())) {
             assetLinkRelationQuery.setCategoryModels(
-                Arrays.asList(AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode()));
+                    // 循环获取计算设备，网络设备下所有子节点
+                    // todo 由于资产类型枚举存在问题，暂时用魔法值代替
+                    getCategoryNodeList(Arrays.asList(2, 3)));
         }
         // 区域条件
         if (CollectionUtils.isEmpty(assetLinkRelationQuery.getAreaIds())) {
@@ -278,5 +281,30 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         return new PageResult<>(assetLinkRelationQuery.getPageSize(),
             this.queryLinkedCountAssetByAssetId(assetLinkRelationQuery), assetLinkRelationQuery.getCurrentPage(),
             assetLinkRelationResponseList);
+    }
+
+    // 获取当前节点下所有子节点列表
+    private List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
+
+        Set<Integer> allNodes = new HashSet<>();
+        getNodesForrecursion(currentNodes, allNodes);
+
+        return new ArrayList<>(allNodes);
+    }
+
+    // 递归获取所有节点
+    private void getNodesForrecursion(List<Integer> list, Set<Integer> allNodes) {
+
+        List<Integer> nodeList = new ArrayList<>();
+
+        if (!list.isEmpty()){
+            nodeList = assetCategoryModelDao.getCategoryNodeList(list);
+        }
+
+        // 当有数据时继续调用本方法，直到返回为空。
+        if (!nodeList.isEmpty()){
+            allNodes.addAll(nodeList);
+            getNodesForrecursion(nodeList, allNodes);
+        }
     }
 }

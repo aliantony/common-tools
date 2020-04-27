@@ -477,4 +477,17 @@
     <select id="hasChild" resultType="java.lang.Integer">
         select count(1) from asset_category_model where parent_id = #{id} and status = 1
     </select>
+
+    <select id="getCategoryNodeList" resultType="integer">
+        select
+            acm.id
+         from
+            asset_category_model acm
+        where
+        acm.status = 1
+        and acm.parent_id in
+        <foreach collection="currentNodes" item="node" open="(" close=")" separator=",">
+            #{node}
+        </foreach>
+    </select>
 </mapper>
