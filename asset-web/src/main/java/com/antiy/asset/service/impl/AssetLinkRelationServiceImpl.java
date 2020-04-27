@@ -277,6 +277,11 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
+        List<String> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
+        statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
+        assetLinkRelationQuery.setStatusList(statusList);
+
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
         if (CollectionUtils.isEmpty(assetLinkRelationResponseList)) {
