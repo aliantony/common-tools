@@ -146,11 +146,7 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     @ApiModelProperty("资产网络状态")
     private String networkStatus;
 
-    /**
-     *  资产与软件关联关系
-     */
-    @ApiModelProperty("资产与软件关联关系")
-    private int relation;
+
 
     @ApiModelProperty("资产与软件关联关系描述")
     private String relationDesc;
@@ -173,14 +169,6 @@ public class AssetStatusMonitorResponse extends BaseResponse {
      *
      */
     private AssetMonitorRuleResponse assetMonitorRuleResponse;
-
-    public int getRelation() {
-        return relation;
-    }
-
-    public void setRelation(int relation) {
-        this.relation = relation;
-    }
 
     public Long getSoftwareId() {
         return softwareId;
