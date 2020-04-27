@@ -121,14 +121,14 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
     /**
      * 自定义名称
      */
-    @Size(max = 10)
+    @Size(max = 10, message = "自定义名称不能超过10个字符")
     @ApiModelProperty("自定义名称")
     private String customName;
 
     /**
      * 自定义内容
      */
-    @Size(max = 300)
+    @Size(max = 300, message = "自定义内容不能超过300个字符")
     @ApiModelProperty("自定义内容")
     private String customContent;
 

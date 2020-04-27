@@ -1,22 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.CategoryRequestConvert;
 import com.antiy.asset.dao.AssetCategoryModelDao;
@@ -26,12 +9,14 @@ import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.util.Constants;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.NodeUtilsConverter;
+import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.encoder.AesEncoder;
@@ -40,6 +25,20 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 品类型号表 服务实现类 </p>
@@ -459,6 +458,28 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             }
         }
         return result;
+    }
+
+    @Override
+    public List<AssetCategoryModelNodeResponse> queryCategoryEquipmentNode() throws Exception {
+        List<AssetCategoryModel> models = assetCategoryModelDao.findAllCategory(false);
+        Map<String, AssetCategoryModel> map = models.stream().collect(Collectors.toMap(AssetCategoryModel::getName, Function.identity()));
+
+        // 获取计算设备的节点树
+            AssetCategoryModel computerModel = map.get(AssetCategoryEnum.COMPUTER.getName());
+            List<AssetCategoryModel> computerModels = recursionSearch(models, computerModel.getId());
+        List<AssetCategoryModelNodeResponse> computerNodeResponses = convertNode(computerModels);
+
+        // 获取网络设备的节点树
+        AssetCategoryModel networkModel = map.get(AssetCategoryEnum.NETWORK.getName());
+        List<AssetCategoryModel> networkModels = recursionSearch(models, networkModel.getId());
+        List<AssetCategoryModelNodeResponse> netNodeResponses = convertNode(networkModels);
+
+        // 组合返回
+        List<AssetCategoryModelNodeResponse> nodes = new ArrayList<>();
+        nodes.addAll(computerNodeResponses);
+        nodes.addAll(netNodeResponses);
+        return nodes;
     }
 
 }

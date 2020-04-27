@@ -1,14 +1,14 @@
 package com.antiy.asset.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
 import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.IBaseService;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p> 品类型号表 服务类 </p>
@@ -61,6 +61,11 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
      * @return
      */
     List<AssetCategoryModelNodeResponse> queryCategoryWithOutRootNode(AssetCategoryModelQuery query) throws Exception;
+
+    /**
+     * 查询节点树（网络设备，计算设备）
+     */
+    List<AssetCategoryModelNodeResponse> queryCategoryEquipmentNode() throws Exception;
 
 
 }
