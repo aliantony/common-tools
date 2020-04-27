@@ -254,18 +254,21 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
             assetResponse.setAssetMac(macResponseConverter.convert(assetMacRelation, AssetMacRelationResponse.class));
 
-            HashMap<String, Object> parentParam = new HashMap<>();
-            parentParam.put("status", "1");
-            parentParam.put("assetId", assetResponse.getParentAssetId());
-            // 查询资产mac
-            List<AssetMacRelation> parentAssetMacRelation = null;
-            try {
-                parentAssetMacRelation = assetMacRelationDao.getByWhere(parentParam);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (Objects.nonNull(assetResponse.getParentAssetId())) {
+                HashMap<String, Object> parentParam = new HashMap<>();
+                parentParam.put("status", "1");
+                parentParam.put("assetId", assetResponse.getParentAssetId());
+                // 查询资产mac
+                List<AssetMacRelation> parentAssetMacRelation = null;
+                try {
+                    parentAssetMacRelation = assetMacRelationDao.getByWhere(parentParam);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                assetResponse.setParentAssetMac(macResponseConverter.convert(parentAssetMacRelation, AssetMacRelationResponse.class));
             }
-            assetResponse.setParentAssetMac(macResponseConverter.convert(parentAssetMacRelation, AssetMacRelationResponse.class));
         });
+
 
         return BeanConvert.convert(assetResponseList, AssetLinkRelationResponse.class);
     }
