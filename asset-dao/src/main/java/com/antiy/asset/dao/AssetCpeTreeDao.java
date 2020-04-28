@@ -20,7 +20,7 @@ public interface AssetCpeTreeDao extends IBaseDao<AssetCpeTree> {
 
     List<AssetCpeTree> findTopNode();
 
-    List<AssetCpeTree> findOSTopNode();
+    List<AssetCpeTree> findOSTopNode(AssetCpeTreeCondition condition);
 
     String queryUniqueIdByNodeName(String title);
 

@@ -30,8 +30,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private String        multipleQuery;
 
     @ApiModelProperty("资产类型")
-    @Encode
-    private Integer[]     categoryModels;
+    private String        categoryModels;
 
     @ApiModelProperty("资产状态")
     private List<Integer> assetStatusList;
@@ -76,7 +75,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("从属业务")
     @Encode
-    private List<String>  assetBusiness;
+    private String        assetBusiness;
 
     /**
      * 资产组
@@ -89,7 +88,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
      */
     @ApiModelProperty("网络类型")
     @Encode
-    private Integer       netType;
+    private String        netType;
 
     /**
      * 归属区域
@@ -163,6 +162,16 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          updateStartTime;
     @ApiModelProperty("更新时间结束时间")
     private Long          updateEndTime;
+    @ApiModelProperty("是否未知资产")
+    private boolean       unknownAssets;
+
+    public boolean isUnknownAssets() {
+        return unknownAssets;
+    }
+
+    public void setUnknownAssets(boolean unknownAssets) {
+        this.unknownAssets = unknownAssets;
+    }
 
     public Boolean getEnterControl() {
         return enterControl;
@@ -212,11 +221,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.multipleQuery = multipleQuery;
     }
 
-    public Integer[] getCategoryModels() {
+    public String getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(Integer[] categoryModels) {
+    public void setCategoryModels(String categoryModels) {
         this.categoryModels = categoryModels;
     }
 
@@ -292,11 +301,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.assetSourceList = assetSourceList;
     }
 
-    public List<String> getAssetBusiness() {
+    public String getAssetBusiness() {
         return assetBusiness;
     }
 
-    public void setAssetBusiness(List<String> assetBusiness) {
+    public void setAssetBusiness(String assetBusiness) {
         this.assetBusiness = assetBusiness;
     }
 
@@ -308,11 +317,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.assetGroupList = assetGroupList;
     }
 
-    public Integer getNetType() {
+    public String getNetType() {
         return netType;
     }
 
-    public void setNetType(Integer netType) {
+    public void setNetType(String netType) {
         this.netType = netType;
     }
 

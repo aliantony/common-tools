@@ -35,7 +35,7 @@ public class AssetCpeTreeServiceImplTest {
 
     @Test
     public void queryTree() throws Exception {
-        List<AssetCpeTreeResponse> list = cpeTreeService.queryTree();
+//        List<AssetCpeTreeResponse> list = cpeTreeService.queryTree();
 
         System.out.println("ok");
     }

@@ -105,7 +105,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     @ApiModelProperty("责任人主键")
     @Encode
-    @NotBlank(message = "责任人不能为空")
+    //@NotBlank(message = "责任人不能为空")
     private String                  responsibleUserId;
 
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
@@ -115,13 +115,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     private Integer                 assetSource;
 
     @ApiModelProperty("1核心2重要3一般")
-    @NotNull(message = "重要程度不能为空")
+    //@NotNull(message = "重要程度不能为空")
     @Max(message = "重要程度不能大于3", value = 3)
     @Min(message = "重要程度不能小于1", value = 1)
     private Integer                 importanceDegree;
 
     @ApiModelProperty("使用到期时间")
-    @NotNull(message = "使用到期时间不能为空")
+   // @NotNull(message = "使用到期时间不能为空")
     @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    serviceLife;
 
