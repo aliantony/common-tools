@@ -2,12 +2,17 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
+import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,4 +158,12 @@ public class AssetReportController {
         reportQueryRequest.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         iAssetReportService.exportAssetGroupTable(reportQueryRequest);
     }
+
+    @ApiOperation(value = "导出pdf和word", notes = "导出")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetReportResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/pdfAndWord", method = RequestMethod.POST)
+    public void exportPdfOrWord(@ApiParam(value = "查询条件") @RequestBody ReportExportRequest reportExportRequest) throws Exception {
+        iAssetReportService.reportExport(reportExportRequest);
+    }
+
 }

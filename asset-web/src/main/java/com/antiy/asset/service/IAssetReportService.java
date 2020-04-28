@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -53,4 +54,5 @@ public interface IAssetReportService {
      */
     void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
 
+    void reportExport(ReportExportRequest reportExportRequest);
 }

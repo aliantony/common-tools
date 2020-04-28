@@ -6,9 +6,11 @@ import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.templet.ReportForm;
 import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.util.ExportUtils;
 import com.antiy.asset.util.ReportDateUtils;
 import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
@@ -29,10 +31,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 资产报表实现类
@@ -49,6 +59,9 @@ public class AssetReportServiceImpl implements IAssetReportService {
     private static final String WEEK          = "%u";
     private static final String MONTH         = "%Y-%m";
     private static final String CLASSIFY_NAME = "classifyName";
+
+    @Resource
+    private ExportUtils exportUtils;
 
     @Resource
     private AssetReportDao      assetReportDao;
@@ -437,4 +450,43 @@ public class AssetReportServiceImpl implements IAssetReportService {
         return pFileName;
     }
 
+    @Override
+    public void reportExport(ReportExportRequest reportExportRequest) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = requestAttributes .getRequest();
+        HttpServletResponse response = requestAttributes.getResponse();
+
+        String filename = encodeFileName(reportExportRequest, request);
+
+        response.reset();
+        response.setContentType("application/octet-stream; charset=utf-8");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=" +filename);
+
+        try {
+            exportUtils.export(reportExportRequest,response.getOutputStream());
+        } catch (Exception e) {
+            LogUtils.error(logger,"导出异常：{}",reportExportRequest);
+        }
+    }
+
+    private String encodeFileName(ReportExportRequest reportExportRequest, HttpServletRequest request)  {
+        String filename= reportExportRequest.getScale()+"."+reportExportRequest.getType().getTypeName();
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        try {
+            if (userAgent.contains("msie") || userAgent.contains("like gecko")) {
+                // win10 ie edge 浏览器 和其他系统的ie
+                filename = URLEncoder.encode(filename, "UTF-8");
+            } else {
+                // fe
+                filename = new String(filename.getBytes("utf-8"), "iso-8859-1");
+            }
+        } catch (UnsupportedEncodingException e) {
+            LogUtils.error(logger,"而文件名称编码异常：{}",reportExportRequest);
+            throw  new BusinessException("导出报表异常");
+        } finally {
+
+        }
+        return filename;
+    }
 }
