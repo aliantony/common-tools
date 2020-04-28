@@ -2512,6 +2512,9 @@
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             )
         </if>
+        <if test="categoryModels != null and categoryModels != ''">
+           and asset.category_model = #{categoryModels}
+        </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
             and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
@@ -2559,7 +2562,7 @@
             </foreach>
         </if>
         <if test="netType != null">
-            and asset.netType = #{netType}
+            and asset.net_type = #{netType}
         </if>
         <if test=" areaIds != null and areaIds.size() > 0">
             and asset.area_id in
@@ -2655,11 +2658,8 @@
                 </otherwise>
             </choose>
         </if>
-        <if test="assetBusiness != null and assetBusiness.size() > 0">
-            and abr.id in
-            <foreach item="item" collection="assetBusiness" open="(" separator="," close=")">
-                #{item}
-            </foreach>
+        <if test="assetBusiness != null and assetBusiness != ''">
+            and abr.id =#{assetBusiness}
         </if>
         <if test="departmentList != null and departmentList.size() > 0">
             and au.department_id in
