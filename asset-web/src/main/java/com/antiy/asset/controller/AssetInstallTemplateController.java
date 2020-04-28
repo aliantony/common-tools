@@ -122,26 +122,26 @@ public class AssetInstallTemplateController {
         return ActionResponse.success(iAssetInstallTemplateService.queryNumberCode(query.getNumberCode().trim()));
     }
 
-    @ApiOperation("模板创建/编辑-操作系统查询")
-    @ApiResponse(code = 200, message = "ok", response = String.class)
-    @RequestMapping(value = "/query/os", method = RequestMethod.POST)
-    public ActionResponse queryOs() {
-        return ActionResponse.success(iAssetInstallTemplateService.queryOs(null));
-    }
+//    @ApiOperation("模板创建/编辑-操作系统查询")
+//    @ApiResponse(code = 200, message = "ok", response = String.class)
+//    @RequestMapping(value = "/query/os", method = RequestMethod.POST)
+//    public ActionResponse queryOs() {
+//        return ActionResponse.success(iAssetInstallTemplateService.queryOs(null));
+//    }
 
-    /**
-     * 保存
-     *
-     * @param assetInstallTemplateRequest
-     * @return actionResponse
-     */
-    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
-    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
-    public ActionResponse saveSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
-        return ActionResponse
-            .success(iAssetInstallTemplateService.saveAssetInstallTemplate(assetInstallTemplateRequest));
-    }
+//    /**
+//     * 保存
+//     *
+//     * @param assetInstallTemplateRequest
+//     * @return actionResponse
+//     */
+//    @ApiOperation(value = "保存接口", notes = "传入实体对象信息")
+//    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
+//    @RequestMapping(value = "/save/single", method = RequestMethod.POST)
+//    public ActionResponse saveSingle(@ApiParam(value = "assetInstallTemplate") @RequestBody AssetInstallTemplateRequest assetInstallTemplateRequest) throws Exception {
+//        return ActionResponse
+//            .success(iAssetInstallTemplateService.saveAssetInstallTemplate(assetInstallTemplateRequest));
+//    }
 
     /**
      * 修改

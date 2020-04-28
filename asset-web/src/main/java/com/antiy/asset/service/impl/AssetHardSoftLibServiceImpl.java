@@ -1,12 +1,13 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.dao.AssetHardSoftLibDao;
 import com.antiy.asset.dao.AssetSoftwareRelationDao;
+import com.antiy.asset.entity.AssetCpeTree;
 import com.antiy.asset.entity.AssetHardSoftLib;
 import com.antiy.asset.service.IAssetHardSoftLibService;
 import com.antiy.asset.service.IAssetInstallTemplateService;
 import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetOperationSystemEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
@@ -14,6 +15,7 @@ import com.antiy.common.base.BaseConverter;
 import com.antiy.common.base.BaseServiceImpl;
 import com.antiy.common.base.PageResult;
 import com.antiy.common.utils.LogUtils;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -47,6 +49,8 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
     private AssetSoftwareRelationDao assetSoftwareRelationDao;
     @Resource
     private IAssetInstallTemplateService iAssetInstallTemplateService;
+    @Resource
+    private AssetCpeTreeDao treeDao;
 
     @Override
     public List<AssetHardSoftLibResponse> queryHardSoftLibList(AssetHardSoftLibQuery query) throws Exception {
@@ -129,9 +133,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query) {
-        //todo 根据基准提供的操作系统来选择合适的软件 先考虑软件与基准操作系统的关联关系
-        String osName = iAssetInstallTemplateService.queryOs(query.getOperationSystem()).get(0).getOsName().replace('-', '_').replace('.', '_');
-        query.setOperationSystem(AssetOperationSystemEnum.valueOf(osName.toUpperCase()).getSerialName());
+        query.setOperationSystem(inialOsName(query.getOperationSystem()));
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
@@ -142,6 +144,25 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
         List<AssetHardSoftLib> softWares = assetHardSoftLibDao.querySoftWares(query);
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 responseConverter.convert(softWares, AssetHardSoftLibResponse.class));
+    }
+
+    private String inialOsName(String osId) {
+        String osName = null;
+        AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        condition.setUniqueId(osId);
+        List<AssetCpeTree> os = treeDao.findNextNode(condition);
+        ParamterExceptionUtils.isEmpty(os, "该操作系统不存在");
+        String title = os.get(0).getTitle().toLowerCase();
+        if (title.contains("windows")) {
+            osName = "windows";
+        } else if (title.contains("linux")) {
+            osName = "linux";
+        } else if (title.contains("macos")) {
+            osName = "macOs";
+        } else {
+            inialOsName(os.get(0).getPid());
+        }
+        return osName;
     }
 
     @Override
