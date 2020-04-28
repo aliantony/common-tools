@@ -9,12 +9,9 @@ import io.swagger.annotations.ApiModelProperty;
  * @Date: 2020/4/10
  */
 public class AssetLendRelationEntity {
-    @ApiModelProperty("归还日期")
-    private String lendPeriods;
-    @ApiModelProperty("出借状态 ")
-    private String lendStatusDesc;
-    @ApiModelProperty("出借日期")
-    private String lendTime;
+    // @ApiModelProperty("归还日期")
+    // private String lendPeriods;
+
     @ApiModelProperty("资产名称")
     private String assetName;
     @ApiModelProperty("资产编号")
@@ -25,14 +22,18 @@ public class AssetLendRelationEntity {
     private String keyNum;
     @ApiModelProperty("资产使用者")
     private String responsibleUserName;
-
-    public String getLendPeriods() {
-        return lendPeriods;
-    }
-
-    public void setLendPeriods(String lendPeriods) {
-        this.lendPeriods = lendPeriods;
-    }
+    @ApiModelProperty("出借状态 ")
+    private String lendStatusDesc;
+    @ApiModelProperty("出借日期")
+    private String lendTime;
+    //
+    // public String getLendPeriods() {
+    // return lendPeriods;
+    // }
+    //
+    // public void setLendPeriods(String lendPeriods) {
+    // this.lendPeriods = lendPeriods;
+    // }
 
     public String getLendStatusDesc() {
         return lendStatusDesc;

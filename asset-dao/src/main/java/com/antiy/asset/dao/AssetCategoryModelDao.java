@@ -42,4 +42,6 @@ public interface AssetCategoryModelDao extends IBaseDao<AssetCategoryModel> {
     Integer hasChild(@Param("id") String categoryModel);
     List<AssetCategoryModel> findAllCategoryCount();
     List<String> getCategoryModelsByParentName(String name);
+
+    List<Integer> getCategoryNodeList(@Param("currentNodes") List<Integer> currentNodes);
 }

@@ -771,6 +771,12 @@
         left join asset t on alr.parent_asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
+        <if test="statusList != null and statusList.size() > 0">
+            and t.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
         asset.id )
         UNION
@@ -807,6 +813,12 @@
         left join asset t on alr.asset_id = t.id
         WHERE
         asset.id = #{primaryKey}
+        <if test="statusList != null and statusList.size() > 0">
+            and asset.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ORDER BY assetPort
         <if test="pageSize !=-1">
@@ -839,9 +851,6 @@
             <foreach collection="areaIds" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-        </if>
-        <if test="categoryModel != null">
-            and a.category_model= #{categoryModel}
         </if>
         <if test="categoryModels != null and categoryModels.size() > 0">
             and a.category_model in
@@ -884,6 +893,12 @@
             left join asset t on alr.parent_asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
+        <if test="statusList != null and statusList.size() > 0">
+            and t.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
             UNION
             SELECT
@@ -907,6 +922,12 @@
             left join asset t on alr.asset_id = t.id
             WHERE
             asset.id = #{primaryKey}
+        <if test="statusList != null and statusList.size() > 0">
+            and asset.asset_status in
+            <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ) t
     </select>

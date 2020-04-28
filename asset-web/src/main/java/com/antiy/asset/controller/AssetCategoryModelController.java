@@ -1,18 +1,19 @@
 package com.antiy.asset.controller;
 
-import javax.annotation.Resource;
-
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.UncodeBaseQuery;
-import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.common.utils.ParamterExceptionUtils;
-import org.springframework.web.bind.annotation.*;
-
-import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.vo.request.AssetCategoryModelRequest;
+import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
 import com.antiy.common.base.ActionResponse;
-
+import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhangyajun
@@ -95,6 +96,19 @@ public class AssetCategoryModelController {
     // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
     public ActionResponse queryCategoryNodeWhihoutNode(@RequestBody AssetCategoryModelQuery query) throws Exception {
         return ActionResponse.success(iAssetCategoryModelService.queryCategoryWithOutRootNode(query));
+    }
+
+    /**
+     * 计算设备，网络设备 品类树查询
+     *
+     * @return actionResponse
+     */
+    @ApiOperation(value = "查询品类树(计算设备，网络设备）", notes = "主键封装对象")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetCategoryModelNodeResponse.class, responseContainer = "list"), })
+    @RequestMapping(value = "/query/equipmentNode", method = RequestMethod.POST)
+    // @PreAuthorize(value = "hasAuthority('asset:categorymodel:queryCategoryNode')")
+    public ActionResponse queryCategoryNodeEquipmentNode() throws Exception {
+        return ActionResponse.success(iAssetCategoryModelService.queryCategoryEquipmentNode());
     }
 
 }

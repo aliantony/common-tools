@@ -4,8 +4,6 @@ import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-
 /**
  * <p>
  * AssetStatusMonitor 查询条件
@@ -17,13 +15,13 @@ import java.util.List;
 
 public class AssetStatusMonitorQuery extends ObjectQuery {
 
-    @ApiModelProperty("监控资源类型")
+    @ApiModelProperty(" 监控资源类型 1、进程 2、软件 3、服务 4、性能")
     Integer type;
     @ApiModelProperty("资产id")
     @Encode
     private String assetId;
-    @ApiModelProperty("关联筛选")
-    List<Integer> relations;
+    @ApiModelProperty("关联筛选 1 已关联 2  未关联 ")
+    int relation;
     /**
      * 更新时间
      */
@@ -37,12 +35,12 @@ public class AssetStatusMonitorQuery extends ObjectQuery {
         this.gmtModified = gmtModified;
     }
 
-    public List<Integer> getRelations() {
-        return relations;
+    public int getRelations() {
+        return relation;
     }
 
-    public void setRelations(List<Integer> relations) {
-        this.relations = relations;
+    public void setRelations(int relation) {
+        this.relation = relation;
     }
 
     public Integer getType() {
