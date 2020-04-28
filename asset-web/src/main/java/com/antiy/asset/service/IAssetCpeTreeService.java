@@ -80,7 +80,7 @@ public interface IAssetCpeTreeService extends IBaseService<AssetCpeTree> {
      * 查询所有的树形分类数据
      * @return
      */
-    List<AssetCpeTreeResponse> queryTree() throws Exception;
+    List<AssetCpeTreeResponse> queryTree(String isCommon) throws Exception;
 
     /**
      * 根据节点名获取对应的BusinessId

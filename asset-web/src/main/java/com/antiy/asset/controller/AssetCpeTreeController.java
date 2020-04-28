@@ -126,8 +126,8 @@ public class AssetCpeTreeController {
     @ApiOperation(value = "查询所有的树形分类数据", notes = "主键封装对象")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AssetCpeTreeResponse.class),})
     @RequestMapping(value = "/query/tree", method = RequestMethod.POST)
-    public ActionResponse queryTree() throws Exception {
-        return ActionResponse.success(iAssetCpeTreeService.queryTree());
+    public ActionResponse queryTree(@RequestBody @ApiParam(value = "主键封装对象") AssetCpeTreeCondition cpeTreeCondition) throws Exception {
+        return ActionResponse.success(iAssetCpeTreeService.queryTree(cpeTreeCondition.getIsCommon()));
     }
 
     /**

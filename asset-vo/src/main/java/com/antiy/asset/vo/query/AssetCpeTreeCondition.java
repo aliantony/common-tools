@@ -22,6 +22,12 @@ public class AssetCpeTreeCondition {
     @ApiModelProperty("父id")
     private String pid;
 
+    /**
+     * 是否进行通用查询 1:是 0:否
+     */
+    @ApiModelProperty("通用")
+    private String isCommon;
+
     public String getPid() {
         return pid;
     }
@@ -36,5 +42,13 @@ public class AssetCpeTreeCondition {
 
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
+    }
+
+    public String getIsCommon() {
+        return isCommon;
+    }
+
+    public void setIsCommon(String isCommon) {
+        this.isCommon = isCommon;
     }
 }
