@@ -186,6 +186,10 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             return Lists.newArrayList();
         }
         assetResponseList.stream().forEach(assetLinkedCount -> {
+
+            // 获取当前的详细资产类型
+            getCategoryParentNodeName(assetLinkedCount.getCategoryModel());
+
             String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 assetLinkedCount.getAreaId());
             try {
@@ -219,8 +223,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
             assetResponse.setParentAssetAreaName(Optional.ofNullable(sysArea).map(com.antiy.common.base.SysArea::getFullName).orElse(null));
             // 设置品类型号名
-            assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
-            assetResponse.setParentCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getParentCategoryModel()));
+            assetResponse.setCategoryModelName(getCategoryParentNodeName(assetResponse.getCategoryModel()));
+            assetResponse.setParentCategoryModelName(getCategoryParentNodeName(assetResponse.getParentCategoryModel()));
             // 姓名、所属组织转换
             AssetUser assetUser = assetUserDao.findUserAndDepartment(assetResponse.getParentAssetUserId());
             if (Objects.nonNull(assetUser)){
@@ -237,7 +241,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
                         break;
                     }
                     departmentId = assetDepartment.getParentId();
-                    departmentName = assetDepartment.getName() + departmentName;
+                    departmentName = assetDepartment.getName() + "-" + departmentName;
                     assetResponse.setParentAssetUserDepartment(departmentName);
                 }
             }
@@ -254,19 +258,19 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
             assetResponse.setAssetMac(macResponseConverter.convert(assetMacRelation, AssetMacRelationResponse.class));
 
-            if (Objects.nonNull(assetResponse.getParentAssetId())) {
                 HashMap<String, Object> parentParam = new HashMap<>();
                 parentParam.put("status", "1");
                 parentParam.put("assetId", assetResponse.getParentAssetId());
                 // 查询资产mac
                 List<AssetMacRelation> parentAssetMacRelation = null;
+            if (Objects.nonNull(assetResponse.getParentAssetId())) {
                 try {
                     parentAssetMacRelation = assetMacRelationDao.getByWhere(parentParam);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                assetResponse.setParentAssetMac(macResponseConverter.convert(parentAssetMacRelation, AssetMacRelationResponse.class));
             }
+                assetResponse.setParentAssetMac(macResponseConverter.convert(parentAssetMacRelation, AssetMacRelationResponse.class));
         });
 
 
@@ -320,5 +324,46 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             allNodes.addAll(nodeList);
             getNodesForrecursion(nodeList, allNodes);
         }
+    }
+
+    // 获取当前节点父节点，直到网络设备，计算设备
+    private String getCategoryParentNodeName(Integer id){
+
+        // 变量初始化
+        String nodeNameAll = "";
+        CategoryValiEntity node = new CategoryValiEntity();
+        node.setId(id);
+
+        if (Objects.isNull(id)){
+            return nodeNameAll;
+        }
+
+        // 递归获取
+        getNodeNameRecursion(node, nodeNameAll);
+        return nodeNameAll;
+    }
+
+    // 递归获取父节点名称
+    private void getNodeNameRecursion(CategoryValiEntity node, String nodeNameAll){
+
+        // 当前暂存变量
+        CategoryValiEntity newNode = new CategoryValiEntity();
+
+        // 获取信息
+        CategoryValiEntity categoryValiEntity = assetCategoryModelDao.getNameByCtegoryId(node.getId());
+
+        if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName()) || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())){
+            nodeNameAll = categoryValiEntity.getName() + "-" + nodeNameAll;
+            return;
+        }
+        if (node.getId() == 0){
+            nodeNameAll = "";
+            return;
+        }
+
+        // 递归获取并叠加节点名称
+        nodeNameAll = categoryValiEntity.getName() + "-" + nodeNameAll;
+        newNode.setId(categoryValiEntity.getParentId());
+        getNodeNameRecursion(newNode, nodeNameAll);
     }
 }
