@@ -8,7 +8,7 @@ import com.antiy.asset.templet.AssetComReportEntity;
 import com.antiy.asset.util.ArrayTypeUtil;
 import com.antiy.asset.util.CSVUtils;
 import com.antiy.asset.util.Constants;
-import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportReQuery;
 import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.asset.vo.response.AssetCompositionReportResponse;
@@ -100,7 +100,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     }
 
     @Override
-    public List<AssetCompositionReportResponse> findListAssetCompositionReport(AssetCompositionReportQuery query) throws Exception {
+    public List<AssetCompositionReportResponse> findListAssetCompositionReport(AssetCompositionReportReQuery query) throws Exception {
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         if (loginUser == null) {
             return Lists.newArrayList();
@@ -125,7 +125,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     }
 
     @Override
-    public PageResult<AssetCompositionReportResponse> findPageAssetCompositionReport(AssetCompositionReportQuery query) throws Exception {
+    public PageResult<AssetCompositionReportResponse> findPageAssetCompositionReport(AssetCompositionReportReQuery query) throws Exception {
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         if (loginUser == null) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
@@ -135,7 +135,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
             this.findListAssetCompositionReport(query));
     }
 
-    public Integer findCountAsset(AssetCompositionReportQuery query) throws Exception {
+    public Integer findCountAsset(AssetCompositionReportReQuery query) throws Exception {
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         if (loginUser == null) {
             return 0;
@@ -147,7 +147,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
     }
 
     @Override
-    public void exportData(AssetCompositionReportQuery assetQuery, HttpServletResponse response,
+    public void exportData(AssetCompositionReportReQuery assetQuery, HttpServletResponse response,
                            HttpServletRequest request) throws Exception {
         if ((assetQuery.getStart() != null && assetQuery.getEnd() != null)) {
             assetQuery.setStart(assetQuery.getStart() - 1);
@@ -176,7 +176,13 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
                 CSVUtils.writeCSV(downloadList,
                     "综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), files, request, response);
             }
-
+            // else if (assetQuery.getExportType() == 3) {
+            // PDFUtils.
+            //
+            // }else if (assetQuery.getExportType() == 4) {
+            //
+            //
+            // }
             LogUtils.recordOperLog(
                 new BusinessData("导出《综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
                     "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));

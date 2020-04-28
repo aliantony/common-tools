@@ -1,21 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.UserSelectResponseConverter;
 import com.antiy.asset.dao.AssetDao;
@@ -44,6 +28,20 @@ import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p> 资产用户信息 服务实现类 </p>
@@ -204,7 +202,8 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
     @Transactional
     public String importUser(MultipartFile file) throws Exception {
 
-        ImportResult<AssetUserEntity> result = ExcelUtils.importExcelFromClient(AssetUserEntity.class, file, 5, 0);
+        ImportResult<AssetUserEntity> result = ExcelUtils.importExcelFromClient(AssetUserEntity.class, file, 5, 0,
+            2000);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }

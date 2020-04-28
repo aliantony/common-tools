@@ -13,7 +13,7 @@ import java.util.List;
  * @since 2018-12-27
  */
 
-public class AssetCompositionReportQuery extends ObjectQuery {
+public class AssetCompositionReportReQuery extends ObjectQuery {
     @ApiModelProperty("status")
     private Integer       status;
 
@@ -58,7 +58,6 @@ public class AssetCompositionReportQuery extends ObjectQuery {
     private Integer       noPatchCountType;
     @ApiModelProperty(" 未安装补丁 数量")
     private Integer       noPatchCount;
-
 
     @ApiModelProperty("导出开始条数")
     private Integer       start;

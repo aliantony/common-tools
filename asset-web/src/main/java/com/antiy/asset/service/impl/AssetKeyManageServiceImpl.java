@@ -1,12 +1,24 @@
 package com.antiy.asset.service.impl;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-
+import com.antiy.asset.dao.AssetKeyManageDao;
+import com.antiy.asset.entity.AssetKeyManage;
+import com.antiy.asset.service.IAssetKeyManageService;
+import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.templet.KeyEntity;
+import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.KeyStatusEnum;
+import com.antiy.asset.vo.enums.KeyUserType;
+import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.query.KeyPullQuery;
+import com.antiy.asset.vo.request.AssetKeyManageRequest;
+import com.antiy.asset.vo.response.AssetKeyManageResponse;
 import com.antiy.asset.vo.response.KeyPullDownResponse;
+import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.LoginUser;
+import com.antiy.common.base.PageResult;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -14,20 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.antiy.asset.dao.AssetKeyManageDao;
-import com.antiy.asset.entity.AssetKeyManage;
-import com.antiy.asset.service.IAssetKeyManageService;
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.util.ExcelUtils;
-import com.antiy.asset.vo.enums.KeyStatusEnum;
-import com.antiy.asset.vo.enums.KeyUserType;
-import com.antiy.asset.vo.query.AssetKeyManageQuery;
-import com.antiy.asset.vo.request.AssetKeyManageRequest;
-import com.antiy.asset.vo.response.AssetKeyManageResponse;
-import com.antiy.common.base.*;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author chenchaowu
@@ -240,7 +242,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     @Transactional
     public String importKey(MultipartFile file) throws Exception {
 
-        ImportResult<KeyEntity> result = ExcelUtils.importExcelFromClient(KeyEntity.class, file, 5, 0);
+        ImportResult<KeyEntity> result = ExcelUtils.importExcelFromClient(KeyEntity.class, file, 5, 0, 2000);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }

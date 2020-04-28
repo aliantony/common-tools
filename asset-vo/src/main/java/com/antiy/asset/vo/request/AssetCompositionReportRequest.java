@@ -1,6 +1,6 @@
 package com.antiy.asset.vo.request;
 
-import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportReQuery;
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
@@ -20,7 +20,8 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
      * 查询条件
      */
     @ApiModelProperty("查询条件")
-    private AssetCompositionReportQuery query;
+    private AssetCompositionReportReQuery query;
+
     /**
      * 查询模板名称
      */
@@ -49,11 +50,11 @@ public class AssetCompositionReportRequest extends BasicRequest implements Objec
     @ApiModelProperty("1 是 0 否  默认那个")
     private Integer                     identification;
 
-    public AssetCompositionReportQuery getQuery() {
+    public AssetCompositionReportReQuery getQuery() {
         return query;
     }
 
-    public void setQuery(AssetCompositionReportQuery query) {
+    public void setQuery(AssetCompositionReportReQuery query) {
         this.query = query;
     }
 

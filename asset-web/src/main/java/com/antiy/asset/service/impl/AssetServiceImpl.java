@@ -2247,7 +2247,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 5,
-            0);
+            0, 1);
 
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
@@ -2490,7 +2490,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 5,
-            0);
+            0, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }
@@ -2721,7 +2721,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
-            5, 0);
+            5, 0, 0);
 
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(result.getDataList())) {
@@ -2939,7 +2939,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 5,
-            0);
+            0, 0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }
@@ -3133,7 +3133,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public String importOhters(MultipartFile file, AssetImportRequest importRequest) throws Exception {
         // 授权数量限制校验
         anthNumValidate();
-        ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0);
+        ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0,
+            0);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }

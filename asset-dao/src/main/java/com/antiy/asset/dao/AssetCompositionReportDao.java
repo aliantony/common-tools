@@ -1,7 +1,7 @@
 package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetCompositionReport;
-import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportReQuery;
 import com.antiy.asset.vo.response.AssetCompositionReportResponse;
 import com.antiy.common.base.IBaseDao;
 import org.apache.ibatis.annotations.Param;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface AssetCompositionReportDao extends IBaseDao<AssetCompositionReport> {
 
-    List<AssetCompositionReportResponse> findAll(AssetCompositionReportQuery query);
+    List<AssetCompositionReportResponse> findAll(AssetCompositionReportReQuery query);
 
     Integer findCountByName(@Param("name") String name, @Param("id") Integer id);
 

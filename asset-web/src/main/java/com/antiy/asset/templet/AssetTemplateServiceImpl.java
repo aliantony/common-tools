@@ -2,7 +2,10 @@ package com.antiy.asset.templet;
 
 import com.antiy.asset.dao.AssetCpeTreeDao;
 import com.antiy.asset.entity.AssetUser;
-import com.antiy.asset.service.*;
+import com.antiy.asset.service.IAssetDepartmentService;
+import com.antiy.asset.service.IAssetNettypeManageService;
+import com.antiy.asset.service.IAssetTemplateService;
+import com.antiy.asset.service.IAssetUserService;
 import com.antiy.asset.vo.query.AssetDepartmentQuery;
 import com.antiy.asset.vo.response.AssetDepartmentResponse;
 import com.antiy.asset.vo.response.AssetNettypeManageResponse;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,19 +33,10 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     @Resource
     private IAssetDepartmentService  iAssetDepartmentService;
     @Resource
-    private IAssetHardSoftLibService iAssetHardSoftLibService;
-    @Resource
     private IAssetNettypeManageService iAssetNettypeManageService;
     @Resource
     private AssetCpeTreeDao            treeDao;
 
-
-    private static List<String>        REMOVE_SYSTEM_OS = new LinkedList<>();
-    static {
-        REMOVE_SYSTEM_OS.add("unix");
-        REMOVE_SYSTEM_OS.add("windows");
-        REMOVE_SYSTEM_OS.add("linux");
-    }
 
     @Override
     public List<String> queryAllCategoryModels() throws Exception {

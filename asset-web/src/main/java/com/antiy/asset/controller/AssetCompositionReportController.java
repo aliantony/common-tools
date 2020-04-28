@@ -2,7 +2,7 @@ package com.antiy.asset.controller;
 
 import com.antiy.asset.entity.AssetCompositionReport;
 import com.antiy.asset.service.IAssetCompositionReportService;
-import com.antiy.asset.vo.query.AssetCompositionReportQuery;
+import com.antiy.asset.vo.query.AssetCompositionReportReQuery;
 import com.antiy.asset.vo.query.AssetCompositionReportTemplateQuery;
 import com.antiy.asset.vo.request.AssetCompositionReportRequest;
 import com.antiy.asset.vo.request.BaseId;
@@ -69,7 +69,7 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "综合报表查询接口", notes = "传入查询条件")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/list", method = RequestMethod.POST)
-    public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") @RequestBody AssetCompositionReportQuery assetCompositionReportQuery) throws Exception {
+    public ActionResponse queryList(@ApiParam(value = "assetCompositionReport") @RequestBody AssetCompositionReportReQuery assetCompositionReportQuery) throws Exception {
         return ActionResponse
             .success(iAssetCompositionReportService.findPageAssetCompositionReport(assetCompositionReportQuery));
     }
@@ -95,8 +95,8 @@ public class AssetCompositionReportController {
     @RequestMapping(value = "/query/id", method = RequestMethod.POST)
     public ActionResponse queryById(@RequestBody BaseId request) throws Exception {
         AssetCompositionReport byId = iAssetCompositionReportService.getById(request.getId());
-        AssetCompositionReportQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
-            AssetCompositionReportQuery.class);
+        AssetCompositionReportReQuery assetCompositionReportQuery = JsonUtil.json2Object(byId.getQueryCondition(),
+            AssetCompositionReportReQuery.class);
         AssetCompositionReportRequest assetCompositionReportRequest = new AssetCompositionReportRequest();
         assetCompositionReportRequest.setQuery(assetCompositionReportQuery);
         assetCompositionReportRequest.setName(byId.getName());
@@ -125,7 +125,8 @@ public class AssetCompositionReportController {
     @ApiOperation(value = "根据条件导出综合报表信息", notes = "主键封装对象")
     @RequestMapping(value = "/export/file", method = RequestMethod.GET)
     // @PreAuthorize(value = "hasAuthority('asset:asset:export')")
-    public void export(@ApiParam(value = "query") AssetCompositionReportQuery assetQuery, HttpServletResponse response,
+    public void export(@ApiParam(value = "query") AssetCompositionReportReQuery assetQuery,
+                       HttpServletResponse response,
                        HttpServletRequest request) throws Exception {
         iAssetCompositionReportService.exportData(assetQuery, response, request);
 

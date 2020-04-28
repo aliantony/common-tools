@@ -1,21 +1,19 @@
 package com.antiy.asset.util;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.antiy.asset.templet.ImportResult;
+import com.antiy.asset.templet.ReportForm;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.antiy.asset.templet.ImportResult;
-import com.antiy.asset.templet.ReportForm;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.ParamterExceptionUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * @Description: Excel操作类
@@ -92,12 +90,12 @@ public class ExcelUtils {
      * @return
      */
     public static ImportResult importExcelFromClient(Class<?> clazz, MultipartFile multipartFile, int headerNum,
-                                                     int sheetIndex) {
+                                                     int sheetIndex, int maxLine) {
         ImportExcel ie;
         ImportResult ir = new ImportResult();
         try {
             ie = new ImportExcel(multipartFile, headerNum, sheetIndex);
-            ir.setDataList(ie.getDataList(clazz));
+            ir.setDataList(ie.getDataList(clazz, maxLine));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {
             throw new BusinessException("文件导入异常");
@@ -123,12 +121,13 @@ public class ExcelUtils {
      * @param sheetIndex sheet下标
      * @return
      */
-    public static ImportResult importExcelFromFile(Class<?> clazz, String filePath, int headerNum, int sheetIndex) {
+    public static ImportResult importExcelFromFile(Class<?> clazz, String filePath, int headerNum, int sheetIndex,
+                                                   int maxLine) {
         ImportExcel ie = null;
         ImportResult ir = new ImportResult();
         try {
             ie = new ImportExcel(filePath, headerNum, sheetIndex);
-            ir.setDataList(ie.getDataList(clazz));
+            ir.setDataList(ie.getDataList(clazz, maxLine));
             ir.setMsg(ie.getResultMsg());
         } catch (IllegalAccessException e) {
             throw new BusinessException("文件导入异常");

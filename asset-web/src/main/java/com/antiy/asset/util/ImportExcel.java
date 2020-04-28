@@ -293,7 +293,7 @@ public class ImportExcel {
      * @param <T>
      * @return
      */
-    public <T> List<T> getDataList(Class<T> clazz) throws IllegalAccessException, InstantiationException,
+    public <T> List<T> getDataList(Class<T> clazz, int maxLine) throws IllegalAccessException, InstantiationException,
             NoSuchMethodException, InvocationTargetException {
         initAnnotationList(clazz);
         List<T> dataList = new ArrayList<>();
@@ -320,9 +320,16 @@ public class ImportExcel {
             return null;
         }
 
-        if (lastRowNum > 2011) {
-            sb.append("导入失败，一次最多只能导入2000条数据！");
-            return null;
+        if (maxLine == 2000) {
+            if (lastRowNum > 2011) {
+                sb.append("导入失败，一次最多只能导入2000条数据！");
+                return null;
+            }
+        } else {
+            if (lastRowNum > 111) {
+                sb.append("导入失败，一次最多只能导入100条数据！");
+                return null;
+            }
         }
 
         for (int i = getDataRownum(); i < lastRowNum; i++) {
