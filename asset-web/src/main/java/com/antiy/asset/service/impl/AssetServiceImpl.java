@@ -405,7 +405,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
             .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
         Integer flag = asset.getCategoryModel();
-        for (int i = assetCategoryModels.size() - 1; i > 0; i++) {
+        for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
             if (categoryModel.getId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
@@ -418,11 +418,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
     }
 
-    private Integer setCategroy(Integer categroy) {
+    private Integer setCategroy(Integer category) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
             .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
-        Integer flag = categroy;
-        for (int i = assetCategoryModels.size() - 1; i > 0; i++) {
+        Integer flag = category;
+        for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
             if (categoryModel.getId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
@@ -1113,8 +1113,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
         assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
-        // 设置品类型号名
-        assetResponse.setCategoryModelName(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
         // 设置操作系统
         if (asset.getOperationSystem() != null) {
             assetResponse.setOperationSystem(asset.getOperationSystem().toString());
@@ -1142,7 +1140,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .getBusinessInfoByAssetId(condition.getPrimaryKey());
         assetResponse.setDependentBusiness(dependentBusiness);
         setCategroy(asset);
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode())) {
+        if (Objects.equals(asset.getCategoryModelType(), AssetCategoryEnum.NETWORK.getCode())) {
             List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
                 AssetNetworkEquipmentResponse assetNetworkEquipmentResponse = networkResponseConverter
@@ -1150,7 +1148,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterResponse.setAssetNetworkEquipment(assetNetworkEquipmentResponse);
             }
         }
-        if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.STORAGE.getCode())) {
+        if (Objects.equals(asset.getCategoryModelType(), AssetCategoryEnum.STORAGE.getCode())) {
             List<AssetStorageMedium> assetStorageMedias = assetStorageMediumDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetStorageMedias)) {
                 AssetStorageMediumResponse assetStorageMediumResponse = storageResponseConverter
