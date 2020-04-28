@@ -1,5 +1,6 @@
 package com.antiy.asset.cache;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -197,6 +198,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
         }
         return list;
     }
+
     /**
      * 获取某个缓存的全部数据
      * @param type
@@ -204,6 +206,6 @@ public class AssetBaseDataCache<T extends BaseEntity> {
      */
     public List<T> getAll(String type) {
         Map cache = caches.get(type);
-        return (List<T>) cache.values();
+        return new ArrayList<>(cache.values());
     }
 }
