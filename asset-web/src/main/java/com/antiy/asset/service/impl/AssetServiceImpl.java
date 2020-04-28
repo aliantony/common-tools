@@ -1141,7 +1141,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetBusinessResponse> dependentBusiness = assetBusinessRelationDao
             .getBusinessInfoByAssetId(condition.getPrimaryKey());
         assetResponse.setDependentBusiness(dependentBusiness);
-
+        setCategroy(asset);
         if (Objects.equals(asset.getCategoryModel(), AssetCategoryEnum.NETWORK.getCode())) {
             List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
