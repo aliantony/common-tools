@@ -194,9 +194,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     String areaId = requestAsset.getAreaId();
                     String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, areaId);
                     SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-                    BusinessExceptionUtils.isTrue(!Objects.isNull(assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
-                        DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))), "使用者不存在，或已经注销");
                     BusinessExceptionUtils.isTrue(!Objects.isNull(sysArea), "当前区域不存在，或已经注销");
+                    if (StringUtils.isNotBlank(requestAsset.getResponsibleUserId())) {
+                        BusinessExceptionUtils.isTrue(!Objects.isNull(assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
+                                DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))), "使用者不存在，或已经注销");
+                    }
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
                     Asset asset = requestConverter.convert(requestAsset, Asset.class);
                     // 设置顶级品类型号

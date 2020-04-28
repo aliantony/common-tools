@@ -246,6 +246,9 @@
                 and title not like '%通用'
                 and title != '无'
             </if>
+            <if test="uniqueId !=null">
+                and unique_id=#{uniqueId}
+            </if>
         </trim>
     </select>
 
