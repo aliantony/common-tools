@@ -2561,7 +2561,7 @@
                 #{item}
             </foreach>
         </if>
-        <if test="netType != null">
+        <if test="netType != null and netType != ''">
             and asset.net_type = #{netType}
         </if>
         <if test=" areaIds != null and areaIds.size() > 0">
