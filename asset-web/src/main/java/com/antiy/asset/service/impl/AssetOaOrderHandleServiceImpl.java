@@ -1,9 +1,7 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.AssetDao;
-import com.antiy.asset.dao.AssetOaOrderDao;
-import com.antiy.asset.dao.AssetOaOrderHandleDao;
-import com.antiy.asset.dao.AssetOaOrderResultDao;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
@@ -66,6 +64,8 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetOaOrderResultDao assetOaOrderResultDao;
     @Resource
     private AssetDao assetDao;
+    @Resource
+    private AssetOperationRecordDao assetOperationRecordDao;
 
     @Resource
     private IAssetLendRelationService assetLendRelationService;
@@ -132,6 +132,25 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetOaOrderResult.setHandleType(request.getHandleType());
             assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
             assetOaOrderResultDao.insert(assetOaOrderResult);
+
+            //操作记录，仅对退回和报废,存入到asset_operation_record
+            Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
+            AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+            assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
+            assetOperationRecord.setOriginStatus(asset.getStatus());
+            if(AssetOaOrderTypeEnum.BACK.getCode().equals(assetOaOrder.getOrderType())){
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+                assetOperationRecord.setContent("退回执行");
+            }else{
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
+                assetOperationRecord.setContent("报废执行");
+            }
+            assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+            assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            assetOperationRecord.setNote(request.getPlan());
+            assetOperationRecord.setFileInfo(request.getFileUrl());
+            logger.info("----------订单处理保存操作记录,assetOperationRecord:{}", JSONObject.toJSONString(assetOperationRecord));
+            assetOperationRecordDao.insert(assetOperationRecord);
         }
         //保存订单与资产关联关系
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
@@ -152,8 +171,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             //如果是退回,资产状态改为待退回
             logger.info("退回处理，orderNumber:{}", request.getOrderNumber());
             Asset asset = new Asset();
-            asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
             asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+            asset.setGmtModified(System.currentTimeMillis());
+            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
             assetDao.updateStatus(asset);
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
             //如果是报废，资产状态改为待报废
