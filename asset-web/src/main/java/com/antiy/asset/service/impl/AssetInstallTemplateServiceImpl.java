@@ -388,9 +388,9 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
 
         //验证操作系统
-        if (this.queryOs(request.getOperationSystem().toString()).isEmpty()) {
-            throw new RequestParamValidateException("该操作系统不存在，请刷新页面重新选择");
-        }
+//        if (this.queryOs(request.getOperationSystem().toString()).isEmpty()) {
+//            throw new RequestParamValidateException("该操作系统不存在，请刷新页面重新选择");
+//        }
         //验证软件
         checkSoftCompliance(request.getSoftBussinessIds());
         //验证补丁
@@ -449,7 +449,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
 
     private synchronized void setTemplateInfo(AssetInstallTemplateRequest request, AssetInstallTemplate template) {
         template.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
-        template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
+//        template.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         List<String> executors = request.getNextExecutor().stream().collect(Collectors.toList());
         if (executors.size() > 1) {
             template.setExecutor("all");
