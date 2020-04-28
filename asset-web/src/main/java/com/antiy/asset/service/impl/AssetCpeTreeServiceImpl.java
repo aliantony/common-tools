@@ -121,18 +121,19 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
     }
 
     @Override
-    public List<AssetCpeTreeResponse> queryTree() throws Exception {
+    public List<AssetCpeTreeResponse> queryTree(String isCommmon) throws Exception {
 
         List<AssetCpeTreeResponse> responseList = Lists.newArrayList();
         // 获取顶级大类
-        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findOSTopNode();
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        condition.setIsCommon(isCommmon);
+        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findOSTopNode(condition);
         for (AssetCpeTree assetCpeTree : topNodeList) {
             condition.setPid(assetCpeTree.getUniqueId());
             List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),
                 AssetCpeTreeResponse.class);
             // 查找子节点数据
-            buildChildrenNode(treeItem);
+            buildChildrenNode(treeItem, isCommmon);
             // 组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
                 AssetCpeTreeResponse.class);
@@ -161,8 +162,9 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
         return assetCpeTreeDao.getOsNameList();
     }
 
-    private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList) {
+    private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList, String isCommon) {
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        condition.setIsCommon(isCommon);
         for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList) {
             condition.setPid(assetCpeTree.getUniqueId());
             Integer hasNext = assetCpeTreeDao.countNextNode(condition);
@@ -172,7 +174,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
                 List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList,
                     AssetCpeTreeResponse.class);
                 assetCpeTree.setChildrenNode(responseList);
-                buildChildrenNode(assetCpeTree.getChildrenNode());
+                buildChildrenNode(assetCpeTree.getChildrenNode(), isCommon);
             }
         }
     }

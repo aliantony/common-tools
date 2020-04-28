@@ -228,6 +228,10 @@
             <if test=" pid != null">
                 and pid = #{pid }
             </if>
+            <if test=' isCommon == "0"'>
+                and title not like '%通用'
+                and title != '无'
+            </if>
         </trim>
     </select>
 
@@ -237,6 +241,10 @@
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             <if test=" pid != null">
                 and pid = #{pid }
+            </if>
+            <if test=' isCommon == "0"'>
+                and title not like '%通用'
+                and title != '无'
             </if>
             <if test="uniqueId !=null">
                 and unique_id=#{uniqueId}
@@ -248,12 +256,20 @@
         select * from
         <include refid="Table_Name"></include>
         where pid = 0
+        <if test=' isCommon == "0"'>
+            and title not like '%通用'
+            and title != '无'
+        </if>
     </select>
 
     <select id="findOSTopNode" resultMap="BaseResultMap">
         select * from
         <include refid="Table_Name"></include>
         where title = '操作系统'
+        <if test=' isCommon == "0"'>
+            and title not like '%通用'
+            and title != '无'
+        </if>
     </select>
 
     <select id="queryUniqueIdByNodeName" parameterType="com.antiy.asset.vo.request.AssetCpeTreeRequest"
