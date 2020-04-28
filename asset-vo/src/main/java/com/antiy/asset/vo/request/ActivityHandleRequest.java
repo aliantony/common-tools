@@ -53,7 +53,7 @@ public class ActivityHandleRequest extends BaseRequest {
     @Override
     public Integer getId() {
         if (Objects.isNull(super.getId())) {
-            return Integer.valueOf(id);
+            return id==null?null:Integer.valueOf(id);
         }
         return super.getId();
     }
