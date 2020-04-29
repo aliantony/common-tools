@@ -226,7 +226,7 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_id(
                     aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
-                topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(assetResponse.getCategoryModel()));
+                topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(DataTypeUtils.stringToInteger(assetResponse.getCategoryModel())));
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
                 topologyNode.setAsset_unrepair(Objects.toString(vulList.get(i)));
                 topologyNode.setAsset_untreated_warning(Objects.toString(alarmList.get(i)));

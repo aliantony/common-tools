@@ -103,7 +103,7 @@ public class Asset extends BaseEntity {
     /**
      * 品类型号
      */
-    private Integer categoryModel;
+    private String  categoryModel;
     /**
      * 品类名称
      */
@@ -582,11 +582,11 @@ public class Asset extends BaseEntity {
         this.areaName = areaName;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
