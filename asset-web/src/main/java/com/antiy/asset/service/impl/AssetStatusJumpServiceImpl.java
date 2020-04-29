@@ -366,7 +366,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
 
         activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
-        ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
+        vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
         assetCorrectIInfoResponse.setNeedManualPush("1");
         List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         //  判断是否属于计算机设备
