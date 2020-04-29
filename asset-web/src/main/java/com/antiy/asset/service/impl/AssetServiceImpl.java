@@ -1291,6 +1291,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
         String assetId = asset.getStringId();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
+        String currentUserName = LoginUserUtil.getLoginUser().getUsername();
         Integer changeStatus;
         BusinessPhaseEnum businessPhaseEnum;
         // 判断计算设备变更走基准配置
@@ -1301,9 +1302,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 // 状态->变更中
                 changeStatus = AssetStatusEnum.IN_CHANGE.getCode();
                 businessPhaseEnum = BusinessPhaseEnum.WAIT_SETTING;
-                List<String> bids = assetOuterRequest.getManualStartActivityRequest().getConfigUserIds();
                 Map formData = new HashMap();
-                formData.put("baselineConfigUserId", Arrays.toString(bids.toArray()));
+                // 调用用户模块获取基准配置人员-----start
+                WorkFlowQuery workFlowQuery = new WorkFlowQuery();
+                workFlowQuery.setFlowId("4");
+                workFlowQuery.setFlowNodeTag("config_base");
+                workFlowQuery.setAreaId(Collections
+                    .singletonList(aesEncoder.encode(assetOuterRequest.getAsset().getAreaId(), currentUserName)));
+                ActionResponse users = baseLineClient.listRy(workFlowQuery);
+                List<Map> userDetails = (List<Map>) users.getBody();
+                if (!Objects.isNull(userDetails) && CollectionUtils.isNotEmpty(userDetails)) {
+                    List<String> encodeUserIds = Lists.newArrayList();
+                    userDetails.stream().forEach(userId -> {
+                        encodeUserIds.add(aesEncoder.decode((String) userId.get("stringId"), currentUserName));
+                    });
+                    formData.put("baselineConfigUserId", String.join(",", encodeUserIds));
+                    formData.put("memo", "资产变更");
+                } else {
+                    BusinessExceptionUtils.isTrue(false, "获取基准配置下一步执行人为空");
+                }
+                // 调用用户模块获取基准配置人员-----end
                 List<BaselineWaitingConfigRequest> baselineWaitingConfigRequestList = Lists.newArrayList();
                 // ------------------对接配置模块------------------start
                 BaselineWaitingConfigRequest baselineWaitingConfigRequest = new BaselineWaitingConfigRequest();
@@ -1319,7 +1337,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineWaitingConfigRequest.setSource(2);
                 baselineWaitingConfigRequest.setFormData(formData);
                 baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
-                baselineWaitingConfigRequest.setAdvice(assetOuterRequest.getManualStartActivityRequest().getSuggest());
+                baselineWaitingConfigRequest.setAdvice("基准变更");
                 baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
                 ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                 if (null == actionResponse

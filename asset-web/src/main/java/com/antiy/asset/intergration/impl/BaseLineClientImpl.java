@@ -1,20 +1,23 @@
 package com.antiy.asset.intergration.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.enums.AssetLogOperationType;
+import com.antiy.asset.vo.query.WorkFlowQuery;
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author: zhangbing
@@ -37,14 +40,16 @@ public class BaseLineClientImpl implements BaseLineClient {
     private String     baselineTemplateUrl;
 
     @Value("${baseLineRectificationUrl}")
-    private String baseLineRectificationUrl;
+    private String     baseLineRectificationUrl;
 
     @Value("${baseLineRemoveAssetUrl}")
-    private String baseLineRemoveAssetUrl;
+    private String     baseLineRemoveAssetUrl;
     @Value("${situationOfVulUrl}")
-    private String situationOfVulUrl;
+    private String     situationOfVulUrl;
     @Value("${deleteProcessInstanceUrl}")
-    private String deleteProcessInstanceUrl;
+    private String     deleteProcessInstanceUrl;
+    @Value("${workflowListRy}")
+    private String     workflowListRyUrl;
     @Resource
     private BaseClient baseClient;
 
@@ -98,16 +103,19 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse<AssetCorrectIInfoResponse> situationOfVul(String primaryKey) {
         JSONObject param = new JSONObject();
         param.put("stringId", primaryKey);
-        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
-        }, situationOfVulUrl);
+        return (ActionResponse) baseClient.post(param,
+            new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
+            }, situationOfVulUrl);
     }
+
     @Override
     @AssetLog(description = "配置/整改", operationType = AssetLogOperationType.ADD)
     public ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId) {
         JSONObject param = new JSONObject();
         param.put("assetId", assetId);
-        return (ActionResponse) baseClient.post(param, new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
-        }, baseLineRectificationUrl);
+        return (ActionResponse) baseClient.post(param,
+            new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
+            }, baseLineRectificationUrl);
     }
 
     @Override
@@ -116,5 +124,11 @@ public class BaseLineClientImpl implements BaseLineClient {
         return (ActionResponse) baseClient.post(procInstIds, new ParameterizedTypeReference<ActionResponse>() {
         }, deleteProcessInstanceUrl);
 
+    }
+
+    @Override
+    public ActionResponse listRy(WorkFlowQuery workFlowQuery) {
+        return (ActionResponse) baseClient.post(workFlowQuery, new ParameterizedTypeReference<ActionResponse>() {
+        }, workflowListRyUrl);
     }
 }
