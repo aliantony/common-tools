@@ -11,6 +11,7 @@
     <name>cd01-asset</name>
     <version>1.2</version>
     <artifactId>asset-web</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>com.antiy</groupId>
