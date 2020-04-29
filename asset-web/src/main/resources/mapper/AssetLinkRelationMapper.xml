@@ -714,11 +714,11 @@
             </foreach>
         </if>
         <if test="statusList != null and statusList.size() > 0">
-            and a.asset_status in
+            and (a.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
@@ -775,11 +775,11 @@
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
-            and t.asset_status in
+            and (t.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+            or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
         </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
         asset.id )
@@ -819,11 +819,11 @@
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
-            and asset.asset_status in
+            and (asset.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+            or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
         </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ORDER BY assetPort
@@ -866,11 +866,11 @@
             </foreach>
         </if>
         <if test="statusList != null and statusList.size() > 0">
-            and a.asset_status in
+            and (a.asset_status in
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
@@ -903,11 +903,11 @@
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
-                and t.asset_status in
+                and (t.asset_status in
                 <foreach collection="statusList" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
-                or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+                or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
             </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
             UNION
@@ -934,11 +934,11 @@
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
-                and asset.asset_status in
+                and (asset.asset_status in
                 <foreach collection="statusList" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
-                or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus})
+                or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
             </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ) t
