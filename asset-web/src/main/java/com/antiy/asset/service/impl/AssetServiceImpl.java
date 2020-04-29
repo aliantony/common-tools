@@ -406,7 +406,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void setCategroy(Asset asset) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
             .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
-        Integer flag = asset.getCategoryModel();
+        Integer flag = DataTypeUtils.stringToInteger(asset.getCategoryModel());
         for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
             if (categoryModel.getId().equals(flag)) {
@@ -2380,7 +2380,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
-            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
+            asset.setCategoryModel(importRequest.getCategory());
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -2621,7 +2621,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
             AssetNetworkEquipment assetNetworkEquipment = new AssetNetworkEquipment();
-            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
+            asset.setCategoryModel(importRequest.getCategory());
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -2849,7 +2849,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetIpRelations.add(assetIpRelation);
             AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
             Asset asset = new Asset();
-            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
+            asset.setCategoryModel(importRequest.getCategory());
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
@@ -3042,7 +3042,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetStorageMedium assetStorageMedium = new AssetStorageMedium();
             asset.setActiviateDate(entity.getActiviateDate());
             asset.setInstallDate(entity.getInstallDate());
-            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
+            asset.setCategoryModel(importRequest.getCategory());
             if (null == entity.getExpirationReminder()) {
                 asset.setExpirationReminder(getCalendar(entity.getDueDate()));
             } else {
@@ -3244,7 +3244,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
-            asset.setCategoryModel(Integer.parseInt(importRequest.getCategory()));
+            asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);

@@ -93,7 +93,7 @@ public class AssetResponse extends BaseResponse {
      * 品类
      */
     @ApiModelProperty("品类")
-    private Integer                        categoryModel;
+    private String                         categoryModel;
     /**
      * 设备类型
      */
@@ -891,11 +891,11 @@ public class AssetResponse extends BaseResponse {
         this.serial = serial;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
