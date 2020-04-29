@@ -1,13 +1,11 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * <p> AssetLinkRelation 查询条件 </p>
@@ -73,6 +71,16 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      */
     @ApiModelProperty("资产状态列表")
     private List<String>  statusList;
+
+    /**
+     * 原始状态
+     */
+    private Integer originStatus;
+
+    /**
+     * 目标状态
+     */
+    private Integer targetStatus;
 
     public List<Integer> getCategoryModels() {
         return categoryModels;
@@ -152,5 +160,21 @@ public class AssetLinkRelationQuery extends ObjectQuery {
 
     public void setStatusList(List<String> statusList) {
         this.statusList = statusList;
+    }
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
+
+    public Integer getTargetStatus() {
+        return targetStatus;
+    }
+
+    public void setTargetStatus(Integer targetStatus) {
+        this.targetStatus = targetStatus;
     }
 }

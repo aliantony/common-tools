@@ -142,10 +142,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public PageResult<AssetLinkedCountResponse> queryAssetLinkedCountPage(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        List<String> statusList = new ArrayList<>();
-        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
-        statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
-        assetLinkRelationQuery.setStatusList(statusList);
+        // 限制资产状态
+        setAssetStatus(assetLinkRelationQuery);
+
         // 品类型号
         if (Objects.isNull(assetLinkRelationQuery.getCategoryModel())) {
             assetLinkRelationQuery.setCategoryModels(
@@ -290,10 +289,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
 
     @Override
     public PageResult<AssetLinkRelationResponse> queryLinkedAssetPageByAssetId(AssetLinkRelationQuery assetLinkRelationQuery) throws Exception {
-        List<String> statusList = new ArrayList<>();
-        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
-        statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
-        assetLinkRelationQuery.setStatusList(statusList);
+        // 限制资产状态
+        setAssetStatus(assetLinkRelationQuery);
 
         List<AssetLinkRelationResponse> assetLinkRelationResponseList = this
             .queryLinkedAssetListByAssetId(assetLinkRelationQuery);
@@ -371,5 +368,17 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         nodeNameAll = categoryValiEntity.getName() + "-" + nodeNameAll;
         newNode.setId(categoryValiEntity.getParentId());
         getNodeNameRecursion(newNode, nodeNameAll);
+    }
+
+    // 资产状态设置
+    private void setAssetStatus(AssetLinkRelationQuery assetLinkRelationQuery){
+
+        List<String> statusList = new ArrayList<>();
+        statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode().toString());
+        statusList.add(AssetStatusEnum.NET_IN.getCode().toString());
+        assetLinkRelationQuery.setStatusList(statusList);
+
+        assetLinkRelationQuery.setOriginStatus(AssetStatusEnum.NET_IN.getCode());
+        assetLinkRelationQuery.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
     }
 }
