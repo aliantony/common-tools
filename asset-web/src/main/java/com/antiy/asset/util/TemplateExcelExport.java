@@ -144,7 +144,14 @@ public class TemplateExcelExport {
         }
         // 第四行备注信息需要合并单元格，进行了特殊处理
         if (rownum == 4) {
-            CellRangeAddress cellAddresses = new CellRangeAddress(3, 3, 0, annotationList.size() - 1);
+            CellRangeAddress cellAddresses = null;
+            if (annotationList.size() == 1) {
+                cellAddresses = new CellRangeAddress(3, 3, 0, 1);
+
+            } else {
+
+                cellAddresses = new CellRangeAddress(3, 3, 0, annotationList.size() - 1);
+            }
             sheet.addMergedRegion(cellAddresses);
             Cell cell = row.createCell(column);
             cell.setCellStyle(style);
