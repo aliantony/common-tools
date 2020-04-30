@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,6 +63,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     @Resource
     private AssetBaseDataCache                                                 assetBaseDataCache;
 
+    @Resource
+    private AssetLinkRelationServiceImpl assetLinkRelationService;
     @Resource
     private AssetCategoryModelDao assetCategoryModelDao;
     @Transactional(rollbackFor = Exception.class)
@@ -262,7 +261,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         String[] strings = areaId.toArray(new String[0]);
         assetAddOfBusinessQuery.setAreaIds(strings);
         //获取计算设备的品类型号
-        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+       // List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
+        List<Integer> ids = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id));
+        List<String> categoryModels = ids.stream().map(t -> t.toString()).collect(Collectors.toList());
         assetAddOfBusinessQuery.setCategoryModels(categoryModels);
         Integer count = assetDao.countQueryAsset(assetAddOfBusinessQuery);
         if (count > 0) {

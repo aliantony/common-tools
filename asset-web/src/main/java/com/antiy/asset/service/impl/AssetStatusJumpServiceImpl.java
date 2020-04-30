@@ -332,20 +332,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //准入更新
             entryService.updateEntryStatus(assetEntryRequest);
 
-            //获取权限人员id
-            ActionResponse usersOfHaveRight = sysUserClient.getUsersOfHaveRight(tag);
-            if (null == usersOfHaveRight || !RespBasicCode.SUCCESS.getResultCode().equals(usersOfHaveRight.getHead().getCode())) {
-                throw new BusinessException("获取权限用具id 失败！");
-            }
-            List<HashMap<String,String>> users=(List<HashMap<String,String>>)usersOfHaveRight.getBody();
-            if(CollectionUtils.isEmpty(users)){
+            //获取特定权限的用户id
+            List<Integer> userIds = getALLUserIdByPermission(tag);
+            if(CollectionUtils.isEmpty(userIds)){
                 boolean isRetire=AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum());
                 throw new BusinessException("请先维护具备"+(isRetire==true?"退回":"报废")+"执行权限的人员");
             }
-
-            List<Integer> userIds = users.stream()
-                    .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), t.get("name"))))
-                    .collect(Collectors.toList());
             //发消息
             SysMessageRequest sysMessageRequest=new SysMessageRequest();
             List<SysMessageRequest> sysMessageRequests=new ArrayList<>();
@@ -362,9 +354,21 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
 
 
-
     }
 
+    private  List<Integer> getALLUserIdByPermission(List<String> tag){
+        //获取权限人员id
+        ActionResponse usersOfHaveRight = sysUserClient.getUsersOfHaveRight(tag);
+        if (null == usersOfHaveRight || !RespBasicCode.SUCCESS.getResultCode().equals(usersOfHaveRight.getHead().getCode())) {
+            throw new BusinessException("获取权限用具id 失败！");
+        }
+        List<HashMap<String,String>> users=(List<HashMap<String,String>>)usersOfHaveRight.getBody();
+
+        List<Integer> userIds = users.stream()
+                .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), t.get("name"))))
+                .collect(Collectors.toList());
+        return  userIds;
+    }
     @Override
     public ActionResponse statusJump(AssetStatusJumpRequest statusJumpRequest) throws Exception {
 
@@ -400,7 +404,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             throw new BusinessException("资产不存在！");
         }
         //判断是否是计算机设备
-        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
+        List<Integer> categoryModels = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id));
         if(!categoryModels.contains(assetOfDB.getCategoryModel().toString())){
             throw new BusinessException("只允许计算设备进行此项操作！");
         }
@@ -416,18 +421,24 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             LogUtils.error(logger, "资产整改配置工作流异常!");
             throw  new BusinessException("资产整改配置工作流异常");
         }
+        AssetCorrectIInfoResponse assetCorrectIInfoResponse = baseLineResponse.getBody();
+        assetCorrectIInfoResponse.setNeedManualPush("0");
+        if(AssetBaseLineEnum.SUCCESS.getMsg().equals(baseLineResponse.getBody().getConfigStatus())
+                ||AssetBaseLineEnum.FALI.getMsg().equals(baseLineResponse.getBody().getConfigStatus())){
+            assetCorrectIInfoResponse.setNeedManualPush("1");
+        }
+        return assetCorrectIInfoResponse;
         //设置整改来源    1 登记到整改    2 入网到整改
-        assetCorrectRequest.setAssetFlowEnum(getCorrectingSource(activityHandleRequest.getStringId()));
+        /*assetCorrectRequest.setAssetFlowEnum(getCorrectingSource(activityHandleRequest.getStringId()));
         AssetCorrectIInfoResponse assetCorrectIInfoResponse=baseLineResponse.getBody();
         if(AssetFlowEnum.NET_IN_TO_CORRECT.equals(assetCorrectRequest.getAssetFlowEnum())){
             assetCorrectIInfoResponse.setCheckStatus(baseLineResponse.getBody().getCheckStatus());
             assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return assetCorrectIInfoResponse;
-        }
-        return  correctingAssetOfbaseLine(baseLineResponse,assetOfDB);
+        }*/
+       // return  correctingAssetOfbaseLine(baseLineResponse,assetOfDB);
     }
-
     @Override
     public AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest assetCorrectRequest) throws Exception {
         ActivityHandleRequest activityHandleRequest=assetCorrectRequest.getActivityHandleRequest();
@@ -592,7 +603,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
     }
 
-    //报废  退回不走工作流了
     private List<String>  startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) throws Exception {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
@@ -605,6 +615,19 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             formData.put("safetyCheckUser", aesEncoder.encode(lastCheckUser.toString(), loginUser.getUsername()));
             assetStatusRequest.setFormData(formData);
         }
+        //设置权限的用户id
+        List<String> tag=Arrays.asList("asset:info:list:bfsq");
+        List<Integer> userIds = getALLUserIdByPermission(tag);
+       // 设置 formData
+        Map<String,String> formData=new HashMap<>();
+        if(AssetFlowEnum.RETIRE_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())){
+            formData.put("retireImplementUser",StringUtils.join(userIds,","));
+        }
+        if(AssetFlowEnum.SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
+                || AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())){
+            formData.put("scrapImplementUser",StringUtils.join(userIds,","));
+        }
+
         // 1.退役申请需要启动流程,其他步骤完成流程
         if (AssetFlowEnum.RETIRE_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
                 || AssetFlowEnum.SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
@@ -623,6 +646,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 } else {
                     manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode());
                 }
+
                 manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
 
                 ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
