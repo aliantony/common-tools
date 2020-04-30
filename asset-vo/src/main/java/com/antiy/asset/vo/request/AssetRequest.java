@@ -3,7 +3,10 @@ package com.antiy.asset.vo.request;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
@@ -64,7 +67,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     private String                  serial;
 
     @ApiModelProperty("品类型号")
-    private Integer                 categoryModel;
+    private String                  categoryModel;
     @ApiModelProperty("品类型号:1计算设备,2网络设备3安全设备4存储设备5其它设备")
     private Integer                 categoryModelType;
     @ApiModelProperty("行政区id")
@@ -105,7 +108,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
 
     @ApiModelProperty("责任人主键")
     @Encode
-    //@NotBlank(message = "责任人不能为空")
+    // @NotBlank(message = "责任人不能为空")
     private String                  responsibleUserId;
 
     @ApiModelProperty("上报来源,1-自动上报，2-人工上报")
@@ -115,13 +118,13 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     private Integer                 assetSource;
 
     @ApiModelProperty("1核心2重要3一般")
-    //@NotNull(message = "重要程度不能为空")
+    // @NotNull(message = "重要程度不能为空")
     @Max(message = "重要程度不能大于3", value = 3)
     @Min(message = "重要程度不能小于1", value = 1)
     private Integer                 importanceDegree;
 
     @ApiModelProperty("使用到期时间")
-   // @NotNull(message = "使用到期时间不能为空")
+    // @NotNull(message = "使用到期时间不能为空")
     @Max(value = 9999999999999L, message = "时间超出范围")
     private Long                    serviceLife;
 
@@ -422,11 +425,11 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.importanceDegree = importanceDegree;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 

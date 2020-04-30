@@ -1198,7 +1198,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
         // 校验资产合规性，如ip、mac不能重复等
         checkAssetCompliance(assetOuterRequest);
-
+        Integer categoryType = setCategroy(
+            DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()));
+        assetOuterRequest.getAsset().setCategoryModelType(categoryType);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         synchronized (lock) {
             // 校验资产状态
@@ -1217,8 +1219,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 更新资产基础信息及各种关联信息
         Integer assetCount = updateAssetInfo(assetOuterRequest);
         ParamterExceptionUtils.isTrue(assetCount != null && assetCount > 0, "信息入库失败");
-        Integer categoryType = setCategroy(assetOuterRequest.getAsset().getCategoryModel());
-        assetOuterRequest.getAsset().setCategoryModelType(categoryType);
         // 根据前端判断启动漏扫,排除走基准配置的已入网资产
         if (!(EnumUtil.equals(assetOuterRequest.getAsset().getAssetStatus(), AssetStatusEnum.NET_IN)
               && EnumUtil.equals(assetOuterRequest.getAsset().getCategoryModelType(), AssetCategoryEnum.COMPUTER))
@@ -1400,8 +1400,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 变更后的硬盘
         List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
             ? Lists.newArrayList()
-            : assetOuterRequest.getAssemblyRequestList().stream().map(AssetAssemblyRequest::getBusinessId)
-                .collect(Collectors.toList());
+            : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
         Asset asset = assetDao.getByAssetId(assetOuterRequest.getAsset().getId());
         String oldOs = asset.getOperationSystemName();
         String newOs = assetOuterRequest.getAsset().getOperationSystemName();
@@ -1414,7 +1414,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return true;
         }
         // 比较硬盘
-        if (!(newDisk.containsAll(oldDisk) && !oldDisk.containsAll(newDisk))) {
+        if (!(newDisk.containsAll(oldDisk) && oldDisk.containsAll(newDisk))) {
             return true;
         }
         return false;
@@ -3790,8 +3790,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         AssetDepartment department = (AssetDepartment) assetBaseDataCache.get(
                             AssetBaseDataCache.ASSET_DEPARTMENT,
                             DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
-                        asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
-                        asset.setDepartmentName(department.getName());
+                        if (!Objects.isNull(department)) {
+                            asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
+                            asset.setDepartmentName(department.getName());
+                        }
                     }
                 }
             }
@@ -3799,8 +3801,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
                 List<AssetBusiness> assetBusinessList = assetBaseDataCache.getAll(AssetBaseDataCache.ASSET_BUSINESS,
                     DataTypeUtils.stringArrayToIntegerArray(asset.getAssetBusiness().split(",")));
-                asset.setAssetBusiness(StringUtils
-                    .join(assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
+                if (CollectionUtils.isNotEmpty(assetBusinessList)) {
+                    asset.setAssetBusiness(StringUtils
+                            .join(assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
+                }
             }
             // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {

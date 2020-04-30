@@ -193,7 +193,9 @@ public class AssetBaseDataCache<T extends BaseEntity> {
         Map cache = caches.get(type);
         if (ids != null && ids.length > 0) {
             Arrays.stream(ids).forEach(id -> {
-                list.add((T) cache.get(id));
+                if (cache.containsKey(id)) {
+                    list.add((T) cache.get(id));
+                }
             });
         }
         return list;
