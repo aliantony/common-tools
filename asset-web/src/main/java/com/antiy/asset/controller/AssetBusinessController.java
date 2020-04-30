@@ -1,5 +1,8 @@
 package com.antiy.asset.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
 import com.antiy.asset.vo.query.AssetBusinessQuery;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,6 +39,9 @@ public class AssetBusinessController {
 
     @Resource
     public IAssetBusinessService iAssetBusinessService;
+
+    @Resource
+    private SysRoleClientImpl sysRoleClient;
     /**
      * 保存
      *
@@ -139,6 +146,18 @@ public class AssetBusinessController {
     public ActionResponse deleteByUniqueId(@ApiParam(value = "assetBusinessRequest") @RequestBody UniqueKeyRquest uniqueKeyRquest)throws Exception{
         Integer result=iAssetBusinessService.updateStatusByUniqueId(uniqueKeyRquest.getUniqueId());
         return ActionResponse.success(result);
+    }
+
+    @RequestMapping(value = "/fefe", method = RequestMethod.GET)
+    public String test(){
+        List<String> tag= Arrays.asList("asset:info:list:bfsq");
+        ActionResponse usersOfHaveRight = sysRoleClient.getUsersOfHaveRight(tag);
+        List list=(List)usersOfHaveRight.getBody();
+        Object d = list.get(0);
+        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(d));
+        String stringId = (String)jsonObject.get("stringId");
+        System.out.println(stringId);
+        return stringId;
     }
 }
 

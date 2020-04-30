@@ -10,15 +10,13 @@ import com.antiy.asset.vo.request.AssetCorrectRequest;
 import com.antiy.common.utils.LogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
-@EnableScheduling
+/*@Configuration
+@EnableScheduling*/
 public class SaticScheduleTask {
     @Resource
     public IAssetService iAssetService;

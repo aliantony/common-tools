@@ -68,4 +68,5 @@ public interface IAssetCategoryModelService extends IBaseService<AssetCategoryMo
     List<AssetCategoryModelNodeResponse> queryCategoryEquipmentNode() throws Exception;
 
 
+    List<String> getCategoryModelsByParentName(String name);
 }
