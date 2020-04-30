@@ -392,7 +392,7 @@ public class AssetResponse extends BaseResponse {
     /**
      * 是否被整改过：1,已整改,2未整改
      */
-    @ApiModelProperty("是否被整改过：1,已整改,2未整改")
+    @ApiModelProperty("是否被整改过：1,已整改,2未整改,3整改中")
     private Integer                        rectification;
 
     public Integer getRectification() {
