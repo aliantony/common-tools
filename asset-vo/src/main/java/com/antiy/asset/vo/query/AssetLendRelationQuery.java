@@ -26,7 +26,7 @@ public class AssetLendRelationQuery extends ObjectQuery {
     @ApiModelProperty("类型")
     private List<String> categoryModels;
     @ApiModelProperty("状态  1 已借用  2 保管中")
-    private int lendStatus;
+    private Integer      lendStatus;
     @ApiModelProperty("当前使用者id")
     @Encode
     private List<String> currentUseIds;
@@ -102,11 +102,11 @@ public class AssetLendRelationQuery extends ObjectQuery {
         this.categoryModels = categoryModels;
     }
 
-    public int getLendStatus() {
+    public Integer getLendStatus() {
         return lendStatus;
     }
 
-    public void setLendStatus(int lendStatus) {
+    public void setLendStatus(Integer lendStatus) {
         this.lendStatus = lendStatus;
     }
 }
