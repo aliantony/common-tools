@@ -127,4 +127,15 @@ public class AssetStatusJumpController {
         AssetCorrectIInfoResponse result=assetStatusJumpService.assetCorrectingOfbaseLine(assetCorrectRequest);
         return ActionResponse.success(result);
     }
+    /**
+     * 继续入网
+     */
+    @ApiOperation(value = "继续入网", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/continue/net/in", method = RequestMethod.POST)
+    public ActionResponse continueNetIn(@RequestBody ActivityHandleRequest activityHandleRequest) throws Exception {
+
+        Integer  result=assetStatusJumpService.continueNetIn(activityHandleRequest);
+        return ActionResponse.success(result);
+    }
 }

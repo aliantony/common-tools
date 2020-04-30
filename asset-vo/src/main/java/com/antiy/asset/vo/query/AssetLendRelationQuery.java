@@ -28,7 +28,8 @@ public class AssetLendRelationQuery extends ObjectQuery {
     @ApiModelProperty("状态  1 已借用  2 保管中")
     private int lendStatus;
     @ApiModelProperty("当前使用者id")
-    private List<Integer> currentUseIds;
+    @Encode
+    private List<String> currentUseIds;
     @ApiModelProperty("出借日期")
     private Long  lendTime;
     @ApiModelProperty("归还日期")
@@ -61,11 +62,11 @@ public class AssetLendRelationQuery extends ObjectQuery {
         this.end = end;
     }
 
-    public List<Integer> getCurrentUseIds() {
+    public List<String> getCurrentUseIds() {
         return currentUseIds;
     }
 
-    public void setCurrentUseIds(List<Integer> currentUseIds) {
+    public void setCurrentUseIds(List<String> currentUseIds) {
         this.currentUseIds = currentUseIds;
     }
 

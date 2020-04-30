@@ -23,6 +23,11 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
 
     /**
+     * 报废组件
+     */
+    @ApiModelProperty("组件报废")
+    private List<AssetAssemblyRequest> assetAssemblyRequest;
+    /**
      * 审批人id
      */
     @ApiModelProperty("审批人id")
@@ -86,6 +91,14 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
      */
     @ApiModelProperty(value = "从整改到待登记true;其他情况可不传")
     private Boolean                    waitCorrectToWaitRegister = Boolean.FALSE;
+
+    public List<AssetAssemblyRequest> getAssetAssemblyRequest() {
+        return assetAssemblyRequest;
+    }
+
+    public void setAssetAssemblyRequest(List<AssetAssemblyRequest> assetAssemblyRequest) {
+        this.assetAssemblyRequest = assetAssemblyRequest;
+    }
 
     public String getCheckUserId() {
         return checkUserId;

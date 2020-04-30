@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetCorrectRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
 import com.antiy.asset.vo.request.AssetStatusJumpRequest;
@@ -30,4 +31,10 @@ public interface IAssetStatusJumpService {
     AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest activityHandleRequest) throws Exception;
     AssetCorrectIInfoResponse assetCorrectingOfbaseLine(AssetCorrectRequest assetCorrectRequest) throws Exception;
     Integer netToCorrect(List<String> assetIds);
+
+    /**
+     * 继续入网
+     * @param assetId
+     */
+    Integer continueNetIn(ActivityHandleRequest assetId) throws Exception;
 }

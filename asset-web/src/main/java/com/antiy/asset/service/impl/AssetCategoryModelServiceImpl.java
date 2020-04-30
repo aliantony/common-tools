@@ -482,4 +482,17 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         return nodes;
     }
 
+    @Override
+    public List<String> getCategoryModelsByParentName(String name) {
+        /*Set<Integer> ids=new HashSet<>();
+        Integer rootId=assetCategoryModelDao.getIdByName(AssetCategoryEnum.COMPUTER.getName());
+        ids.add(rootId);
+        Set<Integer> childIds=assetCategoryModelDao.getChildIdByParentId(rootId);
+        for()
+        ids.addAll(childIds);*/
+
+        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        return null;
+    }
+
 }

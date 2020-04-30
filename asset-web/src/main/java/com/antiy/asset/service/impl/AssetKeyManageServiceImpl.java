@@ -235,8 +235,10 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         List<KeyEntity> dataList = new ArrayList<>();
         KeyEntity computeDeviceEntity = new KeyEntity();
         computeDeviceEntity.setKeyNum("cd002548");
+        dataList.add(computeDeviceEntity);
         return dataList;
     }
+
 
     @Override
     @Transactional

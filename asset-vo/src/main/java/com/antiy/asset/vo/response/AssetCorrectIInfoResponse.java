@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetCorrectIInfoResponse {
     @ApiModelProperty("扫描是否结束")
-    private Boolean isScan;
+    private Boolean scan;
     /**
      * 漏洞数量
      */
@@ -16,8 +16,11 @@ public class AssetCorrectIInfoResponse {
     private int failureCount;
     @ApiModelProperty("漏洞忽略数量")
     private int ignoreCount;
+    @ApiModelProperty("漏洞缓解数量")
+    private int laxation;
     @ApiModelProperty("漏洞状态描述")
     private String vlunDesc;
+
     @ApiModelProperty("核查状态")
     private String checkStatus;
     @ApiModelProperty("配置状态")
@@ -40,17 +43,26 @@ public class AssetCorrectIInfoResponse {
     }
 
     public Boolean getDeal() {
-            if(amount==repairedCount+failureCount+ignoreCount){
+            if(amount==repairedCount+failureCount+ignoreCount+laxation){
                 return true;
             }
             return false;
         }
+
+    public int getLaxation() {
+        return laxation;
+    }
+
+    public void setLaxation(int laxation) {
+        this.laxation = laxation;
+    }
+
     public Boolean getScan() {
-        return isScan;
+        return scan;
     }
 
     public void setScan(Boolean scan) {
-        isScan = scan;
+        this.scan = scan;
     }
 
     public int getAmount() {

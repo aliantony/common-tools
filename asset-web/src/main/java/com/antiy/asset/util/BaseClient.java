@@ -55,6 +55,7 @@ public class BaseClient<T> {
 
         if (LoginUserUtil.getCommonInfo()!=null){
             headers.set(TOKEN_KEY, LoginUserUtil.getCommonInfo().getToken());
+
         }
         HttpEntity<String> entity = new HttpEntity(JSONObject.toJSONString(params), headers);
         ResponseEntity<T> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity,

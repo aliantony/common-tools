@@ -304,7 +304,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     // 获取当前节点下所有子节点列表
-    private List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
+    public List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
 
         Set<Integer> allNodes = new HashSet<>();
         allNodes.addAll(currentNodes);
