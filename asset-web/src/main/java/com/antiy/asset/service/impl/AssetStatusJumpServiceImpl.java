@@ -366,7 +366,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
 
         activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
-        ActionResponse actionResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
+        vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
         assetCorrectIInfoResponse.setNeedManualPush("1");
         List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         //  判断是否属于计算机设备
@@ -673,10 +673,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 numbers.append(v.getNumber()).append(",");
             });
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.BATCH_ENTRY_EXECUTION.getName(), ids.deleteCharAt(ids.length()-1).toString()
-                    , numbers.deleteCharAt(numbers.length()-1).toString(), null, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NET_IN));
+                    , numbers.deleteCharAt(numbers.length()-1).toString(), null, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ASSET_BATCH_ACCESS));
         }else {
             newAssets.forEach(v -> LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ENTRY_EXECUTION.getName(), v.getId()
-                    , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NET_IN)));
+                    , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ACCESS)));
         }
         //下发准入指令
         SecurityContext context=SecurityContextHolder.getContext();

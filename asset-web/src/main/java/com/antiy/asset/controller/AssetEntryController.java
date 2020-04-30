@@ -121,7 +121,7 @@ public class AssetEntryController {
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(
                 new BusinessData("导出资产", 0, "",
-                        assetQuery, BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.NONE));
+                        assetQuery, BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.ACCESS_IMPORT));
         LogUtils.info(LogUtils.get(AssetAdmittanceController.class),
                 AssetEventEnum.ASSET_ADMITTANCE_EXPORT.getName() + " {}", assetQuery.toString());
         return ActionResponse.success();

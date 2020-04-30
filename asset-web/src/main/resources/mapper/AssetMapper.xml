@@ -2345,15 +2345,20 @@
         count(distinct asset.id)
         FROM
         (
-        select * from asset
+        select asset.*,
+        GROUP_CONCAT( DISTINCT air.ip ) AS ip,
+        GROUP_CONCAT( DISTINCT amr.mac ) AS mac
+        from
+        asset
+        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
         <where>
             <trim prefixOverrides="and">
                 <include refid="mq_asset"/>
             </trim>
         </where>
+        group by asset.id
         ) asset
-        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
-        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
         left join baseline_template bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
@@ -2371,20 +2376,25 @@
         SELECT
         asset.*,
         CONCAT_WS('/',asset.manufacturer,asset.name,asset.version) as mnv,
-        GROUP_CONCAT( DISTINCT air.ip ) AS ip,
-        GROUP_CONCAT( DISTINCT amr.mac ) AS mac,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name,
         anm.net_type_name,
         acm.name as category_model_name
         FROM
         (
-            select * from asset
+            select
+              asset.*,
+                GROUP_CONCAT( DISTINCT air.ip ) AS ip,
+                GROUP_CONCAT( DISTINCT amr.mac ) AS mac
+        from asset
+        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
             <where>
                 <trim prefixOverrides="and">
                     <include refid="mq_asset"/>
                 </trim>
             </where>
+            group by asset.id
         ) asset
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
@@ -2500,17 +2510,34 @@
             </foreach>
         </if>
         <if test=" multipleQuery != null and multipleQuery.trim != ''">
-            and (asset.name LIKE
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or asset.number LIKE
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or asset.serial LIKE
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or asset.machine_name LIKE
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or asset.code LIKE
-            CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            )
+            <choose>
+                <when test="unknownAssets">
+                    and (
+                        air.ip like
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or replace(amr.mac,':','-') like
+                        CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
+                    )
+                </when>
+                <otherwise>
+                    and (
+                        asset.name LIKE
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or asset.number LIKE
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or asset.serial LIKE
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or asset.machine_name LIKE
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or asset.code LIKE
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or air.ip like
+                        CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+                        or replace(amr.mac,':','-') like
+                        CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
+                    )
+                </otherwise>
+            </choose>
         </if>
         <if test="categoryModels != null and categoryModels != ''">
            and asset.category_model = #{categoryModels}
@@ -2640,24 +2667,7 @@
     </sql>
     <!--left join 后的查询条件-->
     <sql id="mq_relation">
-        <if test=" multipleQuery != null and multipleQuery.trim != ''">
-            <choose>
-                <when test="unknownAssets">
-                    and (air.ip like
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or replace(amr.mac,':','-') like
-                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
-                    )
-                </when>
-                <otherwise>
-                    and (air.ip like
-                    CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-                    or replace(amr.mac,':','-') like
-                    CONCAT('%',replace(replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),':','-'),'%')
-                    )
-                </otherwise>
-            </choose>
-        </if>
+
         <if test="assetBusiness != null and assetBusiness != ''">
             and abr.id =#{assetBusiness}
         </if>

@@ -147,13 +147,14 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 //        boolean isSuccess = sendCommond(request);
         boolean isSuccess = true;
         //操作日志-安全事件
-        String incident = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED) ? "允许入网" : "禁止入网";
+        boolean isAccess = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED);
+        String incident = isAccess? "允许入网" : "禁止入网";
         List<AssetEntryRecordRequest> recordRequestList = new ArrayList<>();
         assetIds.forEach(v -> {
             Asset asset = assetDao.getByAssetId(v);
             //记录操作日志
             LogUtils.recordOperLog(new BusinessData(incident, asset.getId(), asset.getNumber(), asset,
-                    BusinessModuleEnum.ACCESS_MANAGEMENT, BusinessPhaseEnum.NONE));
+                    BusinessModuleEnum.ACCESS_MANAGEMENT, isAccess?BusinessPhaseEnum.ACCESS_ALLOW:BusinessPhaseEnum.ACCESS_BAN));
             int userId = 0;//0表示系统
             LoginUser loginUser = LoginUserUtil.getLoginUser();
             if (!Objects.isNull(loginUser)) {
