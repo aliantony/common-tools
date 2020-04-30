@@ -56,8 +56,7 @@ public class AssetAssemblyResponse extends BaseResponse {
     /**
      * 拆除 1 未 2 已
      */
-    @ApiModelProperty("产品名")
-
+    @ApiModelProperty("拆除 1 未 2 已")
     private Integer remove;
     /**
      * 消磁 1 未 2 已
