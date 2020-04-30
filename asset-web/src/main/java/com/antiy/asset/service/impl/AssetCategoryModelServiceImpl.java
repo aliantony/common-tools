@@ -101,7 +101,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_INSERT.getName(),
                     assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
-                    BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+                    BusinessModuleEnum.ASSET_TYPE_MANAGE, BusinessPhaseEnum.SYSTEM_ASSET_TYPE_ADD));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_INSERT.getName() + " {}",
                     assetCategoryModel.toString());
         }
@@ -163,7 +163,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_UPDATE.getName(),
                     updateCategory.getId(), updateCategory.getName(), updateCategory,
-                    BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+                    BusinessModuleEnum.ASSET_TYPE_MANAGE, BusinessPhaseEnum.SYSTEM_ASSET_TYPE_EDIT));
             LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_UPDATE.getName() + " {}", updateCategory.toString());
         }
         return ActionResponse.success(result);
@@ -217,7 +217,7 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
         // 记录操作日志和运行日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_CATEGORY_DELETE.getName(),
                 assetCategoryModel.getId(), assetCategoryModel.getName(), assetCategoryModel,
-                BusinessModuleEnum.PRODUCT_TYPE_NUMBER, BusinessPhaseEnum.NONE));
+                BusinessModuleEnum.ASSET_TYPE_MANAGE, BusinessPhaseEnum.SYSTEM_ASSET_TYPE_DELETE));
         LogUtils.info(logger, AssetEventEnum.ASSET_CATEGORY_DELETE.getName() + " {}", assetCategoryModel.toString());
         return deleteAllById(id);
     }
