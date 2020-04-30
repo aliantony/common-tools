@@ -435,12 +435,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(assetOfDB==null){
             throw new BusinessException("资产不存在！");
         }
+
         ActionResponse<AssetCorrectIInfoResponse> vlunResponse= baseLineClient.situationOfVul(activityHandleRequest.getStringId());
 
         if (null == vlunResponse || !RespBasicCode.SUCCESS.getResultCode().equals(vlunResponse.getHead().getCode())) {
             LogUtils.error(logger, "调用漏洞模块失败");
             throw  new BusinessException("调用漏洞模块失败");
         }
+
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
         //整改流程--漏洞步骤处于进行中状态
         if(!assetCorrectIInfoResponse.getScan()||! assetCorrectIInfoResponse.getDeal()){
@@ -480,8 +482,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     @Override
-    public Integer continueNetIn(String assetId) throws Exception {
-        Asset assetOfDB = assetDao.getById(assetId);
+    public Integer continueNetIn(ActivityHandleRequest activityHandleRequest) throws Exception {
+        Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
       //  List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
         List<Integer> computerIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id));
@@ -496,8 +498,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         }
         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-        assetDao.update(asset);
-        return null;
+        Integer update = assetDao.update(asset);
+        //推进工作流
+        Map<String,String> formDdata=new HashMap<>();
+        formDdata.put("activityHandleRequest","activityHandleRequest");
+        activityHandleRequest.setFormData(formDdata);
+        activityClient.completeTask(activityHandleRequest);
+        return update;
     }
 
 

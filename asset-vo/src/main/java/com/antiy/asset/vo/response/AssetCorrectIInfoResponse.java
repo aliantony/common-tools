@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetCorrectIInfoResponse {
     @ApiModelProperty("扫描是否结束")
-    private Boolean isScan;
+    private Boolean scan;
     /**
      * 漏洞数量
      */
@@ -58,11 +58,11 @@ public class AssetCorrectIInfoResponse {
     }
 
     public Boolean getScan() {
-        return isScan;
+        return scan;
     }
 
     public void setScan(Boolean scan) {
-        isScan = scan;
+        this.scan = scan;
     }
 
     public int getAmount() {
