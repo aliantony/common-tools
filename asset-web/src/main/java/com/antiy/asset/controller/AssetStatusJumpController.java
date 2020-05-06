@@ -90,7 +90,7 @@ public class AssetStatusJumpController {
      * 整改
      *
      */
-    @ApiOperation(value = "资产已入网到整改", notes = "传入资产id")
+    @ApiOperation(value = "整改", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/netToCorrect", method = RequestMethod.POST)
     public ActionResponse netToCorrect(@ApiParam(value = "queryCondition") @RequestBody List<BaseRequest> baseList) throws Exception {

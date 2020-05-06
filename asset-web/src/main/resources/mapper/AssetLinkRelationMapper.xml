@@ -697,7 +697,13 @@
         LEFT JOIN asset_ip_relation b ON ( a.id = b.asset_id AND b.STATUS = 1 )
         LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip = c.asset_ip) or (a.id =
         c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
-        left join asset_operation_record d on (d.target_object_id = a.id and d.status = 1)
+        left join
+            (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+            from asset_operation_record d
+            WHERE status = 1
+            GROUP BY d.id
+            ORDER BY d.gmt_create
+            limit 1) as e on e.target_object_id = a.id
         WHERE
         b.asset_id IS NOT NULL
         and a.status = 1
@@ -718,7 +724,7 @@
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
@@ -771,7 +777,13 @@
         LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
         LEFT JOIN asset_link_relation alr ON ( air.ip = alr.asset_ip AND asset.id = alr.asset_id AND alr.STATUS = 1)
         left join asset t on alr.parent_asset_id = t.id
-        left join asset_operation_record d on (d.target_object_id = t.id and d.status = 1)
+        left join
+        (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+        from asset_operation_record d
+        WHERE status = 1
+        GROUP BY d.id
+        ORDER BY d.gmt_create
+        limit 1) as e on e.target_object_id = a.id
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
@@ -779,7 +791,7 @@
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+            or (t.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id =
         asset.id )
@@ -815,7 +827,13 @@
         AND asset.id = alr.parent_asset_id
         AND alr.STATUS = 1 )
         left join asset t on alr.asset_id = t.id
-        left join asset_operation_record d on (d.target_object_id = t.id and d.status = 1)
+        left join
+        (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+        from asset_operation_record d
+        WHERE status = 1
+        GROUP BY d.id
+        ORDER BY d.gmt_create
+        limit 1) as e on e.target_object_id = a.id
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
@@ -823,7 +841,7 @@
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+            or (asset.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ORDER BY assetPort
@@ -849,7 +867,13 @@
         LEFT JOIN asset_ip_relation b ON ( a.id = b.asset_id AND b.STATUS = 1 )
         LEFT JOIN asset_link_relation c ON ( (a.id = c.asset_id AND b.ip = c.asset_ip) or (a.id =
         c.parent_asset_id AND b.ip = c.parent_asset_ip) AND c.STATUS = 1 )
-        left join asset_operation_record d on (d.target_object_id = a.id and d.status = 1)
+        left join
+        (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+        from asset_operation_record d
+        WHERE status = 1
+        GROUP BY d.id
+        ORDER BY d.gmt_create
+        limit 1) as e on e.target_object_id = a.id
         WHERE
         b.asset_id IS NOT NULL
         and a.status = 1
@@ -870,7 +894,7 @@
             <foreach collection="statusList" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         <if test="assetName != null and assetName != ''">
             and a.name like binary CONCAT('%',replace(replace(#{assetName},'%','\%'),'_','\_'),'%')
@@ -899,7 +923,13 @@
             LEFT JOIN asset_ip_relation air ON ( asset.id = air.asset_id AND air.STATUS = 1 )
             LEFT JOIN asset_link_relation alr ON ( air.ip = alr.asset_ip AND asset.id = alr.asset_id AND alr.STATUS = 1)
             left join asset t on alr.parent_asset_id = t.id
-            left join asset_operation_record d on (d.target_object_id = t.id and d.status = 1)
+            left join
+            (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+            from asset_operation_record d
+            WHERE status = 1
+            GROUP BY d.id
+            ORDER BY d.gmt_create
+            limit 1) as e on e.target_object_id = a.id
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
@@ -907,7 +937,7 @@
                 <foreach collection="statusList" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
-                or (t.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+                or (t.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
             </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.parent_asset_ip = air.ip AND d.parent_asset_id = asset.id )
             UNION
@@ -930,7 +960,13 @@
             AND asset.id = alr.parent_asset_id
             AND alr.STATUS = 1 )
             left join asset t on alr.asset_id = t.id
-            left join asset_operation_record d on (d.target_object_id = t.id and d.status = 1)
+            left join
+            (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+            from asset_operation_record d
+            WHERE status = 1
+            GROUP BY d.id
+            ORDER BY d.gmt_create
+            limit 1) as e on e.target_object_id = a.id
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
@@ -938,7 +974,7 @@
                 <foreach collection="statusList" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
-                or (asset.asset_status = #{targetStatus} and d.origin_status = #{originStatus} and d.target_status = #{targetStatus}))
+                or (asset.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
             </if>
             AND NOT EXISTS ( SELECT 1 FROM asset_link_relation d WHERE d.asset_ip = air.ip AND d.asset_id = asset.id )
         ) t

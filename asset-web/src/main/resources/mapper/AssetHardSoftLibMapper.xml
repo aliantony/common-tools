@@ -543,6 +543,22 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="sysVersion != null and sysVersion.trim !='' ">
+                and a.sys_version like CONCAT('%', replace(replace(REPLACE (#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softVersion != null and softVersion.trim !=''">
+                and a.soft_version like CONCAT('%', replace(replace(REPLACE (#{softVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softPlatform != null and softPlatform.trim !=''">
+                and a.soft_platform like CONCAT('%', replace(replace(REPLACE (#{softPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="hardPlatform != null and hardPlatform.trim !=''">
+                and a.hard_platform like CONCAT('%', replace(replace(REPLACE (#{hardPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
             and a.status = 1
         </trim>
         ORDER BY id DESC LIMIT #{pageOffset}, #{pageSize} ) t2
@@ -604,6 +620,22 @@
                 <foreach collection="removeBusinessIds" item="item" open="(" close=")" separator=",">
                     #{item}
                 </foreach>
+            </if>
+            <if test="sysVersion != null and sysVersion.trim !='' ">
+                and a.sys_version like CONCAT('%', replace(replace(REPLACE (#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softVersion != null and softVersion.trim !=''">
+                and a.soft_version like CONCAT('%', replace(replace(REPLACE (#{softVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softPlatform != null and softPlatform.trim !=''">
+                and a.soft_platform like CONCAT('%', replace(replace(REPLACE (#{softPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="hardPlatform != null and hardPlatform.trim !=''">
+                and a.hard_platform like CONCAT('%', replace(replace(REPLACE (#{hardPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
             </if>
             and a.status = 1
         </trim>

@@ -1,14 +1,12 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import com.antiy.asset.vo.enums.AssetTypeEnum;
 import com.antiy.common.base.ObjectQuery;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * <p> HardSoftLib 查询条件 </p>
@@ -59,8 +57,30 @@ public class AssetHardSoftLibQuery extends ObjectQuery {
 
     @ApiModelProperty("去重id")
     private List<String> removeBusinessIds;
+
     @ApiModelProperty("版本")
     private String version;
+
+    /**
+     * 系统版本
+     */
+    @ApiModelProperty("系统版本")
+    private String        sysVersion;
+    /**
+     * 软件版本
+     */
+    @ApiModelProperty("软件版本")
+    private String        softVersion;
+    /**
+     * 软件平台
+     */
+    @ApiModelProperty("软件平台")
+    private String        softPlatform;
+    /**
+     * 硬件平台
+     */
+    @ApiModelProperty("硬件平台")
+    private String        hardPlatform;
 
     public String getVersion() {
         return version;
@@ -142,5 +162,37 @@ public class AssetHardSoftLibQuery extends ObjectQuery {
 
     public void setAssetType(AssetTypeEnum assetType) {
         this.assetType = assetType;
+    }
+
+    public String getSysVersion() {
+        return sysVersion;
+    }
+
+    public void setSysVersion(String sysVersion) {
+        this.sysVersion = sysVersion;
+    }
+
+    public String getSoftVersion() {
+        return softVersion;
+    }
+
+    public void setSoftVersion(String softVersion) {
+        this.softVersion = softVersion;
+    }
+
+    public String getSoftPlatform() {
+        return softPlatform;
+    }
+
+    public void setSoftPlatform(String softPlatform) {
+        this.softPlatform = softPlatform;
+    }
+
+    public String getHardPlatform() {
+        return hardPlatform;
+    }
+
+    public void setHardPlatform(String hardPlatform) {
+        this.hardPlatform = hardPlatform;
     }
 }
