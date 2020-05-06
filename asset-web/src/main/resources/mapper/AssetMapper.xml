@@ -2712,7 +2712,10 @@
         select  count(a.id)  from  asset a where
         status = 1
         and
-        asset_status = #{assetStatus}
+        <!--   资产状态  -->
+        <if test="assetStatus != null">
+            and asset_status = #{assetStatus}
+        </if>
         <!--   是否跳过整改  -->
         <if test="rectification != null">
             and rectification = #{rectification}
