@@ -1,9 +1,7 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -126,7 +124,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
+        this.categoryModelName = categoryModelName;
     }
 
     public Integer getCanBind() {
