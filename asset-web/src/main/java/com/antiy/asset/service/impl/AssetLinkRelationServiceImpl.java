@@ -187,7 +187,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetResponseList.stream().forEach(assetLinkedCount -> {
 
             // 获取当前的详细资产类型
-            getCategoryParentNodeName(assetLinkedCount.getCategoryModel());
+            assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(assetLinkedCount.getCategoryModel()));
 
             String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 assetLinkedCount.getAreaId());
