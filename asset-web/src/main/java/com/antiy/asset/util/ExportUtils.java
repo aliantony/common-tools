@@ -70,7 +70,7 @@ public class ExportUtils {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             configuration.setDefaultEncoding("utf-8");
             configuration.setClassForTemplateLoading(this.getClass(),"/template");
-            Template template = configuration.getTemplate("test.ftl");
+            Template template = configuration.getTemplate("report.ftl");
 
 
             Map<String, Object> data = new HashMap<>(16);
