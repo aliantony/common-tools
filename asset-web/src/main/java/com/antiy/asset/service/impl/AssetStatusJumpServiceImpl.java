@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.entity.Asset;
+import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.RollbackEntity;
 import com.antiy.asset.intergration.ActivityClient;
@@ -468,11 +469,21 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
         assetCorrectIInfoResponse.setNeedManualPush("1");
 
+        //修改整改标志字段
+        Asset asset=new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
+        asset.setRectification(1);
+        AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName());
+        List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(assetCategoryModel.getId()));
+        if(categoryNodeList.contains(assetOfDB.getCategoryModel())){
+            asset.setRectification(4);
+        }
+        assetDao.update(asset);
         return assetCorrectIInfoResponse;
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Integer netToCorrect(List<String> assetIds) {
+    public Integer netToCorrect(List<String> assetIds) throws Exception {
         List<AssetOperationRecord> assetOperationRecordList=new ArrayList<>();
         for(String assetId: assetIds){
             AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
@@ -484,6 +495,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             AssetOperationRecord  lastRecord = assetOperationRecordDao.getLastByAssetId(assetId);
             assetOperationRecord.setTaskId(lastRecord.getTaskId());
             assetOperationRecordList.add(assetOperationRecord);
+
+            //修改整改标志字段
+            Asset asset=new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(assetId));
+            asset.setRectification(3);
+            assetDao.update(asset);
+
             //漏扫
             ActionResponse scan;
             scan = baseLineClient.scan(assetId);
@@ -509,6 +527,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         }
         asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+        asset.setRectification(1);
         Integer update = assetDao.update(asset);
         //推进工作流
         Map<String,String> formDdata=new HashMap<>();

@@ -30,7 +30,7 @@ public interface IAssetStatusJumpService {
 
     AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest activityHandleRequest) throws Exception;
     AssetCorrectIInfoResponse assetCorrectingOfbaseLine(AssetCorrectRequest assetCorrectRequest) throws Exception;
-    Integer netToCorrect(List<String> assetIds);
+    Integer netToCorrect(List<String> assetIds) throws Exception;
 
     /**
      * 继续入网
