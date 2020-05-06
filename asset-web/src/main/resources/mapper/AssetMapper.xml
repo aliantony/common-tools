@@ -2711,7 +2711,6 @@
     <select id="getWorkNumByCondition" resultType="int">
         select  count(a.id)  from  asset a where
         status = 1
-        and
         <!--   资产状态  -->
         <if test="assetStatus != null">
             and asset_status = #{assetStatus}
