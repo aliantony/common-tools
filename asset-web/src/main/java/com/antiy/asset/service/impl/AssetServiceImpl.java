@@ -1441,8 +1441,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 变更之前的硬盘
         List<AssetAssemblyRequest> oldAssembly = assetAssemblyDao
                 .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
-        List<String> oldDisk = CollectionUtils.isEmpty(oldAssembly) ? Lists.newArrayList()
-                : oldAssembly.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
         // 变更后的硬盘
         List<String> newAssembly = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
                 ? Lists.newArrayList()
@@ -1450,7 +1448,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
 
         // 比较硬盘
-        if (!(oldAssembly.containsAll(oldDisk) && oldDisk.containsAll(newAssembly))) {
+        if (newAssembly.size() > oldAssembly.size()) {
             return true;
         }
         return false;
