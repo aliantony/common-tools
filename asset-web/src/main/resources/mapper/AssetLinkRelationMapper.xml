@@ -783,7 +783,7 @@
         WHERE status = 1
         GROUP BY d.id
         ORDER BY d.gmt_create
-        limit 1) as e on e.target_object_id = a.id
+        limit 1) as e on e.target_object_id = t.id
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
@@ -833,7 +833,7 @@
         WHERE status = 1
         GROUP BY d.id
         ORDER BY d.gmt_create
-        limit 1) as e on e.target_object_id = a.id
+        limit 1) as e on e.target_object_id = t.id
         WHERE
         asset.id = #{primaryKey}
         <if test="statusList != null and statusList.size() > 0">
@@ -929,7 +929,7 @@
             WHERE status = 1
             GROUP BY d.id
             ORDER BY d.gmt_create
-            limit 1) as e on e.target_object_id = a.id
+            limit 1) as e on e.target_object_id = t.id
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
@@ -966,7 +966,7 @@
             WHERE status = 1
             GROUP BY d.id
             ORDER BY d.gmt_create
-            limit 1) as e on e.target_object_id = a.id
+            limit 1) as e on e.target_object_id = t.id
             WHERE
             asset.id = #{primaryKey}
             <if test="statusList != null and statusList.size() > 0">
