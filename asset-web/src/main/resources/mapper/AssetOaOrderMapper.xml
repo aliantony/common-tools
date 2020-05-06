@@ -167,6 +167,7 @@
                 <include refid="Where_Column_List"></include>
             </trim>
         </where>
+        order by gmt_create desc
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
