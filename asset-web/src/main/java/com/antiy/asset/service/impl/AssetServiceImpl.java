@@ -1334,6 +1334,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // ------------------对接配置模块------------------end
             } else {
+                if (checkAssemblyIsChange(assetOuterRequest)) {
+                    logger.info("启动漏扫");
+                    // 漏洞扫描
+                    ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                    }
+                }
                 changeStatus = AssetStatusEnum.NET_IN.getCode();
                 businessPhaseEnum = BusinessPhaseEnum.NET_IN;
             }
@@ -1423,6 +1431,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         // 比较硬盘
         if (!(newDisk.containsAll(oldDisk) && oldDisk.containsAll(newDisk))) {
+            return true;
+        }
+        return false;
+    }
+    private boolean checkAssemblyIsChange(AssetOuterRequest assetOuterRequest) {
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更之前的硬盘
+        List<AssetAssemblyRequest> oldAssembly = assetAssemblyDao
+                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+        List<String> oldDisk = CollectionUtils.isEmpty(oldAssembly) ? Lists.newArrayList()
+                : oldAssembly.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+        // 变更后的硬盘
+        List<String> newAssembly = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+                ? Lists.newArrayList()
+                : assetOuterRequest.getAssemblyRequestList().stream()
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+
+        // 比较硬盘
+        if (!(oldAssembly.containsAll(oldDisk) && oldDisk.containsAll(newAssembly))) {
             return true;
         }
         return false;
