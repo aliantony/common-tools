@@ -665,7 +665,7 @@ public class AssetController {
     }
 
     @ApiOperation(value = "资产登记操作系统查询", notes = "传入网络类型id")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetOuterResponse.class, responseContainer = "actionResponse"), })
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetHardSoftLibResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/query/OS", method = RequestMethod.POST)
     public ActionResponse queryOS(@RequestBody @ApiParam(value = "query") AssetOsQuery query) throws Exception {
         return ActionResponse.success(iAssetService.queryOS(query));

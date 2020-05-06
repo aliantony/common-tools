@@ -448,4 +448,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer queryOSCount(AssetOsQuery query);
 
     List<AssetHardSoftLibResponse> queryOSList(AssetOsQuery query);
+
+    Integer updateAreaIdOfAsset(Map<String, Integer> area);
 }
