@@ -3417,9 +3417,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return c.getTimeInMillis();
     }
 
+
     private String getNetTypeByName(String netType) {
         return assetNettypeManageDao.findIdsByName(netType).toString();
     }
+
 
     @Override
     public Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception {
@@ -3434,6 +3436,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(currentAssetList)) {
             throw new BusinessException("资产不存在");
         }
+
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus());
@@ -3441,6 +3444,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException(String.format("资产已处于%s，无法重复提交！", assetStatus));
             }
         }
+
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表

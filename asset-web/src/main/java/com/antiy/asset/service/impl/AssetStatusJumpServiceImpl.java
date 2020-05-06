@@ -407,10 +407,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         //判断是否是计算机设备
         Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
         List<Integer> categoryModels = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id));
-        if(!categoryModels.contains(assetOfDB.getCategoryModel().toString())){
+        Set<String> categoryModelsStr = categoryModels.stream().map(t -> t.toString()).collect(Collectors.toSet());
+        if(categoryModelsStr.add(assetOfDB.getCategoryModel())){
             throw new BusinessException("只允许计算设备进行此项操作！");
         }
-
         ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( activityHandleRequest.getStringId());
         if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
             LogUtils.error(logger, "调用配置模块失败");
@@ -475,7 +475,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         asset.setRectification(1);
         AssetCategoryModel assetCategoryModel = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName());
         List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(assetCategoryModel.getId()));
-        if(categoryNodeList.contains(assetOfDB.getCategoryModel())){
+        Set<String> categoryNodeStrList = categoryNodeList.stream().map(t -> t.toString()).collect(Collectors.toSet());
+        if(categoryNodeStrList.add(assetOfDB.getCategoryModel())){
             asset.setRectification(4);
         }
         assetDao.update(asset);
@@ -515,10 +516,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
       //  List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
-        List<Integer> computerIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id));
+        List<String> computerIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id)).stream().map(t->t.toString()).collect(Collectors.toList());
+
 
         Integer safeId = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
-        List<Integer> safeIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(safeId));
+        List<String> safeIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(safeId)).stream().map(t->t.toString()).collect(Collectors.toList());
         // 非 孤岛 /可借用计算设备
         boolean  k=computerIdList.contains(assetOfDB.getCategoryModel()) && assetOfDB.getIsOrphan()!=1 && assetOfDB.getIsBorrow()!=1;
         Asset asset=new Asset();
@@ -544,7 +546,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         asset.setId(assetOfDB.getId());
        // asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         //判断孤岛设备
-        List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
+        /*List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         if(AssetIsBorrowEnum.REFUSE.equals(assetOfDB.getIsBorrow())
                 && AssetIsOrphanEunm.REFUSE.equals(assetOfDB.getIsOrphan())
                 &&categoryModels.contains(assetOfDB.getCategoryModel())){
@@ -552,7 +554,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
         }else{
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-        }
+        }*/
         assetDao.update(asset);
     }
     public AssetFlowEnum getCorrectingSource( String assetId){

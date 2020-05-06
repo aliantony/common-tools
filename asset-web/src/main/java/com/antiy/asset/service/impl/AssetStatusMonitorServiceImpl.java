@@ -80,6 +80,9 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
     @Override
     public AssetStatusMonitorResponse queryBasePerformance(String primaryKey) {
         AssetStatusMonitorResponse assetStatusMonitorResponse= assetStatusMonitorDao.queryBasePerformance(primaryKey);
+        if(assetStatusMonitorResponse==null){
+            return  null;
+        }
         String runtimeExceptionThreshold = assetStatusMonitorResponse.getAssetMonitorRuleResponse().getRuntimeExceptionThreshold();
         if(StringUtils.isNotBlank(runtimeExceptionThreshold)){
             if(runtimeExceptionThreshold.contains(TimeEnum.HOUR.getName())){
