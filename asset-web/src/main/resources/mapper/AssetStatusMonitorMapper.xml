@@ -60,7 +60,6 @@
         <result column="pid" property="pid"/>
         <result column="network_status" property="networkStatus"/>
         <result column="business_id" property="businessId"/>
-        <result column="relationDesc" property="relation"/>
         <result column="software_id" property="softwareId"/>
     </resultMap>
     <resultMap id="BasePerformance" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse">
@@ -73,7 +72,7 @@
         <result property="diskDetail" column="disk_detail"/>
         <result property="ruleId" column="rule_id"/>
         <result property="gmtModified" column="gmt_modified"/>
-
+        <result property="diskTotalusedRate" column="disk_totalused_rate"/>
         <association property="assetMonitorRuleResponse" javaType="com.antiy.asset.vo.response.AssetMonitorRuleResponse" resultMap="ruleMonitor"/>
     </resultMap>
     <resultMap id="ruleMonitor" type="com.antiy.asset.vo.response.AssetMonitorRuleResponse">
@@ -488,6 +487,7 @@
         asm.memory_used_rate ,
         asm.disk_total ,
         asm.disk_used ,
+        asm.disk_totalused_rate,
         asm.disk_detail ,
         asm.rule_id,
         asm.gmt_modified ,
