@@ -34,6 +34,7 @@
         <result column="relationDesc" property="relation"/>
     </resultMap>
     <resultMap id="queryMonitorMap" type="com.antiy.asset.vo.response.AssetStatusMonitorResponse"  >
+        <result column="id"  property="stringId"/>
         <result column="asset_id" property="assetId"/>
         <result column="cpu_used_rate" property="cpuUsedRate"/>
         <result column="memory_total" property="memoryTotal"/>
