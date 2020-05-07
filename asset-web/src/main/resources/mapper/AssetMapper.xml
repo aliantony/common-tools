@@ -1995,7 +1995,7 @@
 
 
     <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,name,asset_status as assetStatus
+        SELECT id,name,asset_status as assetStatus,number
         FROM asset
         WHERE status=1
         AND id IN
