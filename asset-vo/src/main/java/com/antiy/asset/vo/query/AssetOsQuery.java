@@ -16,7 +16,7 @@ public class AssetOsQuery extends ObjectQuery {
 
     @ApiModelProperty("操作系统大类")
     private String       parentNode;
-    @ApiModelProperty("软件版本")
+    @ApiModelProperty("系统版本")
     private String       sysVersion;
     @ApiModelProperty("语言")
     private String       language;

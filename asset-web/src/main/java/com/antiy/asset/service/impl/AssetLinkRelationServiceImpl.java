@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p> 通联关系表 服务实现类 </p>
@@ -187,7 +188,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetResponseList.stream().forEach(assetLinkedCount -> {
 
             // 获取当前的详细资产类型
-            getCategoryParentNodeName(assetLinkedCount.getCategoryModel());
+            assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(assetLinkedCount.getCategoryModel()));
 
             String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 assetLinkedCount.getAreaId());
@@ -333,21 +334,23 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     private String getCategoryParentNodeName(Integer id){
 
         // 变量初始化
-        String nodeNameAll = "";
+        List<String> nodeNameList = new ArrayList<>();
         CategoryValiEntity node = new CategoryValiEntity();
         node.setId(id);
 
-        if (Objects.isNull(id)){
-            return nodeNameAll;
+        if (Objects.isNull(id) || id == 0){
+            return "";
         }
 
         // 递归获取
-        getNodeNameRecursion(node, nodeNameAll);
+        getNodeNameRecursion(node, nodeNameList);
+        Collections.reverse(nodeNameList);
+        String nodeNameAll = nodeNameList.stream().collect(Collectors.joining("-"));
         return nodeNameAll;
     }
 
     // 递归获取父节点名称
-    private void getNodeNameRecursion(CategoryValiEntity node, String nodeNameAll){
+    private void getNodeNameRecursion(CategoryValiEntity node, List<String> nodeNameList){
 
         // 当前暂存变量
         CategoryValiEntity newNode = new CategoryValiEntity();
@@ -356,18 +359,14 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         CategoryValiEntity categoryValiEntity = assetCategoryModelDao.getNameByCtegoryId(node.getId());
 
         if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName()) || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())){
-            nodeNameAll = categoryValiEntity.getName() + "-" + nodeNameAll;
-            return;
-        }
-        if (node.getId() == 0){
-            nodeNameAll = "";
+            nodeNameList.add(categoryValiEntity.getName());
             return;
         }
 
         // 递归获取并叠加节点名称
-        nodeNameAll = categoryValiEntity.getName() + "-" + nodeNameAll;
+        nodeNameList.add(categoryValiEntity.getName());
         newNode.setId(categoryValiEntity.getParentId());
-        getNodeNameRecursion(newNode, nodeNameAll);
+        getNodeNameRecursion(newNode, nodeNameList);
     }
 
     // 资产状态设置

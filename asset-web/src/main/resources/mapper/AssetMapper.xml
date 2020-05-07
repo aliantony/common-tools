@@ -2687,6 +2687,9 @@
         </trim>
         where number = #{number}
     </update>
+    <update id="updateAreaIdOfAsset">
+        update asset set area_id = #{childId} where area_id = #{parentId}
+    </update>
 
     <select id="queryOrderAssetCount" resultType="java.lang.Integer">
         select count(1) count

@@ -146,7 +146,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
-        //assetDao.getByAssetId()
+        ParamterExceptionUtils.isNull(assetLendRelationRequest.getReturnTime(),"归还时间不能为空！");
         Integer result = assetLendRelationDao.returnConfirm(assetLendRelationRequest);
         LogUtils.recordOperLog(
                 new BusinessData("归还出借资产", assetLendRelationRequest.getAssetId(), assetDao.getNumberById(assetLendRelationRequest.getAssetId()),

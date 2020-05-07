@@ -1217,17 +1217,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 更新资产基础信息及各种关联信息
         Integer assetCount = updateAssetInfo(assetOuterRequest);
         ParamterExceptionUtils.isTrue(assetCount != null && assetCount > 0, "信息入库失败");
-        // 根据前端判断启动漏扫,排除走基准配置的已入网资产
-        if (!(EnumUtil.equals(assetOuterRequest.getAsset().getAssetStatus(), AssetStatusEnum.NET_IN)
-              && EnumUtil.equals(assetOuterRequest.getAsset().getCategoryModelType(), AssetCategoryEnum.COMPUTER))
-            && assetOuterRequest.getNeedScan()) {
-            logger.info("启动漏扫");
-            // 漏洞扫描
-            ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
-            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
-            }
-        }
+
 
         // 记录资产操作流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
@@ -1295,7 +1285,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 判断计算设备变更走基准配置
         if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
             // 判断计算设备硬盘,软件,操作系统是否变化
-            if (checkIsChange(assetOuterRequest)) {
+            if (checkComputerIsChange(assetOuterRequest)) {
                 String reason = getChangeContent(assetOuterRequest);
                 // 状态->变更中
                 changeStatus = AssetStatusEnum.IN_CHANGE.getCode();
@@ -1344,12 +1334,39 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
                 // ------------------对接配置模块------------------end
             } else {
+                if (checkAssemblyIsChange(assetOuterRequest)) {
+                    logger.info("启动漏扫");
+                    // 漏洞扫描
+                    ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                    }
+                }
                 changeStatus = AssetStatusEnum.NET_IN.getCode();
                 businessPhaseEnum = BusinessPhaseEnum.NET_IN;
             }
+        } else if (AssetCategoryEnum.SAFETY.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
+            if (checkSafetyIsChange(assetOuterRequest)) {
+                    logger.info("启动漏扫");
+                    // 漏洞扫描
+                    ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
+                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                        BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                    }
+            }
+            changeStatus = AssetStatusEnum.NET_IN.getCode();
+            businessPhaseEnum = BusinessPhaseEnum.NET_IN;
         }
         // 非计算设备变更直接入网
         else {
+            if (checkOtherIsChange(assetOuterRequest)) {
+                logger.info("启动漏扫");
+                // 漏洞扫描
+                ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                }
+            }
             businessPhaseEnum = BusinessPhaseEnum.NET_IN;
             changeStatus = AssetStatusEnum.NET_IN.getCode();
         }
@@ -1374,9 +1391,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", asset.toString());
     }
 
-    private boolean checkIsChange(AssetOuterRequest assetOuterRequest) {
+    private boolean checkComputerIsChange(AssetOuterRequest assetOuterRequest) {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更之前的硬盘
+        List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
+            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), "DISK");
+        List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
+            : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+        // 变更后的硬盘
+        List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+            ? Lists.newArrayList()
+            : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
         // 变更前的软件
         List<AssetSoftwareInstallResponse> assetSoftwareInstallResponseList = assetSoftwareRelationDao
             .queryInstalledList(queryCondition);
@@ -1390,16 +1417,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         newSofts.stream().forEach(s -> {
             newSoft.add(String.valueOf(s));
         });
-        // 变更之前的硬盘
-        List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
-            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), "DISK");
-        List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
-            : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
-        // 变更后的硬盘
-        List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
-            ? Lists.newArrayList()
-            : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
-                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+
         Asset asset = assetDao.getByAssetId(assetOuterRequest.getAsset().getId());
         String oldOs = asset.getOperationSystemName();
         String newOs = assetOuterRequest.getAsset().getOperationSystemName();
@@ -1417,7 +1435,71 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+    private boolean checkAssemblyIsChange(AssetOuterRequest assetOuterRequest) {
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更之前的硬盘
+        List<AssetAssemblyRequest> oldAssembly = assetAssemblyDao
+                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+        // 变更后的硬盘
+        List<String> newAssembly = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+                ? Lists.newArrayList()
+                : assetOuterRequest.getAssemblyRequestList().stream()
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
 
+        // 比较硬盘
+        if (newAssembly.size() > oldAssembly.size()) {
+            return true;
+        }
+        return false;
+    }
+    private boolean checkSafetyIsChange(AssetOuterRequest assetOuterRequest) {
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更之前的组件
+        List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
+                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+        List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
+                : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+        // 变更后的组件
+        List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+                ? Lists.newArrayList()
+                : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+
+        Asset asset = assetDao.getByAssetId(assetOuterRequest.getAsset().getId());
+        String oldOs = asset.getOperationSystemName();
+        String newOs = assetOuterRequest.getAsset().getOperationSystemName();
+        // 比较操作系统
+        if (!StringUtils.equals(oldOs, newOs)) {
+            return true;
+        }
+        // 比较组件
+        if (newDisk.size() > oldDisk.size()) {
+            return true;
+        }
+        return false;
+    }
+    private boolean checkOtherIsChange(AssetOuterRequest assetOuterRequest) {
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
+        // 变更之前的组件
+        List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
+                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+        List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
+                : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+        // 变更后的组件
+        List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
+                ? Lists.newArrayList()
+                : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+
+        // 比较组件
+        if (newDisk.size() > oldDisk.size()) {
+            return true;
+        }
+        return false;
+    }
     private void checkAssetCompliance(AssetOuterRequest assetOuterRequest) {
 
         // 资产编号不能重复
@@ -3361,9 +3443,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return c.getTimeInMillis();
     }
 
+
     private String getNetTypeByName(String netType) {
         return assetNettypeManageDao.findIdsByName(netType).toString();
     }
+
 
     @Override
     public Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception {
@@ -3378,6 +3462,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(currentAssetList)) {
             throw new BusinessException("资产不存在");
         }
+
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus()))) {
                 AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus());
@@ -3385,6 +3470,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 throw new BusinessException(String.format("资产已处于%s，无法重复提交！", assetStatus));
             }
         }
+
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表
@@ -3801,8 +3887,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 List<AssetBusiness> assetBusinessList = assetBaseDataCache.getAll(AssetBaseDataCache.ASSET_BUSINESS,
                     DataTypeUtils.stringArrayToIntegerArray(asset.getAssetBusiness().split(",")));
                 if (CollectionUtils.isNotEmpty(assetBusinessList)) {
-                    asset.setAssetBusiness(StringUtils
-                            .join(assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
+                    asset.setAssetBusiness(StringUtils.join(
+                        assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
                 }
             }
             // 所属区域

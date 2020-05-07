@@ -1,9 +1,7 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.common.base.BaseResponse;
 import com.antiy.common.encoder.Encode;
-
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -330,7 +328,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
     }
 
     public void setCategoryModelName(String categoryModelName) {
-        this.categoryModelName = AssetCategoryEnum.getNameByCode(categoryModel);
+        this.categoryModelName = categoryModelName;
     }
 
     public String getAssetId() {
@@ -386,7 +384,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
     }
 
     public void setParentCategoryModelName(String parentCategoryModelName) {
-        this.parentCategoryModelName = AssetCategoryEnum.getNameByCode(parentCategoryModel);
+        this.parentCategoryModelName = parentCategoryModelName;
     }
 
     public String getAssetName() {
