@@ -1,6 +1,5 @@
-package com.antiy.asset;
+package com.antiy.asset.kafka;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
