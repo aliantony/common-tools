@@ -1116,6 +1116,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Asset asset = assetDao.getByAssetId(condition.getPrimaryKey());
         // 获取主表信息
         AssetResponse assetResponse = responseConverter.convert(asset, AssetResponse.class);
+        if (assetResponse.getAssetStatus().equals(AssetStatusEnum.WAIT_REGISTER.getCode())
+            || assetResponse.getAssetStatus().equals(AssetStatusEnum.NET_IN_CHECK.getCode())
+            || assetResponse.getAssetStatus().equals(AssetStatusEnum.CORRECTING.getCode())
+            || assetResponse.getAssetStatus().equals(AssetStatusEnum.NET_IN.getCode())) {
+            assetResponse.setStepNode("IN_NET");
+        } else if (assetResponse.getAssetStatus().equals(AssetStatusEnum.NOT_REGISTER.getCode())) {
+            assetResponse.setStepNode("EXCEPTION");
+
+        } else if (assetResponse.getAssetStatus().equals(AssetStatusEnum.IN_CHANGE.getCode())) {
+            assetResponse.setStepNode("CHANGE");
+
+        } else if (assetResponse.getAssetStatus().equals(AssetStatusEnum.SCRAP.getCode())
+                   || assetResponse.getAssetStatus().equals(AssetStatusEnum.WAIT_SCRAP.getCode())) {
+            assetResponse.setStepNode("SCRAP");
+        } else {
+            assetResponse.setStepNode("RETIRE");
+        }
         assetResponse.setDecryptId(Objects.toString(asset.getId()));
         assetResponse.setDecryptInstallTemplateId(asset.getInstallTemplateId());
         assetOuterResponse.setAsset(assetResponse);
