@@ -21,6 +21,8 @@ import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
@@ -101,25 +103,13 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             assetRelationList.add(assetBusinessRelation);
         }
         assetBusinessRelationDao.insertBatch(assetRelationList);
+        LogUtils.recordOperLog(
+                new BusinessData("新增业务信息", business.getId(), business.getName(),
+                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_ADD)
+        );
         return assetBusiness.getStringId();
     }
-    /* @Transactional(rollbackFor = Exception.class)
-     * @Override public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
-     * ParamterExceptionUtils.isNull(request.getUniqueId(),"唯一键不能为空！");
-     * ParamterExceptionUtils.isNull(request.getId(),"业务id不能为空！"); String name = request.getName(); AssetBusiness
-     * business= assetBusinessDao.getByName(name); if(business!=null &&
-     * !business.getUniqueId().equals(request.getUniqueId())){ throw new BusinessException("业务名不能重复！"); } AssetBusiness
-     * assetBusiness = requestConverter.convert(request, AssetBusiness.class); String
-     * uniqueId=assetBusiness.getUniqueId(); assetBusiness.setUniqueId(null);
-     * assetBusiness.setGmtModified(System.currentTimeMillis()); Integer assetBusinessId =
-     * assetBusinessDao.update(assetBusiness); assetBusiness.setUniqueId(uniqueId);
-     * assetBusinessRelationDao.deleteByUniqueId(uniqueId); List<AssetBusinessRelationRequest> assetRelaList =
-     * request.getAssetRelaList(); List<AssetBusinessRelation> assetBusinessRelationList =
-     * relationRequestConverter.convert(assetRelaList, AssetBusinessRelation.class);
-     * assetBusinessRelationList.forEach(t->{ t.setGmtModified(System.currentTimeMillis());
-     * t.setGmtCreate(System.currentTimeMillis()); t.setUniqueId(request.getUniqueId());
-     * t.setAssetBusinessId(request.getId()); }); assetBusinessRelationDao.insertBatch(assetBusinessRelationList);
-     * return assetBusinessId.toString(); } */
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateAssetBusiness(AssetBusinessRequest request) throws Exception {
@@ -146,7 +136,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         addAssetOfBusiness(request);
         deleteAssetOfBusiness(request);
         editAssetOfBusiness(request);
-
+        LogUtils.recordOperLog(
+                new BusinessData("编辑业务信息", business.getId(), assetBusiness.getName(),
+                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_EDIT)
+        );
         return result.toString();
     }
 
@@ -296,7 +289,12 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
 
     @Override
     public Integer updateStatusByUniqueId(String uniqueId) {
-
-        return assetBusinessDao.updateStatusByUniqueId(uniqueId);
+        Integer result = assetBusinessDao.updateStatusByUniqueId(uniqueId);
+        AssetBusiness business = assetBusinessDao.getByUniqueId(uniqueId);
+        LogUtils.recordOperLog(
+                new BusinessData("删除业务信息", business.getId(), business.getName(),
+                        uniqueId, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_DELETE)
+        );
+        return result;
     }
 }

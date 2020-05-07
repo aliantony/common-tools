@@ -266,10 +266,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         return ActionResponse.success();
     }
     private void dealOperLog(AssetStatusJumpRequest statusJumpRequest,List<Integer> assetIdList, List<Asset> assetsInDb){
+        List<String> numberList = assetsInDb.stream().map(t -> t.getNumber()).collect(Collectors.toList());
+        String numbers=StringUtils.join(numberList,",");
         String ids = StringUtils.join(assetIdList, ",");
+
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>1) {
-            assetsInDb.forEach(asset -> LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
-                    ids, asset.getNumber(), statusJumpRequest, BusinessModuleEnum.HARD_ASSET, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum())));
+
+            LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
+                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum()));
         }
     }
     private void dealRelation(AssetStatusJumpRequest statusJumpRequest) throws Exception {
@@ -428,17 +432,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 ||AssetBaseLineEnum.FALI.getMsg().equals(baseLineResponse.getBody().getConfigStatus())){
             assetCorrectIInfoResponse.setNeedManualPush("1");
         }
+
+        LogUtils.recordOperLog(
+                new BusinessData("执行配置基准整改", assetOfDB.getId(), assetOfDB.getNumber(),
+                        assetCorrectRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE)
+        );
         return assetCorrectIInfoResponse;
-        //设置整改来源    1 登记到整改    2 入网到整改
-        /*assetCorrectRequest.setAssetFlowEnum(getCorrectingSource(activityHandleRequest.getStringId()));
-        AssetCorrectIInfoResponse assetCorrectIInfoResponse=baseLineResponse.getBody();
-        if(AssetFlowEnum.NET_IN_TO_CORRECT.equals(assetCorrectRequest.getAssetFlowEnum())){
-            assetCorrectIInfoResponse.setCheckStatus(baseLineResponse.getBody().getCheckStatus());
-            assetCorrectIInfoResponse.setConfigStatus(baseLineResponse.getBody().getConfigStatus());
-            assetCorrectIInfoResponse.setNeedManualPush("0");
-            return assetCorrectIInfoResponse;
-        }*/
-       // return  correctingAssetOfbaseLine(baseLineResponse,assetOfDB);
     }
     @Override
     public AssetCorrectIInfoResponse assetCorrectingInfo(AssetCorrectRequest assetCorrectRequest) throws Exception {
@@ -514,7 +513,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Override
     public Integer continueNetIn(ActivityHandleRequest activityHandleRequest) throws Exception {
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
-      //  List<String> categoryModels = assetCategoryModelDao.getCategoryModelsByParentName(AssetCategoryEnum.COMPUTER.getName());
         Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
         List<String> computerIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id)).stream().map(t->t.toString()).collect(Collectors.toList());
 
@@ -533,9 +531,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Integer update = assetDao.update(asset);
         //推进工作流
         Map<String,String> formDdata=new HashMap<>();
-        formDdata.put("activityHandleRequest","activityHandleRequest");
+        formDdata.put("assetRegisterResult","continueRegister");
         activityHandleRequest.setFormData(formDdata);
-        activityClient.completeTask(activityHandleRequest);
+        ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
+        if(actionResponse==null || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())){
+            throw new BusinessException("工作流异常！");
+        }
+       /* LogUtils.recordOperLog(
+                new BusinessData("通过安全整改", assetOfDB.getId(), assetOfDB.getNumber(),
+                        activityHandleRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE)
+        );*/
         return update;
     }
 
