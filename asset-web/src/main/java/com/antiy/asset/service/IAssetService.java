@@ -359,7 +359,7 @@ public interface IAssetService extends IBaseService<Asset> {
      * @param asset
      * @return
      */
-    PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery asset);
+    PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery asset) throws Exception;
 
     List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
 

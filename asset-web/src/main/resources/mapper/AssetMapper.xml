@@ -2540,8 +2540,11 @@
                 </otherwise>
             </choose>
         </if>
-        <if test="categoryModels != null and categoryModels != ''">
-           and asset.category_model = #{categoryModels}
+        <if test="categoryModelList != null and categoryModelList.size() > 0">
+           and asset.category_model in
+            <foreach item="item" collection="categoryModelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
             and asset.asset_status in

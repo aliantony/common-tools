@@ -1,9 +1,42 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IAssetCategoryModelService;
 import com.antiy.asset.service.IAssetCpeTreeService;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IRedisService;
@@ -30,36 +63,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -173,6 +176,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetBusinessRelationDao                                            relationDao;
     @Resource
     private IAssetCpeTreeService                                                assetCpeTreeService;
+    @Resource
+    private IAssetCategoryModelService                                          assetCategoryModelService;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -3470,7 +3475,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         for (Asset currentAsset : currentAssetList) {
             if (!(AssetStatusEnum.WAIT_REGISTER.getCode().equals(currentAsset.getAssetStatus())
-                    ||AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus()))) {
+                  || AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus()))) {
                 AssetStatusEnum assetByCode = AssetStatusEnum.getAssetByCode(currentAsset.getAssetStatus());
                 String assetStatus = assetByCode.getMsg();
                 throw new BusinessException(String.format("资产已处于%s，无法重复提交！", assetStatus));
@@ -3483,23 +3488,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             operationRecord(currentAsset.getId().toString());
 
             // 记录日志
-            if(AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())){
+            if (AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())) {
                 if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
-                            currentAsset.getName(), list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(), currentAsset.getName(),
+                        list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
                 } else {
                     LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
-                            assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.NOT_REGISTER));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
+                        BusinessPhaseEnum.NOT_REGISTER));
                 }
-            }else {
+            } else {
                 if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                            currentAsset.getName(), list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                        currentAsset.getName(), list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
                 } else {
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                            assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                            BusinessPhaseEnum.NOT_REGISTER));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
+                        BusinessPhaseEnum.NOT_REGISTER));
                 }
             }
             // 更新状态
@@ -3515,16 +3520,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 删除关联业务的资产
 
         relationDao.deleteByAssetId(assetIdList);
-        //整改流程中的不予登记工作流
-        if(AssetStatusEnum.CORRECTING.getCode().equals(currentAssetList.get(0).getAssetStatus())){
+        // 整改流程中的不予登记工作流
+        if (AssetStatusEnum.CORRECTING.getCode().equals(currentAssetList.get(0).getAssetStatus())) {
             List<ActivityHandleRequest> activityHandleRequests = new ArrayList<>();
             List<String> taskIds = list.stream().filter(t -> t.getTaskId() != null).map(t -> t.getTaskId())
-                    .collect(Collectors.toList());
+                .collect(Collectors.toList());
             for (String taskId : taskIds) {
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
                 activityHandleRequest.setTaskId(taskId);
                 Map map = new HashMap();
-        //        map.put("admittanceResult", "noAdmittance");
+                // map.put("admittanceResult", "noAdmittance");
                 map.put("assetRegisterResult", "noRegister");
                 activityHandleRequest.setFormData(map);
                 activityHandleRequests.add(activityHandleRequest);
@@ -3860,9 +3865,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) {
+    public PageResult<AssetResponse> queryAssetPage(AssetMultipleQuery assetMultipleQuery) throws Exception {
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        }
+        if (StringUtils.isNotBlank(assetMultipleQuery.getCategoryModels())) {
+            AssetCategoryModel assetCategoryModel = assetCategoryModelService
+                .getById(DataTypeUtils.stringToInteger(assetMultipleQuery.getCategoryModels()));
+            AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+            query.setSourceOfLend(false);
+            query.setName(assetCategoryModel.getName());
+            List<AssetCategoryModelNodeResponse> list = assetCategoryModelService.queryCategoryWithOutRootNode(query);
+            if (CollectionUtils.isNotEmpty(list)) {
+                List<String> caIds = Lists.newArrayList();
+                getCategory(list, caIds);
+                caIds.add(assetMultipleQuery.getCategoryModels());
+                assetMultipleQuery.setCategoryModelList(caIds);
+            }
         }
         // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
@@ -3942,6 +3961,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
+    }
+
+    private void getCategory(List<AssetCategoryModelNodeResponse> list, List<String> caIds) {
+        if (CollectionUtils.isNotEmpty(list)) {
+            list.stream().forEach(t -> {
+                caIds.add(t.getStringId());
+                getCategory(t.getChildrenNode(), caIds);
+            });
+        }
     }
 
     @Override

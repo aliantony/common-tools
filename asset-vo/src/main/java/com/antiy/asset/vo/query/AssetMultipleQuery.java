@@ -31,7 +31,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("资产类型")
     private String        categoryModels;
-
+    private List<String>  categoryModelList;
     @ApiModelProperty("资产状态")
     private List<Integer> assetStatusList;
 
@@ -164,6 +164,14 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          updateEndTime;
     @ApiModelProperty("是否未知资产")
     private boolean       unknownAssets;
+
+    public List<String> getCategoryModelList() {
+        return categoryModelList;
+    }
+
+    public void setCategoryModelList(List<String> categoryModelList) {
+        this.categoryModelList = categoryModelList;
+    }
 
     public boolean isUnknownAssets() {
         return unknownAssets;
