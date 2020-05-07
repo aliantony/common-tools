@@ -2755,10 +2755,13 @@ WHERE
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
           and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
@@ -2784,10 +2787,13 @@ WHERE
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
             and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>

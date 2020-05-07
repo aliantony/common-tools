@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
@@ -30,36 +62,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1218,7 +1220,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer assetCount = updateAssetInfo(assetOuterRequest);
         ParamterExceptionUtils.isTrue(assetCount != null && assetCount > 0, "信息入库失败");
 
-
         // 记录资产操作流程
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
         assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
@@ -1347,12 +1348,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         } else if (AssetCategoryEnum.SAFETY.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
             if (checkSafetyIsChange(assetOuterRequest)) {
-                    logger.info("启动漏扫");
-                    // 漏洞扫描
-                    ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
-                    if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
-                        BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
-                    }
+                logger.info("启动漏扫");
+                // 漏洞扫描
+                ActionResponse scan = baseLineClient.scan(assetOuterRequest.getAsset().getId());
+                if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                    BusinessExceptionUtils.isTrue(false, "调用漏洞模块出错");
+                }
             }
             changeStatus = AssetStatusEnum.NET_IN.getCode();
             businessPhaseEnum = BusinessPhaseEnum.NET_IN;
@@ -1435,17 +1436,18 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+
     private boolean checkAssemblyIsChange(AssetOuterRequest assetOuterRequest) {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
         // 变更之前的硬盘
         List<AssetAssemblyRequest> oldAssembly = assetAssemblyDao
-                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
         // 变更后的硬盘
         List<String> newAssembly = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
-                ? Lists.newArrayList()
-                : assetOuterRequest.getAssemblyRequestList().stream()
-                .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+            ? Lists.newArrayList()
+            : assetOuterRequest.getAssemblyRequestList().stream().map(AssetAssemblyRequest::getBusinessId)
+                .collect(Collectors.toList());
 
         // 比较硬盘
         if (newAssembly.size() > oldAssembly.size()) {
@@ -1453,18 +1455,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+
     private boolean checkSafetyIsChange(AssetOuterRequest assetOuterRequest) {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
         // 变更之前的组件
         List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
-                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
         List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
-                : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+            : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
         // 变更后的组件
         List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
-                ? Lists.newArrayList()
-                : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+            ? Lists.newArrayList()
+            : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
                 .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
 
         Asset asset = assetDao.getByAssetId(assetOuterRequest.getAsset().getId());
@@ -1480,18 +1483,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+
     private boolean checkOtherIsChange(AssetOuterRequest assetOuterRequest) {
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.setPrimaryKey(assetOuterRequest.getAsset().getId());
         // 变更之前的组件
         List<AssetAssemblyRequest> oldDisks = assetAssemblyDao
-                .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
+            .findAssemblyByAssetId(assetOuterRequest.getAsset().getId(), null);
         List<String> oldDisk = CollectionUtils.isEmpty(oldDisks) ? Lists.newArrayList()
-                : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
+            : oldDisks.stream().map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
         // 变更后的组件
         List<String> newDisk = CollectionUtils.isEmpty(assetOuterRequest.getAssemblyRequestList())
-                ? Lists.newArrayList()
-                : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
+            ? Lists.newArrayList()
+            : assetOuterRequest.getAssemblyRequestList().stream().filter(s -> s.getType().equals("DISK"))
                 .map(AssetAssemblyRequest::getBusinessId).collect(Collectors.toList());
 
         // 比较组件
@@ -1500,6 +1504,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return false;
     }
+
     private void checkAssetCompliance(AssetOuterRequest assetOuterRequest) {
 
         // 资产编号不能重复
@@ -3443,11 +3448,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return c.getTimeInMillis();
     }
 
-
     private String getNetTypeByName(String netType) {
         return assetNettypeManageDao.findIdsByName(netType).toString();
     }
-
 
     @Override
     public Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception {
@@ -3988,6 +3991,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryOS(AssetOsQuery query) throws Exception {
+        // 查询所有
+        if (StringUtils.isBlank(query.getParentNode())) {
+            Integer count = assetDao.queryOSCount(query);
+            if (count <= 0) {
+                return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
+            }
+            return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), assetDao.queryOSList(query));
+        }
         // 获取大类子节点
         QueryCondition condition = new QueryCondition();
         condition.setPrimaryKey(query.getParentNode());
