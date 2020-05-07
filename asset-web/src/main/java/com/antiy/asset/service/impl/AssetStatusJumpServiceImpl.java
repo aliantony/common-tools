@@ -257,7 +257,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
 
         //处理  报废  退回关联的业务
-        dealRelation(statusJumpRequest);
+        dealRelation(statusJumpRequest,  assetsInDb);
 
         // 3.数据库操作
         // updateData(statusJumpRequest, assetsInDb);
@@ -276,7 +276,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum()));
         }
     }
-    private void dealRelation(AssetStatusJumpRequest statusJumpRequest) throws Exception {
+    private void dealRelation(AssetStatusJumpRequest statusJumpRequest,List<Asset> assetsInDb) throws Exception {
 
         //组件报废
         if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
@@ -293,13 +293,16 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)){
             //删除关联业务的资产
             List<String> assetIds = assetIdList.stream().map(e -> e.toString()).collect(Collectors.toList());
-            assetBusinessRelationDao.deleteByAssetId(assetIds);
+            if(CollectionUtils.isNotEmpty(assetIds)){
+                assetBusinessRelationDao.deleteByAssetId(assetIds);
+            }
 
-            //配置
             /**
              * 配置
              */
-            ActionResponse actionResponse= baseLineClient.removeAsset(assetIdList);
+            Map<String,List<Integer>> assetIdMap=new HashMap<>();
+            assetIdMap.put("assets",assetIdList);
+            ActionResponse actionResponse= baseLineClient.removeAsset(assetIdMap);
             if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 throw new BusinessException("资产退役调用漏洞模块失败");
             }
@@ -310,32 +313,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
                 ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
-
-            List<ActivityHandleRequest> requestList = new ArrayList<>();
-            statusJumpRequest.getAssetInfoList().forEach(assetInfo -> {
-                ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-
-                activityHandleRequest.setId(assetInfo.getAssetId());
-
-                requestList.add(activityHandleRequest);
-            });
-            AssetEntryRequest assetEntryRequest=new AssetEntryRequest();
-            assetEntryRequest.setAssetActivityRequests(requestList);
-            assetEntryRequest.setUpdateStatus(DataTypeUtils.integerToString(AssetEnterStatusEnum.NO_ENTER.getCode()));
-            //准入来源设置
-            assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_SCRAP);
-            //设置权限类型
+            //发消息
             List<String> tag=Arrays.asList("asset:info:list:bfsq");
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-                //准入来源设置
-                assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
-                //消息类型
                 tag=Arrays.asList("asset:info:list:thsq");
             }
-
-            //准入更新
-            entryService.updateEntryStatus(assetEntryRequest);
-
             //获取特定权限的用户id
             List<Integer> userIds = getALLUserIdByPermission(tag);
             if(CollectionUtils.isEmpty(userIds)){
@@ -353,10 +335,37 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             });
             sysMessageSender.batchSendMessage(sysMessageRequests);
 
+            //准入  计算机设备和网络设备且不可借用、不是孤岛
+            Integer computerCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
+            Integer networkCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.NETWORK.getName()).getId();
+            List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(computerCategory, networkCategory));
+            Set<String> categoryStrNodeList = categoryNodeList.stream().map(t -> t.toString()).collect(Collectors.toSet());
+            for(Asset asset:assetsInDb){
+                if(categoryStrNodeList.contains(asset.getCategoryModel())&&asset.getIsBorrow()!=1&&asset.getIsOrphan()!=1){
+                    List<ActivityHandleRequest> requestList = new ArrayList<>();
+                    statusJumpRequest.getAssetInfoList().forEach(assetInfo -> {
+                        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
 
+                        activityHandleRequest.setId(assetInfo.getAssetId());
+
+                        requestList.add(activityHandleRequest);
+                    });
+                    AssetEntryRequest assetEntryRequest=new AssetEntryRequest();
+                    assetEntryRequest.setAssetActivityRequests(requestList);
+                    assetEntryRequest.setUpdateStatus(DataTypeUtils.integerToString(AssetEnterStatusEnum.NO_ENTER.getCode()));
+                    //准入来源设置
+                    assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_SCRAP);
+
+                    if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
+                        //准入来源设置
+                        assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
+                    }
+
+                    //准入更新
+                    entryService.updateEntryStatus(assetEntryRequest);
+                }
+            }
         }
-
-
     }
 
     private  List<Integer> getALLUserIdByPermission(List<String> tag){

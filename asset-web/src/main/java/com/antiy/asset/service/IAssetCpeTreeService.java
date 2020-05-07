@@ -91,5 +91,19 @@ public interface IAssetCpeTreeService extends IBaseService<AssetCpeTree> {
      */
     String queryUniqueIdByNodeName(AssetCpeTreeRequest request)  throws Exception;
 
+    /**
+     * 获取所有操作系统名(导出用)
+     *
+     * @return
+     * @throws Exception
+     */
     List<String> queryOsNameList() throws Exception;
+
+    /**
+     * 获取操作系统大类--至版本号一级
+     *
+     * @return
+     * @throws Exception
+     */
+    List<AssetCpeTreeResponse> queryAssetOs() throws Exception;
 }

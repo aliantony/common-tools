@@ -28,12 +28,12 @@ import com.google.common.collect.Lists;
 @Service
 public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> implements IAssetCpeTreeService {
 
-    private Logger                                            logger = LogUtils.get(this.getClass());
+    private Logger logger = LogUtils.get(this.getClass());
 
     @Resource
-    private AssetCpeTreeDao                                   assetCpeTreeDao;
+    private AssetCpeTreeDao assetCpeTreeDao;
     @Resource
-    private BaseConverter<AssetCpeTreeRequest, AssetCpeTree>  requestConverter;
+    private BaseConverter<AssetCpeTreeRequest, AssetCpeTree> requestConverter;
     @Resource
     private BaseConverter<AssetCpeTree, AssetCpeTreeResponse> responseConverter;
     @Resource
@@ -62,14 +62,14 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
     @Override
     public PageResult<AssetCpeTreeResponse> queryPageAssetCpeTree(AssetCpeTreeQuery query) throws Exception {
         return new PageResult<AssetCpeTreeResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
-            this.queryListAssetCpeTree(query));
+                this.queryListAssetCpeTree(query));
     }
 
     @Override
     public AssetCpeTreeResponse queryAssetCpeTreeById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");
         AssetCpeTreeResponse assetCpeTreeResponse = responseConverter
-            .convert(assetCpeTreeDao.getById(queryCondition.getPrimaryKey()), AssetCpeTreeResponse.class);
+                .convert(assetCpeTreeDao.getById(queryCondition.getPrimaryKey()), AssetCpeTreeResponse.class);
         return assetCpeTreeResponse;
     }
 
@@ -131,12 +131,12 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
         for (AssetCpeTree assetCpeTree : topNodeList) {
             condition.setPid(assetCpeTree.getUniqueId());
             List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),
-                AssetCpeTreeResponse.class);
+                    AssetCpeTreeResponse.class);
             // 查找子节点数据
-            buildChildrenNode(treeItem, isCommmon);
+            buildChildrenNode(treeItem, isCommmon, true);
             // 组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
-                AssetCpeTreeResponse.class);
+                    AssetCpeTreeResponse.class);
             assetCpeTreeResponse.setShow(true);
             assetCpeTreeResponse.setChildrenNode(treeItem);
             responseList.add(assetCpeTreeResponse);
@@ -162,7 +162,30 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
         return assetCpeTreeDao.getOsNameList();
     }
 
-    private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList, String isCommon) {
+    @Override
+    public List<AssetCpeTreeResponse> queryAssetOs() throws Exception {
+        List<AssetCpeTreeResponse> responseList = Lists.newArrayList();
+        // 获取顶级大类
+        AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
+        condition.setIsCommon("0");
+        List<AssetCpeTree> topNodeList = assetCpeTreeDao.findOSTopNode(condition);
+        for (AssetCpeTree assetCpeTree : topNodeList) {
+            condition.setPid(assetCpeTree.getUniqueId());
+            List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),
+                    AssetCpeTreeResponse.class);
+            // 查找子节点数据
+            buildChildrenNode(treeItem, "0", false);
+            // 组装基准大类树形数据
+            AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
+                    AssetCpeTreeResponse.class);
+            assetCpeTreeResponse.setShow(true);
+            assetCpeTreeResponse.setChildrenNode(treeItem);
+            responseList.add(assetCpeTreeResponse);
+        }
+        return responseList;
+    }
+
+    private void buildChildrenNode(List<AssetCpeTreeResponse> cpeTreeResponseList, String isCommon, boolean isContinue) {
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
         condition.setIsCommon(isCommon);
         for (AssetCpeTreeResponse assetCpeTree : cpeTreeResponseList) {
@@ -172,9 +195,11 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
                 assetCpeTree.setShow(false);
                 List<AssetCpeTree> assetCpeTreeList = assetCpeTreeDao.findNextNode(condition);
                 List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList,
-                    AssetCpeTreeResponse.class);
+                        AssetCpeTreeResponse.class);
                 assetCpeTree.setChildrenNode(responseList);
-                buildChildrenNode(assetCpeTree.getChildrenNode(), isCommon);
+                if (isContinue) {
+                    buildChildrenNode(assetCpeTree.getChildrenNode(), isCommon, isContinue);
+                }
             }
         }
     }
