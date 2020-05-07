@@ -7,7 +7,7 @@ package com.antiy.asset.vo.enums;
  */
 public enum ExportType {
 
-    PDF("pdf"),WORD("doc");
+    PDF(".pdf"),WORD(".doc");
 
     private String typeName;
 

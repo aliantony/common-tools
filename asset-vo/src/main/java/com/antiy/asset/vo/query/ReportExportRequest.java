@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.query;
 
 import com.antiy.asset.vo.enums.ExportType;
+import com.antiy.common.base.BasicRequest;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @DATE 2020/4/28 14:37
  * @Description
  */
-public class ReportExportRequest {
+public class ReportExportRequest extends BasicRequest {
 
     @ApiModelProperty(value = "图片base64编码")
     @NotBlank(message = "不能为空")
@@ -21,9 +22,9 @@ public class ReportExportRequest {
     @NotNull(message = "导出类型不能为空")
     private ExportType type;
 
-    @ApiModelProperty(value = "导出刻度")
-    @NotNull(message = "导出刻度不能为空")
-    private String scale;
+    @ApiModelProperty(value = "名称")
+    @NotNull(message = "名称")
+    private String name;
 
     public String getImageCode() {
         return imageCode;
@@ -41,12 +42,12 @@ public class ReportExportRequest {
         this.type = type;
     }
 
-    public String getScale() {
-        return scale;
+    public String getName() {
+        return name;
     }
 
-    public void setScale(String scale) {
-        this.scale = scale;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ReportExportRequest {
         return "ReportExportRequest{" +
                 "imageCode='" + imageCode + '\'' +
                 ", type=" + type +
-                ", scale='" + scale + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }
