@@ -29,18 +29,18 @@ public enum AssetStatusEnum implements CodeEnum {
      */
     NET_IN(5, "已入网"),
     /**
-     * 变更中
-     */
-    IN_CHANGE(6, "变更中"),
-    /**
      * 待退回
      */
-    WAIT_RETIRE(7, "待退回"),
+    WAIT_RETIRE(6, "待退回"),
 
     /**
      * 已退回
      */
-        RETIRE(8, "已退回"),
+        RETIRE(7, "已退回"),
+    /**
+     * 变更中
+     */
+    IN_CHANGE(8, "变更中"),
     /**
      * 待报废
      */
