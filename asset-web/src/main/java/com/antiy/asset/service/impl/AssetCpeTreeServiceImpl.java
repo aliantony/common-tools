@@ -174,7 +174,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             List<AssetCpeTreeResponse> treeItem = responseConverter.convert(assetCpeTreeDao.findNextNode(condition),
                     AssetCpeTreeResponse.class);
             // 查找子节点数据
-//            buildChildrenNode(treeItem, "0", false);
+            buildChildrenNode(treeItem, "0", false);
             // 组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
                     AssetCpeTreeResponse.class);
