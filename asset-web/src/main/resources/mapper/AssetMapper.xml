@@ -2781,7 +2781,18 @@ WHERE
     </select>
     <select id="queryOSList" resultType="com.antiy.asset.vo.response.AssetHardSoftLibResponse">
         select
-          *
+        business_id as businessId,
+        number,
+        type,
+        supplier,
+        product_name as productName,
+        version,
+        sys_version as sysVersion,
+        language,
+        soft_version as soft_version,
+        soft_platform as softPlatform,
+        hard_platform as hardPlatform,
+        other
         from
         asset_hard_soft_lib
         where
