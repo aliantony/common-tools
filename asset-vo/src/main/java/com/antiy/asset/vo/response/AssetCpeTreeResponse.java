@@ -14,10 +14,21 @@ public class AssetCpeTreeResponse extends BaseResponse {
      * 唯一键
      */
     private String uniqueId;
+
+    /**
+     * cpe业务主键
+     */
+    private String businessId;
+
     /**
      * 父id
      */
     private String pid;
+
+    /**
+     * 是否删除 1--未删除  0--已删除
+     */
+    private Integer status;
     /**
      * 标题
      */
@@ -31,10 +42,6 @@ public class AssetCpeTreeResponse extends BaseResponse {
      * 子节点数据
      */
     private List<AssetCpeTreeResponse> childrenNode;
-    /**
-     * cpe业务主键
-     */
-    private String                     businessId;
 
     public String getBusinessId() {
         return businessId;
@@ -82,5 +89,13 @@ public class AssetCpeTreeResponse extends BaseResponse {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
