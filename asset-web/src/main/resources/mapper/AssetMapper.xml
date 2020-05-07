@@ -2723,7 +2723,7 @@
         </if>
         <!--   上报来源   -->
         <if test="assetSource != null">
-            and asset_source = #{assetStatus}
+            and asset_source = #{assetSource}
         </if>
         <!--   区域     -->
         <if test="areaId != null and areaId.size()> 0">
