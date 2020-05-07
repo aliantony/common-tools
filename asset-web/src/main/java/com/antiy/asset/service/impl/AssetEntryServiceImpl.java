@@ -31,6 +31,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -122,7 +123,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     }
 
     @Override
-    public String updateEntryStatus(AssetEntryRequest request, SecurityContext... context) {
+    public String updateEntryStatus(AssetEntryRequest request, SecurityContext... context) throws Exception {
+        ParamterExceptionUtils.isTrue(checkAssetComplience(request),"资产应属于计算设备、网络设备、非借用设备、非孤岛设备");
         //token设置
         if (ArrayUtils.isNotEmpty(context)) {
             SecurityContextHolder.setContext(context[0]);
@@ -191,6 +193,22 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return "变更成功";
     }
 
+    public boolean checkAssetComplience(AssetEntryRequest request) throws Exception {
+
+        List<Integer> assetIds = request.getAssetActivityRequests().stream().map(ActivityHandleRequest::getId).collect(Collectors.toList());
+        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(new AssetCategoryModelQuery())
+                .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
+                        LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
+        return assetDao.findByIds(assetIds).stream().filter(asset ->{
+            Integer notOrphan = 2;
+            Integer notBorrow = 2;
+            return notOrphan.equals(asset.getIsOrphan())
+                    && notBorrow.equals(asset.getIsBorrow())
+                    && categoryIds.contains(asset.getCategoryModel())
+                    ;
+        }).collect(Collectors.toList()).isEmpty()? false:true ;
+
+    }
     //找出已经漏洞修复完成、补丁安装完成、配置完成的资产集合 返回未完成的资产
     public AssetEntryRequest scanTask(AssetEntryRequest request) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         //removedRequest 不满足自动恢复准入要求的资产

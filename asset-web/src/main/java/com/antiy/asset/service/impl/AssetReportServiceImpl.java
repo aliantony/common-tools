@@ -471,7 +471,7 @@ public class AssetReportServiceImpl implements IAssetReportService {
     }
 
     private String encodeFileName(ReportExportRequest reportExportRequest, HttpServletRequest request)  {
-        String filename= reportExportRequest.getScale()+"."+reportExportRequest.getType().getTypeName();
+        String filename= reportExportRequest.getName()+reportExportRequest.getType().getTypeName();
         String userAgent = request.getHeader("user-agent").toLowerCase();
         try {
             if (userAgent.contains("msie") || userAgent.contains("like gecko")) {

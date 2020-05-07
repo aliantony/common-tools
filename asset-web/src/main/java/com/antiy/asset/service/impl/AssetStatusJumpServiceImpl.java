@@ -277,14 +277,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
     }
     private void dealRelation(AssetStatusJumpRequest statusJumpRequest) throws Exception {
-        //组件报废
-        List<AssetAssemblyRequest> assetAssemblys = statusJumpRequest.getAssetAssemblyRequest();
-        AssetAssemblyScrapRequest assetAssemblyScrapRequest=new AssetAssemblyScrapRequest();
-        assetAssemblyScrapRequest.setAssetAssemblyRequestList(assetAssemblys);
-        assetAssemblyScrapRequest.setAssetId(assetAssemblys.get(0).getAssetId());
-        assetAssemblyService.scrapUpdate(assetAssemblyScrapRequest);
 
-        //业务管理
+        //组件报废
+        if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
+            List<AssetAssemblyRequest> assetAssemblys = statusJumpRequest.getAssetAssemblyRequest();
+            AssetAssemblyScrapRequest assetAssemblyScrapRequest=new AssetAssemblyScrapRequest();
+            assetAssemblyScrapRequest.setAssetAssemblyRequestList(assetAssemblys);
+            assetAssemblyScrapRequest.setAssetId(assetAssemblys.get(0).getAssetId());
+            assetAssemblyService.scrapUpdate(assetAssemblyScrapRequest);
+        }
+
+        //业务管理  配置
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)){
@@ -303,15 +306,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             return;
         }
 
-        //  准入
+        //  准入  发消息
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
                 ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
 
-
-            /**
-             * 准入
-             */
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             statusJumpRequest.getAssetInfoList().forEach(assetInfo -> {
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
@@ -355,7 +354,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             sysMessageSender.batchSendMessage(sysMessageRequests);
 
 
-
         }
 
 
@@ -369,9 +367,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         List<HashMap<String,String>> users=(List<HashMap<String,String>>)usersOfHaveRight.getBody();
 
+        String username = LoginUserUtil.getLoginUser().getUsername();
         List<Integer> userIds = users.stream()
-                .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), t.get("name"))))
+                .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), username)))
                 .collect(Collectors.toList());
+
         return  userIds;
     }
     @Override
@@ -673,7 +673,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode());
                 }
 
-                manualStartActivityRequest.setFormData(assetStatusRequest.getFormData());
+                manualStartActivityRequest.setFormData(formData);
 
                 ActionResponse actionResponse = activityClient.manualStartProcess(manualStartActivityRequest);
 
@@ -834,7 +834,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         SecurityContext context=SecurityContextHolder.getContext();
         new Thread(() -> {
             SecurityContext finalContext = context;
-            entryService.updateEntryStatus(request,finalContext );
+            try {
+                entryService.updateEntryStatus(request,finalContext );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
 
         return "";

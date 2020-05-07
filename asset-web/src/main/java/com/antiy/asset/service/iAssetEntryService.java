@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface iAssetEntryService {
     PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception;
-  String  updateEntryStatus(AssetEntryRequest request, SecurityContext... contexts);
+  String  updateEntryStatus(AssetEntryRequest request, SecurityContext... contexts) throws Exception;
    List<AssetEntryRecordResponse> queryRecord(AssetEntryQuery query);
 
     List<AssetEntryStatusResponse> queryEntryStatus(List<String> assetIds);

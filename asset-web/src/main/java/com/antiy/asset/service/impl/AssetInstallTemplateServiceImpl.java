@@ -194,7 +194,6 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         this.insertCheckTemplateInfo(request);
         //将模板更新为待审核
         assetInstallTemplate.setCurrentStatus(AssetInstallTemplateStatusEnum.NOTAUDIT.getCode());
-        assetInstallTemplate.setOperationSystemName(this.queryOs(request.getOperationSystem().toString()).get(0).getOsName());
         if (!assetInstallTemplateDao.updateStatus(assetInstallTemplate).equals(0)) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.TEMPLATE_MODIFY.getName(),
                     templateId, assetInstallTemplate.getNumberCode(), assetInstallTemplate.toString(), BusinessModuleEnum.ASSET_INSTALL_TEMPLATE, BusinessPhaseEnum.NONE));

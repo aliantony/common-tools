@@ -185,7 +185,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
             // }
             LogUtils.recordOperLog(
                 new BusinessData("导出《综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
-                    "", assetQuery, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE));
+                    "", assetQuery, BusinessModuleEnum.REPORT, BusinessPhaseEnum.REPORT_EXPORT));
         } else {
             throw new BusinessException("导出数据为空");
         }

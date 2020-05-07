@@ -286,10 +286,12 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         try {
             if (!add.isEmpty()) {
                 keyManageDao.insertBatch(add);
+
             }
             if (!update.isEmpty()) {
                 keyManageDao.updateBatch(update);
             }
+            success = add.size() + update.size();
         } catch (DuplicateKeyException exception) {
             throw new BusinessException("请勿重复提交！");
         }

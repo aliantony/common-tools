@@ -57,6 +57,11 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
         return ret;
     }
 
+    /**
+     * 叶子节点
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<String> queryAllAreaWithUser() throws Exception {
         List<SysArea> areaList = LoginUserUtil.getLoginUser().getAreas();
