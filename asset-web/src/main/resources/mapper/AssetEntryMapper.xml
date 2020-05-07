@@ -100,7 +100,7 @@
             resultType="com.antiy.asset.vo.response.AssetEntryResponse">
         select asset.id stringId,asset.name,asset.number,group_concat(distinct air.ip) ip,
         group_concat(distinct amr.mac) mac,asset.admittance_status entryStatus,
-        if((asset.asset_status between 7 and 10) and asset.admittance_status = 2,false,true) isEntryOperation,
+        if(asset.asset_status in (6,7,9,10) and asset.admittance_status = 2,false,true) isEntryOperation,
         asset_group as assetGroupName, asset_status assetStatus
         from asset
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
