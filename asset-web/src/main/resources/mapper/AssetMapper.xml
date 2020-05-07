@@ -1862,7 +1862,8 @@
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
-        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status,operation_system_name FROM asset
+        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status,operation_system_name,
+        category_model,is_borrow,is_orphan FROM asset
         WHERE status = 1
         <if test="ids != null and ids.size() > 0">
             and asset.id in

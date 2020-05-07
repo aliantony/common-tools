@@ -834,7 +834,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         SecurityContext context=SecurityContextHolder.getContext();
         new Thread(() -> {
             SecurityContext finalContext = context;
-            entryService.updateEntryStatus(request,finalContext );
+            try {
+                entryService.updateEntryStatus(request,finalContext );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
 
         return "";
