@@ -1,12 +1,13 @@
 package com.antiy.asset.intergration;
 
-import java.util.List;
-
 import com.antiy.asset.vo.query.WorkFlowQuery;
 import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhangbing
@@ -55,7 +56,7 @@ public interface BaseLineClient {
      * @param assetIdList
      * @return
      */
-    ActionResponse removeAsset(List<Integer> assetIdList);
+    ActionResponse removeAsset(Map<String, List<Integer>> assetIdList);
 
     ActionResponse situationOfVul(String primaryKey);
 
