@@ -370,8 +370,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<HashMap<String,String>> users=(List<HashMap<String,String>>)usersOfHaveRight.getBody();
 
         List<Integer> userIds = users.stream()
-                .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), t.get("name"))))
+                .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), LoginUserUtil.getLoginUser().getUsername())))
                 .collect(Collectors.toList());
+
         return  userIds;
     }
     @Override
