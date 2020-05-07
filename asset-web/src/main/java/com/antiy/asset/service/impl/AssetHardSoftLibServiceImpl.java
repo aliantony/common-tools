@@ -156,7 +156,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
             query.setOperationSystem("windows");
         } else if (title.contains("linux")) {
             query.setOperationSystem("linux");
-        } else if (title.contains("macos")) {
+        } else if (title.contains("mac") && title.contains("os")) {
             query.setOperationSystem("macOs");
         } else {
             query.setOperationSystem(os.get(0).getPid());
