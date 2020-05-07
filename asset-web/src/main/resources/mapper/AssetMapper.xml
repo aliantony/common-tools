@@ -1995,7 +1995,7 @@
 
 
     <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,name,asset_status as assetStatus
+        SELECT id,name,asset_status as assetStatus,number
         FROM asset
         WHERE status=1
         AND id IN
@@ -2687,6 +2687,9 @@
         </trim>
         where number = #{number}
     </update>
+    <update id="updateAreaIdOfAsset">
+        update asset set area_id = #{childId} where area_id = #{parentId}
+    </update>
 
     <select id="queryOrderAssetCount" resultType="java.lang.Integer">
         select count(1) count
@@ -2709,9 +2712,7 @@
         </if>
     </select>
     <select id="getWorkNumByCondition" resultType="int">
-        select  count(a.id)  from  asset a where
-        status = 1
-        and
+        select  count(a.id)  from  asset a where status = 1
         <!--   资产状态  -->
         <if test="assetStatus != null">
             and asset_status = #{assetStatus}
@@ -2722,7 +2723,7 @@
         </if>
         <!--   上报来源   -->
         <if test="assetSource != null">
-            and asset_source = #{assetStatus}
+            and asset_source = #{assetSource}
         </if>
         <!--   区域     -->
         <if test="areaId != null and areaId.size()> 0">
@@ -2752,10 +2753,13 @@ WHERE
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
           and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
@@ -2777,14 +2781,28 @@ WHERE
     </select>
     <select id="queryOSList" resultType="com.antiy.asset.vo.response.AssetHardSoftLibResponse">
         select
-          *
+        business_id as businessId,
+        number,
+        type,
+        supplier,
+        product_name as productName,
+        version,
+        sys_version as sysVersion,
+        language,
+        soft_version as soft_version,
+        soft_platform as softPlatform,
+        hard_platform as hardPlatform,
+        other
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
             and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>

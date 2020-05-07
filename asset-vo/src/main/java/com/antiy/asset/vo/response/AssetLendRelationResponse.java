@@ -22,7 +22,7 @@ public class AssetLendRelationResponse extends BaseResponse {
      *  唯一键
      */
     @ApiModelProperty("唯一键")
-    private Long uniqueId;
+    private String uniqueId;
     /**
      *  资产id
      */
@@ -221,14 +221,14 @@ public class AssetLendRelationResponse extends BaseResponse {
         this.lendTime = lendTime;
     }
 
-    public Long getUniqueId() {
+
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
-
 
     public String getAssetId() {
         return assetId;

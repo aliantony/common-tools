@@ -133,7 +133,7 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
 
     @Override
     public PageResult<AssetHardSoftLibResponse> queryPageSoft(AssetTemplateSoftwareRelationQuery query) {
-        query.setOperationSystem(inialOsName(query.getOperationSystem()));
+        inialOsName(query);
         Integer count = assetHardSoftLibDao.queryCountSoftWares(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
@@ -146,23 +146,22 @@ public class AssetHardSoftLibServiceImpl extends BaseServiceImpl<AssetHardSoftLi
                 responseConverter.convert(softWares, AssetHardSoftLibResponse.class));
     }
 
-    private String inialOsName(String osId) {
-        String osName = null;
+    private void inialOsName(AssetTemplateSoftwareRelationQuery query) {
         AssetCpeTreeCondition condition = new AssetCpeTreeCondition();
-        condition.setUniqueId(osId);
+        condition.setUniqueId(query.getOperationSystem());
         List<AssetCpeTree> os = treeDao.findNextNode(condition);
         ParamterExceptionUtils.isEmpty(os, "该操作系统不存在");
         String title = os.get(0).getTitle().toLowerCase();
         if (title.contains("windows")) {
-            osName = "windows";
+            query.setOperationSystem("windows");
         } else if (title.contains("linux")) {
-            osName = "linux";
-        } else if (title.contains("macos")) {
-            osName = "macOs";
+            query.setOperationSystem("linux");
+        } else if (title.contains("mac") && title.contains("os")) {
+            query.setOperationSystem("macOs");
         } else {
-            inialOsName(os.get(0).getPid());
+            query.setOperationSystem(os.get(0).getPid());
+            inialOsName(query);
         }
-        return osName;
     }
 
     @Override

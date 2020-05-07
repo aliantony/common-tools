@@ -162,13 +162,11 @@ public class AssetStatusMonitorResponse extends BaseResponse {
     }
 
     public String getRelationDesc() {
-
-        return relationDesc;
+        if(softwareId!=null){
+            return "已关联";
+        }
+        return "未关联";
     }
-/*  public String getRelationDesc() {
-        return AssetSoftwareRelationEnum.getMsgByCode(relation);
-    }*/
-
 
     /**
      * 监控规则
