@@ -117,8 +117,8 @@ public class AssetOaOrderController {
     @RequestMapping(value = "/getStatus", method = RequestMethod.POST)
     public ActionResponse getStatus(@ApiParam(value = "id") @RequestBody AssetOaOrderQuery query)throws Exception{
         logger.info("查询订单状态,queryCondition:{}", JSONObject.toJSONString(query));
-        ParamterExceptionUtils.isBlank(query.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderService.getStatus(Integer.parseInt(query.getPrimaryKey())));
+        ParamterExceptionUtils.isNull(query.getId(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderService.getStatus(query.getId()));
     }
 }
 
