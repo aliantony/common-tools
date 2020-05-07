@@ -70,7 +70,13 @@ public class EntryRestore {
                         if (CollectionUtils.isNotEmpty(request.getEntryRequest().getAssetActivityRequests())) {
                             AssetEntryRequest assetEntryRequest = request.getEntryRequest();
                             assetEntryRequest.setAssetActivityRequests(new ArrayList<>(assetEntryRequest.getAssetActivityRequests()));
-                            new Thread(() -> entryService.updateEntryStatus(assetEntryRequest)).start();
+                            new Thread(() -> {
+                                try {
+                                    entryService.updateEntryStatus(assetEntryRequest);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
                         }
                         if (CollectionUtils.isEmpty(currentEntryRequest.getAssetActivityRequests())) {
                             restoreRequests.remove(request);

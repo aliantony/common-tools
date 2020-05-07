@@ -1379,7 +1379,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 request.setAssetActivityRequests(Arrays.asList(handleRequest));
                 request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.NO_ENTER.getCode()));
                 request.setEntrySource(AssetEntrySourceEnum.ASSET_CHANGE);
-                entryService.updateEntryStatus(request);
+                try {
+                    entryService.updateEntryStatus(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }).start();
         }
         // 更新资产状态
