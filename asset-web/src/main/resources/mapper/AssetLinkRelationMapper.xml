@@ -1107,7 +1107,7 @@
             <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
+            or (a.asset_status = #{targetStatus} and f.origin_status = #{originStatus} and f.target_status = #{targetStatus}))
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary
@@ -1193,7 +1193,7 @@
             <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
-            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
+            or (a.asset_status = #{targetStatus} and f.origin_status = #{originStatus} and f.target_status = #{targetStatus}))
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary
