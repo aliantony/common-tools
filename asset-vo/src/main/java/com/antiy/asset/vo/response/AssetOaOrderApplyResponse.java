@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>
@@ -15,54 +16,79 @@ public class AssetOaOrderApplyResponse extends BaseEntity {
     /**
      * 订单号
      */
+    @ApiModelProperty("订单号")
     private String orderNumber;
+
     /**
      * 申请内容
      */
+    @ApiModelProperty("申请内容")
     private String content;
+
     /**
      * 只针对借用类型，借用开始时间
      */
+    @ApiModelProperty("只针对借用类型，借用开始时间")
     private Long lendStartTime;
+
     /**
      * 只针对借用类型，借用结束时间
      */
+    @ApiModelProperty("只针对借用类型，借用结束时间")
     private Long lendEndTime;
+
     /**
      * 只针对借用类型，借用时间区间
      */
+    @ApiModelProperty("只针对借用类型，借用时间区间")
     private String lendTime;
+
     /**
      * 只针对借用类型，借用目的
      */
+    @ApiModelProperty("只针对借用类型，借用目的")
     private String lendPurpose;
+
     /**
      * 针对退回和报废，资产编号
      */
+    @ApiModelProperty("针对退回和报废，资产编号")
     private String assetNumber;
+
     /**
      * 针对退回和报废，ip
      */
+    @ApiModelProperty("针对退回和报废，ip")
     private String assetIp;
+
     /**
      * 针对退回和报废，mac
      */
+    @ApiModelProperty("针对退回和报废，mac")
     private String assetMac;
+
     /**
      * 申请人id
      */
+    @ApiModelProperty("申请人id")
     private Integer applyUserId;
+
     /**
      * 申请人姓名
      */
+    @ApiModelProperty("申请人姓名")
     private String applyUserName;
+
     /**
      * 申请时间
      */
+    @ApiModelProperty("申请时间")
     private Long applyTime;
+
     /**
      * 申请时间字符串
      */
+    @ApiModelProperty("申请时间字符串")
     private String applyTimeStr;
 
 

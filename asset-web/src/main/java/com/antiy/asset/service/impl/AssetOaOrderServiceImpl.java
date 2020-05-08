@@ -3,6 +3,7 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetOaOrderApplyDao;
 import com.antiy.asset.dao.AssetOaOrderApproveDao;
 import com.antiy.asset.dao.AssetOaOrderDao;
+import com.antiy.asset.dao.AssetOaOrderHandleDao;
 import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderApply;
 import com.antiy.asset.entity.AssetOaOrderApprove;
@@ -31,10 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -56,6 +54,8 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     private AssetOaOrderApplyDao assetOaOrderApplyDao;
     @Resource
     private AssetOaOrderApproveDao assetOaOrderApproveDao;
+    @Resource
+    private AssetOaOrderHandleDao assetOaOrderHandleDao;
 
     @Resource
     private BaseConverter<AssetOaOrderRequest, AssetOaOrder> requestConverter;
@@ -169,7 +169,29 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             assetInfo.put("assetStatus", AssetStatusEnum.getAssetByCode(Integer.parseInt(result.get("assetStatus").toString())).getMsg());
             assetOaOrderResponse.setAssetInfo(assetInfo);
         }
+        setAssetStatusOrId(assetOaOrder, assetOaOrderResponse);
         return assetOaOrderResponse;
+    }
+
+    void setAssetStatusOrId(AssetOaOrder assetOaOrder, AssetOaOrderResponse assetOaOrderResponse){
+        List<Integer> assetStatusList = new ArrayList<Integer>();
+        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
+            //入网处理
+            assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
+            assetStatusList.add(AssetStatusEnum.WAIT_REGISTER.getCode());
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
+            //退回处理
+            assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
+            //报废处理
+            assetStatusList.add(AssetStatusEnum.NET_IN.getCode());
+            assetStatusList.add(AssetStatusEnum.RETIRE.getCode());
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
+            //出借处理
+            List<String> assetIds = assetOaOrderHandleDao.getAssetIdWhenLend();
+            assetOaOrderResponse.setAssetIds(assetIds);
+        }
+        assetOaOrderResponse.setAssetStatusList(assetStatusList);
     }
 
     @Override

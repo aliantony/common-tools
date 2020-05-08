@@ -135,7 +135,10 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
                 Asset asset = assetDao.getById(assetId);
                 if (!AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
                         && !AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    throw new BusinessException("入网处理只允许关联"
+                    throw new BusinessException("资产"
+                            + asset.getName() + "状态为"
+                            + AssetStatusEnum.getAssetByCode(asset.getAssetStatus()).getMsg()
+                            + ",入网处理只允许关联"
                             + AssetStatusEnum.WAIT_REGISTER.getMsg()
                             + "和"
                             + AssetStatusEnum.NET_IN.getMsg()
@@ -148,7 +151,10 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
                 assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
                 Asset asset = assetDao.getById(assetId);
                 if (!AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    throw new BusinessException("退回处理只允许关联"
+                    throw new BusinessException("资产"
+                            + asset.getName() + "状态为"
+                            + AssetStatusEnum.getAssetByCode(asset.getAssetStatus()).getMsg()
+                            + ",退回处理只允许关联"
                             + AssetStatusEnum.NET_IN.getMsg()
                             + "资产");
                 }
@@ -160,7 +166,10 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
                 Asset asset = assetDao.getById(assetId);
                 if (!AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
                         && !AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
-                    throw new BusinessException("报废处理只允许关联"
+                    throw new BusinessException("资产"
+                            + asset.getName() + "状态为"
+                            + AssetStatusEnum.getAssetByCode(asset.getAssetStatus()).getMsg()
+                            + ",报废处理只允许关联"
                             + AssetStatusEnum.RETIRE.getMsg()
                             + "和"
                             + AssetStatusEnum.NET_IN.getMsg()
