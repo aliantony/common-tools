@@ -91,115 +91,229 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         if (CollectionUtils.isEmpty(request.getAssetIds())) {
             throw new BusinessException("请关联资产");
         }
-        if(request.getAssetIds().size() > 1 && !AssetOaOrderTypeEnum.LEND.getCode().equals(request.getHandleType())){
+        if (request.getAssetIds().size() > 1 && !AssetOaOrderTypeEnum.LEND.getCode().equals(request.getHandleType())) {
             throw new BusinessException("只允许关联一条资产信息");
         }
         String orderNumber = request.getOrderNumber();
         AssetOaOrder assetOaOrder = assetOaOrderDao.getByNumber(orderNumber);
         //已处理状态，说明不能再进行处理
-        if(AssetOaOrderStatusEnum.OVER_HANDLE.equals(assetOaOrder.getOrderStatus())){
+        if (AssetOaOrderStatusEnum.OVER_HANDLE.equals(assetOaOrder.getOrderStatus())) {
             throw new BusinessException("订单已被其他人员抢先处理");
         }
-        if (AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())) {
-            //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
-            AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
-            assetOaOrderResult.setOrderNumber(orderNumber);
-            assetOaOrderResult.setLendStatus(request.getLendStatus());
-            assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
-            assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
-            if (!request.getLendStatus().equals(1)) {
-                logger.info("----------不许出借,OrderNumber：{}", request.getOrderNumber());
-                assetOaOrderResult.setRefuseReason(request.getRefuseReason());
-                assetOaOrderResultDao.insert(assetOaOrderResult);
-                return 0;
-            } else {
-                logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
-                assetOaOrderResult.setLendUserId(request.getLendUserId());
-                assetOaOrderResult.setLendTime(request.getLendTime());
-                assetOaOrderResult.setReturnTime(request.getReturnTime());
-                assetOaOrderResult.setLendRemark(request.getLendRemark());
-                assetOaOrderResultDao.insert(assetOaOrderResult);
-            }
-        }else if (AssetOaOrderTypeEnum.BACK.getCode().equals(assetOaOrder.getOrderType()) || AssetOaOrderTypeEnum.SCRAP.getCode().equals(assetOaOrder.getOrderType())) {
-            logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
-            //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
-            AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
-            assetOaOrderResult.setOrderNumber(orderNumber);
-            assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
-            assetOaOrderResult.setPlan(request.getPlan());
-            assetOaOrderResult.setFileUrl(request.getFileUrl());
-            assetOaOrderResult.setFileName(request.getFileName());
-            assetOaOrderResult.setHandleType(request.getHandleType());
-            assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
-            assetOaOrderResultDao.insert(assetOaOrderResult);
-
-            //操作记录，仅对退回和报废,存入到asset_operation_record
-            Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
-            AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
-            assetOperationRecord.setOriginStatus(asset.getStatus());
-            if(AssetOaOrderTypeEnum.BACK.getCode().equals(assetOaOrder.getOrderType())){
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-                assetOperationRecord.setContent("退回执行");
-            }else{
-                assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
-                assetOperationRecord.setContent("报废执行");
-            }
-            assetOperationRecord.setGmtCreate(System.currentTimeMillis());
-            assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
-            assetOperationRecord.setNote(request.getPlan());
-            assetOperationRecord.setFileInfo(request.getFileUrl());
-            logger.info("----------订单处理保存操作记录,assetOperationRecord:{}", JSONObject.toJSONString(assetOperationRecord));
-            assetOperationRecordDao.insert(assetOperationRecord);
+        //判断资产状态
+        judgeAssetStatus(request, assetOaOrder);
+        //保存订单与资产关系
+        saveAssetToOrder(request);
+        //其他逻辑处理
+        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
+            //入网处理
+            saveAssetOaOrderHandleWhenInnet(request, assetOaOrder);
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
+            //退回处理
+            saveAssetOaOrderHandleWhenBack(request, assetOaOrder);
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
+            //报废处理
+            saveAssetOaOrderHandleWhenScript(request, assetOaOrder);
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
+            //出借处理
+            saveAssetOaOrderHandleWhenlend(request, assetOaOrder);
         }
-        //保存订单与资产关联关系
+        return request.getAssetIds().size();
+    }
+
+    /**
+     * 判断资产状态
+     */
+    void judgeAssetStatus(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
+        List<String> assetIds = request.getAssetIds();
+        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
+            //入网处理
+            for (String assetId : assetIds) {
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                Asset asset = assetDao.getById(assetId);
+                if (!AssetStatusEnum.WAIT_REGISTER.getCode().equals(asset.getAssetStatus())
+                        && !AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
+                    throw new BusinessException("入网处理只允许关联"
+                            + AssetStatusEnum.WAIT_REGISTER.getMsg()
+                            + "和"
+                            + AssetStatusEnum.NET_IN.getMsg()
+                            + "资产");
+                }
+            }
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
+            //退回处理
+            for (String assetId : assetIds) {
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                Asset asset = assetDao.getById(assetId);
+                if (!AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
+                    throw new BusinessException("退回处理只允许关联"
+                            + AssetStatusEnum.NET_IN.getMsg()
+                            + "资产");
+                }
+            }
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
+            //报废处理
+            for (String assetId : assetIds) {
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                Asset asset = assetDao.getById(assetId);
+                if (!AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
+                        && !AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())) {
+                    throw new BusinessException("报废处理只允许关联"
+                            + AssetStatusEnum.RETIRE.getMsg()
+                            + "和"
+                            + AssetStatusEnum.NET_IN.getMsg()
+                            + "资产");
+                }
+            }
+        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
+            //出借处理
+            for (String assetId : assetIds) {
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                Integer count = assetOaOrderHandleDao.countLendByAssetId(Integer.parseInt(assetId));
+                if(count == 0){
+                    Asset asset = assetDao.getById(assetId);
+                    throw new BusinessException("资产" + asset.getName() + "不能被出借");
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 当入网
+     */
+    void saveAssetOaOrderHandleWhenInnet(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
+        logger.info("----------入网处理,OrderNumber：{}", request.getOrderNumber());
+        //如果是入网，不更改资产状态
+        logger.info("入网处理，orderNumber:{}", request.getOrderNumber());
+    }
+
+    /**
+     * 当退回
+     */
+    void saveAssetOaOrderHandleWhenBack(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
+        logger.info("----------退回处理,OrderNumber：{}", request.getOrderNumber());
+        //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
+        AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
+        assetOaOrderResult.setOrderNumber(request.getOrderNumber());
+        assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
+        assetOaOrderResult.setPlan(request.getPlan());
+        assetOaOrderResult.setFileUrl(request.getFileUrl());
+        assetOaOrderResult.setFileName(request.getFileName());
+        assetOaOrderResult.setHandleType(request.getHandleType());
+        assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+        assetOaOrderResultDao.insert(assetOaOrderResult);
+        //操作记录，仅对退回和报废,存入到asset_operation_record
+        Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
+        assetOperationRecord.setOriginStatus(asset.getStatus());
+        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+        assetOperationRecord.setContent("退回执行");
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setNote(request.getPlan());
+        assetOperationRecord.setFileInfo(request.getFileUrl());
+        logger.info("----------订单处理保存操作记录,assetOperationRecord:{}", JSONObject.toJSONString(assetOperationRecord));
+        assetOperationRecordDao.insert(assetOperationRecord);
+        //如果是退回,资产状态改为待退回
+        logger.info("退回处理，orderNumber:{}", request.getOrderNumber());
+        Asset asset1 = new Asset();
+        asset1.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
+        asset1.setGmtModified(System.currentTimeMillis());
+        asset1.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetDao.updateStatus(asset1);
+    }
+
+    /**
+     * 当报废
+     */
+    void saveAssetOaOrderHandleWhenScript(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
+        logger.info("----------报废处理,OrderNumber：{}", request.getOrderNumber());
+        //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
+        AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
+        assetOaOrderResult.setOrderNumber(request.getOrderNumber());
+        assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
+        assetOaOrderResult.setPlan(request.getPlan());
+        assetOaOrderResult.setFileUrl(request.getFileUrl());
+        assetOaOrderResult.setFileName(request.getFileName());
+        assetOaOrderResult.setHandleType(request.getHandleType());
+        assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+        assetOaOrderResultDao.insert(assetOaOrderResult);
+        //操作记录，仅对退回和报废,存入到asset_operation_record
+        Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
+        AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+        assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
+        assetOperationRecord.setOriginStatus(asset.getStatus());
+        assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
+        assetOperationRecord.setContent("报废执行");
+        assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+        assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+        assetOperationRecord.setNote(request.getPlan());
+        assetOperationRecord.setFileInfo(request.getFileUrl());
+        logger.info("----------订单处理保存操作记录,assetOperationRecord:{}", JSONObject.toJSONString(assetOperationRecord));
+        assetOperationRecordDao.insert(assetOperationRecord);
+        //如果是报废，资产状态改为待报废
+        logger.info("报废处理，orderNumber:{}", request.getOrderNumber());
+        Asset asset1 = new Asset();
+        asset1.setId(Integer.parseInt(request.getAssetIds().get(0)));
+        asset1.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
+        asset1.setModifyUser(LoginUserUtil.getLoginUser().getId());
+        assetDao.updateStatus(asset1);
+    }
+
+    /**
+     * 当出借
+     */
+    void saveAssetOaOrderHandleWhenlend(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
+        logger.info("----------出借处理,OrderNumber：{}", request.getOrderNumber());
+        //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
+        AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
+        assetOaOrderResult.setOrderNumber(request.getOrderNumber());
+        assetOaOrderResult.setLendStatus(request.getLendStatus());
+        assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
+        assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+        if (!request.getLendStatus().equals(1)) {
+            logger.info("----------不许出借,OrderNumber：{}", request.getOrderNumber());
+            assetOaOrderResult.setRefuseReason(request.getRefuseReason());
+            assetOaOrderResultDao.insert(assetOaOrderResult);
+        } else {
+            logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
+            assetOaOrderResult.setLendUserId(request.getLendUserId());
+            assetOaOrderResult.setLendTime(request.getLendTime());
+            assetOaOrderResult.setReturnTime(request.getReturnTime());
+            assetOaOrderResult.setLendRemark(request.getLendRemark());
+            assetOaOrderResultDao.insert(assetOaOrderResult);
+        }
+        //如果是出借，调用金楚迅提供接口
+        logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
+        AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
+        assetLendInfosRequest.setAssetIds(request.getAssetIds());
+        assetLendInfosRequest.setLendStatus(request.getLendStatus());
+        assetLendInfosRequest.setLendTime(request.getLendTime());
+        assetLendInfosRequest.setLendPeriods(request.getReturnTime());
+        assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
+        assetLendInfosRequest.setUseId(request.getLendUserId());
+        assetLendInfosRequest.setLendPurpose("");
+        assetLendRelationService.saveLendInfos(assetLendInfosRequest);
+    }
+
+    /**
+     * 保存订单与资产关系
+     */
+    void saveAssetToOrder(AssetOaOrderHandleRequest request) {
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
         for (String assetId : request.getAssetIds()) {
             assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
             Integer assetIdInt = Integer.parseInt(assetId);
             AssetOaOrderHandle assetOaOrderHandle = new AssetOaOrderHandle();
             assetOaOrderHandle.setAssetId(assetIdInt);
-            assetOaOrderHandle.setOrderNumber(orderNumber);
+            assetOaOrderHandle.setOrderNumber(request.getOrderNumber());
             assetOaOrderHandles.add(assetOaOrderHandle);
         }
         assetOaOrderHandleDao.insertBatch(assetOaOrderHandles);
-        //对资产做相应操作
-        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
-            //如果是入网，不更改资产状态
-            logger.info("入网处理，orderNumber:{}", request.getOrderNumber());
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
-            //如果是退回,资产状态改为待退回
-            logger.info("退回处理，orderNumber:{}", request.getOrderNumber());
-            Asset asset = new Asset();
-            asset.setAssetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-            asset.setGmtModified(System.currentTimeMillis());
-            asset.setModifyUser(LoginUserUtil.getLoginUser().getId());
-            assetDao.updateStatus(asset);
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
-            //如果是报废，资产状态改为待报废
-            logger.info("报废处理，orderNumber:{}", request.getOrderNumber());
-            Asset asset = new Asset();
-            asset.setId(Integer.parseInt(request.getAssetIds().get(0)));
-            asset.setAssetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
-            assetDao.updateStatus(asset);
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
-            //如果是出借，调用金楚迅提供接口
-            logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
-            AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
-            assetLendInfosRequest.setAssetIds(request.getAssetIds());
-            assetLendInfosRequest.setLendStatus(request.getLendStatus());
-            assetLendInfosRequest.setLendTime(request.getLendTime());
-            assetLendInfosRequest.setLendPeriods(request.getReturnTime());
-            assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
-            assetLendInfosRequest.setUseId(request.getLendUserId());
-            assetLendInfosRequest.setLendPurpose("");
-            assetLendRelationService.saveLendInfos(assetLendInfosRequest);
-        }
-        //更改订单状态为已处理
-        assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
-        assetOaOrderDao.update(assetOaOrder);
-        return request.getAssetIds().size();
     }
+
 
     @Override
     public Integer updateAssetOaOrderHandle(AssetOaOrderHandleRequest request) throws Exception {
