@@ -24,7 +24,9 @@ import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -275,10 +277,15 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
         if (!request.getLendStatus().equals(1)) {
             logger.info("----------不许出借,OrderNumber：{}", request.getOrderNumber());
+            judgeStringLength(request.getRefuseReason(), "拒绝原因", 255, false);
             assetOaOrderResult.setRefuseReason(request.getRefuseReason());
             assetOaOrderResultDao.insert(assetOaOrderResult);
         } else {
             logger.info("----------允许出借,OrderNumber：{}", request.getOrderNumber());
+            judgeStringLength(request.getLendRemark(), "出借说明", 255, false);
+            ParamterExceptionUtils.isNull(request.getReturnTime(), "归还时间不能为空");
+            ParamterExceptionUtils.isNull(request.getLendTime(), "出借时间不能为空");
+            ParamterExceptionUtils.isNull(request.getLendUserId(), "出借人不能为空");
             assetOaOrderResult.setLendUserId(request.getLendUserId());
             assetOaOrderResult.setLendTime(request.getLendTime());
             assetOaOrderResult.setReturnTime(request.getReturnTime());
@@ -312,6 +319,20 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetOaOrderHandles.add(assetOaOrderHandle);
         }
         assetOaOrderHandleDao.insertBatch(assetOaOrderHandles);
+    }
+
+    /**
+     * 判断字符串长度
+     */
+    void judgeStringLength(String str, String StrName, int length, boolean isCanBeEmpty){
+        if(!isCanBeEmpty){
+            if(StringUtils.isEmpty(str)){
+                throw new BusinessException(StrName + "不能为空");
+            }
+        }
+        if(str.length() > length){
+            throw new BusinessException(StrName + "不能超过" + length +"个字符");
+        }
     }
 
 
