@@ -422,7 +422,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     asset.setCategoryModelType(categoryModel.getId() - 1);
                     break;
                 } else {
-                    flag = categoryModel.getId();
+                    flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
                 }
             }
         }
