@@ -1,6 +1,7 @@
 package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * <p>
@@ -15,28 +16,34 @@ public class AssetOaOrderApproveResponse extends BaseEntity {
     /**
      * 订单表id
      */
+    @ApiModelProperty("订单表id")
     private String orderNumber;
     /**
      * 审批人id
      */
+    @ApiModelProperty("审批人id")
     private Integer approveUserId;
     /**
      * 审批人姓名
      */
+    @ApiModelProperty("审批人姓名")
     private String approveUserName;
     /**
      * 审批意见
      */
+    @ApiModelProperty("审批意见")
     private String view;
 
     /**
      * 审批时间
      */
+    @ApiModelProperty("审批时间")
     private Long approveTime;
 
     /**
      * 审批时间字符串
      */
+    @ApiModelProperty("审批时间字符串")
     private String approveTimeStr;
 
 
