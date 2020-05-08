@@ -916,6 +916,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetResponse> assetResponseList = responseConverter
                 .convert(assetLinkRelationDao.findListUnconnectedAsset(query), AssetResponse.class);
             assetResponseList.stream().forEach(assetLinkedCount -> {
+
+                // 获取当前的详细资产类型
+                assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetLinkedCount.getCategoryModel())));
+
                 String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                     assetLinkedCount.getAreaId());
                 try {
@@ -4107,6 +4111,46 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             getNodesForrecursion(nodeList, allNodes);
         }
     }
+
+    // 获取当前节点父节点，直到网络设备，计算设备
+    private String getCategoryParentNodeName(Integer id){
+
+        // 变量初始化
+        List<String> nodeNameList = new ArrayList<>();
+        CategoryValiEntity node = new CategoryValiEntity();
+        node.setId(id);
+
+        if (Objects.isNull(id) || id == 0){
+            return "";
+        }
+
+        // 递归获取
+        getNodeNameRecursion(node, nodeNameList);
+        Collections.reverse(nodeNameList);
+        String nodeNameAll = nodeNameList.stream().collect(Collectors.joining("-"));
+        return nodeNameAll;
+    }
+
+    // 递归获取父节点名称
+    private void getNodeNameRecursion(CategoryValiEntity node, List<String> nodeNameList){
+
+        // 当前暂存变量
+        CategoryValiEntity newNode = new CategoryValiEntity();
+
+        // 获取信息
+        CategoryValiEntity categoryValiEntity = assetCategoryModelDao.getNameByCtegoryId(node.getId());
+
+        if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName()) || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())){
+            nodeNameList.add(categoryValiEntity.getName());
+            return;
+        }
+
+        // 递归获取并叠加节点名称
+        nodeNameList.add(categoryValiEntity.getName());
+        newNode.setId(categoryValiEntity.getParentId());
+        getNodeNameRecursion(newNode, nodeNameList);
+    }
+
 }
 
 @Component
