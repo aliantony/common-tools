@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhangbing
@@ -92,7 +93,7 @@ public class BaseLineClientImpl implements BaseLineClient {
 
     @Override
     @AssetLog(description = "配置/资产退役", operationType = AssetLogOperationType.ADD)
-    public ActionResponse removeAsset(List<Integer> assetIdList) {
+    public ActionResponse removeAsset(Map<String, List<Integer>> assetIdList) {
         return (ActionResponse) baseClient.post(assetIdList, new ParameterizedTypeReference<ActionResponse>() {
         }, baseLineRemoveAssetUrl);
     }

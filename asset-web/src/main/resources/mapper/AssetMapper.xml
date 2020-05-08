@@ -1862,7 +1862,8 @@
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" parameterType="java.util.List">
-        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status,operation_system_name FROM asset
+        SELECT id,asset_status,number,first_enter_nett,gmt_modified,modify_user,status,operation_system_name,
+        category_model,is_borrow,is_orphan FROM asset
         WHERE status = 1
         <if test="ids != null and ids.size() > 0">
             and asset.id in
@@ -1995,7 +1996,7 @@
 
 
     <select id="getAssetStatusListByIds" resultType="com.antiy.asset.entity.Asset">
-        SELECT id,name,asset_status as assetStatus
+        SELECT id,name,asset_status as assetStatus,number
         FROM asset
         WHERE status=1
         AND id IN
@@ -2223,7 +2224,7 @@
                 <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
                     <include refid="assetRelationBusiness"></include>
 
-                    and a.asset_status in (1,3,4,5,6,7,9)
+                    and a.asset_status in (1,3,4,5,6,8,9)
                     and a.status=1
                 </trim>
                 <if test="categoryModels !=null and categoryModels.size()>0">
@@ -2256,7 +2257,7 @@
 
             <trim prefix="where" prefixOverrides="and" suffixOverrides="and">
                 <include refid="assetRelationBusiness"></include>
-                and a.asset_status in (1,3,4,5,6,7,9)
+                and a.asset_status in (1,3,4,5,6,8,9)
                 and a.status=1
             </trim>
             <if test="categoryModels !=null and categoryModels.size()>0">
@@ -2328,7 +2329,7 @@
         </foreach>
 
     </select>
-    <select id="queryIpByAreaId" resultType="com.antiy.asset.vo.response.AssetAreaAndIpResponse" parameterType="com.antiy.asset.vo.request.AssetIpRequest">
+    <select id="queryIpByAreaId" resultType="com.antiy.asset.vo.response.AssetAreaAndIpResponse">
 
         SELECT
             a.area_id as areaId,
@@ -2338,7 +2339,10 @@
             LEFT JOIN asset_ip_relation r ON ( a.id = r.asset_id AND a.`status` = 1 AND r.`status` = 1 )
         WHERE
         LOCATE(#{areaId}, left(area_id, length(#{areaId})))>0
-
+        and a.asset_status not in
+        <foreach collection="statusList" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
     </select>
     <select id="queryAssetCount" resultType="java.lang.Integer">
         SELECT
@@ -2539,8 +2543,11 @@
                 </otherwise>
             </choose>
         </if>
-        <if test="categoryModels != null and categoryModels != ''">
-           and asset.category_model = #{categoryModels}
+        <if test="categoryModelList != null and categoryModelList.size() > 0">
+           and asset.category_model in
+            <foreach item="item" collection="categoryModelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
             and asset.asset_status in
@@ -2712,9 +2719,7 @@
         </if>
     </select>
     <select id="getWorkNumByCondition" resultType="int">
-        select  count(a.id)  from  asset a where
-        status = 1
-        and
+        select  count(a.id)  from  asset a where status = 1
         <!--   资产状态  -->
         <if test="assetStatus != null">
             and asset_status = #{assetStatus}
@@ -2725,7 +2730,7 @@
         </if>
         <!--   上报来源   -->
         <if test="assetSource != null">
-            and asset_source = #{assetStatus}
+            and asset_source = #{assetSource}
         </if>
         <!--   区域     -->
         <if test="areaId != null and areaId.size()> 0">
@@ -2755,10 +2760,13 @@ WHERE
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
           and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
@@ -2780,14 +2788,28 @@ WHERE
     </select>
     <select id="queryOSList" resultType="com.antiy.asset.vo.response.AssetHardSoftLibResponse">
         select
-          *
+        business_id as businessId,
+        number,
+        type,
+        supplier,
+        product_name as productName,
+        version,
+        sys_version as sysVersion,
+        language,
+        soft_version as soft_version,
+        soft_platform as softPlatform,
+        hard_platform as hardPlatform,
+        other
         from
         asset_hard_soft_lib
         where
-        business_id in
-        <foreach collection="childIds" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
+        1 = 1
+        <if test="childIds != null and childIds.size() > 0">
+            and business_id in
+            <foreach collection="childIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
         <if test="sysVersion != null and sysVersion != ''">
             and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>

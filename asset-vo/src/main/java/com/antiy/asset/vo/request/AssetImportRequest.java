@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.request;
 
 import com.antiy.common.base.BasicRequest;
-import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +21,6 @@ public class AssetImportRequest extends BasicRequest implements ObjectValidator 
      * 品类型号
      */
     @ApiModelProperty("品类型号")
-    @Encode
     @NotBlank(message = "品类型号不能为空")
     private String   category;
 

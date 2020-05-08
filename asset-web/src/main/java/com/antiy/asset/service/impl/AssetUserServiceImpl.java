@@ -238,7 +238,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             if (!areasStrings.contains(entity.getAddress())) {
                 error++;
                 a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此所属区域，或已被注销！");
+                builder.append("第").append(a).append("行").append("当前用户没有此地址，或已被注销！");
                 continue;
             }
             AssetUser asset = new AssetUser();
@@ -255,6 +255,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             asset.setQq(entity.getQq());
             asset.setPosition(entity.getPosition());
             asset.setWeixin(entity.getWeixin());
+            asset.setStatus(1);
             assets.add(asset);
             a++;
         }
@@ -262,6 +263,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         if (error == 0) {
             try {
                 assetUserDao.insertBatch(assets);
+                success = assets.size();
             } catch (DuplicateKeyException exception) {
                 throw new BusinessException("请勿重复提交！");
             }
@@ -277,7 +279,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
         // 写入业务日志
 
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_EXPORT_USERS.getName(), 0, "", null,
-            BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+            BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.PEOPLE_IDENTIFY_IMPORT));
         LogUtils.info(logger, AssetEventEnum.ASSET_EXPORT_USERS.getName() + " {}", assets.toString());
 
         return stringBuilder.append(builder).append(sb).toString();

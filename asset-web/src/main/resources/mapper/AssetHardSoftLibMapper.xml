@@ -807,6 +807,26 @@
                 and supplier like CONCAT('%', replace(replace(REPLACE (#{supplier},'\\','\\\\'),'%','\%'),'_','\_'),
                 '%')
             </if>
+            <if test="version != null and version.trim != ''">
+                and version like CONCAT('%', replace(replace(REPLACE (#{version},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="sysVersion != null and sysVersion.trim !='' ">
+                and sys_version like CONCAT('%', replace(replace(REPLACE (#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softVersion != null and softVersion.trim !=''">
+                and soft_version like CONCAT('%', replace(replace(REPLACE (#{softVersion},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="softPlatform != null and softPlatform.trim !=''">
+                and soft_platform like CONCAT('%', replace(replace(REPLACE (#{softPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
+            <if test="hardPlatform != null and hardPlatform.trim !=''">
+                and hard_platform like CONCAT('%', replace(replace(REPLACE (#{hardPlatform},'\\','\\\\'),'%','\%'),'_','\_'),
+                '%')
+            </if>
             and is_storage = 1
             and status = 1
         </trim>

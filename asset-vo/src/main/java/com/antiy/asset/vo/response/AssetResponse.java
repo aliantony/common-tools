@@ -40,7 +40,7 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("资产编号")
     private String                         number;
-    @ApiModelProperty("stepNode")
+    @ApiModelProperty("stepNode:IN_NET(入网流程),EXCEPTION(异常流程),CHANGE(变更流程),SCRAP(报废流程),RETIRE(退回流程)")
     private String                         stepNode;
     /**
      * 资产名称

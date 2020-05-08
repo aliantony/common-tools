@@ -175,7 +175,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Override
     public boolean getStatus(Integer id) throws Exception {
         AssetOaOrder assetOaOrder = assetOaOrderDao.getById(id);
-        if(AssetOaOrderStatusEnum.WAIT_HANDLE.equals(assetOaOrder.getOrderStatus())){
+        if(AssetOaOrderStatusEnum.WAIT_HANDLE.getCode().equals(assetOaOrder.getOrderStatus())){
             //待处理状态，说明可以进行处理
             return true;
         }

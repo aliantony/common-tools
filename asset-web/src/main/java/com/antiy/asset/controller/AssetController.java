@@ -211,7 +211,7 @@ public class AssetController {
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
+    // @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
     public void exportTemplate(@ApiParam("导出的模板类型") ExportTemplateRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getType(), "类型不能为空");
         iAssetService.exportTemplate(request.getType());
@@ -356,7 +356,7 @@ public class AssetController {
     @RequestMapping(value = "/import/computer", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importPc')")
     public ActionResponse importPc(@ApiParam(value = "file") MultipartFile file,
-                                   @RequestBody AssetImportRequest assetImportRequest) throws Exception {
+                                   AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -378,7 +378,7 @@ public class AssetController {
     @RequestMapping(value = "/import/net", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importNet')")
     public ActionResponse importNet(@ApiParam(value = "file") MultipartFile file,
-                                    @RequestBody AssetImportRequest assetImportRequest) throws Exception {
+                                    AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -400,7 +400,7 @@ public class AssetController {
     @RequestMapping(value = "/import/safety", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importSafety')")
     public ActionResponse importSafety(@ApiParam(value = "file") MultipartFile file,
-                                       @RequestBody AssetImportRequest assetImportRequest) throws Exception {
+                                       AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -423,7 +423,7 @@ public class AssetController {
     @RequestMapping(value = "/import/storage", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importStorage')")
     public ActionResponse importStorage(@ApiParam(value = "file") MultipartFile file,
-                                        @RequestBody AssetImportRequest assetImportRequest) throws Exception {
+                                        AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");
@@ -445,7 +445,7 @@ public class AssetController {
     @RequestMapping(value = "/import/ohters", method = RequestMethod.POST)
     @PreAuthorize(value = "hasAuthority('asset:asset:importOhters')")
     public ActionResponse importOhters(@ApiParam(value = "file") MultipartFile file,
-                                       @RequestBody AssetImportRequest assetImportRequest) throws Exception {
+                                       AssetImportRequest assetImportRequest) throws Exception {
         if (file == null) {
 
             throw new BusinessException("导入失败，文件为空，没有选择文件！");

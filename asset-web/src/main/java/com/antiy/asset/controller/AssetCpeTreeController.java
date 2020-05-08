@@ -157,4 +157,13 @@ public class AssetCpeTreeController {
     public ActionResponse queryOsNameList() throws Exception {
         return ActionResponse.success(iAssetCpeTreeService.queryOsNameList());
     }
+
+    @ApiOperation(value = "获取操作系统大类", notes = "无参方法")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+    })
+    @PostMapping(value = "/query/assetOS")
+    public ActionResponse getAssetOS() throws Exception{
+        return ActionResponse.success(iAssetCpeTreeService.queryAssetOs());
+    }
 }

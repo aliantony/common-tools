@@ -16,6 +16,11 @@ import java.util.List;
 
 public class AssetOaOrderQuery extends ObjectQuery {
     /**
+     * 主键字符串
+     */
+    @ApiModelProperty("主键字符串")
+    private String primaryKey;
+    /**
      * 主键
      */
     @ApiModelProperty("主键")
@@ -84,6 +89,16 @@ public class AssetOaOrderQuery extends ObjectQuery {
     }
 
     @Override
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
+    @Override
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    @Override
     public String toString() {
         return "AssetOaOrderQuery{" +
                 ", id=" + id +
@@ -91,6 +106,7 @@ public class AssetOaOrderQuery extends ObjectQuery {
                 ", orderType=" + orderType +
                 ", orderStatus=" + orderStatus +
                 ", gmtCreate=" + gmtCreate +
+                ", primaryKey=" + primaryKey +
                 "}";
     }
 

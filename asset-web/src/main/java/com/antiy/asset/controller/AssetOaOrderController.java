@@ -107,7 +107,7 @@ public class AssetOaOrderController {
 
     /**
      * 通过ID查询订单处理状态
-     * @param queryCondition
+     * @param query
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询订单处理状态", notes = "主键封装对象")
@@ -115,10 +115,10 @@ public class AssetOaOrderController {
             @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/getStatus", method = RequestMethod.POST)
-    public ActionResponse getStatus(@ApiParam(value = "id") @RequestBody QueryCondition queryCondition)throws Exception{
-        logger.info("查询订单状态,queryCondition:{}", JSONObject.toJSONString(queryCondition));
-        ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetOaOrderService.getStatus(Integer.parseInt(queryCondition.getPrimaryKey())));
+    public ActionResponse getStatus(@ApiParam(value = "id") @RequestBody AssetOaOrderQuery query)throws Exception{
+        logger.info("查询订单状态,queryCondition:{}", JSONObject.toJSONString(query));
+        ParamterExceptionUtils.isNull(query.getId(), "ID不能为空");
+        return ActionResponse.success(iAssetOaOrderService.getStatus(query.getId()));
     }
 }
 

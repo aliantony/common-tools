@@ -265,7 +265,12 @@
     <select id="findOSTopNode" resultMap="BaseResultMap">
         select * from
         <include refid="Table_Name"></include>
-        where title = '操作系统'
+        where pid = (SELECT
+        unique_id
+        FROM
+        asset_cpe_tree
+        WHERE
+        title = '操作系统' AND status = 1)
         <if test=' isCommon == "0"'>
             and title not like '%通用'
             and title != '无'
