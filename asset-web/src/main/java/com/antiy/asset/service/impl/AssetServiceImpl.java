@@ -901,11 +901,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             query.setCategoryModels(
                     // 循环获取计算设备，网络设备下所有子节点
                     // todo 由于资产类型枚举存在问题，暂时用魔法值代替
-                    (Integer[])getCategoryNodeList(Arrays.asList(2, 3)).toArray());
+                    getCategoryNodeList(Arrays.asList(2, 3)).toArray(new Integer[0]));
         }else {
             query.setCategoryModels(
                     // 循环获取所有子节点
-                    (Integer[]) getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray());
+                    getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray(new Integer[0]));
         }
 
         // 进行查询
