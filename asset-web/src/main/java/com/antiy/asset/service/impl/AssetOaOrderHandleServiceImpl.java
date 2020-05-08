@@ -97,7 +97,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         String orderNumber = request.getOrderNumber();
         AssetOaOrder assetOaOrder = assetOaOrderDao.getByNumber(orderNumber);
         //已处理状态，说明不能再进行处理
-        if (AssetOaOrderStatusEnum.OVER_HANDLE.equals(assetOaOrder.getOrderStatus())) {
+        if (AssetOaOrderStatusEnum.OVER_HANDLE.getCode().equals(assetOaOrder.getOrderStatus())) {
             throw new BusinessException("订单已被其他人员抢先处理");
         }
         //判断资产状态
