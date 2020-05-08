@@ -298,6 +298,33 @@ public class AssetQuery extends ObjectQuery implements ObjectValidator {
     private String monitorRule;
 
 
+    /**
+     * 原始状态
+     */
+    private Integer originStatus;
+
+    /**
+     * 目标状态
+     */
+    private Integer targetStatus;
+
+
+    public Integer getOriginStatus() {
+        return originStatus;
+    }
+
+    public void setOriginStatus(Integer originStatus) {
+        this.originStatus = originStatus;
+    }
+
+    public Integer getTargetStatus() {
+        return targetStatus;
+    }
+
+    public void setTargetStatus(Integer targetStatus) {
+        this.targetStatus = targetStatus;
+    }
+
     public String getMonitorRule() {
         return monitorRule;
     }

@@ -1079,6 +1079,13 @@
         AND c.STATUS = 1
         left join asset_link_relation d on ((a.id = d.asset_id and b.ip = d.asset_ip ) or (a.id = d.parent_asset_id and
         b.ip = d.parent_asset_ip))
+        left join
+        (SELECT e.id, e.origin_status, e.target_status, e.target_object_id
+        from asset_operation_record e
+        WHERE status = 1
+        GROUP BY e.id
+        ORDER BY e.gmt_create
+        limit 1) as f on f.target_object_id = a.id
         where a.status = 1
         <if test="primaryKey !=null">
             and a.id != #{primaryKey}
@@ -1096,10 +1103,11 @@
             </foreach>
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and a.asset_status in
+            and( a.asset_status in
             <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
+            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary
@@ -1157,6 +1165,13 @@
         AND c.STATUS = 1
         left join asset_link_relation d on ((a.id = d.asset_id and b.ip = d.asset_ip ) or (a.id = d.parent_asset_id and
         b.ip = d.parent_asset_ip))
+        left join
+        (SELECT e.id, e.origin_status, e.target_status, e.target_object_id
+        from asset_operation_record e
+        WHERE status = 1
+        GROUP BY e.id
+        ORDER BY e.gmt_create
+        limit 1) as f on f.target_object_id = a.id
         where a.status = 1
         <if test="primaryKey !=null">
             and a.id != #{primaryKey}
@@ -1174,10 +1189,11 @@
             </foreach>
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and a.asset_status in
+            and( a.asset_status in
             <foreach collection="assetStatusList" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
+            or (a.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         <if test=" multipleQuery != null and multipleQuery != ''">
             and (a.name LIKE binary

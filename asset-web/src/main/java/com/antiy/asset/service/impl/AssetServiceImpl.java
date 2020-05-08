@@ -173,6 +173,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private AssetBusinessRelationDao                                            relationDao;
     @Resource
     private IAssetCpeTreeService                                                assetCpeTreeService;
+    @Resource
+    private AssetCategoryModelDao assetCategoryModelDao;
 
     @Override
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
@@ -888,15 +890,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         query.setAssetStatusList(statusList);
 
-        if (query.getCategoryModels() == null || query.getCategoryModels().length == 0) {
-            // 查询资产的类型
-            Asset asset = assetDao.getByAssetId(query.getPrimaryKey());
-            if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModel())) {
-                query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
-            } else if (AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModel())) {
-                query.setCategoryModels(
-                    new Integer[] { AssetCategoryEnum.COMPUTER.getCode(), AssetCategoryEnum.NETWORK.getCode() });
-            }
+        query.setOriginStatus(AssetStatusEnum.NET_IN.getCode());
+        query.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
+
+        // 品类型号
+        if (Objects.isNull(query.getCategoryModels())) {
+            query.setCategoryModels(
+                    // 循环获取计算设备，网络设备下所有子节点
+                    // todo 由于资产类型枚举存在问题，暂时用魔法值代替
+                    (Integer[])getCategoryNodeList(Arrays.asList(2, 3)).toArray());
+        }else {
+            query.setCategoryModels(
+                    // 循环获取所有子节点
+                    (Integer[]) getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray());
         }
 
         // 进行查询
@@ -4002,6 +4008,33 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
     }
+
+
+    // 获取当前节点下所有子节点列表
+    public List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
+
+        Set<Integer> allNodes = new HashSet<>();
+        allNodes.addAll(currentNodes);
+        getNodesForrecursion(currentNodes, allNodes);
+
+        return new ArrayList<>(allNodes);
+    }
+
+    // 递归获取所有节点
+    private void getNodesForrecursion(List<Integer> list, Set<Integer> allNodes) {
+
+        List<Integer> nodeList = new ArrayList<>();
+
+        if (!list.isEmpty()){
+            nodeList = assetCategoryModelDao.getCategoryNodeList(list);
+        }
+
+        // 当有数据时继续调用本方法，直到返回为空。
+        if (!nodeList.isEmpty()){
+            allNodes.addAll(nodeList);
+            getNodesForrecursion(nodeList, allNodes);
+        }
+    }
 }
 
 @Component
@@ -4078,4 +4111,5 @@ enum AvailableStatusEnum implements CodeEnum {
     public String getMsg() {
         return msg;
     }
+
 }
