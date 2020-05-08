@@ -387,7 +387,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
 
 
-    List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request);
+    List<AssetAreaAndIpResponse> queryIpByAreaId(@Param("areaId")String areaId,@Param("statusList") List<Integer> statusList);
 
     /**
      * 资产综合查询数量

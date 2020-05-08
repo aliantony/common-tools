@@ -2329,7 +2329,7 @@
         </foreach>
 
     </select>
-    <select id="queryIpByAreaId" resultType="com.antiy.asset.vo.response.AssetAreaAndIpResponse" parameterType="com.antiy.asset.vo.request.AssetIpRequest">
+    <select id="queryIpByAreaId" resultType="com.antiy.asset.vo.response.AssetAreaAndIpResponse">
 
         SELECT
             a.area_id as areaId,
@@ -2339,7 +2339,10 @@
             LEFT JOIN asset_ip_relation r ON ( a.id = r.asset_id AND a.`status` = 1 AND r.`status` = 1 )
         WHERE
         LOCATE(#{areaId}, left(area_id, length(#{areaId})))>0
-
+        and a.asset_status not in
+        <foreach collection="statusList" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
     </select>
     <select id="queryAssetCount" resultType="java.lang.Integer">
         SELECT
