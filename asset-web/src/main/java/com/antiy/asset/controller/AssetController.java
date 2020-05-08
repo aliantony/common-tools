@@ -211,7 +211,7 @@ public class AssetController {
      */
     @ApiOperation(value = "导出模板", notes = "主键封装对象")
     @RequestMapping(value = "/export/template", method = RequestMethod.GET)
-    @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
+    // @PreAuthorize(value = "hasAuthority('asset:asset:exportTemplate')")
     public void exportTemplate(@ApiParam("导出的模板类型") ExportTemplateRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getType(), "类型不能为空");
         iAssetService.exportTemplate(request.getType());
