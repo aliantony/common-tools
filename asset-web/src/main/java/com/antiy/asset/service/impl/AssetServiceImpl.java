@@ -216,7 +216,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 不跳过整改=>整改中(计算设备，安全设备)
                     if (request.getNeedScan()) {
                         // 已整改
-                        asset.setRectification(1);
+                        asset.setRectification(3);
                         asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
                     } else {
                         // 计算设备、网络设备=>待准入
@@ -1275,12 +1275,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void dealRegisterProcess(AssetOuterRequest assetOuterRequest) throws Exception {
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
+        asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
         Integer status;
         // 不跳过整改
         if (assetOuterRequest.getNeedScan()) {
             asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
             status = AssetStatusEnum.CORRECTING.getCode();
-            assetOuterRequest.getAsset().setRectification(1);
+            assetOuterRequest.getAsset().setRectification(3);
         } else {
             // 计算设备、网络设备=>待准入
             if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
@@ -1306,6 +1307,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void dealChangeProcess(AssetOuterRequest assetOuterRequest) throws Exception {
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
         String assetId = asset.getStringId();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         String currentUserName = LoginUserUtil.getLoginUser().getUsername();
