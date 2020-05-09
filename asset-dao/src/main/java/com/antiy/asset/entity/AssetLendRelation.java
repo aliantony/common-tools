@@ -17,7 +17,7 @@ private static final long serialVersionUID = 1L;
     /**
     *  唯一键
     */
-    private Long uniqueId;
+    private String uniqueId;
     /**
     *  资产id
     */
@@ -90,14 +90,13 @@ private static final long serialVersionUID = 1L;
         this.lendTime = lendTime;
     }
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
-
 
     public String getAssetId() {
         return assetId;

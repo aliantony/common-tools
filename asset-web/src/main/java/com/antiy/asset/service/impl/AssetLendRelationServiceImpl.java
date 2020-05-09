@@ -177,7 +177,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         assetLendRelation.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         assetLendRelation.setLendStatus(Integer.valueOf(1));
-        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
@@ -225,7 +225,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request, AssetLendRelation.class);
         assetLendRelation.setLendStatus(Integer.valueOf(1));
-        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
