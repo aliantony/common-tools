@@ -27,6 +27,7 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -325,8 +326,10 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         Map<String, List<Double>> secondCoordinates = new HashMap<>();
         // 构造第二层坐标数据
         settingSecondLevelCoordinates(secondMap, jsonData, idCategory, secondCoordinates);
-        // 构造第三层坐标数据
-        settingThirdLevelCoordinates(secondThirdMap, jsonData, idCategory, secondCoordinates);
+        if (MapUtils.isNotEmpty(secondCoordinates)){
+            // 构造第三层坐标数据
+            settingThirdLevelCoordinates(secondThirdMap, jsonData, idCategory, secondCoordinates);
+        }
         // 封装数据
         assetTopologyJsonData.setJson_data0(jsonData);
         assetTopologyRelation.setJson_data(assetTopologyJsonData);
