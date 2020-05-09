@@ -72,7 +72,7 @@ public class AssetAssemblyResponse extends BaseResponse {
      * 唯一键
      */
     @ApiModelProperty("唯一键")
-    private Long    uniqueId;
+    private String    uniqueId;
     /**
      * 1 未报废 2 已报废
      */
@@ -111,11 +111,11 @@ public class AssetAssemblyResponse extends BaseResponse {
         this.smash = smash;
     }
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 

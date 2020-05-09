@@ -6,6 +6,7 @@ import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.vo.user.UserStatus;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.RespBasicCode;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -54,9 +55,12 @@ public class SysRoleClientImpl implements SysUserClient {
     }
 
     @Override
-    public ActionResponse<List<HashMap<String,String>>> getUsersOfHaveRight(List<String> tag) {
+    public ActionResponse<List<HashMap<String,String>>> getUsersOfHaveRight( List<String> tag,List<String> areaIds) {
         JSONObject param = new JSONObject();
         param.put("qxTags", tag);
+        if(CollectionUtils.isNotEmpty(areaIds)){
+            param.put("areaIds",areaIds);
+        }
         return (ActionResponse<List<HashMap<String,String>>>) baseClient.post(param, new ParameterizedTypeReference<ActionResponse<List<HashMap<String,String>>>>() {
         }, getUsersOfHaveRight );
 

@@ -10,6 +10,10 @@ import com.antiy.common.base.BaseEntity;
  */
 
 public class AssetOperationRecord extends BaseEntity {
+    /**
+     * 附件 （暂存）
+     */
+    private String temporaryFile;
 
     /**
      * 被操作的对象ID
@@ -251,10 +255,19 @@ public class AssetOperationRecord extends BaseEntity {
         this.needVulScan = needVulScan;
     }
 
+    public String getTemporaryFile() {
+        return temporaryFile;
+    }
+
+    public void setTemporaryFile(String temporaryFile) {
+        this.temporaryFile = temporaryFile;
+    }
+
     @Override
     public String toString() {
         return "AssetOperationRecord{" +
-                "targetObjectId='" + targetObjectId + '\'' +
+                "temporaryFile='" + temporaryFile + '\'' +
+                ", targetObjectId='" + targetObjectId + '\'' +
                 ", targetStatus=" + targetStatus +
                 ", content='" + content + '\'' +
                 ", operateUserId=" + operateUserId +
@@ -267,6 +280,12 @@ public class AssetOperationRecord extends BaseEntity {
                 ", note='" + note + '\'' +
                 ", fileInfo='" + fileInfo + '\'' +
                 ", needVulScan=" + needVulScan +
+                ", checkUserId=" + checkUserId +
+                ", checkUserName='" + checkUserName + '\'' +
+                ", executeUserId=" + executeUserId +
+                ", executeUserName='" + executeUserName + '\'' +
+                ", taskId=" + taskId +
+                ", temporaryInfo='" + temporaryInfo + '\'' +
                 '}';
     }
 }

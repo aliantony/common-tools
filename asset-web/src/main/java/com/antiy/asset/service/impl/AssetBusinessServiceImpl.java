@@ -88,9 +88,10 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         List<AssetBusinessRelation> assetRelationList = new ArrayList<>();
         for (AssetBusinessRelationRequest itme : list) {
             Asset asset = assetDao.getById(itme.getAssetId());
-            if (!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())
-                  || AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))) {
-                throw new BusinessException("资产状态不合符流程！");
+            if(AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                    ||AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
+                    ||AssetStatusEnum.SCRAP.getCode().equals(asset.getAssetStatus())){
+                throw new BusinessException("资产状态已改变，不能添加此状态资产！");
             }
             AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
             assetBusinessRelation.setAssetId(itme.getAssetId());
@@ -102,9 +103,11 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             assetBusinessRelation.setGmtModified(System.currentTimeMillis());
             assetRelationList.add(assetBusinessRelation);
         }
-        assetBusinessRelationDao.insertBatch(assetRelationList);
+        if(CollectionUtils.isNotEmpty(assetRelationList)){
+            assetBusinessRelationDao.insertBatch(assetRelationList);
+        }
         LogUtils.recordOperLog(
-                new BusinessData("新增业务信息", business.getId(), business.getName(),
+                new BusinessData("新增业务信息", assetBusiness.getId(), assetBusiness.getName(),
                         request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_ADD)
         );
         return assetBusiness.getStringId();
@@ -289,8 +292,8 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
 
     @Override
     public Integer updateStatusByUniqueId(String uniqueId) {
-        Integer result = assetBusinessDao.updateStatusByUniqueId(uniqueId);
         AssetBusiness business = assetBusinessDao.getByUniqueId(uniqueId);
+        Integer result = assetBusinessDao.updateStatusByUniqueId(uniqueId);
         LogUtils.recordOperLog(
                 new BusinessData("删除业务信息", business.getId(), business.getName(),
                         uniqueId, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_DELETE)

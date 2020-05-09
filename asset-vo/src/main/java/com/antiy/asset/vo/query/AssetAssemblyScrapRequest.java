@@ -18,12 +18,23 @@ public class AssetAssemblyScrapRequest extends BaseRequest {
     @ApiModelProperty("备注")
     private String  temporaryInfo;
 
+    @ApiModelProperty("附件")
+    private  String temporaryFile;
+
     public String getTemporaryInfo() {
         return temporaryInfo;
     }
 
     public void setTemporaryInfo(String temporaryInfo) {
         this.temporaryInfo = temporaryInfo;
+    }
+
+    public String getTemporaryFile() {
+        return temporaryFile;
+    }
+
+    public void setTemporaryFile(String temporaryFile) {
+        this.temporaryFile = temporaryFile;
     }
 
     public String getAssetId() {

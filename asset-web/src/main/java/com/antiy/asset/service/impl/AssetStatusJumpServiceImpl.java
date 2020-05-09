@@ -103,7 +103,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     public ActionResponse changeStatus(AssetStatusJumpRequest statusJumpRequest) throws Exception {
         LogUtils.info(logger, "资产状态处理开始,参数request:{}", statusJumpRequest);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
-
         //参数校验
         if(StringUtils.isNotBlank(statusJumpRequest.getFileInfo())){
            if( MAX_FILE_COUNT<statusJumpRequest.getFileInfo().split(";").length){
@@ -125,6 +124,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 }
             });
         }
+
 
         // 1.校验参数信息,当前流程的资产是否都满足当前状态
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
@@ -158,11 +158,20 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         }
 
+        //退回申请校验
+        Integer allowBorrow=1;
+        if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
+            assetsInDb.forEach(asset->{
+               if(allowBorrow.equals(asset.getIsBorrow())){
+                    throw new BusinessException("可出借设备不能进行退回申请操作！");
+               }
+            });
+        }
         // 2.不是变更完成,提交至工作流
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum())) {
             // 先更改为下一个状态,后续失败进行回滚
 //            setInProcess(statusJumpRequest, assetsInDb);
-            List<String> procInstIds = startActivity(statusJumpRequest, loginUser);
+            List<String> procInstIds = startActivity(statusJumpRequest, loginUser,assetsInDb);
             try{
                 updateData(statusJumpRequest, assetsInDb);
             }catch (Exception e){
@@ -313,27 +322,34 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
                 ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
-            //发消息
-            List<String> tag=Arrays.asList("asset:info:list:bfsq");
+/*            //发消息
+             final   List<String> tag=new ArrayList<>(2);
+            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)){
+                tag.add("asset:info:list:bfsq");
+            }
             if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-                tag=Arrays.asList("asset:info:list:thsq");
+                tag.add("asset:info:list:thsq");
             }
-            //获取特定权限的用户id
-            List<Integer> userIds = getALLUserIdByPermission(tag);
-            if(CollectionUtils.isEmpty(userIds)){
-                boolean isRetire=AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum());
-                throw new BusinessException("请先维护具备"+(isRetire==true?"退回":"报废")+"执行权限的人员");
-            }
-            //发消息
-            SysMessageRequest sysMessageRequest=new SysMessageRequest();
             List<SysMessageRequest> sysMessageRequests=new ArrayList<>();
-
-            userIds.forEach(t->{
-                SysMessageRequest v=new SysMessageRequest();
-                v.setReceiveUserId(t);
-                sysMessageRequests.add(v);
+            JSONObject jsonObject=new JSONObject();
+            assetsInDb.forEach(asset->{
+                String areaId = asset.getAreaId();
+                List<Integer> userIds = getALLUserIdByPermission(tag, Arrays.asList(areaId), username);
+                if(CollectionUtils.isEmpty(userIds)){
+                    boolean isRetire=AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum());
+                    throw new BusinessException("请先维护具备"+(isRetire==true?"退回":"报废")+"执行权限的人员");
+                }
+                jsonObject.put("id",asset.getId());
+                userIds.forEach(k->{
+                    SysMessageRequest v=new SysMessageRequest();
+                    v.setReceiveUserId(k);
+                    v.setTopic(statusJumpRequest.getAssetFlowEnum().getNextOperaLog());
+                    v.setOther(jsonObject.toJSONString());
+                    sysMessageRequests.add(v);
+                });
             });
-            sysMessageSender.batchSendMessage(sysMessageRequests);
+
+            sysMessageSender.batchSendMessage(sysMessageRequests);*/
 
             //准入  计算机设备和网络设备且不可借用、不是孤岛
             Integer computerCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
@@ -368,15 +384,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
     }
 
-    private  List<Integer> getALLUserIdByPermission(List<String> tag){
+    private  List<Integer> getALLUserIdByPermission(List<String> tag, String username){
+        return getALLUserIdByPermission(tag,null,username);
+    }
+    private  List<Integer> getALLUserIdByPermission(List<String> tag,List<String> areaIds, String username){
         //获取权限人员id
-        ActionResponse usersOfHaveRight = sysUserClient.getUsersOfHaveRight(tag);
+        ActionResponse usersOfHaveRight = sysUserClient.getUsersOfHaveRight(tag,areaIds);
         if (null == usersOfHaveRight || !RespBasicCode.SUCCESS.getResultCode().equals(usersOfHaveRight.getHead().getCode())) {
             throw new BusinessException("获取权限用具id 失败！");
         }
         List<HashMap<String,String>> users=(List<HashMap<String,String>>)usersOfHaveRight.getBody();
 
-        String username = LoginUserUtil.getLoginUser().getUsername();
         List<Integer> userIds = users.stream()
                 .map(t -> DataTypeUtils.stringToInteger(aesEncoder.decode(t.get("stringId"), username)))
                 .collect(Collectors.toList());
@@ -638,7 +656,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
     }
 
-    private List<String>  startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser) throws Exception {
+    private List<String>  startActivity(AssetStatusJumpRequest assetStatusRequest, LoginUser loginUser,List<Asset> assetsInDb) throws Exception {
         ParamterExceptionUtils.isNull(assetStatusRequest.getFormData(), "formData参数错误");
         // 为满足需求,同时工作流模块无法达到要求;"整改"不通过退回至待检查时,重置formData:将执行意见改为1,将下一步人设置为上一步"检查"的操作人
         if (assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.CORRECT)
@@ -651,16 +669,20 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             assetStatusRequest.setFormData(formData);
         }
         //设置权限的用户id
-        List<String> tag=Arrays.asList("asset:info:list:bfsq");
-        List<Integer> userIds = getALLUserIdByPermission(tag);
-       // 设置 formData
+        final   List<String> tag=new ArrayList<>(2);
+        // 设置 工作流数据参数
         Map<String,String> formData=new HashMap<>();
-        if(AssetFlowEnum.RETIRE_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())){
-            formData.put("retireImplementUser",StringUtils.join(userIds,","));
-        }
+        List<String> areaIds = assetsInDb.stream().map(asset -> aesEncoder.encode(asset.getAreaId(), loginUser.getUsername())).collect(Collectors.toList());
         if(AssetFlowEnum.SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
                 || AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())){
+            tag.add("asset:info:list:bfsq");
+            List<Integer> userIds = getALLUserIdByPermission(tag,areaIds,loginUser.getUsername());
             formData.put("scrapImplementUser",StringUtils.join(userIds,","));
+        }
+        if(assetStatusRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
+            tag.add("asset:info:list:thsq");
+            List<Integer> userIds = getALLUserIdByPermission(tag,areaIds,loginUser.getUsername());
+            formData.put("retireImplementUser",StringUtils.join(userIds,","));
         }
 
         // 1.退役申请需要启动流程,其他步骤完成流程
