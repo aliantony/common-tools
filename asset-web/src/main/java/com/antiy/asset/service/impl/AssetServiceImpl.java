@@ -1307,6 +1307,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void dealChangeProcess(AssetOuterRequest assetOuterRequest) throws Exception {
         Asset asset = BeanConvert.convertBean(assetOuterRequest.getAsset(), Asset.class);
+        asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
         String assetId = asset.getStringId();
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         String currentUserName = LoginUserUtil.getLoginUser().getUsername();
