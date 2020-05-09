@@ -2788,45 +2788,46 @@ WHERE
     </select>
     <select id="queryOSList" resultType="com.antiy.asset.vo.response.AssetHardSoftLibResponse">
         select
-        business_id as businessId,
-        number,
-        type,
-        supplier,
-        product_name as productName,
-        version,
-        sys_version as sysVersion,
-        language,
-        soft_version as soft_version,
-        soft_platform as softPlatform,
-        hard_platform as hardPlatform,
-        other
+        t2.unique_id as businessId,
+        t1.number,
+        t1.type,
+        t1.supplier,
+        t1.product_name as productName,
+        t1.version,
+        t1.sys_version as sysVersion,
+        t1.language,
+        t1.soft_version as soft_version,
+        t1.soft_platform as softPlatform,
+        t1.hard_platform as hardPlatform,
+        t1.other
         from
-        asset_hard_soft_lib
+        asset_hard_soft_lib t1 left join asset_cpe_tree t2
+        on t1.business_id = t2.business_id
         where
         1 = 1
         <if test="childIds != null and childIds.size() > 0">
-            and business_id in
+            and t1.business_id in
             <foreach collection="childIds" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
         </if>
         <if test="sysVersion != null and sysVersion != ''">
-            and sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.sys_version like CONCAT('%',replace(replace(replace(#{sysVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="language != null and language != ''">
-            and language like CONCAT('%',replace(replace(replace(#{language},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.language like CONCAT('%',replace(replace(replace(#{language},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="softVersion != null and softVersion != ''">
-            and soft_version like CONCAT('%',replace(replace(replace(#{softVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.soft_version like CONCAT('%',replace(replace(replace(#{softVersion},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="softPlatform != null and softPlatform != ''">
-            and soft_platform like CONCAT('%',replace(replace(replace(#{softPlatform},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.soft_platform like CONCAT('%',replace(replace(replace(#{softPlatform},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="hardPlatform != null and hardPlatform != ''">
-            and hard_platform like CONCAT('%',replace(replace(replace(#{hardPlatform},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.hard_platform like CONCAT('%',replace(replace(replace(#{hardPlatform},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="other != null and other != ''">
-            and other like CONCAT('%',replace(replace(replace(#{other},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+            and t1.other like CONCAT('%',replace(replace(replace(#{other},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
