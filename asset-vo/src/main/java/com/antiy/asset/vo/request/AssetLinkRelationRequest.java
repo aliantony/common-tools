@@ -110,7 +110,7 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
      */
     @ApiModelProperty("交换机状态: 1.正常 2.损坏")
     @Size(min = 1, max = 2)
-    private Integer switchState;
+    private String switchState;
 
     /**
      * vlan号
@@ -156,11 +156,11 @@ public class AssetLinkRelationRequest extends BaseRequest implements ObjectValid
         this.officeNetState = officeNetState;
     }
 
-    public Integer getSwitchState() {
+    public String getSwitchState() {
         return switchState;
     }
 
-    public void setSwitchState(Integer switchState) {
+    public void setSwitchState(String switchState) {
         this.switchState = switchState;
     }
 
