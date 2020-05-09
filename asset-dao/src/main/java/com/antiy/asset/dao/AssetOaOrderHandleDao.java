@@ -24,4 +24,9 @@ public interface AssetOaOrderHandleDao extends IBaseDao<AssetOaOrderHandle> {
      * 判断资产是否处于可借用状态的保管中
      */
     Integer countLendByAssetId(Integer assetId);
+
+    /**
+     * 查询处于可借用状态的保管中的资产id
+     */
+    List<String> getAssetIdWhenLend();
 }

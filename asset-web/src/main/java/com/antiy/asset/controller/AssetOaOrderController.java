@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.request.AssetOaOrderRequest;
+import com.antiy.asset.vo.response.AssetOaOrderResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
@@ -82,7 +83,7 @@ public class AssetOaOrderController {
      */
     @ApiOperation(value = "通过ID查询", notes = "主键封装对象")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),
+            @ApiResponse(code = 200, message = "OK", response = AssetOaOrderResponse.class, responseContainer = "actionResponse"),
     })
     @RequestMapping(value = "/queryById", method = RequestMethod.POST)
     public ActionResponse queryById(@ApiParam(value = "assetOaOrder") @RequestBody AssetOaOrderQuery assetOaOrderQuery)throws Exception{
