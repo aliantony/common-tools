@@ -9,7 +9,7 @@ import com.antiy.common.base.BaseEntity;
  * @since 2019-09-19
  */
 
-public class AssetAssembly extends BaseEntity {
+public class  AssetAssembly extends BaseEntity {
 
     /**
      * 资产主键
@@ -47,7 +47,7 @@ public class AssetAssembly extends BaseEntity {
     /**
      * 唯一键
      */
-    private Long    uniqueId;
+    private String    uniqueId;
     /**
      * 1 未报废 2 已报废
      */
@@ -93,11 +93,11 @@ public class AssetAssembly extends BaseEntity {
         this.smash = smash;
     }
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 

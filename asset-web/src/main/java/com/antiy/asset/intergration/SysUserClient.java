@@ -18,5 +18,5 @@ public interface SysUserClient {
     Object getInvokeResult(String id);
 
     UserStatus getLoginUserInfo(String userName);
-    ActionResponse<List<HashMap<String,String>>> getUsersOfHaveRight(List<String> tag);
+    ActionResponse<List<HashMap<String,String>>> getUsersOfHaveRight(List<String> tag, List<String> areaIds);
 }

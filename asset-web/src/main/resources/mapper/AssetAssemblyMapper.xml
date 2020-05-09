@@ -237,15 +237,16 @@
         <foreach collection="list" item="item" separator=";">
             update
             asset_assembly
+            set
             <trim suffixOverrides=",">
                 <if test="item.remove !=null">
-                    set remove=#{item.remove},
+                     remove=#{item.remove},
                 </if>
                 <if test="item.demagnetization !=null">
-                    set demagnetization=#{item.demagnetization},
+                     demagnetization=#{item.demagnetization},
                 </if>
                 <if test="item.smash !=null">
-                    set smash=#{item.smash},
+                     smash=#{item.smash},
                 </if>
             </trim>
             where unique_id=#{item.uniqueId} and status=1

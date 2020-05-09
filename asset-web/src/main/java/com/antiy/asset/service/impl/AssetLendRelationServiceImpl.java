@@ -32,9 +32,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * <p>
@@ -177,13 +176,15 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         assetLendRelation.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
         assetLendRelation.setLendStatus(Integer.valueOf(1));
-        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
+        //校验资产状态
+        this.checkAssetStatus(Arrays.asList(assetLendRelation.getAssetId()));
         //出借保存
         this.insertAssetLendRelation(assetLendRelation);
-
+        //日志
         LogUtils.recordOperLog(
                 new BusinessData("借出资产", assetLendRelation.getAssetId(), assetDao.getNumberById(assetLendRelation.getAssetId()),
                         request, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NONE)
@@ -225,11 +226,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request, AssetLendRelation.class);
         assetLendRelation.setLendStatus(Integer.valueOf(1));
-        assetLendRelation.setUniqueId(Long.valueOf(SnowFlakeUtil.getSnowId()));
+        assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
 
+        //校验资产状态
+        this.checkAssetStatus(request.getAssetIds());
         for (String item : request.getAssetIds()) {
             //出借保存
             assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
@@ -264,4 +267,10 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         }
     }
 
+    private void checkAssetStatus(List<String> assetIds){
+        if(assetLendRelationDao.checkStatusByAssetId(assetIds)){
+            logger.error("出借资产{}状态异常！", assetIds.toString());
+            throw new BusinessException("资产状态异常，出借失败！");
+        }
+    }
 }

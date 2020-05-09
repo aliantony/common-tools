@@ -455,6 +455,18 @@
             AND asset_id = #{assetId}
             AND lend_status = 1
     </select>
+    <select id="checkStatusByAssetId" resultType="java.lang.Boolean">
+        SELECT
+            IF(count(1) >0,1,0)
+        FROM
+            asset
+        WHERE
+            id in
+            <foreach collection="assetIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            AND asset_status != 5
+    </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>
             (

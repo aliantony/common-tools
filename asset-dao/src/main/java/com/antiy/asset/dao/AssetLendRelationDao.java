@@ -11,6 +11,7 @@ import com.antiy.asset.vo.response.UserInfoResponse;
 import com.antiy.asset.vo.response.UserListResponse;
 import com.antiy.common.base.IBaseDao;
 import com.antiy.common.base.ObjectQuery;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -52,4 +53,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     String queryDepartmentParent(String departmentId);
 
     Integer countAsset(String assetId);
+
+    Boolean checkStatusByAssetId(@Param("assetIds") List<String> assetIds);
 }

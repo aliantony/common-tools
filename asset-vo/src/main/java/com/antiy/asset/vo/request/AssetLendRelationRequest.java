@@ -20,7 +20,7 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
      *  唯一键
      */
     @ApiModelProperty("唯一键")
-    private Long uniqueId;
+    private String uniqueId;
     /**
      *  资产id
      */
@@ -107,14 +107,13 @@ public class AssetLendRelationRequest extends BaseRequest implements ObjectValid
         this.lendTime = lendTime;
     }
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
-    this.uniqueId = uniqueId;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
-
 
     public String getAssetId() {
         return assetId;

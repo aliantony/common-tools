@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.request;
 
-import java.io.Serializable;
-
 import com.antiy.common.base.BasicRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 /**
  * <p> AssetCpuRequest 请求对象 </p>
@@ -55,7 +54,7 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
      * 唯一键
      */
     @ApiModelProperty("唯一键")
-    private Long    uniqueId;
+    private String    uniqueId;
     /**
      * 1 未报废 2 已报废
      */
@@ -113,11 +112,11 @@ public class AssetAssemblyRequest extends BasicRequest implements ObjectValidato
         this.smash = smash;
     }
 
-    public Long getUniqueId() {
+    public String getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(Long uniqueId) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 

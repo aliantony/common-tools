@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class AssetOperationRecordResponse extends BaseResponse {
+    @ApiModelProperty(value = "附件 暂存")
+    private String temporaryFile;
     /**
      * 被操作的对象ID
      */
@@ -181,10 +183,20 @@ public class AssetOperationRecordResponse extends BaseResponse {
         this.fileInfo = fileInfo;
     }
 
+    public String getTemporaryFile() {
+        return temporaryFile;
+    }
+
+    public void setTemporaryFile(String temporaryFile) {
+        this.temporaryFile = temporaryFile;
+    }
+
     @Override
     public String toString() {
         return "AssetOperationRecordResponse{" +
-                "targetObjectId='" + targetObjectId + '\'' +
+                "temporaryFile='" + temporaryFile + '\'' +
+                ", targetObjectId='" + targetObjectId + '\'' +
+                ", note='" + note + '\'' +
                 ", targetType='" + targetType + '\'' +
                 ", targetStatus=" + targetStatus +
                 ", content='" + content + '\'' +
