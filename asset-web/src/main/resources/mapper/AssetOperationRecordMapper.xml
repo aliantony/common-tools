@@ -318,7 +318,7 @@
               #{entity.executeUserId},
                #{entity.executeUserName},
                #{entity.taskId},
-               #{entiy.temporaryFile}
+               #{entity.temporaryFile}
     </sql>
 
 
