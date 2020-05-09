@@ -141,21 +141,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         });
 
         //资产 报废执行  前置条件 组件报废已经执行
-        if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)){
-
-            List<AssetAssemblyRequest> assemblys = statusJumpRequest.getAssetAssemblyRequest();
-            try {
-
-                for(AssetAssemblyRequest t:assemblys){
-                    int k=t.getRemove()+t.getScrap()+t.getSmash();
-                    if(k<=0){
-                        throw  new BusinessException("请报废完所有组件在提交!");
-                    }
+        List<AssetAssemblyRequest> assemblys = statusJumpRequest.getAssetAssemblyRequest();
+        if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)
+                &&CollectionUtils.isNotEmpty(assemblys)){
+            for(AssetAssemblyRequest t:assemblys){
+                int k=t.getRemove()+t.getScrap()+t.getSmash();
+                if(k<=0){
+                    throw  new BusinessException("请报废完所有组件在提交!");
                 }
-            }catch (Exception e){
-                throw  new BusinessException("请报废完所有组件在提交!");
             }
-
         }
 
         //退回申请校验
