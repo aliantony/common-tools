@@ -98,7 +98,7 @@ public class AssetResponse extends BaseResponse {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType                   categoryType;
+    private Integer                        categoryType;
 
     /**
      * 品类名称
@@ -1028,8 +1028,12 @@ public class AssetResponse extends BaseResponse {
         this.operationSystemName = operationSystemName;
     }
 
-    public CategoryType getCategoryType() {
+    public Integer getCategoryType() {
         return categoryType;
+    }
+
+    public void setCategoryType(Integer categoryType) {
+        this.categoryType = categoryType;
     }
 
     public Long getBaselineTemplateCorrelationGmt() {
@@ -1046,10 +1050,6 @@ public class AssetResponse extends BaseResponse {
 
     public void setInstallTemplateCorrelationGmt(Long installTemplateCorrelationGmt) {
         this.installTemplateCorrelationGmt = installTemplateCorrelationGmt;
-    }
-
-    public void setCategoryType(CategoryType categoryType) {
-        this.categoryType = categoryType;
     }
 
     public List<AssetIpRelationResponse> getIp() {
