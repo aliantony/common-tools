@@ -1267,6 +1267,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     private void dealRegisterProcess(AssetOuterRequest assetOuterRequest) throws Exception {
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
+        asset.setId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()));
         Integer status;
         // 不跳过整改
         if (assetOuterRequest.getNeedScan()) {
