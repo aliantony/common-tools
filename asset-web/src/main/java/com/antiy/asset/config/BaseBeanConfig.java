@@ -4,9 +4,13 @@ import java.io.File;
 
 import javax.servlet.MultipartConfigElement;
 
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 /**
  * @author zhangyajun
@@ -31,5 +35,21 @@ public class BaseBeanConfig {
         }
         factory.setLocation(location);
         return factory.createMultipartConfig();
+    }
+
+    /**
+     * 只对Long型数据进行处理，转换成字符串
+     * @return
+     */
+    @Bean("jackson2ObjectMapperBuilderCustomizer")
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+        Jackson2ObjectMapperBuilderCustomizer customizer = new Jackson2ObjectMapperBuilderCustomizer() {
+            @Override
+            public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
+                jacksonObjectMapperBuilder.serializerByType(Long.class, ToStringSerializer.instance)
+                        .serializerByType(Long.TYPE, ToStringSerializer.instance);
+            }
+        };
+        return customizer;
     }
 }
