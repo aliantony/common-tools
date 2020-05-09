@@ -2508,7 +2508,7 @@
     <!--资产主表的条件-->
     <sql id="mq_asset">
         <if test="ids != null and ids.length > 0">
-            and asset.identity in
+            and asset.id in
             <foreach collection="ids" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
@@ -2542,12 +2542,6 @@
                     )
                 </otherwise>
             </choose>
-        </if>
-        <if test="ids != null and ids.size() > 0">
-            and asset.id in
-            <foreach index="index" item="item" collection="ids" open="(" separator="," close=")">
-                #{item}
-            </foreach>
         </if>
         <if test="categoryModelList != null and categoryModelList.size() > 0">
            and asset.category_model in
