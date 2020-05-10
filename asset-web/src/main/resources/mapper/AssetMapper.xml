@@ -2678,8 +2678,11 @@
         <if test="assetBusiness != null and assetBusiness != ''">
             and abr.id =#{assetBusiness}
         </if>
-        <if test=" assetGroup != null and assetGroup != ''">
-            and agr.asset_group_id = #{assetGroup}
+        <if test=" assetGroupList != null and assetGroupList.size() > 0">
+            and agr.asset_group_id in
+            <foreach item="item" collection="assetGroupList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="departmentList != null and departmentList.size() > 0">
             and au.department_id in
