@@ -19,7 +19,7 @@ private static final long serialVersionUID = 1L;
     /**
     *  业务主键id
     */
-    private Integer assetBusinessId;
+    private String assetBusinessId;
     /**
     *  资产主键id
     */
@@ -66,14 +66,13 @@ private static final long serialVersionUID = 1L;
         this.uniqueId = uniqueId;
     }
 
-    public Integer getAssetBusinessId() {
+    public String getAssetBusinessId() {
         return assetBusinessId;
     }
 
-    public void setAssetBusinessId(Integer assetBusinessId) {
+    public void setAssetBusinessId(String assetBusinessId) {
         this.assetBusinessId = assetBusinessId;
     }
-
 
     public String getAssetId() {
         return assetId;
