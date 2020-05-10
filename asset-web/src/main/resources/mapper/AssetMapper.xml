@@ -2385,7 +2385,9 @@
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name,
         anm.net_type_name,
-        acm.name as category_model_name
+        acm.name as category_model_name,
+        GROUP_CONCAT(distinct air.ip) AS ips,
+        GROUP_CONCAT(distinct amr.mac) AS macs
         FROM
         (
             select
