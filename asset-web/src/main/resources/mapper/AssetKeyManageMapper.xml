@@ -371,6 +371,7 @@
                 #{item}
             </foreach>
         </if>
+        order by t.id desc
         LIMIT 30 offset 0
     </select>
 
