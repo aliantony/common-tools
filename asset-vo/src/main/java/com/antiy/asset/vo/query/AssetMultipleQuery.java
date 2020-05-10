@@ -84,6 +84,12 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     @Encode
     private List<String>  assetGroupList;
     /**
+     * 资产组主键
+     */
+    @ApiModelProperty(value = "资产组",hidden = true)
+    @Encode
+    private String  assetGroup;
+    /**
      * 网络类型
      */
     @ApiModelProperty("网络类型")
@@ -164,6 +170,14 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          updateEndTime;
     @ApiModelProperty("是否未知资产")
     private boolean       unknownAssets;
+
+    public String getAssetGroup() {
+        return assetGroup;
+    }
+
+    public void setAssetGroup(String assetGroup) {
+        this.assetGroup = assetGroup;
+    }
 
     public List<String> getCategoryModelList() {
         return categoryModelList;
