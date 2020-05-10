@@ -140,7 +140,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         deleteAssetOfBusiness(request);
         editAssetOfBusiness(request);
         LogUtils.recordOperLog(
-                new BusinessData("编辑业务信息", business.getId(), assetBusiness.getName(),
+                new BusinessData("编辑业务信息", request.getId(), assetBusiness.getName(),
                         request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_EDIT)
         );
         return result.toString();
