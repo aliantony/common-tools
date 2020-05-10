@@ -165,19 +165,30 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         request.setAddAssetList(addAsset);
         // 编辑的资产
         List<AssetBusinessRelationRequest> editAsset = new ArrayList<>();
-        for (AssetBusinessRelationResponse itemOfDb : assetOfDB) {
-            for (AssetBusinessRelationRequest itemOfParam : assetOfParamter) {
-                if (
-                    itemOfDb.getStringId().equals(itemOfParam.getAssetId())
-                    && (itemOfDb.getBusinessInfluence()==null && itemOfParam.getBusinessInfluence()!=null
-                    || !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence()))
-                ) {
-                    editAsset.add(itemOfParam);
-                }
-
-            }
-        }
-        request.setEditAsset(editAsset);
+//        for (AssetBusinessRelationResponse itemOfDb : assetOfDB) {
+//            for (AssetBusinessRelationRequest itemOfParam : assetOfParamter) {
+//                if (itemOfDb.getBusinessInfluence() == null){
+//                    continue;
+//                }
+//                if (
+//                        itemOfDb.getStringId().equals(itemOfParam.getAssetId())){
+//                }
+//
+//                {
+//                    editAsset.add(itemOfParam);
+//                }
+//
+//                if (
+//                    itemOfDb.getStringId().equals(itemOfParam.getAssetId())
+//                    && (itemOfDb.getBusinessInfluence()==null && itemOfParam.getBusinessInfluence()!=null
+//                    || !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence()))
+//                ) {
+//                    editAsset.add(itemOfParam);
+//                }
+//
+//            }
+//        }
+        request.setEditAsset(assetOfParamter);
     }
 
     private void editAssetOfBusiness(AssetBusinessRequest request) {
