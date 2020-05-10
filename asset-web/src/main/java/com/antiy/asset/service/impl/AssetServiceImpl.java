@@ -1,36 +1,19 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.cache.AssetBaseDataCache;
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.intergration.*;
-import com.antiy.asset.service.IAssetCategoryModelService;
-import com.antiy.asset.service.IAssetCpeTreeService;
-import com.antiy.asset.service.IAssetService;
-import com.antiy.asset.service.IRedisService;
-import com.antiy.asset.templet.*;
-import com.antiy.asset.util.Constants;
-import com.antiy.asset.util.*;
-import com.antiy.asset.vo.enums.*;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.asset.vo.user.OauthMenuResponse;
-import com.antiy.asset.vo.user.UserStatus;
-import com.antiy.biz.util.RedisKeyUtil;
-import com.antiy.biz.util.RedisUtil;
-import com.antiy.common.base.SysArea;
-import com.antiy.common.base.*;
-import com.antiy.common.download.DownloadVO;
-import com.antiy.common.download.ExcelDownloadUtil;
-import com.antiy.common.encoder.AesEncoder;
-import com.antiy.common.enums.BusinessModuleEnum;
-import com.antiy.common.enums.BusinessPhaseEnum;
-import com.antiy.common.enums.ModuleEnum;
-import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
-import com.antiy.common.utils.DataTypeUtils;
-import com.antiy.common.utils.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -49,18 +32,37 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.antiy.asset.cache.AssetBaseDataCache;
+import com.antiy.asset.dao.*;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.intergration.*;
+import com.antiy.asset.service.IAssetCategoryModelService;
+import com.antiy.asset.service.IAssetCpeTreeService;
+import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.service.IRedisService;
+import com.antiy.asset.templet.*;
+import com.antiy.asset.util.*;
+import com.antiy.asset.util.Constants;
+import com.antiy.asset.vo.enums.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.user.OauthMenuResponse;
+import com.antiy.asset.vo.user.UserStatus;
+import com.antiy.biz.util.RedisKeyUtil;
+import com.antiy.biz.util.RedisUtil;
+import com.antiy.common.base.*;
+import com.antiy.common.base.SysArea;
+import com.antiy.common.download.DownloadVO;
+import com.antiy.common.download.ExcelDownloadUtil;
+import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
+import com.antiy.common.enums.ModuleEnum;
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.utils.*;
+import com.antiy.common.utils.DataTypeUtils;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -175,7 +177,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Resource
     private IAssetCpeTreeService                                                assetCpeTreeService;
     @Resource
-    private AssetCategoryModelDao assetCategoryModelDao;
+    private AssetCategoryModelDao                                               assetCategoryModelDao;
     @Resource
     private IAssetCategoryModelService                                          assetCategoryModelService;
 
@@ -438,7 +440,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 if ("1".equals(categoryModel.getParentId())) {
                     return categoryModel.getId() - 1;
                 } else {
-                    flag = categoryModel.getId();
+                    flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
                 }
             }
         }
@@ -899,13 +901,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 品类型号
         if (Objects.isNull(query.getCategoryModels())) {
             query.setCategoryModels(
-                    // 循环获取计算设备，网络设备下所有子节点
-                    // todo 由于资产类型枚举存在问题，暂时用魔法值代替
-                    getCategoryNodeList(Arrays.asList(2, 3)).toArray(new Integer[0]));
-        }else {
+                // 循环获取计算设备，网络设备下所有子节点
+                // todo 由于资产类型枚举存在问题，暂时用魔法值代替
+                getCategoryNodeList(Arrays.asList(2, 3)).toArray(new Integer[0]));
+        } else {
             query.setCategoryModels(
-                    // 循环获取所有子节点
-                    getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray(new Integer[0]));
+                // 循环获取所有子节点
+                getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray(new Integer[0]));
         }
 
         // 进行查询
@@ -918,7 +920,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetResponseList.stream().forEach(assetLinkedCount -> {
 
                 // 获取当前的详细资产类型
-                assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetLinkedCount.getCategoryModel())));
+                assetLinkedCount.setCategoryModelName(
+                    getCategoryParentNodeName(Integer.valueOf(assetLinkedCount.getCategoryModel())));
 
                 String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                     assetLinkedCount.getAreaId());
@@ -3482,11 +3485,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return c.getTimeInMillis();
     }
 
-
     private String getNetTypeByName(String netType) {
         return assetNettypeManageDao.findIdsByName(netType).toString();
     }
-
 
     @Override
     public Integer assetNoRegister(List<NoRegisterRequest> list) throws Exception {
@@ -3861,10 +3862,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
     @Override
     public List<AssetAreaAndIpResponse> queryIpByAreaId(AssetIpRequest request) {
-        //在资产状态为不予登记、已退回、已报废时，收回该IP
-        List<Integer> statusList = com.google.common.collect.Lists.newArrayList(AssetStatusEnum.NOT_REGISTER.getCode(), AssetStatusEnum.RETIRE.getCode(),
-                AssetStatusEnum.SCRAP.getCode());
-        List<AssetAreaAndIpResponse> assetAreaAndIpResponses = assetDao.queryIpByAreaId(request.getAreaId(),statusList);
+        // 在资产状态为不予登记、已退回、已报废时，收回该IP
+        List<Integer> statusList = com.google.common.collect.Lists.newArrayList(AssetStatusEnum.NOT_REGISTER.getCode(),
+            AssetStatusEnum.RETIRE.getCode(), AssetStatusEnum.SCRAP.getCode());
+        List<AssetAreaAndIpResponse> assetAreaAndIpResponses = assetDao.queryIpByAreaId(request.getAreaId(),
+            statusList);
         LogUtils.info(logger, "查询区域ip:{}", assetAreaAndIpResponses);
         return assetAreaAndIpResponses.stream().filter(ipResponse -> StringUtils.isNotBlank(ipResponse.getIp()))
             .collect(Collectors.toList());
@@ -3990,6 +3992,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
+            object.setCategoryType(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel())) + 1);
+
         }
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
@@ -4087,7 +4091,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
     }
 
-
     // 获取当前节点下所有子节点列表
     public List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
 
@@ -4103,26 +4106,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         List<Integer> nodeList = new ArrayList<>();
 
-        if (!list.isEmpty()){
+        if (!list.isEmpty()) {
             nodeList = assetCategoryModelDao.getCategoryNodeList(list);
         }
 
         // 当有数据时继续调用本方法，直到返回为空。
-        if (!nodeList.isEmpty()){
+        if (!nodeList.isEmpty()) {
             allNodes.addAll(nodeList);
             getNodesForrecursion(nodeList, allNodes);
         }
     }
 
     // 获取当前节点父节点，直到网络设备，计算设备
-    private String getCategoryParentNodeName(Integer id){
+    private String getCategoryParentNodeName(Integer id) {
 
         // 变量初始化
         List<String> nodeNameList = new ArrayList<>();
         CategoryValiEntity node = new CategoryValiEntity();
         node.setId(id);
 
-        if (Objects.isNull(id) || id == 0){
+        if (Objects.isNull(id) || id == 0) {
             return "";
         }
 
@@ -4134,7 +4137,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     // 递归获取父节点名称
-    private void getNodeNameRecursion(CategoryValiEntity node, List<String> nodeNameList){
+    private void getNodeNameRecursion(CategoryValiEntity node, List<String> nodeNameList) {
 
         // 当前暂存变量
         CategoryValiEntity newNode = new CategoryValiEntity();
@@ -4142,7 +4145,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 获取信息
         CategoryValiEntity categoryValiEntity = assetCategoryModelDao.getNameByCtegoryId(node.getId());
 
-        if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName()) || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())){
+        if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName())
+            || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())) {
             nodeNameList.add(categoryValiEntity.getName());
             return;
         }
