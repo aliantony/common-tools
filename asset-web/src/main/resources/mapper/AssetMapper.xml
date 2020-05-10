@@ -2386,6 +2386,7 @@
         bt.tp_name as baseline_template_name,
         anm.net_type_name,
         acm.name as category_model_name,
+        asset.gmt_create,
         GROUP_CONCAT(distinct air.ip) AS ips,
         GROUP_CONCAT(distinct amr.mac) AS macs
         FROM
