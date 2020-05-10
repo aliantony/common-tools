@@ -153,7 +153,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
     public Integer keyRecipients(AssetKeyManageRequest request) throws Exception {
         ParamterExceptionUtils.isNull(request.getKeyUserType(), "使用者类型为空!");
         ParamterExceptionUtils.isNull(request.getKeyUserId(), "使用者ID不能为空!");
-        ParamterExceptionUtils.isNull(request.getUserNumName(), "使用者不能为空!");
+//        ParamterExceptionUtils.isNull(request.getUserNumName(), "使用者不能为空!");
         ParamterExceptionUtils.isNull(request.getRecipTime(), "领用时间不能为空!");
 
         LoginUser user = LoginUserUtil.getLoginUser();
