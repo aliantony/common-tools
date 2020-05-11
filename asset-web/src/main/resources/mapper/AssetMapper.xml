@@ -2624,7 +2624,7 @@
         <if test=" isBorrow != null">
             and asset.is_borrow = #{isBorrow}
         </if>
-        <if test=" baselineTemplateId != null">
+        <if test=" baselineTemplateId != null and baselineTemplateId != ''">
             and asset.baseline_template_id = #{baselineTemplateId}
         </if>
         <if test=" netStatus != null">
