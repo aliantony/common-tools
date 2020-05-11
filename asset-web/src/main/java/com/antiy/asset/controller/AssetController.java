@@ -1,23 +1,19 @@
 package com.antiy.asset.controller;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.intergration.ActivityClient;
-import com.antiy.asset.intergration.BaseLineClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.*;
@@ -25,13 +21,9 @@ import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.QueryCondition;
-import com.antiy.common.encoder.AesEncoder;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.utils.BusinessExceptionUtils;
-import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 
 import io.swagger.annotations.*;
@@ -556,10 +548,9 @@ public class AssetController {
     @RequestMapping(value = "/query/assetlist", method = RequestMethod.POST)
     // @PreAuthorize(value = "hasAuthority('asset:asset:queryList')")
     public ActionResponse queryAssetList(@RequestBody @ApiParam(value = "asset") AssetMultipleQuery asset) throws Exception {
-        if (StringUtils.isNotBlank(asset.getSortName()) && StringUtils.isNotBlank(asset.getSortOrder())) {
-            if (asset.getSortName().equals("gmtCreate")) {
-                asset.setSortName("gmt_create");
-            }
+        if (StringUtils.isBlank(asset.getSortName()) || StringUtils.isBlank(asset.getSortOrder())) {
+            asset.setSortName("gmt_create");
+            asset.setSortOrder("desc");
         }
         return ActionResponse.success(iAssetService.queryAssetPage(asset));
     }

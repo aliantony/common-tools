@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -1194,6 +1195,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterResponse.setAssetStorageMedium(assetStorageMediumResponse);
             }
 
+        }
+        if (StringUtils.isNotBlank(asset.getCustomField())) {
+            assetResponse.setCustomField(JSON.parseArray(asset.getCustomField(), AssetCustomizeRequest.class));
         }
         /* // 查询组件 List<AssetAssemblyRequest> assetAssemblys =
          * assetAssemblyDao.findAssemblyByAssetId(condition.getPrimaryKey(), ""); List<AssetAssemblyResponse>
