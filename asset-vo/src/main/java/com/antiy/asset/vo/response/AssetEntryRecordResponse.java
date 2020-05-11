@@ -16,7 +16,7 @@ public class AssetEntryRecordResponse extends BaseResponse {
     @ApiModelProperty("成功后的状态: 1已运行，2已禁止")
     private int changeStatus;
     @ApiModelProperty("创建时间")
-    private String gmtCreate;
+    private Long gmtCreate;
     @ApiModelProperty(value = "创建用户id",hidden = true)
     private int createUser;
     @ApiModelProperty("创建用户姓名")
@@ -48,11 +48,11 @@ public class AssetEntryRecordResponse extends BaseResponse {
         this.changeStatus = changeStatus;
     }
 
-    public String getGmtCreate() {
+    public Long getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(String gmtCreate) {
+    public void setGmtCreate(Long gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
