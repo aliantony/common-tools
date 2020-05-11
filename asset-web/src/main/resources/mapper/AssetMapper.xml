@@ -80,6 +80,7 @@
         <result column="net_type" property="netType"/>
         <result column="net_type_name" property="netTypeName"/>
         <result column="soft_version" property="softVersion"/>
+        <result column="expiration_reminder" property="expirationReminder"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
