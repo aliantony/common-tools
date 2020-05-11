@@ -3921,6 +3921,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMultipleQuery.setCategoryModelList(caIds);
             }
         }
+        if (assetMultipleQuery.getUnknownAssets()) {
+            if (CollectionUtils.isEmpty(assetMultipleQuery.getAssetSourceList())) {
+                assetMultipleQuery.setAssetSourceList(
+                    Arrays.asList(AssetSourceEnum.AGENCY_REPORT.getCode(), AssetSourceEnum.ASSET_DETECTION.getCode()));
+            }
+        }
         // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         // 工作台进入,过滤当前用户待办的资产id
