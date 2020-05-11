@@ -3710,7 +3710,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetResponse> list = this.queryAssetPage(assetQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
-        if (assetQuery.isUnknownAssets()) {
+        if (assetQuery.getUnknownAssets()) {
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
             List<AssetUnkonwEntity> assetEntities1 = BeanConvert.convert(assetEntities, AssetUnkonwEntity.class);
             downloadVO.setDownloadList(assetEntities1);
@@ -3728,7 +3728,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             } else if (assetQuery.getExportType() == 2) {
                 List<?> downloadList = downloadVO.getDownloadList();
                 String[] files;
-                if (assetQuery.isUnknownAssets()) {
+                if (assetQuery.getUnknownAssets()) {
                     files = new String[] { "名称", "编号", "资产类型", "厂商", "ip", "mac", "资产组", "重要程度", "使用者", "上报方式", "操作系统名",
                                            "状态", "首次发现时间", "首次入网时间", "到期时间" };
                 } else {
@@ -3739,7 +3739,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     files, request, response);
             } else if (assetQuery.getExportType() == 3) {
                 String fileName = "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT);
-                if (assetQuery.isUnknownAssets()) {
+                if (assetQuery.getUnknownAssets()) {
                     List<AssetUnkonwEntity> downloadList = (List<AssetUnkonwEntity>) downloadVO.getDownloadList();
                     Dom4jUtils.createXml(downloadList, AssetUnkonwEntity.class, request, response, fileName);
                 } else {
