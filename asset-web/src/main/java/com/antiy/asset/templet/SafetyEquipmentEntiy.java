@@ -55,7 +55,7 @@ public class SafetyEquipmentEntiy {
     /**
      * 操作系统
      */
-    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = true, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl")
+    @ExcelField(value = "operationSystem", align = 1, title = "操作系统", required = true, defaultDataMethod = "getAllSystemOs", defaultDataBeanName = "assetTemplateServiceImpl", length = 128)
     private String operationSystem;
 
     /**
@@ -66,7 +66,7 @@ public class SafetyEquipmentEntiy {
     /**
      * p地址
      */
-    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)  备注:该IP需要是在(归属区域、网络类型)下推荐的可用IP", dataType = DataTypeEnum.IP, required = true)
+    @ExcelField(value = "ip", align = 1, title = "ip地址(必填)", dataType = DataTypeEnum.IP, required = true)
     private String ip;
     /**
      * ip地址
