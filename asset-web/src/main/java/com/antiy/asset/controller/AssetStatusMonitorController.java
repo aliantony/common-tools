@@ -3,6 +3,7 @@ package com.antiy.asset.controller;
 import com.antiy.asset.service.IAssetStatusMonitorService;
 import com.antiy.asset.vo.query.AssetStatusMonitorQuery;
 import com.antiy.asset.vo.request.AssetStatusMonitorRequest;
+import com.antiy.asset.vo.response.AssetStatusMonitorCountResponse;
 import com.antiy.asset.vo.response.AssetStatusMonitorResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
@@ -59,6 +60,19 @@ public class AssetStatusMonitorController {
     public ActionResponse queryBasePerformance(@ApiParam(value = "queryCondition") @RequestBody QueryCondition queryCondition)throws Exception{
         AssetStatusMonitorResponse statusMonitorResponse=iAssetStatusMonitorService.queryBasePerformance(queryCondition.getPrimaryKey());
         return ActionResponse.success(statusMonitorResponse);
+    }
+
+    /**
+     * 条数查询
+     */
+    @ApiOperation(value = "软件进程与服务条数", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetStatusMonitorCountResponse.class),
+    })
+    @RequestMapping(value = "/query/count", method = RequestMethod.POST)
+    public ActionResponse queryCount(@ApiParam(value = "queryCondition") @RequestBody AssetStatusMonitorQuery assetStatusMonitorQuery)throws Exception{
+        AssetStatusMonitorCountResponse assetStatusMonitorCountResponse= iAssetStatusMonitorService.queryCount(assetStatusMonitorQuery);
+        return ActionResponse.success(assetStatusMonitorCountResponse);
     }
 
     /**

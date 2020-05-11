@@ -3,6 +3,7 @@ package com.antiy.asset.service;
 import com.antiy.asset.entity.AssetStatusMonitor;
 import com.antiy.asset.vo.query.AssetStatusMonitorQuery;
 import com.antiy.asset.vo.request.AssetStatusMonitorRequest;
+import com.antiy.asset.vo.response.AssetStatusMonitorCountResponse;
 import com.antiy.asset.vo.response.AssetStatusMonitorResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.IBaseService;
@@ -67,4 +68,6 @@ public interface IAssetStatusMonitorService extends IBaseService<AssetStatusMoni
         AssetStatusMonitorResponse queryBasePerformance(String primaryKey);
 
         PageResult<AssetStatusMonitorResponse> queryMonitor(AssetStatusMonitorQuery assetStatusMonitorQuery);
+
+    AssetStatusMonitorCountResponse queryCount(AssetStatusMonitorQuery assetStatusMonitorQuery);
 }
