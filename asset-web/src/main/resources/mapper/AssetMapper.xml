@@ -77,6 +77,7 @@
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
         <result column="key" property="key"/>
+        <result column="net_type" property="netType"/>
         <result column="net_type_name" property="netTypeName"/>
         <result column="soft_version" property="softVersion"/>
     </resultMap>
@@ -1915,7 +1916,7 @@
         asset.*,
         `user`.`name` AS responsible_user_name,
         `user`.`mobile` As contact_tel,
-        anm.net_type_name as netTypeName,
+        anm.net_type_name ,
         acm.name as category_model_name
         FROM
         <include refid="Table_Name"></include>
