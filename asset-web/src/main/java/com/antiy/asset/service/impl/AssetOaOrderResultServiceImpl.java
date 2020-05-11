@@ -54,7 +54,6 @@ public class AssetOaOrderResultServiceImpl extends BaseServiceImpl<AssetOaOrderR
         @Override
         public List<AssetOaOrderResultResponse> findListAssetOaOrderRefuse(AssetOaOrderResultQuery query) throws Exception {
             List<AssetOaOrderResult> assetOaOrderRefuseList = assetOaOrderRefuseDao.findQuery(query);
-            //TODO
             List<AssetOaOrderResultResponse> assetOaOrderRefuseResponse = responseConverter.convert(assetOaOrderRefuseList, AssetOaOrderResultResponse.class );
             return assetOaOrderRefuseResponse;
         }
