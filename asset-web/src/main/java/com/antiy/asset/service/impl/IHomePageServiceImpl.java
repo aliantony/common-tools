@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,8 @@ public class IHomePageServiceImpl implements IHomePageService {
 
             if (n <= nameValueList.size()) {
                 nameValueList.get(n).setValue(num);
+                //TODO 演示数据
+                nameValueList.get(n).setValue(RandomUtils.nextInt(99));
             }
             n++;
         }
