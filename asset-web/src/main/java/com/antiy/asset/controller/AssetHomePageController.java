@@ -80,6 +80,9 @@ public class AssetHomePageController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/count/runDay", method = RequestMethod.POST)
     public ActionResponse getRunDay() throws Exception {
-        return ActionResponse.success(homePageService.getRunDay());
+        //TODO
+        //演示所需，临时注销
+//        return ActionResponse.success(homePageService.getRunDay());
+        return ActionResponse.success(10);
     }
 }
