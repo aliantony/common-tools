@@ -262,6 +262,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
+
+        query.setOriginStatus(AssetStatusEnum.NET_IN.getCode());
+        query.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
     }
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
