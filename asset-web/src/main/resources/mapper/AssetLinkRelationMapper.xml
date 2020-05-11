@@ -1274,6 +1274,13 @@
         asset1.category_model as categoryModal,parent_asset_id as parentAssetId,asset2.category_model as
         parentCategoryModal from asset_link_relation left join asset asset1 on asset_id = asset1.id LEFT JOIN asset
         asset2 on parent_asset_id = asset2.id
+        left join
+        (SELECT e.id, e.origin_status, e.target_status, e.target_object_id
+        from asset_operation_record e
+        WHERE status = 1
+        GROUP BY e.id
+        ORDER BY e.gmt_create
+        limit 1) as f on (f.target_object_id = asset1.id or f.target_object_id = asset2.id)
         where
         asset1.status=1
         and asset2.status=1
@@ -1291,16 +1298,18 @@
             </foreach>
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset1.asset_status in
+            and (asset1.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
+            or (asset1.asset_status = #{targetStatus} and f.origin_status = #{originStatus} and f.target_status = #{targetStatus}))
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset2.asset_status in
+            and (asset2.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
                 #{assetStatus}
             </foreach>
+            or (asset2.asset_status = #{targetStatus} and f.origin_status = #{originStatus} and f.target_status = #{targetStatus}))
         </if>
     </select>
 
