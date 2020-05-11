@@ -280,10 +280,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
     }
     private void dealRelation(AssetStatusJumpRequest statusJumpRequest,List<Asset> assetsInDb) throws Exception {
-
+        List<AssetAssemblyRequest> assetAssemblys = statusJumpRequest.getAssetAssemblyRequest();
         //组件报废
-        if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
-            List<AssetAssemblyRequest> assetAssemblys = statusJumpRequest.getAssetAssemblyRequest();
+        if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())
+                &&CollectionUtils.isNotEmpty(assetAssemblys)){
             AssetAssemblyScrapRequest assetAssemblyScrapRequest=new AssetAssemblyScrapRequest();
             assetAssemblyScrapRequest.setAssetAssemblyRequestList(assetAssemblys);
             assetAssemblyScrapRequest.setAssetId(assetAssemblys.get(0).getAssetId());

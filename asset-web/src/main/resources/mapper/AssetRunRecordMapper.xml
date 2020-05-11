@@ -151,7 +151,7 @@
     </select>
 
     <select id="getRunDayTime" resultType="java.lang.Long">
-        select count(difference_value) from
+        select SUM(difference_value) from
         <include refid="Table_Name"></include>
     </select>
 </mapper>

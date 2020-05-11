@@ -3,10 +3,12 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.AssetStatusMonitorDao;
 import com.antiy.asset.entity.AssetStatusMonitor;
 import com.antiy.asset.service.IAssetStatusMonitorService;
+import com.antiy.asset.vo.enums.AssetStatusMonitorEnum;
 import com.antiy.asset.vo.enums.TimeEnum;
 import com.antiy.asset.vo.query.AssetStatusMonitorQuery;
 import com.antiy.asset.vo.request.AssetStatusMonitorRequest;
 import com.antiy.asset.vo.response.AssetMonitorRuleResponse;
+import com.antiy.asset.vo.response.AssetStatusMonitorCountResponse;
 import com.antiy.asset.vo.response.AssetStatusMonitorResponse;
 import com.antiy.common.base.*;
 import com.antiy.common.utils.LogUtils;
@@ -113,5 +115,26 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
             return  new PageResult<>(assetStatusMonitorQuery.getPageSize(),count,assetStatusMonitorQuery.getCurrentPage(),assetStatusMonitorResponses);
         }
         return new PageResult<>(assetStatusMonitorQuery.getPageSize(),0,assetStatusMonitorQuery.getCurrentPage(), Lists.newArrayList());
+    }
+
+    @Override
+    public AssetStatusMonitorCountResponse queryCount(AssetStatusMonitorQuery assetStatusMonitorQuery) {
+
+        Long lastTime = assetStatusMonitorDao.maxMonitorGmtCreate(assetStatusMonitorQuery);
+        assetStatusMonitorQuery.setGmtModified(lastTime);
+
+        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.PROCESS.getCode());
+        Integer processCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
+
+        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.SOFT.getCode());
+        Integer softCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
+
+        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.SERVICE.getCode());
+        Integer serviceCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
+        AssetStatusMonitorCountResponse assetStatusMonitorCountResponse=new AssetStatusMonitorCountResponse();
+        assetStatusMonitorCountResponse.setProcess(processCount);
+        assetStatusMonitorCountResponse.setService(serviceCount);
+        assetStatusMonitorCountResponse.setSoftware(softCount);
+        return assetStatusMonitorCountResponse;
     }
 }

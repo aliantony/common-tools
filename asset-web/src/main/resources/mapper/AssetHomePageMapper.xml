@@ -31,15 +31,14 @@
 
     <select id="assetOnlineChart" resultType="java.lang.Integer"
             parameterType="com.antiy.asset.entity.AssetOnlineChartCondition">
-        select count(ase.is_manage) include
+        select count(asset_status) include
         from
-        asset_safety_equipment ase
-        left join asset on ase.asset_id = asset.id
-        left join asset_status_monitor asm on asm.asset_id = ase.asset_id
+        asset
         where
         <include refid="area_asset_status"/>
-        and ase.is_manage = 1 and asset.net_status = 1 and asset.status = 1 and ase.status = 1
-        and asm.gmt_modified &gt; #{startTime} and asm.gmt_modified &lt;= #{endTime}
+        and asset.status = 1
+        and asset.gmt_modified &gt; #{startTime} and asset.gmt_modified &lt;= #{endTime}
+        group by asset_status
     </select>
 
     <select id="assetImportanceDegreePie" resultType="com.antiy.asset.vo.response.AssetImportancePie"
