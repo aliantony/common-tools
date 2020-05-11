@@ -111,10 +111,11 @@
             CONCAT('%',replace(replace(#{ip},'%','\%'),'_','\_'),'%')
         </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
-            and asset_status in
-            <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
-                #{assetStatus}
+            and (asset.asset_status in
+            <foreach collection="assetStatusList" open="(" close=")" separator="," item="item">
+                #{item}
             </foreach>
+            or (asset.asset_status = #{targetStatus} and e.origin_status = #{originStatus} and e.target_status = #{targetStatus}))
         </if>
         <if test="assetStatus != null">
             and asset_status = #{assetStatus}
@@ -269,6 +270,13 @@
         <if test="queryDepartmentName == true">
             LEFT JOIN asset_department department ON asset_user.department_id = department.id and department.status=1
         </if>
+        left join
+        (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+        from asset_operation_record d
+        WHERE status = 1
+        GROUP BY d.id
+        ORDER BY d.gmt_create
+        limit 1) as e on e.target_object_id = asset.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>
@@ -285,6 +293,13 @@
         from asset asset
         left join asset_ip_relation air on asset.id = air.asset_id and air.status = 1
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id and asset_user.status = 1
+        left join
+        (SELECT d.id, d.origin_status, d.target_status, d.target_object_id
+        from asset_operation_record d
+        WHERE status = 1
+        GROUP BY d.id
+        ORDER BY d.gmt_create
+        limit 1) as e on e.target_object_id = asset.id
         <where>
             <trim prefixOverrides="and">
                 <include refid="Multiple_Query"></include>

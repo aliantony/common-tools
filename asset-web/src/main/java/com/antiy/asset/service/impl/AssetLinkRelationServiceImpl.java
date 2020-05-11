@@ -331,7 +331,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
     }
 
     // 获取当前节点父节点，直到网络设备，计算设备
-    private String getCategoryParentNodeName(Integer id){
+    public String getCategoryParentNodeName(Integer id){
 
         // 变量初始化
         List<String> nodeNameList = new ArrayList<>();

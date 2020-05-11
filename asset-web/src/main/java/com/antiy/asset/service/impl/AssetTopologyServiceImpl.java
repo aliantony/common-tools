@@ -85,6 +85,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private VulClient                           vulClient;
     @Resource
     private AssetCategoryModelDao assetCategoryModelDao;
+    @Resource
+    private AssetLinkRelationServiceImpl assetLinkRelationService;
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
@@ -227,7 +229,11 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
                 topologyNode.setAsset_id(
                     aesEncoder.encode(assetResponse.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
                 topologyNode.setAsset_group(assetResponse.getAssetGroup());
-                topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(DataTypeUtils.stringToInteger(assetResponse.getCategoryModel())));
+//                topologyNode.setAsset_type(AssetCategoryEnum.getNameByCode(DataTypeUtils.stringToInteger(assetResponse.getCategoryModel())));
+
+                // 设置品类型号转换
+                topologyNode.setAsset_type(assetLinkRelationService.getCategoryParentNodeName(Integer.valueOf(assetResponse.getCategoryModel())));
+
                 topologyNode.setPerson_name(assetResponse.getResponsibleUserName());
                 topologyNode.setAsset_unrepair(Objects.toString(vulList.get(i)));
                 topologyNode.setAsset_untreated_warning(Objects.toString(alarmList.get(i)));
@@ -256,6 +262,9 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         statusList.add(AssetStatusEnum.WAIT_RETIRE.getCode());
         statusList.add(AssetStatusEnum.NET_IN.getCode());
         query.setAssetStatusList(statusList);
+
+        query.setOriginStatus(AssetStatusEnum.NET_IN.getCode());
+        query.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
     }
 
     private void setListAreaName(List<AssetResponse> assetResponseList) throws Exception {
