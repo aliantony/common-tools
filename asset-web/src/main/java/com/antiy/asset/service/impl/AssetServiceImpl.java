@@ -2511,13 +2511,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
             String typeId = getNetTypeByName(entity.getNetType());
-            if (checkIP(entity.getIp(), aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()),
-                aesEncoder.encode(typeId, LoginUserUtil.getLoginUser().getUsername()))) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("该IP已被使用或与归属区域、网络类型冲突！");
-                continue;
-            }
+            // if (checkIP(entity.getIp(), aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()),
+            // aesEncoder.encode(typeId, LoginUserUtil.getLoginUser().getUsername()))) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("该IP已被使用或与归属区域、网络类型冲突！");
+            // continue;
+            // }
 
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
@@ -2981,13 +2981,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
             String typeId = getNetTypeByName(entity.getNetType());
-            if (checkIP(entity.getIp(), aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()),
-                aesEncoder.encode(typeId, LoginUserUtil.getLoginUser().getUsername()))) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("该IP已被使用或与归属区域、网络类型冲突！");
-                continue;
-            }
+            // if (checkIP(entity.getIp(), aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername()),
+            // aesEncoder.encode(typeId, LoginUserUtil.getLoginUser().getUsername()))) {
+            // error++;
+            // a++;
+            // builder.append("第").append(a).append("行").append("该IP已被使用或与归属区域、网络类型冲突！");
+            // continue;
+            // }
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             AssetMacRelation assetMacRelation = new AssetMacRelation();
@@ -3698,7 +3698,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public void exportData(AssetQuery assetQuery, HttpServletResponse response,
+    public void exportData(AssetMultipleQuery assetQuery, HttpServletResponse response,
                            HttpServletRequest request) throws Exception {
         if ((assetQuery.getStart() != null && assetQuery.getEnd() != null)) {
             assetQuery.setStart(assetQuery.getStart() - 1);
@@ -3706,11 +3706,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.setAreaIds(
-            ArrayTypeUtil.objectArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray()));
-        List<AssetResponse> list = this.findPageAsset(assetQuery).getItems();
+            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        List<AssetResponse> list = this.queryAssetPage(assetQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
-        if (assetQuery.getUnknownAssets()) {
+        if (assetQuery.isUnknownAssets()) {
             List<AssetEntity> assetEntities = assetEntityConvert.convert(list, AssetEntity.class);
             List<AssetUnkonwEntity> assetEntities1 = BeanConvert.convert(assetEntities, AssetUnkonwEntity.class);
             downloadVO.setDownloadList(assetEntities1);
@@ -3722,13 +3722,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 3种导方式 1 excel 2 cvs 3 xml
         if (CollectionUtils.isNotEmpty(downloadVO.getDownloadList())) {
 
-            if (assetQuery.getExportType() == 1) {
+            if (null == assetQuery.getExportType() || assetQuery.getExportType() == 1) {
                 excelDownloadUtil.excelDownload(request, response,
                     "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), downloadVO);
             } else if (assetQuery.getExportType() == 2) {
                 List<?> downloadList = downloadVO.getDownloadList();
                 String[] files;
-                if (assetQuery.getUnknownAssets()) {
+                if (assetQuery.isUnknownAssets()) {
                     files = new String[] { "名称", "编号", "资产类型", "厂商", "ip", "mac", "资产组", "重要程度", "使用者", "上报方式", "操作系统名",
                                            "状态", "首次发现时间", "首次入网时间", "到期时间" };
                 } else {
@@ -3739,7 +3739,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     files, request, response);
             } else if (assetQuery.getExportType() == 3) {
                 String fileName = "资产" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT);
-                if (assetQuery.getUnknownAssets()) {
+                if (assetQuery.isUnknownAssets()) {
                     List<AssetUnkonwEntity> downloadList = (List<AssetUnkonwEntity>) downloadVO.getDownloadList();
                     Dom4jUtils.createXml(downloadList, AssetUnkonwEntity.class, request, response, fileName);
                 } else {

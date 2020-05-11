@@ -1,16 +1,14 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * 资产列表查询参数
@@ -19,6 +17,16 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel
 public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
+    @ApiModelProperty("导出开始条数")
+    private Integer       start;
+
+    @ApiModelProperty("导出结束条数")
+    private Integer       end;
+    /**
+     * 资产id,消息通知跳转使用
+     */
+    @ApiModelProperty(" 导出方式 1 excel  2 cvs 3 xml")
+    private Integer       exportType;
     /**
      * 待办事项的资产id
      */
@@ -494,5 +502,29 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     @Override
     public void validate() throws RequestParamValidateException {
 
+    }
+
+    public Integer getExportType() {
+        return exportType;
+    }
+
+    public void setExportType(Integer exportType) {
+        this.exportType = exportType;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getEnd() {
+        return end;
+    }
+
+    public void setEnd(Integer end) {
+        this.end = end;
     }
 }

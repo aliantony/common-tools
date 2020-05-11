@@ -2442,6 +2442,9 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+        <if test="start!=null and end!=null and pageSize==-1">
+            limit #{start},#{end}
+        </if>
     </select>
     <select id="queryManufacturer" resultType="java.lang.String">
         select distinct manufacturer from asset where status = 1
