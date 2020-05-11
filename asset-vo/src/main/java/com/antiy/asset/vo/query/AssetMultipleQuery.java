@@ -187,11 +187,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.categoryModelList = categoryModelList;
     }
 
-    public boolean isUnknownAssets() {
+    public Boolean getUnknownAssets() {
         return unknownAssets;
     }
 
-    public void setUnknownAssets(boolean unknownAssets) {
+    public void setUnknownAssets(Boolean unknownAssets) {
         this.unknownAssets = unknownAssets;
     }
 

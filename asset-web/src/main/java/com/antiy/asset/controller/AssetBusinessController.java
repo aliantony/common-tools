@@ -1,5 +1,6 @@
 package com.antiy.asset.controller;
 
+import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.asset.intergration.impl.SysRoleClientImpl;
 import com.antiy.asset.service.IAssetBusinessService;
 import com.antiy.asset.vo.query.AssetAddOfBusinessQuery;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -116,6 +119,20 @@ public class AssetBusinessController {
         return ActionResponse.success(iAssetBusinessService.queryPageAssetBusiness(assetBusinessQuery));
     }
 
+    @ApiOperation(value = "资产登记业务查询", notes = "传入查询条件")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetBusinessResponse.class, responseContainer = "List"),
+    })
+    @RequestMapping(value = "/query/business/name", method = RequestMethod.POST)
+    public ActionResponse queryAllBusinessNameList()throws Exception{
+        List<AssetBusiness> assetBusinessList=iAssetBusinessService.getAll();
+        Map<String,String> map=new HashMap<>(assetBusinessList.size());
+        assetBusinessList.forEach(t->{
+            map.put("name",t.getName());
+            map.put("uniqueId",t.getUniqueId());
+        });
+        return ActionResponse.success(map);
+    }
     /**
      * 通过ID查询
      *

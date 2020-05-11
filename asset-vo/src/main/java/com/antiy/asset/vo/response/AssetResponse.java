@@ -98,7 +98,7 @@ public class AssetResponse extends BaseResponse {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private Integer                        categoryType;
+    private String                         categoryType;
 
     /**
      * 品类名称
@@ -1028,11 +1028,11 @@ public class AssetResponse extends BaseResponse {
         this.operationSystemName = operationSystemName;
     }
 
-    public Integer getCategoryType() {
+    public String getCategoryType() {
         return categoryType;
     }
 
-    public void setCategoryType(Integer categoryType) {
+    public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
     }
 
