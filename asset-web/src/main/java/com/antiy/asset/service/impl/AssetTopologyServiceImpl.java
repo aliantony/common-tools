@@ -1,12 +1,10 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetCategoryModelDao;
 import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetLinkRelationDao;
 import com.antiy.asset.dao.AssetTopologyDao;
-import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetGroup;
-import com.antiy.asset.entity.AssetLink;
-import com.antiy.asset.entity.IdCount;
+import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.VulClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetTopologyService;
@@ -85,6 +83,8 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private Double                              thirdLevelHeight;
     @Resource
     private VulClient                           vulClient;
+    @Resource
+    private AssetCategoryModelDao assetCategoryModelDao;
 
     @Override
     public TopologyAssetResponse queryAssetNodeInfo(String assetId) throws Exception {
@@ -352,20 +352,20 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
     private void initLevelRelation(List<AssetLink> assetLinks, Map<String, List<String>> firstMap,
                                    Map<String, List<String>> secondMap, Map<String, List<String>> secondThirdMap) {
         for (AssetLink assetLink : assetLinks) {
-            if (Objects.equals(assetLink.getCategoryModal(), AssetCategoryEnum.NETWORK.getCode())
-                && Objects.equals(assetLink.getParentCategoryModal(), AssetCategoryEnum.NETWORK.getCode())) {
+            if (Objects.equals(assetLink.getCategoryModal(), 3)
+                && Objects.equals(assetLink.getParentCategoryModal(), 3)) {
                 // 构造第一，二级层级节点关系
                 flushMap(firstMap, assetLink);
                 flushParentMap(firstMap, assetLink);
 
             } else {
                 // 构造第二，三级层级节点关系
-                if (Objects.equals(assetLink.getCategoryModal(), AssetCategoryEnum.NETWORK.getCode())) {
+                if (Objects.equals(assetLink.getCategoryModal(), 3)) {
                     flushMap(secondMap, assetLink);
                 } else {
                     flushParentMap(secondThirdMap, assetLink);
                 }
-                if (Objects.equals(assetLink.getParentCategoryModal(), AssetCategoryEnum.NETWORK.getCode())) {
+                if (Objects.equals(assetLink.getParentCategoryModal(), 3)) {
                     flushParentMap(secondMap, assetLink);
                 } else {
                     flushMap(secondThirdMap, assetLink);
@@ -385,16 +385,24 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
 
     private void initIdCategory(List<AssetLink> assetLinks, Map<String, String> idCategory) {
         for (AssetLink assetLink : assetLinks) {
-            String categoryId = Objects.toString(assetLink.getCategoryModal());
-            if (Objects.equals(categoryId, AssetCategoryEnum.NETWORK.getCode().toString())) {
+            // 获取父类id(品类型号是网络设备还是计算设备)
+            String categoryId = getCategoryParentNodeName(assetLink.getCategoryModal());
+
+            // 对应关系，设置对应品类型号
+            assetLink.setCategoryModal(Integer.valueOf(categoryId));
+
+            // 这里枚举类有问题，暂时用魔法值代替
+            if (Objects.equals(categoryId, "3")) {
                 idCategory.put(assetLink.getAssetId(), "sim_topo-network");
-            } else if (Objects.equals(categoryId, AssetCategoryEnum.COMPUTER.getCode().toString())) {
+            } else if (Objects.equals(categoryId, "2")) {
                 idCategory.put(assetLink.getAssetId(), "sim_topo-host");
             }
-            String parentCategoryId = Objects.toString(assetLink.getParentCategoryModal());
-            if (Objects.equals(parentCategoryId, AssetCategoryEnum.NETWORK.getCode().toString())) {
+            String parentCategoryId = getCategoryParentNodeName(assetLink.getParentCategoryModal());
+            // 对应关系，设置对应品类型号
+            assetLink.setParentCategoryModal(Integer.valueOf(parentCategoryId));
+            if (Objects.equals(parentCategoryId, "3")) {
                 idCategory.put(assetLink.getParentAssetId(), "sim_topo-network");
-            } else if (Objects.equals(parentCategoryId, AssetCategoryEnum.COMPUTER.getCode().toString())) {
+            } else if (Objects.equals(parentCategoryId, "2")) {
                 idCategory.put(assetLink.getParentAssetId(), "sim_topo-host");
             }
         }
@@ -742,10 +750,45 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         }
         if (query.getCategoryModels() == null) {
             Integer[] category = new Integer[2];
-            category[0] = AssetCategoryEnum.COMPUTER.getCode();
-            category[1] = AssetCategoryEnum.NETWORK.getCode();
+            category[0] = 2;
+            category[1] = 3;
             query.setCategoryModels(category);
         }
         setStatusQuery(query);
+    }
+
+       // 获取当前节点父节点，直到网络设备，计算设备
+    private String getCategoryParentNodeName(Integer id){
+
+        // 变量初始化
+        String nodeId = "";
+        CategoryValiEntity node = new CategoryValiEntity();
+        node.setId(id);
+
+        if (Objects.isNull(id) || id == 0){
+            return "";
+        }
+
+        // 递归获取
+       nodeId = getNodeNameRecursion(node);
+        return nodeId;
+    }
+
+    // 递归获取父节点名称
+    private String getNodeNameRecursion(CategoryValiEntity node){
+
+        // 当前暂存变量
+        CategoryValiEntity newNode = new CategoryValiEntity();
+
+        // 获取信息
+        CategoryValiEntity categoryValiEntity = assetCategoryModelDao.getNameByCtegoryId(node.getId());
+
+        if (AssetCategoryEnum.COMPUTER.getName().equals(categoryValiEntity.getName()) || AssetCategoryEnum.NETWORK.getName().equals(categoryValiEntity.getName())){
+            return String.valueOf(categoryValiEntity.getId());
+        }
+
+        // 递归获取并叠加节点名称
+        newNode.setId(categoryValiEntity.getParentId());
+        return getNodeNameRecursion(newNode);
     }
 }
