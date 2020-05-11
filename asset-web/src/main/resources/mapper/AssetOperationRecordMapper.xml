@@ -528,6 +528,7 @@
         GROUP_CONCAT( DISTINCT amr.mac ) AS macs,
         aor.id as assetOperationRecordId,
         aor.temporary_info as temporaryInfo,
+        aor.temporary_file as temporaryFile,
         aor.file_info AS fileInfo,
         aor.content,
         aor.note,

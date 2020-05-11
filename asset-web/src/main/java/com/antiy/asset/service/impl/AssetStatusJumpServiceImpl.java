@@ -436,7 +436,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(categoryModelsStr.add(assetOfDB.getCategoryModel())){
             throw new BusinessException("只允许计算设备进行此项操作！");
         }
-        ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=baseLineClient.rectification( activityHandleRequest.getStringId());
+        ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=null;
+        try {
+            baseLineClient.rectification( activityHandleRequest.getStringId());
+        }catch (Exception e){
+            logger.error("整改调用配置远程接口抛异常");
+            throw new BusinessException(e.getMessage());
+        }
         if (null == baseLineResponse || !RespBasicCode.SUCCESS.getResultCode().equals(baseLineResponse.getHead().getCode())) {
             LogUtils.error(logger, "调用配置模块失败");
             throw  new BusinessException("调用配置模块失败");
@@ -738,7 +744,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             return Lists.newArrayList();
         }
     }
-
     /**
      * 更新数据库:资产、操作记录<br>
      * 如果是退役,删除通联关系

@@ -17,6 +17,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.DataTypeUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -98,18 +99,19 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
         }
         //把备注信息写入到该条资产报废申请的 temporary_info 列
         AssetSchemeQuery assetSchemeQuery=new AssetSchemeQuery();
-        assetSchemeQuery.setAssetIds(Arrays.asList(assetAssemblyScrapRequest.getAssetAssemblyRequestList().get(0).getAssetId()));
+        assetSchemeQuery.setAssetIds(Arrays.asList(assetAssemblyScrapRequest.getAssetAssemblyRequestList().get(1).getAssetId()));
         assetSchemeQuery.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
         assetSchemeQuery.setOrginStatusOne(AssetStatusEnum.NET_IN.getCode());
         assetSchemeQuery.setOrginStatusTwo(AssetStatusEnum.RETIRE.getCode());
         List<AssetResponse> assetResponseList = assetOperationRecordDao.queryAssetSchemListByAssetIds(assetSchemeQuery);
+        ObjectMapper json=new ObjectMapper();
         if(CollectionUtils.isNotEmpty(assetResponseList) &&
                 (StringUtils.isNotBlank(assetAssemblyScrapRequest.getTemporaryInfo())
-                        || StringUtils.isNotBlank(assetAssemblyScrapRequest.getTemporaryFile()))){
+                        || StringUtils.isNotBlank(json.writeValueAsString(assetAssemblyScrapRequest.getTemporaryInfo())))){
             AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
             assetOperationRecord.setId(DataTypeUtils.stringToInteger(assetResponseList.get(0).getAssetOperationRecordId()));
             assetOperationRecord.setTemporaryInfo(assetAssemblyScrapRequest.getTemporaryInfo());
-            assetOperationRecord.setTemporaryFile(assetAssemblyScrapRequest.getTemporaryFile());
+            assetOperationRecord.setTemporaryFile(json.writeValueAsString(assetAssemblyScrapRequest.getTemporaryFile()));
              assetOperationRecordDao.update(assetOperationRecord);
             logger.info("保存暂存备注/附件");
         }
