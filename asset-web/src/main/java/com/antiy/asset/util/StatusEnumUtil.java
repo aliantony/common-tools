@@ -58,12 +58,11 @@ public class StatusEnumUtil {
     }
 
     /**
-     * 已入网+变更中+退役待审批+退役审批未通过的状态资产类型分布情况
+     * 已入网+变更中+变更中+待退回+已退回+待报废+已报废 的状态资产类型分布情况
      * @return
      */
     public static List<Integer> getAssetTypeStatus() {
         List<Integer> status = Lists.newArrayList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-            AssetStatusEnum.CORRECTING.getCode(), AssetStatusEnum.NET_IN_CHECK.getCode(),
             AssetStatusEnum.WAIT_SCRAP.getCode(), AssetStatusEnum.SCRAP.getCode(),
                 AssetStatusEnum.RETIRE.getCode(), AssetStatusEnum.WAIT_RETIRE.getCode());
         return status;
