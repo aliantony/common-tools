@@ -10,6 +10,7 @@ import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.asset.entity.AssetBusinessRelation;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetBusinessService;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -97,7 +98,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
             assetBusinessRelation.setAssetId(itme.getAssetId());
             assetBusinessRelation.setBusinessInfluence(itme.getBusinessInfluence());
             assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
-            assetBusinessRelation.setAssetBusinessId(assetBusiness.getId());
+            assetBusinessRelation.setAssetBusinessId(assetBusiness.getUniqueId());
             assetBusinessRelation.setUniqueId(assetBusiness.getUniqueId());
             assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
             assetBusinessRelation.setGmtModified(System.currentTimeMillis());
@@ -140,7 +141,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         deleteAssetOfBusiness(request);
         editAssetOfBusiness(request);
         LogUtils.recordOperLog(
-                new BusinessData("编辑业务信息", business.getId(), assetBusiness.getName(),
+                new BusinessData("编辑业务信息", request.getId(), assetBusiness.getName(),
                         request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_EDIT)
         );
         return result.toString();
@@ -164,19 +165,30 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         request.setAddAssetList(addAsset);
         // 编辑的资产
         List<AssetBusinessRelationRequest> editAsset = new ArrayList<>();
-        for (AssetBusinessRelationResponse itemOfDb : assetOfDB) {
-            for (AssetBusinessRelationRequest itemOfParam : assetOfParamter) {
-                if (
-                    itemOfDb.getStringId().equals(itemOfParam.getAssetId())
-                    && (itemOfDb.getBusinessInfluence()==null && itemOfParam.getBusinessInfluence()!=null
-                    || !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence()))
-                ) {
-                    editAsset.add(itemOfParam);
-                }
-
-            }
-        }
-        request.setEditAsset(editAsset);
+//        for (AssetBusinessRelationResponse itemOfDb : assetOfDB) {
+//            for (AssetBusinessRelationRequest itemOfParam : assetOfParamter) {
+//                if (itemOfDb.getBusinessInfluence() == null){
+//                    continue;
+//                }
+//                if (
+//                        itemOfDb.getStringId().equals(itemOfParam.getAssetId())){
+//                }
+//
+//                {
+//                    editAsset.add(itemOfParam);
+//                }
+//
+//                if (
+//                    itemOfDb.getStringId().equals(itemOfParam.getAssetId())
+//                    && (itemOfDb.getBusinessInfluence()==null && itemOfParam.getBusinessInfluence()!=null
+//                    || !itemOfDb.getBusinessInfluence().equals(itemOfParam.getBusinessInfluence()))
+//                ) {
+//                    editAsset.add(itemOfParam);
+//                }
+//
+//            }
+//        }
+        request.setEditAsset(assetOfParamter);
     }
 
     private void editAssetOfBusiness(AssetBusinessRequest request) {
@@ -215,7 +227,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
                 assetBusinessRelation.setBusinessInfluence(item.getBusinessInfluence());
                 assetBusinessRelation.setGmtCreate(System.currentTimeMillis());
                 assetBusinessRelation.setGmtModified(System.currentTimeMillis());
-                assetBusinessRelation.setAssetBusinessId(request.getId());
+                assetBusinessRelation.setAssetBusinessId(request.getUniqueId());
                 assetBusinessRelation.setUniqueId(request.getUniqueId());
                 assetRelationList.add(assetBusinessRelation);
             }
