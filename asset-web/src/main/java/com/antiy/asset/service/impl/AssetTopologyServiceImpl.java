@@ -748,12 +748,27 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
             query.setAreaIds(
                 DataTypeUtils.integerArrayToStringArray(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser()));
         }
+/*
         if (query.getCategoryModels() == null) {
             Integer[] category = new Integer[2];
             category[0] = 2;
             category[1] = 3;
             query.setCategoryModels(category);
         }
+*/
+
+        // 品类型号
+        if (Objects.isNull(query.getCategoryModels())) {
+            query.setCategoryModels(
+                    // 循环获取计算设备，网络设备下所有子节点
+                    // todo 由于资产类型枚举存在问题，暂时用魔法值代替
+                    getCategoryNodeList(Arrays.asList(2, 3)).toArray(new Integer[0]));
+        }else {
+            query.setCategoryModels(
+                    // 循环获取所有子节点
+                    getCategoryNodeList(Arrays.asList(query.getCategoryModels())).toArray(new Integer[0]));
+        }
+
         setStatusQuery(query);
     }
 
@@ -790,5 +805,31 @@ public class AssetTopologyServiceImpl implements IAssetTopologyService {
         // 递归获取并叠加节点名称
         newNode.setId(categoryValiEntity.getParentId());
         return getNodeNameRecursion(newNode);
+    }
+
+    // 获取当前节点下所有子节点列表
+    public List<Integer> getCategoryNodeList(List<Integer> currentNodes) {
+
+        Set<Integer> allNodes = new HashSet<>();
+        allNodes.addAll(currentNodes);
+        getNodesForrecursion(currentNodes, allNodes);
+
+        return new ArrayList<>(allNodes);
+    }
+
+    // 递归获取所有节点
+    private void getNodesForrecursion(List<Integer> list, Set<Integer> allNodes) {
+
+        List<Integer> nodeList = new ArrayList<>();
+
+        if (!list.isEmpty()){
+            nodeList = assetCategoryModelDao.getCategoryNodeList(list);
+        }
+
+        // 当有数据时继续调用本方法，直到返回为空。
+        if (!nodeList.isEmpty()){
+            allNodes.addAll(nodeList);
+            getNodesForrecursion(nodeList, allNodes);
+        }
     }
 }
