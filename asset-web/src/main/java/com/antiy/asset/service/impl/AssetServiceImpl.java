@@ -1288,7 +1288,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         checkAssetCompliance(assetOuterRequest);
         Integer categoryType = setCategroy(
             DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()));
-        assetOuterRequest.getAsset().setCategoryType(categoryType);
+        assetOuterRequest.getAsset().setCategoryType(DataTypeUtils.integerToString(categoryType));
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         synchronized (lock) {
             // 校验资产状态
