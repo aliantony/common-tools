@@ -622,8 +622,8 @@
         ahsl.business_id AS software_business_id
         FROM
         baseline_template_hist bt
-        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_id
-        AND bts.STATUS = 1
+        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_hist_id
+        AND bts.is_delete = 0
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
@@ -669,8 +669,8 @@
         ahsl.business_id AS software_business_id
         FROM
         baseline_template_hist bt
-        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_id
-        AND bts.STATUS = 1
+        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_hist_id
+        AND bts.is_delete = 0
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
@@ -711,8 +711,8 @@
         ahsl.business_id AS software_business_id
         FROM
         baseline_template_hist bt
-        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_id
-        AND bts.STATUS = 1
+        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_hist_id
+        AND bts.is_delete =0
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE
@@ -759,8 +759,8 @@
         ahsl.business_id AS software_business_id
         FROM
         baseline_template_hist bt
-        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_id
-        AND bts.STATUS = 1
+        LEFT JOIN baseline_template_software_hist bts ON bt.id = bts.template_hist_id
+        AND bts.is_delete = 0
         LEFT JOIN asset_hard_soft_lib ahsl ON bts.software_id = ahsl.id
         AND ahsl.STATUS = 1
         WHERE

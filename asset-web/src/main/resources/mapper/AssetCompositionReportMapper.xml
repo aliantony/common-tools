@@ -183,7 +183,7 @@
         AND air. STATUS = 1
         )
         LEFT JOIN asset_user asset_user ON t.responsible_user_id = asset_user.id
-        LEFT JOIN baseline_template bt ON t.baseline_template_id = bt.id
+        LEFT JOIN baseline_template_hist bt ON t.baseline_template_id = bt.id
         LEFT JOIN (
         SELECT
         a.id,
@@ -274,7 +274,7 @@
         AND air. STATUS = 1
         )
         LEFT JOIN asset_user asset_user ON t.responsible_user_id = asset_user.id
-        LEFT JOIN baseline_template bt ON t.baseline_template_id = bt.id
+        LEFT JOIN baseline_template_hist bt ON t.baseline_template_id = bt.id
         LEFT JOIN (
         SELECT
         a.id,

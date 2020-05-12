@@ -1319,7 +1319,7 @@
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
         left join asset_user asset_user on asset.responsible_user_id = asset_user.id
-        left join baseline_template bt on asset.baseline_template_id = bt.id
+        left join baseline_template_hist bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on asset.id=abr.asset_id and abr.status=1
         <where>
             <trim prefixOverrides="and">
@@ -2015,7 +2015,7 @@
             bt.tp_name as value
         FROM
             asset asset
-            INNER JOIN baseline_template bt ON asset.baseline_template_id = bt.id
+            INNER JOIN baseline_template_hist bt ON asset.baseline_template_id = bt.id
     </select>
     <select id="getAllSupplierofSafetyEquipment" resultType="java.lang.String">
         SELECT manufacturer
@@ -2368,7 +2368,7 @@
         </where>
         group by asset.id
         ) asset
-        left join baseline_template bt on asset.baseline_template_id = bt.id
+        left join baseline_template_hist bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         <if test="departmentList != null and departmentList.size() > 0">
@@ -2410,7 +2410,7 @@
         ) asset
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
-        left join baseline_template bt on asset.baseline_template_id = bt.id
+        left join baseline_template_hist bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         left join asset_nettype_manage anm on (asset.net_type = anm.id and anm.status = 1)

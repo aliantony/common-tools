@@ -784,10 +784,10 @@
         </if>
     </select>
     <select id="queryNameListType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select sw_type from baseline_template where id = #{baselineTemplateId}
+        select sw_type from baseline_template_hist where id = #{baselineTemplateId}
     </select>
     <select id="queryOsType" resultType="java.lang.Integer" parameterType="com.antiy.asset.vo.query.InstallQuery">
-        select system_type from baseline_template where id = #{baselineTemplateId}
+        select system_type from baseline_template_hist where id = #{baselineTemplateId}
     </select>
     <!--模板的软件-->
     <select id="querySoftwareIds" resultType="java.lang.Long" parameterType="com.antiy.asset.vo.query.InstallQuery">
@@ -906,7 +906,7 @@
         </if>
     </select>
     <select id="queryOs" resultType="java.lang.String">
-        select serial_name from asset_cpe_filter where business_id = (select system from baseline_template where id = #{query.baselineTemplateId})
+        select serial_name from asset_cpe_filter where business_id = (select system from baseline_template_hist where id = #{query.baselineTemplateId})
     </select>
     <select id="getContent" resultType="java.lang.String">
         SELECT
