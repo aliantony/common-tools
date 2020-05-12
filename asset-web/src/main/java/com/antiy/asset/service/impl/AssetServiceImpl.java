@@ -1638,6 +1638,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private Integer updateAssetInfo(AssetOuterRequest assetOuterRequest) {
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         Asset asset = requestConverter.convert(assetOuterRequest.getAsset(), Asset.class);
+        setCategroy(asset);
         Integer assetCount = transactionTemplate.execute(new TransactionCallback<Integer>() {
             @Override
             public Integer doInTransaction(TransactionStatus transactionStatus) {
