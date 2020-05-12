@@ -218,19 +218,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
                     // 不跳过整改=>整改中(计算设备，安全设备)
                     if (request.getNeedScan()) {
-                        // 已整改
                         asset.setRectification(3);
                         asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
                     } else {
+                        asset.setRectification(2);
                         // 计算设备、网络设备=>待准入
                         if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
                             || AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModelType())) {
                             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
-                            asset.setRectification(2);
                         } else {
                             // 安全设备、存储设备、其他设备 =>已入网
                             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
-                            asset.setRectification(2);
                             asset.setFirstEnterNett(currentTimeMillis);
                         }
                     }
@@ -390,24 +388,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         });
-        /*ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        activityRequest.setBusinessId(String.valueOf(id));
-        activityRequest.setProcessDefinitionKey("assetAdmittance");
-        activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
-        activityRequest.setFormData(createFormData(request.getNeedScan(),
-            setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
-            request.getAsset().getAreaId()));
-        ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-        // 启动流程后，activiti会返回procInstId 发给漏洞
-        if (null == actionResponse
-            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
-            // 调用失败，逻辑删登记的资产
-            assetDao.deleteById(id);
-            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
-        }
-        // 启动流程后，activiti会返回procInstId 发给漏洞
-        String procInstId = actionResponse.getBody().toString();
-        assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));*/
+        /* ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
+         * activityRequest.setBusinessId(String.valueOf(id));
+         * activityRequest.setProcessDefinitionKey("assetAdmittance");
+         * activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+         * activityRequest.setFormData(createFormData(request.getNeedScan(),
+         * setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
+         * request.getAsset().getAreaId())); ActionResponse actionResponse =
+         * activityClient.manualStartProcess(activityRequest); // 启动流程后，activiti会返回procInstId 发给漏洞 if (null ==
+         * actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) { //
+         * 调用失败，逻辑删登记的资产 assetDao.deleteById(id); return actionResponse == null ?
+         * ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse; } // 启动流程后，activiti会返回procInstId 发给漏洞
+         * String procInstId = actionResponse.getBody().toString(); assetOperationRecordDao.writeProcInstId(id,
+         * Integer.valueOf(procInstId)); */
 
         // 是否需要进行漏扫
         if (request.getNeedScan()) {
@@ -1365,6 +1358,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterRequest.getAsset().setRectification(2);
             }
         }
+        /* ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
+         * activityRequest.setBusinessId(assetOuterRequest.getAsset().getId());
+         * activityRequest.setProcessDefinitionKey("assetAdmittance");
+         * activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+         * activityRequest.setFormData(createFormData(assetOuterRequest.getNeedScan(),
+         * setCategroy(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel())),
+         * assetOuterRequest.getAsset().getAreaId())); ActionResponse actionResponse =
+         * activityClient.manualStartProcess(activityRequest); // 启动流程后，activiti会返回procInstId 发给漏洞 if (null ==
+         * actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+         * BusinessExceptionUtils.isTrue(false, "启动工作流报错"); } // 启动流程后，activiti会返回procInstId 发给漏洞 String procInstId =
+         * actionResponse.getBody().toString();
+         * assetOperationRecordDao.writeProcInstId(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getId()),
+         * Integer.valueOf(procInstId)); */
         // 更新资产状态
         updateAssetStatus(status, System.currentTimeMillis(), asset.getStringId());
         // 记录操作日志
@@ -4061,6 +4067,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         for (AssetResponse object : assetResponseList) {
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
+            }
+            if (!"2".equals(object.getCategoryType()) && !"4".equals(object.getCategoryType())) {
+                object.setRectification(null);
             }
             object.setCategoryType(DataTypeUtils
                 .integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel())) + 1));
