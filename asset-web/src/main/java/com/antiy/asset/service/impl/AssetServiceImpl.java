@@ -390,16 +390,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         });
-        /* if (request.getManualStartActivityRequest() != null) { ManualStartActivityRequest activityRequest =
-         * request.getManualStartActivityRequest(); activityRequest.setBusinessId(String.valueOf(id));
-         * activityRequest.setProcessDefinitionKey("assetAdmittance");
-         * activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + ""); ActionResponse actionResponse =
-         * activityClient.manualStartProcess(activityRequest); // 如果流程引擎为空,直接返回错误信息 启动流程后，activiti会返回procInstId 发给漏洞 if
-         * (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode()))
-         * { // 调用失败，逻辑删登记的资产 assetDao.deleteById(id); return actionResponse == null ?
-         * ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse; } String procInstId =
-         * actionResponse.getBody().toString(); assetOperationRecordDao.writeProcInstId(id,
-         * Integer.valueOf(procInstId)); } */
+       /* ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
+        activityRequest.setConfigUserIds();
+        activityRequest.setBusinessId(String.valueOf(id));
+        activityRequest.setProcessDefinitionKey("assetAdmittance");
+        activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
+        Map formData = new HashMap();
+        ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
+        // 如果流程引擎为空,直接返回错误信息 启动流程后，activiti会返回procInstId 发给漏洞
+        if (null == actionResponse
+            || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
+            // 调用失败，逻辑删登记的资产
+            assetDao.deleteById(id);
+            return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
+        }
+        String procInstId = actionResponse.getBody().toString();
+        assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));*/
 
         // 是否需要进行漏扫
         if (request.getNeedScan()) {
@@ -3705,8 +3711,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetQuery.setEnd(assetQuery.getEnd() - assetQuery.getStart());
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
-        assetQuery.setAreaIds(
-            LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
+        assetQuery.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
         List<AssetResponse> list = this.queryAssetPage(assetQuery).getItems();
         DownloadVO downloadVO = new DownloadVO();
         // 未知资产
@@ -3990,7 +3995,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 } else {
                     if (asset.getExpirationReminder() != null && asset.getExpirationReminder() > 0) {
                         // 未到到期时间，但是以到到期提醒时间，显示绿色
-                        if (System.currentTimeMillis() > asset.getServiceLife()) {
+                        if (System.currentTimeMillis() > asset.getExpirationReminder()) {
                             asset.setRowColor("green");
                         }
                     }
