@@ -2,6 +2,7 @@ package com.antiy.asset.vo.response;
 
 import com.antiy.common.base.BaseResponse;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,7 +17,8 @@ public class AssetBusinessResponse extends BaseResponse {
      * 业务id
      */
     @ApiModelProperty("业务id")
-    private Integer id;
+    @Encode
+    private String id;
     /**
      * 业务名称（中文字符，去重）
      */
@@ -84,13 +86,19 @@ public class AssetBusinessResponse extends BaseResponse {
         this.sortOrder = sortOrder;
     }
 
-    public Integer getId() {
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setImportanceDesc(String importanceDesc) {
+        this.importanceDesc = importanceDesc;
     }
+
 
     public String getImportanceDesc() {
         return importanceDesc;
