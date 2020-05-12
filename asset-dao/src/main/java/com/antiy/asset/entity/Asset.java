@@ -108,7 +108,7 @@ public class Asset extends BaseEntity {
      * 品类名称
      */
     private String  categoryModelName;
-    private Integer categoryModelType;
+    private String  categoryType;
     /**
      * 厂商
      */
@@ -334,12 +334,12 @@ public class Asset extends BaseEntity {
         this.rowColor = rowColor;
     }
 
-    public Integer getCategoryModelType() {
-        return categoryModelType;
+    public String getCategoryType() {
+        return categoryType;
     }
 
-    public void setCategoryModelType(Integer categoryModelType) {
-        this.categoryModelType = categoryModelType;
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
     }
 
     public String getNetTypeName() {

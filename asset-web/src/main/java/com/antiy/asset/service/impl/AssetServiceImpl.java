@@ -223,8 +223,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else {
                         asset.setRectification(2);
                         // 计算设备、网络设备=>待准入
-                        if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
-                            || AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModelType())) {
+                        if ("2".equals(asset.getCategoryType()) || "3".equals(asset.getCategoryType())) {
                             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                         } else {
                             // 安全设备、存储设备、其他设备 =>已入网
@@ -426,7 +425,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 不跳过整改=>整改中(计算设备，安全设备)
         if (needScan) {
             formData.put("assetRegisterResult", "continueRegister");
-            if (AssetCategoryEnum.COMPUTER.getCode().equals(categoryType)) {
+            if ("2".equals(categoryType)) {
                 formData.put("needNetImplement", 1);
                 formData.put("implementUser", getImplementUser(areaId));
             } else {
@@ -435,8 +434,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             formData.put("assetRegisterResult", "noRegister");
             // 计算设备、网络设备=>待准入
-            if (AssetCategoryEnum.COMPUTER.getCode().equals(categoryType)
-                || AssetCategoryEnum.NETWORK.getCode().equals(categoryType)) {
+            if ("2".equals(categoryType) || "3".equals(categoryType)) {
                 formData.put("needNetImplement", 1);
                 formData.put("implementUser", getImplementUser(areaId));
             } else {
@@ -476,7 +474,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
             if (categoryModel.getId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
-                    asset.setCategoryModelType(categoryModel.getId() - 1);
+                    asset.setCategoryType(DataTypeUtils.integerToString(categoryModel.getId()));
                     break;
                 } else {
                     flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
@@ -493,7 +491,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
             if (categoryModel.getId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
-                    return categoryModel.getId() - 1;
+                    return categoryModel.getId();
                 } else {
                     flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
                 }
@@ -1233,7 +1231,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .getBusinessInfoByAssetId(condition.getPrimaryKey());
         assetResponse.setDependentBusiness(dependentBusiness);
         setCategroy(asset);
-        if (Objects.equals(asset.getCategoryModelType(), AssetCategoryEnum.NETWORK.getCode())) {
+        assetResponse.setCategoryType(asset.getCategoryType());
+        if (Objects.equals(asset.getCategoryType(), "3")) {
             List<AssetNetworkEquipment> assetNetworkEquipments = assetNetworkEquipmentDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetNetworkEquipments)) {
                 AssetNetworkEquipmentResponse assetNetworkEquipmentResponse = networkResponseConverter
@@ -1241,7 +1240,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterResponse.setAssetNetworkEquipment(assetNetworkEquipmentResponse);
             }
         }
-        if (Objects.equals(asset.getCategoryModelType(), AssetCategoryEnum.STORAGE.getCode())) {
+        if (Objects.equals(asset.getCategoryType(), "4")) {
             List<AssetStorageMedium> assetStorageMedias = assetStorageMediumDao.getByWhere(param);
             if (CollectionUtils.isNotEmpty(assetStorageMedias)) {
                 AssetStorageMediumResponse assetStorageMediumResponse = storageResponseConverter
@@ -1345,8 +1344,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetOuterRequest.getAsset().setRectification(3);
         } else {
             // 计算设备、网络设备=>待准入
-            if (AssetCategoryEnum.COMPUTER.getCode().equals(asset.getCategoryModelType())
-                || AssetCategoryEnum.NETWORK.getCode().equals(asset.getCategoryModelType())) {
+            if ("2".equals(asset.getCategoryType()) || "3".equals(asset.getCategoryType())) {
                 asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                 status = AssetStatusEnum.NET_IN_CHECK.getCode();
                 assetOuterRequest.getAsset().setRectification(2);
@@ -1683,7 +1681,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     int count = assetDao.changeAsset(asset);
                     // 处理ip
                     dealIp(assetOuterRequest.getAsset().getId(), assetOuterRequest.getIpRelationRequests(),
-                        asset.getCategoryModelType());
+                        DataTypeUtils.stringToInteger(asset.getCategoryType()));
                     // 处理mac
                     dealMac(assetOuterRequest.getAsset().getId(), assetOuterRequest.getMacRelationRequests());
                     // 资产变更-软件处理
@@ -4068,8 +4066,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
-            object.setCategoryType(DataTypeUtils
-                    .integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel())) + 1));
+            object.setCategoryType(
+                DataTypeUtils.integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel()))));
             if (!"2".equals(object.getCategoryType()) && !"5".equals(object.getCategoryType())) {
                 object.setRectification(null);
             }
