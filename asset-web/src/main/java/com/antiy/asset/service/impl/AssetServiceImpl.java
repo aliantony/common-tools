@@ -390,20 +390,22 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         });
-       /* ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
-        activityRequest.setConfigUserIds();
+        /*ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setBusinessId(String.valueOf(id));
         activityRequest.setProcessDefinitionKey("assetAdmittance");
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
-        Map formData = new HashMap();
+        activityRequest.setFormData(createFormData(request.getNeedScan(),
+            setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
+            request.getAsset().getAreaId()));
         ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
-        // 如果流程引擎为空,直接返回错误信息 启动流程后，activiti会返回procInstId 发给漏洞
+        // 启动流程后，activiti会返回procInstId 发给漏洞
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
             // 调用失败，逻辑删登记的资产
             assetDao.deleteById(id);
             return actionResponse == null ? ActionResponse.fail(RespBasicCode.BUSSINESS_EXCETION) : actionResponse;
         }
+        // 启动流程后，activiti会返回procInstId 发给漏洞
         String procInstId = actionResponse.getBody().toString();
         assetOperationRecordDao.writeProcInstId(id, Integer.valueOf(procInstId));*/
 
@@ -418,6 +420,59 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         return ActionResponse.success(msg);
+    }
+
+    /**
+     * 返回资产启动流程需要的formData
+     * @param needScan
+     * @param categoryType
+     * @return
+     */
+    private Map createFormData(boolean needScan, Integer categoryType, String areaId) {
+        Map formData = new HashMap();
+        // 不跳过整改=>整改中(计算设备，安全设备)
+        if (needScan) {
+            formData.put("assetRegisterResult", "continueRegister");
+            if (AssetCategoryEnum.COMPUTER.getCode().equals(categoryType)) {
+                formData.put("needNetImplement", 1);
+                formData.put("implementUser", getImplementUser(areaId));
+            } else {
+                formData.put("needNetImplement", 2);
+            }
+        } else {
+            formData.put("assetRegisterResult", "noRegister");
+            // 计算设备、网络设备=>待准入
+            if (AssetCategoryEnum.COMPUTER.getCode().equals(categoryType)
+                || AssetCategoryEnum.NETWORK.getCode().equals(categoryType)) {
+                formData.put("needNetImplement", 1);
+                formData.put("implementUser", getImplementUser(areaId));
+            } else {
+                // 安全设备、存储设备、其他设备 =>已入网
+                formData.put("needNetImplement", 2);
+            }
+        }
+        return formData;
+    }
+
+    private String getImplementUser(String areaId) {
+        WorkFlowQuery workFlowQuery = new WorkFlowQuery();
+        workFlowQuery.setFlowId("4");
+        workFlowQuery.setFlowNodeTag("config_base");
+        workFlowQuery.setAreaId(
+            Collections.singletonList(aesEncoder.encode(areaId, LoginUserUtil.getLoginUser().getUsername())));
+        ActionResponse users = baseLineClient.listRy(workFlowQuery);
+        List<Map> userDetails = (List<Map>) users.getBody();
+        if (!Objects.isNull(userDetails) && CollectionUtils.isNotEmpty(userDetails)) {
+            List<String> encodeUserIds = Lists.newArrayList();
+            userDetails.stream().forEach(userId -> {
+                encodeUserIds.add(
+                    aesEncoder.decode((String) userId.get("stringId"), LoginUserUtil.getLoginUser().getUsername()));
+            });
+            return String.join(",", encodeUserIds);
+        } else {
+            logger.info("获取准入执行人失败");
+        }
+        return "";
     }
 
     private void setCategroy(Asset asset) {
