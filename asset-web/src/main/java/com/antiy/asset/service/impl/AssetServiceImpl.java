@@ -4068,12 +4068,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             if (MapUtils.isNotEmpty(processMap)) {
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
-            if (!"2".equals(object.getCategoryType()) && !"4".equals(object.getCategoryType())) {
+            object.setCategoryType(DataTypeUtils
+                    .integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel())) + 1));
+            if (!"2".equals(object.getCategoryType()) && !"5".equals(object.getCategoryType())) {
                 object.setRectification(null);
             }
-            object.setCategoryType(DataTypeUtils
-                .integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel())) + 1));
-
         }
         return new PageResult<>(assetMultipleQuery.getPageSize(), count, assetMultipleQuery.getCurrentPage(),
             assetResponseList);
