@@ -1288,7 +1288,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         checkAssetCompliance(assetOuterRequest);
         Integer categoryType = setCategroy(
             DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()));
-        assetOuterRequest.getAsset().setCategoryModelType(categoryType);
+        assetOuterRequest.getAsset().setCategoryType(categoryType);
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         synchronized (lock) {
             // 校验资产状态
@@ -1313,9 +1313,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOperationRecord.setTargetObjectId(assetOuterRequest.getAsset().getId());
         assetOperationRecord.setOriginStatus(assetOuterRequest.getAsset().getAssetStatus());
         if (EnumUtil.equals(assetOuterRequest.getAsset().getAssetStatus(), AssetStatusEnum.NET_IN)
-            && EnumUtil.equals(assetOuterRequest.getAsset().getCategoryModelType(), AssetCategoryEnum.COMPUTER)) {
+            && assetOuterRequest.getAsset().getCategoryType().equals("2")) {
             assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
-        } else if (!EnumUtil.equals(assetOuterRequest.getAsset().getCategoryModelType(), AssetCategoryEnum.COMPUTER)) {
+        } else if (assetOuterRequest.getAsset().getCategoryType().equals("2")) {
             assetOperationRecord.setTargetStatus(AssetStatusEnum.NET_IN.getCode());
         } else {
             assetOperationRecord.setTargetStatus(AssetStatusEnum.CORRECTING.getCode());
@@ -1386,7 +1386,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         Integer changeStatus;
         BusinessPhaseEnum businessPhaseEnum;
         // 判断计算设备变更走基准配置
-        if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
+        if ("2".equals(assetOuterRequest.getAsset().getCategoryType())) {
             // 判断计算设备硬盘,软件,操作系统是否变化
             if (checkComputerIsChange(assetOuterRequest)) {
                 String reason = getChangeContent(assetOuterRequest);
@@ -1448,7 +1448,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 changeStatus = AssetStatusEnum.NET_IN.getCode();
                 businessPhaseEnum = BusinessPhaseEnum.NET_IN;
             }
-        } else if (AssetCategoryEnum.SAFETY.getCode().equals(assetOuterRequest.getAsset().getCategoryModelType())) {
+        } else if ("5".equals(assetOuterRequest.getAsset().getCategoryType())) {
             if (checkSafetyIsChange(assetOuterRequest)) {
                 logger.info("启动漏扫");
                 // 漏洞扫描

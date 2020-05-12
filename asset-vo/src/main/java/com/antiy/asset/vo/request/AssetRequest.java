@@ -69,7 +69,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("品类型号")
     private String                  categoryModel;
     @ApiModelProperty("品类型号:1计算设备,2网络设备3安全设备4存储设备5其它设备")
-    private Integer                 categoryModelType;
+    private Integer                 categoryType;
     @ApiModelProperty("行政区id")
     @Encode
     @NotBlank(message = "行政区域信息不能为空")
@@ -217,12 +217,12 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
         this.softVersion = softVersion;
     }
 
-    public Integer getCategoryModelType() {
-        return categoryModelType;
+    public Integer getCategoryType() {
+        return categoryType;
     }
 
-    public void setCategoryModelType(Integer categoryModelType) {
-        this.categoryModelType = categoryModelType;
+    public void setCategoryType(Integer categoryType) {
+        this.categoryType = categoryType;
     }
 
     public String getNetType() {
