@@ -794,10 +794,10 @@
         SELECT
             b.business_id
         FROM
-            baseline_template_software a
-            INNER JOIN asset_hard_soft_lib b ON a.software_id = b.id and a.status=1 and b.status=1
+            baseline_template_software_hist a
+            INNER JOIN asset_hard_soft_lib b ON a.software_id = b.id and a.is_delete=0 and b.status=1
         WHERE
-	      template_id =  #{baselineTemplateId}
+	      template_hist_id =  #{baselineTemplateId}
     </select>
     <!--查询可关联的软件-->
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
