@@ -283,7 +283,7 @@
                         locate(#{item},asset.asset_group)>0
                     </foreach>
                 </if>
-                and asset.category_model =1
+                and asset.category_model =2
                 and amrr.asset_id is null
             </otherwise>
         </choose>

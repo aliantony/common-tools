@@ -6,6 +6,7 @@ import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
+import java.util.Map;
 
 public class AssetAssemblyScrapRequest extends BaseRequest {
 
@@ -19,7 +20,7 @@ public class AssetAssemblyScrapRequest extends BaseRequest {
     private String  temporaryInfo;
 
     @ApiModelProperty("附件")
-    private  String temporaryFile;
+    private Map<String,Object> temporaryFile;
 
     public String getTemporaryInfo() {
         return temporaryInfo;
@@ -29,11 +30,11 @@ public class AssetAssemblyScrapRequest extends BaseRequest {
         this.temporaryInfo = temporaryInfo;
     }
 
-    public String getTemporaryFile() {
+    public Map<String, Object> getTemporaryFile() {
         return temporaryFile;
     }
 
-    public void setTemporaryFile(String temporaryFile) {
+    public void setTemporaryFile(Map<String, Object> temporaryFile) {
         this.temporaryFile = temporaryFile;
     }
 

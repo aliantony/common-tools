@@ -119,22 +119,22 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
 
     @Override
     public AssetStatusMonitorCountResponse queryCount(AssetStatusMonitorQuery assetStatusMonitorQuery) {
-
-        Long lastTime = assetStatusMonitorDao.maxMonitorGmtCreate(assetStatusMonitorQuery);
-        assetStatusMonitorQuery.setGmtModified(lastTime);
-
-        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.PROCESS.getCode());
-        Integer processCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
-
-        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.SOFT.getCode());
-        Integer softCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
-
-        assetStatusMonitorQuery.setType(AssetStatusMonitorEnum.SERVICE.getCode());
-        Integer serviceCount= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
+        Integer processCount=  getCount(assetStatusMonitorQuery,AssetStatusMonitorEnum.PROCESS);
+        Integer softCount=getCount(assetStatusMonitorQuery,AssetStatusMonitorEnum.SOFT);
+        Integer serviceCount=getCount(assetStatusMonitorQuery,AssetStatusMonitorEnum.SERVICE);
         AssetStatusMonitorCountResponse assetStatusMonitorCountResponse=new AssetStatusMonitorCountResponse();
         assetStatusMonitorCountResponse.setProcess(processCount);
         assetStatusMonitorCountResponse.setService(serviceCount);
         assetStatusMonitorCountResponse.setSoftware(softCount);
         return assetStatusMonitorCountResponse;
     }
+
+    private Integer getCount(AssetStatusMonitorQuery assetStatusMonitorQuery,AssetStatusMonitorEnum assetStatusMonitorEnum){
+        assetStatusMonitorQuery.setType(assetStatusMonitorEnum.getCode());
+        Long lastTime = assetStatusMonitorDao.maxMonitorGmtCreate(assetStatusMonitorQuery);
+        assetStatusMonitorQuery.setGmtModified(lastTime);
+        Integer count= assetStatusMonitorDao.countMonitor(assetStatusMonitorQuery);
+        return count;
+    }
+
 }

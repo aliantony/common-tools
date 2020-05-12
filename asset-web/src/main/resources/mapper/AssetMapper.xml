@@ -2496,7 +2496,7 @@
             t2.tp_name as value
         from
             asset t1
-            left join baseline_template t2 on t1.baseline_template_id = t2.id
+            left join baseline_template_hist t2 on t1.baseline_template_id = t2.id
         where
             t1.status = 1
             and t1.baseline_template_id is not null

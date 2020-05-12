@@ -1,13 +1,12 @@
 package com.antiy.asset.vo.response;
 
-import java.util.List;
-
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.request.AssetCustomizeRequest;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.utils.JsonUtil;
-
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.List;
 
 /**
  * <p> AssetResponse 响应对象 </p>
@@ -18,6 +17,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AssetResponse extends BaseResponse {
 
+
+
+    @ApiModelProperty("附件 暂存")
+    private String temporaryFile;
     @Encode
     @ApiModelProperty("操作记录表id")
     String                                 assetOperationRecordId;
@@ -1090,6 +1093,14 @@ public class AssetResponse extends BaseResponse {
 
     public void setDecryptId(String decryptId) {
         this.decryptId = decryptId;
+    }
+
+    public String getTemporaryFile() {
+        return temporaryFile;
+    }
+
+    public void setTemporaryFile(String temporaryFile) {
+        this.temporaryFile = temporaryFile;
     }
 
     @Override
