@@ -10,6 +10,7 @@ import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.RespBasicCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -112,9 +113,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId) {
         JSONObject param = new JSONObject();
         param.put("assetId", assetId);
-        return (ActionResponse) baseClient.post(param,
-            new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
-            }, baseLineRectificationUrl);
+        return  (ActionResponse) baseClient.post(param,
+                new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
+                }, baseLineRectificationUrl);
     }
 
     @Override
