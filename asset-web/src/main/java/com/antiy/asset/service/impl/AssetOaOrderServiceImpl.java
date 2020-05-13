@@ -110,7 +110,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         }
         assetOaOrderApproveDao.insertBatch(assetOaOrderApproves);
         //todo 发送消息
-        //sendMessage(request, assetOaOrder);
+        sendMessage(request, assetOaOrder);
         return assetOaOrder.getId();
     }
 
@@ -143,9 +143,9 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
 
         List<SysMessageRequest> sysMessageRequests = new ArrayList<>();
         //获取特定权限的用户id
-        List<String> tag = new ArrayList<String>();
-        tag.add(tagStr);
-        List<Integer> userIds = getALLUserIdByPermission(tag);
+        List<String> tags = new ArrayList<String>();
+        tags.add(tagStr);
+        List<Integer> userIds = getALLUserIdByPermission(tags);
         if(CollectionUtils.isEmpty(userIds)){
             throw new BusinessException("请先维护具备" + AssetOaOrderTypeEnum.getValueByCode(assetOaOrderRequest.getOrderType()).getMsg() + "执行权限的人员");
         }
@@ -274,19 +274,17 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         return false;
     }
 
-    private  List<Integer> getALLUserIdByPermission(List<String> tag){
-        logger.info("--------------查询用户---------，tag:{}", tag.toString());
+    private  List<Integer> getALLUserIdByPermission(List<String> tags){
+        logger.info("--------------查询用户---------，tag:{}", tags.toString());
         //获取权限人员id
-        List<String> tags = new ArrayList<String>();
-        tags.add("asset");
         QxTagQuery qxTagQuery = new QxTagQuery();
         qxTagQuery.setTags(tags);
 
         ActionResponse<List<Map<String, Object>>> response = (ActionResponse<List<Map<String, Object>>>) client.post(qxTagQuery, new ParameterizedTypeReference<ActionResponse>() {
         }, getUsersByQxTagUrl);
-        if (response == null && !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
+        if (response == null || !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
             logger.info("请求url:{},参数：{}", getUsersByQxTagUrl, qxTagQuery);
-            throw new BusinessException("调用用户模块获取准入管理权限用户信息失败");
+            throw new BusinessException("调用用户模块获取资产管理权限用户信息失败");
         }
 
         List<Integer> userIds = new ArrayList<Integer>();

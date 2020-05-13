@@ -438,7 +438,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=null;
         try {
-            baseLineClient.rectification( activityHandleRequest.getStringId());
+            baseLineResponse = baseLineClient.rectification( activityHandleRequest.getStringId());
         }catch (Exception e){
             logger.error("整改调用配置远程接口抛异常");
             throw new BusinessException(e.getMessage());
