@@ -231,6 +231,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             asset.setFirstEnterNett(currentTimeMillis);
                         }
                     }
+                    BaselineAssetTemplate baselineAssetTemplate = new BaselineAssetTemplate();
                     asset.setBusinessId(Long.valueOf(requestAsset.getBusinessId()));
                     if (StringUtils.isNotBlank(requestAsset.getBaselineTemplateId())) {
                         ActionResponse baselineTemplate = baseLineClient
@@ -238,6 +239,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         HashMap body = (HashMap) baselineTemplate.getBody();
                         Integer isEnable = (Integer) body.get("isEnable");
                         BusinessExceptionUtils.isTrue(isEnable == 1, "当前基准模板已经禁用!");
+                        // 保存资产模板关系
+                        baselineAssetTemplate
+                            .setTemplateHistId(DataTypeUtils.stringToInteger(requestAsset.getBaselineTemplateId()));
+                        baselineAssetTemplate.setTemplateHistName((String) body.get("name"));
+                        baselineAssetTemplate.setIsChange(0);
+                        baselineAssetTemplate.setIsNew(1);
+                        baselineAssetTemplate.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        baselineAssetTemplate.setGmtCreate(System.currentTimeMillis());
                         asset.setBaselineTemplateId(requestAsset.getBaselineTemplateId());
                         asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
                     }
@@ -266,6 +275,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 返回的资产id
                     assetDao.insert(asset);
                     aid = asset.getStringId();
+                    baselineAssetTemplate.setAssetId(DataTypeUtils.stringToInteger(aid));
+                    //保存资产与配置模板关系
+                    assetDao.saveAssetBaselineTemplate(baselineAssetTemplate);
+
                     // 添加业务 关联
                     List<AssetBusinessRelationRequest> asetBusinessRelationRequests = request
                         .getAsetBusinessRelationRequests();
@@ -3991,6 +4004,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMultipleQuery.setAssetSourceList(
                     Arrays.asList(AssetSourceEnum.AGENCY_REPORT.getCode(), AssetSourceEnum.ASSET_DETECTION.getCode()));
             }
+        } else {
+            assetMultipleQuery.setAssetSourceList(
+                    Arrays.asList(AssetSourceEnum.MANUAL_REGISTRATION.getCode()));
         }
         // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
