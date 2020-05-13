@@ -38,6 +38,13 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
     private List<String> areaIds;
     @ApiModelProperty(value = "资产类型",hidden = true)
     private List<String>  assetCategorys;
+    @ApiModelProperty("导出开始条数")
+    private Integer start;
+    @ApiModelProperty("导出结束条数")
+    private Integer end;
+
+
+
 
     @Override
     public void validate() throws RequestParamValidateException {
@@ -49,7 +56,21 @@ public class AssetEntryQuery extends ObjectQuery implements ObjectValidator {
 
     }
 
+    public Integer getStart() {
+        return start;
+    }
 
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getEnd() {
+        return end;
+    }
+
+    public void setEnd(Integer end) {
+        this.end = end;
+    }
     public List<String> getAssetCategorys() {
         return assetCategorys;
     }

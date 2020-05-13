@@ -115,6 +115,9 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+        <if test=" pageSize =-1 and start !=null and end !=null">
+            limit #{start},#{end}
+        </if>
     </select>
     <select id="queryEntryRecord" resultType="com.antiy.asset.vo.response.AssetEntryRecordResponse">
         select source entrySource,result entryResult,change_status changeStatus,gmt_create gmtCreate,create_user createUser

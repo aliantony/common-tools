@@ -1239,8 +1239,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         param.put("assetId", condition.getPrimaryKey());
         List<AssetIpRelation> assetIpRelations = assetIpRelationDao.getByWhere(param);
         assetResponse.setIp(ipResponseConverter.convert(assetIpRelations, AssetIpRelationResponse.class));
+        if (CollectionUtils.isNotEmpty(assetIpRelations)) {
+            assetResponse.setIps(assetIpRelations.stream().map(v -> v.getIp()).reduce((ips, ip) -> ips + "," + ip).orElse(""));
+        }
         // 查询mac
         List<AssetMacRelation> assetMacRelations = assetMacRelationDao.getByWhere(param);
+        if (CollectionUtils.isNotEmpty(assetMacRelations)) {
+            assetResponse.setMacs(assetMacRelations.stream().map(v -> v.getMac()).reduce((macs, mac) -> macs + "," + mac).orElse(""));
+        }
         assetResponse.setMac(macResponseConverter.convert(assetMacRelations, AssetMacRelationResponse.class));
         // 查询从属业务
         List<AssetBusinessResponse> dependentBusiness = assetBusinessRelationDao

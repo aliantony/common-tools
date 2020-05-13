@@ -105,11 +105,11 @@ public class AssetEntryController {
         }
         assetQuery.setPageSize(Constants.ALL_PAGE);
         assetQuery.validate();
-//        if (start != null) {
-//            assetQuery.setStart(start - 1);
-//            assetQuery.setEnd(end - start + 1);
-//        }
-        List<AssetEntryResponse> assetList = iAssetEntryService.queryList(assetQuery);
+        if (start != null) {
+            assetQuery.setStart(start - 1);
+            assetQuery.setEnd(end - start + 1);
+        }
+        List<AssetEntryResponse> assetList = iAssetEntryService.queryPage(assetQuery).getItems();
         if (!CollectionUtils.isNotEmpty(assetList)) {
             return ActionResponse.success("没有数据可以导出");
         }

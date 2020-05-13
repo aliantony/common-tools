@@ -1,6 +1,7 @@
 package com.antiy.asset.templet;
 
 import com.antiy.asset.annotation.ExcelField;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
 import io.swagger.annotations.ApiModelProperty;
 
 public class AccessExport {
@@ -10,6 +11,13 @@ public class AccessExport {
     @ExcelField(value = "name", align = 1, title = "名称", type = 0)
     @ApiModelProperty("名称")
     private String  name;
+
+    @ApiModelProperty("编号")
+    private String number;
+
+    @ApiModelProperty("资产状态")
+    private String assetStatus;
+
     /**
      * 资产组
      */
@@ -35,6 +43,21 @@ public class AccessExport {
     @ApiModelProperty("状态")
     private String admittanceStatusString;
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getAssetStatus() {
+        return assetStatus;
+    }
+
+    public void setAssetStatus(Integer assetStatus) {
+        this.assetStatus = AssetStatusEnum.getAssetByCode(assetStatus).getMsg();
+    }
 
     public String getName() {
         return name;
