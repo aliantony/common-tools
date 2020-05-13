@@ -19,14 +19,7 @@ import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.RespBasicCode;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author: zhangbing
