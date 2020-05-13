@@ -1071,6 +1071,28 @@
             </foreach>
         </trim>
     </insert>
+    <insert id="saveAssetBaselineTemplate" parameterType="com.antiy.asset.entity.BaselineAssetTemplate">
+        insert into baseline_asset_template_hist
+        (
+            asset_id,
+            template_hist_id,
+            template_hist_name,
+            gmt_create,
+            create_user,
+            is_new,
+            is_change
+        )
+        values
+        (
+            #{assetId},
+            #{templateHistId},
+            #{templateHistName},
+            #{gmtCreate},
+            #{createUser},
+            #{isNew},
+            #{isChange}
+        )
+    </insert>
 
 
     <update id="update" parameterType="com.antiy.asset.entity.Asset">

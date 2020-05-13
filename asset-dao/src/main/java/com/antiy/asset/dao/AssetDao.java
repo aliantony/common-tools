@@ -450,4 +450,6 @@ public interface AssetDao extends IBaseDao<Asset> {
     List<AssetHardSoftLibResponse> queryOSList(AssetOsQuery query);
 
     Integer updateAreaIdOfAsset(Map<String, Integer> area);
+
+    void saveAssetBaselineTemplate(BaselineAssetTemplate baselineAssetTemplate);
 }
