@@ -1,16 +1,20 @@
 package com.antiy.asset.dao;
 
-import com.antiy.asset.dto.AssetWorkQueryDto;
-import com.antiy.asset.entity.*;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
-import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.antiy.asset.dto.AssetWorkQueryDto;
+import com.antiy.asset.entity.*;
+import com.antiy.asset.vo.query.*;
+import com.antiy.asset.vo.request.AlarmAssetRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetRollbackRequest;
+import com.antiy.asset.vo.request.AssetUnknownRequest;
+import com.antiy.asset.vo.response.*;
+import com.antiy.common.base.IBaseDao;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -294,7 +298,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      */
     Asset getByAssetId(@Param("id") String id);
 
-    List<AssetAssembly> getAssemblyInfoById(@Param("id") String id);
+    List<AssetAssembly> getAssemblyInfoById(@Param("id") String id, @Param("readOnly") boolean readOnly);
 
     /**
      * 统计品类
@@ -386,8 +390,8 @@ public interface AssetDao extends IBaseDao<Asset> {
 
     List<AssetMatchResponse> queryAssetInfo(AssetMatchRequest request);
 
-
-    List<AssetAreaAndIpResponse> queryIpByAreaId(@Param("areaId")String areaId,@Param("statusList") List<Integer> statusList);
+    List<AssetAreaAndIpResponse> queryIpByAreaId(@Param("areaId") String areaId,
+                                                 @Param("statusList") List<Integer> statusList);
 
     /**
      * 资产综合查询数量

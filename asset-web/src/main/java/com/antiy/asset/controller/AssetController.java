@@ -129,16 +129,16 @@ public class AssetController {
     /**
      * 通过ID查询已关联组件列表
      *
-     * @param condition 主键封装对象
+     * @param query 主键封装对象
      * @return actionResponse
      */
     @ApiOperation(value = "通过ID查询已关联组件列表", notes = "主键封装对象")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = AssetAssemblyDetailResponse.class, responseContainer = "actionResponse"), })
     @RequestMapping(value = "/get/assemblyInfo", method = RequestMethod.POST)
-    public ActionResponse getAssemblyInfo(@RequestBody @ApiParam(value = "asset") QueryCondition condition) {
-        ParamterExceptionUtils.isNull(condition, "资产不能为空");
-        ParamterExceptionUtils.isNull(condition.getPrimaryKey(), "ID不能为空");
-        return ActionResponse.success(iAssetService.getAssemblyInfo(condition));
+    public ActionResponse getAssemblyInfo(@RequestBody @ApiParam(value = "asset") ReadOnlyQuery query) {
+        ParamterExceptionUtils.isNull(query, "查询条件不能为空");
+        ParamterExceptionUtils.isNull(query.getPrimaryKey(), "资产ID不能为空");
+        return ActionResponse.success(iAssetService.getAssemblyInfo(query));
     }
 
     /**

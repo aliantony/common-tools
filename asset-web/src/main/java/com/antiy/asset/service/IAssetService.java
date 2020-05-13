@@ -298,7 +298,7 @@ public interface IAssetService extends IBaseService<Asset> {
      */
     boolean checkRepeatNumber(String number, Integer id) throws Exception;
 
-    List<AssetAssemblyResponse> getAssemblyInfo(QueryCondition condition);
+    List<AssetAssemblyResponse> getAssemblyInfo(ReadOnlyQuery query);
 
     /**
      * 不予登记

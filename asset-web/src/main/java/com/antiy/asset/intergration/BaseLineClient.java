@@ -65,4 +65,6 @@ public interface BaseLineClient {
     ActionResponse deleteProcessInstance(List<String> procInstIds);
 
     ActionResponse listRy(WorkFlowQuery workFlowQuery);
+
+    ActionResponse getUsersByQxTagAndAreaId(Map param);
 }
