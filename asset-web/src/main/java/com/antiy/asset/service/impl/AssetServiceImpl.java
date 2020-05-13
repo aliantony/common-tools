@@ -4004,6 +4004,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMultipleQuery.setAssetSourceList(
                     Arrays.asList(AssetSourceEnum.AGENCY_REPORT.getCode(), AssetSourceEnum.ASSET_DETECTION.getCode()));
             }
+        } else {
+            assetMultipleQuery.setAssetSourceList(
+                    Arrays.asList(AssetSourceEnum.MANUAL_REGISTRATION.getCode()));
         }
         // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
