@@ -187,8 +187,8 @@
         <if test=" driverNumber != null">
             driver_number = #{driverNumber },
         </if>
-        <if test=" firmware != null">
-            firmware = #{firmware },
+        <if test=" firmwareVersion != null">
+            firmware = #{firmwareVersion },
         </if>
         <if test=" osVersion != null">
             os_version = #{osVersion },
@@ -250,8 +250,8 @@
         <if test=" driverNumber != null">
             and driver_number = #{driverNumber }
         </if>
-        <if test=" firmware != null">
-            and firmware = #{firmware }
+        <if test=" firmwareVersion != null">
+            and firmware = #{firmwareVersion }
         </if>
         <if test=" osVersion != null">
             and os_version = #{osVersion }
