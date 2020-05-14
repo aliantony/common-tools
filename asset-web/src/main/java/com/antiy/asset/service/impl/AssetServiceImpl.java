@@ -275,9 +275,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     // 返回的资产id
                     assetDao.insert(asset);
                     aid = asset.getStringId();
-                    baselineAssetTemplate.setAssetId(DataTypeUtils.stringToInteger(aid));
                     // 保存资产与配置模板关系
-                    assetDao.saveAssetBaselineTemplate(baselineAssetTemplate);
+                    if (StringUtils.isNotBlank(request.getAsset().getBaselineTemplateId())) {
+                        baselineAssetTemplate.setAssetId(DataTypeUtils.stringToInteger(aid));
+                        assetDao.saveAssetBaselineTemplate(baselineAssetTemplate);
+                    }
 
                     // 添加业务 关联
                     List<AssetBusinessRelationRequest> asetBusinessRelationRequests = request
