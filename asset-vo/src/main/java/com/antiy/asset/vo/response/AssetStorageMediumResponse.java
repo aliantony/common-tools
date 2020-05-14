@@ -1,6 +1,5 @@
 package com.antiy.asset.vo.response;
 
-import com.antiy.common.base.BaseEntity;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -64,6 +63,33 @@ public class AssetStorageMediumResponse extends BaseResponse {
      */
     @ApiModelProperty("OS版本")
     private String  osVersion;
+    /**
+     * 硬盘类型
+     */
+    @ApiModelProperty("硬盘类型")
+    private Integer diskType;
+    /**
+     * 硬盘类型
+     */
+    @ApiModelProperty("硬盘类型名字")
+    private String  diskTypeName;
+
+    public String getDiskTypeName() {
+        return diskTypeName;
+    }
+
+    public void setDiskTypeName(String diskTypeName) {
+        this.diskTypeName = diskTypeName;
+    }
+
+    public Integer getDiskType() {
+        return diskType;
+    }
+
+    public void setDiskType(Integer diskType) {
+        this.diskType = diskType;
+        this.diskTypeName = diskType == 1 ? "机械" : (diskType == 2 ? "固态" : "小硬盘");
+    }
 
     public String getAssetId() {
         return assetId;
@@ -150,7 +176,7 @@ public class AssetStorageMediumResponse extends BaseResponse {
         return "AssetStorageMediumResponse{" + "assetId='" + assetId + '\'' + ", maximumStorage='" + maximumStorage
                + '\'' + ", diskNumber=" + diskNumber + ", highCache='" + highCache + '\'' + ", innerInterface='"
                + innerInterface + '\'' + ", raidSupport='" + raidSupport + '\'' + ", averageTransferRate='"
-               + averageTransferRate + '\'' + ", driverNumber=" + driverNumber + ", firmwareVersion='" + firmwareVersion + '\''
-               + ", osVersion='" + osVersion + '\'' + '}';
+               + averageTransferRate + '\'' + ", driverNumber=" + driverNumber + ", firmwareVersion='" + firmwareVersion
+               + '\'' + ", osVersion='" + osVersion + '\'' + '}';
     }
 }
