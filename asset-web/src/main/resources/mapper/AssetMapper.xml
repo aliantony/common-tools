@@ -626,7 +626,9 @@
         <if test=" location != null">
             location = #{location },
         </if>
-
+        <if test="rectification !=null">
+            rectification = #{rectification},
+        </if>
 
         <if test=" houseLocation != null">
             house_location = #{houseLocation },
