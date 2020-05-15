@@ -2,9 +2,12 @@ package com.antiy.asset.vo.request;
 
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
 import com.antiy.common.base.BasicRequest;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
 
@@ -13,7 +16,8 @@ import java.util.List;
  * @since 2020/2/14
  */
 @ApiModel(description = "准入资产请求类")
-public class AssetEntryRequest extends BasicRequest {
+public class AssetEntryRequest extends BasicRequest  implements ObjectValidator {
+    @Valid
     @ApiModelProperty("资产集合")
     @NotEmpty(message = "资产不能为空")
     private List<ActivityHandleRequest> assetActivityRequests;
@@ -62,5 +66,10 @@ public class AssetEntryRequest extends BasicRequest {
                 ", updateStatus='" + updateStatus + '\'' +
                 ", entrySource=" + entrySource +
                 '}';
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+
     }
 }

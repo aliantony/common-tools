@@ -839,6 +839,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //更新资产状态
             assetDao.updateAssetBatch(newAssets);
         }
+        //工作流参数初始化
+        request.getAssetActivityRequests().forEach(v->{
+            v.setStringId(null);
+            v.setFormData(new HashMap());
+        });
         //推动工作流
         ActionResponse response=activityClient.completeTaskBatch(request.getAssetActivityRequests());
         if (response==null || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
