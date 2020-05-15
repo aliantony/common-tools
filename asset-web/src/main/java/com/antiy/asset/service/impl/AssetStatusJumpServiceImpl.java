@@ -483,7 +483,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
         //整改流程--漏洞步骤处于进行中状态
-        if(!assetCorrectIInfoResponse.getScan()||! assetCorrectIInfoResponse.getDeal()){
+        if(assetCorrectIInfoResponse.getScan()|| !assetCorrectIInfoResponse.getDeal()){
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
         }
@@ -807,14 +807,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         return assetOperationRecord;
     }
 
-    private Integer getTaksIdByBusinessKey(String key){
+    /*private Integer getTaksIdByBusinessKey(String key){
         ActionResponse actionResponse=activityClient.getTaksIdByBusinessKey(key);
         if(actionResponse==null || !actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
             throw new BusinessException("通过businessKey获取taksId 出错");
         }
         String taskId=(String)actionResponse.getBody();
         return  Integer.valueOf(taskId);
-    }
+    }*/
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String entryExecution(AssetEntryRequest request) {

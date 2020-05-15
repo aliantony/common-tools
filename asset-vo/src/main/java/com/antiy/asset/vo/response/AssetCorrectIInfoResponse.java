@@ -31,7 +31,7 @@ public class AssetCorrectIInfoResponse {
      * false: 未完成
      */
     private Boolean isDeal;
-    @ApiModelProperty("流程推动标志： 0 不需要手动推动  1 需要手动推动 ")
+    @ApiModelProperty("按钮显示标志： 0 不显示  1 需要显示 ")
     private  String needManualPush;
 
     public String getNeedManualPush() {
