@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -32,36 +64,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -372,7 +374,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             AssetStorageMedium.class);
                         saveStorage(asset, assetStorageMedium, medium);
                     }
-
+                    // 保存安全设备
+                    if ("5".equals(asset.getCategoryType())) {
+                        AssetSafetyEquipment assetSafetyEquipment = new AssetSafetyEquipment();
+                        assetSafetyEquipment.setAssetId(aid);
+                        assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                        assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
+                        assetSafetyEquipmentDao.insert(assetSafetyEquipment);
+                    }
                     // 记录资产操作流程
                     AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
                     assetOperationRecord.setTargetObjectId(aid);
@@ -400,7 +409,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
 
         });
-        //启动工作流
+        // 启动工作流
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setBusinessId(String.valueOf(id));
         activityRequest.setProcessDefinitionKey("assetAdmittance");
@@ -1240,12 +1249,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<AssetIpRelation> assetIpRelations = assetIpRelationDao.getByWhere(param);
         assetResponse.setIp(ipResponseConverter.convert(assetIpRelations, AssetIpRelationResponse.class));
         if (CollectionUtils.isNotEmpty(assetIpRelations)) {
-            assetResponse.setIps(assetIpRelations.stream().map(v -> v.getIp()).reduce((ips, ip) -> ips + "," + ip).orElse(""));
+            assetResponse
+                .setIps(assetIpRelations.stream().map(v -> v.getIp()).reduce((ips, ip) -> ips + "," + ip).orElse(""));
         }
         // 查询mac
         List<AssetMacRelation> assetMacRelations = assetMacRelationDao.getByWhere(param);
         if (CollectionUtils.isNotEmpty(assetMacRelations)) {
-            assetResponse.setMacs(assetMacRelations.stream().map(v -> v.getMac()).reduce((macs, mac) -> macs + "," + mac).orElse(""));
+            assetResponse.setMacs(
+                assetMacRelations.stream().map(v -> v.getMac()).reduce((macs, mac) -> macs + "," + mac).orElse(""));
         }
         assetResponse.setMac(macResponseConverter.convert(assetMacRelations, AssetMacRelationResponse.class));
         // 查询从属业务
@@ -1378,7 +1389,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetOuterRequest.getAsset().setRectification(2);
             }
         }
-        //启动工作流
+        // 启动工作流
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setBusinessId(String.valueOf(assetOuterRequest.getAsset().getId()));
         activityRequest.setProcessDefinitionKey("assetAdmittance");
@@ -4012,14 +4023,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 assetMultipleQuery.setCategoryModelList(caIds);
             }
         }
+        // 未知资产列表
         if (assetMultipleQuery.getUnknownAssets()) {
             if (CollectionUtils.isEmpty(assetMultipleQuery.getAssetSourceList())) {
+                assetMultipleQuery
+                    .setAssetStatusList(Collections.singletonList(AssetStatusEnum.WAIT_REGISTER.getCode()));
                 assetMultipleQuery.setAssetSourceList(
                     Arrays.asList(AssetSourceEnum.AGENCY_REPORT.getCode(), AssetSourceEnum.ASSET_DETECTION.getCode()));
             }
-        } else {
-            assetMultipleQuery.setAssetSourceList(Arrays.asList(AssetSourceEnum.MANUAL_REGISTRATION.getCode()));
-        }
+        } /* else { assetMultipleQuery.setAssetSourceList(Arrays.asList(AssetSourceEnum.MANUAL_REGISTRATION.getCode()));
+           * } */
         // 查询待办
         Map<String, WaitingTaskReponse> processMap = this.getAllHardWaitingTask("asset");
         // 工作台进入,过滤当前用户待办的资产id
