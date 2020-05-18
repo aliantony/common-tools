@@ -224,7 +224,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             assetResponse.setParentAssetAreaName(Optional.ofNullable(sysArea).map(com.antiy.common.base.SysArea::getFullName).orElse(null));
             // 设置品类型号名
             assetResponse.setCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetResponse.getCategoryModel())));
-            assetResponse.setParentCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetResponse.getParentCategoryModel())));
+            if (Objects.nonNull(assetResponse.getParentCategoryModel())){
+                assetResponse.setParentCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetResponse.getParentCategoryModel())));
+            }
             // 设置品类型号大类
             assetResponse.setCategoryType(String.valueOf(assetResponse.getCategoryModelName().contains("计算设备") ? '2' : '3'));
 
