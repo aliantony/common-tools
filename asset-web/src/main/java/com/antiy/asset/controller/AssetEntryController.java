@@ -79,7 +79,7 @@ public class AssetEntryController {
 
     @ApiOperation(value = "对接漏洞配置补丁", notes = "是否弹出阻断入网提示窗", response = Boolean.class)
     @RequestMapping(value = "/query/entryOperation", method = RequestMethod.POST)
-    public ActionResponse queryEntryOperation(@RequestBody AssetEntryQuery query) {
+    public ActionResponse queryEntryOperation(@RequestBody AssetEntryQuery query) throws Exception {
         return ActionResponse.success(iAssetEntryService.queryEntryOperation(query));
     }
 

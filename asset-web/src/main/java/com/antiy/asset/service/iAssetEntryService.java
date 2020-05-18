@@ -18,5 +18,5 @@ public interface iAssetEntryService {
 
     List<AssetEntryStatusResponse> queryEntryStatus(List<String> assetIds);
 
-    boolean queryEntryOperation(AssetEntryQuery query);
+    boolean queryEntryOperation(AssetEntryQuery query) throws Exception;
 }
