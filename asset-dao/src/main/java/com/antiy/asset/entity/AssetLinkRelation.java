@@ -1,7 +1,6 @@
 package com.antiy.asset.entity;
 
 import com.antiy.asset.vo.response.AssetMacRelationResponse;
-import com.antiy.asset.vo.response.CategoryType;
 import com.antiy.common.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -94,7 +93,7 @@ public class AssetLinkRelation extends BaseEntity {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType      categoryType;
+    private String      categoryType;
 
     /**
      * 父类资产编号
@@ -277,11 +276,11 @@ public class AssetLinkRelation extends BaseEntity {
     }
 
 
-    public CategoryType getCategoryType() {
+    public String getCategoryType() {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
     }
 

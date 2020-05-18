@@ -225,6 +225,9 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             // 设置品类型号名
             assetResponse.setCategoryModelName(getCategoryParentNodeName(assetResponse.getCategoryModel()));
             assetResponse.setParentCategoryModelName(getCategoryParentNodeName(assetResponse.getParentCategoryModel()));
+            // 设置品类型号大类
+            assetResponse.setCategoryType(String.valueOf(assetResponse.getCategoryModelName().contains("计算设备") ? '2' : '3'));
+
             // 姓名、所属组织转换
             AssetUser assetUser = assetUserDao.findUserAndDepartment(assetResponse.getParentAssetUserId());
             if (Objects.nonNull(assetUser)){

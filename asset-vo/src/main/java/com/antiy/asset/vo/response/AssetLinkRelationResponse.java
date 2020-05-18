@@ -80,7 +80,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType categoryType;
+    private String categoryType;
 
     /**
      * 父类资产编号
@@ -299,11 +299,11 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentAssetMac = parentAssetMac;
     }
 
-    public CategoryType getCategoryType() {
+    public String getCategoryType() {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
     }
 
