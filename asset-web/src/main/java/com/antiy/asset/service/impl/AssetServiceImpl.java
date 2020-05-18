@@ -1512,7 +1512,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         // 阻断入网判断
-        if (assetOuterRequest.isNeedEntryForbidden()) {
+        /*if (assetOuterRequest.isNeedEntryForbidden()) {
             new Thread(() -> {
                 AssetEntryRequest request = new AssetEntryRequest();
                 ActivityHandleRequest handleRequest = new ActivityHandleRequest();
@@ -1526,7 +1526,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     e.printStackTrace();
                 }
             }).start();
-        }
+        }*/
         // 更新资产状态
         updateAssetStatus(changeStatus, System.currentTimeMillis(), assetId);
         // 记录操作日志
