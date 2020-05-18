@@ -188,7 +188,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         assetResponseList.stream().forEach(assetLinkedCount -> {
 
             // 获取当前的详细资产类型
-            assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(assetLinkedCount.getCategoryModel()));
+            assetLinkedCount.setCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetLinkedCount.getCategoryModel())));
 
             String newAreaKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                 assetLinkedCount.getAreaId());
@@ -223,8 +223,8 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
             }
             assetResponse.setParentAssetAreaName(Optional.ofNullable(sysArea).map(com.antiy.common.base.SysArea::getFullName).orElse(null));
             // 设置品类型号名
-            assetResponse.setCategoryModelName(getCategoryParentNodeName(assetResponse.getCategoryModel()));
-            assetResponse.setParentCategoryModelName(getCategoryParentNodeName(assetResponse.getParentCategoryModel()));
+            assetResponse.setCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetResponse.getCategoryModel())));
+            assetResponse.setParentCategoryModelName(getCategoryParentNodeName(Integer.valueOf(assetResponse.getParentCategoryModel())));
             // 设置品类型号大类
             assetResponse.setCategoryType(String.valueOf(assetResponse.getCategoryModelName().contains("计算设备") ? '2' : '3'));
 

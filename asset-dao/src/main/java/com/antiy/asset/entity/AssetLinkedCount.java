@@ -25,7 +25,7 @@ public class AssetLinkedCount extends BaseEntity {
     /**
      * 资产品类型号
      */
-    private Integer      categoryModel;
+    private String      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -99,11 +99,11 @@ public class AssetLinkedCount extends BaseEntity {
         this.name = name;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 

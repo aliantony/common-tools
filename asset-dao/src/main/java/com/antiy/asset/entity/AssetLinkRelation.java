@@ -36,7 +36,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 资产品类型号
      */
-    private Integer           categoryModel;
+    private String           categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -60,7 +60,7 @@ public class AssetLinkRelation extends BaseEntity {
     /**
      * 关联资产品类型号
      */
-    private Integer           parentCategoryModel;
+    private String           parentCategoryModel;
     /**
      * 关联资产品类型号名称
      */
@@ -380,19 +380,19 @@ public class AssetLinkRelation extends BaseEntity {
         this.status = status;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getParentCategoryModel() {
+    public String getParentCategoryModel() {
         return parentCategoryModel;
     }
 
-    public void setParentCategoryModel(Integer parentCategoryModel) {
+    public void setParentCategoryModel(String parentCategoryModel) {
         this.parentCategoryModel = parentCategoryModel;
     }
 

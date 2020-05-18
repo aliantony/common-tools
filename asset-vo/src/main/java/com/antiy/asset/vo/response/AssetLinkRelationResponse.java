@@ -39,7 +39,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private Integer      categoryModel;
+    private String      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -70,7 +70,7 @@ public class AssetLinkRelationResponse extends BaseResponse {
      * 关联资产品类型号
      */
     @ApiModelProperty("关联资产品类型号")
-    private Integer      parentCategoryModel;
+    private String      parentCategoryModel;
     /**
      * 关联资产品类型号名称
      */
@@ -363,19 +363,19 @@ public class AssetLinkRelationResponse extends BaseResponse {
         this.parentAssetPort = parentAssetPort;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
-    public Integer getParentCategoryModel() {
+    public String getParentCategoryModel() {
         return parentCategoryModel;
     }
 
-    public void setParentCategoryModel(Integer parentCategoryModel) {
+    public void setParentCategoryModel(String parentCategoryModel) {
         this.parentCategoryModel = parentCategoryModel;
     }
 

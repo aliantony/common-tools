@@ -31,7 +31,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private Integer      categoryModel;
+    private String      categoryModel;
     /**
      * 资产品类型号名称
      */
@@ -51,7 +51,7 @@ public class AssetLinkedCountResponse extends BaseResponse {
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private CategoryType categoryType;
+    private String categoryType;
     /**
      * 区域名称
      */
@@ -79,11 +79,11 @@ public class AssetLinkedCountResponse extends BaseResponse {
         this.areaName = areaName;
     }
 
-    public CategoryType getCategoryType() {
+    public String getCategoryType() {
         return categoryType;
     }
 
-    public void setCategoryType(CategoryType categoryType) {
+    public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
     }
 
@@ -111,11 +111,11 @@ public class AssetLinkedCountResponse extends BaseResponse {
         this.name = name;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 
