@@ -1801,7 +1801,7 @@
         <if test="id!=null ">
             a.id !=#{id} and
         </if>
-        a.`status` =1 AND m.`status` =1 and
+        a.`status` =1 AND a.`asset_source` !=2 AND m.`status` =1 and
         upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
         '' ) )
     </select>
