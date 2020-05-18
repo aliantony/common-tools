@@ -447,17 +447,17 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 formData.put("needNetImplement", 1);
                 formData.put("implementUser", getImplementUser("asset:info:list:change", areaId));
             } else {
-                formData.put("needNetImplement", 2);
+                formData.put("needNetImplement", 0);
             }
         } else {
-            formData.put("assetRegisterResult", "noRegister");
+            formData.put("assetRegisterResult", "continueNet");
             // 计算设备、网络设备=>待准入
             if (2 == categoryType || 3 == categoryType) {
                 formData.put("needNetImplement", 1);
                 formData.put("implementUser", getImplementUser("asset:info:list:impl", areaId));
             } else {
                 // 安全设备、存储设备、其他设备 =>已入网
-                formData.put("needNetImplement", 2);
+                formData.put("needNetImplement", 0);
             }
         }
         return formData;

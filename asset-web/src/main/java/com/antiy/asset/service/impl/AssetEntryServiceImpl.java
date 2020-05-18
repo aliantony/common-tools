@@ -202,8 +202,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return assetDao.findByIds(assetIds).stream().filter(asset ->{
             Integer notOrphan = 2;
             Integer notBorrow = 2;
-            return notOrphan.equals(asset.getIsOrphan())
-                    && notBorrow.equals(asset.getIsBorrow())
+            return (notOrphan.equals(asset.getIsOrphan()) || asset.getIsOrphan()==null)
+                    && ( notBorrow.equals(asset.getIsBorrow()) || asset.getIsBorrow()==null)
                     && categoryIds.contains(asset.getCategoryModel())
                     ;
         }).collect(Collectors.toList()).isEmpty()? false:true ;

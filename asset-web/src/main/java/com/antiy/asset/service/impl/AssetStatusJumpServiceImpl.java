@@ -822,6 +822,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 .map(ActivityHandleRequest::getId).collect(Collectors.toList());
         List<Asset> oldAssets = assetDao.findByIds(assetIds);
         List<Asset> newAssets;
+        List<AssetOperationRecord> records = new ArrayList<>();
         synchronized (lock) {
             //并发处理 验证资产状态
             for (Asset oldAsset : oldAssets) {
@@ -830,21 +831,46 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 }
             }
             newAssets = oldAssets.stream().map(v -> {
+                // 记录资产操作流程
+                AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
+                assetOperationRecord.setTargetObjectId(String.valueOf(v.getId()));
+                assetOperationRecord.setOriginStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
+                assetOperationRecord.setTargetStatus(AssetStatusEnum.IN_CHANGE.getCode());
+                assetOperationRecord.setContent(AssetFlowEnum.ADMITTANCE.getNextMsg());
+                assetOperationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
+                assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetOperationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
+                assetOperationRecord.setGmtCreate(System.currentTimeMillis());
+                assetOperationRecord.setProcessResult(EnumUtil.equals(Integer.parseInt(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED)?1:0);
+                assetOperationRecord.setStatus(1);
+                records.add(assetOperationRecord);
+
                 v.setFirstEnterNett(System.currentTimeMillis());
                 v.setModifyUser(LoginUserUtil.getLoginUser().getId());
                 v.setGmtModified(System.currentTimeMillis());
                 v.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+
                 return v;
             }).collect(Collectors.toList());
             //更新资产状态
             assetDao.updateAssetBatch(newAssets);
         }
+
+        assetOperationRecordDao.insertBatch(records);
+        //工作流参数初始化
+        request.getAssetActivityRequests().forEach(v->{
+
+            v.setId(v.getStringId());
+            v.setStringId(null);
+            v.setFormData(new HashMap());
+        });
         //推动工作流
         ActionResponse response=activityClient.completeTaskBatch(request.getAssetActivityRequests());
         if (response==null || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())){
             logger.warn("工作流参数：{}",request.getAssetActivityRequests());
             throw new BusinessException("调用工作流模块失败");
         }
+
         //记录操作日志
         if (newAssets.size() > 1) {
             StringBuilder ids = new StringBuilder();
