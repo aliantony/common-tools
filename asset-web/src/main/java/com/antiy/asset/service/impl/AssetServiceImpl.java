@@ -595,8 +595,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     @Override
-    public boolean checkRepeatMAC(String mac, Integer id) throws Exception {
-        Integer countIp = assetDao.findCountMac(mac, id);
+    public boolean checkRepeatMAC(String mac, Integer id, Integer assetSource) throws Exception {
+        Integer countIp = assetDao.findCountMac(mac, id, assetSource);
         return countIp >= 1;
     }
 
@@ -2488,7 +2488,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<ComputeDeviceEntity> result = ExcelUtils.importExcelFromClient(ComputeDeviceEntity.class, file, 5,
-            0, 1);
+            0, 2000);
 
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
@@ -2547,7 +2547,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (checkRepeatMAC(entity.getMac(), null)) {
+            if (checkRepeatMAC(entity.getMac(), null, 2)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -2731,7 +2731,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<NetworkDeviceEntity> result = ExcelUtils.importExcelFromClient(NetworkDeviceEntity.class, file, 5,
-            0, 0);
+            0, 2000);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }
@@ -2788,7 +2788,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (checkRepeatMAC(entity.getMac(), null)) {
+            if (checkRepeatMAC(entity.getMac(), null, null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
@@ -2962,7 +2962,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<SafetyEquipmentEntiy> result = ExcelUtils.importExcelFromClient(SafetyEquipmentEntiy.class, file,
-            5, 0, 0);
+            5, 0, 2000);
 
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(result.getDataList())) {
@@ -3020,7 +3020,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("该厂商下,不存在当前名称！");
                 continue;
             }
-            if (checkRepeatMAC(entity.getMac(), null)) {
+            if (checkRepeatMAC(entity.getMac(), null, null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("资产MAC地址重复！");
@@ -3180,7 +3180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         anthNumValidate();
 
         ImportResult<StorageDeviceEntity> result = ExcelUtils.importExcelFromClient(StorageDeviceEntity.class, file, 5,
-            0, 0);
+            0, 2000);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }
@@ -3375,7 +3375,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 授权数量限制校验
         anthNumValidate();
         ImportResult<OtherDeviceEntity> result = ExcelUtils.importExcelFromClient(OtherDeviceEntity.class, file, 5, 0,
-            0);
+            2000);
         if (Objects.isNull(result.getDataList())) {
             return result.getMsg();
         }
@@ -3421,7 +3421,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("资产编号重复！");
                 continue;
             }
-            if (checkRepeatMAC(entity.getMac(), null)) {
+            if (checkRepeatMAC(entity.getMac(), null, null)) {
                 repeat++;
                 a++;
                 builder.append("第").append(a).append("行").append("MAC地址重复！");

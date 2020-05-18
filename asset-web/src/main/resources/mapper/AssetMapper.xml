@@ -626,14 +626,9 @@
         <if test=" location != null">
             location = #{location },
         </if>
-        <if test="rectification !=null">
-            rectification = #{rectification},
-        </if>
-
         <if test=" houseLocation != null">
             house_location = #{houseLocation },
         </if>
-
         <if test=" uuid != null">
             uuid = #{uuid },
         </if>
@@ -682,8 +677,48 @@
         <if test=" stepNode != null">
             step_node = #{stepNode },
         </if>
-        <if test=" memo != null">
-            memo = #{memo },
+        <if test=" netStatus != null">
+            net_status = #{netStatus },
+        </if>
+        <if test=" isOrphan != null">
+            is_orphan = #{isOrphan },
+        </if>
+        <if test=" customField != null">
+            custom_field = #{customField },
+        </if>
+        <if test=" machineName != null">
+            machine_name = #{machineName },
+        </if>
+        <if test=" isSecrecy != null">
+            is_secrecy = #{isSecrecy },
+        </if>
+        <if test=" code != null">
+            code = #{code },
+        </if>
+        <if test=" installDate != null">
+            install_date = #{installDate },
+        </if>
+        <if test=" activiateDate != null">
+            activiate_date = #{activiateDate },
+        </if>
+        <if test=" expirationReminder != null">
+            expiration_reminder = #{expirationReminder },
+        </if>
+        <if test=" netType != null">
+            net_type = #{netType },
+        </if>
+        <if test=" isBorrow != null">
+            is_borrow = #{isBorrow },
+        </if>
+        <if test=" key != null">
+            `key` = #{key },
+        </if>
+        <if test=" softVersion != null">
+            soft_version = #{softVersion },
+        </if>
+
+        <if test=" rectification != null">
+            rectification = #{rectification },
         </if>
         <if test=" gmtCreate != null">
             gmt_create = #{gmtCreate },
@@ -697,17 +732,11 @@
         <if test=" modifyUser != null">
             modify_user = #{modifyUser },
         </if>
+        <if test=" memo != null">
+            memo = #{memo },
+        </if>
         <if test=" status != null">
             status = #{status },
-        </if>
-        <if test=" netStatus != null">
-            net_status = #{netStatus },
-        </if>
-        <if test=" isOrphan != null">
-            is_orphan = #{isOrphan },
-        </if>
-        <if test=" customField != null">
-            custom_field = #{customField },
         </if>
     </sql>
 
@@ -1742,6 +1771,7 @@
         activiate_date = #{activiateDate },
         is_orphan=#{isOrphan},
         is_borrow = #{isBorrow },
+        is_borrow = #{isBorrow },
         expiration_reminder = #{expirationReminder },
         install_date = #{installDate },
         custom_field=#{customField},
@@ -1801,7 +1831,10 @@
         <if test="id!=null ">
             a.id !=#{id} and
         </if>
-        a.`status` =1 AND a.`asset_source` !=2 AND m.`status` =1 and
+        <if test="assetSource!=null ">
+            a.`code` !='' and
+        </if>
+        a.`status` =1 AND m.`status` =1 and
         upper( ( REPLACE ( REPLACE (mac, ':', '' ), '-', '' ) ) ) = upper( REPLACE ( REPLACE ( #{mac}, ':', '' ), '-',
         '' ) )
     </select>
