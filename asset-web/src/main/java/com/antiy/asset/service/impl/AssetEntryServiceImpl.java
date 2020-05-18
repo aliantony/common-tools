@@ -131,7 +131,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         }
         //准入状态一致不用下发，过滤当前资产准入状态与更新状态不一致的资产
         List<ActivityHandleRequest> activityHandleRequests = request.getAssetActivityRequests().stream().filter(v -> {
-            if (!assetDao.getByAssetId(String.valueOf(v.getId())).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
+            if (EnumUtil.equals(request.getEntrySource().getCode(),AssetEntrySourceEnum.UNKNOWN_ASSET_REGISTER)
+             || !assetDao.getByAssetId(String.valueOf(v.getId())).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
                 return true;
             }
             return false;

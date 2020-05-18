@@ -27,9 +27,9 @@ public class EnumUtil {
      * @return
      */
     public static boolean equals(int code, CodeEnum codeEnum) {
-        if (codeEnum.getCode().equals(code)) {
-            return true;
-        }
-        return false;
+        return codeEnum.getCode().equals(code) ? true : false;
+    }
+    public static boolean notEquals(int code, CodeEnum codeEnum) {
+        return !codeEnum.getCode().equals(code) ? true : false;
     }
 }
