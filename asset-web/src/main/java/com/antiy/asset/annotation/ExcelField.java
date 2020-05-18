@@ -60,6 +60,13 @@ public @interface ExcelField {
     String dictType() default "";
 
     /**
+     * 如果是可以输入下拉框值
+     *
+     * @return
+     */
+    String comfim() default "";
+
+    /**
      * 是否是日期 false：否；true：是；
      *
      * @return
