@@ -316,48 +316,19 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
                 ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
-/*            //发消息
-             final   List<String> tag=new ArrayList<>(2);
-            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)){
-                tag.add("asset:info:list:bfsq");
-            }
-            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-                tag.add("asset:info:list:thsq");
-            }
-            List<SysMessageRequest> sysMessageRequests=new ArrayList<>();
-            JSONObject jsonObject=new JSONObject();
-            assetsInDb.forEach(asset->{
-                String areaId = asset.getAreaId();
-                List<Integer> userIds = getALLUserIdByPermission(tag, Arrays.asList(areaId), username);
-                if(CollectionUtils.isEmpty(userIds)){
-                    boolean isRetire=AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum());
-                    throw new BusinessException("请先维护具备"+(isRetire==true?"退回":"报废")+"执行权限的人员");
-                }
-                jsonObject.put("id",asset.getId());
-                userIds.forEach(k->{
-                    SysMessageRequest v=new SysMessageRequest();
-                    v.setReceiveUserId(k);
-                    v.setTopic(statusJumpRequest.getAssetFlowEnum().getNextOperaLog());
-                    v.setOther(jsonObject.toJSONString());
-                    sysMessageRequests.add(v);
-                });
-            });
-
-            sysMessageSender.batchSendMessage(sysMessageRequests);*/
 
             //准入  计算机设备和网络设备且不可借用、不是孤岛
             Integer computerCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
             Integer networkCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.NETWORK.getName()).getId();
-            List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(computerCategory, networkCategory));
-            Set<String> categoryStrNodeList = categoryNodeList.stream().map(t -> t.toString()).collect(Collectors.toSet());
+            Set<String> computerCategoryList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(computerCategory)).stream().map(t -> t.toString()).collect(Collectors.toSet());
+            Set<String> networkCategoryList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(networkCategory)).stream().map(t -> t.toString()).collect(Collectors.toSet());
             for(Asset asset:assetsInDb){
-                if(categoryStrNodeList.contains(asset.getCategoryModel())&&asset.getIsBorrow()!=1&&asset.getIsOrphan()!=1){
+                boolean isComputerCategoryAllow=computerCategoryList.contains(asset.getCategoryModel())&&asset.getIsBorrow()!=1&&asset.getIsOrphan()!=1;
+                if(isComputerCategoryAllow ||networkCategoryList.contains(asset.getCategoryModel()) ){
                     List<ActivityHandleRequest> requestList = new ArrayList<>();
                     statusJumpRequest.getAssetInfoList().forEach(assetInfo -> {
                         ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-
                         activityHandleRequest.setId(assetInfo.getAssetId());
-
                         requestList.add(activityHandleRequest);
                     });
                     AssetEntryRequest assetEntryRequest=new AssetEntryRequest();
@@ -370,7 +341,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                         //准入来源设置
                         assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
                     }
-
                     //准入更新
                     entryService.updateEntryStatus(assetEntryRequest);
                 }
@@ -697,11 +667,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 ManualStartActivityRequest manualStartActivityRequest = new ManualStartActivityRequest();
                 manualStartActivityRequest.setAssignee(loginUser.getId().toString());
                 manualStartActivityRequest.setBusinessId(assetInfo.getAssetId());
-                if (AssetFlowEnum.RETIRE_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
+                if (AssetFlowEnum.SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())
                         || AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(assetStatusRequest.getAssetFlowEnum())) {
-                    manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode());
-                } else {
                     manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_SCRAP.getCode());
+                } else {
+                    manualStartActivityRequest.setProcessDefinitionKey(AssetActivityTypeEnum.ASSET_RETIRE.getCode());
                 }
 
                 manualStartActivityRequest.setFormData(formData);
