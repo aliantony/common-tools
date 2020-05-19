@@ -1991,6 +1991,7 @@
 
     <select id="queryInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetResponse" >
         SELECT
+        asset.id as stringId,
         asset.name,
         asset.number,
         asset.asset_group as assetGroup,
