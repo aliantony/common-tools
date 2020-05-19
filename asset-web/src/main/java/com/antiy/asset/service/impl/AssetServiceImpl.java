@@ -3258,6 +3258,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
+
             if (entity.getExpirationReminder() >= entity.getDueDate()) {
                 error++;
                 a++;
@@ -3468,6 +3469,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
+            if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                continue;
+            }
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3496,6 +3503,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
+            asset.setInstallDate(entity.getInstallDate());
+            asset.setActiviateDate(entity.getActiviateDate());
+            asset.setInstallDate(entity.getInstallDate());
+            if (null == entity.getExpirationReminder()) {
+                asset.setExpirationReminder(getCalendar(entity.getDueDate()));
+            } else {
+                asset.setExpirationReminder(entity.getExpirationReminder());
+            }
             asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
