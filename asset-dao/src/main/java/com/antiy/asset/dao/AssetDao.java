@@ -456,4 +456,11 @@ public interface AssetDao extends IBaseDao<Asset> {
     Integer updateAreaIdOfAsset(Map<String, Integer> area);
 
     void saveAssetBaselineTemplate(BaselineAssetTemplate baselineAssetTemplate);
+
+    /**
+     * 扫描过期资产
+     * @param time
+     * @return
+     */
+    List<AssetMonitor> getExpirationAsset(@Param("time") long time);
 }

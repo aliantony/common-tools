@@ -2929,4 +2929,18 @@ WHERE
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+    <select id="getExpirationAsset" resultType="com.antiy.asset.entity.AssetMonitor">
+        select
+          t.id as assetId,
+          group_concat(air.ip) as ip,
+          group_concat(amr.mac) as mac,
+          t.number,
+          t.service_life as threshole
+          from asset t
+          left join asset_ip_relation air on (t.id = air.asset_id and air.status = 1)
+          left join asset_mac_relation amr on (t.id = amr.asset_id and amr.status = 1)
+        where t.status = 1
+        and t.expiration_reminder &lt;= #{time}
+        group by t.id
+    </select>
 </mapper>

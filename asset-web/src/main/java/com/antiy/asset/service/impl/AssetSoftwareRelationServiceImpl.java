@@ -1,5 +1,17 @@
 package com.antiy.asset.service.impl;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -19,16 +31,6 @@ import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产软件关系信息 服务实现类 </p>
@@ -113,7 +115,7 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
         // 模板黑白名单类型
         Integer nameListType = assetSoftwareRelationDao.queryNameListType(query);
         // 模板所属操作系统 ,只区分windows和linux 1代表windows ,2是linux
-        String os = assetSoftwareRelationDao.queryOsType(query)==1?"windows":"linux";
+        //String os = assetSoftwareRelationDao.queryOsType(query)==1?"windows":"linux";
         // 模板的软件
         List<Long> softwareIds = assetSoftwareRelationDao.querySoftwareIds(query);
         // 已安装的软件
@@ -135,12 +137,12 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Lists.newArrayList());
         }
         Integer count = assetSoftwareRelationDao.queryInstallableCount(query, nameListType, softwareIds,
-            installedSoftIds, os);
+            installedSoftIds, null);
         if (count == 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Lists.newArrayList());
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
-            assetSoftwareRelationDao.queryInstallableList(query, nameListType, softwareIds, installedSoftIds, os));
+            assetSoftwareRelationDao.queryInstallableList(query, nameListType, softwareIds, installedSoftIds, null));
     }
 
     @Override
