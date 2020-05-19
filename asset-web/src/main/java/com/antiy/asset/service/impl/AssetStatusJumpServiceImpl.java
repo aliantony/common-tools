@@ -3,7 +3,6 @@ package com.antiy.asset.service.impl;
 import com.antiy.asset.dao.*;
 import com.antiy.asset.dto.StatusJumpAssetInfo;
 import com.antiy.asset.entity.Asset;
-import com.antiy.asset.entity.AssetCategoryModel;
 import com.antiy.asset.entity.AssetOperationRecord;
 import com.antiy.asset.entity.RollbackEntity;
 import com.antiy.asset.intergration.ActivityClient;
@@ -428,6 +427,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(AssetBaseLineEnum.SUCCESS.getMsg().equals(baseLineResponse.getBody().getConfigStatus())
                 ||AssetBaseLineEnum.FALI.getMsg().equals(baseLineResponse.getBody().getConfigStatus())){
             assetCorrectIInfoResponse.setNeedManualPush("1");
+            //修改整改标志字段
+            Asset asset=new Asset();
+            asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
+            asset.setRectification(1);
+            assetDao.update(asset);
         }
 
         LogUtils.recordOperLog(
@@ -465,7 +469,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
         assetCorrectIInfoResponse.setNeedManualPush("1");
 
-        //修改整改标志字段
+       /* //修改整改标志字段
         Asset asset=new Asset();
         asset.setId(DataTypeUtils.stringToInteger(activityHandleRequest.getStringId()));
         asset.setRectification(1);
@@ -475,7 +479,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(categoryNodeStrList.add(assetOfDB.getCategoryModel())){
             asset.setRectification(4);
         }
-        assetDao.update(asset);
+        assetDao.update(asset);*/
         return assetCorrectIInfoResponse;
     }
     @Transactional(rollbackFor = Exception.class)
