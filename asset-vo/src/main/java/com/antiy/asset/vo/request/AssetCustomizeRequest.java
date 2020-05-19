@@ -10,9 +10,9 @@ import javax.validation.constraints.NotBlank;
  */
 
 public class AssetCustomizeRequest {
-    @NotBlank(message = "自定义字段名称不能为空")
+    //@NotBlank(message = "自定义字段名称不能为空")
     private String name;
-    @NotBlank(message = "自定义字段值不能为空")
+    //@NotBlank(message = "自定义字段值不能为空")
     private String value;
 
     public String getName() {
