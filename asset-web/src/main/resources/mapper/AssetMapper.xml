@@ -98,7 +98,6 @@
 
 
     <sql id="IF_Base_Column_List_ForBatch">
-
             number,
             step_node,
             name,
@@ -113,7 +112,6 @@
             operation_system_name,
             responsible_user_id,
             house_location,
-
             uuid,
             asset_source,
             importance_degree,
@@ -139,7 +137,12 @@
             custom_field,
             machine_name,
             is_secrecy,
-            code
+            code,
+            net_type,
+            install_date,
+            activiate_date,
+            expiration_reminder,
+            is_borrow,
     </sql>
 
     <sql id="IF_Value_Column_List_ForBatch">
@@ -157,7 +160,6 @@
         #{entity.operationSystemName },
         #{entity.responsibleUserId },
         #{entity.houseLocation },
-        #{entity.firmwareVersion },
         #{entity.uuid },
         #{entity.assetSource },
         #{entity.importanceDegree },
@@ -183,7 +185,14 @@
         #{entity.customField  },
         #{entity.machineName },
         #{entity.isSecrecy },
-        #{entity.code }
+        #{entity.code },
+        #{entity.netType },
+        #{entity.installDate },
+        #{entity.activiateDate },
+        #{entity.expirationReminder },
+        #{entity.isBorrow }
+
+
     </sql>
 
     <sql id="Where_Column">
