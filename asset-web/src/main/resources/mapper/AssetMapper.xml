@@ -83,6 +83,8 @@
         <result column="soft_version" property="softVersion"/>
         <result column="expiration_reminder" property="expirationReminder"/>
         <result column="rectification" property="rectification"/>
+        <result column="install_date" property="installDate"/>
+        <result column="activiate_date" property="activiateDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
