@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
+import com.antiy.asset.util.DateTimeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
 import com.antiy.asset.vo.query.*;
 import com.antiy.asset.vo.request.*;
@@ -55,6 +56,13 @@ public class AssetController {
     @RequestMapping(value = "/save/single", method = RequestMethod.POST)
     public ActionResponse saveSingle(@RequestBody(required = false) @ApiParam(value = "asset") AssetOuterRequest asset) throws Exception {
         checkCustomizeRequest(asset);
+        if (asset.getAsset().getExpirationReminder() != null && asset.getAsset().getExpirationReminder() > 0) {
+            asset.getAsset()
+                .setExpirationReminder(DateTimeUtils.getLastSeconds(asset.getAsset().getExpirationReminder()));
+        }
+        if (asset.getAsset().getServiceLife() != null && asset.getAsset().getServiceLife() > 0) {
+            asset.getAsset().setServiceLife(DateTimeUtils.getLastSeconds(asset.getAsset().getServiceLife()));
+        }
         return iAssetService.saveAsset(asset);
     }
 
@@ -68,7 +76,7 @@ public class AssetController {
             asset.setAssetCustomizeRequests(null);
             return;
         }
-        asset.getAssetCustomizeRequests().stream().forEach(t->{
+        asset.getAssetCustomizeRequests().stream().forEach(t -> {
             if (StringUtils.isEmpty(t.getValue()) || StringUtils.isEmpty(t.getName())) {
                 ParamterExceptionUtils.isTrue(false, "自定义字段数据不能为空");
             }
@@ -175,6 +183,16 @@ public class AssetController {
     public ActionResponse updateSingle(@RequestBody(required = false) AssetOuterRequest assetOuterRequest) throws Exception {
         ParamterExceptionUtils.isNull(assetOuterRequest.getAsset().getId(), "资产ID不能为空");
         checkCustomizeRequest(assetOuterRequest);
+        if (assetOuterRequest.getAsset().getExpirationReminder() != null
+            && assetOuterRequest.getAsset().getExpirationReminder() > 0) {
+            assetOuterRequest.getAsset().setExpirationReminder(
+                DateTimeUtils.getLastSeconds(assetOuterRequest.getAsset().getExpirationReminder()));
+        }
+        if (assetOuterRequest.getAsset().getServiceLife() != null
+            && assetOuterRequest.getAsset().getServiceLife() > 0) {
+            assetOuterRequest.getAsset()
+                .setServiceLife(DateTimeUtils.getLastSeconds(assetOuterRequest.getAsset().getServiceLife()));
+        }
         iAssetService.changeAsset(assetOuterRequest);
         return ActionResponse.success();
     }
