@@ -11,7 +11,7 @@ public class OtherDeviceEntity {
     /**
      * 资产编号
      */
-    @ExcelField(value = "number", align = 1, title = "资产编号(必填) 备注:仅限字母数字组合",required = true)
+    @ExcelField(value = "number", align = 1, title = "资产编号(必填) ", required = true)
     private String number;
 
     /**
@@ -29,7 +29,7 @@ public class OtherDeviceEntity {
     /**
      * 国资码
      */
-    @ExcelField(value = "code", align = 1, title = "国资码(必填) 备注:仅限字母数字组合", length = 255, required = true)
+    @ExcelField(value = "code", align = 1, title = "国资码(必填) ", length = 255, required = true)
     private String code;
 
     /**
