@@ -151,7 +151,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             StringBuilder stringBuilder = new StringBuilder();
             assetIds.forEach(v->stringBuilder.append(v).append(" "));
             logger.info("资产id:{}",stringBuilder.toString());
-            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
+            return "";
+//            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
         }
         request.setAssetActivityRequests(activityHandleRequests);
         //todo 下发指令 判断第三方是全部成功还是部分成功
