@@ -55,4 +55,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     Integer countAsset(String assetId);
 
     Boolean checkStatusByAssetId(@Param("assetIds") List<String> assetIds);
+
+    Integer countAssetLend(String assetId);
 }

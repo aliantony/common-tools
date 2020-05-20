@@ -467,6 +467,16 @@
             </foreach>
             AND asset_status != 5
     </select>
+    <select id="countAssetLend" resultType="java.lang.Integer">
+        SELECT
+	count( 1 )
+    FROM
+        asset_lend_relation
+    WHERE
+        STATUS = 1
+        AND lend_status = 1
+        AND asset_id = #{assetId}
+    </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>
             (

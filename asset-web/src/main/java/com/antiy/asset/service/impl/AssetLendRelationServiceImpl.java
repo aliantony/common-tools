@@ -145,7 +145,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public Integer returnConfirm(AssetLendRelationRequest assetLendRelationRequest) {
-        ParamterExceptionUtils.isNull(assetLendRelationRequest.getReturnTime(),"归还时间不能为空！");
+        ParamterExceptionUtils.isNull(assetLendRelationRequest.getReturnTime(), "归还时间不能为空！");
         Integer result = assetLendRelationDao.returnConfirm(assetLendRelationRequest);
         LogUtils.recordOperLog(
                 new BusinessData("归还出借资产", assetLendRelationRequest.getAssetId(), assetDao.getNumberById(assetLendRelationRequest.getAssetId()),
@@ -180,7 +180,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
-        //校验资产状态
+        //校验资产状态和是否以出借
         this.checkAssetStatus(Arrays.asList(assetLendRelation.getAssetId()));
         //出借保存
         this.insertAssetLendRelation(assetLendRelation);
@@ -267,10 +267,15 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         }
     }
 
-    private void checkAssetStatus(List<String> assetIds){
-        if(assetLendRelationDao.checkStatusByAssetId(assetIds)){
+    private void checkAssetStatus(List<String> assetIds) {
+        if (assetLendRelationDao.checkStatusByAssetId(assetIds)) {
             logger.error("出借资产{}状态异常！", assetIds.toString());
             throw new BusinessException("资产状态异常，出借失败！");
+        }
+        for (String assetId : assetIds) {
+            if (assetLendRelationDao.countAssetLend(assetId) > 0){
+                throw new BusinessException("存在以出借资产，出借失败！");
+            }
         }
     }
 }
