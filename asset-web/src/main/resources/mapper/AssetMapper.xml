@@ -56,6 +56,7 @@
         <result column="version" property="version"/>
         <result column="warranty" property="warranty"/>
         <result column="install_template_id" property="installTemplateId"/>
+        <result column="baseline_template_name" property="baselineTemplateName"/>
         <result column="baseline_template_id" property="baselineTemplateId"/>
         <result column="baseline_template_correlation_gmt" property="baselineTemplateCorrelationGmt"/>
         <result column="install_template_correlation_gmt" property="installTemplateCorrelationGmt"/>
@@ -82,6 +83,8 @@
         <result column="soft_version" property="softVersion"/>
         <result column="expiration_reminder" property="expirationReminder"/>
         <result column="rectification" property="rectification"/>
+        <result column="install_date" property="installDate"/>
+        <result column="activiate_date" property="activiateDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -95,7 +98,6 @@
 
 
     <sql id="IF_Base_Column_List_ForBatch">
-
             number,
             step_node,
             name,
@@ -110,7 +112,6 @@
             operation_system_name,
             responsible_user_id,
             house_location,
-
             uuid,
             asset_source,
             importance_degree,
@@ -136,7 +137,12 @@
             custom_field,
             machine_name,
             is_secrecy,
-            code
+            code,
+            net_type,
+            install_date,
+            activiate_date,
+            expiration_reminder,
+            is_borrow,
     </sql>
 
     <sql id="IF_Value_Column_List_ForBatch">
@@ -154,7 +160,6 @@
         #{entity.operationSystemName },
         #{entity.responsibleUserId },
         #{entity.houseLocation },
-        #{entity.firmwareVersion },
         #{entity.uuid },
         #{entity.assetSource },
         #{entity.importanceDegree },
@@ -180,7 +185,14 @@
         #{entity.customField  },
         #{entity.machineName },
         #{entity.isSecrecy },
-        #{entity.code }
+        #{entity.code },
+        #{entity.netType },
+        #{entity.installDate },
+        #{entity.activiateDate },
+        #{entity.expirationReminder },
+        #{entity.isBorrow }
+
+
     </sql>
 
     <sql id="Where_Column">
@@ -1988,6 +2000,7 @@
 
     <select id="queryInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetResponse" >
         SELECT
+        asset.id as stringId,
         asset.name,
         asset.number,
         asset.asset_group as assetGroup,
@@ -2925,5 +2938,19 @@ WHERE
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
+    </select>
+    <select id="getExpirationAsset" resultType="com.antiy.asset.entity.AssetMonitor">
+        select
+          t.id as assetId,
+          group_concat(air.ip) as ip,
+          group_concat(amr.mac) as mac,
+          t.number,
+          t.service_life as threshole
+          from asset t
+          left join asset_ip_relation air on (t.id = air.asset_id and air.status = 1)
+          left join asset_mac_relation amr on (t.id = amr.asset_id and amr.status = 1)
+        where t.status = 1
+        and t.expiration_reminder &lt;= #{time}
+        group by t.id
     </select>
 </mapper>

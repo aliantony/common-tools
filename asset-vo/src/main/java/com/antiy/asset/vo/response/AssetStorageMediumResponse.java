@@ -88,7 +88,9 @@ public class AssetStorageMediumResponse extends BaseResponse {
 
     public void setDiskType(Integer diskType) {
         this.diskType = diskType;
-        this.diskTypeName = diskType == 1 ? "机械" : (diskType == 2 ? "固态" : "小硬盘");
+        if (diskType != null) {
+            this.diskTypeName = diskType == 1 ? "机械" : (diskType == 2 ? "固态" : "小硬盘");
+        }
     }
 
     public String getAssetId() {

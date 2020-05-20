@@ -271,7 +271,7 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="getLendRelationList" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         a.id as assetId,
         a.name as  assetName,
@@ -298,7 +298,7 @@
             and a.is_borrow=1
             and a.asset_status =5
             and a.status=1
-            order by alr.lend_time desc ,a.first_enter_nett desc
+            order by alr.lend_time desc,alr.return_time desc ,a.first_enter_nett desc
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
@@ -466,6 +466,16 @@
                 #{item}
             </foreach>
             AND asset_status != 5
+    </select>
+    <select id="countAssetLend" resultType="java.lang.Integer">
+        SELECT
+	count( 1 )
+    FROM
+        asset_lend_relation
+    WHERE
+        STATUS = 1
+        AND lend_status = 1
+        AND asset_id = #{assetId}
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

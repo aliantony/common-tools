@@ -22,6 +22,8 @@ import java.util.Map;
 public class AssetStatusJumpRequest extends BasicRequest implements ObjectValidator {
 
 
+    @Encode
+    private String assetId;
     /**
      * 报废组件
      */
@@ -202,6 +204,14 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     public void setWaitCorrectToWaitRegister(Boolean waitCorrectToWaitRegister) {
         this.waitCorrectToWaitRegister = waitCorrectToWaitRegister;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
     @Override

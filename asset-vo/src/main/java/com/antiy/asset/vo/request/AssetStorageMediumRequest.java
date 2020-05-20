@@ -1,7 +1,6 @@
 package com.antiy.asset.vo.request;
 
 import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.antiy.common.base.BasicRequest;
@@ -32,7 +31,7 @@ public class AssetStorageMediumRequest extends BasicRequest implements ObjectVal
      * 最大存储量
      */
     @ApiModelProperty("最大存储量")
-    @NotBlank(message = "最大存储容量不能为空")
+    // @NotBlank(message = "最大存储容量不能为空")
     @Size(message = "最大存储量长度不超过9999999", max = 8)
     private String  maximumStorage;
     /**

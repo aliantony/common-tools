@@ -223,7 +223,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     } else {
                         asset.setRectification(2);
                         // 计算设备、网络设备=>待准入
-                        if ("2".equals(asset.getCategoryType()) || "3".equals(asset.getCategoryType())) {
+                        if ("2".equals(asset.getCategoryType())) {
+                            // 可借用设备、孤岛设备直接到已入网
+                            if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
+                                asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                            } else {
+                                asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
+                            }
+                        } else if ("3".equals(asset.getCategoryType())) {
                             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                         } else {
                             // 安全设备、存储设备、其他设备 =>已入网
@@ -414,9 +421,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityRequest.setBusinessId(String.valueOf(id));
         activityRequest.setProcessDefinitionKey("assetAdmittance");
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
-        activityRequest.setFormData(createFormData(request.getNeedScan(),
-            setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
-            request.getAsset().getAreaId()));
+        activityRequest.setFormData(
+            createFormData(request.getNeedScan(), request.getAsset().getIsBorrow(), request.getAsset().getIsOrphan(),
+                setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
+                request.getAsset().getAreaId()));
         ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
         if (null == actionResponse
             || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -447,7 +455,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @param categoryType
      * @return
      */
-    private Map createFormData(boolean needScan, Integer categoryType, String areaId) {
+    private Map createFormData(boolean needScan, Integer isBorrow, Integer isOrphan, Integer categoryType,
+                               String areaId) {
         Map formData = new HashMap();
         // 不跳过整改=>整改中(计算设备，安全设备)
         if (needScan) {
@@ -461,7 +470,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             formData.put("assetRegisterResult", "continueNet");
             // 计算设备、网络设备=>待准入
-            if (2 == categoryType || 3 == categoryType) {
+            if (2 == categoryType) {
+                // 孤岛设备和可借用设备直接到已入网
+                if (isBorrow == 1 || isOrphan == 1) {
+                    formData.put("needNetImplement", 0);
+                } else {
+                    formData.put("needNetImplement", 1);
+                    formData.put("implementUser", getImplementUser("asset:info:list:impl", areaId));
+                }
+            } else if (3 == categoryType) {
                 formData.put("needNetImplement", 1);
                 formData.put("implementUser", getImplementUser("asset:info:list:impl", areaId));
             } else {
@@ -1376,17 +1393,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             status = AssetStatusEnum.CORRECTING.getCode();
             assetOuterRequest.getAsset().setRectification(3);
         } else {
+            assetOuterRequest.getAsset().setRectification(2);
             // 计算设备、网络设备=>待准入
-            if ("2".equals(asset.getCategoryType()) || "3".equals(asset.getCategoryType())) {
+            if ("2".equals(asset.getCategoryType())) {
+                // 可借用设备、孤岛设备直接到已入网
+                if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
+                    asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                    asset.setFirstEnterNett(System.currentTimeMillis());
+                    status = AssetStatusEnum.NET_IN.getCode();
+                } else {
+                    asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
+                    status = AssetStatusEnum.NET_IN_CHECK.getCode();
+                }
+            } else if ("3".equals(asset.getCategoryType())) {
                 asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                 status = AssetStatusEnum.NET_IN_CHECK.getCode();
-                assetOuterRequest.getAsset().setRectification(2);
             } else {
                 // 安全设备、存储设备、其他设备 =>已入网
                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                 asset.setFirstEnterNett(System.currentTimeMillis());
                 status = AssetStatusEnum.NET_IN.getCode();
-                assetOuterRequest.getAsset().setRectification(2);
             }
         }
         // 启动工作流
@@ -1395,6 +1421,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityRequest.setProcessDefinitionKey("assetAdmittance");
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
         activityRequest.setFormData(createFormData(assetOuterRequest.getNeedScan(),
+            assetOuterRequest.getAsset().getIsBorrow(), assetOuterRequest.getAsset().getIsOrphan(),
             setCategroy(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel())),
             assetOuterRequest.getAsset().getAreaId()));
         ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
@@ -1512,21 +1539,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
 
         // 阻断入网判断
-        /*if (assetOuterRequest.isNeedEntryForbidden()) {
-            new Thread(() -> {
-                AssetEntryRequest request = new AssetEntryRequest();
-                ActivityHandleRequest handleRequest = new ActivityHandleRequest();
-                handleRequest.setId(assetId);
-                request.setAssetActivityRequests(Arrays.asList(handleRequest));
-                request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.NO_ENTER.getCode()));
-                request.setEntrySource(AssetEntrySourceEnum.ASSET_CHANGE);
-                try {
-                    entryService.updateEntryStatus(request);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }*/
+        /* if (assetOuterRequest.isNeedEntryForbidden()) { new Thread(() -> { AssetEntryRequest request = new
+         * AssetEntryRequest(); ActivityHandleRequest handleRequest = new ActivityHandleRequest();
+         * handleRequest.setId(assetId); request.setAssetActivityRequests(Arrays.asList(handleRequest));
+         * request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.NO_ENTER.getCode()));
+         * request.setEntrySource(AssetEntrySourceEnum.ASSET_CHANGE); try { entryService.updateEntryStatus(request); }
+         * catch (Exception e) { e.printStackTrace(); } }).start(); } */
         // 更新资产状态
         updateAssetStatus(changeStatus, System.currentTimeMillis(), assetId);
         // 记录操作日志
@@ -3258,6 +3276,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
+
             if (entity.getExpirationReminder() >= entity.getDueDate()) {
                 error++;
                 a++;
@@ -3468,6 +3487,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
+            if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                error++;
+                a++;
+                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                continue;
+            }
 
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3496,6 +3521,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
+            asset.setInstallDate(entity.getInstallDate());
+            asset.setActiviateDate(entity.getActiviateDate());
+            asset.setInstallDate(entity.getInstallDate());
+            if (null == entity.getExpirationReminder()) {
+                asset.setExpirationReminder(getCalendar(entity.getDueDate()));
+            } else {
+                asset.setExpirationReminder(entity.getExpirationReminder());
+            }
             asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());

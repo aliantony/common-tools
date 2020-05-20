@@ -70,7 +70,7 @@
         set admittance_status=#{updateStatus}
         where id in
         <foreach collection="assetActivityRequests" item="item" open="(" separator="," close=")">
-            #{item.stringId}
+            #{item.id}
         </foreach>
         and status=1
     </update>

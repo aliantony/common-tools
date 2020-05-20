@@ -6,6 +6,7 @@ import com.antiy.asset.entity.Asset;
 import com.antiy.asset.service.iAssetEntryService;
 import com.antiy.asset.templet.EntryRestore;
 import com.antiy.asset.util.BaseClient;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
@@ -53,6 +54,7 @@ import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author liulusheng
@@ -90,10 +92,9 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     @Override
     public PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception {
-        AssetCategoryModelQuery modelQuery = new AssetCategoryModelQuery();
-        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(modelQuery)
-                .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
-                        LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
+
+        //获取网络设备和计算设备乃至下级节点的id
+        List<String> categoryIds = getCategoryIdsOfComputerAndNet();
         query.setAssetCategorys(categoryIds);
         if (CollectionUtils.isEmpty(query.getAreaIds())) {
             query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser());
@@ -103,6 +104,13 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             return new PageResult<>(query.getPageSize(), 0, query.getCurrentPage(), Collections.EMPTY_LIST);
         }
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), this.queryList(query));
+    }
+
+    public List<String> getCategoryIdsOfComputerAndNet() throws Exception {
+        AssetCategoryModelQuery modelQuery = new AssetCategoryModelQuery();
+       return categoryModelService.queryCategoryWithOutRootNode(modelQuery)
+                .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
+                        LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
     }
 
     /**
@@ -143,7 +151,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             StringBuilder stringBuilder = new StringBuilder();
             assetIds.forEach(v->stringBuilder.append(v).append(" "));
             logger.info("资产id:{}",stringBuilder.toString());
-            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
+            return "";
+//            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
         }
         request.setAssetActivityRequests(activityHandleRequests);
         //todo 下发指令 判断第三方是全部成功还是部分成功
@@ -197,9 +206,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     public boolean checkAssetComplience(AssetEntryRequest request) throws Exception {
 
         List<Integer> assetIds = request.getAssetActivityRequests().stream().map(ActivityHandleRequest::getId).collect(Collectors.toList());
-        List<String> categoryIds = categoryModelService.queryCategoryWithOutRootNode(new AssetCategoryModelQuery())
-                .stream().filter(v -> Objects.equals("计算设备", v.getName()) || Objects.equals("网络设备", v.getName())).collect(
-                        LinkedList::new, (list, v) -> getCategoryIds(v, list), List::addAll);
+        List<String> categoryIds = getCategoryIdsOfComputerAndNet();
         return assetDao.findByIds(assetIds).stream().filter(asset ->{
             Integer notOrphan = 2;
             Integer notBorrow = 2;
@@ -418,9 +425,13 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     }
 
     @Override
-    public boolean queryEntryOperation(AssetEntryQuery query) {
-        for (AssetEntryStatusResponse queryEntryStatus : assetEntryDao.queryEntryStatus(Arrays.asList(query.getAssetIds()))) {
-            if (EnumUtil.equals(queryEntryStatus.getEntryStatus(), AssetEnterStatusEnum.ENTERED)) {
+    public boolean queryEntryOperation(AssetEntryQuery query) throws Exception {
+        //网络设备和计算设备乃至下级节点的类型id
+        List<String> categoryIds = getCategoryIdsOfComputerAndNet();
+        List<Asset> assets= assetDao.findByIds(Stream.of(query.getAssetIds()).map(id-> DataTypeUtils.stringToInteger(id)).collect(Collectors.toList()));
+        for (Asset asset : assets) {
+            if (categoryIds.contains(asset.getCategoryModel())
+                    && EnumUtil.equals(asset.getAdmittanceStatus(), AssetEnterStatusEnum.ENTERED)) {
                 return true;
             }
         }
