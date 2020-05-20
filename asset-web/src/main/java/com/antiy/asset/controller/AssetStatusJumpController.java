@@ -72,6 +72,18 @@ public class AssetStatusJumpController {
 
 
     /**
+     * 状态判断
+     */
+    @ApiOperation(value = "资产状态扭转判断", notes = "传入实体对象信息")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),})
+    @RequestMapping(value = "/status/judge", method = RequestMethod.POST)
+    public ActionResponse statusJudge(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
+       Boolean flag= assetStatusJumpService.statusJudge(statusJumpRequest);
+        return ActionResponse.success(flag);
+    }
+
+
+    /**
      * 资产不予登记
      *
      * @param assetStatusChangeRequest

@@ -37,4 +37,6 @@ public interface IAssetStatusJumpService {
      * @param assetId
      */
     Integer continueNetIn(ActivityHandleRequest assetId) throws Exception;
+
+    Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest);
 }
