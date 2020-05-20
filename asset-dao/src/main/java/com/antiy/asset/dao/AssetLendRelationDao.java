@@ -2,6 +2,7 @@ package com.antiy.asset.dao;
 
 import com.antiy.asset.entity.AssetLendRelation;
 import com.antiy.asset.vo.query.ApproveListQuery;
+import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.request.ApplicantRequest;
 import com.antiy.asset.vo.request.AssetLendRelationRequest;
 import com.antiy.asset.vo.request.UserInfoRequest;
@@ -57,4 +58,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     Boolean checkStatusByAssetId(@Param("assetIds") List<String> assetIds);
 
     Integer countAssetLend(String assetId);
+
+    List<AssetLendRelationResponse> getLendRelationList(AssetLendRelationQuery query);
 }

@@ -272,10 +272,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         String numbers=StringUtils.join(numberList,",");
         String ids = StringUtils.join(assetIdList, ",");
 
-        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>1) {
+        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>0) {
 
             LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
                     ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum()));
+            logger.info("记录操作日志");
         }
     }
     private void dealRelation(AssetStatusJumpRequest statusJumpRequest,List<Asset> assetsInDb) throws Exception {
@@ -311,7 +312,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             return;
         }
 
-        //  准入  发消息
+        //  禁止准入
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
                 ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
@@ -321,29 +322,27 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             Integer networkCategory = assetCategoryModelDao.getByName(AssetCategoryEnum.NETWORK.getName()).getId();
             Set<String> computerCategoryList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(computerCategory)).stream().map(t -> t.toString()).collect(Collectors.toSet());
             Set<String> networkCategoryList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(networkCategory)).stream().map(t -> t.toString()).collect(Collectors.toSet());
+            List<ActivityHandleRequest> requestList = new ArrayList<>();
             for(Asset asset:assetsInDb){
                 boolean isComputerCategoryAllow=computerCategoryList.contains(asset.getCategoryModel())&&asset.getIsBorrow()!=1&&asset.getIsOrphan()!=1;
                 if(isComputerCategoryAllow ||networkCategoryList.contains(asset.getCategoryModel()) ){
-                    List<ActivityHandleRequest> requestList = new ArrayList<>();
-                    statusJumpRequest.getAssetInfoList().forEach(assetInfo -> {
-                        ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                        activityHandleRequest.setId(assetInfo.getAssetId());
-                        requestList.add(activityHandleRequest);
-                    });
-                    AssetEntryRequest assetEntryRequest=new AssetEntryRequest();
-                    assetEntryRequest.setAssetActivityRequests(requestList);
-                    assetEntryRequest.setUpdateStatus(DataTypeUtils.integerToString(AssetEnterStatusEnum.NO_ENTER.getCode()));
-                    //准入来源设置
-                    assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_SCRAP);
-
-                    if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
-                        //准入来源设置
-                        assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
-                    }
-                    //准入更新
-                    entryService.updateEntryStatus(assetEntryRequest);
+                    ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+                    activityHandleRequest.setId(asset.getId().toString());
+                    requestList.add(activityHandleRequest);
                 }
             }
+            AssetEntryRequest assetEntryRequest=new AssetEntryRequest();
+            assetEntryRequest.setAssetActivityRequests(requestList);
+            assetEntryRequest.setUpdateStatus(DataTypeUtils.integerToString(AssetEnterStatusEnum.NO_ENTER.getCode()));
+            //准入来源设置
+            assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_SCRAP);
+
+            if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)){
+                //准入来源设置
+                assetEntryRequest.setEntrySource(AssetEntrySourceEnum.ASSET_RETIRE);
+            }
+            //准入更新
+            entryService.updateEntryStatus(assetEntryRequest);
         }
     }
 
@@ -545,6 +544,17 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         return update;
     }
 
+    @Override
+    public Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest) {
+        AssetFlowEnum assetFlowEnum = statusJumpRequest.getAssetFlowEnum();
+        String assetId = statusJumpRequest.getAssetId();
+        Asset assetOfDb = assetDao.getByAssetId(assetId);
+        if(assetFlowEnum.getCurrentAssetStatus().getCode().equals(assetOfDb.getAssetStatus())){
+            return true;
+        }
+        return false;
+    }
+
 
     private void changeAssetStatusToNetIn(Asset assetOfDB) throws Exception {
         //改变资产状态
@@ -690,7 +700,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 if (!actionResponse.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                     throw new BusinessException((String) actionResponse.getBody());
                 }
-                procInstIds.add((String)actionResponse.getBody());
+                String procId = (String) actionResponse.getBody();
+                procInstIds.add(procId);
+                LogUtils.info(logger,"资产id为{},流程实例为{}",assetInfo.getAssetId(),procId);
             }
             return  procInstIds;
 

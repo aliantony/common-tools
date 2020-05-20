@@ -32,8 +32,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -84,8 +86,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public List<AssetLendRelationResponse> queryListAssetLendRelation(AssetLendRelationQuery query) throws Exception {
-        List<AssetLendRelation> assetLendRelationList = assetLendRelationDao.findQuery(query);
-        return responseConverter.convert(assetLendRelationList, AssetLendRelationResponse.class);
+        List<AssetLendRelationResponse> assetLendRelationList = assetLendRelationDao.getLendRelationList(query);
+        return assetLendRelationList;
     }
 
     @Override
