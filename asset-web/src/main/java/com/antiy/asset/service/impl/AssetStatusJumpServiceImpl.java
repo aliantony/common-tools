@@ -312,6 +312,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             return;
         }
 
+        // 对应通联关系解除
+        assetLinkRelationDao.deleteByAssetIdList(assetIdList);
+
         //  准入  发消息
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_APPLICATION)
