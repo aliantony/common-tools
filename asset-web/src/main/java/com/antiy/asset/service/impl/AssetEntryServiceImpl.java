@@ -12,13 +12,8 @@ import com.antiy.asset.vo.enums.AssetEnterStatusEnum;
 import com.antiy.asset.vo.enums.AssetEntrySourceEnum;
 import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.asset.vo.query.AssetEntryQuery;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetEntryRecordRequest;
-import com.antiy.asset.vo.request.AssetEntryRequest;
-import com.antiy.asset.vo.response.AssetCategoryModelNodeResponse;
-import com.antiy.asset.vo.response.AssetEntryRecordResponse;
-import com.antiy.asset.vo.response.AssetEntryResponse;
-import com.antiy.asset.vo.response.AssetEntryStatusResponse;
+import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.response.*;
 import com.antiy.biz.entity.SysMessageRequest;
 import com.antiy.biz.message.SysMessageSender;
 import com.antiy.biz.util.RedisKeyUtil;
@@ -29,10 +24,8 @@ import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.exception.BusinessException;
-import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
-import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -65,8 +58,12 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     private Logger logger = LogUtils.get(this.getClass());
     @Resource
     private AssetEntryDao assetEntryDao;
-    @Value("${sendEntryCommond}")
-    private String entryCommondUrl;
+    @Value("${entry.system.token.url}")
+    private String entrySystemTokenUrl;
+    @Value("${forbidden.entry.url}")
+    private String forbiddenEntryUrl;
+    @Value("${allow.entry.url}")
+    private String allowEntryUrl;
     @Resource
     private AssetDao assetDao;
     @Resource
@@ -132,15 +129,18 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
     @Override
     public String updateEntryStatus(AssetEntryRequest request, SecurityContext... context) throws Exception {
-        ParamterExceptionUtils.isTrue(checkAssetComplience(request),"资产应属于计算设备、网络设备、非借用设备、非孤岛设备");
+        if (!checkAssetComplience(request)) {
+            return "资产应属于计算设备、网络设备、非借用设备、非孤岛设备";
+        }
         //token设置
         if (ArrayUtils.isNotEmpty(context)) {
             SecurityContextHolder.setContext(context[0]);
         }
         //准入状态一致不用下发，过滤当前资产准入状态与更新状态不一致的资产
         List<ActivityHandleRequest> activityHandleRequests = request.getAssetActivityRequests().stream().filter(v -> {
-            if (EnumUtil.equals(request.getEntrySource().getCode(),AssetEntrySourceEnum.UNKNOWN_ASSET_REGISTER)
-             || !assetDao.getByAssetId(String.valueOf(v.getId())).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
+            if (EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.UNKNOWN_ASSET_REGISTER)
+                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_ENTER_NET)
+                    || !assetDao.getByAssetId(String.valueOf(v.getId())).getAdmittanceStatus().equals(Integer.valueOf(request.getUpdateStatus()))) {
                 return true;
             }
             return false;
@@ -152,56 +152,115 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             assetIds.forEach(v->stringBuilder.append(v).append(" "));
             logger.info("资产id:{}",stringBuilder.toString());
             return "";
-//            throw new RequestParamValidateException("所选资产已经是" + AssetEnterStatusEnum.getAssetByCode(Integer.valueOf(request.getUpdateStatus())).getMsg() + "状态,操作无效");
         }
         request.setAssetActivityRequests(activityHandleRequests);
-        //todo 下发指令 判断第三方是全部成功还是部分成功
-//        boolean isSuccess = sendCommond(request);
-        boolean isSuccess = true;
-        //操作日志-安全事件
-        boolean isAccess = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED);
-        String incident = isAccess? "允许入网" : "禁止入网";
+
+        //获取登录用户
+        int userId = 0;//0表示系统
+        LoginUser loginUser = LoginUserUtil.getLoginUser();
+        if (!Objects.isNull(loginUser)) {
+            userId = loginUser.getId();
+        }
+        //recordRequestList 准入历史
         List<AssetEntryRecordRequest> recordRequestList = new ArrayList<>();
-        assetIds.forEach(v -> {
+        //如果来源为准入实施且准入禁止，则只记录准入历史记录并设置status为0，方便准入管理列表按准入操作排序
+        if (EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_ENTER_NET)
+                && AssetEnterStatusEnum.NO_ENTER.getCode().equals(Integer.valueOf(request.getUpdateStatus()))) {
+            int finalUserId = userId;
+            assetIds.forEach(v -> {
+                Asset asset = assetDao.getByAssetId(v);
+                AssetEntryRecordRequest recordRequest = new AssetEntryRecordRequest(asset.getStringId(), request.getEntrySource().getCode(),
+                        0, Integer.valueOf(request.getUpdateStatus()), System.currentTimeMillis(), finalUserId
+                );
+                recordRequest.setStatus(0);
+                recordRequestList.add(recordRequest);
+            });
+            //保存历史记录
+            assetEntryDao.insertRecordBatch(recordRequestList);
+            return "";
+        }
+
+        //errno 失败的资产数量
+        int errno = 0;
+        //准入系统不支持批量操作
+        for (String v : assetIds) {
+            //todo 下发指令 判断第三方是全部成功还是部分成功
+            List<String> macs=assetDao.findMacByAssetId(v);
+            if (CollectionUtils.isEmpty(macs)) {
+                continue;
+            }
+            List<String> ip = assetDao.findIpByAssetId(v);
+            String ips = null;
+            if (CollectionUtils.isNotEmpty(ip)) {
+                ips = String.join(",", ip);
+            }
+//            boolean isSuccess = entryControl(macs, Integer.valueOf(request.getUpdateStatus()),request.getEntrySource().getMsg(),ips);
+            boolean isSuccess = true;
+
+            //操作日志-安全事件
+            boolean isAccess = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED);
+            String incident = isAccess ? "允许入网" : "禁止入网";
             Asset asset = assetDao.getByAssetId(v);
             //记录操作日志
             LogUtils.recordOperLog(new BusinessData(incident, asset.getId(), asset.getNumber(), asset,
-                    BusinessModuleEnum.ACCESS_MANAGEMENT, isAccess?BusinessPhaseEnum.ACCESS_ALLOW:BusinessPhaseEnum.ACCESS_BAN));
-            int userId = 0;//0表示系统
-            LoginUser loginUser = LoginUserUtil.getLoginUser();
-            if (!Objects.isNull(loginUser)) {
-                userId = loginUser.getId();
-            }
+                    BusinessModuleEnum.ACCESS_MANAGEMENT, isAccess ? BusinessPhaseEnum.ACCESS_ALLOW : BusinessPhaseEnum.ACCESS_BAN));
+
             AssetEntryRecordRequest recordRequest = new AssetEntryRecordRequest(asset.getStringId(), request.getEntrySource().getCode(),
                     isSuccess ? 1 : 0, Integer.valueOf(request.getUpdateStatus()), System.currentTimeMillis(), userId
             );
             recordRequestList.add(recordRequest);
-        });
-        //保存历史记录
-        assetEntryDao.insertRecordBatch(recordRequestList);
 
-        //失败发送系统消息
-        if (BooleanUtils.isFalse(isSuccess)) {
-            sendMessage(assetIds, Integer.valueOf(request.getUpdateStatus()));
-            throw new BusinessException("准入状态变更失败!");
-        } else {
+            //保存历史记录
+            assetEntryDao.insertRecordBatch(recordRequestList);
+            //第N次循环,清空历史记录
+            recordRequestList.clear();
+            //失败发送系统消息
+            if (BooleanUtils.isFalse(isSuccess)) {
+                errno++;
+                sendMessage(assetIds, Integer.valueOf(request.getUpdateStatus()));
+            } else {
 
-            //更新资产准入状态
-            assetEntryDao.updateEntryStatus(request);
-            //如果来源是漏洞扫描，补丁安装，配置扫描，启动自动恢复机制
-            if ((EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
-                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.VUL_SCAN)
-                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL)
-                    || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_CHANGE))
-                    && (EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.NO_ENTER))) {
-                //自动恢复为准入允许
-                request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));
-                entryRestore.initRestoreRequest(request);
+                //更新资产准入状态
+                assetEntryDao.updateEntryStatus(request);
+                //如果来源是漏洞扫描，补丁安装，配置扫描，启动自动恢复机制
+                if ((EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.CONFIG_SCAN)
+                        || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.VUL_SCAN)
+                        || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.PATCH_INSTALL)
+                        || EnumUtil.equals(request.getEntrySource().getCode(), AssetEntrySourceEnum.ASSET_CHANGE))
+                        && (EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.NO_ENTER))) {
+                    //自动恢复为准入允许
+                    request.setUpdateStatus(String.valueOf(AssetEnterStatusEnum.ENTERED.getCode()));
+                    entryRestore.initRestoreRequest(request);
+                }
             }
         }
 
+        //全部失败，给与提示
+        if (errno >= assetIds.size()) {
+            throw new BusinessException("准入状态变更失败!");
+        }
         return "变更成功";
     }
+
+    private boolean entryControl(List<String> macs, Integer updateStatus,String msg,String ip) {
+        //根据mac对资产进行准入控制
+        for (String mac : macs) {
+            EntrySystemForbiddenRequest request = new EntrySystemForbiddenRequest();
+            request.setMac(mac);
+            boolean isAllow = EnumUtil.equals(updateStatus, AssetEnterStatusEnum.ENTERED);
+            if (!isAllow) {
+                request.setMsg(msg);
+                request.setIp(ip);
+            }
+           boolean isSuccess=sendCommond(request, isAllow);
+            if (isSuccess) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public boolean checkAssetComplience(AssetEntryRequest request) throws Exception {
 
@@ -288,13 +347,9 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return removedRequest;
     }
 
-    private boolean sendCommond(AssetEntryRequest request) {
+    private boolean sendCommond(EntrySystemRequest request,boolean isAllow) {
         //todo 测试是否可以下发指令通信
-        List<String> assetIds = request.getAssetActivityRequests().stream().map(v -> String.valueOf(v.getId())).collect(Collectors.toList());
         int count = 0;
-        ActionResponse response = null;
-        //todo 下发参数设置
-        MultiValueMap<String, Object> commondParam = new LinkedMultiValueMap<>();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         //获取可用连接的超时时间15秒
         requestFactory.setConnectionRequestTimeout(15_000);
@@ -306,31 +361,44 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
         headers.setContentType(type);
-        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(commondParam, headers);
 
-        logger.info("请求地址：{}，参数：{}", entryCommondUrl, commondParam);
+        EntrySystemResponse response = null;
+        //errno 错误码,0表示没有错
+        Integer errno = 0;
         //下发指令
         do {
             count++;
-            ResponseEntity<ActionResponse> responseEntity = null;
             try {
-                responseEntity = restTemplate.exchange(entryCommondUrl, HttpMethod.POST, entity, ActionResponse.class);
-                response = responseEntity.getBody();
+                //获取token
+                EntrySystemResponse tokenResponse = restTemplate.getForObject(entrySystemTokenUrl, EntrySystemResponse.class);
+                if (Objects.isNull(tokenResponse) || !Objects.equals(errno, tokenResponse.getErrno())) {
+                    LogUtils.info(logger,"获取准入系统token失败:{}",tokenResponse);
+                    continue;
+                }
+                request.setToken(tokenResponse.getToken());
+
+                //准入允许
+                if (isAllow) {
+                    response=restTemplate.postForObject(allowEntryUrl, request, EntrySystemResponse.class);
+                }else {
+                    EntrySystemForbiddenRequest forbiddenRequest = (EntrySystemForbiddenRequest) request;
+                    response=restTemplate.postForObject(forbiddenEntryUrl, forbiddenRequest, EntrySystemResponse.class);
+                }
+
             } catch (Exception e) {
-                logger.warn("指令第{}次下发失败，代码异常：{}", count
-                        , e.getMessage());
+                logger.warn("指令第{}次下发失败，代码异常：{}", count, e.getMessage());
                 continue;
             }
             //下发失败，继续下发指令
-            if (response == null || !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
+            if (response == null || !Objects.equals(errno, response.getErrno())) {
                 logger.info("指令第{}次下发失败,response:{}", response);
                 continue;
-            }else {
-                break;
             }
+                break;
+
 
         } while (count < 2);
-        if (response == null || !StringUtils.equals(response.getHead().getCode(), RespBasicCode.SUCCESS.getResultCode())) {
+        if (response == null || !Objects.equals(errno, response.getErrno())) {
             return false;
         }
         return true;
@@ -429,9 +497,14 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         //网络设备和计算设备乃至下级节点的类型id
         List<String> categoryIds = getCategoryIdsOfComputerAndNet();
         List<Asset> assets= assetDao.findByIds(Stream.of(query.getAssetIds()).map(id-> DataTypeUtils.stringToInteger(id)).collect(Collectors.toList()));
+        Integer notOrphan = 2;
+        Integer notBorrow = 2;
         for (Asset asset : assets) {
             if (categoryIds.contains(asset.getCategoryModel())
-                    && EnumUtil.equals(asset.getAdmittanceStatus(), AssetEnterStatusEnum.ENTERED)) {
+                    && EnumUtil.equals(asset.getAdmittanceStatus(), AssetEnterStatusEnum.ENTERED)
+                    && (notOrphan.equals(asset.getIsOrphan()) || asset.getIsOrphan() == null)
+                    && (notBorrow.equals(asset.getIsBorrow()) || asset.getIsBorrow() == null)
+            ) {
                 return true;
             }
         }

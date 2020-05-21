@@ -34,17 +34,28 @@ public class ScanAssetExpiration {
     private String        topic = "queue.csos.alarm.asset.monitor";
 
     /**
-     * 每天0点扫描到期提醒的资产
+     * 每天0点扫描到期提醒、过期的资产
      */
     @Scheduled(cron = "0 0 0 */1 * ?")
     //@Scheduled(cron = "*/20 * * * * ?")
     public void scan() {
-        List<AssetMonitor> list = assetDao.getExpirationAsset(System.currentTimeMillis());
-        if (CollectionUtils.isNotEmpty(list)) {
-            list.stream().forEach(t -> {
-                t.setCurrent(String.valueOf(System.currentTimeMillis()));
-                t.setTime(System.currentTimeMillis());
+        Long currentTime = System.currentTimeMillis();
+        List<AssetMonitor> expirationAsset = assetDao.getExpirationAsset(currentTime);
+        List<AssetMonitor> serviceLifeAsset = assetDao.getServiceLifeAsset(currentTime);
+
+        if (CollectionUtils.isNotEmpty(expirationAsset)) {
+            expirationAsset.stream().forEach(t -> {
+                t.setCurrent(String.valueOf(currentTime));
+                t.setTime(currentTime);
                 t.setAlarmCode("1050005");
+                sendMsg(topic, JSONObject.toJSONString(t));
+            });
+        }
+        if (CollectionUtils.isNotEmpty(serviceLifeAsset)) {
+            serviceLifeAsset.stream().forEach(t -> {
+                t.setCurrent(String.valueOf(currentTime));
+                t.setTime(currentTime);
+                t.setAlarmCode("1050006");
                 sendMsg(topic, JSONObject.toJSONString(t));
             });
         }

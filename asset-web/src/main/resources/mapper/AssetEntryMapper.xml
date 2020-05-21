@@ -58,10 +58,10 @@
 
     </insert>
     <insert id="insertRecordBatch" parameterType="java.util.List">
-        insert into asset_entry_record(asset_id,source,result,change_status,gmt_create,create_user)
+        insert into asset_entry_record(asset_id,source,result,change_status,gmt_create,create_user,status)
         values
         <foreach collection="recordList" separator="," item="item">
-            (#{item.assetId},#{item.entrySource},#{item.entryResult},#{item.changeStatus},#{item.gmtCreate},#{item.createUser})
+            (#{item.assetId},#{item.entrySource},#{item.entryResult},#{item.changeStatus},#{item.gmtCreate},#{item.createUser},#{item.status})
         </foreach>
     </insert>
     <update id="update"/>
@@ -106,7 +106,7 @@
         left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
-        left join asset_entry_record aer on asset.id=aer.asset_id and aer.status=1
+        left join asset_entry_record aer on asset.id=aer.asset_id
         <trim prefix="where 1=1">
             <include refid="assetEntryQuery"/>
         </trim>

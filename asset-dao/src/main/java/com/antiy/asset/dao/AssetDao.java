@@ -1,5 +1,11 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.dto.AssetWorkQueryDto;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.*;
@@ -9,11 +15,6 @@ import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -458,9 +459,25 @@ public interface AssetDao extends IBaseDao<Asset> {
     void saveAssetBaselineTemplate(BaselineAssetTemplate baselineAssetTemplate);
 
     /**
-     * 扫描过期资产
+     * 扫描到期提醒资产
      * @param time
      * @return
      */
     List<AssetMonitor> getExpirationAsset(@Param("time") long time);
+
+    /**
+     * 扫描过期资产
+     * @param time
+     * @return
+     */
+    List<AssetMonitor> getServiceLifeAsset(@Param("time") long time);
+
+    /**
+     * 通过资产id查询mac
+     */
+    List<String> findMacByAssetId(@Param("assetId") String assetId);
+    /**
+     * 通过资产id查询ip
+     */
+    List<String> findIpByAssetId(@Param("assetId") String assetId);
 }

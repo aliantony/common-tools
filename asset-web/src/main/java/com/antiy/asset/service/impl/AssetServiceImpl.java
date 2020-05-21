@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -64,6 +32,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -227,6 +225,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // 可借用设备、孤岛设备直接到已入网
                             if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
                                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                                asset.setFirstEnterNett(currentTimeMillis);
                             } else {
                                 asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                             }
@@ -1730,7 +1729,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(assetCustomizeRequests)) {
                         asset.setCustomField(JsonUtil.ListToJson(assetCustomizeRequests));
                     }
-                    // 处理业务
+                    // 处理从属业务
                     if (CollectionUtils.isNotEmpty(assetOuterRequest.getAsetBusinessRelationRequests())) {
                         dealBusiness(asset.getStringId(), assetOuterRequest.getAsetBusinessRelationRequests());
                     }
@@ -1783,38 +1782,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     void dealBusiness(String assetId, List<AssetBusinessRelationRequest> relationRequests) {
-        List<String> preRelation = assetBusinessRelationDao.getBusinessInfoByAssetId(assetId).stream()
-            .map(AssetBusinessResponse::getUniqueId).collect(Collectors.toList());
-        List<String> filterRelaton = new ArrayList<>();
-        List<AssetBusinessRelationRequest> updateRelation = new ArrayList<>();
-        List<AssetBusinessRelation> insertRelation = relationRequests.stream().filter(v -> {
-            AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(),
-                Integer.valueOf(assetId));
-            if (Objects.isNull(businessRelation)) {
-                v.setAssetId(assetId);
-                v.setGmtCreate(System.currentTimeMillis());
-                v.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                return true;
-            } else if (!v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
-                v.setAssetId(assetId);
-                v.setGmtModified(System.currentTimeMillis());
-                v.setModifyUser(LoginUserUtil.getLoginUser().getId());
-                updateRelation.add(v);
-            }
-            filterRelaton.add(businessRelation.getUniqueId());
-            return false;
-        }).map(t -> BeanConvert.convertBean(t, AssetBusinessRelation.class)).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(filterRelaton)) {
-            preRelation.removeAll(filterRelaton);
-        }
-        // 删除以前关联的业务
-        if (CollectionUtils.isNotEmpty(preRelation)) {
-            assetBusinessRelationDao.deleteByAssetIdAndUniqueId(preRelation, assetId);
-        }
-        // 更新关联过的业务
-        if (CollectionUtils.isNotEmpty(updateRelation)) {
-            assetBusinessRelationDao.updateBatchInfluenceByAssetId(updateRelation, assetId);
-        }
+        //删除就的从属关系
+        assetBusinessRelationDao.deleteByAssetId(Collections.singletonList(assetId));
+        List<AssetBusinessRelation> insertRelation = Lists.newArrayList();
+        relationRequests.stream().forEach(r->{
+            AssetBusinessRelation businessRelation = new AssetBusinessRelation();
+            businessRelation.setAssetId(assetId);
+            businessRelation.setBusinessInfluence(r.getBusinessInfluence());
+            businessRelation.setAssetBusinessId(r.getAssetBusinessId());
+            businessRelation.setUniqueId(SnowFlakeUtil.getSnowId());
+            businessRelation.setGmtCreate(System.currentTimeMillis());
+            businessRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            insertRelation.add(businessRelation);
+        });
         // 插入新业务
         if (CollectionUtils.isNotEmpty(insertRelation)) {
             assetBusinessRelationDao.insertBatchRelation(insertRelation);
@@ -3695,17 +3675,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 整改流程中的不予登记工作流
         if (AssetStatusEnum.CORRECTING.getCode().equals(currentAssetList.get(0).getAssetStatus())) {
             List<ActivityHandleRequest> activityHandleRequests = new ArrayList<>();
-            List<String> taskIds = list.stream().filter(t -> t.getTaskId() != null).map(t -> t.getTaskId())
-                .collect(Collectors.toList());
-            for (String taskId : taskIds) {
-                ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                activityHandleRequest.setTaskId(taskId);
-                Map map = new HashMap();
-                // map.put("admittanceResult", "noAdmittance");
-                map.put("assetRegisterResult", "noRegister");
-                activityHandleRequest.setFormData(map);
-                activityHandleRequests.add(activityHandleRequest);
-            }
+
+           for(NoRegisterRequest request: list){
+               //获取流程实例id
+               Integer assetId = com.antiy.asset.util.DataTypeUtils.stringToInteger(request.getAssetId());
+               List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
+               ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+               activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+               Map map = new HashMap();
+               // map.put("admittanceResult", "noAdmittance");
+               map.put("assetRegisterResult", "noRegister");
+               activityHandleRequest.setFormData(map);
+               activityHandleRequests.add(activityHandleRequest);
+           }
+
             if (activityHandleRequests.size() > 0)
                 activityClient.completeTaskBatch(activityHandleRequests);
         }
