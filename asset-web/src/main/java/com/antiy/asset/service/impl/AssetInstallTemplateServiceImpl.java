@@ -223,10 +223,8 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         int index = 0;
         if (StringUtils.isNotBlank(baselineId)) {
             type = assetInstallTemplateDao.queryBaselineTemplateType(query);
-            if (Objects.equals(BaselineTemplateStatusEnum.BLACK_ITEM.getCode(),type)
-            || Objects.equals(BaselineTemplateStatusEnum.WHITE_ITEM.getCode(),type)){
-                query.setOperationSystems(assetInstallTemplateDao.getParentNodesByNodes(query.getOperationSystem()));
-            }
+            query.setOperationSystems(assetInstallTemplateDao.getParentNodesByNodes(query.getOperationSystem()));
+            query.setOperationSystem(null);
         }
 
         if (baselineId == null) {

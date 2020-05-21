@@ -188,7 +188,12 @@
         <if test=" modifiedUser != null">
             and modified_user = #{modifiedUser }
         </if>
-
+        <if test="operationSystems !=null and operationSystems.size >0">
+            and operation_system in
+            <foreach collection="operationSystems" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetInstallTemplate" useGeneratedKeys="true"
@@ -442,22 +447,7 @@
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id AND apit.STATUS = 1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
-            <if test=" name != null and name !=''">
-                and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-            </if>
-            <if test=" numberCode != null and numberCode !=''">
-                and ait.number_code like
-                concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-            </if>
-            <if test=" currentStatus != null">
-                and ait.current_status = #{currentStatus }
-            </if>
-            <if test=" operationSystem != null and operationSystem !=''">
-                and ait.operation_system = #{operationSystem }
-            </if>
-            <if test=" operationSystemName != null and operationSystemName !=''">
-                and ait.operation_system_name = #{operationSystemName }
-            </if>
+           <include refid="common_query"/>
             <if test="stringId !=null and stringId !=''">
                 and ait.id=#{stringId}
             </if>
