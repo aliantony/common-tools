@@ -34,10 +34,10 @@ public class ScanAssetExpiration {
     private String        topic = "queue.csos.alarm.asset.monitor";
 
     /**
-     * 每天0点扫描到期提醒的资产
+     * 每天0点扫描到期提醒、过期的资产
      */
-    //@Scheduled(cron = "0 0 0 */1 * ?")
-    @Scheduled(cron = "*/20 * * * * ?")
+    @Scheduled(cron = "0 0 0 */1 * ?")
+    //@Scheduled(cron = "*/20 * * * * ?")
     public void scan() {
         Long currentTime = System.currentTimeMillis();
         List<AssetMonitor> expirationAsset = assetDao.getExpirationAsset(currentTime);
