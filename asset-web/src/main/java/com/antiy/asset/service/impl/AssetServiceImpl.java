@@ -227,6 +227,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             // 可借用设备、孤岛设备直接到已入网
                             if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
                                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+                                asset.setFirstEnterNett(currentTimeMillis);
                             } else {
                                 asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
                             }
