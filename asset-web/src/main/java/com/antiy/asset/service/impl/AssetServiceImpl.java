@@ -1730,7 +1730,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (CollectionUtils.isNotEmpty(assetCustomizeRequests)) {
                         asset.setCustomField(JsonUtil.ListToJson(assetCustomizeRequests));
                     }
-                    // 处理业务
+                    // 处理从属业务
                     if (CollectionUtils.isNotEmpty(assetOuterRequest.getAsetBusinessRelationRequests())) {
                         dealBusiness(asset.getStringId(), assetOuterRequest.getAsetBusinessRelationRequests());
                     }
@@ -1783,38 +1783,19 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     }
 
     void dealBusiness(String assetId, List<AssetBusinessRelationRequest> relationRequests) {
-        List<String> preRelation = assetBusinessRelationDao.getBusinessInfoByAssetId(assetId).stream()
-            .map(AssetBusinessResponse::getUniqueId).collect(Collectors.toList());
-        List<String> filterRelaton = new ArrayList<>();
-        List<AssetBusinessRelationRequest> updateRelation = new ArrayList<>();
-        List<AssetBusinessRelation> insertRelation = relationRequests.stream().filter(v -> {
-            AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(),
-                Integer.valueOf(assetId));
-            if (Objects.isNull(businessRelation)) {
-                v.setAssetId(assetId);
-                v.setGmtCreate(System.currentTimeMillis());
-                v.setCreateUser(LoginUserUtil.getLoginUser().getId());
-                return true;
-            } else if (!v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
-                v.setAssetId(assetId);
-                v.setGmtModified(System.currentTimeMillis());
-                v.setModifyUser(LoginUserUtil.getLoginUser().getId());
-                updateRelation.add(v);
-            }
-            filterRelaton.add(businessRelation.getUniqueId());
-            return false;
-        }).map(t -> BeanConvert.convertBean(t, AssetBusinessRelation.class)).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(filterRelaton)) {
-            preRelation.removeAll(filterRelaton);
-        }
-        // 删除以前关联的业务
-        if (CollectionUtils.isNotEmpty(preRelation)) {
-            assetBusinessRelationDao.deleteByAssetIdAndUniqueId(preRelation, assetId);
-        }
-        // 更新关联过的业务
-        if (CollectionUtils.isNotEmpty(updateRelation)) {
-            assetBusinessRelationDao.updateBatchInfluenceByAssetId(updateRelation, assetId);
-        }
+        //删除就的从属关系
+        assetBusinessRelationDao.deleteByAssetId(Collections.singletonList(assetId));
+        List<AssetBusinessRelation> insertRelation = Lists.newArrayList();
+        relationRequests.stream().forEach(r->{
+            AssetBusinessRelation businessRelation = new AssetBusinessRelation();
+            businessRelation.setAssetId(assetId);
+            businessRelation.setBusinessInfluence(r.getBusinessInfluence());
+            businessRelation.setAssetBusinessId(r.getAssetBusinessId());
+            businessRelation.setUniqueId(SnowFlakeUtil.getSnowId());
+            businessRelation.setGmtCreate(System.currentTimeMillis());
+            businessRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            insertRelation.add(businessRelation);
+        });
         // 插入新业务
         if (CollectionUtils.isNotEmpty(insertRelation)) {
             assetBusinessRelationDao.insertBatchRelation(insertRelation);
