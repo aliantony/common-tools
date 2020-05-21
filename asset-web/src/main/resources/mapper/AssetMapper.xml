@@ -2978,4 +2978,14 @@ WHERE
 		and t.service_life is not null
         group by t.id
     </select>
+    <select id="findMacByAssetId" resultType="java.lang.String">
+        select mac
+        from asset_mac_relation
+        where asset_id=#{assetId} and status=1
+    </select>
+    <select id="findIpByAssetId" resultType="java.lang.String">
+         select ip
+        from asset_ip_relation
+        where asset_id=#{assetId} and status=1
+    </select>
 </mapper>

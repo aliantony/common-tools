@@ -471,4 +471,13 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @return
      */
     List<AssetMonitor> getServiceLifeAsset(@Param("time") long time);
+
+    /**
+     * 通过资产id查询mac
+     */
+    List<String> findMacByAssetId(@Param("assetId") String assetId);
+    /**
+     * 通过资产id查询ip
+     */
+    List<String> findIpByAssetId(@Param("assetId") String assetId);
 }

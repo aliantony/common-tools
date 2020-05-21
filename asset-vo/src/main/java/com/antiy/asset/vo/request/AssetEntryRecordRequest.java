@@ -20,6 +20,7 @@ public class AssetEntryRecordRequest extends BaseRequest {
     private int changeStatus;
     private long gmtCreate;
     private int createUser;
+    private int status = 1;
 
     public AssetEntryRecordRequest(String assetId, int entrySource, int entryResult, int changeStatus, long gmtCreate, int createUser) {
         this.assetId = assetId;
@@ -28,6 +29,14 @@ public class AssetEntryRecordRequest extends BaseRequest {
         this.changeStatus = changeStatus;
         this.gmtCreate = gmtCreate;
         this.createUser = createUser;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getAssetId() {
