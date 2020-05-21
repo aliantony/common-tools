@@ -3,6 +3,8 @@ package com.antiy.asset.vo.query;
 import com.antiy.common.base.ObjectQuery;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetInstallTemplate 查询条件 </p>
  *
@@ -23,6 +25,8 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
     private Integer currentStatus;
     @ApiModelProperty("适用操作系统编号")
     private Long operationSystem;
+    @ApiModelProperty("适用操作系统集合")
+    private List<Long> operationSystems;
     @ApiModelProperty("适用操作系统名称")
     private String operationSystemName;
     @ApiModelProperty("描述")
@@ -39,6 +43,15 @@ public class AssetInstallTemplateQuery extends ObjectQuery {
     private Integer status;
     @ApiModelProperty("模板id")
     private String stringId;
+
+    public List<Long> getOperationSystems() {
+        return operationSystems;
+    }
+
+    public void setOperationSystems(List<Long> operationSystems) {
+        this.operationSystems = operationSystems;
+    }
+
     public String getBaselineId() {
         return baselineId;
     }

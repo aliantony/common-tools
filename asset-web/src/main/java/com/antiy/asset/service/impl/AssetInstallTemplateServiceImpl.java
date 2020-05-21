@@ -29,6 +29,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -220,9 +221,17 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
         Integer count = null;
         Integer type = null;
         int index = 0;
+        if (StringUtils.isNotBlank(baselineId)) {
+            type = assetInstallTemplateDao.queryBaselineTemplateType(query);
+            if (Objects.equals(BaselineTemplateStatusEnum.BLACK_ITEM.getCode(),type)
+            || Objects.equals(BaselineTemplateStatusEnum.WHITE_ITEM.getCode(),type)){
+                query.setOperationSystems(assetInstallTemplateDao.getParentNodesByNodes(query.getOperationSystem()));
+            }
+        }
+
         if (baselineId == null) {
             count = this.findCount(query);
-        } else if ((type = assetInstallTemplateDao.queryBaselineTemplateType(query)).equals(BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
+        } else if (type.equals(BaselineTemplateStatusEnum.BLACK_ITEM.getCode())) {
             count = assetInstallTemplateDao.CountFilterBlackItemTemplate(query);
             index = 1;
         } else if (type.equals(BaselineTemplateStatusEnum.WHITE_ITEM.getCode())) {
