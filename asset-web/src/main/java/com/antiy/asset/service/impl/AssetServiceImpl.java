@@ -1791,10 +1791,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             AssetBusinessRelation businessRelation = assetBusinessRelationDao.getByUniqueIdAndAssetId(v.getUniqueId(),
                 Integer.valueOf(assetId));
             if (Objects.isNull(businessRelation)) {
+                v.setAssetId(assetId);
                 v.setGmtCreate(System.currentTimeMillis());
                 v.setCreateUser(LoginUserUtil.getLoginUser().getId());
                 return true;
             } else if (!v.getBusinessInfluence().equals(businessRelation.getBusinessInfluence())) {
+                v.setAssetId(assetId);
                 v.setGmtModified(System.currentTimeMillis());
                 v.setModifyUser(LoginUserUtil.getLoginUser().getId());
                 updateRelation.add(v);
