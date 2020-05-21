@@ -212,7 +212,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
 
             //保存历史记录
             assetEntryDao.insertRecordBatch(recordRequestList);
-
+            //第N次循环,清空历史记录
+            recordRequestList.clear();
             //失败发送系统消息
             if (BooleanUtils.isFalse(isSuccess)) {
                 errno++;
