@@ -37,6 +37,7 @@ public class ScanAssetExpiration {
      * 每天0点扫描到期提醒的资产
      */
     @Scheduled(cron = "0 0 0 */1 * ?")
+    //@Scheduled(cron = "*/20 * * * * ?")
     public void scan() {
         List<AssetMonitor> list = assetDao.getExpirationAsset(System.currentTimeMillis());
         if (CollectionUtils.isNotEmpty(list)) {
@@ -44,8 +45,8 @@ public class ScanAssetExpiration {
                 t.setCurrent(String.valueOf(System.currentTimeMillis()));
                 t.setTime(System.currentTimeMillis());
                 t.setAlarmCode("1050005");
+                sendMsg(topic, JSONObject.toJSONString(t));
             });
-            sendMsg(topic, JSONObject.toJSONString(list));
         }
     }
 

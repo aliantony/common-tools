@@ -83,7 +83,16 @@ public class AssetStatusMonitorServiceImpl extends BaseServiceImpl<AssetStatusMo
     public AssetStatusMonitorResponse queryBasePerformance(String primaryKey) {
         AssetStatusMonitorResponse assetStatusMonitorResponse= assetStatusMonitorDao.queryBasePerformance(primaryKey);
         if(assetStatusMonitorResponse==null){
-            return  null;
+            //修改资产在线状态为未知
+            AssetStatusMonitorResponse response=new AssetStatusMonitorResponse();
+            response.setNetworkStatus("未知");
+            return  response;
+        }
+        Long reportTime = assetStatusMonitorResponse.getGmtModified();
+        long currentTime = System.currentTimeMillis();
+        long oneHour=1000L*60*60;
+        if(reportTime<=currentTime&& currentTime-reportTime>oneHour){
+            assetStatusMonitorResponse.setNetworkStatus("离线");
         }
         AssetMonitorRuleResponse assetMonitorRuleResponse = assetStatusMonitorResponse.getAssetMonitorRuleResponse();
         if(assetMonitorRuleResponse==null){
