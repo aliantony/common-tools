@@ -485,7 +485,7 @@
     </select>
     <select id="listByAssetIds" resultMap="BaseResultMap">
         select
-        a.target_object_id,a.origin_status,task_id
+        a.target_object_id,a.origin_status,task_id,a.id
         from
         <include refid="Table_Name"/> a
         inner join

@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -150,4 +151,14 @@ public interface AssetInstallTemplateDao extends IBaseDao<AssetInstallTemplate> 
 
     Integer deleteBatchPatchByPatchCode(AssetInstallTemplateRequest request);
     Integer findCountPatch(@Param("patchId") String patchId);
+    /**
+     *
+     * 根据操作系统node进行递归父节点的获取
+     *
+     * @param os
+     * @return
+     * @throws Exception
+     */
+    ArrayList<Long> getParentNodesByNodes(Long os) throws Exception;
+
 }
