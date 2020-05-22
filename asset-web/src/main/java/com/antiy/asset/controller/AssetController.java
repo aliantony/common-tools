@@ -1,35 +1,64 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.util.DateTimeUtils;
 import com.antiy.asset.vo.enums.AssetActivityTypeEnum;
-import com.antiy.asset.vo.query.*;
-import com.antiy.asset.vo.request.*;
-import com.antiy.asset.vo.response.*;
+import com.antiy.asset.vo.query.AssetBaselinTemplateQuery;
+import com.antiy.asset.vo.query.AssetMultipleQuery;
+import com.antiy.asset.vo.query.AssetOaOrderQuery;
+import com.antiy.asset.vo.query.AssetOsQuery;
+import com.antiy.asset.vo.query.AssetQuery;
+import com.antiy.asset.vo.query.ReadOnlyQuery;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
+import com.antiy.asset.vo.request.AreaIdRequest;
+import com.antiy.asset.vo.request.AssetCountByAreaIdsRequest;
+import com.antiy.asset.vo.request.AssetImportRequest;
+import com.antiy.asset.vo.request.AssetIpRequest;
+import com.antiy.asset.vo.request.AssetLockRequest;
+import com.antiy.asset.vo.request.AssetMatchRequest;
+import com.antiy.asset.vo.request.AssetOuterRequest;
+import com.antiy.asset.vo.request.BaseId;
+import com.antiy.asset.vo.request.ExportTemplateRequest;
+import com.antiy.asset.vo.request.ManualStartActivityRequest;
+import com.antiy.asset.vo.request.NumberMac;
+import com.antiy.asset.vo.request.ProcessTemplateRequest;
+import com.antiy.asset.vo.request.UnconnectedManufacturerRequest;
+import com.antiy.asset.vo.response.AssetAssemblyDetailResponse;
+import com.antiy.asset.vo.response.AssetCountColumnarResponse;
+import com.antiy.asset.vo.response.AssetCountResponse;
+import com.antiy.asset.vo.response.AssetHardSoftLibResponse;
+import com.antiy.asset.vo.response.AssetMatchResponse;
+import com.antiy.asset.vo.response.AssetOuterResponse;
+import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.*;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author zhangyajun
@@ -686,4 +715,34 @@ public class AssetController {
     public ActionResponse queryOS(@RequestBody @ApiParam(value = "query") AssetOsQuery query) throws Exception {
         return ActionResponse.success(iAssetService.queryOS(query));
     }
+
+
+
+    /**
+     * 根据区域ID返回资产UUID
+     *
+     * @param areaIdRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据区域ID返回资产UUID", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/uuidByAreaId", method = RequestMethod.POST)
+    public ActionResponse queryUuidByAreaId(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
+        return ActionResponse.success(iAssetService.queryUuidByAreaIds(areaIdRequest));
+    }
+
+    /**
+     * 根据区域ID返回资产ID
+     *
+     * @param areaIdRequest
+     * @return actionResponse
+     */
+    @ApiOperation(value = "根据区域ID返回资产ID", notes = "传入实体对象信息")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/query/idByAreaId", method = RequestMethod.POST)
+    public ActionResponse queryIdByAreaId(@RequestBody(required = false) @ApiParam(value = "areaIdRequest") AreaIdRequest areaIdRequest) throws Exception {
+        return ActionResponse.success(iAssetService.queryIdByAreaIds(areaIdRequest));
+    }
+
+
 }
