@@ -813,7 +813,6 @@
         from asset_hard_soft_lib
         where
         status = 1
-        and type in( 'a','d','m','f','e')
         <choose>
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
@@ -851,6 +850,14 @@
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE  CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
+        <choose>
+            <when test="query.type != null and query.type != ''">
+                and type = #{query.type}
+            </when>
+            <otherwise>
+                and type in ('a','d','m','f','e')
+            </otherwise>
+        </choose>
         <if test="query.productName != null and query.productName != ''">
             and product_name LIKE  CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
@@ -865,7 +872,6 @@
         from asset_hard_soft_lib
         where
         status = 1
-        and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
@@ -901,6 +907,14 @@
                 #{item}
             </foreach>
         </if>
+        <choose>
+            <when test="query.type != null and query.type != ''">
+                and type = #{query.type}
+            </when>
+            <otherwise>
+                and type in ('a','d','m','f','e')
+            </otherwise>
+        </choose>
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE  CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>

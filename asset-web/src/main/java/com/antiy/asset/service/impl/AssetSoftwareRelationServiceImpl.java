@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -112,6 +113,9 @@ public class AssetSoftwareRelationServiceImpl extends BaseServiceImpl<AssetSoftw
     }
     @Override
     public PageResult<AssetSoftwareInstallResponse> queryInstallableList(InstallQuery query) {
+        if (StringUtils.isBlank(query.getType())) {
+            query.setType("a");
+        }
         // 模板黑白名单类型
         Integer nameListType = assetSoftwareRelationDao.queryNameListType(query);
         // 模板所属操作系统 ,只区分windows和linux 1代表windows ,2是linux
