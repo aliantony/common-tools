@@ -279,15 +279,34 @@
 
     <select id="queryUniqueIdByNodeName" parameterType="com.antiy.asset.vo.request.AssetCpeTreeRequest"
             resultType="java.lang.String">
-        select unique_id from
+        select business_id from
         <include refid="Table_Name"></include>
         where title = #{title}
         and status = 1
     </select>
 
+    <!--    <select id="getOsNameList" resultType="java.lang.String">-->
+    <!--  SELECT-->
+    <!--						CONCAT_WS('/',t4.supplier,t4.product_name,t4.version) as osName-->
+    <!--        FROM-->
+    <!--            (SELECT-->
+    <!--                t1.node,t1.title,t1.business_id,-->
+    <!--                    IF(FIND_IN_SET(parent_node, @pids) > 0, @pids:=CONCAT(@pids, ',', node), 0) AS ischild-->
+    <!--            FROM-->
+    <!--                (SELECT-->
+    <!--                unique_id AS node, pid AS parent_node, title, business_id-->
+    <!--            FROM-->
+    <!--                asset_cpe_tree-->
+    <!--            WHERE-->
+    <!--                status = 1-->
+    <!--            ORDER BY parent_node , node) t1, (SELECT @pids:=('688792976662462464')) t2) t3 left join asset_hard_soft_lib t4 on t3.business_id = t4.business_id-->
+    <!--        WHERE-->
+    <!--        ischild != 0-->
+    <!--        and t3.business_id != '';-->
+    <!--    </select>-->
     <select id="getOsNameList" resultType="java.lang.String">
-  SELECT
-						CONCAT_WS('/',t4.supplier,t4.product_name,t4.version) as osName
+        SELECT
+            title
         FROM
             (SELECT
                 t1.node,t1.title,t1.business_id,
@@ -299,9 +318,10 @@
                 asset_cpe_tree
             WHERE
                 status = 1
-            ORDER BY parent_node , node) t1, (SELECT @pids:=('688792976662462464')) t2) t3 left join asset_hard_soft_lib t4 on t3.business_id = t4.business_id
+            ORDER BY parent_node , node) t1, (SELECT @pids:=('688792976662462464')) t2) t3
         WHERE
         ischild != 0
-        and t3.business_id != '';
+        and business_id != ''
     </select>
+
 </mapper>
