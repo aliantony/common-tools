@@ -206,6 +206,9 @@
 
     <sql id="where">
         <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="id != null">
+                and asm.id = #{id}
+            </if>
             <if test="keyNum != null and keyNum.length() > 0">
                 and asm.key_num like CONCAT('%',replace(replace(#{keyNum},'%','\%'),'_','\_'),'%')
             </if>
