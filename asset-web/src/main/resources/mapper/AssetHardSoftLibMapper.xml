@@ -866,4 +866,18 @@
         <include refid="Table_Name"/>
         where gmt_modified &gt;= #{startStamp} and gmt_modified &lt;= #{endStamp}
     </select>
+    <select id="getNameByBid" resultType="java.lang.String">
+SELECT
+	CONCAT_WS(
+		'/',
+		supplier,
+		product_name,
+		version
+	) as name
+FROM
+	asset_hard_soft_lib
+WHERE
+business_id = #{businessId}
+
+    </select>
 </mapper>

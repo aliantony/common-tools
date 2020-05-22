@@ -2286,7 +2286,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         safetyEquipmentEntiy.setSerial("ANFRWGDFETYRYF");
         safetyEquipmentEntiy.setHouseLocation("501机房004号");
         safetyEquipmentEntiy.setImportanceDegree("1");
-        safetyEquipmentEntiy.setOperationSystem("Windows");
+        safetyEquipmentEntiy.setOperationSystem("microsoft/windows_8/consumer_preview");
         safetyEquipmentEntiy.setCode("cd002");
         safetyEquipmentEntiy.setIsSecrecy("是");
         safetyEquipmentEntiy.setNetType("红网");
@@ -2418,7 +2418,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         computeDeviceEntity.setBuyDate(System.currentTimeMillis());
         computeDeviceEntity.setDueTime(System.currentTimeMillis());
         computeDeviceEntity.setManufacturer("huawei");
-        computeDeviceEntity.setOperationSystem("Window 10");
+        computeDeviceEntity.setOperationSystem("microsoft/windows_8/consumer_preview");
         dataList.add(computeDeviceEntity);
         return dataList;
     }
@@ -2626,8 +2626,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetMac.add(entity.getMac());
             ComputerVo computerVo = new ComputerVo();
             Asset asset = new Asset();
-            asset.setOperationSystem(Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem())));
-            asset.setOperationSystemName(entity.getOperationSystem());
+            long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
+            asset.setOperationSystem(operationSystem);
+            asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAreaId(areaId);
@@ -3112,8 +3113,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCode(entity.getCode());
             asset.setNetType(typeId);
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
-            asset.setOperationSystem(Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem())));
-            asset.setOperationSystemName(entity.getOperationSystem());
+            long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
+            asset.setOperationSystem(operationSystem);
+            asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
