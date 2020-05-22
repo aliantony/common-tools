@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.CommonTypeEnum;
 import com.antiy.common.encoder.Encode;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -17,6 +18,17 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
     @ApiModelProperty("资产ID")
     @Encode
     private String assetId;
+    /**
+     * 软件类型
+     */
+    @ApiModelProperty("软件类型")
+    private String type;
+    /**
+     * 软件类型名称
+     */
+    @ApiModelProperty("软件类型名称")
+    private String typeName;
+
     /**
      * 软件ID
      */
@@ -46,11 +58,27 @@ public class AssetSoftwareInstallResponse extends BaseResponse {
     private String softPlatform;
 
     /**
-     * 创建时间
-     * @
+     * 创建时间 @
      */
     @ApiModelProperty("软件平台")
     private String gmtCreate;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        this.typeName = CommonTypeEnum.getNameByCode(type);
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
 
     public String getGmtCreate() {
         return gmtCreate;

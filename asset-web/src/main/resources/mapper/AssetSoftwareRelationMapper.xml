@@ -748,6 +748,7 @@
           t1.id,
           t1.software_id as softwareId,
           t2.supplier,
+          t2.type,
           t2.product_name as productName,
           t2.version,
           t2.soft_platform as softPlatform
@@ -767,6 +768,7 @@
           t1.id,
           t1.software_id as softwareId,
           t2.supplier,
+          t2.type,
           t2.product_name as productName,
           t2.version,
           t2.soft_platform as softPlatform,
@@ -803,6 +805,7 @@
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
         select
         business_id as softwareId,
+        type,
         supplier,
         product_name as productName,
         version,
@@ -810,7 +813,7 @@
         from asset_hard_soft_lib
         where
         status = 1
-        and type = 'a'
+        and type in( 'a','d','m','f','e')
         <choose>
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
