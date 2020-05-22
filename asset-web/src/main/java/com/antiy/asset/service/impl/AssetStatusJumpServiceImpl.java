@@ -574,7 +574,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Override
     public Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest) {
         AssetFlowEnum assetFlowEnum = statusJumpRequest.getAssetFlowEnum();
-        List<String> assetIds = statusJumpRequest.getAssetId();
+        List<String> assetIds = statusJumpRequest.getAssetIds();
         List<Asset> assetList =  assetDao.getByAssetIds(assetIds);
         if(CollectionUtils.isEmpty(assetList)){
             return false;
