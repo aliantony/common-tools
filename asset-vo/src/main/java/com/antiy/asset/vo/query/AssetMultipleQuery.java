@@ -1,14 +1,16 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
+import javax.validation.constraints.Size;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.constraints.Size;
-import java.util.List;
 
 /**
  * 资产列表查询参数
@@ -94,9 +96,9 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     /**
      * 资产组主键
      */
-    @ApiModelProperty(value = "资产组",hidden = true)
+    @ApiModelProperty(value = "资产组", hidden = true)
     @Encode
-    private String  assetGroup;
+    private String        assetGroup;
     /**
      * 网络类型
      */
@@ -178,6 +180,38 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private Long          updateEndTime;
     @ApiModelProperty("是否未知资产")
     private boolean       unknownAssets;
+    @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryVulCount;
+
+    @ApiModelProperty(value = "是否查询补丁个数,true 表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryPatchCount;
+
+    @ApiModelProperty(value = "是否查询告警个数，true表示查询，false表示不查询", allowableValues = "true,false")
+    private Boolean       queryAlarmCount;
+
+    public Boolean getQueryVulCount() {
+        return queryVulCount;
+    }
+
+    public void setQueryVulCount(Boolean queryVulCount) {
+        this.queryVulCount = queryVulCount;
+    }
+
+    public Boolean getQueryPatchCount() {
+        return queryPatchCount;
+    }
+
+    public void setQueryPatchCount(Boolean queryPatchCount) {
+        this.queryPatchCount = queryPatchCount;
+    }
+
+    public Boolean getQueryAlarmCount() {
+        return queryAlarmCount;
+    }
+
+    public void setQueryAlarmCount(Boolean queryAlarmCount) {
+        this.queryAlarmCount = queryAlarmCount;
+    }
 
     public String getAssetGroup() {
         return assetGroup;

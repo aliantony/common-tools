@@ -90,7 +90,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
 
     @Override
     public Integer saveAssetOaOrderHandle(AssetOaOrderHandleRequest request) throws Exception {
-        if (CollectionUtils.isEmpty(request.getAssetIds())) {
+        if (request.getLendStatus() == 1 && CollectionUtils.isEmpty(request.getAssetIds())) {
             throw new BusinessException("请关联资产");
         }
         if (request.getAssetIds().size() > 1 && !AssetOaOrderTypeEnum.LEND.getCode().equals(request.getHandleType())) {
