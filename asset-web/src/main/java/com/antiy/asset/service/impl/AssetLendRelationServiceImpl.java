@@ -232,6 +232,9 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
+        if (assetLendRelation.getAssetId() == null){
+            assetLendRelation.setUseId(LoginUserUtil.getLoginUser().getId());
+        }
 
         //校验资产状态
         this.checkAssetStatus(request.getAssetIds());
