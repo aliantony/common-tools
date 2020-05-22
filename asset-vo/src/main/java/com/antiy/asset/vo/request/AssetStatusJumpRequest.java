@@ -23,7 +23,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
 
     @Encode
-    private String assetId;
+    private List<String> assetIds;
     /**
      * 报废组件
      */
@@ -206,12 +206,12 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
         this.waitCorrectToWaitRegister = waitCorrectToWaitRegister;
     }
 
-    public String getAssetId() {
-        return assetId;
+    public List<String> getAssetIds() {
+        return assetIds;
     }
 
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
+    public void setAssetIds(List<String> assetIds) {
+        this.assetIds = assetIds;
     }
 
     @Override

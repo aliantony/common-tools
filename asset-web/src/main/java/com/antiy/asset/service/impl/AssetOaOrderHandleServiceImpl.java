@@ -120,6 +120,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             //出借处理
             saveAssetOaOrderHandleWhenlend(request, assetOaOrder);
         }
+        //更新已处理
+        assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
+        assetOaOrderDao.update(assetOaOrder);
         return request.getAssetIds().size();
     }
 
