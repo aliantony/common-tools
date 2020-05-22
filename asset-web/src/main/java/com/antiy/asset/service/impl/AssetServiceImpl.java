@@ -2251,7 +2251,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         otherDeviceEntity.setHouseLocation("07-08-1");
         otherDeviceEntity.setBuyDate(System.currentTimeMillis());
         otherDeviceEntity.setDueDate(System.currentTimeMillis());
-        otherDeviceEntity.setExpirationReminder(System.currentTimeMillis());
+        otherDeviceEntity.setExpirationReminder(getCalendar(System.currentTimeMillis()));
         otherDeviceEntity.setInstallDate(System.currentTimeMillis());
         otherDeviceEntity.setActiviateDate(System.currentTimeMillis());
         otherDeviceEntity.setWarranty("2年");
@@ -2358,11 +2358,11 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setActiviateDate(System.currentTimeMillis());
         networkDeviceEntity.setInstallDate(System.currentTimeMillis());
         networkDeviceEntity.setExpirationReminder(getCalendar(System.currentTimeMillis()));
-        networkDeviceEntity.setCpuSize(2.3f);
+        networkDeviceEntity.setCpuSize(2f);
         networkDeviceEntity.setArea("成都市");
         networkDeviceEntity.setMac("00-01-6C-06-A6-29");
         networkDeviceEntity.setName("ar500");
-        networkDeviceEntity.setDramSize(3.42f);
+        networkDeviceEntity.setDramSize(3f);
         networkDeviceEntity.setExpectBandwidth(4);
         networkDeviceEntity.setFirmwareVersion("1.1.1");
         networkDeviceEntity.setUser("留小查");
@@ -2372,9 +2372,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         networkDeviceEntity.setCpuVersion("i7");
         networkDeviceEntity.setIos("WDWFER");
         networkDeviceEntity.setDueDate(System.currentTimeMillis());
-        networkDeviceEntity.setFlashSize(2.32f);
+        networkDeviceEntity.setFlashSize(2f);
         networkDeviceEntity.setPortSize(4);
-        networkDeviceEntity.setNcrmSize(4.22f);
+        networkDeviceEntity.setNcrmSize(4f);
         networkDeviceEntity.setOuterIp("192.168.1.9");
         networkDeviceEntity.setManufacturer("huawei");
         networkDeviceEntity.setIsWireless(1);
