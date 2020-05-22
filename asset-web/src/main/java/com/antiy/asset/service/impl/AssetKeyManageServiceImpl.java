@@ -6,6 +6,7 @@ import com.antiy.asset.service.IAssetKeyManageService;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.templet.KeyEntity;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.KeyStatusEnum;
 import com.antiy.asset.vo.enums.KeyUserType;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
@@ -14,9 +15,13 @@ import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetKeyManageResponse;
 import com.antiy.asset.vo.response.KeyPullDownResponse;
 import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -139,6 +144,10 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setIsDelete(1);
         keyManageDao.keyRegister(keyManage);
 
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_REGISTER.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_REGISTER));
+
         return keyManage.getId();
     }
 
@@ -176,6 +185,10 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             }
         }
 
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_RECIPIENTS.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_USE));
+
         return keyManageDao.keyRecipients(keyManage);
     }
 
@@ -196,6 +209,11 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setUserNumName(null);
         keyManage.setRecipTime(null);
         keyManage.setRecipState(KeyStatusEnum.KEY_NO_RECIPIENTS.getStatus());
+
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_RETURN.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_BACK));
+
         return keyManageDao.keyReturn(keyManage);
     }
 
@@ -210,7 +228,15 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         AssetKeyManage keyManage = new AssetKeyManage();
         keyManage.setId(request.getId());
         keyManage.setRecipState(keyStatus);
-        return keyManageDao.keyFreeze(keyManage);
+        Integer result = keyManageDao.keyFreeze(keyManage);
+
+        AssetKeyManage assetKeyManage = keyManageDao.queryId(request.getId());
+
+        LogUtils.recordOperLog(new BusinessData(keyStatus == 3 ? AssetEventEnum.KEY_FREEZE.getName() : AssetEventEnum.KEY_UNFREEZE.getName(),
+                assetKeyManage.getId(), assetKeyManage.getKeyNum(), assetKeyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_FROZEN));
+
+        return result;
     }
 
     /**
@@ -286,10 +312,19 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         try {
             if (!add.isEmpty()) {
                 keyManageDao.insertBatch(add);
-
+                add.forEach(keyManage -> {
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_IMPORT.getName(),
+                            keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                            BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_IMPORT));
+                });
             }
             if (!update.isEmpty()) {
                 keyManageDao.updateBatch(update);
+                update.forEach(keyManage -> {
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_IMPORT.getName(),
+                            keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                            BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_IMPORT));
+                });
             }
             success = add.size() + update.size();
         } catch (DuplicateKeyException exception) {
