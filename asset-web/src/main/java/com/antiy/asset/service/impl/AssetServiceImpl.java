@@ -1136,8 +1136,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         int maxNum = 4;
         List<String> areaIds = loginUser.getAreaIdsOfCurrentUser();
-        // 不统计已退役资产
-        List<Integer> status = Arrays.asList(6, 10);
+        List<Integer> status = StatusEnumUtil.getAssetTypeStatus();
         // update by zhangbing 对于空的厂商和产品确认需要统计，统计的到其他
         List<Map<String, Object>> list = assetDao.countManufacturer(areaIds, status);
         return CountTypeUtil.getEnumCountResponse(maxNum, list);
@@ -3748,8 +3747,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public Integer countUnusual(AssetQuery query) {
         Integer count = 0;
         if (CollectionUtils.isEmpty(query.getAssetStatusList())) {
-            List<Integer> status = Arrays.asList(AssetStatusEnum.NET_IN.getCode(), AssetStatusEnum.IN_CHANGE.getCode(),
-                AssetStatusEnum.WAIT_RETIRE.getCode(), AssetStatusEnum.WAIT_SCRAP.getCode());
+            List<Integer> status = StatusEnumUtil.getAssetTypeStatus();
             query.setAssetStatusList(status);
         }
         if (ArrayUtils.isEmpty(query.getAreaIds())) {
