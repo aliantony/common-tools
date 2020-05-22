@@ -574,12 +574,18 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Override
     public Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest) {
         AssetFlowEnum assetFlowEnum = statusJumpRequest.getAssetFlowEnum();
-        String assetId = statusJumpRequest.getAssetId();
-        Asset assetOfDb = assetDao.getByAssetId(assetId);
-        if(assetFlowEnum.getCurrentAssetStatus().getCode().equals(assetOfDb.getAssetStatus())){
-            return true;
+        List<String> assetIds = statusJumpRequest.getAssetId();
+        List<Asset> assetList =  assetDao.getByAssetIds(assetIds);
+        if(CollectionUtils.isEmpty(assetList)){
+            return false;
         }
-        return false;
+        for(Asset assetOfDb:assetList){
+            if(!assetFlowEnum.getCurrentAssetStatus().getCode().equals(assetOfDb.getAssetStatus())){
+                LogUtils.info(logger,"资产已被其他用户操作");
+                return false;
+            }
+        }
+        return true;
     }
 
 
