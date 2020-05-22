@@ -15,6 +15,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetAssemblyScrapRequest;
+import com.antiy.asset.vo.query.AssetStatusJudgeRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.biz.entity.SysMessageRequest;
@@ -572,7 +573,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     @Override
-    public Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest) {
+    public Boolean statusJudge(AssetStatusJudgeRequest statusJumpRequest) {
         AssetFlowEnum assetFlowEnum = statusJumpRequest.getAssetFlowEnum();
         List<String> assetIds = statusJumpRequest.getAssetIds();
         List<Asset> assetList =  assetDao.getByAssetIds(assetIds);
