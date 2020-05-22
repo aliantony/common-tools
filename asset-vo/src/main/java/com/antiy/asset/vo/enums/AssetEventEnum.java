@@ -129,7 +129,13 @@ public enum AssetEventEnum {
     DELETE_ASSET_MONITOR_RULE_RELATION(126, "删除资产监控规则关联资产"),
     ENTRY_EXECUTION(127, "进行准入实施"),
     ASSET_EXPORT_USERS(128, "导入人员身份"),
-    BATCH_ENTRY_EXECUTION(129,"批量对资产做准入操作")
+    BATCH_ENTRY_EXECUTION(129,"批量对资产做准入操作"),
+    KEY_REGISTER(130, "登记key"),
+    KEY_RECIPIENTS(131, "领用key"),
+    KEY_RETURN(132, "归还key"),
+    KEY_FREEZE(133, "冻结key"),
+    KEY_UNFREEZE(134, "解冻key"),
+    KEY_IMPORT(135, "导入key")
     ;
 
     private Integer status;

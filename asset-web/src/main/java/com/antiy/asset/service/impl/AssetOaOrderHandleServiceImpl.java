@@ -207,6 +207,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
      */
     void saveAssetOaOrderHandleWhenBack(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
         logger.info("----------退回处理,OrderNumber：{}", request.getOrderNumber());
+        judgeStringLength(request.getPlan(), "拟定退回方案", 255, false);
         //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
         AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
         assetOaOrderResult.setOrderNumber(request.getOrderNumber());
@@ -218,9 +219,11 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
         assetOaOrderResultDao.insert(assetOaOrderResult);
         //操作记录，仅对退回和报废,存入到asset_operation_record
-        Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
+        String assetId = request.getAssetIds().get(0);
+        assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+        Asset asset = assetDao.getById(Integer.parseInt(assetId));
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
+        assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setOriginStatus(asset.getStatus());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
         assetOperationRecord.setContent("退回执行");
@@ -244,6 +247,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
      */
     void saveAssetOaOrderHandleWhenScript(AssetOaOrderHandleRequest request, AssetOaOrder assetOaOrder) throws Exception {
         logger.info("----------报废处理,OrderNumber：{}", request.getOrderNumber());
+        judgeStringLength(request.getPlan(), "拟定报废方案", 255, false);
         //如果是出借，需要保存出借记录,1 拒绝出借，0允许出借
         AssetOaOrderResult assetOaOrderResult = new AssetOaOrderResult();
         assetOaOrderResult.setOrderNumber(request.getOrderNumber());

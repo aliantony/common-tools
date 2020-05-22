@@ -1880,7 +1880,7 @@
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and status = 1 and asset_status=6
+        and status = 1 and asset_status=5
     </select>
 
     <select id="findAlarmAssetId" resultType="int" parameterType="com.antiy.asset.vo.query.AssetQuery">

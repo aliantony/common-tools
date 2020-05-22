@@ -6,6 +6,7 @@ import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderApply;
 import com.antiy.asset.entity.AssetOaOrderApprove;
 import com.antiy.asset.intergration.SysUserClient;
+import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.util.BaseClient;
 import com.antiy.asset.util.DataTypeUtils;
@@ -13,6 +14,7 @@ import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetLendRelationQuery;
 import com.antiy.asset.vo.query.AssetOaOrderQuery;
 import com.antiy.asset.vo.query.QxTagQuery;
 import com.antiy.asset.vo.request.AssetOaOrderApplyRequest;
@@ -63,6 +65,8 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     private AssetOaOrderApproveDao assetOaOrderApproveDao;
     @Resource
     private AssetOaOrderHandleDao assetOaOrderHandleDao;
+    @Resource
+    private AssetLendRelationDao assetLendRelationDao;
     @Resource
     private AssetDao assetDao;
 
@@ -243,7 +247,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         return assetOaOrderResponse;
     }
 
-    void setAssetStatusOrId(AssetOaOrder assetOaOrder, AssetOaOrderResponse assetOaOrderResponse) {
+    void setAssetStatusOrId(AssetOaOrder assetOaOrder, AssetOaOrderResponse assetOaOrderResponse) throws Exception{
         List<Integer> assetStatusList = new ArrayList<Integer>();
         if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
             //入网处理
@@ -258,7 +262,12 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             assetStatusList.add(AssetStatusEnum.RETIRE.getCode());
         } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
             //出借处理
-            List<String> assetIds = assetOaOrderHandleDao.getAssetIdWhenLend();
+            //List<String> assetIds = assetOaOrderHandleDao.getAssetIdWhenLend();
+            AssetLendRelationQuery query = new AssetLendRelationQuery();
+            List<String> areaIdsOfCurrentUser = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
+            query.setAreaIds(areaIdsOfCurrentUser);
+            query.setLendStatus(2);
+            List<String> assetIds = assetLendRelationDao.getLendRelationAssetIdList(query);
             assetOaOrderResponse.setAssetIds(assetIds);
         }
         assetOaOrderResponse.setAssetStatusList(assetStatusList);
