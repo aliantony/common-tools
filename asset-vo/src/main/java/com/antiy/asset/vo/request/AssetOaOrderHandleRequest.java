@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AssetOaOrderHandleRequest extends BasicRequest implements ObjectValidator {
 
-    @ApiModelProperty("是否出借，1是 0否")
+    @ApiModelProperty("是否出借，1是 2拒绝")
     private Integer lendStatus;
 
     @ApiModelProperty("拒绝原因")
