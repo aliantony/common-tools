@@ -278,7 +278,7 @@
         a.number as assetNumber,
         acm.name as categoryModel,
         a.responsible_user_id as responsibleUserId,
-        akm.key_num as `key`,
+        akm.key_num as keyNum,
         alr.lend_status as lendStatus,
         alr.use_id as useId,
         alr.lend_time as lendTime,
