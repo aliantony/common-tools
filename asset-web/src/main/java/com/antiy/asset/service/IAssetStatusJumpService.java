@@ -1,5 +1,6 @@
 package com.antiy.asset.service;
 
+import com.antiy.asset.vo.query.AssetStatusJudgeRequest;
 import com.antiy.asset.vo.request.ActivityHandleRequest;
 import com.antiy.asset.vo.request.AssetCorrectRequest;
 import com.antiy.asset.vo.request.AssetEntryRequest;
@@ -38,5 +39,5 @@ public interface IAssetStatusJumpService {
      */
     Integer continueNetIn(ActivityHandleRequest assetId) throws Exception;
 
-    Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest);
+    Boolean statusJudge(AssetStatusJudgeRequest statusJumpRequest);
 }

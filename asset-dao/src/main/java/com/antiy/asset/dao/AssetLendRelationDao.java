@@ -60,4 +60,6 @@ public interface AssetLendRelationDao extends IBaseDao<AssetLendRelation> {
     Integer countAssetLend(String assetId);
 
     List<AssetLendRelationResponse> getLendRelationList(AssetLendRelationQuery query);
+
+    List<String> getLendRelationAssetIdList(AssetLendRelationQuery query);
 }

@@ -15,6 +15,7 @@ import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.EnumUtil;
 import com.antiy.asset.vo.enums.*;
 import com.antiy.asset.vo.query.AssetAssemblyScrapRequest;
+import com.antiy.asset.vo.query.AssetStatusJudgeRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.biz.entity.SysMessageRequest;
@@ -572,14 +573,20 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
 
     @Override
-    public Boolean statusJudge(AssetStatusJumpRequest statusJumpRequest) {
+    public Boolean statusJudge(AssetStatusJudgeRequest statusJumpRequest) {
         AssetFlowEnum assetFlowEnum = statusJumpRequest.getAssetFlowEnum();
-        String assetId = statusJumpRequest.getAssetId();
-        Asset assetOfDb = assetDao.getByAssetId(assetId);
-        if(assetFlowEnum.getCurrentAssetStatus().getCode().equals(assetOfDb.getAssetStatus())){
-            return true;
+        List<String> assetIds = statusJumpRequest.getAssetIds();
+        List<Asset> assetList =  assetDao.getByAssetIds(assetIds);
+        if(CollectionUtils.isEmpty(assetList)){
+            return false;
         }
-        return false;
+        for(Asset assetOfDb:assetList){
+            if(!assetFlowEnum.getCurrentAssetStatus().getCode().equals(assetOfDb.getAssetStatus())){
+                LogUtils.info(logger,"资产已被其他用户操作");
+                return false;
+            }
+        }
+        return true;
     }
 
 

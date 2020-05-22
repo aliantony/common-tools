@@ -7,12 +7,15 @@ import com.antiy.asset.intergration.ActivityClient;
 import com.antiy.asset.service.IAssetService;
 import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusJumpService;
+import com.antiy.asset.vo.query.AssetStatusJudgeRequest;
 import com.antiy.asset.vo.query.NoRegisterRequest;
-import com.antiy.asset.vo.request.*;
+import com.antiy.asset.vo.request.ActivityHandleRequest;
+import com.antiy.asset.vo.request.AssetCorrectRequest;
+import com.antiy.asset.vo.request.AssetEntryRequest;
+import com.antiy.asset.vo.request.AssetStatusJumpRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
-import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -77,7 +80,7 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "资产状态扭转判断", notes = "传入实体对象信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),})
     @RequestMapping(value = "/status/judge", method = RequestMethod.POST)
-    public ActionResponse statusJudge(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJumpRequest statusJumpRequest) throws Exception {
+    public ActionResponse statusJudge(@ApiParam(value = "statusJumpRequest") @NotNull @RequestBody(required = false) AssetStatusJudgeRequest statusJumpRequest) throws Exception {
        Boolean flag= assetStatusJumpService.statusJudge(statusJumpRequest);
         return ActionResponse.success(flag);
     }
