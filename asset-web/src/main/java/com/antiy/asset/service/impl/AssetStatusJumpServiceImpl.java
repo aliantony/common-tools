@@ -565,6 +565,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }*/
         }else{
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
+            asset.setFirstEnterNett(System.currentTimeMillis());
         }
         Integer update = assetDao.update(asset);
         LogUtils.recordOperLog(
