@@ -16,11 +16,11 @@ import com.antiy.asset.vo.response.AssetOaOrderHandleResponse;
 import com.antiy.biz.file.FileRespVO;
 import com.antiy.biz.file.FileResponse;
 import com.antiy.biz.file.FileUtils;
-import com.antiy.common.base.BaseConverter;
-import com.antiy.common.base.BaseServiceImpl;
-import com.antiy.common.base.PageResult;
-import com.antiy.common.base.RespBasicCode;
+import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.AssetEnum;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
@@ -107,22 +107,32 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         //保存订单与资产关系
         saveAssetToOrder(request);
         //其他逻辑处理
-        if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
+        if (AssetOaOrderTypeEnum.INNET.getCode().equals(assetOaOrder.getOrderType())) {
             //入网处理
             saveAssetOaOrderHandleWhenInnet(request, assetOaOrder);
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
+        } else if (AssetOaOrderTypeEnum.BACK.getCode().equals(assetOaOrder.getOrderType())) {
             //退回处理
             saveAssetOaOrderHandleWhenBack(request, assetOaOrder);
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
+        } else if (AssetOaOrderTypeEnum.SCRAP.getCode().equals(assetOaOrder.getOrderType())) {
             //报废处理
             saveAssetOaOrderHandleWhenScript(request, assetOaOrder);
-        } else if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
+        } else if (AssetOaOrderTypeEnum.LEND.getCode().equals(assetOaOrder.getOrderType())) {
             //出借处理
             saveAssetOaOrderHandleWhenlend(request, assetOaOrder);
         }
         //更新已处理
         assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
         assetOaOrderDao.update(assetOaOrder);
+        //操作日志
+        LogUtils.recordOperLog(new BusinessData(
+                AssetOaOrderTypeEnum.getValueByCode(assetOaOrder.getOrderType()).getMsg() + "处理",
+                assetOaOrder.getId(),
+                assetOaOrder.getNumber(),
+                JSONObject.toJSON(assetOaOrder),
+                BusinessModuleEnum.CONFIG_TEMPLATE_MANAGEMENT,
+                BusinessPhaseEnum.NONE,
+                AssetEnum.NOT_ASSET_NO
+        ));
         return request.getAssetIds().size();
     }
 
@@ -226,7 +236,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setOriginStatus(asset.getStatus());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_RETIRE.getCode());
-        assetOperationRecord.setContent("退回执行");
+        assetOperationRecord.setContent("OA订单退回执行");
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setNote(request.getPlan());
@@ -259,12 +269,14 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
         assetOaOrderResultDao.insert(assetOaOrderResult);
         //操作记录，仅对退回和报废,存入到asset_operation_record
-        Asset asset = assetDao.getById(Integer.parseInt(request.getAssetIds().get(0)));
+        String assetId = request.getAssetIds().get(0);
+        assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+        Asset asset = assetDao.getById(Integer.parseInt(assetId));
         AssetOperationRecord assetOperationRecord = new AssetOperationRecord();
-        assetOperationRecord.setTargetObjectId(request.getAssetIds().get(0));
+        assetOperationRecord.setTargetObjectId(assetId);
         assetOperationRecord.setOriginStatus(asset.getStatus());
         assetOperationRecord.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
-        assetOperationRecord.setContent("报废执行");
+        assetOperationRecord.setContent("OA订单报废执行");
         assetOperationRecord.setGmtCreate(System.currentTimeMillis());
         assetOperationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetOperationRecord.setNote(request.getPlan());
