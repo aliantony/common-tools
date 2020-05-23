@@ -1188,7 +1188,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         types.keySet().stream().forEach(t->{
             Integer count = assetDao.countCategory(areaIdsOfCurrentUser, status,t);
             EnumCountResponse enumCountResponse = new EnumCountResponse();
-            enumCountResponse.setNumber(count);
+            enumCountResponse.setNumber(count == null ? 0 : count);
             enumCountResponse.setCode(Collections.singletonList(String.valueOf(t)));
             enumCountResponse.setMsg(types.get(t));
             listResponse.add(enumCountResponse);
