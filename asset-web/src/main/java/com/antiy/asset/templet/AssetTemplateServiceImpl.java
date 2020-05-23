@@ -54,6 +54,14 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
                 ret.add(area.getFullName());
             }
         }
+
+        // for (SysArea area : areaList) {
+        // // if (map.get(area.getId()) == null) {
+        // if (map.get(area.getId()) == null) {
+        // ret.add(area.getFullName());
+        // // }
+        // }
+        // }
         return ret;
     }
 
