@@ -3509,6 +3509,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             Asset asset = new Asset();
             String typeId = getNetTypeByName(entity.getNetType());
             asset.setNetType(typeId);
+            asset.setHouseLocation(entity.getHouseLocation());
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setInstallDate(entity.getInstallDate());
             asset.setActiviateDate(entity.getActiviateDate());
