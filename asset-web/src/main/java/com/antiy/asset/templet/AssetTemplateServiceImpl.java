@@ -50,9 +50,9 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
         List<String> ret = new ArrayList<>();
         // fix: 安天资产安全运维平台ASMP-811【资产1.1】资产信息管理-导入：导入模板区域项数据应为全部区域
         for (SysArea area : areaList) {
-            // if (map.get(area.getId()) == null) {
+            if (map.get(area.getId()) == null) {
                 ret.add(area.getFullName());
-            // }
+            }
         }
         return ret;
     }
