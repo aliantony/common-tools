@@ -124,13 +124,14 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.OVER_HANDLE.getCode());
         assetOaOrderDao.update(assetOaOrder);
         //操作日志
+        logger.info("--------订单处理完成,orderNumber:{}", request.getOrderNumber());
         LogUtils.recordOperLog(new BusinessData(
                 AssetOaOrderTypeEnum.getValueByCode(assetOaOrder.getOrderType()).getMsg() + "处理",
                 assetOaOrder.getId(),
                 assetOaOrder.getNumber(),
                 JSONObject.toJSON(assetOaOrder),
-                BusinessModuleEnum.CONFIG_TEMPLATE_MANAGEMENT,
-                BusinessPhaseEnum.NONE,
+                BusinessModuleEnum.OA_ORDER_MANAGE,
+                BusinessPhaseEnum.OA_HANDLE,
                 AssetEnum.NOT_ASSET_NO
         ));
         return request.getAssetIds().size();
