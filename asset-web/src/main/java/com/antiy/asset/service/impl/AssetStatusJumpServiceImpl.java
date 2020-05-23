@@ -520,7 +520,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //修改整改标志字段
             Asset asset=new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setRectification(3);
+            asset.setRectification(1);
             assetDao.update(asset);
 
             //漏扫

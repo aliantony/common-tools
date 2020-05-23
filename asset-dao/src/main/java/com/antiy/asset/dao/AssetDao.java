@@ -476,8 +476,19 @@ public interface AssetDao extends IBaseDao<Asset> {
      * 通过资产id查询mac
      */
     List<String> findMacByAssetId(@Param("assetId") String assetId);
+
     /**
      * 通过资产id查询ip
      */
     List<String> findIpByAssetId(@Param("assetId") String assetId);
+
+    /**
+     * 统计资产类型及其下级
+     * @param areaIds
+     * @param status
+     * @param type
+     * @return
+     */
+    Integer countCategory(@Param("areaIds") List<String> areaIds, @Param("status") List<Integer> status,
+                          @Param("type") Integer type);
 }

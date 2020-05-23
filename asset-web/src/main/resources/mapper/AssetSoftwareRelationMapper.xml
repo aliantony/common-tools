@@ -748,6 +748,7 @@
           t1.id,
           t1.software_id as softwareId,
           t2.supplier,
+          t2.type,
           t2.product_name as productName,
           t2.version,
           t2.soft_platform as softPlatform
@@ -767,6 +768,7 @@
           t1.id,
           t1.software_id as softwareId,
           t2.supplier,
+          t2.type,
           t2.product_name as productName,
           t2.version,
           t2.soft_platform as softPlatform,
@@ -803,6 +805,7 @@
     <select id="queryInstallableList" resultType="com.antiy.asset.vo.response.AssetSoftwareInstallResponse">
         select
         business_id as softwareId,
+        type,
         supplier,
         product_name as productName,
         version,
@@ -810,7 +813,6 @@
         from asset_hard_soft_lib
         where
         status = 1
-        and type = 'a'
         <choose>
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
                 and business_id not in
@@ -848,6 +850,14 @@
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE  CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>
+        <choose>
+            <when test="query.type != null and query.type != ''">
+                and type = #{query.type}
+            </when>
+            <otherwise>
+                and type in ('a','d','m','f','e')
+            </otherwise>
+        </choose>
         <if test="query.productName != null and query.productName != ''">
             and product_name LIKE  CONCAT('%',replace(replace(#{query.productName},'%','\%'),'_','\_'),'%')
         </if>
@@ -862,7 +872,6 @@
         from asset_hard_soft_lib
         where
         status = 1
-        and type = 'a'
         <choose>
             <!--排除黑名单和已安装过的软件-->
             <when test="nameListType == 1 and softwareIds != null and softwareIds.size() > 0">
@@ -898,6 +907,14 @@
                 #{item}
             </foreach>
         </if>
+        <choose>
+            <when test="query.type != null and query.type != ''">
+                and type = #{query.type}
+            </when>
+            <otherwise>
+                and type in ('a','d','m','f','e')
+            </otherwise>
+        </choose>
         <if test="query.supplier != null and query.supplier != ''">
             and supplier LIKE  CONCAT('%',replace(replace(#{query.supplier},'%','\%'),'_','\_'),'%')
         </if>

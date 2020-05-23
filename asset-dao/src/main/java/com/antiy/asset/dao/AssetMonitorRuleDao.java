@@ -1,5 +1,6 @@
 package com.antiy.asset.dao;
 
+import com.antiy.asset.dto.AssetRunExpMonitorDTO;
 import com.antiy.asset.entity.AssetMonitorRule;
 import com.antiy.asset.vo.query.UniqueKeyQuery;
 import com.antiy.asset.vo.response.AssetResponse;
@@ -41,4 +42,6 @@ public interface AssetMonitorRuleDao extends IBaseDao<AssetMonitorRule> {
     List<AssetResponse> queryAssetByUniqueId(UniqueKeyQuery assetMonitorRuleQuery);
 
     Integer countAssetByUniqueId(UniqueKeyQuery uniqueId);
+
+    List<AssetRunExpMonitorDTO> getRunExpMonitorInfo();
 }

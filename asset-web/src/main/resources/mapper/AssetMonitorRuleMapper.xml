@@ -384,6 +384,38 @@
         where unique_id=#{uniqueId}
         and status=1
     </select>
+    <resultMap id="runExpMonitorInfo" type="com.antiy.asset.dto.AssetRunExpMonitorDTO">
+        <result  property="runtimeExceptionThreshold" column="runtime_exception_threshold"/>
+        <collection property="assetDTOs" ofType="com.antiy.asset.dto.AssetMonitorDTO">
+            <id column="id" property="assetId"/>
+            <result property="number" column="number"/>
+            <result property="ip" column="assetIp"/>
+            <result property="mac" column="assetMac"/>
+        </collection>
+    </resultMap>
+    <select id="getRunExpMonitorInfo" resultMap="runExpMonitorInfo">
+        SELECT
+	any_value(runtime_exception_threshold) as runtime_exception_threshold,
+	a.id ,
+	a.number,
+	GROUP_CONCAT( air.ip ) AS assetIp,
+	GROUP_CONCAT( amc.mac ) AS assetMac
+FROM
+	asset_monitor_rule AS amr
+	INNER JOIN asset_monitor_rule_relation AS amrr ON amrr.rule_unique_id = amr.unique_id
+	AND amrr.STATUS = 1
+	INNER JOIN asset AS a ON amrr.asset_id = a.id
+	AND a.STATUS = 1
+	LEFT JOIN asset_ip_relation air ON a.id = air.asset_id
+	AND air.STATUS = 1
+	LEFT JOIN asset_mac_relation AS amc ON a.id = amc.asset_id
+	AND amr.STATUS = 1
+WHERE
+	amr.STATUS = 1
+	AND amr.runtime_exception_threshold IS NOT NULL
+
+	GROUP BY a.id
+    </select>
     <select id="countAssetByUniqueId" resultType="int">
         SELECT
            count(a.id)
