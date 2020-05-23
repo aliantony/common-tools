@@ -103,12 +103,17 @@ public class ScanAssetExpiration {
                 Long intervalTime=currentTime-reportTime;
                 boolean alarm=false;
                 if(TimeEnum.HOUR.getName().equals(assetRunExpTime.getUnit())){
+
+                    assetMonitorDTO.setCurrent(String.format("%.1f",intervalTime/(1000*36000*24.0)));
+                    assetMonitorDTO.setThreshole(String.format("%.1f",assetRunExpTime.getRuntimeExceptionThreshold()/24.0));
                     intervalTime/=(1000*3600);
                     if(intervalTime>assetRunExpTime.getRuntimeExceptionThreshold()){
                         alarm=true;
                     }
                 }
                 if(TimeEnum.DAY.getName().equals(assetRunExpTime.getUnit())){
+                    assetMonitorDTO.setCurrent(String.format("%.1f",intervalTime/(1000*36000*24.0)));
+                    assetMonitorDTO.setThreshole(assetRunExpTime.getRuntimeExceptionThreshold().toString());
                     intervalTime/=(1000*3600*24);
                     if(intervalTime>assetRunExpTime.getRuntimeExceptionThreshold()){
                         alarm=true;
@@ -117,8 +122,6 @@ public class ScanAssetExpiration {
                 if(alarm){
                     //产生告警
                     assetMonitorDTO.setTime(System.currentTimeMillis());
-                    assetMonitorDTO.setCurrent(intervalTime.toString());
-                    assetMonitorDTO.setThreshole(assetRunExpTime.getRuntimeExceptionThreshold().toString());
                     assetMonitorDTO.setAlarmCode("1050004");
                     sendMsg(topic,JSONObject.toJSONString(assetMonitorDTO));
                     LogUtils.info(log,"产生告警{} ",assetMonitorDTO.getNumber());

@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class AssetCorrectIInfoResponse {
     @ApiModelProperty("扫描是否结束")
     private Boolean scan;
+
+    @ApiModelProperty("扫描是否结束")
+    private String scanDesc;
+
     /**
      * 漏洞数量
      */
@@ -33,6 +37,15 @@ public class AssetCorrectIInfoResponse {
     private Boolean isDeal;
     @ApiModelProperty("按钮显示标志： 0 不显示  1 需要显示 ")
     private  String needManualPush;
+
+    public String getScanDesc() {
+        if(scan){
+            return "漏洞扫描中";
+        }
+        return "";
+    }
+
+
 
     public String getNeedManualPush() {
         return needManualPush;

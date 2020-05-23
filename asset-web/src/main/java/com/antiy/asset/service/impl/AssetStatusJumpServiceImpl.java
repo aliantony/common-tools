@@ -465,6 +465,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
         //整改流程--漏洞步骤处于进行中状态
+
         if(assetCorrectIInfoResponse.getScan()|| !assetCorrectIInfoResponse.getDeal()){
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
