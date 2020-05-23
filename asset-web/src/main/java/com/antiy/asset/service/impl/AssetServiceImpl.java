@@ -1180,33 +1180,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return Lists.newArrayList();
         }
         List<String> areaIdsOfCurrentUser = loginUser.getAreaIdsOfCurrentUser();
-
+        //统计五大类
+        Map<Integer,String> types = new HashMap(){{put(2, "计算设备");put(3, "网络设备");put(4, "存储设备");put(5, "安全设备");put(6, "其他设备");}};
         // 已入网+变更中+退役待审批+退役审批未通过的状态资产类型分
         List<Integer> status = StatusEnumUtil.getAssetTypeStatus();
-        /**
-         *
-         * 统计品类型号 Map中的数据 key--品类型号 value--总数
-         */
-        List<Map<String, Object>> categoryModelCount = assetDao.countCategoryModel(areaIdsOfCurrentUser, status);
-
         List<EnumCountResponse> listResponse = new LinkedList<>();
-        for (AssetCategoryEnum categoryEnum : AssetCategoryEnum.values()) {
-            EnumCountResponse enumCountResponse = new EnumCountResponse(categoryEnum.getName(),
-                categoryEnum.getCode() + "", 0);
-            // 查找品类型号对应的总数并设置到EnumCountResponse对象中
-            for (Map<String, Object> map : categoryModelCount) {
-                Integer code = (Integer) map.get("key");
-                if (categoryEnum.getCode().equals(code)) {
-                    Long n = (Long) map.get("value");
-                    enumCountResponse.setNumber(n);
-                    break;
-                }
-            }
-
+        types.keySet().stream().forEach(t->{
+            Integer count = assetDao.countCategory(areaIdsOfCurrentUser, status,t);
+            EnumCountResponse enumCountResponse = new EnumCountResponse();
+            enumCountResponse.setNumber(count);
+            enumCountResponse.setCode(Collections.singletonList(String.valueOf(t)));
+            enumCountResponse.setMsg(types.get(t));
             listResponse.add(enumCountResponse);
-        }
+        });
         return listResponse;
-
     }
 
     @Override
