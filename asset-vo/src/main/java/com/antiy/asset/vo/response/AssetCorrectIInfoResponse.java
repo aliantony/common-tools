@@ -39,6 +39,9 @@ public class AssetCorrectIInfoResponse {
     private  String needManualPush;
 
     public String getScanDesc() {
+        if(scan==null){
+            return  "";
+        }
         if(scan){
             return "漏洞扫描中";
         }

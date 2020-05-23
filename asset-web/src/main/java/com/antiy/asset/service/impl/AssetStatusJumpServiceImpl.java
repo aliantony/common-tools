@@ -425,22 +425,18 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         assetCorrectIInfoResponse.setNeedManualPush("0");
         if(AssetBaseLineEnum.SUCCESS.getMsg().equals(baseLineResponse.getBody().getConfigStatus())
                 ||AssetBaseLineEnum.FALI.getMsg().equals(baseLineResponse.getBody().getConfigStatus())){
-            //配置工作流
-            Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
-            List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
-            activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
-            ActionResponse baseLineActivityResponse = baseLineActivity(baseLineResponse, activityHandleRequest);
 
             //前端按钮显示标志
             assetCorrectIInfoResponse.setNeedManualPush("1");
-            // 保存taskid;  继续入网使用taskId
-           /* if (null != baseLineActivityResponse &&RespBasicCode.SUCCESS.getResultCode().equals(baseLineActivityResponse.getHead().getCode())) {
-                AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
-                assetOperationRecord.setId(assetOperationRecords.get(0).getId());
-                assetOperationRecord.setTaskId(Integer.valueOf((String)baseLineActivityResponse.getBody()));
-                assetOperationRecordDao.update(assetOperationRecord);
-                LogUtils.info(logger,"配置整改： 保存配置整改流程taskId：{}",(String)baseLineActivityResponse.getBody());
-            }*/
+            //资产没跳过整改才走工作流
+            if(assetOfDB.getRectification()!=1){
+                //配置工作流
+                Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
+                List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
+                activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+                ActionResponse baseLineActivityResponse = baseLineActivity(baseLineResponse, activityHandleRequest);
+            }
+
         }
         LogUtils.recordOperLog(
                 new BusinessData("执行配置基准整改", assetOfDB.getId(), assetOfDB.getNumber(),
@@ -470,13 +466,18 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
         }
+
+        assetCorrectIInfoResponse.setNeedManualPush("1");
+        //资产跳过整改不走工作流
+        if(assetOfDB.getRectification()==1){
+            return assetCorrectIInfoResponse;
+        }
         //获取流程实例id    (漏洞步骤完成)
         Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
         List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
-
         activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
         ActionResponse vlunActivityResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
-        assetCorrectIInfoResponse.setNeedManualPush("1");
+
 
         if(vlunActivityResponse!=null &&RespBasicCode.SUCCESS.getResultCode().equals(vlunActivityResponse.getHead().getCode())){
             //是安全设备保存taskid     继续入网中使用taskid
@@ -493,12 +494,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                     LogUtils.error(logger, "资产整改配置工作流异常!");
                     throw  new BusinessException("资产整改配置工作流异常");
                 }
-                //保存taskid
-              /*  AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
-                assetOperationRecord.setId(assetOperationRecords.get(0).getId());
-                assetOperationRecord.setTaskId(Integer.valueOf((String)baseLineActivityResponse.getBody()));
-                assetOperationRecordDao.update(assetOperationRecord);
-                LogUtils.info(logger,"保存漏洞整改taskId:{}",(String)baseLineActivityResponse.getBody());*/
             }
         }
 
