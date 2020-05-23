@@ -283,4 +283,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
             }
         }
     }
+
+    @Override
+    public String queryByAssetId(QueryCondition queryCondition) {
+        Integer count = assetLendRelationDao.countByAssetId(queryCondition.getPrimaryKey());
+        if (count != null && count > 0){
+            throw new BusinessException("该资产已出借或不是已入网状态，不能进行出借");
+        }
+        return Boolean.TRUE.toString();
+    }
 }
