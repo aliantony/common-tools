@@ -3123,6 +3123,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setDescrible(entity.getMemo());
             asset.setIsInnet(0);
             asset.setAdmittanceStatus(1);
+            asset.setSoftVersion(entity.getNewVersion());
             assets.add(asset);
             assetSafetyEquipment.setGmtCreate(System.currentTimeMillis());
             assetSafetyEquipment.setCreateUser(LoginUserUtil.getLoginUser().getId());
