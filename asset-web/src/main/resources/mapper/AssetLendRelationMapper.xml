@@ -496,6 +496,16 @@
         AND lend_status = 1
         AND asset_id = #{assetId}
     </select>
+    <select id="countByAssetId" resultType="java.lang.Integer">
+        SELECT
+            count( 1 )
+        FROM
+            asset a
+            LEFT JOIN asset_lend_relation alr ON a.id = alr.asset_id
+        WHERE
+            a.id = #{assetId}
+            AND ( a.asset_status <![CDATA[<> ]]> 5 OR alr.lend_status = 1 )
+    </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>
             (

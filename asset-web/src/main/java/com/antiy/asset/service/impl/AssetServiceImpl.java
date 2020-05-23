@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -64,6 +32,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1188,7 +1186,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         types.keySet().stream().forEach(t->{
             Integer count = assetDao.countCategory(areaIdsOfCurrentUser, status,t);
             EnumCountResponse enumCountResponse = new EnumCountResponse();
-            enumCountResponse.setNumber(count);
+            enumCountResponse.setNumber(count == null ? 0 : count);
             enumCountResponse.setCode(Collections.singletonList(String.valueOf(t)));
             enumCountResponse.setMsg(types.get(t));
             listResponse.add(enumCountResponse);
@@ -3628,7 +3626,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表
-            operationRecord(currentAsset.getId().toString());
+
+            operationRecord(currentAsset);
 
             // 记录日志
             if (AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())) {
@@ -3675,8 +3674,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
                 activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
                 Map map = new HashMap();
-                // map.put("admittanceResult", "noAdmittance");
-                map.put("assetRegisterResult", "noRegister");
+                if(request.getSource().equals("1")){
+                    map.put("vulRectifyResult", "noRegister");
+                }
+                if(request.getSource().equals("2")){
+                    map.put("baselineRectifyResult", "noRegister");
+                }
                 activityHandleRequest.setFormData(map);
                 activityHandleRequests.add(activityHandleRequest);
             }
@@ -3783,16 +3786,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             .map(AvailableStatusEnum::getMsg).collect(Collectors.toList());
     }
 
-    private void operationRecord(String id) throws Exception {
+    private void operationRecord(Asset asset) throws Exception {
         // 记录操作历史到数据库
         AssetOperationRecord operationRecord = new AssetOperationRecord();
-        operationRecord.setTargetObjectId(id);
-        operationRecord.setOriginStatus(AssetStatusEnum.WAIT_REGISTER.getCode());
+        operationRecord.setTargetObjectId(asset.getId().toString());
+        operationRecord.setOriginStatus(asset.getAssetStatus());
         operationRecord.setTargetStatus(AssetStatusEnum.NOT_REGISTER.getCode());
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        operationRecord.setContent(AssetFlowEnum.NO_REGISTER.getNextMsg());
+        if(!AssetStatusEnum.CORRECTING.equals(asset.getAssetStatus())){
+            operationRecord.setContent("整改不予登记");
+        }else {
+            operationRecord.setContent(AssetFlowEnum.NO_REGISTER.getNextMsg());
+        }
         operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecordDao.insert(operationRecord);

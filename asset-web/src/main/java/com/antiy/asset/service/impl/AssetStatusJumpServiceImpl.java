@@ -22,6 +22,7 @@ import com.antiy.biz.entity.SysMessageRequest;
 import com.antiy.biz.message.SysMessageSender;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.AssetEnum;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -464,6 +465,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = vlunResponse.getBody();
         //整改流程--漏洞步骤处于进行中状态
+
         if(assetCorrectIInfoResponse.getScan()|| !assetCorrectIInfoResponse.getDeal()){
             assetCorrectIInfoResponse.setNeedManualPush("0");
             return  assetCorrectIInfoResponse;
@@ -904,10 +906,10 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
                 numbers.append(v.getNumber()).append(",");
             });
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.BATCH_ENTRY_EXECUTION.getName(), ids.deleteCharAt(ids.length()-1).toString()
-                    , numbers.deleteCharAt(numbers.length()-1).toString(), null, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ASSET_BATCH_ACCESS));
+                    , numbers.deleteCharAt(numbers.length()-1).toString(), null, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ASSET_BATCH_ACCESS, AssetEnum.NOT_ASSET_NO));
         }else {
             newAssets.forEach(v -> LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ENTRY_EXECUTION.getName(), v.getId()
-                    , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ACCESS)));
+                    , v.getNumber(), v, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ACCESS,AssetEnum.IS_ASSET_NO)));
         }
         //下发准入指令
         SecurityContext context=SecurityContextHolder.getContext();

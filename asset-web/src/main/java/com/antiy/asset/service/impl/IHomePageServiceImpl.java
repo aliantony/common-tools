@@ -128,7 +128,7 @@ public class IHomePageServiceImpl implements IHomePageService {
         Long totalTime = runRecordDao.getRunDayTime();
 
         Long dayTime = 24 * 60 * 60 * 1000L;
-        if (totalTime > dayTime) {
+        if (totalTime != null && totalTime > dayTime) {
             day = totalTime / dayTime;
         }
         return day;

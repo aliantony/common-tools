@@ -133,5 +133,7 @@ public interface IAssetLendRelationService extends IBaseService<AssetLendRelatio
      * @throws Exception
      */
     String saveLendInfos(AssetLendInfosRequest request) throws Exception;
+
+    String queryByAssetId(QueryCondition queryCondition);
 }
 
