@@ -20,6 +20,7 @@ import com.antiy.biz.util.RedisKeyUtil;
 import com.antiy.biz.util.RedisUtil;
 import com.antiy.common.base.*;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.AssetEnum;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
@@ -203,7 +204,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             Asset asset = assetDao.getByAssetId(v);
             //记录操作日志
             LogUtils.recordOperLog(new BusinessData(incident, asset.getId(), asset.getNumber(), asset,
-                    BusinessModuleEnum.ACCESS_MANAGEMENT, isAccess ? BusinessPhaseEnum.ACCESS_ALLOW : BusinessPhaseEnum.ACCESS_BAN));
+                    BusinessModuleEnum.ACCESS_MANAGEMENT, isAccess ? BusinessPhaseEnum.ACCESS_ALLOW : BusinessPhaseEnum.ACCESS_BAN, AssetEnum.IS_ASSET_NO));
 
             AssetEntryRecordRequest recordRequest = new AssetEntryRecordRequest(asset.getStringId(), request.getEntrySource().getCode(),
                     isSuccess ? 1 : 0, Integer.valueOf(request.getUpdateStatus()), System.currentTimeMillis(), userId
