@@ -9,13 +9,9 @@ import com.antiy.asset.service.IAssetSoftwareRelationService;
 import com.antiy.asset.service.IAssetStatusJumpService;
 import com.antiy.asset.vo.query.AssetStatusJudgeRequest;
 import com.antiy.asset.vo.query.NoRegisterRequest;
-import com.antiy.asset.vo.request.ActivityHandleRequest;
-import com.antiy.asset.vo.request.AssetCorrectRequest;
-import com.antiy.asset.vo.request.AssetEntryRequest;
-import com.antiy.asset.vo.request.AssetStatusJumpRequest;
+import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
-import com.antiy.common.base.BaseRequest;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
@@ -109,12 +105,11 @@ public class AssetStatusJumpController {
     @ApiOperation(value = "整改", notes = "传入资产id")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/netToCorrect", method = RequestMethod.POST)
-    public ActionResponse netToCorrect(@ApiParam(value = "queryCondition") @RequestBody List<BaseRequest> baseList) throws Exception {
-        List<String> assetIds = baseList.stream().map(t -> t.getStringId()).collect(Collectors.toList());
+    public ActionResponse netToCorrect(@ApiParam(value = "queryCondition") @RequestBody AssetNetToCorrectRequest assetNetToCorrectRequest) throws Exception {
+        List<String> assetIds = assetNetToCorrectRequest.getAssetInfoList().stream().map(t -> t.getAssetId()).collect(Collectors.toList());
         Integer result=assetStatusJumpService.netToCorrect(assetIds);
         return ActionResponse.success(result);
     }
-
     @ApiOperation(value = "准入实施", response = ActionResponse.class)
     @RequestMapping(value = "/entryExecution", method = RequestMethod.POST)
     public ActionResponse entryExecution(@RequestBody AssetEntryRequest request) {

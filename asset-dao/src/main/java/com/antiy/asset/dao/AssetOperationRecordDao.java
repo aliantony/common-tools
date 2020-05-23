@@ -67,4 +67,5 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
     void writeProcInstId(@Param("assetId") int assetId, @Param("procInstId")int procInstId);
 
     AssetOperationRecord getLastByAssetId(String stringId);
+    Integer insertBatchTask(List<AssetOperationRecord> assetOperationRecordList);
 }

@@ -483,6 +483,13 @@
         order by id desc
         limit 1
     </select>
+    <insert id="insertBatchTask" >
+        insert into asset_operation_record (target_object_id,origin_status,target_status,content,task_id)
+        values
+        <foreach collection="list" item="e" separator=";" open="("  close=")">
+              ,#{e.targetObjectId},#{e.originStatus},#{e.targetStatus},#{e.content},#{e.taskId}
+        </foreach>
+    </insert>
     <select id="listByAssetIds" resultMap="BaseResultMap">
         select
         a.target_object_id,a.origin_status,task_id,a.id

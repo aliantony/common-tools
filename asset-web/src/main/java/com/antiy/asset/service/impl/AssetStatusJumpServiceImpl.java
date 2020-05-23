@@ -508,8 +508,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Override
     public Integer netToCorrect(List<String> assetIds) throws Exception {
         List<AssetOperationRecord> assetOperationRecordList=new ArrayList<>();
+        Integer userId = LoginUserUtil.getLoginUser().getId();
         for(String assetId: assetIds){
-            AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
+           /* AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
             assetOperationRecord.setTargetObjectId(assetId);
             assetOperationRecord.setOriginStatus(AssetFlowEnum.NET_IN_TO_CORRECT.getCurrentAssetStatus().getCode());
             assetOperationRecord.setTargetStatus(AssetFlowEnum.NET_IN_TO_CORRECT.getAgreeStatus().getCode());
@@ -517,7 +518,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //获取资产登记保存的流程实例
             AssetOperationRecord  lastRecord = assetOperationRecordDao.getLastByAssetId(assetId);
             assetOperationRecord.setTaskId(lastRecord.getTaskId());
-            assetOperationRecordList.add(assetOperationRecord);
+            assetOperationRecordList.add(assetOperationRecord);*/
 
             //修改整改标志字段
             Asset asset=new Asset();
@@ -530,7 +531,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             scan = baseLineClient.scan(assetId);
 
         }
-        return assetOperationRecordDao.insertBatch(assetOperationRecordList);
+        return 1;
     }
 
     @Override
@@ -538,8 +539,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
         Integer id = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
         List<String> computerIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(id)).stream().map(t->t.toString()).collect(Collectors.toList());
-
-
         Integer safeId = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
        // List<String> safeIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(safeId)).stream().map(t->t.toString()).collect(Collectors.toList());
         // 非 孤岛 、不可借用计算设备
