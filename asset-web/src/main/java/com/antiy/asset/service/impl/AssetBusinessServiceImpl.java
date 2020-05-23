@@ -10,7 +10,6 @@ import com.antiy.asset.entity.AssetBusiness;
 import com.antiy.asset.entity.AssetBusinessRelation;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetBusinessService;
-import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.enums.AssetCategoryEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -22,6 +21,7 @@ import com.antiy.asset.vo.response.AssetBusinessRelationResponse;
 import com.antiy.asset.vo.response.AssetBusinessResponse;
 import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.common.base.*;
+import com.antiy.common.enums.AssetEnum;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
@@ -109,7 +109,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         }
         LogUtils.recordOperLog(
                 new BusinessData("新增业务信息", assetBusiness.getId(), assetBusiness.getName(),
-                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_ADD)
+                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_ADD, AssetEnum.IS_ASSET_NO)
         );
         return assetBusiness.getStringId();
     }
@@ -142,7 +142,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
         editAssetOfBusiness(request);
         LogUtils.recordOperLog(
                 new BusinessData("编辑业务信息", request.getId(), assetBusiness.getName(),
-                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_EDIT)
+                        request, BusinessModuleEnum.BUSINESS_MANAGE, BusinessPhaseEnum.BUSINESS_EDIT,AssetEnum.IS_ASSET_NO)
         );
         return result.toString();
     }

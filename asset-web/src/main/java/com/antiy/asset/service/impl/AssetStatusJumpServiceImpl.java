@@ -277,7 +277,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>0) {
 
             LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
-                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum()));
+                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum(),AssetEnum.NOT_ASSET_NO));
             logger.info("记录操作日志");
         }
     }
@@ -440,7 +440,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         LogUtils.recordOperLog(
                 new BusinessData("执行配置基准整改", assetOfDB.getId(), assetOfDB.getNumber(),
-                        assetCorrectRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE)
+                        assetCorrectRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE,AssetEnum.IS_ASSET_NO)
         );
         return assetCorrectIInfoResponse;
     }
@@ -505,22 +505,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<AssetOperationRecord> assetOperationRecordList=new ArrayList<>();
         Integer userId = LoginUserUtil.getLoginUser().getId();
         for(String assetId: assetIds){
-           /* AssetOperationRecord assetOperationRecord=new AssetOperationRecord();
-            assetOperationRecord.setTargetObjectId(assetId);
-            assetOperationRecord.setOriginStatus(AssetFlowEnum.NET_IN_TO_CORRECT.getCurrentAssetStatus().getCode());
-            assetOperationRecord.setTargetStatus(AssetFlowEnum.NET_IN_TO_CORRECT.getAgreeStatus().getCode());
-            assetOperationRecord.setContent(AssetFlowEnum.NET_IN_TO_CORRECT.getNextMsg());
-            //获取资产登记保存的流程实例
-            AssetOperationRecord  lastRecord = assetOperationRecordDao.getLastByAssetId(assetId);
-            assetOperationRecord.setTaskId(lastRecord.getTaskId());
-            assetOperationRecordList.add(assetOperationRecord);*/
-
             //修改整改标志字段
             Asset asset=new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
             asset.setRectification(1);
             assetDao.update(asset);
-
             //漏扫
             ActionResponse scan;
             scan = baseLineClient.scan(assetId);
@@ -564,7 +553,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Integer update = assetDao.update(asset);
         LogUtils.recordOperLog(
                 new BusinessData("通过安全整改", assetOfDB.getId(), assetOfDB.getNumber(),
-                        activityHandleRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE)
+                        activityHandleRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE,AssetEnum.IS_ASSET_NO)
         );
         return update;
     }
