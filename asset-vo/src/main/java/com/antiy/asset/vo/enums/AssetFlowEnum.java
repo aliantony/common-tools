@@ -20,6 +20,9 @@ public enum AssetFlowEnum {
      * 不予登记->登记
      */
     NO_REGISTER(AssetStatusEnum.NOT_REGISTER,"","不予登记资产。", "登记资产信息"),
+
+
+
     /**
      * 整改中->继续入网/不予登记
      */

@@ -7,6 +7,12 @@ public class NoRegisterRequest {
     private String assetId;
     private String taskId;
 
+    /**
+     * 来源
+     * 1 漏洞不予登记
+     * 2 配置不予登记
+     */
+    private String source;
     public String getAssetId() {
         return assetId;
     }
@@ -21,5 +27,13 @@ public class NoRegisterRequest {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }
