@@ -261,7 +261,7 @@ public class AssetLendRelationController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
     })
-    @RequestMapping(value = "/query/assetStatus", method = RequestMethod.GET)
+    @RequestMapping(value = "/query/assetStatus", method = RequestMethod.POST)
     public ActionResponse queryByAssetId(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryByAssetId(queryCondition));
     }
