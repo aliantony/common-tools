@@ -9,19 +9,19 @@ public enum AssetOaOrderTypeEnum {
     /**
      * 入网
      */
-    INNET(1,"入网"),
+    INNET(1,"OA入网订单"),
     /**
      * 退回
      */
-    BACK(2,"退回"),
+    BACK(2,"OA退回订单"),
     /**
      * 报废
      */
-    SCRAP(3,"报废"),
+    SCRAP(3,"OA报废订单"),
     /**
      * 出借
      */
-    LEND(4,"出借");
+    LEND(4,"OA出借订单");
 
     private Integer code;
     private String msg;
