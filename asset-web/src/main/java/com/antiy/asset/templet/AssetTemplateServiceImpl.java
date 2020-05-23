@@ -44,24 +44,27 @@ public class AssetTemplateServiceImpl implements IAssetTemplateService {
     }
 
     @Override
-    public List<String> queryAllArea() throws Exception {
+    public List<String> queryAllAreaYeZi() throws Exception {
         List<SysArea> areaList = LoginUserUtil.getLoginUser().getAreas();
         Map<String, String> map = areaList.parallelStream().collect(Collectors.toMap(SysArea::getParentId, e -> e.getId(), (k1, k2)->k1));
         List<String> ret = new ArrayList<>();
-        // fix: 安天资产安全运维平台ASMP-811【资产1.1】资产信息管理-导入：导入模板区域项数据应为全部区域
         for (SysArea area : areaList) {
             if (map.get(area.getId()) == null) {
                 ret.add(area.getFullName());
             }
         }
 
-        // for (SysArea area : areaList) {
-        // // if (map.get(area.getId()) == null) {
-        // if (map.get(area.getId()) == null) {
-        // ret.add(area.getFullName());
-        // // }
-        // }
-        // }
+        return ret;
+    }
+
+    @Override
+    public List<String> queryAllArea() throws Exception {
+        List<SysArea> areaList = LoginUserUtil.getLoginUser().getAreas();
+        List<String> ret = new ArrayList<>();
+        for (SysArea area : areaList) {
+            ret.add(area.getFullName());
+        }
+
         return ret;
     }
 
