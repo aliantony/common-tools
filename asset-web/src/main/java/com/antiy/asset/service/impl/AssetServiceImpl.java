@@ -2550,13 +2550,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("MAC地址重复！");
                 continue;
             }
-
-            if (entity.getExpirationReminder() >= entity.getDueTime()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
-                continue;
+            if (entity.getExpirationReminder() != null) {
+                if (entity.getExpirationReminder() >= entity.getDueTime()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                    continue;
+                }
             }
+
 
             if (entity.getBuyDate() != null) {
 
@@ -2825,11 +2827,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (entity.getExpirationReminder() >= entity.getDueDate()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
-                continue;
+            if (entity.getExpirationReminder() != null) {
+                if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                    continue;
+                }
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
@@ -3041,11 +3045,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
                 continue;
             }
-            if (entity.getExpirationReminder() >= entity.getDueDate()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
-                continue;
+
+            if (entity.getExpirationReminder() != null) {
+                if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                    continue;
+                }
             }
             if ("".equals(checkUser(entity.getUser()))) {
                 error++;
@@ -3248,11 +3255,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 continue;
             }
 
-            if (entity.getExpirationReminder() >= entity.getDueDate()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
-                continue;
+            if (entity.getExpirationReminder() != null) {
+                if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                    continue;
+                }
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
@@ -3451,18 +3460,24 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     continue;
                 }
             }
+            if (entity.getDueDate() != null) {
 
-            if (isDataBig(entity.getDueDate())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
-                continue;
+                if (isDataBig(entity.getDueDate())) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期时间需大于等于今天！");
+                    continue;
+                }
             }
-            if (entity.getExpirationReminder() >= entity.getDueDate()) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
-                continue;
+
+            if (entity.getExpirationReminder() != null && entity.getDueDate() != null) {
+
+                if (entity.getExpirationReminder() >= entity.getDueDate()) {
+                    error++;
+                    a++;
+                    builder.append("第").append(a).append("行").append("到期提醒时间需小于到期时间！");
+                    continue;
+                }
             }
 
             if ("".equals(checkUser(entity.getUser()))) {
@@ -3492,11 +3507,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             assetNumbers.add(entity.getNumber());
             assetMac.add(entity.getMac());
             Asset asset = new Asset();
+            String typeId = getNetTypeByName(entity.getNetType());
+            asset.setNetType(typeId);
+            asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setInstallDate(entity.getInstallDate());
             asset.setActiviateDate(entity.getActiviateDate());
+            asset.setCode(entity.getCode());
             asset.setInstallDate(entity.getInstallDate());
             if (null == entity.getExpirationReminder()) {
-                asset.setExpirationReminder(getCalendar(entity.getDueDate()));
+                if (entity.getDueDate() == null) {
+                    entity.setDueDate(2524492800000L);
+                    asset.setExpirationReminder(2523888000000L);
+                } else {
+
+                    asset.setExpirationReminder(getCalendar(entity.getDueDate()));
+                }
             } else {
                 asset.setExpirationReminder(entity.getExpirationReminder());
             }
@@ -3520,12 +3545,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setWarranty(entity.getWarranty());
             asset.setDescrible(entity.getMemo());
             assets.add(asset);
-            AssetIpRelation assetIpRelation = new AssetIpRelation();
-            assetIpRelation.setIp(entity.getIp());
-            AssetMacRelation assetMacRelation = new AssetMacRelation();
-            assetMacRelation.setMac(entity.getMac());
-            assetMacRelations.add(assetMacRelation);
-            assetIpRelations.add(assetIpRelation);
+
+            if (entity.getIp() != null) {
+
+                AssetIpRelation assetIpRelation = new AssetIpRelation();
+                assetIpRelation.setIp(entity.getIp());
+                assetIpRelations.add(assetIpRelation);
+
+            }
+            if (entity.getMac() != null) {
+
+                AssetMacRelation assetMacRelation = new AssetMacRelation();
+                assetMacRelation.setMac(entity.getMac());
+                assetMacRelations.add(assetMacRelation);
+
+            }
 
             a++;
         }
@@ -3540,13 +3574,25 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             List<AssetOperationRecord> recordList = new ArrayList<>();
             for (int i = 0; i < assets.size(); i++) {
                 String stringId = assets.get(i).getStringId();
-                assetIpRelations.get(i).setAssetId(assets.get(i).getId());
-                assetMacRelations.get(i).setAssetId(assets.get(i).getId());
+                if (CollectionUtils.isNotEmpty(assetIpRelations)) {
+
+                    assetIpRelations.get(i).setAssetId(assets.get(i).getId());
+                }
+                if (CollectionUtils.isNotEmpty(assetMacRelations)) {
+
+                    assetMacRelations.get(i).setAssetId(assets.get(i).getId());
+                }
                 recordList.add(assetRecord(stringId, assets.get(i).getAreaId()));
                 success++;
             }
-            assetIpRelationDao.insertBatch(assetIpRelations);
-            assetMacRelationDao.insertBatch(assetMacRelations);
+            if (CollectionUtils.isNotEmpty(assetIpRelations)) {
+
+                assetIpRelationDao.insertBatch(assetIpRelations);
+            }
+            if (CollectionUtils.isNotEmpty(assetMacRelations)) {
+
+                assetMacRelationDao.insertBatch(assetMacRelations);
+            }
             assetOperationRecordDao.insertBatch(recordList);
         }
 
