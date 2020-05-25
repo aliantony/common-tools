@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -32,36 +64,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -214,6 +216,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     setCategroy(asset);
                     AssetHardSoftLib byBusinessId = assetHardSoftLibDao.getByBusinessId(requestAsset.getBusinessId());
                     BusinessExceptionUtils.isTrue(byBusinessId.getStatus() == 1, "当前(厂商+名称+版本)不存在，或已经注销");
+                    checkAreaIsLeaf(asset.getAreaId());
                     // 不跳过整改=>整改中(计算设备，安全设备)
                     if (request.getNeedScan()) {
                         asset.setRectification(3);
@@ -446,6 +449,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
         return ActionResponse.success(msg);
+    }
+
+    /**
+     * 校验区域是否是叶子节点
+     * @param areaId
+     * @return
+     */
+    void checkAreaIsLeaf(String areaId) {
+        try {
+            List<SysArea> sysArea = redisUtil.getObjectsByKeyword(
+                ModuleEnum.SYSTEM.getType() + ":" + SysArea.class.getSimpleName() + ":" + areaId, SysArea.class);
+            if (sysArea.size() > 1) {
+                ParamterExceptionUtils.isTrue(false, "区域只能选择末级节点");
+            }
+            if (sysArea.size() != 1) {
+                ParamterExceptionUtils.isTrue(false, "区域不存在或已被删除");
+            }
+        } catch (Exception e) {
+            logger.error("获取区域数据出错");
+        }
     }
 
     /**
@@ -1178,13 +1201,21 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             return Lists.newArrayList();
         }
         List<String> areaIdsOfCurrentUser = loginUser.getAreaIdsOfCurrentUser();
-        //统计五大类
-        Map<Integer,String> types = new HashMap(){{put(2, "计算设备");put(3, "网络设备");put(4, "存储设备");put(5, "安全设备");put(6, "其他设备");}};
+        // 统计五大类
+        Map<Integer, String> types = new HashMap() {
+            {
+                put(2, "计算设备");
+                put(3, "网络设备");
+                put(4, "存储设备");
+                put(5, "安全设备");
+                put(6, "其他设备");
+            }
+        };
         // 已入网+变更中+退役待审批+退役审批未通过的状态资产类型分
         List<Integer> status = StatusEnumUtil.getAssetTypeStatus();
         List<EnumCountResponse> listResponse = new LinkedList<>();
-        types.keySet().stream().forEach(t->{
-            Integer count = assetDao.countCategory(areaIdsOfCurrentUser, status,t);
+        types.keySet().stream().forEach(t -> {
+            Integer count = assetDao.countCategory(areaIdsOfCurrentUser, status, t);
             EnumCountResponse enumCountResponse = new EnumCountResponse();
             enumCountResponse.setNumber(count == null ? 0 : count);
             enumCountResponse.setCode(Collections.singletonList(String.valueOf(t)));
@@ -1319,6 +1350,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ActionResponse changeAsset(AssetOuterRequest assetOuterRequest) throws Exception {
+        checkAreaIsLeaf(assetOuterRequest.getAsset().getAreaId());
         // 校验资产合规性，如ip、mac不能重复等
         checkAssetCompliance(assetOuterRequest);
         Integer categoryType = setCategroy(
@@ -2559,7 +2591,6 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 }
             }
 
-
             if (entity.getBuyDate() != null) {
 
                 if (isBuyDataBig(entity.getBuyDate())) {
@@ -3721,10 +3752,10 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
                 activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
                 Map map = new HashMap();
-                if(request.getSource().equals("1")){
+                if (request.getSource().equals("1")) {
                     map.put("vulRectifyResult", "noRegister");
                 }
-                if(request.getSource().equals("2")){
+                if (request.getSource().equals("2")) {
                     map.put("baselineRectifyResult", "noRegister");
                 }
                 activityHandleRequest.setFormData(map);
@@ -3842,9 +3873,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         operationRecord.setGmtCreate(System.currentTimeMillis());
         operationRecord.setOperateUserId(LoginUserUtil.getLoginUser().getId());
         operationRecord.setOperateUserName(LoginUserUtil.getLoginUser().getName());
-        if(!AssetStatusEnum.CORRECTING.equals(asset.getAssetStatus())){
+        if (!AssetStatusEnum.CORRECTING.equals(asset.getAssetStatus())) {
             operationRecord.setContent("整改不予登记");
-        }else {
+        } else {
             operationRecord.setContent(AssetFlowEnum.NO_REGISTER.getNextMsg());
         }
         operationRecord.setCreateUser(LoginUserUtil.getLoginUser().getId());
