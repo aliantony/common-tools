@@ -174,8 +174,12 @@
 
 
     <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT count(1) count from (
         SELECT
-        count(1) count
+        IFNULL(t1.vulCount, 0) AS vulCount,
+        IFNULL(t1.noVulCount, 0) AS noVulCount,
+        IFNULL(t2.patchCount, 0) AS patchCount,
+        IFNULL(t2.noPatchCount, 0) AS noPatchCount
         FROM
         asset t
         LEFT JOIN asset_ip_relation air ON (
@@ -248,11 +252,60 @@
             </trim>
         </where>
 
+        ) report
+
+        <where>
+            <trim prefixOverrides="and">
+                <if test=" vulCount != null and vulCountType != null ">
+                    <choose>
+                        <when test="vulCountType == 2">
+                            and vulCount >= #{vulCount}
+                        </when>
+                        <otherwise>
+                            and vulCount &lt;= #{vulCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" noVulCount != null and noVulCountType != null ">
+                    <choose>
+                        <when test="noVulCountType == 2">
+                            and noVulCount >= #{noVulCount}
+                        </when>
+                        <otherwise>
+                            and noVulCount &lt;=#{noVulCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" patchCount != null and patchCountType != null ">
+                    <choose>
+                        <when test="patchCountType == 2">
+                            and patchCount >= #{patchCount}
+                        </when>
+                        <otherwise>
+                            and patchCount &lt;= #{patchCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" noPatchCount != null and noPatchCountType != null ">
+                    <choose>
+                        <when test="noPatchCountType == 2">
+                            and noPatchCount >= #{noPatchCount}
+                        </when>
+                        <otherwise>
+                            and noPatchCount &lt;= #{noPatchCount}
+                        </otherwise>
+                    </choose>
+                </if>
+            </trim>
+        </where>
+
     </select>
 
 
     <select id="findAll" resultType="com.antiy.asset.vo.response.AssetCompositionReportResponse"
             parameterType="com.antiy.asset.vo.query.AssetCompositionReportReQuery">
+
+        SELECT * from (
         SELECT
         t.id,
         t.number,
@@ -363,6 +416,53 @@
             limit #{start},#{end}
         </if>
 
+        ) report
+
+        <where>
+            <trim prefixOverrides="and">
+                <if test=" vulCount != null and vulCountType != null ">
+                    <choose>
+                        <when test="vulCountType == 2">
+                            and vulCount >= #{vulCount}
+                        </when>
+                        <otherwise>
+                            and vulCount &lt;= #{vulCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" noVulCount != null and noVulCountType != null ">
+                    <choose>
+                        <when test="noVulCountType == 2">
+                            and noVulCount >= #{noVulCount}
+                        </when>
+                        <otherwise>
+                            and noVulCount &lt;=#{noVulCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" patchCount != null and patchCountType != null ">
+                    <choose>
+                        <when test="patchCountType == 2">
+                            and patchCount >= #{patchCount}
+                        </when>
+                        <otherwise>
+                            and patchCount &lt;= #{patchCount}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test=" noPatchCount != null and noPatchCountType != null ">
+                    <choose>
+                        <when test="noPatchCountType == 2">
+                            and noPatchCount >= #{noPatchCount}
+                        </when>
+                        <otherwise>
+                            and noPatchCount &lt;= #{noPatchCount}
+                        </otherwise>
+                    </choose>
+                </if>
+            </trim>
+        </where>
+
     </select>
     <!--资产条件查询-->
     <sql id="Multiple_Query">
@@ -386,49 +486,6 @@
                 #{item}
             </foreach>
         </if>
-        <if test=" vulCount != null and vulCountType != null ">
-            <choose>
-                <when test="vulCountType == 2">
-                    and vulCount >= #{vulCount}
-                </when>
-                <otherwise>
-                    and vulCount &lt;= #{vulCount}
-                </otherwise>
-            </choose>
-        </if>
-        <if test=" noVulCount != null and noVulCountType != null ">
-            <choose>
-                <when test="noVulCountType == 2">
-                    and noVulCount >= #{noVulCount}
-                </when>
-                <otherwise>
-                    and noVulCount &lt;=#{noVulCount}
-                </otherwise>
-            </choose>
-        </if>
-
-        <if test=" patchCount != null and patchCountType != null ">
-            <choose>
-                <when test="patchCountType == 2">
-                    and patchCount >= #{patchCount}
-                </when>
-                <otherwise>
-                    and patchCount &lt;= #{patchCount}
-                </otherwise>
-            </choose>
-        </if>
-        <if test=" noPatchCount != null and noPatchCountType != null ">
-            <choose>
-                <when test="noPatchCountType == 2">
-                    and noPatchCount >= #{noPatchCount}
-                </when>
-                <otherwise>
-                    and noPatchCount &lt;= #{noPatchCount}
-                </otherwise>
-            </choose>
-        </if>
-
-
         <if test=" importanceDegrees != null and importanceDegrees.size() > 0">
             and t.importance_degree in
             <foreach collection="importanceDegrees" separator="," open="(" close=")" item="item">
