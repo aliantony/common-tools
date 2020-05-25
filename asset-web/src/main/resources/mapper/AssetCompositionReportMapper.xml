@@ -202,7 +202,7 @@
         sum(
         CASE
         WHEN vul_status != 5
-        OR 7 THEN
+        OR vul_status != 7 THEN
         1
         ELSE
         0
