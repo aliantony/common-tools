@@ -456,18 +456,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
      * @param areaId
      * @return
      */
-    void checkAreaIsLeaf(String areaId) {
-        try {
-            List<SysArea> sysArea = redisUtil.getObjectsByKeyword(
-                ModuleEnum.SYSTEM.getType() + ":" + SysArea.class.getSimpleName() + ":" + areaId, SysArea.class);
-            if (sysArea.size() > 1) {
-                ParamterExceptionUtils.isTrue(false, "区域只能选择末级节点");
-            }
-            if (sysArea.size() != 1) {
-                ParamterExceptionUtils.isTrue(false, "区域不存在或已被删除");
-            }
-        } catch (Exception e) {
-            logger.error("获取区域数据出错");
+    void checkAreaIsLeaf(String areaId) throws Exception {
+        List<SysArea> sysArea = redisUtil.getObjectsByKeyword(
+            ModuleEnum.SYSTEM.getType() + ":" + SysArea.class.getSimpleName() + ":" + areaId, SysArea.class);
+        if (sysArea.size() > 1) {
+            ParamterExceptionUtils.isTrue(false, "区域只能选择末级节点");
+        }
+        if (sysArea.size() != 1) {
+            ParamterExceptionUtils.isTrue(false, "区域不存在或已被删除");
         }
     }
 
