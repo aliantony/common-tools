@@ -231,22 +231,31 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
      * @return
      */
     @Override
-    public Integer keyReturn(AssetKeyManageRequest request) {
+    public Integer keyReturn(AssetKeyManageRequest request) throws Exception{
         AssetKeyManage keyManage = keyManageDao.queryId(request.getId());
         if (keyManage == null) {
             throw new BusinessException("KEY不存在！");
         }
-        keyManage.setKeyUserType(null);
+
+        // 资产中key同步处理
+        if (keyManage.getKeyUserType() ==1) {
+            AssetKeyManage assetKeyManage = new AssetKeyManage();
+            assetKeyManage.setKeyUserId(keyManage.getKeyUserId());
+            assetKeyUpdate(assetKeyManage);
+        }
         keyManage.setKeyUserId(null);
         keyManage.setUserNumName(null);
         keyManage.setRecipTime(null);
         keyManage.setRecipState(KeyStatusEnum.KEY_NO_RECIPIENTS.getStatus());
+        keyManage.setKeyUserType(null);
+
+        keyManageDao.keyReturn(keyManage);
 
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_RETURN.getName(),
                 keyManage.getId(), keyManage.getKeyNum(), keyManage,
                 BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_BACK));
 
-        return keyManageDao.keyReturn(keyManage);
+        return keyManage.getId();
     }
 
     /**
