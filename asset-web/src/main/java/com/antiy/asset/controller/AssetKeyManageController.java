@@ -49,7 +49,7 @@ public class AssetKeyManageController {
     @ApiOperation(value = "key登记", notes = "key登记")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @PostMapping(value = "/register")
-    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) {
+    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) throws Exception{
         return ActionResponse.success(keyManageService.keyRegister(request));
     }
 

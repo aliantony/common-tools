@@ -134,7 +134,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 查询资产漏洞数
      *
-     * @param areaIds
+     * @param query
      * @return
      */
     List<IdCount> queryAssetVulCount(AssetQuery query);
@@ -142,7 +142,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 查询资产补丁数
      *
-     * @param areaIds
+     * @param query
      * @return
      */
     List<IdCount> queryAssetPatchCount(AssetQuery query);
