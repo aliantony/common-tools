@@ -1835,7 +1835,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String assetId = assetOuterRequest.getAsset().getId();
         List<RollBack> rollbackInfo = new ArrayList<>();
         // 计算设备才有操作系统
-        if (AssetCategoryEnum.COMPUTER.getCode().equals(assetRequest.getCategoryModel())) {
+        if ("2".equals(assetRequest.getCategoryModel())) {
             Asset asset = assetDao.getByAssetId(assetId);
             String oldOs = asset.getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
@@ -1907,7 +1907,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             }
         }
-        if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModel())) {
+        if ("2".equals(assetOuterRequest.getAsset().getCategoryModel())) {
             QueryCondition queryCondition = new QueryCondition();
             queryCondition.setPrimaryKey(assetId);
             // 变更前的软件
