@@ -2900,6 +2900,7 @@ WHERE
     <select id="queryOSList" resultType="com.antiy.asset.vo.response.AssetHardSoftLibResponse">
         select
         t2.unique_id as businessId,
+        t1.cpe_uri as cpeUri,
         t1.number,
         t1.type,
         t1.supplier,
