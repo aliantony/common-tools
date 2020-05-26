@@ -14,6 +14,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * <p> AssetRequest 请求对象 </p>
@@ -155,6 +156,7 @@ public class AssetRequest extends BasicRequest implements ObjectValidator, Seria
     @ApiModelProperty("物理位置")
     private String                  location;
     @ApiModelProperty("机器名")
+    @Length(max = 30, message = "机器名长度不能超过30")
     private String                  machineName;
     @ApiModelProperty("是否涉密：1涉密，0-不涉密")
     private Integer                 isSecrecy;

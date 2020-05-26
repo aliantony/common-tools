@@ -99,7 +99,7 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
         }
         //把备注信息写入到该条资产报废申请的 temporary_info 列
         AssetSchemeQuery assetSchemeQuery=new AssetSchemeQuery();
-        assetSchemeQuery.setAssetIds(Arrays.asList(assetAssemblyScrapRequest.getAssetAssemblyRequestList().get(1).getAssetId()));
+        assetSchemeQuery.setAssetIds(Arrays.asList(assetAssemblyScrapRequest.getAssetId()));
         assetSchemeQuery.setTargetStatus(AssetStatusEnum.WAIT_SCRAP.getCode());
         assetSchemeQuery.setOrginStatusOne(AssetStatusEnum.NET_IN.getCode());
         assetSchemeQuery.setOrginStatusTwo(AssetStatusEnum.RETIRE.getCode());
@@ -115,7 +115,12 @@ public class AssetAssemblyServiceImpl extends BaseServiceImpl<AssetAssembly> imp
              assetOperationRecordDao.update(assetOperationRecord);
             logger.info("保存暂存备注/附件");
         }
+
+        int result=1;
+        if(CollectionUtils.isNotEmpty(assetAssemblyScrapRequest.getAssetAssemblyRequestList())){
+           result= assetAssemblyDao.updateByUniqueId(assetAssemblyScrapRequest.getAssetAssemblyRequestList());
+        }
         //组件报废信息
-       return assetAssemblyDao.updateByUniqueId(assetAssemblyScrapRequest.getAssetAssemblyRequestList());
+       return result;
     }
 }

@@ -1,12 +1,13 @@
 package com.antiy.asset.vo.query;
 
+import java.util.List;
+
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 关联软件查询
@@ -28,10 +29,20 @@ public class InstallQuery extends ObjectQuery implements ObjectValidator {
     private boolean      isBatch;
     @ApiModelProperty(value = "厂商", required = true)
     private String       supplier;
+    @ApiModelProperty(value = "类型", required = true)
+    private String       type;
     @ApiModelProperty(value = "名称", required = true)
     private String       productName;
     @ApiModelProperty(value = "需排除的软件id", required = true)
     private List<String> exceptIds;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public List<String> getExceptIds() {
         return exceptIds;

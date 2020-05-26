@@ -88,4 +88,7 @@ public interface AssetHardSoftLibDao extends IBaseDao<AssetHardSoftLib> {
      * @return
      */
     List<AssetHardSoftLib> getCpeByTime(AssetSynchCpeQuery cpeQuery);
+
+    String getNameByBid(@Param("businessId") Long businessId);
+
 }

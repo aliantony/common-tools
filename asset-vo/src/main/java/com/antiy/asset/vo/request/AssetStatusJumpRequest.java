@@ -22,6 +22,7 @@ import java.util.Map;
 public class AssetStatusJumpRequest extends BasicRequest implements ObjectValidator {
 
 
+
     /**
      * 报废组件
      */
@@ -203,6 +204,8 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     public void setWaitCorrectToWaitRegister(Boolean waitCorrectToWaitRegister) {
         this.waitCorrectToWaitRegister = waitCorrectToWaitRegister;
     }
+
+
 
     @Override
     public void validate() throws RequestParamValidateException {

@@ -4,6 +4,7 @@ import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 /**
@@ -18,9 +19,21 @@ public class AssetTemplateSoftwareRelationQuery extends ObjectQuery {
     private String softwareName;
     @ApiModelProperty("厂商")
     private String manufacturer;
+    @ApiModelProperty("软件类型")
+    @Pattern(regexp = "^[ademf]$",message = "软件类型参数错误，只能传ademf任意一个")
+    private String type;
     @ApiModelProperty("移除软件关联id")
     @Encode
     private List<String> removeSoftIds;
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getOperationSystem() {
         return operationSystem;

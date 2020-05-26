@@ -188,7 +188,12 @@
         <if test=" modifiedUser != null">
             and modified_user = #{modifiedUser }
         </if>
-
+        <if test="operationSystems !=null and operationSystems.size >0">
+            and operation_system in
+            <foreach collection="operationSystems" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
     </sql>
 
     <insert id="insert" parameterType="com.antiy.asset.entity.AssetInstallTemplate" useGeneratedKeys="true"
@@ -442,22 +447,7 @@
         LEFT JOIN asset_patch_install_template apit ON ait.id = apit.install_template_id AND apit.STATUS = 1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             and ait.status=1
-            <if test=" name != null and name !=''">
-                and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-            </if>
-            <if test=" numberCode != null and numberCode !=''">
-                and ait.number_code like
-                concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-            </if>
-            <if test=" currentStatus != null">
-                and ait.current_status = #{currentStatus }
-            </if>
-            <if test=" operationSystem != null and operationSystem !=''">
-                and ait.operation_system = #{operationSystem }
-            </if>
-            <if test=" operationSystemName != null and operationSystemName !=''">
-                and ait.operation_system_name = #{operationSystemName }
-            </if>
+           <include refid="common_query"/>
             <if test="stringId !=null and stringId !=''">
                 and ait.id=#{stringId}
             </if>
@@ -608,6 +598,30 @@
     <select id="querySoftIds" resultType="java.lang.Long">
         select software_id from asset_software_install_template where install_template_id = #{installTemplateId} and status = 1
     </select>
+    <sql id="common_query">
+        <if test=" name != null and name !=''">
+            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+        </if>
+        <if test=" numberCode != null and numberCode !=''">
+            and ait.number_code like
+            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
+        </if>
+        <if test=" currentStatus != null">
+            and ait.current_status = #{currentStatus }
+        </if>
+        <if test=" operationSystem != null">
+            and ait.operation_system = #{operationSystem }
+        </if>
+        <if test=" operationSystemName != null">
+            and ait.operation_system_name = #{operationSystemName }
+        </if>
+        <if test="operationSystems !=null and operationSystems.size >0">
+        and ait.operation_system in
+        <foreach collection="operationSystems" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        </if>
+    </sql>
     <select id="CountFilterBlackItemTemplate" resultType="Integer"
             parameterType="com.antiy.common.base.ObjectQuery">
         select count(1) from ( SELECT
@@ -629,22 +643,7 @@
         WHERE
         bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1
-        <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like
-            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" currentStatus != null">
-            and ait.current_status = #{currentStatus }
-        </if>
-        <if test=" operationSystem != null">
-            and ait.operation_system = #{operationSystem }
-        </if>
-        <if test=" operationSystemName != null">
-            and ait.operation_system_name = #{operationSystemName }
-        </if>
+       <include refid="common_query"/>
         GROUP BY ait.id HAVING count(t.software_business_id)=0
         ) t
     </select>
@@ -676,22 +675,7 @@
         WHERE
         bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1
-        <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like
-            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" currentStatus != null">
-            and ait.current_status = #{currentStatus }
-        </if>
-        <if test=" operationSystem != null">
-            and ait.operation_system = #{operationSystem }
-        </if>
-        <if test=" operationSystemName != null">
-            and ait.operation_system_name = #{operationSystemName }
-        </if>
+        <include refid="common_query"/>
         GROUP BY ait.id HAVING count(t.software_business_id)=0
         order by ait.gmt_modified desc
         <if test="pageSize !=-1">
@@ -718,22 +702,7 @@
         WHERE
         bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1 and asit.software_id is not null
-        <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like
-            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" currentStatus != null">
-            and ait.current_status = #{currentStatus }
-        </if>
-        <if test=" operationSystem != null">
-            and ait.operation_system = #{operationSystem }
-        </if>
-        <if test=" operationSystemName != null">
-            and ait.operation_system_name = #{operationSystemName }
-        </if>
+        <include refid="common_query"/>
         GROUP BY ait.id HAVING count(t.software_business_id)=count(asit.software_id)
         ) t
     </select>
@@ -766,22 +735,7 @@
         WHERE
         bt.id = #{baselineId}) t on t.software_business_id=asit.software_id
         where ait.status=1 and asit.software_id is not null
-        <if test=" name != null and name !=''">
-            and ait.`name` like concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" numberCode != null and numberCode !=''">
-            and ait.number_code like
-            concat('%',replace(replace(replace(#{numberCode},'\\','\\\\'),'_','\_'),'%','\%'),'%')
-        </if>
-        <if test=" currentStatus != null">
-            and ait.current_status = #{currentStatus }
-        </if>
-        <if test=" operationSystem != null">
-            and ait.operation_system = #{operationSystem }
-        </if>
-        <if test=" operationSystemName != null">
-            and ait.operation_system_name = #{operationSystemName }
-        </if>
+        <include refid="common_query"/>
         GROUP BY ait.id HAVING count(t.software_business_id)=count(asit.software_id)
         order by ait.gmt_modified desc
         <if test="pageSize !=-1">
@@ -800,5 +754,22 @@
     </update>
     <select id="findCountPatch" parameterType="String" resultType="java.lang.Integer">
         select count(1) from patch_info where id=#{patchId} and status=1
+    </select>
+    <select id="getParentNodesByNodes" resultType="java.lang.Long">
+         SELECT
+         node
+         FROM
+         (SELECT
+         t1.node,IF(FIND_IN_SET(node, @pids) > 0, @pids:=CONCAT(@pids, ',', parent_node), 0) AS ischild
+         FROM
+         (SELECT
+         unique_id as node, pid as parent_node
+         FROM
+         asset_cpe_tree
+         WHERE
+         status = 1
+         ORDER BY parent_node desc, node desc) t1, (SELECT @pids:=#{os}) t2) t3
+         WHERE
+         ischild != 0
     </select>
 </mapper>

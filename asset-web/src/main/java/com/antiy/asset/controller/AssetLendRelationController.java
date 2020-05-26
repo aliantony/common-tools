@@ -250,5 +250,20 @@ public class AssetLendRelationController {
     public ActionResponse queryUserInfo(@RequestBody UserInfoRequest request) throws Exception {
         return ActionResponse.success(iAssetLendRelationService.queryUserInfo(request));
     }
+
+    /**
+     * 通过ID查询资产状态
+     *
+     * @param queryCondition
+     * @return actionResponse
+     */
+    @ApiOperation(value = "通过ID查询资产状态", notes = "主键封装对象")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = AssetLendRelationResponse.class),
+    })
+    @RequestMapping(value = "/query/assetStatus", method = RequestMethod.POST)
+    public ActionResponse queryByAssetId(@ApiParam(value = "主键封装对象") @RequestBody QueryCondition queryCondition) throws Exception {
+        return ActionResponse.success(iAssetLendRelationService.queryByAssetId(queryCondition));
+    }
 }
 

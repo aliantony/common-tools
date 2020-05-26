@@ -271,14 +271,14 @@
         </trim>
     </select>
 
-    <select id="findQuery" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
+    <select id="getLendRelationList" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse" parameterType="com.antiy.common.base.ObjectQuery">
         SELECT
         a.id as assetId,
         a.name as  assetName,
         a.number as assetNumber,
         acm.name as categoryModel,
         a.responsible_user_id as responsibleUserId,
-        akm.key_num as `key`,
+        akm.key_num as keyNum,
         alr.lend_status as lendStatus,
         alr.use_id as useId,
         alr.lend_time as lendTime,
@@ -298,12 +298,31 @@
             and a.is_borrow=1
             and a.asset_status =5
             and a.status=1
-            order by alr.lend_time desc ,a.first_enter_nett desc
+            order by alr.lend_time desc,alr.return_time desc ,a.first_enter_nett desc
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
+
+    <select id="getLendRelationAssetIdList" resultType="string" parameterType="com.antiy.common.base.ObjectQuery">
+        SELECT
+        a.id as assetId
+        FROM asset  as a
+        left join asset_user as au on a.responsible_user_id=au.id and au.status=1
+        left join asset_key_manage as akm on a.id=akm.key_user_id and akm.is_delete=1
+        left join asset_category_model as acm on acm.id=a.category_model and acm.status=1
+        left join  asset_lend_relation as alr
+        on a.id=alr.asset_id and alr.lend_status =1 and alr.status=1
+        left join asset_user  on asset_user.id=alr.use_id and asset_user.status=1
+        <trim prefix="where" prefixOverrides="and">
+            <include refid="baseQuery"/>
+            and a.is_borrow=1
+            and a.asset_status =5
+            and a.status=1
+        </trim>
+    </select>
+
     <select id="queryInfo" resultType="com.antiy.asset.vo.response.AssetLendRelationResponse">
         select
           lend_status as lendStatus,
@@ -466,6 +485,26 @@
                 #{item}
             </foreach>
             AND asset_status != 5
+    </select>
+    <select id="countAssetLend" resultType="java.lang.Integer">
+        SELECT
+	count( 1 )
+    FROM
+        asset_lend_relation
+    WHERE
+        STATUS = 1
+        AND lend_status = 1
+        AND asset_id = #{assetId}
+    </select>
+    <select id="countByAssetId" resultType="java.lang.Integer">
+        SELECT
+            count( 1 )
+        FROM
+            asset a
+            LEFT JOIN asset_lend_relation alr ON a.id = alr.asset_id
+        WHERE
+            a.id = #{assetId}
+            AND ( a.asset_status <![CDATA[<> ]]> 5 OR alr.lend_status = 1 )
     </select>
     <sql id="baseQuery">
         <if test='multiQuery !=null and multiQuery!="" '>

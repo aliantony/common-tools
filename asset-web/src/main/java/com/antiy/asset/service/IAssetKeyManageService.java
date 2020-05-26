@@ -26,7 +26,7 @@ public interface IAssetKeyManageService {
      * @param request
      * @return
      */
-    Integer keyRegister(AssetKeyManageRequest request);
+    Integer keyRegister(AssetKeyManageRequest request) throws Exception;
 
     /**
      * key领用
@@ -41,7 +41,7 @@ public interface IAssetKeyManageService {
      * @param request
      * @return
      */
-    Integer keyReturn(AssetKeyManageRequest request);
+    Integer keyReturn(AssetKeyManageRequest request) throws Exception;
 
     /**
      * key冻结 or 解冻

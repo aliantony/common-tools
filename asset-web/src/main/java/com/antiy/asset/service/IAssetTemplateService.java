@@ -22,6 +22,8 @@ public interface IAssetTemplateService {
      */
     List<String> queryAllArea() throws Exception;
 
+    List<String> queryAllAreaYeZi() throws Exception;
+
     /**
      * 获取所有的区域信息
      * @return

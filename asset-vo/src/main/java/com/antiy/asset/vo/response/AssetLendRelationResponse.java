@@ -102,7 +102,7 @@ public class AssetLendRelationResponse extends BaseResponse {
     private String assetGroup;
     @ApiModelProperty("key")
     private String keyNum;
-    @ApiModelProperty("资产使用者")
+    @ApiModelProperty("资产登记人")
     private String responsibleUserName;
     @ApiModelProperty("出借者")
     private String useName;
@@ -194,14 +194,6 @@ public class AssetLendRelationResponse extends BaseResponse {
 
     public void setAssetNumber(String assetNumber) {
         this.assetNumber = assetNumber;
-    }
-
-    public String getResponsibleUserName() {
-        return responsibleUserName;
-    }
-
-    public void setResponsibleUserName(String responsibleUserName) {
-        this.responsibleUserName = responsibleUserName;
     }
 
     public String getUseName() {

@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.response;
 
+import com.antiy.asset.vo.enums.CommonTypeEnum;
 import com.antiy.common.base.BaseResponse;
 
 import io.swagger.annotations.ApiModel;
@@ -126,6 +127,7 @@ public class AssetHardSoftLibResponse extends BaseResponse {
 
     public void setType(String type) {
         this.type = type;
+        this.typeName = CommonTypeEnum.getNameByCode(type);
     }
 
     public String getTypeName() {

@@ -4,6 +4,7 @@ import com.antiy.asset.service.IAssetAreaReportService;
 import com.antiy.asset.service.IAssetReportService;
 import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetEntrySystemResponse;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.utils.LoginUserUtil;
@@ -166,4 +167,9 @@ public class AssetReportController {
         iAssetReportService.reportExport(reportExportRequest);
     }
 
+    @ApiOperation(value = "全量查询资产的准入情况", notes = "准入系统对接接口", tags = "准入管理",response = AssetEntrySystemResponse.class,responseContainer = "list")
+    @RequestMapping(value = "/SyncAdmittanceStatus",method = RequestMethod.POST)
+    public ActionResponse queryAllEntryStatus() throws Exception {
+        return ActionResponse.success(iAssetReportService.queryAllEntryStatus());
+    }
 }

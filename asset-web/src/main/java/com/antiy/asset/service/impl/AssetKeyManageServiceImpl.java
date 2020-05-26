@@ -1,22 +1,30 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetDao;
 import com.antiy.asset.dao.AssetKeyManageDao;
+import com.antiy.asset.entity.Asset;
 import com.antiy.asset.entity.AssetKeyManage;
 import com.antiy.asset.service.IAssetKeyManageService;
 import com.antiy.asset.templet.ImportResult;
 import com.antiy.asset.templet.KeyEntity;
 import com.antiy.asset.util.ExcelUtils;
+import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.KeyStatusEnum;
 import com.antiy.asset.vo.enums.KeyUserType;
 import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.query.KeyPullQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.AssetKeyManageResponse;
+import com.antiy.asset.vo.response.AssetResponse;
 import com.antiy.asset.vo.response.KeyPullDownResponse;
 import com.antiy.common.base.BaseConverter;
+import com.antiy.common.base.BusinessData;
 import com.antiy.common.base.LoginUser;
 import com.antiy.common.base.PageResult;
+import com.antiy.common.enums.BusinessModuleEnum;
+import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.exception.BusinessException;
+import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -27,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.net.ssl.KeyManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +51,9 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
 
     @Resource
     private AssetKeyManageDao keyManageDao;
+
+    @Resource
+    private AssetDao assetDao;
 
     @Resource
     private BaseConverter<AssetKeyManage, AssetKeyManageResponse> converter;
@@ -86,7 +98,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
      * @return
      */
     @Override
-    public Integer keyRegister(AssetKeyManageRequest request) {
+    public Integer keyRegister(AssetKeyManageRequest request) throws Exception {
 
         ParamterExceptionUtils.isNull(request.getKeyNum(), "KEY编号为空!");
         ParamterExceptionUtils.isNull(request.getRecipState(), "领用状态为空!");
@@ -139,6 +151,15 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setIsDelete(1);
         keyManageDao.keyRegister(keyManage);
 
+        // 对资产表中的key进行同步
+        if (keyManage.getKeyUserType() == 1) {
+            assetKeyUpdate(keyManage);
+        }
+
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_REGISTER.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_REGISTER));
+
         return keyManage.getId();
     }
 
@@ -176,7 +197,31 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
             }
         }
 
-        return keyManageDao.keyRecipients(keyManage);
+        keyManageDao.keyRecipients(keyManage);
+
+        // 对资产表中的key进行同步
+        if (keyManage.getKeyUserType() == 1) {
+            assetKeyUpdate(keyManage);
+        }
+
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_RECIPIENTS.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_USE));
+
+        return keyManage.getId();
+    }
+
+    private Integer assetKeyUpdate(AssetKeyManage keyManage) throws Exception {
+
+        Asset asset = assetDao.getById(keyManage.getKeyUserId());
+        if (asset != null) {
+            asset = new Asset();
+            asset.setId(keyManage.getKeyUserId());
+            asset.setKey(keyManage.getKeyNum());
+            assetDao.update(asset);
+        }
+
+        return asset.getId();
     }
 
     /**
@@ -186,17 +231,31 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
      * @return
      */
     @Override
-    public Integer keyReturn(AssetKeyManageRequest request) {
+    public Integer keyReturn(AssetKeyManageRequest request) throws Exception{
         AssetKeyManage keyManage = keyManageDao.queryId(request.getId());
         if (keyManage == null) {
             throw new BusinessException("KEY不存在！");
         }
-        keyManage.setKeyUserType(null);
+
+        // 资产中key同步处理
+        if (keyManage.getKeyUserType() ==1) {
+            AssetKeyManage assetKeyManage = new AssetKeyManage();
+            assetKeyManage.setKeyUserId(keyManage.getKeyUserId());
+            assetKeyUpdate(assetKeyManage);
+        }
         keyManage.setKeyUserId(null);
         keyManage.setUserNumName(null);
         keyManage.setRecipTime(null);
         keyManage.setRecipState(KeyStatusEnum.KEY_NO_RECIPIENTS.getStatus());
-        return keyManageDao.keyReturn(keyManage);
+        keyManage.setKeyUserType(null);
+
+        keyManageDao.keyReturn(keyManage);
+
+        LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_RETURN.getName(),
+                keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_BACK));
+
+        return keyManage.getId();
     }
 
     /**
@@ -210,7 +269,15 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         AssetKeyManage keyManage = new AssetKeyManage();
         keyManage.setId(request.getId());
         keyManage.setRecipState(keyStatus);
-        return keyManageDao.keyFreeze(keyManage);
+        Integer result = keyManageDao.keyFreeze(keyManage);
+
+        AssetKeyManage assetKeyManage = keyManageDao.queryId(request.getId());
+
+        LogUtils.recordOperLog(new BusinessData(keyStatus == 3 ? AssetEventEnum.KEY_FREEZE.getName() : AssetEventEnum.KEY_UNFREEZE.getName(),
+                assetKeyManage.getId(), assetKeyManage.getKeyNum(), assetKeyManage,
+                BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_FROZEN));
+
+        return result;
     }
 
     /**
@@ -286,10 +353,19 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         try {
             if (!add.isEmpty()) {
                 keyManageDao.insertBatch(add);
-
+                add.forEach(keyManage -> {
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_IMPORT.getName(),
+                            keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                            BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_IMPORT));
+                });
             }
             if (!update.isEmpty()) {
                 keyManageDao.updateBatch(update);
+                update.forEach(keyManage -> {
+                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.KEY_IMPORT.getName(),
+                            keyManage.getId(), keyManage.getKeyNum(), keyManage,
+                            BusinessModuleEnum.KEY_MANAGE, BusinessPhaseEnum.KEY_IMPORT));
+                });
             }
             success = add.size() + update.size();
         } catch (DuplicateKeyException exception) {

@@ -49,7 +49,7 @@ public class AssetKeyManageController {
     @ApiOperation(value = "key登记", notes = "key登记")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @PostMapping(value = "/register")
-    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) {
+    public ActionResponse keyRegister(@RequestBody AssetKeyManageRequest request) throws Exception{
         return ActionResponse.success(keyManageService.keyRegister(request));
     }
 
@@ -75,7 +75,7 @@ public class AssetKeyManageController {
     @ApiOperation(value = "key归还", notes = "key归还")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @PostMapping(value = "/return")
-    public ActionResponse keyReturn(@RequestBody AssetKeyManageRequest request) {
+    public ActionResponse keyReturn(@RequestBody AssetKeyManageRequest request) throws Exception{
         ParamterExceptionUtils.isNull(request.getId(), "ID不能为空");
         return ActionResponse.success(keyManageService.keyReturn(request));
     }

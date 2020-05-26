@@ -674,7 +674,6 @@
         t1.id
         from asset_hard_soft_lib t1
         <trim prefix="where" prefixOverrides="And">
-            And t1.type='a'
             and t1.status=1
             and (POSITION(#{operationSystem} in soft_platform) or soft_platform='any')
             and t1.is_storage=1
@@ -694,6 +693,14 @@
                 </foreach>
 
             </if>
+            <choose>
+                 <when test="type !=null and type.trim !=''">
+                     And t1.type=#{type}
+                 </when>
+                 <otherwise>
+                     And t1.type in ('a','d','m','f','e')
+                 </otherwise>
+            </choose>
         </trim>
         ) t2
     </select>
@@ -719,7 +726,6 @@
         from asset_hard_soft_lib t1
         inner join ( SELECT id FROM asset_hard_soft_lib
         <trim prefix="where" prefixOverrides="And">
-            And type='a'
             and status=1
             <choose>
 
@@ -751,7 +757,14 @@
                 and product_name like CONCAT('%', replace(replace(REPLACE
                 (#{softwareName},'\\','\\\\'),'%','\%'),'_','\_'), '%')
             </if>
-
+            <choose>
+                <when test="type !=null and type.trim !=''">
+                    And t1.type=#{type}
+                </when>
+                <otherwise>
+                    And t1.type in ('a','d','m','f','e')
+                </otherwise>
+            </choose>
         </trim>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
@@ -865,5 +878,14 @@
         from
         <include refid="Table_Name"/>
         where gmt_modified &gt;= #{startStamp} and gmt_modified &lt;= #{endStamp}
+    </select>
+    <select id="getNameByBid" resultType="java.lang.String">
+SELECT
+cpe_uri
+FROM
+	asset_hard_soft_lib
+WHERE
+business_id = #{businessId}
+
     </select>
 </mapper>

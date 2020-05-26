@@ -176,13 +176,7 @@ public class AssetCompositionReportServiceImpl extends BaseServiceImpl<AssetComp
                 CSVUtils.writeCSV(downloadList,
                     "综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT), files, request, response);
             }
-            // else if (assetQuery.getExportType() == 3) {
-            // PDFUtils.
-            //
-            // }else if (assetQuery.getExportType() == 4) {
-            //
-            //
-            // }
+
             LogUtils.recordOperLog(
                 new BusinessData("导出《综合资产报表" + DateUtils.getDataString(new Date(), DateUtils.NO_TIME_FORMAT) + "》", 0,
                     "", assetQuery, BusinessModuleEnum.REPORT, BusinessPhaseEnum.REPORT_EXPORT));

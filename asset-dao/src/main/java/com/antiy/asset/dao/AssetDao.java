@@ -1,5 +1,11 @@
 package com.antiy.asset.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.antiy.asset.dto.AssetWorkQueryDto;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.vo.query.*;
@@ -9,11 +15,6 @@ import com.antiy.asset.vo.request.AssetRollbackRequest;
 import com.antiy.asset.vo.request.AssetUnknownRequest;
 import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.IBaseDao;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * <p> 资产主表 Mapper 接口 </p>
@@ -133,7 +134,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 查询资产漏洞数
      *
-     * @param areaIds
+     * @param query
      * @return
      */
     List<IdCount> queryAssetVulCount(AssetQuery query);
@@ -141,7 +142,7 @@ public interface AssetDao extends IBaseDao<Asset> {
     /**
      * 查询资产补丁数
      *
-     * @param areaIds
+     * @param query
      * @return
      */
     List<IdCount> queryAssetPatchCount(AssetQuery query);
@@ -458,9 +459,36 @@ public interface AssetDao extends IBaseDao<Asset> {
     void saveAssetBaselineTemplate(BaselineAssetTemplate baselineAssetTemplate);
 
     /**
-     * 扫描过期资产
+     * 扫描到期提醒资产
      * @param time
      * @return
      */
     List<AssetMonitor> getExpirationAsset(@Param("time") long time);
+
+    /**
+     * 扫描过期资产
+     * @param time
+     * @return
+     */
+    List<AssetMonitor> getServiceLifeAsset(@Param("time") long time);
+
+    /**
+     * 通过资产id查询mac
+     */
+    List<String> findMacByAssetId(@Param("assetId") String assetId);
+
+    /**
+     * 通过资产id查询ip
+     */
+    List<String> findIpByAssetId(@Param("assetId") String assetId);
+
+    /**
+     * 统计资产类型及其下级
+     * @param areaIds
+     * @param status
+     * @param type
+     * @return
+     */
+    Integer countCategory(@Param("areaIds") List<String> areaIds, @Param("status") List<Integer> status,
+                          @Param("type") Integer type);
 }

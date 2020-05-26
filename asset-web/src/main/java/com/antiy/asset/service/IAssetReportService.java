@@ -2,8 +2,11 @@ package com.antiy.asset.service;
 
 import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
+import com.antiy.asset.vo.response.AssetEntrySystemResponse;
 import com.antiy.asset.vo.response.AssetReportResponse;
 import com.antiy.asset.vo.response.AssetReportTableResponse;
+
+import java.util.List;
 
 /**
  * <p> 资产报表 服务类 </p>
@@ -55,4 +58,6 @@ public interface IAssetReportService {
     void exportAssetGroupTable(ReportQueryRequest reportQueryRequest) throws Exception;
 
     void reportExport(ReportExportRequest reportExportRequest);
+
+    List<AssetEntrySystemResponse> queryAllEntryStatus() throws Exception;
 }
