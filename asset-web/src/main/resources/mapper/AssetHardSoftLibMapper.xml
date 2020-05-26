@@ -881,12 +881,7 @@
     </select>
     <select id="getNameByBid" resultType="java.lang.String">
 SELECT
-	CONCAT_WS(
-		'/',
-		supplier,
-		product_name,
-		version
-	) as name
+cpe_uri
 FROM
 	asset_hard_soft_lib
 WHERE
