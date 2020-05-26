@@ -292,7 +292,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             assetAssemblyService.scrapUpdate(assetAssemblyScrapRequest);
         }
 
-        //业务管理  配置
+        //业务管理  配置   通联   漏洞清除补丁
         List<Integer> assetIdList = statusJumpRequest.getAssetInfoList().stream().map(e -> DataTypeUtils.stringToInteger(e.getAssetId())).collect(Collectors.toList());
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_EXECUTEE)
                 ||statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.SCRAP_EXECUTEE)){
@@ -311,11 +311,15 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             if (null == actionResponse || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
                 throw new BusinessException("资产退役调用漏洞模块失败");
             }
-            return;
+
+            // 对应通联关系解除
+            assetLinkRelationDao.deleteByAssetIdList(assetIdList);
+            List<String> idList = assetsInDb.stream().map(t -> DataTypeUtils.integerToString(t.getId())).collect(Collectors.toList());
+            //漏洞清除补丁
+            ActionResponse vlueResponse=baseLineClient.scannerEliminate(idList);
         }
 
-        // 对应通联关系解除
-        assetLinkRelationDao.deleteByAssetIdList(assetIdList);
+
 
         //  禁止准入
         if(statusJumpRequest.getAssetFlowEnum().equals(AssetFlowEnum.RETIRE_APPLICATION)
@@ -526,7 +530,9 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Integer safeId = assetCategoryModelDao.getByName(AssetCategoryEnum.COMPUTER.getName()).getId();
        // List<String> safeIdList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(safeId)).stream().map(t->t.toString()).collect(Collectors.toList());
         // 非 孤岛 、不可借用计算设备
-        boolean  k=computerIdList.contains(assetOfDB.getCategoryModel()) && assetOfDB.getIsOrphan()!=1 && assetOfDB.getIsBorrow()!=1;
+        //boolean  k=computerIdList.contains(assetOfDB.getCategoryModel()) && assetOfDB.getIsOrphan()!=1 && assetOfDB.getIsBorrow()!=1;
+        Integer one=1;
+        boolean  k=computerIdList.contains(assetOfDB.getCategoryModel()) && !one.equals(assetOfDB.getIsOrphan()) && !one.equals(assetOfDB.getIsBorrow());
         Asset asset=new Asset();
         asset.setId(assetOfDB.getId());
         asset.setRectification(1);

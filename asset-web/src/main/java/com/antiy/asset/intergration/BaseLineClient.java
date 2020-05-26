@@ -67,4 +67,6 @@ public interface BaseLineClient {
     ActionResponse listRy(WorkFlowQuery workFlowQuery);
 
     ActionResponse getUsersByQxTagAndAreaId(Map param);
+
+    ActionResponse scannerEliminate(List<String> assetIdList);
 }
