@@ -2,11 +2,13 @@ package com.antiy.asset.vo.query;
 
 import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.common.base.BaseRequest;
+import com.antiy.common.encoder.Encode;
 
 import java.util.List;
 
 public class AssetStatusJudgeRequest extends BaseRequest {
 
+    @Encode
     private List<String> assetIds;
 
     private AssetFlowEnum assetFlowEnum;

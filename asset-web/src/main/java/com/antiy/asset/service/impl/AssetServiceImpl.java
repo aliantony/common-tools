@@ -186,6 +186,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     public ActionResponse saveAsset(AssetOuterRequest request) throws Exception {
         // 授权数量校验
         anthNumValidate();
+        checkAssetCompliance(request);
         AssetRequest requestAsset = request.getAsset();
         AssetNetworkEquipmentRequest networkEquipmentRequest = request.getNetworkEquipment();
         AssetStorageMediumRequest assetStorageMedium = request.getAssetStorageMedium();
@@ -226,7 +227,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         // 计算设备、网络设备=>待准入
                         if ("2".equals(asset.getCategoryType())) {
                             // 可借用设备、孤岛设备直接到已入网
-                            if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
+                            if ("1".equals(DataTypeUtils.integerToString(asset.getIsBorrow()))
+                                || "1".equals(DataTypeUtils.integerToString(asset.getIsOrphan()))) {
                                 asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                                 asset.setFirstEnterNett(currentTimeMillis);
                             } else {
@@ -470,7 +472,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     /**
      * 返回资产启动流程需要的formData
      * @param needScan
-     * @param categoryType
+     *
      * @return
      */
     private Map createFormData(boolean needScan, Integer isBorrow, Integer isOrphan, Integer categoryType,
@@ -490,7 +492,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 计算设备、网络设备=>待准入
             if (2 == categoryType) {
                 // 孤岛设备和可借用设备直接到已入网
-                if (isBorrow == 1 || isOrphan == 1) {
+                if ("1".equals(DataTypeUtils.integerToString(isBorrow))
+                    || "1".equals(DataTypeUtils.integerToString(isOrphan))) {
                     formData.put("needNetImplement", 0);
                 } else {
                     formData.put("needNetImplement", 1);
@@ -1410,7 +1413,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 计算设备、网络设备=>待准入
             if ("2".equals(asset.getCategoryType())) {
                 // 可借用设备、孤岛设备直接到已入网
-                if (asset.getIsBorrow() == 1 || asset.getIsOrphan() == 1) {
+                if ("1".equals(DataTypeUtils.integerToString(asset.getIsBorrow()))
+                    || "1".equals(DataTypeUtils.integerToString(asset.getIsOrphan()))) {
                     asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
                     asset.setFirstEnterNett(System.currentTimeMillis());
                     status = AssetStatusEnum.NET_IN.getCode();
@@ -1831,7 +1835,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         String assetId = assetOuterRequest.getAsset().getId();
         List<RollBack> rollbackInfo = new ArrayList<>();
         // 计算设备才有操作系统
-        if (AssetCategoryEnum.COMPUTER.getCode().equals(assetRequest.getCategoryModel())) {
+        if ("2".equals(assetRequest.getCategoryModel())) {
             Asset asset = assetDao.getByAssetId(assetId);
             String oldOs = asset.getOperationSystemName();
             String newOs = assetOuterRequest.getAsset().getOperationSystemName();
@@ -1903,7 +1907,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
             }
         }
-        if (AssetCategoryEnum.COMPUTER.getCode().equals(assetOuterRequest.getAsset().getCategoryModel())) {
+        if ("2".equals(assetOuterRequest.getAsset().getCategoryModel())) {
             QueryCondition queryCondition = new QueryCondition();
             queryCondition.setPrimaryKey(assetId);
             // 变更前的软件

@@ -142,5 +142,16 @@
             </if>
         </trim>
     </select>
+    <select id="queryAllEntryStatus" resultType="com.antiy.asset.vo.response.AssetEntrySystemResponse">
+        select mac ,admittance_status admittanceStatus
+        from
+        asset inner join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+        where
+        category_model in
+        <foreach collection="list" open="(" separator="," close=")" item="item">
+            #{item}
+        </foreach>
+        and asset.status=1
+    </select>
 
 </mapper>
