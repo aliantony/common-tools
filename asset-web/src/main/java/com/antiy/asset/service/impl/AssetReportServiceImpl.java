@@ -1,5 +1,6 @@
 package com.antiy.asset.service.impl;
 
+import com.antiy.asset.dao.AssetEntryDao;
 import com.antiy.asset.dao.AssetReportDao;
 import com.antiy.asset.entity.AssetGroupEntity;
 import com.antiy.asset.service.IAssetReportService;
@@ -12,10 +13,7 @@ import com.antiy.asset.vo.enums.AssetEventEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
 import com.antiy.asset.vo.query.ReportExportRequest;
 import com.antiy.asset.vo.request.ReportQueryRequest;
-import com.antiy.asset.vo.response.AssetReportResponse;
-import com.antiy.asset.vo.response.AssetReportTableResponse;
-import com.antiy.asset.vo.response.ReportData;
-import com.antiy.asset.vo.response.ReportTableHead;
+import com.antiy.asset.vo.response.*;
 import com.antiy.common.base.BusinessData;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
@@ -23,6 +21,7 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.JsonUtil;
 import com.antiy.common.utils.LogUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 资产报表实现类
@@ -65,6 +57,10 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
     @Resource
     private AssetReportDao      assetReportDao;
+    @Resource
+    private AssetEntryDao entryDao;
+    @Resource
+    private AssetEntryServiceImpl entryService;
 
     private List<Integer> getStatusList() {
         List<Integer> statusList = new ArrayList<>();
@@ -488,5 +484,14 @@ public class AssetReportServiceImpl implements IAssetReportService {
 
         }
         return filename;
+    }
+
+    @Override
+    public List<AssetEntrySystemResponse> queryAllEntryStatus() throws Exception {
+        List<String> categoryIds = entryService.getCategoryIdsOfComputerAndNet();
+        if (CollectionUtils.isEmpty(categoryIds)) {
+            return Collections.<AssetEntrySystemResponse>emptyList();
+        }
+        return entryDao.queryAllEntryStatus(categoryIds);
     }
 }
