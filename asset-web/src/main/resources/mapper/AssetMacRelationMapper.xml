@@ -121,6 +121,16 @@
         </trim>
     </select>
 
+    <select id="checkRepeat" resultType="java.lang.Integer">
+        select count(1) from asset_mac_relation where replace(mac,':','-') in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            replace(#{item},':','-')
+        </foreach>
+        <if test="id != null">
+            and asset_id != #{id}
+        </if>
+        and status = 1
+    </select>
     <select id="findQuery" resultMap="BaseResultMap" parameterType="com.antiy.common.base.ObjectQuery">
         select * from
         <include refid="Table_Name"></include>
@@ -129,14 +139,6 @@
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
-    </select>
-    <select id="checkRepeat" resultType="java.lang.Integer">
-        select count(1) from asset_mac_relation where replace(mac,':','-') in
-        <foreach collection="list" item="item" separator="," open="(" close=")">
-            replace(#{item},':','-')
-        </foreach>
-        and asset_id != #{id}
-        and status = 1
     </select>
     <!--删除资产mac关系-->
     <delete id="deleteByAssetId">
