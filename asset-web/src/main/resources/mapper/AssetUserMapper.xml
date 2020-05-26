@@ -404,6 +404,9 @@
         <if test=" mobile != null">
             AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
         </if>
+        <if test="key != null and key != ''">
+            AND akm.key_num like concat('%', replace(replace(#{key },'%','\%'),'_','\_'),'%')
+        </if>
         order by a.gmt_create desc
         <include refid="Page_List"></include>
     </select>
