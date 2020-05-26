@@ -833,6 +833,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String entryExecution(AssetEntryRequest request) {
+        //过滤没有taskId的资产
+        request.setAssetActivityRequests(request.getAssetActivityRequests().stream().filter(v -> StringUtils.isNotBlank(v.getTaskId())).collect(Collectors.toList()));
+        if (CollectionUtils.isEmpty(request.getAssetActivityRequests())) {
+            throw new BusinessException("该操作的资产当前用户无代办，准入实施无法操作");
+        }
         List<Integer> assetIds = request.getAssetActivityRequests().stream()
                 .map(ActivityHandleRequest::getId).collect(Collectors.toList());
         List<Asset> oldAssets = assetDao.findByIds(assetIds);
