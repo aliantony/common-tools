@@ -15,6 +15,8 @@ import com.antiy.common.base.PageResult;
 import com.antiy.common.base.QueryCondition;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,12 +131,17 @@ public class AssetBusinessController {
     @RequestMapping(value = "/query/business/name", method = RequestMethod.POST)
     public ActionResponse queryAllBusinessNameList()throws Exception{
         List<AssetBusiness> assetBusinessList=iAssetBusinessService.getAll();
-        Map<String,String> map=new HashMap<>(assetBusinessList.size());
+        List<Map<String,String>> list=new ArrayList<>();
+        if(CollectionUtils.isEmpty(assetBusinessList)){
+            return ActionResponse.success(Lists.newArrayList());
+        }
         assetBusinessList.forEach(t->{
+            Map<String,String> map=new HashMap<>(1);
             map.put("name",t.getName());
             map.put("uniqueId",t.getUniqueId());
+            list.add(map);
         });
-        return ActionResponse.success(map);
+        return ActionResponse.success(list);
     }
     /**
      * 通过ID查询
