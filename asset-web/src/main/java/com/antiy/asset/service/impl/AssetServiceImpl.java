@@ -472,7 +472,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     /**
      * 返回资产启动流程需要的formData
      * @param needScan
-     * @param categoryType
+     *
      * @return
      */
     private Map createFormData(boolean needScan, Integer isBorrow, Integer isOrphan, Integer categoryType,
