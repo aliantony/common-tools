@@ -2016,7 +2016,7 @@
         LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id and `user`.status=1
         left join asset_key_manage as akm on akm.key_user_id=asset.id and akm.is_delete=1
         left join asset_category_model as acm on acm.id=asset.category_model and acm.status=1
-        left join asset_lend_relation as alr on alr.asset_id=asset.id and alr.status=1
+        left join asset_lend_relation as alr on alr.asset_id=asset.id and alr.status=1  and alr.lend_status =1
         LEFT JOIN asset_user `userlend` ON `userlend`.id = alr.use_id and `userlend`.status=1
         where asset.id=#{id}
     </select>
