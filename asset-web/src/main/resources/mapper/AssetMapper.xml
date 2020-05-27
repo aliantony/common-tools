@@ -2001,8 +2001,6 @@
 
     <select id="queryInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetResponse">
 
-
-
         SELECT
         asset.id as stringId,
         asset.name,
@@ -2011,13 +2009,14 @@
         `user`.`name` AS responsibleUserName,
         akm.key_num as `key`,
         acm.name as categoryModelName,
-        alr.use_name as useName
+        userlend.`name` as useName
         FROM
         <include refid="Table_Name"></include>
-        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id
+        LEFT JOIN asset_user `user` ON `user`.id = asset.responsible_user_id and `user`.status=1
         left join asset_key_manage as akm on akm.key_user_id=asset.id and akm.is_delete=1
         left join asset_category_model as acm on acm.id=asset.category_model and acm.status=1
         left join asset_lend_relation as alr on alr.asset_id=asset.id and alr.status=1
+        LEFT JOIN asset_user `userlend` ON `userlend`.id = alr.use_id and `userlend`.status=1
         where asset.id=#{id}
     </select>
     <select id="getAssemblyInfoById" parameterType="java.lang.String" resultType="com.antiy.asset.entity.AssetAssembly">

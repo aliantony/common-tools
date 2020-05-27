@@ -255,6 +255,11 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public AssetResponse queryAssetInfo(Integer id) {
 
         AssetResponse assetResponse = assetDao.queryInfoByAssetId(id);
+
+        if(assetResponse.getUseName()==null){
+            assetResponse.setUseName(assetResponse.getResponsibleUserName());
+        }
+        assetResponse.setResponsibleUserName(null);
         return assetResponse;
     }
 

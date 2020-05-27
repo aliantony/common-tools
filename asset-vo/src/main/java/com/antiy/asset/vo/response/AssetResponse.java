@@ -18,7 +18,8 @@ import java.util.List;
 public class AssetResponse extends BaseResponse {
 
 
-
+  @ApiModelProperty("资产当前使用者")
+    private String useName;
     @ApiModelProperty("附件 暂存")
     private String temporaryFile;
     @Encode
@@ -398,7 +399,16 @@ public class AssetResponse extends BaseResponse {
     @ApiModelProperty("是否被整改过：1,已整改,2未整改,3整改中")
     private Integer                        rectification;
 
-    public Integer getRectification() {
+
+  public String getUseName() {
+    return useName;
+  }
+
+  public void setUseName(String useName) {
+    this.useName = useName;
+  }
+
+  public Integer getRectification() {
         return rectification;
     }
 
