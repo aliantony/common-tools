@@ -78,6 +78,7 @@
         <result column="code" property="code"/>
         <result column="mnv" property="mnv"/>
         <result column="key" property="key"/>
+        <result column="key_num" property="keyNum"/>
         <result column="net_type" property="netType"/>
         <result column="net_type_name" property="netTypeName"/>
         <result column="soft_version" property="softVersion"/>
@@ -2459,6 +2460,7 @@
         left join baseline_template_hist bt on asset.baseline_template_id = bt.id
         left join asset_business_relation abr on (asset.id=abr.asset_id and abr.status=1)
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
+        left join asset_key_manage akm on (akm.key_user_type = 1 and asset.id = akm.key_user_id and akm.is_delete = 1)
         <if test="departmentList != null and departmentList.size() > 0">
             left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
         </if>
@@ -2472,6 +2474,7 @@
     <select id="queryAssetList" resultMap="BaseResultMap">
         SELECT
         asset.*,
+        GROUP_CONCAT(distinct akm.key_num) as key_num,
         CONCAT_WS('/',asset.manufacturer,asset.name,asset.version) as mnv,
         GROUP_CONCAT( DISTINCT abr.asset_business_id ) AS asset_business,
         bt.tp_name as baseline_template_name,
@@ -2482,19 +2485,19 @@
         GROUP_CONCAT(distinct amr.mac) AS macs
         FROM
         (
-        select
-        asset.*,
-        GROUP_CONCAT( DISTINCT air.ip ) AS ip,
-        GROUP_CONCAT( DISTINCT amr.mac ) AS mac
-        from asset
-        left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
-        left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
-        <where>
-            <trim prefixOverrides="and">
-                <include refid="mq_asset"/>
-            </trim>
-        </where>
-        group by asset.id
+            select
+            asset.*,
+            GROUP_CONCAT( DISTINCT air.ip ) AS ip,
+            GROUP_CONCAT( DISTINCT amr.mac ) AS mac
+            from asset
+            left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
+            left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
+            <where>
+                <trim prefixOverrides="and">
+                    <include refid="mq_asset"/>
+                </trim>
+            </where>
+            group by asset.id
         ) asset
         left join asset_ip_relation air on (asset.id = air.asset_id and air.status = 1)
         left join asset_mac_relation amr on (asset.id = amr.asset_id and amr.status = 1)
@@ -2503,6 +2506,7 @@
         left join asset_group_relation agr on (asset.id = agr.asset.id = agr.status = 1)
         left join asset_nettype_manage anm on (asset.net_type = anm.id and anm.status = 1)
         left join asset_category_model acm on (asset.category_model = acm.id and acm.status = 1)
+        left join asset_key_manage akm on (akm.key_user_type = 1 and asset.id = akm.key_user_id and akm.is_delete = 1)
         <if test="departmentList != null and departmentList.size() > 0">
             left join asset_user au on (asset.responsible_user_id = au.id and au.status = 1)
         </if>
@@ -2662,9 +2666,7 @@
             and asset.house_location like
             CONCAT('%',replace(replace(replace(#{houseLocation},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>
-        <if test="key != null and key != ''">
-            and asset.key like CONCAT('%',replace(replace(replace(#{key},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-        </if>
+
         <if test="names != null and names.size() > 0">
             and asset.name in
             <foreach item="item" collection="names" open="(" separator="," close=")">
@@ -2790,6 +2792,9 @@
                 #{item}
             </foreach>
         </if>
+        <if test="key != null and key != ''">
+           and akm.key_num like CONCAT('%',replace(replace(replace(#{key},'\\','\\\\'),'%','\%'),'_','\_'),'%')
+       </if>
     </sql>
 
     <update id="updateStatusByNumber" parameterType="com.antiy.asset.entity.Asset">
