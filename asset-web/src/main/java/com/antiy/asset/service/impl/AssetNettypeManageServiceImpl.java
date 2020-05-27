@@ -70,6 +70,7 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
         for (AssetNettypeManage en : all) {
             map.put(ObjectUtils.toString(en.getId()), JsonUtil.object2Json(en));
         }
+        redisUtil.del("net-type");
         redisUtil.hmset("net-type", map);
     }
 
@@ -96,9 +97,9 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
         }
         assetNettypeManage.setModifiedUser(LoginUserUtil.getLoginUser().getId());
         assetNettypeManage.setGmtModified(System.currentTimeMillis());
-        String id = assetNettypeManageDao.update(assetNettypeManage).toString();
-        redisUtil.hset("net-type", id, JsonUtil.object2Json(assetNettypeManage));
-        return id;
+        assetNettypeManageDao.update(assetNettypeManage);
+        redisUtil.hset("net-type", assetNettypeManage.getStringId(), JsonUtil.object2Json(assetNettypeManage));
+        return assetNettypeManage.getStringId();
     }
 
     @Override
@@ -146,8 +147,8 @@ public class AssetNettypeManageServiceImpl extends BaseServiceImpl<AssetNettypeM
             throw new BusinessException("该网络类型关联有资产，不能删除");
         }
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
-        String id = assetNettypeManageDao.deleteById(baseRequest.getStringId()).toString();
-        redisUtil.hdel("net-type", id);
-        return id;
+        assetNettypeManageDao.deleteById(baseRequest.getStringId());
+        redisUtil.hdel("net-type", baseRequest.getStringId());
+        return baseRequest.getStringId();
     }
 }
