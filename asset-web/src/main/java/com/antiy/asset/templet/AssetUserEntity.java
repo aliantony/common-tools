@@ -42,7 +42,7 @@ public class AssetUserEntity {
     /**
      * 住址
      */
-    @ExcelField(value = "address", align = 1, title = "地址", type = 0, length = 100, defaultDataMethod = "queryAllAreaYeZi", defaultDataBeanName = "assetTemplateServiceImpl")
+    @ExcelField(value = "address", align = 1, title = "地址", type = 0, length = 100, defaultDataMethod = "queryAllArea", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  address;
     /**
      * 详细地址
