@@ -137,7 +137,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             // 组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
                     AssetCpeTreeResponse.class);
-            assetCpeTreeResponse.setShow(true);
+            assetCpeTreeResponse.setIsShow(true);
             assetCpeTreeResponse.setChildrenNode(treeItem);
             responseList.add(assetCpeTreeResponse);
         }
@@ -178,7 +178,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             // 组装基准大类树形数据
             AssetCpeTreeResponse assetCpeTreeResponse = responseConverter.convert(assetCpeTree,
                     AssetCpeTreeResponse.class);
-            assetCpeTreeResponse.setShow(true);
+            assetCpeTreeResponse.setIsShow(true);
             assetCpeTreeResponse.setChildrenNode(treeItem);
             responseList.add(assetCpeTreeResponse);
         }
@@ -192,7 +192,7 @@ public class AssetCpeTreeServiceImpl extends BaseServiceImpl<AssetCpeTree> imple
             condition.setPid(assetCpeTree.getUniqueId());
             Integer hasNext = assetCpeTreeDao.countNextNode(condition);
             if (hasNext > 0) {
-                assetCpeTree.setShow(false);
+                assetCpeTree.setIsShow(false);
                 List<AssetCpeTree> assetCpeTreeList = assetCpeTreeDao.findNextNode(condition);
                 List<AssetCpeTreeResponse> responseList = responseConverter.convert(assetCpeTreeList,
                         AssetCpeTreeResponse.class);

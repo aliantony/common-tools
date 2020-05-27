@@ -36,7 +36,7 @@ public class AssetCpeTreeResponse extends BaseResponse {
     /**
      * 是否默认显示
      */
-    private Boolean show;
+    private Boolean isShow;
 
     /**
      * 子节点数据
@@ -51,12 +51,12 @@ public class AssetCpeTreeResponse extends BaseResponse {
         this.businessId = businessId;
     }
 
-    public Boolean getShow() {
-        return show;
+    public Boolean getIsShow() {
+        return isShow;
     }
 
-    public void setShow(Boolean show) {
-        this.show = show;
+    public void setIsShow(Boolean isShow) {
+        this.isShow = isShow;
     }
 
     public List<AssetCpeTreeResponse> getChildrenNode() {
