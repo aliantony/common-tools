@@ -174,6 +174,10 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public String saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
+        ParamterExceptionUtils.isBlank(String.valueOf(request.getUseId()), "用户Id不能为空");
+        ParamterExceptionUtils.isBlank(String.valueOf(request.getLendTime()), "出借日期不能为空");
+        ParamterExceptionUtils.isBlank(String.valueOf(request.getLendPeriods()), "预计归还日期不能为空");
+
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
         assetLendRelation.setAssetId(aesEncoder.decode(request.getAssetId(), LoginUserUtil.getLoginUser().getUsername()));
