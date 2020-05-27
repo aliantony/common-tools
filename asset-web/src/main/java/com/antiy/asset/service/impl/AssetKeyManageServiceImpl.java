@@ -394,6 +394,8 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
 
     @Override
     public List<KeyPullDownResponse> userMapList(KeyPullQuery query) throws Exception {
+        List<Integer> userIds = keyManageDao.getAssetUserIds(2);
+        query.setAssetUserIds(userIds);
         return keyManageDao.userMapList(query);
     }
 }
