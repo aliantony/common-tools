@@ -382,7 +382,7 @@
 
     <select id="queryUserList" resultType="com.antiy.asset.entity.AssetUser">
         select a.id, a.name, a.department_id AS departmentId,
-        b.name as departmentName,
+        b.name as departmentName, a.address, a.address addressName,
         a.email, a.qq, a.weixin, a.mobile, a.address,detail_address as detailAddress, position, a.create_user AS
         createUser, a.modify_user AS modifyUser,
         a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo,
