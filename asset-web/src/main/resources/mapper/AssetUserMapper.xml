@@ -242,25 +242,7 @@
         </where>
     </select>
 
-    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
-        select
-        count(1) count
-        from asset_user a left join asset_department b on a.department_id = b.id
-        where 1 = 1
-        <if test=" departmentId != null and departmentId != ''">
-            AND a.department_id in
-            <foreach collection="departmentIds" separator="," open="(" close=")" index="index" item="item">
-                #{item }
-            </foreach>
-        </if>
-        <if test=" name != null and name != ''">
-            AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
-        </if>
-        <if test=" mobile != null and mobile != ''">
-            AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
-        </if>
-        and a.status = 1
-    </select>
+
 
     <select id="findListCount" resultType="int" parameterType="com.antiy.asset.vo.query.AssetUserQuery">
         select
@@ -379,10 +361,32 @@
             )
         </foreach>
     </insert>
-
+    <select id="findCount" resultType="int" parameterType="com.antiy.common.base.ObjectQuery">
+        select
+        count(1) count
+        from asset_user a left join asset_department b on a.department_id = b.id
+        left join asset_key_manage akm on (akm.key_user_id = a.id and akm.is_delete = 1)
+        where 1 = 1
+        <if test=" departmentId != null and departmentId != ''">
+            AND a.department_id in
+            <foreach collection="departmentIds" separator="," open="(" close=")" index="index" item="item">
+                #{item }
+            </foreach>
+        </if>
+        <if test=" name != null and name != ''">
+            AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
+        </if>
+        <if test=" mobile != null and mobile != ''">
+            AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="key != null and key != ''">
+            AND akm.key_num like concat('%', replace(replace(#{key },'%','\%'),'_','\_'),'%')
+        </if>
+        and a.status = 1
+    </select>
     <select id="queryUserList" resultType="com.antiy.asset.entity.AssetUser">
         select a.id, a.name, a.department_id AS departmentId,
-        b.name as departmentName,
+        b.name as departmentName, a.address, a.address addressName,
         a.email, a.qq, a.weixin, a.mobile, a.address,detail_address as detailAddress, position, a.create_user AS
         createUser, a.modify_user AS modifyUser,
         a.gmt_create AS gmtCreate, a.gmt_modified AS gmtModified, a.status,a.memo,
@@ -403,6 +407,9 @@
         </if>
         <if test=" mobile != null">
             AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
+        </if>
+        <if test="key != null and key != ''">
+            AND akm.key_num like concat('%', replace(replace(#{key },'%','\%'),'_','\_'),'%')
         </if>
         order by a.gmt_create desc
         <include refid="Page_List"></include>

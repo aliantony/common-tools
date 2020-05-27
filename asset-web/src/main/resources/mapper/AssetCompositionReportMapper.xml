@@ -405,7 +405,7 @@
                 </choose>
             </when>
             <otherwise>
-                t.importance_degree desc
+                t.first_enter_nett desc , t.importance_degree asc
             </otherwise>
         </choose>
 

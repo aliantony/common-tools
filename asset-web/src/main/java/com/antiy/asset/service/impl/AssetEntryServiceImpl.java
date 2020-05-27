@@ -87,6 +87,8 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
     private String patchInstallCompleteUrl;
     @Value("${queryConfigCompleteUrl}")
     private String configCompleteUrl;
+    @Value("${api.entry.url}")
+    private String apiEntryUrl;
 
     @Override
     public PageResult<AssetEntryResponse> queryPage(AssetEntryQuery query) throws Exception {
@@ -195,8 +197,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
             if (CollectionUtils.isNotEmpty(ip)) {
                 ips = String.join(",", ip);
             }
-//            boolean isSuccess = entryControl(macs, Integer.valueOf(request.getUpdateStatus()),request.getEntrySource().getMsg(),ips);
-            boolean isSuccess = true;
+            boolean isSuccess = entryControl(macs, Integer.valueOf(request.getUpdateStatus()),request.getEntrySource().getMsg(),ips);
 
             //操作日志-安全事件
             boolean isAccess = EnumUtil.equals(Integer.valueOf(request.getUpdateStatus()), AssetEnterStatusEnum.ENTERED);
@@ -348,61 +349,24 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
         return removedRequest;
     }
 
-    private boolean sendCommond(EntrySystemRequest request,boolean isAllow) {
+    public boolean sendCommond(EntrySystemRequest request,boolean isAllow) {
         //todo 测试是否可以下发指令通信
-        int count = 0;
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        //获取可用连接的超时时间15秒
-        requestFactory.setConnectionRequestTimeout(15_000);
-        //建立连接前的超时时间15秒
-        requestFactory.setConnectTimeout(15_000);
-        //建立连接后获取响应的超时时间15秒
-        requestFactory.setReadTimeout(15_000);
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
-        HttpHeaders headers = new HttpHeaders();
-        MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
-        headers.setContentType(type);
-
-        EntrySystemResponse response = null;
-        //errno 错误码,0表示没有错
-        Integer errno = 0;
-        //下发指令
-        do {
-            count++;
-            try {
-                //获取token
-                EntrySystemResponse tokenResponse = restTemplate.getForObject(entrySystemTokenUrl, EntrySystemResponse.class);
-                if (Objects.isNull(tokenResponse) || !Objects.equals(errno, tokenResponse.getErrno())) {
-                    LogUtils.info(logger,"获取准入系统token失败:{}",tokenResponse);
-                    continue;
-                }
-                request.setToken(tokenResponse.getToken());
-
-                //准入允许
-                if (isAllow) {
-                    response=restTemplate.postForObject(allowEntryUrl, request, EntrySystemResponse.class);
-                }else {
-                    EntrySystemForbiddenRequest forbiddenRequest = (EntrySystemForbiddenRequest) request;
-                    response=restTemplate.postForObject(forbiddenEntryUrl, forbiddenRequest, EntrySystemResponse.class);
-                }
-
-            } catch (Exception e) {
-                logger.warn("指令第{}次下发失败，代码异常：{}", count, e.getMessage());
-                continue;
-            }
-            //下发失败，继续下发指令
-            if (response == null || !Objects.equals(errno, response.getErrno())) {
-                logger.info("指令第{}次下发失败,response:{}", response);
-                continue;
-            }
-                break;
-
-
-        } while (count < 2);
-        if (response == null || !Objects.equals(errno, response.getErrno())) {
-            return false;
+        ActionResponse response = null;
+        Map<String, Object> param = new HashMap<>();
+        param.put("realSend", 0);
+        param.put("allow", isAllow ? 1 : 2);
+        param.put("entrySystemRequest", request);
+        try {
+            response = (ActionResponse) client.post(param, new ParameterizedTypeReference<ActionResponse>() {
+            }, apiEntryUrl);
+        } catch (Exception e) {
+            LogUtils.error(logger, e.getMessage());
         }
-        return true;
+        if (response == null || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+            throw new BusinessException("api Module调用失败");
+        }
+        Boolean result = (Boolean) response.getBody();
+        return result;
     }
 
 

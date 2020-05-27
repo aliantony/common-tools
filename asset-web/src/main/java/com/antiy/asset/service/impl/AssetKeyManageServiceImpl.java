@@ -213,11 +213,12 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
 
     private Integer assetKeyUpdate(AssetKeyManage keyManage) throws Exception {
 
-        Asset asset = assetDao.getById(keyManage.getKeyUserId());
+        Asset asset = assetDao.getById(keyManage.getKeyUserId().toString());
         if (asset != null) {
             asset = new Asset();
             asset.setId(keyManage.getKeyUserId());
-            asset.setKey(keyManage.getKeyNum());
+//            asset.setKey(keyManage.getKeyNum());
+            asset.setKey("");
             assetDao.update(asset);
         }
 

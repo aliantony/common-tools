@@ -2,6 +2,7 @@ package com.antiy.asset.controller;
 
 import javax.annotation.Resource;
 
+import com.antiy.asset.cache.OsDataCache;
 import org.springframework.web.bind.annotation.*;
 
 import com.antiy.asset.service.IAssetCpeTreeService;
@@ -26,6 +27,9 @@ public class AssetCpeTreeController {
 
     @Resource
     public IAssetCpeTreeService iAssetCpeTreeService;
+
+    @Resource
+    private OsDataCache osDataCache;
 
     /**
      * 保存
@@ -164,6 +168,6 @@ public class AssetCpeTreeController {
     })
     @PostMapping(value = "/query/assetOS")
     public ActionResponse getAssetOS() throws Exception{
-        return ActionResponse.success(iAssetCpeTreeService.queryAssetOs());
+        return ActionResponse.success(osDataCache.getTree(OsDataCache.ASSET_OS_TREE));
     }
 }
