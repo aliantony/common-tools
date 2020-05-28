@@ -425,7 +425,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
         activityRequest.setFormData(
                 createFormData(request.getNeedScan(), request.getAsset().getIsBorrow(), request.getAsset().getIsOrphan(),
-                        setCategroy(DataTypeUtils.stringToInteger(request.getAsset().getCategoryModel())),
+                        setCategroy(request.getAsset().getCategoryModel()),
                         request.getAsset().getAreaId()));
         ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
         if (null == actionResponse
@@ -531,31 +531,31 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void setCategroy(Asset asset) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
                 .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
-        Integer flag = DataTypeUtils.stringToInteger(asset.getCategoryModel());
+        String flag = asset.getCategoryModel();
         for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
-            if (categoryModel.getId().equals(flag)) {
+            if (categoryModel.getStringId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
                     asset.setCategoryType(DataTypeUtils.integerToString(categoryModel.getId()));
                     break;
                 } else {
-                    flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
+                    flag = categoryModel.getParentId();
                 }
             }
         }
     }
 
-    private Integer setCategroy(Integer category) {
+    private Integer setCategroy(String category) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
                 .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
-        Integer flag = category;
+        String flag = category;
         for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
-            if (categoryModel.getId().equals(flag)) {
+            if (categoryModel.getStringId().equals(flag)) {
                 if ("1".equals(categoryModel.getParentId())) {
                     return categoryModel.getId();
                 } else {
-                    flag = DataTypeUtils.stringToInteger(categoryModel.getParentId());
+                    flag = categoryModel.getParentId();
                 }
             }
         }
@@ -1352,7 +1352,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 校验资产合规性，如ip、mac不能重复等
         checkAssetCompliance(assetOuterRequest);
         Integer categoryType = setCategroy(
-                DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel()));
+                assetOuterRequest.getAsset().getCategoryModel());
         assetOuterRequest.getAsset().setCategoryType(DataTypeUtils.integerToString(categoryType));
         LoginUser loginUser = LoginUserUtil.getLoginUser();
         synchronized (lock) {
@@ -1438,7 +1438,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         activityRequest.setAssignee(LoginUserUtil.getLoginUser().getId() + "");
         activityRequest.setFormData(createFormData(assetOuterRequest.getNeedScan(),
                 assetOuterRequest.getAsset().getIsBorrow(), assetOuterRequest.getAsset().getIsOrphan(),
-                setCategroy(DataTypeUtils.stringToInteger(assetOuterRequest.getAsset().getCategoryModel())),
+                setCategroy(assetOuterRequest.getAsset().getCategoryModel()),
                 assetOuterRequest.getAsset().getAreaId()));
         ActionResponse actionResponse = activityClient.manualStartProcess(activityRequest);
         if (null == actionResponse
@@ -4199,7 +4199,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     if (StringUtils.isNotBlank(assetUser.getDepartmentId())) {
                         AssetDepartment department = (AssetDepartment) assetBaseDataCache.get(
                                 AssetBaseDataCache.ASSET_DEPARTMENT,
-                               assetUser.getDepartmentId());
+                                assetUser.getDepartmentId());
                         if (!Objects.isNull(department)) {
                             asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
                             asset.setDepartmentName(department.getName());
@@ -4249,7 +4249,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 object.setWaitingTaskReponse(processMap.get(object.getStringId()));
             }
             object.setCategoryType(
-                    DataTypeUtils.integerToString(setCategroy(DataTypeUtils.stringToInteger(object.getCategoryModel()))));
+                    DataTypeUtils.integerToString(setCategroy(object.getCategoryModel())));
             if (!"2".equals(object.getCategoryType()) && !"5".equals(object.getCategoryType())) {
                 object.setRectification(null);
             }
