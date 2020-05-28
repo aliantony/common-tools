@@ -18,7 +18,11 @@ public enum AssetChangeDetailEnum implements ValuedEnum {
 	/**
 	 * 入网审批-4
 	 */
-     OPERATION_WAIT_LEADER_CHECK("入网审批。审批情况：",AssetStatusEnum.NET_IN_CHECK.getCode()),
+	OPERATION_WAIT_LEADER_CHECK("入网审批。审批情况：",AssetStatusEnum.NET_IN_CHECK.getCode()),
+	/**
+	 * 整改中-3
+	 */
+     OPERATION_CORRECTING("整改资产：",AssetStatusEnum.CORRECTING.getCode()),
 	/**
 	 * 准入实施-6
 	 */
