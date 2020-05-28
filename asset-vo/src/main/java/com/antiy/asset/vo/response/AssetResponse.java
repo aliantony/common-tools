@@ -398,6 +398,15 @@ public class AssetResponse extends BaseResponse {
      */
     @ApiModelProperty("是否被整改过：1,已整改,2未整改,3整改中")
     private Integer                        rectification;
+    @ApiModelProperty("1 未走完漏洞整改流程  2 已走完漏洞整改流程")
+  private Integer  isVlunCorrect;
+  public Integer getIsVlunCorrect() {
+    return isVlunCorrect;
+  }
+
+  public void setIsVlunCorrect(Integer isVlunCorrect) {
+    this.isVlunCorrect = isVlunCorrect;
+  }
 
 
   public String getUseName() {

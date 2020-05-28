@@ -333,7 +333,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             Set<String> networkCategoryList = assetLinkRelationService.getCategoryNodeList(Arrays.asList(networkCategory)).stream().map(t -> t.toString()).collect(Collectors.toSet());
             List<ActivityHandleRequest> requestList = new ArrayList<>();
             for(Asset asset:assetsInDb){
-                boolean isComputerCategoryAllow=computerCategoryList.contains(asset.getCategoryModel())&&asset.getIsBorrow()!=1&&asset.getIsOrphan()!=1;
+                Integer one=1;
+                boolean isComputerCategoryAllow=computerCategoryList.contains(asset.getCategoryModel())&& !one.equals(asset.getIsBorrow())&&!one.equals(asset.getIsOrphan());
                 if(isComputerCategoryAllow ||networkCategoryList.contains(asset.getCategoryModel()) ){
                     ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
                     activityHandleRequest.setId(asset.getId().toString());
@@ -472,6 +473,13 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
 
         assetCorrectIInfoResponse.setNeedManualPush("1");
+
+        //修改漏洞整改流程标志字段
+        Asset asset=new Asset();
+        asset.setId(assetOfDB.getId());
+        asset.setIsVlunCorrect(2);
+        assetDao.update(asset);
+
         //资产跳过整改不走工作流
         if(assetOfDB.getRectification()==1){
             return assetCorrectIInfoResponse;

@@ -86,6 +86,7 @@
         <result column="rectification" property="rectification"/>
         <result column="install_date" property="installDate"/>
         <result column="activiate_date" property="activiateDate"/>
+        <result column="is_vlun_correct" property="isVlunCorrect"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -143,7 +144,7 @@
             install_date,
             activiate_date,
             expiration_reminder,
-            is_borrow,
+            is_borrow
     </sql>
 
     <sql id="IF_Value_Column_List_ForBatch">
@@ -1377,6 +1378,7 @@
         asset.install_template_id,
         asset.baseline_template_id,
         asset.step_node,
+        asset.is_vlun_correct,
         bt.tp_name as baseline_template_name,
         net_status
 

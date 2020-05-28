@@ -314,6 +314,20 @@ public class Asset extends BaseEntity {
      */
     private Integer rectification;
 
+    /**
+     *
+     *1 未走完漏洞整改流程  2 已走完漏洞整改流程
+     */
+    private Integer  isVlunCorrect;
+
+    public Integer getIsVlunCorrect() {
+        return isVlunCorrect;
+    }
+
+    public void setIsVlunCorrect(Integer isVlunCorrect) {
+        this.isVlunCorrect = isVlunCorrect;
+    }
+
     public String getKeyNum() {
         return keyNum;
     }
