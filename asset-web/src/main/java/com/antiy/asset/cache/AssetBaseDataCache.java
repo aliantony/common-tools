@@ -39,7 +39,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
     private static Integer                                  DEFAULT_SIZE         = 16;
     private Logger                                          log                  = LogUtils.get(this.getClass());
 
-    private Map<String, Map<Integer, ? extends BaseEntity>> caches               = new ConcurrentHashMap<>();
+    private Map<String, Map<String, ? extends BaseEntity>> caches               = new ConcurrentHashMap<>();
     @Resource
     private AssetBusinessDao                                assetBusinessDao;
     @Resource
@@ -68,35 +68,35 @@ public class AssetBaseDataCache<T extends BaseEntity> {
             List<AssetBusiness> assetBusinesses = assetBusinessDao.getAll();
             if (CollectionUtils.isNotEmpty(assetBusinesses)) {
                 caches.put(ASSET_BUSINESS,
-                    assetBusinesses.stream().collect(Collectors.toMap(AssetBusiness::getId, Function.identity())));
+                    assetBusinesses.stream().collect(Collectors.toMap(AssetBusiness::getUniqueId, Function.identity())));
             } else {
                 caches.put(ASSET_BUSINESS, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
             List<AssetGroup> assetGroups = assetGroupDao.getAll();
             if (CollectionUtils.isNotEmpty(assetGroups)) {
                 caches.put(ASSET_GROUP,
-                    assetGroups.stream().collect(Collectors.toMap(AssetGroup::getId, Function.identity())));
+                    assetGroups.stream().collect(Collectors.toMap(AssetGroup::getStringId, Function.identity())));
             } else {
                 caches.put(ASSET_GROUP, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
             List<AssetUser> assetUsers = assetUserDao.getAll();
             if (CollectionUtils.isNotEmpty(assetUsers)) {
                 caches.put(ASSET_USER,
-                    assetUsers.stream().collect(Collectors.toMap(AssetUser::getId, Function.identity())));
+                    assetUsers.stream().collect(Collectors.toMap(AssetUser::getStringId, Function.identity())));
             } else {
                 caches.put(ASSET_USER, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
             List<AssetDepartment> assetDepartments = assetDepartmentDao.getAll();
             if (CollectionUtils.isNotEmpty(assetDepartments)) {
                 caches.put(ASSET_DEPARTMENT,
-                    assetDepartments.stream().collect(Collectors.toMap(AssetDepartment::getId, Function.identity())));
+                    assetDepartments.stream().collect(Collectors.toMap(AssetDepartment::getStringId, Function.identity())));
             } else {
                 caches.put(ASSET_DEPARTMENT, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
             List<AssetCategoryModel> assetCategoryModels = assetCategoryModelDao.getAll();
             if (CollectionUtils.isNotEmpty(assetCategoryModels)) {
                 caches.put(ASSET_CATEGORY_MODEL, assetCategoryModels.stream()
-                    .collect(Collectors.toMap(AssetCategoryModel::getId, Function.identity())));
+                    .collect(Collectors.toMap(AssetCategoryModel::getStringId, Function.identity())));
             } else {
                 caches.put(ASSET_CATEGORY_MODEL, new ConcurrentHashMap<>(DEFAULT_SIZE));
             }
@@ -133,7 +133,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
      * @param id
      * @return
      */
-    public T get(String type, Integer id) {
+    public T get(String type, String id) {
         Map cache = caches.get(type);
         if (MapUtils.isNotEmpty(cache) && cache.containsKey(id)) {
             return (T) cache.get(id);
@@ -146,7 +146,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
      * @param type
      * @param id
      */
-    public void remove(String type, Integer id) {
+    public void remove(String type, String id) {
         Map cache = caches.get(type);
         if (MapUtils.isNotEmpty(cache) && cache.containsKey(id)) {
             cache.remove(id);
@@ -158,7 +158,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
      * @param type
      * @param ids
      */
-    public void remove(String type, List<Integer> ids) {
+    public void remove(String type, List<String> ids) {
         Map cache = caches.get(type);
         if (MapUtils.isNotEmpty(cache)) {
             ids.stream().forEach(id -> {
@@ -175,7 +175,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
     public void update(String type, T data) {
         Map cache = caches.get(type);
         if (MapUtils.isNotEmpty(cache)) {
-            if (cache.containsKey(data.getId())) {
+            if (cache.containsKey(data.getStringId())) {
                 cache.remove(data.getId());
             }
             cache.put(data.getId(), data);
@@ -188,7 +188,7 @@ public class AssetBaseDataCache<T extends BaseEntity> {
      * @param ids
      * @return
      */
-    public List<T> getAll(String type, Integer[] ids) {
+    public List<T> getAll(String type, String[] ids) {
         List<T> list = Lists.newArrayList();
         Map cache = caches.get(type);
         if (ids != null && ids.length > 0) {

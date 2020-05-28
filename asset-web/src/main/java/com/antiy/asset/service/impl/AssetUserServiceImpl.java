@@ -171,7 +171,7 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
             userInfo != null ? userInfo.getName() : null, id, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_USER_DELETE.getName() + " {}", id);
         // 更新缓存
-        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_USER, id);
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_USER, DataTypeUtils.integerToString(id));
         return ActionResponse.success();
     }
 

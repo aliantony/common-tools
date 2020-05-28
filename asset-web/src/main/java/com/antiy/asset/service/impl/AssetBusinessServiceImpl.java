@@ -259,7 +259,7 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
     public String deleteAssetBusinessById(BaseRequest baseRequest) throws Exception {
         ParamterExceptionUtils.isBlank(baseRequest.getStringId(), "主键Id不能为空");
         // 更新缓存
-        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_BUSINESS, baseRequest.getId());
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_BUSINESS, baseRequest.getStringId());
         return assetBusinessDao.deleteById(baseRequest.getStringId()).toString();
     }
 

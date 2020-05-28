@@ -1,18 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.convert.SelectConvert;
 import com.antiy.asset.dao.AssetDao;
@@ -45,6 +32,17 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
 import com.antiy.common.utils.ParamterExceptionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产组表 服务实现类 </p>
@@ -56,23 +54,23 @@ import com.antiy.common.utils.ParamterExceptionUtils;
 public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implements IAssetGroupService {
 
     @Resource
-    private AssetGroupDao                                 assetGroupDao;
+    private AssetGroupDao assetGroupDao;
     @Resource
-    private AssetDao                                      assetDao;
+    private AssetDao assetDao;
     @Resource
-    private AesEncoder                                    aesEncoder;
+    private AesEncoder aesEncoder;
     @Resource
-    private AssetGroupRelationDao                         assetGroupRelationDao;
+    private AssetGroupRelationDao assetGroupRelationDao;
     @Resource
-    private SelectConvert                                 selectConvert;
+    private SelectConvert selectConvert;
     @Resource
-    private RedisUtil                                     redisUtil;
+    private RedisUtil redisUtil;
     @Resource
     private BaseConverter<AssetGroup, AssetGroupResponse> assetGroupToResponseConverter;
     @Resource
-    private BaseConverter<AssetGroupRequest, AssetGroup>  assetGroupToAssetGroupConverter;
+    private BaseConverter<AssetGroupRequest, AssetGroup> assetGroupToAssetGroupConverter;
     @Resource
-    private AssetBaseDataCache                            assetBaseDataCache;
+    private AssetBaseDataCache assetBaseDataCache;
 
     @Override
     @Transactional
@@ -104,10 +102,10 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         if (!Objects.equals(0, result)) { // 写入业务日志
             LogHandle.log(assetGroup.toString(), AssetEventEnum.ASSET_GROUP_INSERT.getName(),
-                AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_GROUP_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_INSERT.getName(), assetGroup.getId(),
-                assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
+                    assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_INSERT.getName() + " {}", assetGroup.toString());
         }
 
@@ -154,7 +152,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         // 查询已有的关联信息
         List<AssetGroupRelation> existedRelationList = assetGroupRelationDao
-            .listRelationByGroupId(DataTypeUtils.stringToInteger(request.getId()));
+                .listRelationByGroupId(DataTypeUtils.stringToInteger(request.getId()));
         // 创建资产组关联关系,插入记录
         if (ArrayUtils.isNotEmpty(assetIdArr)) {
             for (String assetId : assetIdArr) {
@@ -180,14 +178,14 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 existedRelationList.removeIf(e -> e.getAssetId().equals(requestAssetId));
             }
             List<Integer> deleteIdList = existedRelationList.stream().map(AssetGroupRelation::getId)
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(deleteIdList)) {
                 assetRelationResult = assetGroupRelationDao.deleteBatch(deleteIdList);
                 if (!Objects.equals(0, assetRelationResult)) {
                     // 写入业务日志(删除关联资产)
                     LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName(),
-                        assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
-                        BusinessPhaseEnum.NONE));
+                            assetGroup.getId(), assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT,
+                            BusinessPhaseEnum.NONE));
                     LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_DELETE.getName() + " {}", assetGroup);
                 }
             }
@@ -205,7 +203,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                 List<String> assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
                 // 资产关联的资产组不能超过10个
                 ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
-                    "资产关联的资产组不能超过10个");
+                        "资产关联的资产组不能超过10个");
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             }
@@ -219,11 +217,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
                     assetGroupNameList = assetGroupRelationDao.findAssetGroupNameByAssetId(assetId);
                 } catch (Exception e) {
                     LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_RELATION_INSERT.getName() + " {}",
-                        assetGroup.toString());
+                            assetGroup.toString());
                 }
                 // 资产关联的资产组不能超过10个
                 ParamterExceptionUtils.isTrue(assetGroupNameList.size() <= Constants.MAX_ASSET_RELATION_GROUP_COUNT,
-                    "资产关联的资产组不能超过10个");
+                        "资产关联的资产组不能超过10个");
                 String assetGroupName = assetGroupNameList.toString();
                 updateAssetGroupName(map, assetNameBuilder, assetId, assetGroupNameList, assetGroupName);
             });
@@ -261,7 +259,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
         if (!Objects.equals(0, updateGroupResult)) {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_UPDATE.getName(), assetGroup.getId(),
-                assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
+                    assetGroup.getName(), assetGroup, BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_UPDATE.getName() + " {}", assetGroup);
         }
 
@@ -272,11 +270,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     public List<AssetGroupResponse> findListAssetGroup(AssetGroupQuery query) throws Exception {
         List<AssetGroup> assetGroupList = assetGroupDao.findQuery(query);
         List<AssetGroupResponse> assetResponseList = assetGroupToResponseConverter.convert(assetGroupList,
-            AssetGroupResponse.class);
+                AssetGroupResponse.class);
 
         for (AssetGroupResponse assetGroupResponse : assetResponseList) {
             List<String> assetList = assetGroupRelationDao
-                .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
+                    .findAssetNameByAssetGroupId(Integer.valueOf(assetGroupResponse.getStringId()));
             StringBuilder assetDetail = new StringBuilder();
             for (String assetName : assetList) {
                 if (assetList.size() == 1) {
@@ -289,7 +287,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetGroupResponse.setAssetList(assetList);
             assetGroupResponse.setCreateUser(assetGroupResponse.getCreateUser());
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                assetGroupResponse.getCreateUser());
+                    assetGroupResponse.getCreateUser());
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             assetGroupResponse.setCreateUserName(sysUser == null ? "" : sysUser.getName());
         }
@@ -299,7 +297,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public PageResult<AssetGroupResponse> findPageAssetGroup(AssetGroupQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCount(query), query.getCurrentPage(),
-            this.findListAssetGroup(query));
+                this.findListAssetGroup(query));
     }
 
     @Override
@@ -309,6 +307,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     /**
      * 通联查询的资产组下拉项接口
+     *
      * @return
      * @throws Exception
      */
@@ -317,9 +316,9 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         AssetQuery query = new AssetQuery();
         if ((isNet == null) || isNet == 2) {
             query.setCategoryModels(
-                new Integer[] { AssetCategoryEnum.NETWORK.getCode(), AssetCategoryEnum.COMPUTER.getCode() });
+                    new Integer[]{AssetCategoryEnum.NETWORK.getCode(), AssetCategoryEnum.COMPUTER.getCode()});
         } else {
-            query.setCategoryModels(new Integer[] { AssetCategoryEnum.NETWORK.getCode() });
+            query.setCategoryModels(new Integer[]{AssetCategoryEnum.NETWORK.getCode()});
         }
         query.setAreaIds(LoginUserUtil.getLoginUser().getAreaIdsOfCurrentUser().toArray(new String[0]));
         List<Integer> statusList = new ArrayList<>();
@@ -338,7 +337,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
     @Override
     public AssetGroupResponse findGroupById(String id) throws Exception {
         AssetGroupResponse assetGroupResponse = assetGroupToResponseConverter.convert(assetGroupDao.getById(id),
-            AssetGroupResponse.class);
+                AssetGroupResponse.class);
         return assetGroupResponse;
     }
 
@@ -347,7 +346,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
         List<SelectResponse> selectResponseList = new ArrayList<>();
         for (AssetGroup assetGroup : assetGroupDao.findCreateUser()) {
             String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysUser.class,
-                assetGroup.getCreateUser());
+                    assetGroup.getCreateUser());
             SysUser sysUser = redisUtil.getObject(key, SysUser.class);
             SelectResponse selectResponse = new SelectResponse();
             selectResponse.setId(DataTypeUtils.integerToString(assetGroup.getCreateUser()));
@@ -362,6 +361,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
 
     /**
      * 更新资产主表资产组信息
+     *
      * @param map
      * @param assetNameBuilder
      * @param assetId
@@ -378,7 +378,7 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             assetNameBuilder.delete(0, assetNameBuilder.length());
             // 写入业务日志
             LogHandle.log(assetGroupNameList.toString(), AssetEventEnum.ASSET_MODIFY.getName(),
-                AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_MODIFY.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.info(logger, AssetEventEnum.ASSET_MODIFY.getName() + " {}", assetGroupNameList.toString());
         } else {
             map.put("assetGroupName", null);
@@ -396,11 +396,11 @@ public class AssetGroupServiceImpl extends BaseServiceImpl<AssetGroup> implement
             throw new BusinessException("您已关联对应资产，无法进行注销");
         } else {
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_GROUP_DELETE.getName(),
-                DataTypeUtils.stringToInteger(id.toString()), assetGroupDao.getNameById(id), id,
-                BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
+                    DataTypeUtils.stringToInteger(id.toString()), assetGroupDao.getNameById(id), id,
+                    BusinessModuleEnum.ASSET_GROUP_MANAGEMENT, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_GROUP_DELETE.getName() + " {}", id);
             // 更新缓存
-            assetBaseDataCache.remove(AssetBaseDataCache.ASSET_GROUP, (int) id);
+            assetBaseDataCache.remove(AssetBaseDataCache.ASSET_GROUP, String.valueOf(id));
             return assetGroupDao.deleteById(Integer.valueOf((String) id));
         }
     }

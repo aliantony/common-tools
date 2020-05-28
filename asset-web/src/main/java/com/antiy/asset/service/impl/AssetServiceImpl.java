@@ -206,7 +206,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                         BusinessExceptionUtils
                                 .isTrue(
                                         !Objects.isNull(assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
-                                                DataTypeUtils.stringToInteger(requestAsset.getResponsibleUserId()))),
+                                                requestAsset.getResponsibleUserId())),
                                         "使用者不存在，或已经注销");
                     }
                     List<AssetGroupRequest> assetGroup = requestAsset.getAssetGroups();
@@ -4194,12 +4194,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 责任人名称
             if (StringUtils.isNotBlank(asset.getResponsibleUserId())) {
                 AssetUser assetUser = (AssetUser) assetBaseDataCache.get(AssetBaseDataCache.ASSET_USER,
-                        DataTypeUtils.stringToInteger(asset.getResponsibleUserId()));
+                        asset.getResponsibleUserId());
                 if (assetUser != null) {
                     if (StringUtils.isNotBlank(assetUser.getDepartmentId())) {
                         AssetDepartment department = (AssetDepartment) assetBaseDataCache.get(
                                 AssetBaseDataCache.ASSET_DEPARTMENT,
-                                DataTypeUtils.stringToInteger(assetUser.getDepartmentId()));
+                               assetUser.getDepartmentId());
                         if (!Objects.isNull(department)) {
                             asset.setResponsibleUserName(department.getName() + "/" + assetUser.getName());
                             asset.setDepartmentName(department.getName());
@@ -4210,7 +4210,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 所属业务
             if (StringUtils.isNotBlank(asset.getAssetBusiness())) {
                 List<AssetBusiness> assetBusinessList = assetBaseDataCache.getAll(AssetBaseDataCache.ASSET_BUSINESS,
-                        DataTypeUtils.stringArrayToIntegerArray(asset.getAssetBusiness().split(",")));
+                        asset.getAssetBusiness().split(","));
                 if (CollectionUtils.isNotEmpty(assetBusinessList)) {
                     asset.setAssetBusiness(StringUtils.join(
                             assetBusinessList.stream().map(AssetBusiness::getName).collect(Collectors.toList()), ","));
