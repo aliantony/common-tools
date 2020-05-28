@@ -3700,6 +3700,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
         }
 
+        // 整改流程中的不予登记工作流
+        if (AssetStatusEnum.CORRECTING.getCode().equals(currentAssetList.get(0).getAssetStatus())) {
+            List<ActivityHandleRequest> activityHandleRequests = new ArrayList<>();
+
+            for (NoRegisterRequest request : list) {
+                // 获取流程实例id
+                Integer assetId = com.antiy.asset.util.DataTypeUtils.stringToInteger(request.getAssetId());
+                List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao
+                        .listByAssetIds(Arrays.asList(assetId));
+                ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
+                activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+                Map map = new HashMap();
+                if (request.getSource().equals("1")) {
+                    map.put("vulRectifyResult", "noRegister");
+                }
+                if (request.getSource().equals("2")) {
+                    map.put("baselineRectifyResult", "noRegister");
+                }
+                activityHandleRequest.setFormData(map);
+                activityHandleRequests.add(activityHandleRequest);
+            }
+
+            if (activityHandleRequests.size() > 0)
+                activityClient.completeTaskBatch(activityHandleRequests);
+        }
+
         List<Asset> assetList = new ArrayList<>(currentAssetList.size());
         for (Asset currentAsset : currentAssetList) {
             // 记录资产状态变更信息到操作记录表
@@ -3739,31 +3765,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 删除关联业务的资产
 
         relationDao.deleteByAssetId(assetIdList);
-        // 整改流程中的不予登记工作流
-        if (AssetStatusEnum.CORRECTING.getCode().equals(currentAssetList.get(0).getAssetStatus())) {
-            List<ActivityHandleRequest> activityHandleRequests = new ArrayList<>();
 
-            for (NoRegisterRequest request : list) {
-                // 获取流程实例id
-                Integer assetId = com.antiy.asset.util.DataTypeUtils.stringToInteger(request.getAssetId());
-                List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao
-                        .listByAssetIds(Arrays.asList(assetId));
-                ActivityHandleRequest activityHandleRequest = new ActivityHandleRequest();
-                activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
-                Map map = new HashMap();
-                if (request.getSource().equals("1")) {
-                    map.put("vulRectifyResult", "noRegister");
-                }
-                if (request.getSource().equals("2")) {
-                    map.put("baselineRectifyResult", "noRegister");
-                }
-                activityHandleRequest.setFormData(map);
-                activityHandleRequests.add(activityHandleRequest);
-            }
-
-            if (activityHandleRequests.size() > 0)
-                activityClient.completeTaskBatch(activityHandleRequests);
-        }
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
         return currentAssetList.size();
