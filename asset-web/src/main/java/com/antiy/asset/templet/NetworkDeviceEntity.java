@@ -50,7 +50,7 @@ public class NetworkDeviceEntity {
     /**
      * area
      */
-    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true, defaultDataMethod = "queryAllArea", defaultDataBeanName = "assetTemplateServiceImpl")
+    @ExcelField(value = "area", align = 1, title = "所属区域(必填)", required = true, defaultDataMethod = "queryAllAreaYeZi", defaultDataBeanName = "assetTemplateServiceImpl")
     private String  area;
 
     /**

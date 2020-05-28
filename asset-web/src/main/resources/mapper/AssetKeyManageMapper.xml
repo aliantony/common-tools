@@ -391,6 +391,10 @@
         </if>
     </select>
 
+    <select id="getAssetUserIds" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select key_user_id from asset_key_manage where key_user_type = #{type} and key_user_id is not null
+    </select>
+
     <select id="userMapList" parameterType="com.antiy.asset.vo.query.KeyPullQuery" resultType="com.antiy.asset.vo.response.KeyPullDownResponse">
         select
         t.id as id,
@@ -399,7 +403,12 @@
         asset_user t
         where
         t.status = 1
-        and t.id not in (select key_user_id from asset_key_manage where key_user_type = 2)
+        <if test=" assetUserIds != null and assetUserIds.size() > 0">
+            and t.id not in
+            <foreach collection="assetUserIds" item="item" index="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test=" multipleQuery != null and multipleQuery.trim != ''">
             and t.name LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
         </if>

@@ -92,19 +92,15 @@ public class AssetEntryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = ActionResponse.class, responseContainer = "actionResponse"),})
     @RequestMapping(value = "/access/export", method = RequestMethod.GET)
     @PreAuthorize(value = "hasAuthority('asset:admittance:export')")
-    public ActionResponse export(@ApiParam(value = "asset") @RequestParam(required = false) Integer status,
-                                 Integer start, Integer end, HttpServletRequest request,
+    public ActionResponse export(@ApiParam(value = "AssetEntryQuery")AssetEntryQuery assetQuery, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
+        Integer start = assetQuery.getStart();
+        Integer end = assetQuery.getEnd();
         if (start != null || end != null) {
             ParamterExceptionUtils.isTrue(start != null && end != null, "导出条数有误");
             ParamterExceptionUtils.isTrue(start <= end, "导出条数有误");
         }
-        AssetEntryQuery assetQuery = new AssetEntryQuery();
-        if (!Objects.isNull(status)) {
-            assetQuery.setEntryStatus(String.valueOf(status));
-        }
         assetQuery.setPageSize(Constants.ALL_PAGE);
-        assetQuery.validate();
         if (start != null) {
             assetQuery.setStart(start - 1);
             assetQuery.setEnd(end - start + 1);

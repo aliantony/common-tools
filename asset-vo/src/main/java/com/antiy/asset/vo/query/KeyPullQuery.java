@@ -22,6 +22,9 @@ public class KeyPullQuery implements ObjectValidator {
     @Size(max = 30, message = "综合查询条件不能超过30")
     private String multipleQuery;
 
+    @ApiModelProperty("资产用户ID")
+    private List<Integer> assetUserIds;
+
     /**
      * 用户管辖区域
      */
@@ -47,5 +50,13 @@ public class KeyPullQuery implements ObjectValidator {
 
     public void setAreaIds(List<String> areaIds) {
         this.areaIds = areaIds;
+    }
+
+    public List<Integer> getAssetUserIds() {
+        return assetUserIds;
+    }
+
+    public void setAssetUserIds(List<Integer> assetUserIds) {
+        this.assetUserIds = assetUserIds;
     }
 }
