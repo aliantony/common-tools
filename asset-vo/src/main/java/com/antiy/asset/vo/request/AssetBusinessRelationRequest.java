@@ -22,7 +22,7 @@ public class AssetBusinessRelationRequest extends BaseRequest implements ObjectV
      * 业务主键id
      */
     @ApiModelProperty("业务主键id")
-    @Encode
+    //@Encode
     private String  assetBusinessId;
     /**
      * 资产主键id
