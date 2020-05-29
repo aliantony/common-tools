@@ -4107,9 +4107,23 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         }
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(loginUser.getAreaIdsOfCurrentUser());
+        } else {
+            List<String> areaIds = Lists.newArrayList();
+            Collections.sort(assetMultipleQuery.getAreaIds());
+            for (String area:assetMultipleQuery.getAreaIds() ) {
+                if (!areaIds.contains(area)) {
+                    List<SysArea> sysArea = redisUtil.getObjectsByKeyword(
+                            ModuleEnum.SYSTEM.getType() + ":" + SysArea.class.getSimpleName() + ":" + area, SysArea.class);
+                    if (CollectionUtils.isNotEmpty(sysArea)) {
+                        areaIds.addAll(sysArea.stream().map(SysArea::getId).collect(Collectors.toList()));
+                    }
+                }
+            }
+            assetMultipleQuery.setAreaIds(areaIds);
         }
         if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) {
             List<String> caIds = Lists.newArrayList();
+            Collections.sort(assetMultipleQuery.getCategoryModels());
             for (String t : assetMultipleQuery.getCategoryModels()) {
                 AssetCategoryModel assetCategoryModel = assetCategoryModelService
                         .getById(DataTypeUtils.stringToInteger(t));
