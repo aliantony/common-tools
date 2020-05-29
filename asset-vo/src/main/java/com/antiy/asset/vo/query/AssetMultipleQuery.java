@@ -39,7 +39,7 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     private String multipleQuery;
 
     @ApiModelProperty("资产类型")
-    private String categoryModels;
+    private List<String> categoryModels;
     private List<String> categoryModelList;
     @ApiModelProperty("资产状态")
     private List<Integer> assetStatusList;
@@ -284,11 +284,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.multipleQuery = multipleQuery;
     }
 
-    public String getCategoryModels() {
+    public List<String> getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(String categoryModels) {
+    public void setCategoryModels(List<String> categoryModels) {
         this.categoryModels = categoryModels;
     }
 

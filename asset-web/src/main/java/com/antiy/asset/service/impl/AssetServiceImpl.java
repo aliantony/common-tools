@@ -4108,19 +4108,20 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         if (CollectionUtils.isEmpty(assetMultipleQuery.getAreaIds())) {
             assetMultipleQuery.setAreaIds(loginUser.getAreaIdsOfCurrentUser());
         }
-        if (StringUtils.isNotBlank(assetMultipleQuery.getCategoryModels())) {
-            AssetCategoryModel assetCategoryModel = assetCategoryModelService
-                    .getById(DataTypeUtils.stringToInteger(assetMultipleQuery.getCategoryModels()));
-            AssetCategoryModelQuery query = new AssetCategoryModelQuery();
-            query.setSourceOfLend(false);
-            query.setName(assetCategoryModel.getName());
-            List<AssetCategoryModelNodeResponse> list = assetCategoryModelService.queryCategoryWithOutRootNode(query);
-            if (CollectionUtils.isNotEmpty(list)) {
-                List<String> caIds = Lists.newArrayList();
-                getCategory(list, caIds);
-                caIds.add(assetMultipleQuery.getCategoryModels());
-                assetMultipleQuery.setCategoryModelList(caIds);
+        if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) {
+            List<String> caIds = Lists.newArrayList();
+            for (String t : assetMultipleQuery.getCategoryModels()) {
+                AssetCategoryModel assetCategoryModel = assetCategoryModelService
+                        .getById(DataTypeUtils.stringToInteger(t));
+                AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+                query.setSourceOfLend(false);
+                query.setName(assetCategoryModel.getName());
+                List<AssetCategoryModelNodeResponse> list = assetCategoryModelService.queryCategoryWithOutRootNode(query);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    getCategory(list, caIds);
+                }
             }
+            assetMultipleQuery.setCategoryModelList(caIds);
         }
         // 未知资产列表
         if (assetMultipleQuery.getUnknownAssets()) {
@@ -4276,7 +4277,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void getCategory(List<AssetCategoryModelNodeResponse> list, List<String> caIds) {
         if (CollectionUtils.isNotEmpty(list)) {
             list.stream().forEach(t -> {
-                caIds.add(t.getStringId());
+                if (!caIds.contains(t.getStringId())) {
+                    caIds.add(t.getStringId());
+                }
                 getCategory(t.getChildrenNode(), caIds);
             });
         }
