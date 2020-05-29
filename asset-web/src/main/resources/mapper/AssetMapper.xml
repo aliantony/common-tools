@@ -2617,7 +2617,7 @@
     </select>
     <!--资产主表的条件-->
     <sql id="mq_asset">
-        <if test="ids != null and ids.length > 0">
+        <if test="ids != null">
             and asset.id in
             <foreach collection="ids" item="item" open="(" close=")" separator=",">
                 #{item}

@@ -69,6 +69,8 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetDao assetDao;
     @Resource
     private AssetOperationRecordDao assetOperationRecordDao;
+    @Resource
+    private AssetLendRelationDao assetLendRelationDao;
 
     @Resource
     private IAssetLendRelationService assetLendRelationService;
@@ -335,6 +337,32 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetLendInfosRequest.setUseId(request.getLendUserId());
             assetLendInfosRequest.setLendPurpose("");
             assetLendRelationService.saveLendInfos(assetLendInfosRequest);
+            //保存数据到asset_lend_relation
+            saveLendRelation(request);
+        }
+    }
+
+    /**
+     * 保存数据到asset_lend_relation
+     */
+    void saveLendRelation(AssetOaOrderHandleRequest request){
+        if(CollectionUtils.isEmpty(request.getAssetIds())){
+            for(String assetId : request.getAssetIds()){
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                AssetLendRelation assetLendRelation = new AssetLendRelation();
+                assetLendRelation.setAssetId(assetId);
+                assetLendRelation.setUseId(request.getExcuteUserId());
+                assetLendRelation.setLendPurpose(request.getLendRemark());
+                assetLendRelation.setLendPeriods(request.getReturnTime());
+                assetLendRelation.setLendTime(request.getLendTime());
+                //1出借，2保管中
+                assetLendRelation.setLendStatus(1);
+                assetLendRelation.setOrderNumber(request.getOrderNumber());
+                assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetLendRelation.setGmtCreate(System.currentTimeMillis());
+                assetLendRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetLendRelation.setGmtModified(System.currentTimeMillis());
+            }
         }
     }
 

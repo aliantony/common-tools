@@ -268,6 +268,9 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             query.setAreaIds(areaIdsOfCurrentUser);
             query.setLendStatus(2);
             List<String> assetIds = assetLendRelationDao.getLendRelationAssetIdList(query);
+            if(CollectionUtils.isEmpty(assetIds)){
+                assetIds.add("");
+            }
             assetOaOrderResponse.setAssetIds(assetIds);
         }
         assetOaOrderResponse.setAssetStatusList(assetStatusList);
