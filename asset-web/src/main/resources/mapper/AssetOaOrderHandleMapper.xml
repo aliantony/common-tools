@@ -54,7 +54,8 @@
         </if>
     </sql>
 
-    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderHandle" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insert" parameterType="com.antiy.asset.entity.AssetOaOrderHandle" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
         insert into
         <include refid="Table_Name"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -147,13 +148,18 @@
         </foreach>
     </insert>
 
-    <select id="countLendByAssetId" resultType="integer" >
-        select count(1) count
-        from asset tb1
-        left join asset_lend_relation tb2 on tb1.id = tb2.asset_id
-        where tb1.is_borrow = 1
-        and tb1.id = #{assetId }
-        and tb2.id is null
+    <select id="countLendByAssetId" resultType="integer">
+        SELECT count(1)
+        FROM asset as a
+        LEFT JOIN asset_user as au ON a.responsible_user_id=au.id and au.status=1
+        LEFT JOIN asset_key_manage as akm ON a.id=akm.key_user_id and akm.is_delete=1
+        LEFT JOIN asset_category_model as acm ON acm.id=a.category_model and acm.status=1
+        LEFT JOIN asset_lend_relation as alr ON a.id=alr.asset_id and alr.lend_status =1 and alr.status=1
+        LEFT JOIN asset_user ON asset_user.id=alr.use_id and asset_user.status=1
+        where a.is_borrow=1
+        and a.asset_status =5
+        and a.status=1
+        and a.id = #{assetId }
     </select>
 
     <select id="getAssetIdWhenLend" resultType="string" parameterType="java.lang.Integer">
