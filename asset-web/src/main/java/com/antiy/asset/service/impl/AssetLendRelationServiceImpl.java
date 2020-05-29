@@ -8,6 +8,7 @@ import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.templet.AssetLendRelationEntity;
 import com.antiy.asset.util.Constants;
+import com.antiy.asset.util.DataTypeUtils;
 import com.antiy.asset.util.SnowFlakeUtil;
 import com.antiy.asset.vo.query.ApproveListQuery;
 import com.antiy.asset.vo.query.AssetLendRelationQuery;
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -71,6 +73,9 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private AesEncoder aesEncoder;
 
+    @Resource
+    private AssetLinkRelationServiceImpl assetLinkRelationService;
+
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
         AssetLendRelation assetLendRelation = requestConverter.convert(request, AssetLendRelation.class);
@@ -94,6 +99,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     public PageResult<AssetLendRelationResponse> queryPageAssetLendRelation(AssetLendRelationQuery query) throws Exception {
         List<String> areaIdsOfCurrentUser = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(areaIdsOfCurrentUser);
+        List<String> categoryModels = query.getCategoryModels();
+        if(CollectionUtils.isNotEmpty(categoryModels)){
+            List<Integer> categoryModelList = categoryModels.stream().map(t -> DataTypeUtils.stringToInteger(t)).collect(Collectors.toList());
+            List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(categoryModelList);
+            List<String> categorysStr = categoryNodeList.stream().map(t -> DataTypeUtils.integerToString(t)).collect(Collectors.toList());
+            query.setCategoryModels(categorysStr);
+        }
         return new PageResult<AssetLendRelationResponse>(query.getPageSize(), this.findCount(query), query.getCurrentPage(), this.queryListAssetLendRelation(query));
     }
 

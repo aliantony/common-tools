@@ -520,7 +520,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             //修改整改标志字段
             Asset asset=new Asset();
             asset.setId(DataTypeUtils.stringToInteger(assetId));
-            asset.setRectification(1);
+            asset.setRectification(AssetCorrectStateEnum.HAD_DONE_CORRECT.getCode());
             assetDao.update(asset);
             //漏扫
             ActionResponse scan;
@@ -543,7 +543,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         boolean  k=computerIdList.contains(assetOfDB.getCategoryModel()) && !one.equals(assetOfDB.getIsOrphan()) && !one.equals(assetOfDB.getIsBorrow());
         Asset asset=new Asset();
         asset.setId(assetOfDB.getId());
-        asset.setRectification(1);
+        asset.setRectification(AssetCorrectStateEnum.HAS_DONE_CORRECT.getCode());
         if(k){
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
             //推进工作流
@@ -587,6 +587,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             }
         }
         return true;
+    }
+
+    @Override
+    public Integer completeCorrect(String primaryKey) throws Exception {
+        Asset asset= new Asset();
+        asset.setId(DataTypeUtils.stringToInteger(primaryKey));
+        asset.setRectification(AssetCorrectStateEnum.HAS_DONE_CORRECT.getCode());
+        return assetDao.update(asset);
     }
 
 

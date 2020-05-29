@@ -40,4 +40,6 @@ public interface IAssetStatusJumpService {
     Integer continueNetIn(ActivityHandleRequest assetId) throws Exception;
 
     Boolean statusJudge(AssetStatusJudgeRequest statusJumpRequest);
+
+    Integer completeCorrect(String primaryKey) throws Exception;
 }
