@@ -197,7 +197,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
                 Integer count = assetOaOrderHandleDao.countLendByAssetId(Integer.parseInt(assetId));
                 if(count == 0){
                     Asset asset = assetDao.getById(assetId);
-                    throw new BusinessException("资产" + asset.getName() + "不能被出借");
+                    throw new BusinessException("资产" + asset.getName() + "未处于保管中,不能被出借");
                 }
             }
         }
