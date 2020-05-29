@@ -1431,6 +1431,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 status = AssetStatusEnum.NET_IN.getCode();
             }
         }
+        // 保存资产与配置模板关系
+        if (StringUtils.isNotBlank(asset.getBaselineTemplateId())) {
+            BaselineAssetTemplate baselineAssetTemplate = new BaselineAssetTemplate();
+            ActionResponse baselineTemplate = baseLineClient
+                    .getBaselineTemplate(asset.getBaselineTemplateId());
+            HashMap body = (HashMap) baselineTemplate.getBody();
+            Integer isEnable = (Integer) body.get("isEnable");
+            BusinessExceptionUtils.isTrue(isEnable == 1, "当前基准模板已经禁用!");
+            baselineAssetTemplate
+                    .setTemplateHistId(DataTypeUtils.stringToInteger(asset.getBaselineTemplateId()));
+            baselineAssetTemplate.setTemplateHistName((String) body.get("name"));
+            baselineAssetTemplate.setIsChange(0);
+            baselineAssetTemplate.setIsNew(1);
+            baselineAssetTemplate.setCreateUser(LoginUserUtil.getLoginUser().getId());
+            baselineAssetTemplate.setGmtCreate(System.currentTimeMillis());
+            asset.setBaselineTemplateId(asset.getBaselineTemplateId());
+            asset.setBaselineTemplateCorrelationGmt(System.currentTimeMillis());
+            baselineAssetTemplate.setAssetId(DataTypeUtils.stringToInteger(asset.getStringId()));
+            assetDao.saveAssetBaselineTemplate(baselineAssetTemplate);
+        }
         // 启动工作流
         ManualStartActivityRequest activityRequest = new ManualStartActivityRequest();
         activityRequest.setBusinessId(String.valueOf(assetOuterRequest.getAsset().getId()));
@@ -4110,7 +4130,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         } else {
             List<String> areaIds = Lists.newArrayList();
             Collections.sort(assetMultipleQuery.getAreaIds());
-            for (String area:assetMultipleQuery.getAreaIds() ) {
+            for (String area : assetMultipleQuery.getAreaIds()) {
                 if (!areaIds.contains(area)) {
                     List<SysArea> sysArea = redisUtil.getObjectsByKeyword(
                             ModuleEnum.SYSTEM.getType() + ":" + SysArea.class.getSimpleName() + ":" + area, SysArea.class);
