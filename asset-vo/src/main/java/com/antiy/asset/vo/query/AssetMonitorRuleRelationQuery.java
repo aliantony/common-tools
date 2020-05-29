@@ -1,5 +1,6 @@
 package com.antiy.asset.vo.query;
 
+import com.antiy.common.encoder.Encode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,34 +25,45 @@ public class AssetMonitorRuleRelationQuery extends AssetBaseQuery {
     @ApiModelProperty("添加或者删除后的所有资产id集合，未加密")
     private List<String> assetIds;
     @ApiModelProperty("厂商名称")
-    List<String> suppliers;
-    @ApiModelProperty("资产组名称")
-    List<String> groupName;
+    List<String> supplier;
+    @ApiModelProperty("资产组id 加密")
+    @Encode
+    List<String> assetGroup;
     @ApiModelProperty("重要程度")
-    List<String> importanceDegree;
+    List<String> importance;
+    @ApiModelProperty(value = "资产类型ids",hidden = true)
+    List<String> categoryIds;
 
-    public List<String> getSuppliers() {
-        return suppliers;
+    public List<String> getCategoryIds() {
+        return categoryIds;
     }
 
-    public void setSuppliers(List<String> suppliers) {
-        this.suppliers = suppliers;
+    public void setCategoryIds(List<String> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 
-    public List<String> getGroupName() {
-        return groupName;
+    public List<String> getSupplier() {
+        return supplier;
     }
 
-    public void setGroupName(List<String> groupName) {
-        this.groupName = groupName;
+    public void setSupplier(List<String> supplier) {
+        this.supplier = supplier;
     }
 
-    public List<String> getImportanceDegree() {
-        return importanceDegree;
+    public List<String> getAssetGroup() {
+        return assetGroup;
     }
 
-    public void setImportanceDegree(List<String> importanceDegree) {
-        this.importanceDegree = importanceDegree;
+    public void setAssetGroup(List<String> assetGroup) {
+        this.assetGroup = assetGroup;
+    }
+
+    public List<String> getImportance() {
+        return importance;
+    }
+
+    public void setImportance(List<String> importance) {
+        this.importance = importance;
     }
 
     public List<String> getAssetIds() {

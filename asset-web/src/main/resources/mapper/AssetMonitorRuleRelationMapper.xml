@@ -161,6 +161,7 @@
         right join asset on asset.id=amrr.asset_id and asset.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+        left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             <include refid="queryAssetRealtion"/>
         </trim>
@@ -204,6 +205,7 @@
         right join asset on asset.id=amrr.asset_id and asset.status=1
         left join asset_ip_relation air on asset.id=air.asset_id and air.status=1
         left join asset_mac_relation amr on asset.id=amr.asset_id and amr.status=1
+        left join asset_group_relation agr on asset.id=agr.asset_id and agr.status=1
         <trim prefix="WHERE" prefixOverrides="AND |OR ">
             <include refid="queryAssetRealtion"/>
         </trim>
@@ -265,25 +267,30 @@
                         #{item}
                     </foreach>
                 </if>
-                <if test="suppliers !=null and !suppliers.isEmpty">
+                <if test="supplier !=null and !supplier.isEmpty">
                     and asset.manufacturer in
-                    <foreach collection="suppliers" item="item" open="(" close=")" separator=",">
+                    <foreach collection="supplier" item="item" open="(" close=")" separator=",">
                         #{item}
                     </foreach>
                 </if>
-                <if test="importanceDegree !=null and !importanceDegree.isEmpty">
+                <if test="importance !=null and !importance.isEmpty">
                     and asset.importance_degree in
-                    <foreach collection="importanceDegree" item="item" open="(" close=")" separator=",">
+                    <foreach collection="importance" item="item" open="(" close=")" separator=",">
                         #{item}
                     </foreach>
                 </if>
-                <if test="groupName !=null and !groupName.isEmpty">
-                    and
-                    <foreach collection="groupName" item="item" open="(" close=")" separator="or">
-                        locate(#{item},asset.asset_group)>0
+                <if test="assetGroup !=null and !assetGroup.isEmpty">
+                    and agr.asset_group_id in
+                    <foreach collection="assetGroup" item="item" open="(" close=")" separator=",">
+                        #{item}
                     </foreach>
                 </if>
-                and asset.category_model =2
+                <if test="categoryIds !=null and !categoryIds.isEmpty">
+                    and asset.category_model in
+                    <foreach collection="categoryIds" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
                 and amrr.asset_id is null
             </otherwise>
         </choose>
