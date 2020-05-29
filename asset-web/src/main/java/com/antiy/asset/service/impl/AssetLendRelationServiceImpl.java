@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +76,8 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Resource
     private AssetLinkRelationServiceImpl assetLinkRelationService;
+
+    private static Pattern PATTERN_NUMBER = Pattern.compile("^[-\\+]?[\\d]*$");
 
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
@@ -189,6 +192,14 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         ParamterExceptionUtils.isBlank(String.valueOf(request.getUseId()), "用户Id不能为空");
         ParamterExceptionUtils.isBlank(String.valueOf(request.getLendTime()), "出借日期不能为空");
         ParamterExceptionUtils.isBlank(String.valueOf(request.getLendPeriods()), "预计归还日期不能为空");
+
+        if (!PATTERN_NUMBER.matcher(String.valueOf(request.getLendTime())).matches()){
+            throw new BusinessException("出借日期不能为空");
+        }
+        if (!PATTERN_NUMBER.matcher(String.valueOf(request.getLendPeriods())).matches()){
+            throw new BusinessException("预计归还日期不能为空");
+        }
+
 
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
