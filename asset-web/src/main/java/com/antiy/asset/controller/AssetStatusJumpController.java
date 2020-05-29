@@ -155,7 +155,6 @@ public class AssetStatusJumpController {
         Integer  result=assetStatusJumpService.continueNetIn(activityHandleRequest);
         return ActionResponse.success(result);
     }
-
     /**
      * 整改完成
      */
