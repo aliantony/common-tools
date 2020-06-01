@@ -531,6 +531,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private void setCategroy(Asset asset) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
                 .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
+        Collections.sort(assetCategoryModels, Comparator.comparing(AssetCategoryModel::getId));
         String flag = asset.getCategoryModel();
         for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
@@ -548,6 +549,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
     private Integer setCategroy(String category) {
         List<AssetCategoryModel> assetCategoryModels = assetBaseDataCache
                 .getAll(AssetBaseDataCache.ASSET_CATEGORY_MODEL);
+        Collections.sort(assetCategoryModels, Comparator.comparing(AssetCategoryModel::getId));
         String flag = category;
         for (int i = assetCategoryModels.size() - 1; i >= 0; i--) {
             AssetCategoryModel categoryModel = assetCategoryModels.get(i);
