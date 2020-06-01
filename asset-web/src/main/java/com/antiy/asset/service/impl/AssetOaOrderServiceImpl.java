@@ -1,16 +1,15 @@
 package com.antiy.asset.service.impl;
 
-import com.antiy.asset.dao.*;
-import com.antiy.asset.entity.Asset;
+import com.antiy.asset.dao.AssetLendRelationDao;
+import com.antiy.asset.dao.AssetOaOrderApplyDao;
+import com.antiy.asset.dao.AssetOaOrderApproveDao;
+import com.antiy.asset.dao.AssetOaOrderDao;
 import com.antiy.asset.entity.AssetOaOrder;
 import com.antiy.asset.entity.AssetOaOrderApply;
 import com.antiy.asset.entity.AssetOaOrderApprove;
-import com.antiy.asset.intergration.SysUserClient;
 import com.antiy.asset.login.LoginTool;
 import com.antiy.asset.service.IAssetOaOrderService;
 import com.antiy.asset.util.BaseClient;
-import com.antiy.asset.util.DataTypeUtils;
-import com.antiy.asset.vo.enums.AssetFlowEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -41,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -64,11 +62,8 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Resource
     private AssetOaOrderApproveDao assetOaOrderApproveDao;
     @Resource
-    private AssetOaOrderHandleDao assetOaOrderHandleDao;
-    @Resource
     private AssetLendRelationDao assetLendRelationDao;
-    @Resource
-    private AssetDao assetDao;
+
 
     @Resource
     private BaseConverter<AssetOaOrderRequest, AssetOaOrder> requestConverter;
@@ -88,8 +83,6 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Resource
     private SysMessageSender messageSender;
     @Resource
-    private SysUserClient sysUserClient;
-    @Resource
     private BaseClient client;
 
     @Value("${getUsersByQxTagUrl}")
@@ -101,6 +94,11 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     public Integer saveAssetOaOrder(AssetOaOrderRequest request) throws Exception {
         AssetOaOrder assetOaOrder = requestConverter.convert(request, AssetOaOrder.class);
         assetOaOrder.setOrderStatus(AssetOaOrderStatusEnum.WAIT_HANDLE.getCode());
+        //查询订单编号是否重复
+        AssetOaOrder assetOaOrder1 = assetOaOrderDao.getByNumber(request.getNumber());
+        if(assetOaOrder1 != null){
+            throw new BusinessException("订单编号已存在");
+        }
         //保存订单信息
         assetOaOrderDao.insert(assetOaOrder);
         //保存申请信息
@@ -152,12 +150,12 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         List<String> tags = new ArrayList<String>();
         tags.add(tagStr);
         List<Integer> userIds = getALLUserIdByPermission(tags);
-        if(CollectionUtils.isEmpty(userIds)){
+        if (CollectionUtils.isEmpty(userIds)) {
             throw new BusinessException("请先维护具备" + AssetOaOrderTypeEnum.getValueByCode(assetOaOrderRequest.getOrderType()).getMsg() + "执行权限的人员");
         }
 
         final String taskType = message;
-        userIds.forEach(t->{
+        userIds.forEach(t -> {
             SysMessageRequest sysMessageRequest = new SysMessageRequest();
             sysMessageRequest.setTopic("OA订单");
             sysMessageRequest.setSummary("OA订单管理");
@@ -168,7 +166,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             sysMessageRequests.add(sysMessageRequest);
         });
         ActionResponse actionResponse = messageSender.batchSendMessage(sysMessageRequests);
-        if(actionResponse != null && !STATUS_SUCCESS.equals(actionResponse.getHead().getCode())){
+        if (actionResponse != null && !STATUS_SUCCESS.equals(actionResponse.getHead().getCode())) {
             throw new BusinessException("产生OA订单发送消息失败");
         }
     }
@@ -252,7 +250,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         return assetOaOrderResponse;
     }
 
-    void setAssetStatusOrId(AssetOaOrder assetOaOrder, AssetOaOrderResponse assetOaOrderResponse) throws Exception{
+    void setAssetStatusOrId(AssetOaOrder assetOaOrder, AssetOaOrderResponse assetOaOrderResponse) throws Exception {
         List<Integer> assetStatusList = new ArrayList<Integer>();
         if (assetOaOrder.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
             //入网处理
@@ -273,7 +271,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             query.setAreaIds(areaIdsOfCurrentUser);
             query.setLendStatus(2);
             List<String> assetIds = assetLendRelationDao.getLendRelationAssetIdList(query);
-            if(CollectionUtils.isEmpty(assetIds)){
+            if (CollectionUtils.isEmpty(assetIds)) {
                 assetIds.add("");
             }
             assetOaOrderResponse.setAssetIds(assetIds);
@@ -291,7 +289,7 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         return false;
     }
 
-    private  List<Integer> getALLUserIdByPermission(List<String> tags){
+    private List<Integer> getALLUserIdByPermission(List<String> tags) {
         logger.info("--------------查询用户---------，tag:{}", tags.toString());
         //获取权限人员id
         QxTagQuery qxTagQuery = new QxTagQuery();
@@ -306,10 +304,10 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
 
         List<Integer> userIds = new ArrayList<Integer>();
         response.getBody().forEach(v -> {
-            if(LoginUserUtil.getLoginUser() == null){
+            if (LoginUserUtil.getLoginUser() == null) {
                 userIds.add(Integer.parseInt(v.get("stringId").toString()));
-            }else{
-                userIds.add(Integer.parseInt(aesEncoder.decode(v.get("stringId").toString(),LoginUserUtil.getLoginUser().getUsername())));
+            } else {
+                userIds.add(Integer.parseInt(aesEncoder.decode(v.get("stringId").toString(), LoginUserUtil.getLoginUser().getUsername())));
             }
         });
 
