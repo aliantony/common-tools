@@ -95,6 +95,8 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
     @Value("${getUsersByQxTagUrl}")
     private String getUsersByQxTagUrl;
 
+    public static final String STATUS_SUCCESS = "200";
+
     @Override
     public Integer saveAssetOaOrder(AssetOaOrderRequest request) throws Exception {
         AssetOaOrder assetOaOrder = requestConverter.convert(request, AssetOaOrder.class);
@@ -129,19 +131,19 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
         source = 1;
         if (assetOaOrderRequest.getOrderType().equals(AssetOaOrderTypeEnum.INNET.getCode())) {
             //入网订单
-            message = "OA入网申请订单";
+            message = "入网申请订单";
             tagStr = "asset";
         } else if (assetOaOrderRequest.getOrderType().equals(AssetOaOrderTypeEnum.BACK.getCode())) {
             //退回订单
-            message = "OA退回申请订单";
+            message = "退回申请订单";
             tagStr = "asset";
         } else if (assetOaOrderRequest.getOrderType().equals(AssetOaOrderTypeEnum.SCRAP.getCode())) {
             //报废订单
-            message = "OA报废申请订单";
+            message = "报废申请订单";
             tagStr = "asset";
         } else if (assetOaOrderRequest.getOrderType().equals(AssetOaOrderTypeEnum.LEND.getCode())) {
             //出借订单
-            message = "OA出借申请订单";
+            message = "出借申请订单";
             tagStr = "asset";
         }
 
@@ -159,13 +161,16 @@ public class AssetOaOrderServiceImpl extends BaseServiceImpl<AssetOaOrder> imple
             SysMessageRequest sysMessageRequest = new SysMessageRequest();
             sysMessageRequest.setTopic("OA订单");
             sysMessageRequest.setSummary("OA订单管理");
-            sysMessageRequest.setContent(new StringBuilder("您有一条由系统提交的[" + taskType + "]任务，请尽快处理").toString());
+            sysMessageRequest.setContent(new StringBuilder("您有一条由OA系统提交的[" + taskType + "]任务，请尽快处理").toString());
             sysMessageRequest.setOrigin(1);//资产管理来源
             sysMessageRequest.setReceiveUserId(t);
             sysMessageRequest.setOther("{\"id\":" + assetOaOrder.getId() + "}");
             sysMessageRequests.add(sysMessageRequest);
         });
-        messageSender.batchSendMessage(sysMessageRequests);
+        ActionResponse actionResponse = messageSender.batchSendMessage(sysMessageRequests);
+        if(actionResponse != null && !STATUS_SUCCESS.equals(actionResponse.getHead().getCode())){
+            throw new BusinessException("产生OA订单发送消息失败");
+        }
     }
 
     @Override
