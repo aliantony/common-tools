@@ -261,8 +261,11 @@
                         and amr.`name` like
                         concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
                     </if>
-                    <if test=" alarmLevel != null and alarmLevel !=''">
-                        and amr.`alarm_level` = #{alarmLevel}
+                    <if test=" alarmLevel != null and !alarmLevel.isEmpty">
+                        and amr.`alarm_level` in
+                        <foreach item="item" collection="alarmLevel" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
                     </if>
                     <if test="areaList.size > 0">
                         and area_id in
@@ -302,8 +305,11 @@
                         and amr.`name` like
                         concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
                     </if>
-                    <if test=" alarmLevel != null and alarmLevel !=''">
-                        and amr.`alarm_level` = #{alarmLevel}
+                    <if test=" alarmLevel != null and !alarmLevel.isEmpty">
+                        and amr.`alarm_level` in
+                        <foreach item="item" collection="alarmLevel" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
                     </if>
                     <if test="areaList.size > 0">
                         and amr.area_id in
@@ -329,8 +335,11 @@
                         and amr.`name` like
                         concat('%',replace(replace(replace(#{name},'\\','\\\\'),'_','\_'),'%','\%'),'%')
                     </if>
-                    <if test=" alarmLevel != null and alarmLevel !=''">
-                        and amr.`alarm_level` = #{alarmLevel}
+                    <if test=" alarmLevel != null and !alarmLevel.isEmpty">
+                        and amr.`alarm_level` in
+                        <foreach item="item" collection="alarmLevel" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
                     </if>
                     <if test="areaList.size > 0">
                         and area_id in

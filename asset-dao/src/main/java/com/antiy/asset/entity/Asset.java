@@ -252,6 +252,10 @@ public class Asset extends BaseEntity {
      */
     private String  key;
     /**
+     * key
+     */
+    private String  keyNum;
+    /**
      * 创建时间
      */
     private Long    gmtCreate;
@@ -309,6 +313,29 @@ public class Asset extends BaseEntity {
      * 是否被整改过：1,已整改,2未整改
      */
     private Integer rectification;
+
+    /**
+     *
+     *1 未走完漏洞整改流程  2 已走完漏洞整改流程
+     */
+    private Integer  isVlunCorrect;
+
+    public Integer getIsVlunCorrect() {
+        return isVlunCorrect;
+    }
+
+    public void setIsVlunCorrect(Integer isVlunCorrect) {
+        this.isVlunCorrect = isVlunCorrect;
+    }
+
+    public String getKeyNum() {
+        return keyNum;
+    }
+
+    public void setKeyNum(String keyNum) {
+        this.keyNum = keyNum;
+        this.key = keyNum;
+    }
 
     public Integer getRectification() {
         return rectification;

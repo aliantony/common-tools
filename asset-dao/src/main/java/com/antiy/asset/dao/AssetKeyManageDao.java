@@ -5,6 +5,7 @@ import com.antiy.asset.vo.query.AssetKeyManageQuery;
 import com.antiy.asset.vo.query.KeyPullQuery;
 import com.antiy.asset.vo.request.AssetKeyManageRequest;
 import com.antiy.asset.vo.response.KeyPullDownResponse;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -105,4 +106,6 @@ public interface AssetKeyManageDao {
 	Integer userMapCount(KeyPullQuery query);
 
 	List<KeyPullDownResponse> userMapList(KeyPullQuery query);
+
+    List<Integer> getAssetUserIds(@Param("type") Integer type);
 }

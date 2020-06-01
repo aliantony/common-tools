@@ -12,9 +12,13 @@ import com.antiy.asset.vo.query.NoRegisterRequest;
 import com.antiy.asset.vo.request.*;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
+import com.antiy.common.base.BasicRequest;
+import com.antiy.common.base.QueryCondition;
+import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,6 +110,9 @@ public class AssetStatusJumpController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class), })
     @RequestMapping(value = "/netToCorrect", method = RequestMethod.POST)
     public ActionResponse netToCorrect(@ApiParam(value = "queryCondition") @RequestBody AssetNetToCorrectRequest assetNetToCorrectRequest) throws Exception {
+        if(CollectionUtils.isEmpty(assetNetToCorrectRequest.getAssetInfoList())){
+            throw  new BusinessException("整改的资产不能为空！");
+        }
         List<String> assetIds = assetNetToCorrectRequest.getAssetInfoList().stream().map(t -> t.getAssetId()).collect(Collectors.toList());
         Integer result=assetStatusJumpService.netToCorrect(assetIds);
         return ActionResponse.success(result);
@@ -148,4 +155,15 @@ public class AssetStatusJumpController {
         Integer  result=assetStatusJumpService.continueNetIn(activityHandleRequest);
         return ActionResponse.success(result);
     }
+    /**
+     * 整改完成
+     */
+    @ApiOperation(value = "整改完成", notes = "传入资产id")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Integer.class, responseContainer = "actionResponse"), })
+    @RequestMapping(value = "/complete/correct", method = RequestMethod.POST)
+    public ActionResponse continueNetIn(@RequestBody QueryCondition queryCondition) throws Exception {
+        Integer  result=assetStatusJumpService.completeCorrect(queryCondition.getPrimaryKey());
+        return ActionResponse.success(result);
+    }
+
 }

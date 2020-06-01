@@ -1,18 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import static com.antiy.biz.file.FileHelper.logger;
-
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.AssetDepartmentDao;
 import com.antiy.asset.dao.AssetUserDao;
@@ -37,6 +24,17 @@ import com.antiy.common.enums.ModuleEnum;
 import com.antiy.common.utils.BusinessExceptionUtils;
 import com.antiy.common.utils.LogUtils;
 import com.antiy.common.utils.LoginUserUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.antiy.biz.file.FileHelper.logger;
 
 /**
  * <p> 资产部门信息 服务实现类 </p>
@@ -48,18 +46,18 @@ import com.antiy.common.utils.LoginUserUtil;
 public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment> implements IAssetDepartmentService {
 
     @Resource
-    private AssetDepartmentDao                                      assetDepartmentDao;
+    private AssetDepartmentDao assetDepartmentDao;
     @Resource
-    private BaseConverter<AssetDepartmentRequest, AssetDepartment>  requestConverter;
+    private BaseConverter<AssetDepartmentRequest, AssetDepartment> requestConverter;
     @Resource
     private BaseConverter<AssetDepartment, AssetDepartmentResponse> responseConverter;
     @Resource
-    private AesEncoder                                              aesEncoder;
+    private AesEncoder aesEncoder;
     @Resource
-    private AssetUserDao                                            assetUserDao;
+    private AssetUserDao assetUserDao;
     @Resource
-    private AssetBaseDataCache                                      assetBaseDataCache;
-    private static Map<String, Integer>                             parentMap = new HashMap<>();
+    private AssetBaseDataCache assetBaseDataCache;
+    private static Map<String, Integer> parentMap = new HashMap<>();
 
     static {
         parentMap.put("0", 0);
@@ -78,15 +76,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (result != null && !Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(),
-                AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             // 记录操作日志和运行日志
             LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment.getId(),
-                    assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+                    new BusinessData(AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName(), assetDepartment.getId(),
+                            assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPARTMENT_INSERT.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse
-            .success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
+                .success(aesEncoder.encode(assetDepartment.getStringId(), LoginUserUtil.getLoginUser().getUsername()));
     }
 
     private boolean checkNameRepeat(AssetDepartmentRequest request) throws Exception {
@@ -95,8 +93,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
             assetDepartmentQuery.setName(request.getName());
             // 根据id是否为null进行不同的查询重名操作
             return assetDepartmentDao.findRepeatName(
-                request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()),
-                request.getName()) >= 1;
+                    request.getId() == null ? null : DataTypeUtils.stringToInteger(request.getId()),
+                    request.getName()) >= 1;
         }
         return false;
     }
@@ -114,10 +112,10 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         if (!Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(assetDepartment.toString(), AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(),
-                AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_DEPARTMENT_INSERT.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.recordOperLog(
-                new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment.getId(),
-                    assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
+                    new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName(), assetDepartment.getId(),
+                            assetDepartment.getName(), assetDepartment, BusinessModuleEnum.ASSET_USER, BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_UPDATE.getName() + " {}", assetDepartment.toString());
         }
         return ActionResponse.success(result);
@@ -169,8 +167,8 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
      * 递归查询出所有的部门和其子部门
      *
      * @param result 查询的结果集
-     * @param list 查询的数据集
-     * @param id 递归的参数
+     * @param list   查询的数据集
+     * @param id     递归的参数
      */
     private void recursion(List<AssetDepartment> result, List<AssetDepartment> list, Integer id) {
         for (AssetDepartment assetDepartment : list) {
@@ -188,7 +186,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
     @Override
     public PageResult<AssetDepartmentResponse> findPageAssetDepartment(AssetDepartmentQuery query) throws Exception {
         return new PageResult<>(query.getPageSize(), this.findCountAssetDepartment(query), query.getCurrentPage(),
-            this.findListAssetDepartment(query));
+                this.findListAssetDepartment(query));
     }
 
     @Override
@@ -199,7 +197,7 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         List<AssetDepartment> assetDepartment = assetDepartmentDao.findListAssetDepartment(query);
         NodeUtilsConverter nodeConverter = new NodeUtilsConverter();
         List<AssetDepartmentNodeResponse> assetDepartmentNodeResponses = nodeConverter.columnToNode(assetDepartment,
-            AssetDepartmentNodeResponse.class);
+                AssetDepartmentNodeResponse.class);
         dealLevel(assetDepartmentNodeResponses);
         return CollectionUtils.isNotEmpty(assetDepartmentNodeResponses) ? assetDepartmentNodeResponses.get(0) : null;
     }
@@ -212,9 +210,9 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
                     parentMap.put(assetDepartmentNodeResponse.getStringId(), 1);
                 } else {
                     parentMap.put(assetDepartmentNodeResponse.getStringId(),
-                        parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
+                            parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
                     assetDepartmentNodeResponse
-                        .setLevelType(parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
+                            .setLevelType(parentMap.get(assetDepartmentNodeResponse.getParentId()) + 1);
                 }
                 dealLevel(assetDepartmentNodeResponse.getChildrenNode());
             }
@@ -241,13 +239,13 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         int result = assetDepartmentDao.delete(list);
         // 更新缓存
         assetBaseDataCache.remove(AssetBaseDataCache.ASSET_DEPARTMENT,
-            list.stream().map(AssetDepartment::getId).collect(Collectors.toList()));
+                list.stream().map(AssetDepartment::getId).collect(Collectors.toList()));
         // 写入业务日志
         LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
-            AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
-            assetDepartmentLog.getId(), assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
-            BusinessPhaseEnum.NONE));
+                assetDepartmentLog.getId(), assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
+                BusinessPhaseEnum.NONE));
         LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         return ActionResponse.success(result >= 1 ? 1 : 0);
     }
@@ -280,15 +278,15 @@ public class AssetDepartmentServiceImpl extends BaseServiceImpl<AssetDepartment>
         BusinessExceptionUtils.isEmpty(list, "该部门不存在");
         Integer result = assetDepartmentDao.delete(list);
         // 更新缓存
-        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_DEPARTMENT, (Integer) id);
+        assetBaseDataCache.remove(AssetBaseDataCache.ASSET_DEPARTMENT, String.valueOf(id));
         AssetDepartment assetDepartmentLog = assetDepartmentDao.getById(id);
         if (!Objects.equals(result, 0)) {
             // 写入业务日志
             LogHandle.log(list.toString(), AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(),
-                AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
+                    AssetEventEnum.ASSET_DEPAETMENT_DELETE.getStatus(), ModuleEnum.ASSET.getCode());
             LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName(), (Integer) id,
-                assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
-                BusinessPhaseEnum.NONE));
+                    assetDepartmentLog.getName(), assetDepartmentLog, BusinessModuleEnum.ASSET_USER,
+                    BusinessPhaseEnum.NONE));
             LogUtils.info(logger, AssetEventEnum.ASSET_DEPAETMENT_DELETE.getName() + " {}", list.toString());
         }
         return ActionResponse.success(result);

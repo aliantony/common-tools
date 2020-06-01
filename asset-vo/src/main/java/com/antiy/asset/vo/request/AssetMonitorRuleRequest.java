@@ -9,6 +9,9 @@ import javax.validation.constraints.Size;
 import com.antiy.common.base.BaseRequest;
 import com.antiy.common.encoder.Encode;
 
+import com.antiy.common.exception.BusinessException;
+import com.antiy.common.exception.RequestParamValidateException;
+import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -20,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @ApiModel("资产监控规则请求对象")
-public class AssetMonitorRuleRequest extends BaseRequest {
+public class AssetMonitorRuleRequest extends BaseRequest implements ObjectValidator {
     /**
      * 唯一键
      */
@@ -37,16 +40,12 @@ public class AssetMonitorRuleRequest extends BaseRequest {
     @NotBlank(message = "告警等级不能为空")
     @ApiModelProperty("告警等级")
     private String                         alarmLevel;
-    @NotBlank(message = "状态不能为空")
     @ApiModelProperty("状态")
     private String                         ruleStatus;
-    @NotNull(message = "CPU监控不能为空")
     @ApiModelProperty("CPU监控")
     private Integer                        cpuThreshold;
-    @NotNull(message = "内存监控不能为空")
     @ApiModelProperty("内存监控")
     private Integer                        memoryThreshold;
-    @NotNull(message = "总磁盘监控不能为空")
     @ApiModelProperty("总磁盘监控")
     private Integer                        diskThreshold;
     @NotNull(message = "运行异常监控不能为空")
@@ -143,5 +142,12 @@ public class AssetMonitorRuleRequest extends BaseRequest {
 
     public void setRelatedAsset(List<String> relatedAsset) {
         this.relatedAsset = relatedAsset;
+    }
+
+    @Override
+    public void validate() throws RequestParamValidateException {
+        if (this.cpuThreshold==null&&this.diskThreshold==null&&this.memoryThreshold==null){
+            throw new BusinessException("cpu 内存 磁盘不能同时为空");
+        }
     }
 }

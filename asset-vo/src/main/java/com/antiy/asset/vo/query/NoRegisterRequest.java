@@ -6,7 +6,6 @@ public class NoRegisterRequest {
     @Encode
     private String assetId;
     private String taskId;
-
     /**
      * 来源
      * 1 漏洞不予登记

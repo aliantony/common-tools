@@ -1,81 +1,80 @@
 package com.antiy.asset.vo.query;
 
-import java.util.List;
-
-import javax.validation.constraints.Size;
-
 import com.antiy.common.base.ObjectQuery;
 import com.antiy.common.encoder.Encode;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.validation.ObjectValidator;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.Size;
+import java.util.List;
+
 /**
  * 资产列表查询参数
+ *
  * @Author: lvliang
  * @Date: 2020/4/8 10:04
  */
 @ApiModel
 public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("导出开始条数")
-    private Integer       start;
+    private Integer start;
 
     @ApiModelProperty("导出结束条数")
-    private Integer       end;
+    private Integer end;
     /**
      * 资产id,消息通知跳转使用
      */
     @ApiModelProperty(" 导出方式 1 excel  2 cvs 3 xml")
-    private Integer       exportType;
+    private Integer exportType;
     /**
      * 待办事项的资产id
      */
-    private String[]      ids;
+    private String[] ids;
     @ApiModelProperty(value = "是否从控制台进入，默认false 不从控制台进入，true为控制台进入")
-    private Boolean       enterControl = false;
+    private Boolean enterControl = false;
     @ApiModelProperty("综合查询条件")
     @Size(max = 30, message = "综合查询条件不能超过30")
-    private String        multipleQuery;
+    private String multipleQuery;
 
     @ApiModelProperty("资产类型")
-    private String        categoryModels;
-    private List<String>  categoryModelList;
+    private List<String> categoryModels;
+    private List<String> categoryModelList;
     @ApiModelProperty("资产状态")
     private List<Integer> assetStatusList;
 
     @ApiModelProperty("物理位置")
-    private String        location;
+    private String location;
 
     @ApiModelProperty("机房位置")
-    private String        houseLocation;
+    private String houseLocation;
 
     @ApiModelProperty("key")
-    private String        key;
+    private String key;
 
     /**
      * 资产名称
      */
     @ApiModelProperty(value = "资产名称")
-    private List<String>  names;
+    private List<String> names;
 
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private List<String>  manufacturerList;
+    private List<String> manufacturerList;
 
     /**
      * 版本
      */
     @ApiModelProperty("版本")
-    private List<String>  versionList;
+    private List<String> versionList;
     /**
      * 操作系统
      */
     @ApiModelProperty("操作系统")
-    private List<Long>    operationSystemList;
+    private List<Long> operationSystemList;
 
     /**
      * 资产来源
@@ -85,68 +84,68 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
 
     @ApiModelProperty("从属业务")
     @Encode
-    private String        assetBusiness;
+    private String assetBusiness;
 
     /**
      * 资产组
      */
     @ApiModelProperty("资产组")
     @Encode
-    private List<String>  assetGroupList;
+    private List<String> assetGroupList;
     /**
      * 资产组主键
      */
     @ApiModelProperty(value = "资产组", hidden = true)
     @Encode
-    private String        assetGroup;
+    private String assetGroup;
     /**
      * 网络类型
      */
     @ApiModelProperty("网络类型")
     @Encode
-    private String        netType;
+    private String netType;
 
     /**
      * 归属区域
      */
     @Encode
     @ApiModelProperty("归属区域")
-    private List<String>  areaIds;
+    private List<String> areaIds;
 
     /**
      * 使用者
      */
     @ApiModelProperty("使用者")
     @Encode
-    private List<String>  responsibleUserIdList;
+    private List<String> responsibleUserIdList;
     /**
      * 所属组织
      */
     @ApiModelProperty("所属组织")
     @Encode
-    private List<String>  departmentList;
+    private List<String> departmentList;
 
     /**
      * 资产准入状态
      */
     @ApiModelProperty("准入状态：1-已允许，2-已禁止")
-    private Integer       admittanceStatus;
+    private Integer admittanceStatus;
 
     /**
      * 是否可借用
      */
     @ApiModelProperty("是否可借用：1-可借用，2-不可借用")
-    private Integer       isBorrow;
+    private Integer isBorrow;
 
     @ApiModelProperty("基准模板id")
     @Encode
-    private String        baselineTemplateId;
+    private String baselineTemplateId;
     @ApiModelProperty("网络连接")
-    private Integer       netStatus;
+    private Integer netStatus;
     @ApiModelProperty("是否涉密")
-    private Integer       isSecrecy;
+    private Integer isSecrecy;
     @ApiModelProperty("是否孤岛设备")
-    private Integer       isOrphan;
+    private Integer isOrphan;
     /**
      * 1-核心，2-重要，3-一般
      */
@@ -158,36 +157,36 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
     @ApiModelProperty("维护方式")
     private List<Integer> installTypeList;
     @ApiModelProperty("到期时间起始时间")
-    private Long          serviceLifeStartTime;
+    private Long serviceLifeStartTime;
     @ApiModelProperty("到期时间结束时间")
-    private Long          serviceLifeEndTime;
+    private Long serviceLifeEndTime;
     @ApiModelProperty("首次发现时间起始时间")
-    private Long          firstEnterStartTime;
+    private Long firstEnterStartTime;
     @ApiModelProperty("首次发现时间结束时间")
-    private Long          firstEnterEndTime;
+    private Long firstEnterEndTime;
 
     @ApiModelProperty("装机时间开始时间")
-    private Long          installDateStartTime;
+    private Long installDateStartTime;
     @ApiModelProperty("装机时间结束时间")
-    private Long          installDateEndTime;
+    private Long installDateEndTime;
     @ApiModelProperty("启用时间开始时间")
-    private Long          activiateDateStartTime;
+    private Long activiateDateStartTime;
     @ApiModelProperty("启用时间结束时间")
-    private Long          activiateDateEndTime;
+    private Long activiateDateEndTime;
     @ApiModelProperty("更新时间起始时间")
-    private Long          updateStartTime;
+    private Long updateStartTime;
     @ApiModelProperty("更新时间结束时间")
-    private Long          updateEndTime;
+    private Long updateEndTime;
     @ApiModelProperty("是否未知资产")
-    private boolean       unknownAssets;
+    private boolean unknownAssets;
     @ApiModelProperty(value = "是否查询漏洞个数,true 表示查询，false表示不查询", allowableValues = "true,false")
-    private Boolean       queryVulCount;
+    private Boolean queryVulCount = false;
 
     @ApiModelProperty(value = "是否查询补丁个数,true 表示查询，false表示不查询", allowableValues = "true,false")
-    private Boolean       queryPatchCount;
+    private Boolean queryPatchCount = false;
 
     @ApiModelProperty(value = "是否查询告警个数，true表示查询，false表示不查询", allowableValues = "true,false")
-    private Boolean       queryAlarmCount;
+    private Boolean queryAlarmCount = false;
 
     public Boolean getQueryVulCount() {
         return queryVulCount;
@@ -285,11 +284,11 @@ public class AssetMultipleQuery extends ObjectQuery implements ObjectValidator {
         this.multipleQuery = multipleQuery;
     }
 
-    public String getCategoryModels() {
+    public List<String> getCategoryModels() {
         return categoryModels;
     }
 
-    public void setCategoryModels(String categoryModels) {
+    public void setCategoryModels(List<String> categoryModels) {
         this.categoryModels = categoryModels;
     }
 

@@ -5,6 +5,7 @@ import com.antiy.asset.dao.*;
 import com.antiy.asset.entity.*;
 import com.antiy.asset.service.IAssetLendRelationService;
 import com.antiy.asset.service.IAssetOaOrderHandleService;
+import com.antiy.asset.vo.enums.AssetOaLendStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderStatusEnum;
 import com.antiy.asset.vo.enums.AssetOaOrderTypeEnum;
 import com.antiy.asset.vo.enums.AssetStatusEnum;
@@ -68,6 +69,8 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
     private AssetDao assetDao;
     @Resource
     private AssetOperationRecordDao assetOperationRecordDao;
+    @Resource
+    private AssetLendRelationDao assetLendRelationDao;
 
     @Resource
     private IAssetLendRelationService assetLendRelationService;
@@ -197,7 +200,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
                 Integer count = assetOaOrderHandleDao.countLendByAssetId(Integer.parseInt(assetId));
                 if(count == 0){
                     Asset asset = assetDao.getById(assetId);
-                    throw new BusinessException("资产" + asset.getName() + "不能被出借");
+                    throw new BusinessException("资产" + asset.getName() + "未处于保管中,不能被出借");
                 }
             }
         }
@@ -304,6 +307,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
         assetOaOrderResult.setLendStatus(request.getLendStatus());
         assetOaOrderResult.setGmtCreate(System.currentTimeMillis());
         assetOaOrderResult.setExcuteUserId(assetOaOrder.getOrderType());
+        if(!AssetOaLendStatusEnum.YES.getCode().equals(request.getLendStatus())){
+            return;
+        }
         if (!request.getLendStatus().equals(1)) {
             logger.info("----------不许出借,OrderNumber：{}", request.getOrderNumber());
             judgeStringLength(request.getRefuseReason(), "拒绝原因", 255, false);
@@ -320,18 +326,44 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetOaOrderResult.setReturnTime(request.getReturnTime());
             assetOaOrderResult.setLendRemark(request.getLendRemark());
             assetOaOrderResultDao.insert(assetOaOrderResult);
+            //如果是出借，调用金楚迅提供接口
+            logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
+            AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
+            assetLendInfosRequest.setAssetIds(request.getAssetIds());
+            assetLendInfosRequest.setLendStatus(request.getLendStatus());
+            assetLendInfosRequest.setLendTime(request.getLendTime());
+            assetLendInfosRequest.setLendPeriods(request.getReturnTime());
+            assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
+            assetLendInfosRequest.setUseId(request.getLendUserId());
+            assetLendInfosRequest.setLendPurpose("");
+            assetLendRelationService.saveLendInfos(assetLendInfosRequest);
+            //保存数据到asset_lend_relation
+            saveLendRelation(request);
         }
-        //如果是出借，调用金楚迅提供接口
-        logger.info("出借处理，orderNumber:{}", request.getOrderNumber());
-        AssetLendInfosRequest assetLendInfosRequest = new AssetLendInfosRequest();
-        assetLendInfosRequest.setAssetIds(request.getAssetIds());
-        assetLendInfosRequest.setLendStatus(request.getLendStatus());
-        assetLendInfosRequest.setLendTime(request.getLendTime());
-        assetLendInfosRequest.setLendPeriods(request.getReturnTime());
-        assetLendInfosRequest.setOrderNumber(request.getOrderNumber());
-        assetLendInfosRequest.setUseId(request.getLendUserId());
-        assetLendInfosRequest.setLendPurpose("");
-        assetLendRelationService.saveLendInfos(assetLendInfosRequest);
+    }
+
+    /**
+     * 保存数据到asset_lend_relation
+     */
+    void saveLendRelation(AssetOaOrderHandleRequest request){
+        if(CollectionUtils.isEmpty(request.getAssetIds())){
+            for(String assetId : request.getAssetIds()){
+                assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
+                AssetLendRelation assetLendRelation = new AssetLendRelation();
+                assetLendRelation.setAssetId(assetId);
+                assetLendRelation.setUseId(request.getExcuteUserId());
+                assetLendRelation.setLendPurpose(request.getLendRemark());
+                assetLendRelation.setLendPeriods(request.getReturnTime());
+                assetLendRelation.setLendTime(request.getLendTime());
+                //1出借，2保管中
+                assetLendRelation.setLendStatus(1);
+                assetLendRelation.setOrderNumber(request.getOrderNumber());
+                assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
+                assetLendRelation.setGmtCreate(System.currentTimeMillis());
+                assetLendRelation.setModifyUser(LoginUserUtil.getLoginUser().getId());
+                assetLendRelation.setGmtModified(System.currentTimeMillis());
+            }
+        }
     }
 
     /**
@@ -339,6 +371,9 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
      */
     void saveAssetToOrder(AssetOaOrderHandleRequest request) {
         List<AssetOaOrderHandle> assetOaOrderHandles = new ArrayList<AssetOaOrderHandle>();
+        if(!AssetOaLendStatusEnum.YES.getCode().equals(request.getLendStatus())){
+            return;
+        }
         for (String assetId : request.getAssetIds()) {
             assetId = assetId.endsWith("==") ? aesEncoder.decode(assetId, LoginUserUtil.getLoginUser().getUsername()) : assetId;
             Integer assetIdInt = Integer.parseInt(assetId);

@@ -18,59 +18,60 @@ import java.util.List;
 public class AssetResponse extends BaseResponse {
 
 
-
+    @ApiModelProperty("资产当前使用者")
+    private String useName;
     @ApiModelProperty("附件 暂存")
     private String temporaryFile;
     @Encode
     @ApiModelProperty("操作记录表id")
-    String                                 assetOperationRecordId;
+    String assetOperationRecordId;
     @ApiModelProperty("报废暂存备注")
-    private String                         temporaryInfo;
+    private String temporaryInfo;
     /**
      * 厂商名称版本
      */
     @ApiModelProperty("厂商名称版本")
-    private String                         mnv;
+    private String mnv;
     /**
      * 业务名称
      */
     @ApiModelProperty("业务名称")
-    private String                         businessName;
+    private String businessName;
     @ApiModelProperty("所属组织")
-    private String                         departmentName;
+    private String departmentName;
     /**
      * 资产编号
      */
     @ApiModelProperty("资产编号")
-    private String                         number;
+    private String number;
     @ApiModelProperty("stepNode:IN_NET(入网流程),EXCEPTION(异常流程),CHANGE(变更流程),SCRAP(报废流程),RETIRE(退回流程)")
-    private String                         stepNode;
+    private String stepNode;
     /**
      * 资产名称
      */
     @ApiModelProperty("资产名称")
-    private String                         name;
+    private String name;
     /**
      * 资产组
      */
     @ApiModelProperty("资产组")
-    private String                         assetGroup;
+    private String assetGroup;
     /**
      * 资产组列表
      */
     @ApiModelProperty("资产组列表")
-    private List<AssetGroupResponse>       assetGroups;
+    private List<AssetGroupResponse> assetGroups;
 
     /**
      * 从属业务名称集合
      */
     @ApiModelProperty("从属业务名称集合")
-    private List<AssetBusinessResponse>    assetBusinessResponse;
+    private List<AssetBusinessResponse> assetBusinessResponse;
     /**
      * ip
      */
     @ApiModelProperty("ip")
-    private List<AssetIpRelationResponse>  ip;
+    private List<AssetIpRelationResponse> ip;
     /**
      * mac
      */
@@ -81,322 +82,354 @@ public class AssetResponse extends BaseResponse {
      * ips
      */
     @ApiModelProperty("ips用于列表展示")
-    private String                         ips;
+    private String ips;
     /**
      * mac
      */
     @ApiModelProperty("mac用于列表展示")
-    private String                         macs;
+    private String macs;
     /**
      * 序列表
      */
     @ApiModelProperty("序列表 ")
-    private String                         serial;
+    private String serial;
     /**
      * 品类
      */
     @ApiModelProperty("品类")
-    private String                         categoryModel;
+    private String categoryModel;
     /**
      * 设备类型
      */
     @ApiModelProperty("设备类型")
-    private String                         categoryType;
+    private String categoryType;
 
     /**
      * 品类名称
      */
     @ApiModelProperty("品类名称")
-    private String                         categoryModelName;
+    private String categoryModelName;
     /**
      * 品类名称
      */
     @ApiModelProperty("版本")
-    private String                         version;
+    private String version;
     /**
      * 厂商
      */
     @ApiModelProperty("厂商")
-    private String                         manufacturer;
+    private String manufacturer;
     /**
      * 装机时间
      */
     @ApiModelProperty("装机时间")
-    private Long                           installDate;
+    private Long installDate;
     /**
      * 启用时间
      */
     @ApiModelProperty("启用时间")
-    private Long                           activiateDate;
+    private Long activiateDate;
     /**
      * 到期提醒
      */
     @ApiModelProperty("到期提醒")
-    private Long                           expirationReminder;
+    private Long expirationReminder;
     /**
      * 网络类型:1红网，2篮网
      */
     @ApiModelProperty("网络类型:1红网，2篮网")
     @Encode
-    private String                         netType;
+    private String netType;
     /**
      * 网络类型名称
      */
-    private String                         netTypeName;
+    private String netTypeName;
     /**
      * 是否借用：1-借用，2-未借用
      */
     @ApiModelProperty("是否可借用：1-可借用，2-不可借用")
-    private Integer                        isBorrow;
+    private Integer isBorrow;
     /**
      * key
      */
     @ApiModelProperty("key")
-    private String                         key;
+    private String key;
 
     /**
      * 资产状态：详情查看AssetStatusEnum
      */
     @ApiModelProperty("资产状态")
-    private Integer                        assetStatus;
+    private Integer assetStatus;
     /**
      * 操作系统
      */
     @ApiModelProperty("操作系统")
-    private String                         operationSystem;
+    private String operationSystem;
 
     /**
      * 操作系统名
      */
     @ApiModelProperty("操作系统名")
-    private String                         operationSystemName;
+    private String operationSystemName;
     /**
      * 操作系统提示
      */
     @ApiModelProperty("操作系统提示")
-    private String                         operationSystemNotice;
+    private String operationSystemNotice;
 
     /**
      * 设备uuid
      */
     @ApiModelProperty("设备uuid")
-    private String                         uuid;
+    private String uuid;
     /**
      * 责任人主键
      */
     @ApiModelProperty("责任人主键")
     @Encode
-    private String                         responsibleUserId;
+    private String responsibleUserId;
     /**
      * 责任人名称
      */
     @ApiModelProperty("责任人名称")
-    private String                         responsibleUserName;
+    private String responsibleUserName;
     /**
      * 配置模板id
      */
     @ApiModelProperty("配置模板id")
-    private String                         baselineTemplateId;
+    private String baselineTemplateId;
     /**
      * 配置模板名称
      */
     @ApiModelProperty("配置模板名称")
-    private String                         baselineTemplateName;
+    private String baselineTemplateName;
     /**
      * 装机模板id
      */
     @ApiModelProperty("装机模板id")
     @Encode
-    private String                         installTemplateId;
+    private String installTemplateId;
     /**
      * 装机模板id
      */
     @ApiModelProperty("不加密的装机模板id")
-    private String                         decryptInstallTemplateId;
+    private String decryptInstallTemplateId;
 
     /**
      * 资产来源
      */
     @ApiModelProperty("资产来源")
-    private Integer                        assetSource;
+    private Integer assetSource;
     /**
      * 资产来源名称
      */
     @ApiModelProperty("资产来源名称")
-    private String                         assetSourceName;
+    private String assetSourceName;
     /**
      * 重要程度
      */
     @ApiModelProperty("重要程度")
-    private Integer                        importanceDegree;
+    private Integer importanceDegree;
     /**
      * 重要程度名称
      */
     @ApiModelProperty("重要程度名称")
-    private String                         importanceDegreeName;
+    private String importanceDegreeName;
     /**
      * 描述
      */
     @ApiModelProperty("描述")
-    private String                         describle;
+    private String describle;
 
     /**
      * 使用到期时间
      */
     @ApiModelProperty("使用到期时间")
-    private Long                           serviceLife;
+    private Long serviceLife;
 
     /**
      * 购买日期
      */
     @ApiModelProperty("购买日期")
-    private Long                           buyDate;
+    private Long buyDate;
     /**
      * 保修期
      */
     @ApiModelProperty("保修期")
-    private String                         warranty;
+    private String warranty;
     @ApiModelProperty("联系电话")
-    private String                         contactTel;
+    private String contactTel;
     /**
      * 资产准入状态
      */
     @ApiModelProperty("资产准入状态:1已允许，2已禁止")
-    private Integer                        admittanceStatus;
+    private Integer admittanceStatus;
     /**
      * 资产准入状态名称
      */
     @ApiModelProperty("资产准入状态名称")
-    private String                         admittanceStatusName;
+    private String admittanceStatusName;
     /**
      * 创建时间
      */
     @ApiModelProperty("创建时间")
-    private Long                           gmtCreate;
+    private Long gmtCreate;
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty("更新时间")
+    private Long gmtModified;
 
     /**
      * 首次入网时间
      */
     @ApiModelProperty("首次入网时间")
-    private Long                           firstEnterNett;
+    private Long firstEnterNett;
     /**
      * 行政区划主键
      */
     @ApiModelProperty("行政区划主键")
     @Encode
-    private String                         areaId;
+    private String areaId;
     /**
      * 行政区划名称
      */
     @ApiModelProperty("行政区划名称")
-    private String                         areaName;
+    private String areaName;
 
     /**
      * 机房位置
      */
     @ApiModelProperty("机房位置")
-    private String                         houseLocation;
+    private String houseLocation;
     /**
      * 维护方式1人工2自动
      */
     @ApiModelProperty("维护方式1人工2自动")
-    private Integer                        installType;
+    private Integer installType;
     /**
      * 维护方式名称
      */
     @ApiModelProperty("维护方式名称")
-    private String                         installTypeName;
+    private String installTypeName;
     /**
      * 资产流程信息
      */
     @ApiModelProperty("资产流程信息")
-    private WaitingTaskReponse             waitingTaskReponse;
+    private WaitingTaskReponse waitingTaskReponse;
 
     @ApiModelProperty(value = "漏洞个数")
-    private String                         vulCount;
+    private String vulCount;
 
     @ApiModelProperty(value = "补丁个数")
-    private String                         patchCount;
+    private String patchCount;
 
     @ApiModelProperty(value = "告警个数")
-    private String                         alarmCount;
+    private String alarmCount;
 
     @ApiModelProperty(value = "配置模板关联时间")
-    private Long                           baselineTemplateCorrelationGmt;
+    private Long baselineTemplateCorrelationGmt;
 
     @ApiModelProperty(value = "装机模板关联时间")
-    private Long                           installTemplateCorrelationGmt;
+    private Long installTemplateCorrelationGmt;
     /**
      * 首次发现时间
      */
     @ApiModelProperty(value = "首次发现时间")
-    private Long                           firstDiscoverTime;
+    private Long firstDiscoverTime;
     @ApiModelProperty(value = "解密id")
-    private String                         decryptId;
+    private String decryptId;
 
     @ApiModelProperty(value = "上一步状态")
-    private Integer                        originStatus;
+    private Integer originStatus;
 
     @ApiModelProperty("网络连接状态：1-在线，2-离线，3-未知")
-    private Integer                        netStatus;
+    private Integer netStatus;
     @ApiModelProperty("网络连接状态名称")
-    private String                         netStatusName;
+    private String netStatusName;
     @ApiModelProperty("物理位置")
-    private String                         location;
+    private String location;
     @ApiModelProperty("从属业务名称,详情展示")
-    private String                         assetBusiness;
+    private String assetBusiness;
     @ApiModelProperty("从属业务集合")
-    private List<AssetBusinessResponse>    dependentBusiness;
+    private List<AssetBusinessResponse> dependentBusiness;
     @ApiModelProperty("是否孤岛设备：1是,2否")
-    private Integer                        isOrphan;
+    private Integer isOrphan;
     @ApiModelProperty("自定义字段")
-    private List<AssetCustomizeRequest>    customField;
+    private List<AssetCustomizeRequest> customField;
 
     @ApiModelProperty("机器名")
-    private String                         machineName;
+    private String machineName;
     @ApiModelProperty("是否涉密：1是，2-否")
-    private Integer                        isSecrecy;
+    private Integer isSecrecy;
     @ApiModelProperty("国资码")
-    private String                         code;
+    private String code;
 
     @ApiModelProperty("附件")
-    private String                         fileInfo;
+    private String fileInfo;
     @ApiModelProperty("审批内容")
-    private String                         note;
+    private String note;
 
     @ApiModelProperty("审批人主键")
     @Encode
-    private String                         checkUserId;
+    private String checkUserId;
     @ApiModelProperty("审批人名字")
-    private String                         checkUserName;
+    private String checkUserName;
     @ApiModelProperty("操作日志内容")
-    private String                         content;
+    private String content;
     @Encode
     @ApiModelProperty("执行人主键")
-    private String                         executeUserId;
+    private String executeUserId;
     @ApiModelProperty("执行人名字")
-    private String                         executeUserName;
+    private String executeUserName;
 
     /**
      * 备注
      */
     @ApiModelProperty("描述")
-    private String                         memo;
+    private String memo;
     /**
      * 行颜色
      */
     @ApiModelProperty("行颜色:green,yellow")
-    private String                         rowColor;
+    private String rowColor;
     /**
      * 软件版本
      */
     @ApiModelProperty("软件版本")
-    private String                         softVersion;
+    private String softVersion;
     /**
      * 是否被整改过：1,已整改,2未整改
      */
     @ApiModelProperty("是否被整改过：1,已整改,2未整改,3整改中")
-    private Integer                        rectification;
+    private Integer rectification;
+    @ApiModelProperty("1 未走完漏洞整改流程  2 已走完漏洞整改流程")
+    private Integer isVlunCorrect;
+
+    public Integer getIsVlunCorrect() {
+        return isVlunCorrect;
+    }
+
+    public Long getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public void setIsVlunCorrect(Integer isVlunCorrect) {
+        this.isVlunCorrect = isVlunCorrect;
+    }
+
+
+    public String getUseName() {
+        return useName;
+    }
+
+    public void setUseName(String useName) {
+        this.useName = useName;
+    }
 
     public Integer getRectification() {
         return rectification;
@@ -761,8 +794,8 @@ public class AssetResponse extends BaseResponse {
 
     public void setInstallTypeName(String installTypeName) {
         this.installTypeName = InstallType.getInstallTypeByCode(installType) != null
-            ? InstallType.getInstallTypeByCode(installType).getStatus()
-            : "";
+                ? InstallType.getInstallTypeByCode(installType).getStatus()
+                : "";
     }
 
     public String getVulCount() {
@@ -1106,22 +1139,22 @@ public class AssetResponse extends BaseResponse {
     @Override
     public String toString() {
         return "AssetResponse{" + "number='" + number + '\'' + ", name='" + name + '\'' + ", assetGroup='" + assetGroup
-               + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", ips='" + ips + '\''
-               + ", macs='" + macs + '\'' + ", serial='" + serial + '\'' + ", categoryModel=" + categoryModel
-               + ", categoryType=" + categoryType + ", categoryModelName='" + categoryModelName + '\'' + ", version='"
-               + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
-               + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
-               + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
-               + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
-               + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
-               + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
-               + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + +'\''
-               + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus=" + admittanceStatus
-               + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='" + areaId + '\''
-               + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
-               + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
-               + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
-               + ", alarmCount='" + alarmCount + '\'' + '}';
+                + '\'' + ", assetGroups=" + assetGroups + ", ip=" + ip + ", mac=" + mac + ", ips='" + ips + '\''
+                + ", macs='" + macs + '\'' + ", serial='" + serial + '\'' + ", categoryModel=" + categoryModel
+                + ", categoryType=" + categoryType + ", categoryModelName='" + categoryModelName + '\'' + ", version='"
+                + version + '\'' + ", manufacturer='" + manufacturer + '\'' + ", assetStatus=" + assetStatus
+                + ", operationSystem='" + operationSystem + '\'' + ", operationSystemName='" + operationSystemName + '\''
+                + ", operationSystemNotice='" + operationSystemNotice + '\'' + ", uuid='" + uuid + '\''
+                + ", responsibleUserId='" + responsibleUserId + '\'' + ", responsibleUserName='" + responsibleUserName
+                + '\'' + ", baselineTemplateId='" + baselineTemplateId + '\'' + ", installTemplateId='"
+                + installTemplateId + '\'' + ", assetSource=" + assetSource + ", importanceDegree=" + importanceDegree
+                + ", describle='" + describle + '\'' + ", serviceLife=" + serviceLife + ", contactTel='" + +'\''
+                + ", buyDate=" + buyDate + ", warranty='" + warranty + '\'' + ", admittanceStatus=" + admittanceStatus
+                + ", gmtCreate=" + gmtCreate + ", firstEnterNett=" + firstEnterNett + ", areaId='" + areaId + '\''
+                + ", areaName='" + areaName + '\'' + ", houseLocation='" + houseLocation + '\'' + ", installType="
+                + installType + ", installTypeName='" + installTypeName + '\'' + ", waitingTaskReponse="
+                + waitingTaskReponse + ", vulCount='" + vulCount + '\'' + ", patchCount='" + patchCount + '\''
+                + ", alarmCount='" + alarmCount + '\'' + '}';
     }
 
     public String getStepNode() {

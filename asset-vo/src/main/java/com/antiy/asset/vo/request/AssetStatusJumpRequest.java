@@ -8,6 +8,7 @@ import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.ParamterExceptionUtils;
 import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -53,7 +54,7 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
     private String executeUserName;
 
     @ApiModelProperty("资产信息")
-    @NotEmpty(message = "资产数据格式不正确")
+    @NotEmpty(message = "资产不能为空")
     @Valid
     private List<StatusJumpAssetInfo>  assetInfoList;
 
@@ -209,10 +210,16 @@ public class AssetStatusJumpRequest extends BasicRequest implements ObjectValida
 
     @Override
     public void validate() throws RequestParamValidateException {
+        if(CollectionUtils.isEmpty(assetInfoList)){
+            ParamterExceptionUtils.isTrue(false, "资产不能为空");
+        }
+
         if (!(assetFlowEnum.equals(AssetFlowEnum.CHANGE_COMPLETE)) && formData == null
             && manualStartActivityRequest == null) {
             ParamterExceptionUtils.isTrue(false, "请求流程数据不能为空");
         }
+
+
         if(assetFlowEnum.equals(AssetFlowEnum.RETIRE_APPLICATION)
 
             || assetFlowEnum.equals(AssetFlowEnum.SCRAP_APPLICATION)

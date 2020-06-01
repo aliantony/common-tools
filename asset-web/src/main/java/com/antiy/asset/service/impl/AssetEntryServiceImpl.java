@@ -118,7 +118,7 @@ public class AssetEntryServiceImpl implements iAssetEntryService {
      * @param nodes
      * @return
      */
-    private void getCategoryIds(AssetCategoryModelNodeResponse nodes,List<String> result )  {
+    public void getCategoryIds(AssetCategoryModelNodeResponse nodes,List<String> result )  {
         result.add(nodes.getStringId());
         if (CollectionUtils.isNotEmpty(nodes.getChildrenNode())) {
             for (AssetCategoryModelNodeResponse node : nodes.getChildrenNode()) {

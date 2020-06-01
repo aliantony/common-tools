@@ -1,12 +1,12 @@
 package com.antiy.asset.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
 
 import com.antiy.asset.util.AreaUtils;
+import com.antiy.asset.vo.enums.AssetStatusEnum;
+import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,6 +42,10 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
     private BaseConverter<AssetMonitorRuleRelationRequest, AssetMonitorRuleRelation> requestConverter;
     @Resource
     private BaseConverter<AssetMonitorRuleRelation, AssetMonitorRuleRelationResponse> responseConverter;
+    @Resource
+    private AssetCategoryModelServiceImpl categoryModelService;
+    @Resource
+    private AssetEntryServiceImpl entryService;
 
     @Override
     public String saveAssetMonitorRuleRelation(AssetMonitorRuleRelationRequest request) throws Exception {
@@ -77,6 +81,10 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
             //获取所有的下级区域
             query.setAreaList(AreaUtils.getWholeNextArea(query.getAreaList().get(0)));
         }
+        //设置资产状态
+        query.setStatusList(Arrays.asList(AssetStatusEnum.NET_IN.getCode(),AssetStatusEnum.WAIT_RETIRE.getCode()));
+        //设置计算设备类型
+        query.setCategoryIds(getCategoryIdsOfComputer());
         Integer count = this.findCount(query);
         if (count <= 0) {
             return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(), Collections.emptyList());
@@ -84,7 +92,13 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
         return new PageResult<>(query.getPageSize(), count, query.getCurrentPage(),
                 this.queryListAssetMonitorRuleRelation(query));
     }
-
+    public List<String> getCategoryIdsOfComputer() throws Exception {
+        AssetCategoryModelQuery modelQuery = new AssetCategoryModelQuery();
+        modelQuery.setName("计算设备");
+        return categoryModelService.queryCategoryWithOutRootNode(modelQuery)
+                .stream().collect(
+                        LinkedList::new, (list, v) -> entryService.getCategoryIds(v, list), List::addAll);
+    }
     @Override
     public AssetMonitorRuleRelationResponse queryAssetMonitorRuleRelationById(QueryCondition queryCondition) throws Exception {
         ParamterExceptionUtils.isBlank(queryCondition.getPrimaryKey(), "主键Id不能为空");

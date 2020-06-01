@@ -3,6 +3,8 @@ package com.antiy.asset.vo.query;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * <p> AssetMonitorRule 查询条件 </p>
  *
@@ -15,7 +17,7 @@ public class AssetMonitorRuleQuery extends AssetBaseQuery {
     @ApiModelProperty("规则名称")
     private String name;
     @ApiModelProperty("告警等级")
-    private String alarmLevel;
+    private List<String> alarmLevel;
     @ApiModelProperty("是否关联资产数排序")
     private boolean relatedAssetSort;
     @ApiModelProperty("唯一键")
@@ -45,11 +47,11 @@ public class AssetMonitorRuleQuery extends AssetBaseQuery {
         this.name = name;
     }
 
-    public String getAlarmLevel() {
+    public List<String> getAlarmLevel() {
         return alarmLevel;
     }
 
-    public void setAlarmLevel(String alarmLevel) {
+    public void setAlarmLevel(List<String> alarmLevel) {
         this.alarmLevel = alarmLevel;
     }
 }
