@@ -402,10 +402,10 @@
                 #{item }
             </foreach>
         </if>
-        <if test=" name != null">
+        <if test=" name != null and name != ''">
             AND a.name like binary concat('%',replace(replace(#{name },'%','\%'),'_','\_'),'%')
         </if>
-        <if test=" mobile != null">
+        <if test=" mobile != null and mobile != ''">
             AND a.mobile like concat('%', replace(replace(#{mobile },'%','\%'),'_','\_'),'%')
         </if>
         <if test="key != null and key != ''">
