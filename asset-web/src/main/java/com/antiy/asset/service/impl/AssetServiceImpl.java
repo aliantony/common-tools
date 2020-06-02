@@ -300,6 +300,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetBusinessRelation.setAssetId(aid);
                             assetBusinessRelation.setGmtCreate(currentTimeMillis);
                             assetBusinessRelation.setCreateUser(curentUser);
+                            assetBusinessRelation.setUniqueId(SnowFlakeUtil.getSnowId());
                         });
                         assetBusinessRelationDao.insertBatch(assetBusinessRelations);
                     }
