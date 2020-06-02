@@ -77,8 +77,6 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Resource
     private AssetLinkRelationServiceImpl assetLinkRelationService;
 
-    private static Pattern PATTERN_NUMBER = Pattern.compile("^[-\\+]?[\\d]*$");
-
     @Override
     public String saveAssetLendRelation(AssetLendRelationRequest request) throws Exception {
         AssetLendRelation assetLendRelation = requestConverter.convert(request, AssetLendRelation.class);
@@ -103,7 +101,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         List<String> areaIdsOfCurrentUser = LoginTool.getLoginUser().getAreaIdsOfCurrentUser();
         query.setAreaIds(areaIdsOfCurrentUser);
         List<String> categoryModels = query.getCategoryModels();
-        if(CollectionUtils.isNotEmpty(categoryModels)){
+        if (CollectionUtils.isNotEmpty(categoryModels)) {
             List<Integer> categoryModelList = categoryModels.stream().map(t -> DataTypeUtils.stringToInteger(t)).collect(Collectors.toList());
             List<Integer> categoryNodeList = assetLinkRelationService.getCategoryNodeList(categoryModelList);
             List<String> categorysStr = categoryNodeList.stream().map(t -> DataTypeUtils.integerToString(t)).collect(Collectors.toList());
@@ -189,17 +187,15 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public String saveLendInfo(AssetLendInfoRequest request) throws Exception {
         ParamterExceptionUtils.isBlank(String.valueOf(request.getAssetId()), "资产Id不能为空");
-        ParamterExceptionUtils.isBlank(String.valueOf(request.getUseId()), "用户Id不能为空");
-        ParamterExceptionUtils.isBlank(String.valueOf(request.getLendTime()), "出借日期不能为空");
-        ParamterExceptionUtils.isBlank(String.valueOf(request.getLendPeriods()), "预计归还日期不能为空");
-
-        if (!PATTERN_NUMBER.matcher(String.valueOf(request.getLendTime())).matches()){
+        if (request.getLendTime() == null) {
             throw new BusinessException("出借日期不能为空");
         }
-        if (!PATTERN_NUMBER.matcher(String.valueOf(request.getLendPeriods())).matches()){
+        if (request.getLendPeriods() == null) {
             throw new BusinessException("预计归还日期不能为空");
         }
-
+        if (request.getUseId() == null) {
+            throw new BusinessException("用户Id不能为空");
+        }
 
         AssetLendRelation assetLendRelation = lendRelationBaseConverter.convert(request, AssetLendRelation.class);
 
@@ -247,9 +243,13 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
     @Override
     public String saveLendInfos(AssetLendInfosRequest request) throws Exception {
-        ParamterExceptionUtils.isNull(request.getUseId(), "用户ID不能为空");
-        ParamterExceptionUtils.isNull(request.getAssetIds(), "资产列表不能为空");
         ParamterExceptionUtils.isNull(request.getOrderNumber(), "OA编号不能为空");
+        if (request.getUseId() == null) {
+            throw new BusinessException("用户Id不能为空");
+        }
+        if (CollectionUtils.isEmpty(request.getAssetIds())){
+            throw new BusinessException("资产列表不能为空");
+        }
 
         String userName = LoginUserUtil.getLoginUser().getUsername();
 
@@ -259,7 +259,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
-        if (assetLendRelation.getAssetId() == null){
+        if (assetLendRelation.getAssetId() == null) {
             assetLendRelation.setUseId(LoginUserUtil.getLoginUser().getId());
         }
 
@@ -279,7 +279,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         AssetResponse assetResponse = assetDao.queryInfoByAssetId(id);
 
-        if(assetResponse.getUseName()==null){
+        if (assetResponse.getUseName() == null) {
             assetResponse.setUseName(assetResponse.getResponsibleUserName());
         }
         assetResponse.setResponsibleUserName(null);
@@ -310,7 +310,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
             throw new BusinessException("资产状态异常，出借失败！");
         }
         for (String assetId : assetIds) {
-            if (assetLendRelationDao.countAssetLend(assetId) > 0){
+            if (assetLendRelationDao.countAssetLend(assetId) > 0) {
                 throw new BusinessException("存在以出借资产，出借失败！");
             }
         }
@@ -319,7 +319,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
     @Override
     public String queryByAssetId(QueryCondition queryCondition) {
         Integer count = assetLendRelationDao.countByAssetId(queryCondition.getPrimaryKey());
-        if (count != null && count > 0){
+        if (count != null && count > 0) {
             throw new BusinessException("该资产已出借或不是已入网状态，不能进行出借");
         }
         return Boolean.TRUE.toString();
