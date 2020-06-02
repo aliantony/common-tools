@@ -274,12 +274,30 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         String numbers=StringUtils.join(numberList,",");
         String ids = StringUtils.join(assetIdList, ",");
 
-        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>0) {
 
+        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()==1) {
+            BusinessPhaseEnum businessPhaseEnum=null;
+            String msg=null;
+            if(AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
+                businessPhaseEnum=BusinessPhaseEnum.EXIT_APPLY;
+            }
+            if(AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum()) ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
+                businessPhaseEnum=BusinessPhaseEnum.SCAPE_APPLY;
+            }
+
+            if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
+                businessPhaseEnum=BusinessPhaseEnum.SCAPE_EXE;
+            }
             LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
-                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum(),AssetEnum.NOT_ASSET_NO));
+                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, businessPhaseEnum,AssetEnum.IS_ASSET_NO));
             logger.info("记录操作日志");
         }
+        if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()>1) {
+            LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
+                    ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, statusJumpRequest.getAssetFlowEnum().getBusinessPhaseEnum(),AssetEnum.NOT_ASSET_NO));
+            logger.info("批量资产记录操作日志");
+        }
+
     }
     private void dealRelation(AssetStatusJumpRequest statusJumpRequest,List<Asset> assetsInDb) throws Exception {
         List<AssetAssemblyRequest> assetAssemblys = statusJumpRequest.getAssetAssemblyRequest();
