@@ -251,7 +251,8 @@
                 <include refid="Multiple_Query"></include>
             </trim>
         </where>
-
+        GROUP BY
+        t.id
         ) report
 
         <where>
