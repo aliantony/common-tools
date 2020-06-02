@@ -1473,6 +1473,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 Integer.valueOf(procInstId));
         // 更新资产状态
         updateAssetStatus(status, System.currentTimeMillis(), asset.getStringId());
+        // 是否需要进行漏扫
+        if (assetOuterRequest.getNeedScan()) {
+            ActionResponse scan = baseLineClient.scan(asset.getStringId());
+            // 如果漏洞为空,直接返回错误信息
+            if (null == scan || !RespBasicCode.SUCCESS.getResultCode().equals(scan.getHead().getCode())) {
+                BusinessExceptionUtils.isTrue(false, "资产登记调用漏洞扫描报错");
+            }
+        }
         // 记录操作日志
         LogUtils.recordOperLog(new BusinessData(AssetEventEnum.ASSET_INSERT.getName(), asset.getId(), asset.getNumber(),
                 asset, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.WAIT_CHECK));
