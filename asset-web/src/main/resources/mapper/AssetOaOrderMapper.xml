@@ -180,7 +180,9 @@
         from
         <include refid="Table_Name"></include>
         where number = #{number}
+        limit 1
     </select>
+
     <select id="getNumByCondition" resultType="int">
         select
         count(id)

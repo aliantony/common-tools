@@ -232,7 +232,7 @@
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             or air.ip like
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
-            or amr.mac like
+            or replace(amr.mac,':','-') like
             CONCAT('%',replace(replace(replace(#{multipleQuery},'\\','\\\\'),'%','\%'),'_','\_'),'%')
             )
         </if>
@@ -291,7 +291,8 @@
                         #{item}
                     </foreach>
                 </if>
-                and amrr.asset_id is null
+                and  asset.id not in(select amrr.asset_id from asset_monitor_rule_relation amrr  INNER JOIN asset_monitor_rule  amr
+                on amrr.rule_unique_id=amr.unique_id and amr.status=1 where amrr.status=1)
             </otherwise>
         </choose>
 
