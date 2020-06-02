@@ -18,6 +18,7 @@ public class AssetAddOfBusinessQuery extends ObjectQuery {
      * 资产组
      */
     @ApiModelProperty("资产组")
+    @Encode
     private List<String> assetGroup;
     /**
      * 厂商
