@@ -1,5 +1,14 @@
 package com.antiy.asset.intergration.impl;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.antiy.asset.aop.AssetLog;
 import com.antiy.asset.intergration.BaseLineClient;
@@ -10,14 +19,6 @@ import com.antiy.asset.vo.request.BaselineAssetRegisterRequest;
 import com.antiy.asset.vo.request.BaselineWaitingConfigRequest;
 import com.antiy.asset.vo.response.AssetCorrectIInfoResponse;
 import com.antiy.common.base.ActionResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * @author: zhangbing
@@ -53,7 +54,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     @Value("${getUsersByQxTagAndAreaId}")
     private String     getUsersByQxTagAndAreaId;
     @Value("${scannerEliminateUrl}")
-    private String scannerEliminateUrl;
+    private String     scannerEliminateUrl;
+    @Value("${getUserIdsByAreaIdsUrl}")
+    private String     getUserIdsByAreaIdsUrl;
     @Resource
     private BaseClient baseClient;
 
@@ -117,9 +120,9 @@ public class BaseLineClientImpl implements BaseLineClient {
     public ActionResponse<AssetCorrectIInfoResponse> rectification(String assetId) {
         JSONObject param = new JSONObject();
         param.put("assetId", assetId);
-        return  (ActionResponse) baseClient.post(param,
-                new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
-                }, baseLineRectificationUrl);
+        return (ActionResponse) baseClient.post(param,
+            new ParameterizedTypeReference<ActionResponse<AssetCorrectIInfoResponse>>() {
+            }, baseLineRectificationUrl);
     }
 
     @Override
@@ -148,5 +151,11 @@ public class BaseLineClientImpl implements BaseLineClient {
         return (ActionResponse) baseClient.post(assetIdList, new ParameterizedTypeReference<ActionResponse>() {
         }, scannerEliminateUrl);
 
+    }
+
+    @Override
+    public ActionResponse getUserIdsByAreaIds(Map map) {
+        return (ActionResponse) baseClient.post(map, new ParameterizedTypeReference<ActionResponse>() {
+        }, getUserIdsByAreaIdsUrl);
     }
 }
