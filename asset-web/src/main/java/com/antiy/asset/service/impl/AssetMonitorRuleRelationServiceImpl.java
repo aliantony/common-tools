@@ -10,6 +10,7 @@ import com.antiy.asset.vo.query.AssetCategoryModelQuery;
 import com.antiy.common.exception.BusinessException;
 import com.antiy.common.utils.LoginUserUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,9 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
             query.setAreaList(AreaUtils.getWholeNextArea(query.getAreaList().get(0)));
         }
         //转化综合查询
-        query.setMultipleQuery(query.getMultipleQuery().replace(':','-'));
+        if (StringUtils.isNotBlank(query.getMultipleQuery())) {
+            query.setMultipleQuery(query.getMultipleQuery().replace(':','-'));
+        }
         //设置资产状态
         query.setStatusList(Arrays.asList(AssetStatusEnum.NET_IN.getCode(),AssetStatusEnum.WAIT_RETIRE.getCode()));
         //设置计算设备类型
