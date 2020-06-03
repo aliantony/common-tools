@@ -442,7 +442,7 @@ public class AssetInstallTemplateServiceImpl extends BaseServiceImpl<AssetInstal
                 logger.warn(e.getCause().getMessage());
                 throw new BusinessException("调用用户模块失败");
             }
-            if (response == null && !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
+            if (response == null || !response.getHead().getCode().equals(RespBasicCode.SUCCESS.getResultCode())) {
                 logger.info(checkUserComplianceUrl + "请求参数:{}", query);
                 throw new BusinessException("调用用户模块失败");
             }
