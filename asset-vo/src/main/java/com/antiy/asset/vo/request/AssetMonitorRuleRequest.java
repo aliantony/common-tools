@@ -146,8 +146,8 @@ public class AssetMonitorRuleRequest extends BaseRequest implements ObjectValida
 
     @Override
     public void validate() throws RequestParamValidateException {
-        if (this.cpuThreshold==null&&this.diskThreshold==null&&this.memoryThreshold==null){
-            throw new BusinessException("cpu 内存 磁盘不能同时为空");
+        if (this.cpuThreshold==null&&this.diskThreshold==null&&this.memoryThreshold==null&&runtimeExceptionThreshold==null){
+            throw new BusinessException("cpu 内存 磁盘 运行异常监控 不能同时为空");
         }
     }
 }
