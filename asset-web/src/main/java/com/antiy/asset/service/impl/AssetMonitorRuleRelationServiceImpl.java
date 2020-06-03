@@ -81,6 +81,8 @@ public class AssetMonitorRuleRelationServiceImpl extends BaseServiceImpl<AssetMo
             //获取所有的下级区域
             query.setAreaList(AreaUtils.getWholeNextArea(query.getAreaList().get(0)));
         }
+        //转化综合查询
+        query.setMultipleQuery(query.getMultipleQuery().replace(':','-'));
         //设置资产状态
         query.setStatusList(Arrays.asList(AssetStatusEnum.NET_IN.getCode(),AssetStatusEnum.WAIT_RETIRE.getCode()));
         //设置计算设备类型

@@ -404,7 +404,7 @@
 <select id="getBusinessInfoByAssetId" resultType="com.antiy.asset.vo.response.AssetBusinessResponse" parameterType="java.lang.String">
     select ab.id,ab.name,abr.business_influence importance,ab.unique_id uniqueId
     from <include refid="Table_Name"/> abr
-    inner join asset_business ab on abr.asset_business_id=ab.id and ab.status=1
+    inner join asset_business ab on abr.asset_business_id=ab.unique_id and ab.status=1
     where
     abr.asset_id=#{assetId}
     and abr.status=1
