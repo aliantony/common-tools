@@ -152,7 +152,7 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManageDao.keyRegister(keyManage);
 
         // 对资产表中的key进行同步
-        if (keyManage.getKeyUserType() == 1) {
+        if (KeyStatusEnum.KEY_RECIPIENTS.getStatus().equals(keyManage.getRecipState()) && keyManage.getKeyUserType() == 1) {
             assetKeyUpdate(keyManage);
         }
 
