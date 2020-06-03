@@ -259,7 +259,7 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
         if (assetLendRelation.getAssetId() == null) {
-            assetLendRelation.setUseId(LoginUserUtil.getLoginUser().getId());
+            assetLendRelation.setUseId(request.getUseId());
         }
 
         //校验资产状态
