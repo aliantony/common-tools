@@ -276,10 +276,10 @@ public class AssetCategoryModelServiceImpl extends BaseServiceImpl<AssetCategory
                 }
                 parentNode = node;
                 filterTreeWithAssets(parentNode.getChildrenNode(), parentNode);
-                if (!Objects.isNull(lastNode) && lastNode.getChildrenNode().isEmpty() && lastNode.getCount() <= 0) {
+                if (!Objects.isNull(lastNode) && CollectionUtils.isEmpty(lastNode.getChildrenNode()) && lastNode.getCount() <= 0) {
                     childNodes.remove(lastNode);
                     i--;
-                } else if (!Objects.isNull(lastNode) && lastNode.getChildrenNode().isEmpty()) {
+                } else if (!Objects.isNull(lastNode) && CollectionUtils.isEmpty(lastNode.getChildrenNode())) {
                     lastNode.setChildrenNode(null);
                 }
             }
