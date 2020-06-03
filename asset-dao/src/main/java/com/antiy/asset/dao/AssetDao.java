@@ -463,7 +463,7 @@ public interface AssetDao extends IBaseDao<Asset> {
      * @param time
      * @return
      */
-    List<AssetMonitor> getExpirationAsset(@Param("time") long time);
+    List<AssetArea> getExpirationAsset(@Param("time") long time);
 
     /**
      * 扫描过期资产

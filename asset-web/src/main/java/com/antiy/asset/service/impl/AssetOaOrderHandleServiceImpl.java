@@ -338,7 +338,7 @@ public class AssetOaOrderHandleServiceImpl extends BaseServiceImpl<AssetOaOrderH
             assetLendInfosRequest.setLendPurpose("");
             assetLendRelationService.saveLendInfos(assetLendInfosRequest);
             //保存数据到asset_lend_relation
-            saveLendRelation(request);
+            //saveLendRelation(request);
         }
     }
 

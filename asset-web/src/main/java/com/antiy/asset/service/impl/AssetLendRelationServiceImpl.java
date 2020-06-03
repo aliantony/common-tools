@@ -255,18 +255,18 @@ public class AssetLendRelationServiceImpl extends BaseServiceImpl<AssetLendRelat
 
         AssetLendRelation assetLendRelation = lendInfosRequestAssetLendRelationBaseConverter.convert(request, AssetLendRelation.class);
         assetLendRelation.setLendStatus(Integer.valueOf(1));
-        assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
         assetLendRelation.setGmtCreate(System.currentTimeMillis());
         assetLendRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
         assetLendRelation.setStatus(Integer.valueOf(1));
         if (assetLendRelation.getAssetId() == null) {
-            assetLendRelation.setUseId(LoginUserUtil.getLoginUser().getId());
+            assetLendRelation.setUseId(request.getUseId());
         }
 
         //校验资产状态
         this.checkAssetStatus(request.getAssetIds());
         for (String item : request.getAssetIds()) {
             //出借保存
+            assetLendRelation.setUniqueId(SnowFlakeUtil.getSnowId());
             assetLendRelation.setAssetId(aesEncoder.decode(item, userName));
             //由oa系统发起出借，出借模块无需添加日志
             this.insertAssetLendRelation(assetLendRelation);

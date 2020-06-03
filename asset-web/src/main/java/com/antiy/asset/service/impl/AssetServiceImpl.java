@@ -300,7 +300,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                             assetBusinessRelation.setAssetId(aid);
                             assetBusinessRelation.setGmtCreate(currentTimeMillis);
                             assetBusinessRelation.setCreateUser(curentUser);
-                            assetBusinessRelation.setUniqueId(SnowFlakeUtil.getSnowId());
+                            assetBusinessRelation.setUniqueId(assetBusinessRelation.getAssetBusinessId());
                         });
                         assetBusinessRelationDao.insertBatch(assetBusinessRelations);
                     }
@@ -1833,7 +1833,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             businessRelation.setAssetId(assetId);
             businessRelation.setBusinessInfluence(r.getBusinessInfluence());
             businessRelation.setAssetBusinessId(r.getAssetBusinessId());
-            businessRelation.setUniqueId(SnowFlakeUtil.getSnowId());
+            businessRelation.setUniqueId(r.getAssetBusinessId());
             businessRelation.setGmtCreate(System.currentTimeMillis());
             businessRelation.setCreateUser(LoginUserUtil.getLoginUser().getId());
             insertRelation.add(businessRelation);
