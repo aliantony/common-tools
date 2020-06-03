@@ -187,14 +187,12 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
         keyManage.setGmtModified(System.currentTimeMillis());
         keyManage.setIsDelete(1);
 
-        if (KeyUserType.KEY_USER.getStatus().equals(keyManage.getKeyUserType())) {
-            AssetKeyManageRequest query = new AssetKeyManageRequest();
-            query.setKeyNum(keyManage.getKeyNum());
-            query.setKeyUserType(keyManage.getKeyUserType());
-            query.setKeyUserId(keyManage.getKeyUserId());
-            if (keyManageDao.keyNameCountVerify(query) > 0) {
-                throw new BusinessException("使用者重复!");
-            }
+        AssetKeyManageRequest query = new AssetKeyManageRequest();
+        query.setKeyNum(keyManage.getKeyNum());
+        query.setKeyUserType(keyManage.getKeyUserType());
+        query.setKeyUserId(keyManage.getKeyUserId());
+        if (keyManageDao.keyNameCountVerify(query) > 0) {
+            throw new BusinessException("使用者重复!");
         }
 
         keyManageDao.keyRecipients(keyManage);
@@ -232,14 +230,14 @@ public class AssetKeyManageServiceImpl implements IAssetKeyManageService {
      * @return
      */
     @Override
-    public Integer keyReturn(AssetKeyManageRequest request) throws Exception{
+    public Integer keyReturn(AssetKeyManageRequest request) throws Exception {
         AssetKeyManage keyManage = keyManageDao.queryId(request.getId());
         if (keyManage == null) {
             throw new BusinessException("KEY不存在！");
         }
 
         // 资产中key同步处理
-        if (keyManage.getKeyUserType() ==1) {
+        if (keyManage.getKeyUserType() == 1) {
             AssetKeyManage assetKeyManage = new AssetKeyManage();
             assetKeyManage.setKeyUserId(keyManage.getKeyUserId());
             assetKeyUpdate(assetKeyManage);
