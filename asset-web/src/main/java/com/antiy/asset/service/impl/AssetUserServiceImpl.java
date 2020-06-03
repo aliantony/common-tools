@@ -235,12 +235,6 @@ public class AssetUserServiceImpl extends BaseServiceImpl<AssetUser> implements 
                 }
             }
 
-            if (!areasStrings.contains(entity.getAddress())) {
-                error++;
-                a++;
-                builder.append("第").append(a).append("行").append("当前用户没有此地址，或已被注销！");
-                continue;
-            }
             AssetUser asset = new AssetUser();
             asset.setGmtCreate(System.currentTimeMillis());
             asset.setAddress(areaId);
