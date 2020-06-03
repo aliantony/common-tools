@@ -3162,9 +3162,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCode(entity.getCode());
             asset.setNetType(typeId);
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
-            long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
-            asset.setOperationSystem(operationSystem);
-            asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
+            if (StringUtils.isNotBlank(entity.getOperationSystem())) {
+
+                long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
+                asset.setOperationSystem(operationSystem);
+                asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
+            }
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());

@@ -101,6 +101,7 @@
 
     <sql id="IF_Base_Column_List_ForBatch">
             number,
+            soft_version,
             step_node,
             name,
             install_type,
@@ -149,6 +150,7 @@
 
     <sql id="IF_Value_Column_List_ForBatch">
         #{entity.number },
+        #{entity.softVersion },
         #{entity.stepNode },
         #{entity.name },
         #{entity.installType },

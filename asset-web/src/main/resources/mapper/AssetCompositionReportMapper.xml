@@ -410,13 +410,6 @@
             </otherwise>
         </choose>
 
-        <if test="pageSize !=-1">
-            LIMIT #{pageSize} offset #{pageOffset}
-        </if>
-        <if test="start!=null and end!=null and pageSize==-1">
-            limit #{start},#{end}
-        </if>
-
         ) report
 
         <where>
@@ -463,7 +456,12 @@
                 </if>
             </trim>
         </where>
-
+        <if test="pageSize !=-1">
+            LIMIT #{pageSize} offset #{pageOffset}
+        </if>
+        <if test="start!=null and end!=null and pageSize==-1">
+            limit #{start},#{end}
+        </if>
     </select>
     <!--资产条件查询-->
     <sql id="Multiple_Query">
