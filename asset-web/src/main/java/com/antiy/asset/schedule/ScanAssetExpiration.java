@@ -63,7 +63,7 @@ public class ScanAssetExpiration {
     /**
      * 每天0点扫描到期提醒、过期的资产
      */
-    // @Scheduled(cron = "0 0 0 */1 * ?")
+    @Scheduled(cron = "0 0 0 */1 * ?")
     // @Scheduled(cron = "*/5 * * * * ?")
     public void scan() {
         Long currentTime = System.currentTimeMillis();
