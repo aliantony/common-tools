@@ -50,29 +50,29 @@ public enum AssetFlowEnum {
      * 退回申请
      *
      */
-    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.WAIT_RETIRE,"","退回申请。","退回申请",BusinessPhaseEnum.ASSET_BATCH_BACK_APPLY),
+    RETIRE_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.WAIT_RETIRE,"","退回申请。","批量对资产做退回申请操作",BusinessPhaseEnum.ASSET_BATCH_BACK_APPLY),
 
     /**
      * 退役执行
      */
-    RETIRE_EXECUTEE(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退回执行。","退回执行",BusinessPhaseEnum.ASSET_BATCH_BACK_EXE),
+    RETIRE_EXECUTEE(AssetStatusEnum.WAIT_RETIRE,AssetStatusEnum.RETIRE,AssetStatusEnum.RETIRE,"","退回执行。","批量对资产做退回执行操作",BusinessPhaseEnum.ASSET_BATCH_BACK_EXE),
     /**
      * 报废申请
      * 已退回 --> 待报废
      */
-        SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请。","报废申请",BusinessPhaseEnum.ASSET_BATCH_SCAPE_APPLY),
+        SCRAP_APPLICATION(AssetStatusEnum.RETIRE,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请。","批量对资产做报废申请操作",BusinessPhaseEnum.ASSET_BATCH_SCAPE_APPLY),
 
 
     /**
      * 报废申请
      * 已入网 --> 待报废
      */
-    NET_IN_TO_SCRAP_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请。","报废申请",BusinessPhaseEnum.ASSET_BATCH_SCAPE_APPLY),
+    NET_IN_TO_SCRAP_APPLICATION(AssetStatusEnum.NET_IN,AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.WAIT_SCRAP,"","报废申请。","批量对资产做报废申请操作",BusinessPhaseEnum.ASSET_BATCH_SCAPE_APPLY),
 
     /**
      * 报废执行
      */
-    SCRAP_EXECUTEE(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP,AssetStatusEnum.SCRAP,"","报废执行。","报废执行",BusinessPhaseEnum.NONE),
+    SCRAP_EXECUTEE(AssetStatusEnum.WAIT_SCRAP,AssetStatusEnum.SCRAP,AssetStatusEnum.SCRAP,"","报废执行。","批量对资产做报废执行操作",BusinessPhaseEnum.NONE),
     /**
      * 整改 （已入网到整改）
      */

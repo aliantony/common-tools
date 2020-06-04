@@ -1,37 +1,5 @@
 package com.antiy.asset.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -57,6 +25,7 @@ import com.antiy.common.base.SysArea;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.AssetEnum;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
@@ -64,6 +33,36 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -2683,6 +2682,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
             asset.setCategoryModel(importRequest.getCategory());
@@ -2941,6 +2941,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3179,6 +3180,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3370,6 +3372,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3596,6 +3599,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
@@ -3772,21 +3776,12 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 记录日志
             if (AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())) {
                 if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(), currentAsset.getName(),
-                        list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(), assetDao.getNumberById(currentAsset.getId().toString()),
+                        list, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 } else {
                     LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
-                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.NOT_REGISTER));
-                }
-            } else {
-                if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                        currentAsset.getName(), list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-                } else {
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.NOT_REGISTER));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.ASSET_INFO_MANAGE,
+                        BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 }
             }
             // 更新状态
@@ -3802,6 +3797,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 删除关联业务的资产
 
         relationDao.deleteByAssetId(assetIdList);
+
+        if(list.size()>1){
+            List<Asset> assets = assetDao.getByAssetIds(assetIdList);
+            List<String> numbers = assets.stream().map(t -> t.getNumber()).collect(Collectors.toList());
+            String numbersStr = StringUtils.join(numbers, ",");
+            String assetIdsStr=StringUtils.join(assetIdList,",");
+            LogUtils.recordOperLog(new BusinessData("批量对资产做不予登记操作", assetIdsStr,
+                    numbersStr, list, BusinessModuleEnum.ASSET_INFO_MANAGE,
+                    BusinessPhaseEnum.ASSET_BATCH_NOT_REGISTER,AssetEnum.NOT_ASSET_NO));
+        }
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
         return currentAssetList.size();
