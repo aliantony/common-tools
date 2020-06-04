@@ -1,5 +1,7 @@
 package com.antiy.asset.service.impl;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -150,6 +152,15 @@ public class AssetMonitorRuleServiceImpl extends BaseServiceImpl<AssetMonitorRul
     @Override
     public PageResult<AssetMonitorRuleResponse> queryPageAssetMonitorRule(AssetMonitorRuleQuery query) throws Exception {
         ConditionFactory.createAreaQuery(query);
+        if (query.getAreaList().size()>1){
+            String area = query.getAreaList().get(0);
+            for (int i = 1; i < query.getAreaList().size(); i++) {
+                if (query.getAreaList().get(i).indexOf(area)<0){
+                    area = query.getAreaList().get(i);
+                }
+            }
+            query.setAreaList(Arrays.asList(area));
+        }
         Integer num = this.findCount(query);
         if (num > 0) {
             List<AssetMonitorRuleResponse> monitorRuleResponseList = this.queryListAssetMonitorRule(query);
