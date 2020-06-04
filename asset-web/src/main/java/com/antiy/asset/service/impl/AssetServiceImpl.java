@@ -2675,6 +2675,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
             asset.setCategoryModel(importRequest.getCategory());
@@ -2933,6 +2934,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3171,6 +3173,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3362,6 +3365,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3588,6 +3592,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
