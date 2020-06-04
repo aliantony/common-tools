@@ -271,6 +271,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
+                    asset.setGmtModified(System.currentTimeMillis());
                     asset.setAssetSource(AssetSourceEnum.MANUAL_REGISTRATION.getCode());
                     // 处理自定义字段
                     List<AssetCustomizeRequest> assetCustomizeRequests = request.getAssetCustomizeRequests();
@@ -1259,9 +1260,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse.setDecryptInstallTemplateId(asset.getInstallTemplateId());
         assetOuterResponse.setAsset(assetResponse);
         // 获取区域
+        StringBuilder areaName = new StringBuilder();
+        String parentAreaId = asset.getAreaId().substring(0,asset.getAreaId().length()-3);
+        String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                parentAreaId);
+        SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
+        areaName.append(parentArea.getFullName()).append("/");
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
+        areaName.append(sysArea.getFullName());
+        assetResponse.setAreaName(areaName.toString());
         // 设置操作系统
         if (asset.getOperationSystem() != null) {
             assetResponse.setOperationSystem(asset.getOperationSystem().toString());
@@ -4264,15 +4272,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {
+                StringBuilder areaName = new StringBuilder();
+                String parentAreaId = asset.getAreaId().substring(0,asset.getAreaId().length()-3);
+                String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                        parentAreaId);
+                try {
+                    SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
+                    areaName.append(parentArea.getFullName()).append("/");
+                } catch (Exception e) {
+                    logger.error("获取区域名称出错");
+                }
                 String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                     asset.getAreaId());
                 SysArea sysArea = null;
                 try {
                     sysArea = redisUtil.getObject(key, SysArea.class);
+                    areaName.append(sysArea.getFullName());
                 } catch (Exception e) {
                     logger.error("获取区域名称出错");
                 }
-                asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
+                asset.setAreaName(areaName.toString());
             }
             // 行颜色
             if (asset.getServiceLife() != null && asset.getServiceLife() > 0) {
