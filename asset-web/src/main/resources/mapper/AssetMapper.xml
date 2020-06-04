@@ -2382,12 +2382,13 @@
         ) b
     </select>
 
+
     <sql id="assetRelationBusiness">
         <if test='multipleQuery != null and multipleQuery != "" '>
             ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or replace(amr.`mac`,':','-')  LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},":","-"),'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="manufacturer != null and manufacturer.size()>0">

@@ -440,6 +440,12 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             throw new BusinessException("只允许计算设备进行此项操作！");
         }
 
+        //修改漏洞整改流程标志字段
+        Asset asset=new Asset();
+        asset.setId(assetOfDB.getId());
+        asset.setIsVlunCorrect(2);
+        assetDao.update(asset);
+
 
         ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=null;
         try {
@@ -502,11 +508,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         assetCorrectIInfoResponse.setNeedManualPush("1");
 
-        //修改漏洞整改流程标志字段
+        /*//修改漏洞整改流程标志字段
         Asset asset=new Asset();
         asset.setId(assetOfDB.getId());
         asset.setIsVlunCorrect(2);
-        assetDao.update(asset);
+        assetDao.update(asset);*/
 
         //资产跳过整改不走工作流
         if(assetOfDB.getRectification()==1){

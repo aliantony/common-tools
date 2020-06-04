@@ -300,7 +300,7 @@
                 a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
                 or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
                 or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-                or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+                or replace(amr.`mac`,':','-')  LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},":","-"),'%','\%'),'_','\_'),'%')
             </if>
         </trim>
         <if test=" areaIds != null and areaIds.length > 0 ">
