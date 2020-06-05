@@ -273,22 +273,27 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         List<String> numberList = assetsInDb.stream().map(t -> t.getNumber()).collect(Collectors.toList());
         String numbers=StringUtils.join(numberList,",");
         String ids = StringUtils.join(assetIdList, ",");
-
-
         if (!AssetFlowEnum.CHANGE_COMPLETE.equals(statusJumpRequest.getAssetFlowEnum()) && assetIdList.size()==1) {
             BusinessPhaseEnum businessPhaseEnum=null;
+            String incident="";
             String msg=null;
             if(AssetFlowEnum.RETIRE_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
                 businessPhaseEnum=BusinessPhaseEnum.EXIT_APPLY;
+                incident="提出退回申请";
             }
             if(AssetFlowEnum.SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum()) ||AssetFlowEnum.NET_IN_TO_SCRAP_APPLICATION.equals(statusJumpRequest.getAssetFlowEnum())){
                 businessPhaseEnum=BusinessPhaseEnum.SCAPE_APPLY;
+                incident="提出报废申请";
             }
-
+            if(AssetFlowEnum.RETIRE_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
+                businessPhaseEnum=BusinessPhaseEnum.EXIT_EXE;
+                incident="执行退回";
+            }
             if(AssetFlowEnum.SCRAP_EXECUTEE.equals(statusJumpRequest.getAssetFlowEnum())){
                 businessPhaseEnum=BusinessPhaseEnum.SCAPE_EXE;
+                incident="执行报废";
             }
-            LogUtils.recordOperLog(new BusinessData(statusJumpRequest.getAssetFlowEnum().getNextOperaLog(),
+            LogUtils.recordOperLog(new BusinessData(incident,
                     ids, numbers, statusJumpRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, businessPhaseEnum,AssetEnum.IS_ASSET_NO));
             logger.info("记录操作日志");
         }
@@ -420,6 +425,8 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
     }
     @Override
     public AssetCorrectIInfoResponse assetCorrectingOfbaseLine(AssetCorrectRequest assetCorrectRequest) throws Exception {
+
+
         ActivityHandleRequest activityHandleRequest=assetCorrectRequest.getActivityHandleRequest();
         Asset assetOfDB = assetDao.getById(activityHandleRequest.getStringId());
         if(assetOfDB==null){
@@ -432,6 +439,14 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         if(categoryModelsStr.add(assetOfDB.getCategoryModel())){
             throw new BusinessException("只允许计算设备进行此项操作！");
         }
+
+        //修改漏洞整改流程标志字段
+        Asset asset=new Asset();
+        asset.setId(assetOfDB.getId());
+        asset.setIsVlunCorrect(2);
+        assetDao.update(asset);
+
+
         ActionResponse<AssetCorrectIInfoResponse> baseLineResponse=null;
         try {
             baseLineResponse = baseLineClient.rectification( activityHandleRequest.getStringId());
@@ -443,6 +458,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             LogUtils.error(logger, "调用配置模块失败");
             throw  new BusinessException("调用配置模块失败");
         }
+
 
         AssetCorrectIInfoResponse assetCorrectIInfoResponse = baseLineResponse.getBody();
         assetCorrectIInfoResponse.setNeedManualPush("0");
@@ -463,7 +479,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         LogUtils.recordOperLog(
                 new BusinessData("执行配置基准整改", assetOfDB.getId(), assetOfDB.getNumber(),
-                        assetCorrectRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE,AssetEnum.IS_ASSET_NO)
+                        assetCorrectRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.RECTIFICATION,AssetEnum.IS_ASSET_NO)
         );
         return assetCorrectIInfoResponse;
     }
@@ -492,11 +508,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
 
         assetCorrectIInfoResponse.setNeedManualPush("1");
 
-        //修改漏洞整改流程标志字段
+        /*//修改漏洞整改流程标志字段
         Asset asset=new Asset();
         asset.setId(assetOfDB.getId());
         asset.setIsVlunCorrect(2);
-        assetDao.update(asset);
+        assetDao.update(asset);*/
 
         //资产跳过整改不走工作流
         if(assetOfDB.getRectification()==1){
@@ -504,8 +520,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         //获取流程实例id    (漏洞步骤完成)
         Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
-        List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
-        activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+        AssetOperationRecord assetOperationRecords=assetOperationRecordDao.getByAssetId(assetId);
+        if(assetOperationRecords==null){
+            throw new BusinessException("无法获取该资产登记流程实例ID");
+        }
+        activityHandleRequest.setProcInstId(assetOperationRecords.getTaskId().toString());
         ActionResponse vlunActivityResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
 
 
@@ -545,6 +564,25 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
             scan = baseLineClient.scan(assetId);
 
         }
+        if(assetIds.size()==1){
+            String id = assetIds.get(0);
+            Asset asset = assetDao.getByAssetId(id);
+            LogUtils.recordOperLog(
+                    new BusinessData("执行安全检查", id, asset.getNumber(),
+                            asset, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.RECTIFICATION,AssetEnum.IS_ASSET_NO)
+            );
+        }
+        if(assetIds.size()>1){
+            List<Asset> assets = assetDao.getByAssetIds(assetIds);
+            List<String> numbers = assets.stream().map(t -> t.getNumber()).collect(Collectors.toList());
+            String numbersStr = StringUtils.join(numbers, ",");
+            String assetsStr = StringUtils.join(assetIds, ",");
+            LogUtils.recordOperLog(
+                    new BusinessData("批量对资产进行整改操作", assetsStr,numbersStr,
+                            assets, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.ASSET_BATCH_CHANGE,AssetEnum.NOT_ASSET_NO)
+            );
+        }
+
         return 1;
     }
 
@@ -564,20 +602,6 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         asset.setRectification(AssetCorrectStateEnum.HAS_DONE_CORRECT.getCode());
         if(k){
             asset.setAssetStatus(AssetStatusEnum.NET_IN_CHECK.getCode());
-            //推进工作流
-            //获取流程实例id
-           /* Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
-            List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
-            activityHandleRequest.setTaskId(assetOperationRecords.get(0).getTaskId().toString());
-            Map<String,String> formDdata=new HashMap<>();
-            activityHandleRequest.setFormData(formDdata);
-            ActionResponse actionResponse = activityClient.completeTask(activityHandleRequest);
-            LogUtils.info(logger,"工作流activityHandleRequest 参数{}",activityHandleRequest.toString());
-            if(actionResponse==null || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())){
-                asset.setAssetStatus(AssetStatusEnum.CORRECTING.getCode());
-                asset.setRectification(3);
-                throw new BusinessException("工作流异常！");
-            }*/
         }else{
             asset.setAssetStatus(AssetStatusEnum.NET_IN.getCode());
             asset.setFirstEnterNett(System.currentTimeMillis());
@@ -585,7 +609,7 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         Integer update = assetDao.update(asset);
         LogUtils.recordOperLog(
                 new BusinessData("通过安全整改", assetOfDB.getId(), assetOfDB.getNumber(),
-                        activityHandleRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NONE,AssetEnum.IS_ASSET_NO)
+                        activityHandleRequest, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.CONTINU_NET,AssetEnum.IS_ASSET_NO)
         );
         return update;
     }

@@ -57,6 +57,7 @@ import com.antiy.common.base.SysArea;
 import com.antiy.common.download.DownloadVO;
 import com.antiy.common.download.ExcelDownloadUtil;
 import com.antiy.common.encoder.AesEncoder;
+import com.antiy.common.enums.AssetEnum;
 import com.antiy.common.enums.BusinessModuleEnum;
 import com.antiy.common.enums.BusinessPhaseEnum;
 import com.antiy.common.enums.ModuleEnum;
@@ -271,6 +272,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                     }
                     asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
                     asset.setGmtCreate(System.currentTimeMillis());
+                    asset.setGmtModified(System.currentTimeMillis());
                     asset.setAssetSource(AssetSourceEnum.MANUAL_REGISTRATION.getCode());
                     // 处理自定义字段
                     List<AssetCustomizeRequest> assetCustomizeRequests = request.getAssetCustomizeRequests();
@@ -1259,9 +1261,15 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetResponse.setDecryptInstallTemplateId(asset.getInstallTemplateId());
         assetOuterResponse.setAsset(assetResponse);
         // 获取区域
+        StringBuilder areaName = new StringBuilder();
+        String parentAreaId = asset.getAreaId().substring(0, asset.getAreaId().length() - 3);
+        String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, parentAreaId);
+        SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
+        areaName.append(parentArea.getFullName()).append("/");
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
         SysArea sysArea = redisUtil.getObject(key, SysArea.class);
-        assetResponse.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
+        areaName.append(sysArea.getFullName());
+        assetResponse.setAreaName(areaName.toString());
         // 设置操作系统
         if (asset.getOperationSystem() != null) {
             assetResponse.setOperationSystem(asset.getOperationSystem().toString());
@@ -1536,6 +1544,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
                 baselineWaitingConfigRequest.setAdvice("基准变更");
                 baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+                // 操作记录中记录资产需要漏扫
+                assetOuterRequest.setNeedScan(true);
                 ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                 if (null == actionResponse
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
@@ -2675,6 +2685,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setIsInnet(0);
             asset.setCategoryModel(importRequest.getCategory());
@@ -2933,6 +2944,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3162,12 +3174,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCode(entity.getCode());
             asset.setNetType(typeId);
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
-            long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
-            asset.setOperationSystem(operationSystem);
-            asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
+            if (StringUtils.isNotBlank(entity.getOperationSystem())) {
+
+                long operationSystem = Long.parseLong(treeDao.queryUniqueIdByNodeName(entity.getOperationSystem()));
+                asset.setOperationSystem(operationSystem);
+                asset.setOperationSystemName(assetHardSoftLibDao.getNameByBid(operationSystem));
+            }
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3359,6 +3375,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setIsSecrecy("是".equals(entity.getIsSecrecy()) ? 1 : 2);
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
             asset.setCreateUser(LoginUserUtil.getLoginUser().getId());
@@ -3585,6 +3602,7 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             asset.setCategoryModel(importRequest.getCategory());
             asset.setResponsibleUserId(checkUser(entity.getUser()));
             asset.setGmtCreate(System.currentTimeMillis());
+            asset.setGmtModified(System.currentTimeMillis());
             asset.setAreaId(areaId);
             asset.setInstallType(InstallType.AUTOMATIC.getCode());
             asset.setImportanceDegree(DataTypeUtils.stringToInteger(entity.getImportanceDegree()));
@@ -3761,21 +3779,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 记录日志
             if (AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())) {
                 if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(), currentAsset.getName(),
-                        list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
+                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
+                        assetDao.getNumberById(currentAsset.getId().toString()), list,
+                        BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 } else {
                     LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
-                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.NOT_REGISTER));
-                }
-            } else {
-                if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                        currentAsset.getName(), list, BusinessModuleEnum.HARD_ASSET, BusinessPhaseEnum.NOT_REGISTER));
-                } else {
-                    LogUtils.recordOperLog(new BusinessData(AssetEventEnum.NO_REGISTER.getName(), currentAsset.getId(),
-                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.HARD_ASSET,
-                        BusinessPhaseEnum.NOT_REGISTER));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list,
+                        BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 }
             }
             // 更新状态
@@ -3791,6 +3801,16 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         // 删除关联业务的资产
 
         relationDao.deleteByAssetId(assetIdList);
+
+        if (list.size() > 1) {
+            List<Asset> assets = assetDao.getByAssetIds(assetIdList);
+            List<String> numbers = assets.stream().map(t -> t.getNumber()).collect(Collectors.toList());
+            String numbersStr = StringUtils.join(numbers, ",");
+            String assetIdsStr = StringUtils.join(assetIdList, ",");
+            LogUtils.recordOperLog(
+                new BusinessData("批量对资产做不予登记操作", assetIdsStr, numbersStr, list, BusinessModuleEnum.ASSET_INFO_MANAGE,
+                    BusinessPhaseEnum.ASSET_BATCH_NOT_REGISTER, AssetEnum.NOT_ASSET_NO));
+        }
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
         return currentAssetList.size();
@@ -4147,23 +4167,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             assetMultipleQuery.setAreaIds(areaIds);
         }
-        if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) {
-            List<String> caIds = Lists.newArrayList();
-            Collections.sort(assetMultipleQuery.getCategoryModels());
-            for (String t : assetMultipleQuery.getCategoryModels()) {
-                AssetCategoryModel assetCategoryModel = assetCategoryModelService
-                    .getById(DataTypeUtils.stringToInteger(t));
-                AssetCategoryModelQuery query = new AssetCategoryModelQuery();
-                query.setSourceOfLend(false);
-                query.setName(assetCategoryModel.getName());
-                List<AssetCategoryModelNodeResponse> list = assetCategoryModelService
-                    .queryCategoryWithOutRootNode(query);
-                if (CollectionUtils.isNotEmpty(list)) {
-                    getCategory(list, caIds);
+        if (CollectionUtils.isNotEmpty(assetMultipleQuery.getOperationSystemList())) {
+            List ids = Lists.newArrayList();
+            assetMultipleQuery.getOperationSystemList().stream().forEach(operatingSystem -> {
+                QueryCondition condition = new QueryCondition();
+                condition.setPrimaryKey(String.valueOf(operatingSystem));
+                ids.add(operatingSystem);
+                List<AssetCpeTreeResponse> list = null;
+                try {
+                    list = assetCpeTreeService.querySubTreeById(condition);
+                } catch (Exception e) {
+
                 }
-            }
-            assetMultipleQuery.setCategoryModelList(caIds);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    ids.addAll(list.stream().map(AssetCpeTreeResponse::getUniqueId).collect(Collectors.toSet()));
+                }
+            });
+            assetMultipleQuery.setOperationSystemList(ids);
         }
+        /* if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) { List<String> caIds =
+         * Lists.newArrayList(); Collections.sort(assetMultipleQuery.getCategoryModels()); for (String t :
+         * assetMultipleQuery.getCategoryModels()) { AssetCategoryModel assetCategoryModel = assetCategoryModelService
+         * .getById(DataTypeUtils.stringToInteger(t)); AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+         * query.setSourceOfLend(false); query.setName(assetCategoryModel.getName());
+         * List<AssetCategoryModelNodeResponse> list = assetCategoryModelService .queryCategoryWithOutRootNode(query);
+         * if (CollectionUtils.isNotEmpty(list)) { getCategory(list, caIds); } }
+         * assetMultipleQuery.setCategoryModelList(caIds); } */
         // 未知资产列表
         if (assetMultipleQuery.getUnknownAssets()) {
             if (CollectionUtils.isEmpty(assetMultipleQuery.getAssetSourceList())) {
@@ -4261,15 +4290,26 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {
+                StringBuilder areaName = new StringBuilder();
+                String parentAreaId = asset.getAreaId().substring(0, asset.getAreaId().length() - 3);
+                String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
+                    parentAreaId);
+                try {
+                    SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
+                    areaName.append(parentArea.getFullName()).append("/");
+                } catch (Exception e) {
+                    logger.error("获取区域名称出错");
+                }
                 String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
                     asset.getAreaId());
                 SysArea sysArea = null;
                 try {
                     sysArea = redisUtil.getObject(key, SysArea.class);
+                    areaName.append(sysArea.getFullName());
                 } catch (Exception e) {
                     logger.error("获取区域名称出错");
                 }
-                asset.setAreaName(Optional.ofNullable(sysArea).map(SysArea::getFullName).orElse(null));
+                asset.setAreaName(areaName.toString());
             }
             // 行颜色
             if (asset.getServiceLife() != null && asset.getServiceLife() > 0) {

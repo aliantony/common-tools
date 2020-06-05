@@ -23,11 +23,13 @@ public enum AlarmLevelEnum {
             .get(0);
     }
     public static String getCodeByMsg(String code){
-        if(StringUtils.isBlank(code))
+        if(StringUtils.isBlank(code)) {
             return  null;
+        }
         List<String> collect = Arrays.stream(AlarmLevelEnum.values()).filter(v -> v.getCode().equals(code)).map(t -> t.getName()).collect(Collectors.toList());
-        if(CollectionUtils.isNotEmpty(collect))
+        if(CollectionUtils.isNotEmpty(collect)) {
             return  collect.get(0);
+        }
         return null;
     }
     AlarmLevelEnum(String code, String name) {

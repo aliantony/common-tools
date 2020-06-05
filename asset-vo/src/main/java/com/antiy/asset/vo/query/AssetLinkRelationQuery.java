@@ -42,7 +42,7 @@ public class AssetLinkRelationQuery extends ObjectQuery {
      * 资产品类型号
      */
     @ApiModelProperty("资产品类型号")
-    private Integer       categoryModel;
+    private String       categoryModel;
     /**
      * 资产品类型号
      */
@@ -90,11 +90,11 @@ public class AssetLinkRelationQuery extends ObjectQuery {
         this.categoryModels = categoryModels;
     }
 
-    public Integer getCategoryModel() {
+    public String getCategoryModel() {
         return categoryModel;
     }
 
-    public void setCategoryModel(Integer categoryModel) {
+    public void setCategoryModel(String categoryModel) {
         this.categoryModel = categoryModel;
     }
 

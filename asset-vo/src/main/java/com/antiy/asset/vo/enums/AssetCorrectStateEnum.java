@@ -2,7 +2,7 @@ package com.antiy.asset.vo.enums;
 
 public enum AssetCorrectStateEnum {
 
-    HAD_DONE_CORRECT(1,"已整改"),
+        HAD_DONE_CORRECT(1,"已整改"),
     NEED_CORRECT(2,"未整改"),
     CORRECTING(3,"整改中"),
     HAS_DONE_CORRECT(4,"完成整改")

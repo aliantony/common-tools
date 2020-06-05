@@ -7,7 +7,6 @@ import com.antiy.common.validation.ObjectValidator;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 /**
  * <p> AssetGroupRelation 查询条件 </p>

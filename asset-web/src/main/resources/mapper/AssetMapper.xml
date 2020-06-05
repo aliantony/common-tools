@@ -101,6 +101,7 @@
 
     <sql id="IF_Base_Column_List_ForBatch">
             number,
+            soft_version,
             step_node,
             name,
             install_type,
@@ -149,6 +150,7 @@
 
     <sql id="IF_Value_Column_List_ForBatch">
         #{entity.number },
+        #{entity.softVersion },
         #{entity.stepNode },
         #{entity.name },
         #{entity.installType },
@@ -2321,13 +2323,12 @@
         GROUP_CONCAT(distinct amr.mac) AS macs
         FROM
         asset AS a
-        left join asset_group_relation agr on (a.id = agr.asset_id = agr.status = 1)
+        left join asset_group_relation agr on  a.id = agr.asset_id and agr.status = 1
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
         LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
         <trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
             <include refid="assetRelationBusiness"></include>
-
             and a.asset_status in (1,3,4,5,6,8,9)
             and a.status=1
         </trim>
@@ -2356,7 +2357,7 @@
         a.id
         FROM
         asset AS a
-        left join asset_group_relation agr on (a.id = agr.asset_id = agr.status = 1)
+        left join asset_group_relation agr on  a.id = agr.asset_id and agr.status = 1
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
         LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
@@ -2381,12 +2382,13 @@
         ) b
     </select>
 
+
     <sql id="assetRelationBusiness">
         <if test='multipleQuery != null and multipleQuery != "" '>
             ( a.`name` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or a.`number` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
             or air.`ip` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
-            or amr.`mac` LIKE CONCAT('%',replace(replace(#{multipleQuery},'%','\%'),'_','\_'),'%')
+            or replace(amr.`mac`,':','-')  LIKE CONCAT('%',replace(replace(replace(#{multipleQuery},":","-"),'%','\%'),'_','\_'),'%')
             )
         </if>
         <if test="manufacturer != null and manufacturer.size()>0">
@@ -2396,6 +2398,7 @@
             </foreach>
         </if>
         <if test="assetGroup !=null and assetGroup.size()>0">
+            and
               agr.asset_group_id in
                 <foreach collection="assetGroup" item="e" open="(" close=")" separator="," >
                    #{e}
@@ -2665,6 +2668,12 @@
         <if test="categoryModelList != null and categoryModelList.size() > 0">
             and asset.category_model in
             <foreach item="item" collection="categoryModelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and asset.category_model in
+            <foreach item="item" collection="categoryModels" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -2969,21 +2978,15 @@ WHERE
             LIMIT #{pageSize} offset #{pageOffset}
         </if>
     </select>
-    <select id="getExpirationAsset" resultType="com.antiy.asset.entity.AssetMonitor">
+    <select id="getExpirationAsset" resultType="com.antiy.asset.entity.AssetArea">
         select
-          t.id as assetId,
-          group_concat(air.ip) as ip,
-          group_concat(amr.mac) as mac,
-          t.number,
-          t.service_life as threshole
+          t.id ,
+          t.area_id as area
           from asset t
-          left join asset_ip_relation air on (t.id = air.asset_id and air.status = 1)
-          left join asset_mac_relation amr on (t.id = amr.asset_id and amr.status = 1)
         where t.status = 1
         and t.expiration_reminder &lt;= #{time}
         and t.expiration_reminder > 0
 		and t.expiration_reminder is not null
-        group by t.id
     </select>
     <select id="getServiceLifeAsset" resultType="com.antiy.asset.entity.AssetMonitor">
         select

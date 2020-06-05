@@ -69,4 +69,6 @@ public interface BaseLineClient {
     ActionResponse getUsersByQxTagAndAreaId(Map param);
 
     ActionResponse scannerEliminate(List<String> assetIdList);
+
+    ActionResponse getUserIdsByAreaIds(Map map);
 }

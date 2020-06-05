@@ -240,10 +240,9 @@
                 left join asset_monitor_rule_relation amrr on amr.unique_id = amrr.rule_unique_id
                 <trim prefix="WHERE" prefixOverrides="AND |OR ">
                     <if test="areaList.size > 0">
-                        and amr.area_id in
                         <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
+                            and amr.area_id like concat(#{areaId},'%')
+                         </foreach>
                     </if>
                     and amr.status = 1
                 </trim>
@@ -268,10 +267,9 @@
                         </foreach>
                     </if>
                     <if test="areaList.size > 0">
-                        and area_id in
-                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
+                        <foreach item="areaId" collection="areaList" separator=",">
+                            and amr.area_id like concat(#{areaId},'%')
+                         </foreach>
                     </if>
                     and amr.status = 1
                 </trim>
@@ -312,10 +310,9 @@
                         </foreach>
                     </if>
                     <if test="areaList.size > 0">
-                        and amr.area_id in
-                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
+                        <foreach item="areaId" collection="areaList" separator=",">
+                            and amr.area_id like concat(#{areaId},'%')
+                         </foreach>
                     </if>
                     and amr.status = 1
                 </trim>
@@ -342,10 +339,9 @@
                         </foreach>
                     </if>
                     <if test="areaList.size > 0">
-                        and area_id in
-                        <foreach item="areaId" collection="areaList" open="(" separator="," close=")">
-                            #{areaId}
-                        </foreach>
+                        <foreach item="areaId" collection="areaList" separator=",">
+                            and amr.area_id like concat(#{areaId},'%')
+                         </foreach>
                     </if>
                     and amr.status = 1
                 </trim>

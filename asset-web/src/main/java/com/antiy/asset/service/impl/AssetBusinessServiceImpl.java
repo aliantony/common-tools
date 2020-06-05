@@ -218,8 +218,9 @@ public class AssetBusinessServiceImpl extends BaseServiceImpl<AssetBusiness> imp
                     throw new BusinessException("不能重复关联资产！");
                 }
                 Asset asset = assetDao.getById(item.getAssetId());
-                if (!(AssetStatusEnum.NET_IN.getCode().equals(asset.getAssetStatus())
-                      || AssetStatusEnum.IN_CHANGE.getCode().equals(asset.getAssetStatus()))) {
+                if (AssetStatusEnum.NOT_REGISTER.getCode().equals(asset.getAssetStatus())
+                      || AssetStatusEnum.RETIRE.getCode().equals(asset.getAssetStatus())
+                        ||AssetStatusEnum.SCRAP.getCode().equals(asset.getAssetStatus())) {
                     throw new BusinessException("资产状态不合符流程！");
                 }
                 AssetBusinessRelation assetBusinessRelation = new AssetBusinessRelation();
