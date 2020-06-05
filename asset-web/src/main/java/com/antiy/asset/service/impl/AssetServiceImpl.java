@@ -1544,6 +1544,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
                 baselineWaitingConfigRequest.setBusinessId(assetId + "&1&" + assetId);
                 baselineWaitingConfigRequest.setAdvice("基准变更");
                 baselineWaitingConfigRequestList.add(baselineWaitingConfigRequest);
+                // 操作记录中记录资产需要漏扫
+                assetOuterRequest.setNeedScan(true);
                 ActionResponse actionResponse = baseLineClient.baselineConfig(baselineWaitingConfigRequestList);
                 if (null == actionResponse
                     || !RespBasicCode.SUCCESS.getResultCode().equals(actionResponse.getHead().getCode())) {
