@@ -1,5 +1,37 @@
 package com.antiy.asset.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
 import com.antiy.asset.cache.AssetBaseDataCache;
 import com.antiy.asset.dao.*;
@@ -33,36 +65,6 @@ import com.antiy.common.exception.BusinessException;
 import com.antiy.common.exception.RequestParamValidateException;
 import com.antiy.common.utils.*;
 import com.antiy.common.utils.DataTypeUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * <p> 资产主表 服务实现类 </p>
@@ -1260,9 +1262,8 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
         assetOuterResponse.setAsset(assetResponse);
         // 获取区域
         StringBuilder areaName = new StringBuilder();
-        String parentAreaId = asset.getAreaId().substring(0,asset.getAreaId().length()-3);
-        String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                parentAreaId);
+        String parentAreaId = asset.getAreaId().substring(0, asset.getAreaId().length() - 3);
+        String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, parentAreaId);
         SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
         areaName.append(parentArea.getFullName()).append("/");
         String key = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class, asset.getAreaId());
@@ -3776,12 +3777,13 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 记录日志
             if (AssetStatusEnum.CORRECTING.getCode().equals(currentAsset.getAssetStatus())) {
                 if (assetDao.getNumberById(currentAsset.getId().toString()) == null) {
-                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(), assetDao.getNumberById(currentAsset.getId().toString()),
-                        list, BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
+                    LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
+                        assetDao.getNumberById(currentAsset.getId().toString()), list,
+                        BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 } else {
                     LogUtils.recordOperLog(new BusinessData("安全整改不通过", currentAsset.getId(),
-                        assetDao.getNumberById(currentAsset.getId().toString()), list, BusinessModuleEnum.ASSET_INFO_MANAGE,
-                        BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
+                        assetDao.getNumberById(currentAsset.getId().toString()), list,
+                        BusinessModuleEnum.ASSET_INFO_MANAGE, BusinessPhaseEnum.NOT_REGISTER, AssetEnum.IS_ASSET_NO));
                 }
             }
             // 更新状态
@@ -3798,14 +3800,14 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
 
         relationDao.deleteByAssetId(assetIdList);
 
-        if(list.size()>1){
+        if (list.size() > 1) {
             List<Asset> assets = assetDao.getByAssetIds(assetIdList);
             List<String> numbers = assets.stream().map(t -> t.getNumber()).collect(Collectors.toList());
             String numbersStr = StringUtils.join(numbers, ",");
-            String assetIdsStr=StringUtils.join(assetIdList,",");
-            LogUtils.recordOperLog(new BusinessData("批量对资产做不予登记操作", assetIdsStr,
-                    numbersStr, list, BusinessModuleEnum.ASSET_INFO_MANAGE,
-                    BusinessPhaseEnum.ASSET_BATCH_NOT_REGISTER,AssetEnum.NOT_ASSET_NO));
+            String assetIdsStr = StringUtils.join(assetIdList, ",");
+            LogUtils.recordOperLog(
+                new BusinessData("批量对资产做不予登记操作", assetIdsStr, numbersStr, list, BusinessModuleEnum.ASSET_INFO_MANAGE,
+                    BusinessPhaseEnum.ASSET_BATCH_NOT_REGISTER, AssetEnum.NOT_ASSET_NO));
         }
 
         LogUtils.info(logger, AssetEventEnum.NO_REGISTER.getName() + " {}", list);
@@ -4163,23 +4165,32 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             }
             assetMultipleQuery.setAreaIds(areaIds);
         }
-        if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) {
-            List<String> caIds = Lists.newArrayList();
-            Collections.sort(assetMultipleQuery.getCategoryModels());
-            for (String t : assetMultipleQuery.getCategoryModels()) {
-                AssetCategoryModel assetCategoryModel = assetCategoryModelService
-                    .getById(DataTypeUtils.stringToInteger(t));
-                AssetCategoryModelQuery query = new AssetCategoryModelQuery();
-                query.setSourceOfLend(false);
-                query.setName(assetCategoryModel.getName());
-                List<AssetCategoryModelNodeResponse> list = assetCategoryModelService
-                    .queryCategoryWithOutRootNode(query);
-                if (CollectionUtils.isNotEmpty(list)) {
-                    getCategory(list, caIds);
+        if (CollectionUtils.isNotEmpty(assetMultipleQuery.getOperationSystemList())) {
+            List ids = Lists.newArrayList();
+            assetMultipleQuery.getOperationSystemList().stream().forEach(operatingSystem -> {
+                QueryCondition condition = new QueryCondition();
+                condition.setPrimaryKey(String.valueOf(operatingSystem));
+                ids.add(operatingSystem);
+                List<AssetCpeTreeResponse> list = null;
+                try {
+                    list = assetCpeTreeService.querySubTreeById(condition);
+                } catch (Exception e) {
+
                 }
-            }
-            assetMultipleQuery.setCategoryModelList(caIds);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    ids.addAll(list.stream().map(AssetCpeTreeResponse::getUniqueId).collect(Collectors.toSet()));
+                }
+            });
+            assetMultipleQuery.setOperationSystemList(ids);
         }
+        /* if (CollectionUtils.isNotEmpty(assetMultipleQuery.getCategoryModels())) { List<String> caIds =
+         * Lists.newArrayList(); Collections.sort(assetMultipleQuery.getCategoryModels()); for (String t :
+         * assetMultipleQuery.getCategoryModels()) { AssetCategoryModel assetCategoryModel = assetCategoryModelService
+         * .getById(DataTypeUtils.stringToInteger(t)); AssetCategoryModelQuery query = new AssetCategoryModelQuery();
+         * query.setSourceOfLend(false); query.setName(assetCategoryModel.getName());
+         * List<AssetCategoryModelNodeResponse> list = assetCategoryModelService .queryCategoryWithOutRootNode(query);
+         * if (CollectionUtils.isNotEmpty(list)) { getCategory(list, caIds); } }
+         * assetMultipleQuery.setCategoryModelList(caIds); } */
         // 未知资产列表
         if (assetMultipleQuery.getUnknownAssets()) {
             if (CollectionUtils.isEmpty(assetMultipleQuery.getAssetSourceList())) {
@@ -4278,9 +4289,9 @@ public class AssetServiceImpl extends BaseServiceImpl<Asset> implements IAssetSe
             // 所属区域
             if (StringUtils.isNotBlank(asset.getAreaId())) {
                 StringBuilder areaName = new StringBuilder();
-                String parentAreaId = asset.getAreaId().substring(0,asset.getAreaId().length()-3);
+                String parentAreaId = asset.getAreaId().substring(0, asset.getAreaId().length() - 3);
                 String parentKey = RedisKeyUtil.getKeyWhenGetObject(ModuleEnum.SYSTEM.getType(), SysArea.class,
-                        parentAreaId);
+                    parentAreaId);
                 try {
                     SysArea parentArea = redisUtil.getObject(parentKey, SysArea.class);
                     areaName.append(parentArea.getFullName()).append("/");
