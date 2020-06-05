@@ -2323,7 +2323,7 @@
         GROUP_CONCAT(distinct amr.mac) AS macs
         FROM
         asset AS a
-        left join asset_group_relation agr on (a.id = agr.asset_id = agr.status = 1)
+        left join asset_group_relation agr on  a.id = agr.asset_id and agr.status = 1
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
         LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
@@ -2357,7 +2357,7 @@
         a.id
         FROM
         asset AS a
-        left join asset_group_relation agr on (a.id = agr.asset_id = agr.status = 1)
+        left join asset_group_relation agr on  a.id = agr.asset_id and agr.status = 1
         LEFT JOIN asset_ip_relation AS air ON air.asset_id = a.id and air.status=1
         LEFT JOIN asset_mac_relation AS amr ON amr.asset_id = a.id and amr.status=1
 
@@ -2398,6 +2398,7 @@
             </foreach>
         </if>
         <if test="assetGroup !=null and assetGroup.size()>0">
+            and
               agr.asset_group_id in
                 <foreach collection="assetGroup" item="e" open="(" close=")" separator="," >
                    #{e}

@@ -68,4 +68,6 @@ public interface AssetOperationRecordDao extends IBaseDao<AssetOperationRecord> 
 
     AssetOperationRecord getLastByAssetId(String stringId);
     Integer insertBatchTask(List<AssetOperationRecord> assetOperationRecordList);
+
+    AssetOperationRecord getByAssetId(Integer assetId);
 }

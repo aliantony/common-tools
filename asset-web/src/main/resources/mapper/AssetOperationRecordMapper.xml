@@ -504,6 +504,16 @@
         ) b
         USING(id)
     </select>
+    <select id="getByAssetId" resultMap="BaseResultMap">
+        select
+        a.target_object_id,a.origin_status,task_id,a.id
+        from
+        <include refid="Table_Name"/> a
+        where   target_object_id=#{assetId}
+        and a.task_id is not null
+        order BY target_object_id desc
+        limit 0,1
+    </select>
     <select id="queryAssetSchemListByAssetIds" resultType="com.antiy.asset.vo.response.AssetResponse">
 <!--        SELECT
         aor.id as stringId,

@@ -520,8 +520,11 @@ public class AssetStatusJumpServiceImpl implements IAssetStatusJumpService {
         }
         //获取流程实例id    (漏洞步骤完成)
         Integer assetId = DataTypeUtils.stringToInteger(activityHandleRequest.getStringId());
-        List<AssetOperationRecord> assetOperationRecords = assetOperationRecordDao.listByAssetIds(Arrays.asList(assetId));
-        activityHandleRequest.setProcInstId(assetOperationRecords.get(0).getTaskId().toString());
+        AssetOperationRecord assetOperationRecords=assetOperationRecordDao.getByAssetId(assetId);
+        if(assetOperationRecords==null){
+            throw new BusinessException("无法获取该资产登记流程实例ID");
+        }
+        activityHandleRequest.setProcInstId(assetOperationRecords.getTaskId().toString());
         ActionResponse vlunActivityResponse = vlunActivity(assetCorrectIInfoResponse, activityHandleRequest);
 
 
