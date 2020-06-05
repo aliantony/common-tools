@@ -2670,6 +2670,12 @@
                 #{item}
             </foreach>
         </if>
+        <if test="categoryModels != null and categoryModels.size() > 0">
+            and asset.category_model in
+            <foreach item="item" collection="categoryModels" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="assetStatusList != null and assetStatusList.size() > 0">
             and asset.asset_status in
             <foreach item="assetStatus" collection="assetStatusList" open="(" separator="," close=")">
