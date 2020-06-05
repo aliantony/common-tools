@@ -155,7 +155,7 @@ public class AssetLinkRelationServiceImpl extends BaseServiceImpl<AssetLinkRelat
         }else {
             assetLinkRelationQuery.setCategoryModels(
                     // 循环获取所有子节点
-                    getCategoryNodeList(Arrays.asList(assetLinkRelationQuery.getCategoryModel())));
+                    getCategoryNodeList(Arrays.asList(Integer.valueOf(assetLinkRelationQuery.getCategoryModel()))));
         }
 
         // 区域条件
