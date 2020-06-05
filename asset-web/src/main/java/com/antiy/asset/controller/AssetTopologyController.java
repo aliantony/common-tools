@@ -1,21 +1,17 @@
 package com.antiy.asset.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.antiy.asset.service.IAssetTopologyService;
 import com.antiy.asset.vo.query.AssetQuery;
 import com.antiy.asset.vo.response.SelectResponse;
 import com.antiy.common.base.ActionResponse;
 import com.antiy.common.base.BaseRequest;
-
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 资产拓扑管理
@@ -113,7 +109,7 @@ public class AssetTopologyController {
     @RequestMapping(value = "/query/graph", method = RequestMethod.POST)
     @ApiResponse(code = 200, message = "OK", response = Object.class, responseContainer = "actionResponse")
     // @PreAuthorize(value = "hasAuthority('asset:topology:queryList')")
-    public ActionResponse getTopologyGraph() throws Exception {
+    public ActionResponse getTopologyGraph() throws Exception { 
         return ActionResponse.success(iAssetTopologyService.getTopologyGraph());
     }
 
