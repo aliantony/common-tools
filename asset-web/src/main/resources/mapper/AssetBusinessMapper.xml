@@ -228,15 +228,10 @@
            <include refid="base_query"></include>
         </trim>
 
-        order by
-
         <choose>
             <when test="sortOrder != null and sortOrder != '' and sortName != null and sortName != ''">
-                ${sortName} ${sortOrder} ,gmt_modified desc
+                order by ${sortName} ${sortOrder} ,gmt_modified desc
             </when>
-            <otherwise>
-                gmt_modified desc
-            </otherwise>
         </choose>
         <if test="pageSize !=-1">
             LIMIT #{pageSize} offset #{pageOffset}
