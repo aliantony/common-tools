@@ -1,6 +1,7 @@
 package com.auto;
 
 import com.antony.config.AliyunSmsSenderImpl;
+import com.antony.config.EnableSms;
 import com.antony.config.TencentSmsSenderImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @version  1.0.0
  */
 @SpringBootApplication
+@EnableSms //被动生效
 public class UseApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(UseApplication.class, args);
