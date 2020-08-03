@@ -1,0 +1,11 @@
+sms:
+  aliyun:
+    userName: 王东
+    password: abc
+    sign: 123
+    url: www.baidu.com
+  tencent:
+    userName: 王东
+    password: fty
+    sign: jgh
+    url: www.sign.com
