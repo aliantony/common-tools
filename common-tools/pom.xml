@@ -12,6 +12,11 @@
         <module>sms-spring-boot-starter</module>
         <module>use-starter</module>
         <module>web-flux</module>
+        <module>web-thymeleaf</module>
+        <module>spring-boot-spring-security-thymeleaf</module>
+        <module>spring-rest-hello-world</module>
+        <module>spring-rest-validation</module>
+        <module>spring-rest-security</module>
     </modules>
 
     <parent>
