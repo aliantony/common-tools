@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @Entity
@@ -85,5 +87,10 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", price=" + price +
                 '}';
+    }
+
+    public static void main(String[] args) throws IOException {
+        File file = new File(Book.class.getResource("/").getPath());
+        System.out.println(file.getParentFile().getParentFile().getPath());
     }
 }
