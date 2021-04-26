@@ -28,7 +28,7 @@
 
     <properties>
         <oshi.version>3.9.1</oshi.version>
-        <io.version>2.6</io.version>
+        <io.version>2.7</io.version>
         <spring.context.version>3.2.0.RELEASE</spring.context.version>
     </properties>
 
